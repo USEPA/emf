@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class name="gov.epa.emissions.commons.data.DatasetType" table="dataset_types" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="java.lang.String" not-null="true" length="255"/>
+        <property name="description" column="description" type="java.lang.String" not-null="true"/>
+        <property name="minFiles" column="min_files" type="integer" not-null="true" length="4"/>
+        <property name="maxFiles" column="max_files" type="integer" not-null="true" length="4"/>
+        <property name="external" column="external" type="boolean" not-null="true"/>
+        <property name="defaultSortOrder" column="default_sortorder" type="java.lang.String" not-null="false"/>
+        <property name="importerClassName" column="importer_classname" type="java.lang.String" not-null="false"/>
+        <property name="exporterClassName" column="exporter_classname" type="java.lang.String" not-null="false"/>
+        <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="tablePerDataset" column="table_per_dataset" type="integer" not-null="true"/>
+        <property name="creationDate" column="creation_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="lastModifiedDate" column="last_mod_date" type="java.util.Date" not-null="false" length="4"/>
+        
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+        	column="creator"/> 
+        	
+        <many-to-one
+            name="fileFormat" 
+            class="gov.epa.emissions.commons.io.XFileFormat"
+        	column="file_format"/> 
+        
+       	<array name="keyVals" table="dataset_types_keywords" cascade="save-update">
+      		<key column="dataset_type_id"/>
+      		<list-index column="list_index"/>
+		    <composite-element class="gov.epa.emissions.commons.data.KeyVal">
+	        	<property name="value" column="value" not-null="false"/>
+	        	<property name="kwname" column="kwname" not-null="true"/>	
+	    		<many-to-one  name="keyword" column="keyword_id" class="gov.epa.emissions.commons.data.Keyword" cascade="save-update"/>
+      		</composite-element>
+ 		</array>
+
+       	<array name="qaStepTemplates" table="dataset_types_qa_step_templates" cascade="save-update">
+      		<key column="dataset_type_id"/>
+      		<list-index column="list_index"/>
+		    <composite-element class="gov.epa.emissions.commons.data.QAStepTemplate">
+				<property name="name" column="name" type="java.lang.String" not-null="true"/>
+        		<many-to-one name="program"
+     				 class ="gov.epa.emissions.commons.data.QAProgram"
+	     			 column="qa_program_id" unique="true" not-null="false"
+	     	     />
+        		<property name="programArguments" column="program_arguments" type="java.lang.String" not-null="false"/>
+		        <property name="required" column="required" type="boolean" not-null="false"/>               
+        		<property name="order" column="order_no" type="float" not-null="false"/>
+        		<property name="description" column="description" type="string" not-null="false"/>
+      		</composite-element>
+ 		</array>
+ 	
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,760 @@
+package gov.epa.emissions.googleearth.kml.generator;
+
+import gov.epa.emissions.googleearth.CSVRecordReader;
+import gov.epa.emissions.googleearth.RecordProducer;
+import gov.epa.emissions.googleearth.kml.ConfigurationManager;
+import gov.epa.emissions.googleearth.kml.KMZGeneratorException;
+import gov.epa.emissions.googleearth.kml.PropertiesManager;
+import gov.epa.emissions.googleearth.kml.PropertiesManager.PropertyKey;
+import gov.epa.emissions.googleearth.kml.bin.EqualBinStrategy;
+import gov.epa.emissions.googleearth.kml.record.Record;
+import gov.epa.emissions.googleearth.kml.utils.Utils;
+import gov.epa.emissions.googleearth.kml.validator.CLIInputValidator;
+import gov.epa.emissions.googleearth.kml.validator.GUIInputValidator;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+public class BinnedPointSourceGenerator {
+
+	private PropertiesManager propertiesManager;
+	private RecordProducer recordProducer;
+	private PreProcessor preProcessor;
+
+	private File inputFile;
+	private File outputFile;
+	private List<List<Record>> binnedRecords = new ArrayList<List<Record>>();
+
+	private int numberOfBins = 5;
+	private double[] bins = new double[numberOfBins];
+	private int[] binCount = new int[numberOfBins];
+
+	private String labelColumnName;
+	private String filterColumnName;
+	private String filterValue;
+	private String dataColumnName;
+	private double dataMinimum;
+
+	private String labelDisplayName;
+	private String filterDisplayName;
+	private String dataDisplayName;
+
+	private int labelColumnIndex = -1;
+	private int filterColumnIndex = -1;
+	private int dataColumnIndex = -1;
+
+	private String indent = "";
+
+	private static final String INDENTATION = "    ";
+	private static final String IMAGES_DIR = "images";
+
+	public BinnedPointSourceGenerator(RecordProducer recordProducer,
+			File inputFile, File outputFile, PropertiesManager propertiesManager) {
+
+		this.recordProducer = recordProducer;
+		this.propertiesManager = propertiesManager;
+
+		this.preProcessor = new PreProcessor(this.recordProducer,
+				this.propertiesManager);
+
+		this.inputFile = inputFile;
+		this.outputFile = outputFile;
+	}
+
+	public void generate() throws KMZGeneratorException {
+
+		this.labelColumnName = propertiesManager
+				.getValue(PropertyKey.LABEL_COLUMNNAME.getKey());
+		this.filterColumnName = propertiesManager
+				.getValue(PropertyKey.FILTER_COLUMNNAME.getKey());
+		this.filterValue = propertiesManager.getValue(PropertyKey.FILTER_VALUE
+				.getKey());
+		this.dataColumnName = propertiesManager
+				.getValue(PropertyKey.DATA_COLUMNNAME.getKey());
+
+		String key = PropertyKey.DATA_MINIMUM.getKey();
+		String value = propertiesManager.getValue(key);
+		try {
+			this.dataMinimum = Double.parseDouble(value);
+		} catch (NumberFormatException e) {
+			throw new KMZGeneratorException(
+					KMZGeneratorException.ERROR_CODE_INCORRECT_VALUE_TYPE,
+					"Value of '" + key + "' is '" + value
+							+ "'. It must be numeric.");
+		}
+
+		this.preProcessor.preProcessRecords();
+
+		this.bins = new EqualBinStrategy(this.numberOfBins, this.preProcessor
+				.getValues()).createBins();
+
+		this.binRecords(this.preProcessor.getRecords());
+
+		try {
+
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+			BufferedWriter bw = new BufferedWriter(osw);
+
+			this.writeDocument(bw);
+
+			bw.flush();
+			bw.close();
+
+		} catch (IOException e) {
+			throw new KMZGeneratorException(
+					KMZGeneratorException.ERROR_CODE_UNABLE_TO_WRITE_KML_DOCUMENT,
+					e.getLocalizedMessage());
+		}
+	}
+
+	public static String createDefaultFileName(
+			PropertiesManager propertiesManager, String inputFileName) {
+
+		StringBuilder sb = new StringBuilder();
+
+		String label = propertiesManager
+				.getValue(PropertiesManager.PropertyKey.LABEL_COLUMNNAME
+						.getKey());
+		String filterColumnName = propertiesManager
+				.getValue(PropertiesManager.PropertyKey.FILTER_COLUMNNAME
+						.getKey());
+		String filterValue = propertiesManager
+				.getValue(PropertiesManager.PropertyKey.FILTER_VALUE.getKey());
+		String dataColumnName = propertiesManager
+				.getValue(PropertiesManager.PropertyKey.DATA_COLUMNNAME
+						.getKey());
+		String dataMinimum = propertiesManager
+				.getValue(PropertiesManager.PropertyKey.DATA_MINIMUM.getKey());
+
+		sb.append(getBeginingOfFileName(inputFileName, 12)).append("_").append(
+				label).append("_").append(filterColumnName).append("_").append(
+				filterValue).append("_").append(dataColumnName).append("_")
+				.append(dataMinimum).append(".kmz");
+		return sb.toString();
+	}
+
+	private static String getBeginingOfFileName(String fileName) {
+
+		String retVal = null;
+
+		String temp = fileName;
+		if (fileName.contains("\\")) {
+
+			String[] split = fileName.split("\\\\");
+			temp = split[split.length - 1];
+		} else if (fileName.contains("/")) {
+
+			String[] split = fileName.split("/");
+			temp = split[split.length - 1];
+		}
+
+		while (temp.length() > 0) {
+
+			if (temp.startsWith("_") || temp.startsWith(".")) {
+				temp = temp.substring(1);
+			} else {
+				break;
+			}
+		}
+
+		String[] split = temp.split("_");
+		if (split.length == 1) {
+
+			split = temp.split(".");
+			retVal = split[0];
+		} else {
+			retVal = split[0];
+		}
+
+		return retVal;
+	}
+
+	private static String getBeginingOfFileName(String fileName, int length) {
+
+		String retVal = fileName;
+
+		if (retVal.length() >= length) {
+			retVal = retVal.substring(0, length);
+		}
+
+		return retVal;
+	}
+
+	protected void validateColumnNames(Record record)
+			throws KMZGeneratorException {
+
+		if (record.getIndex(this.dataColumnName) < 0) {
+			throw new KMZGeneratorException(
+					KMZGeneratorException.ERROR_CODE_INCORRECT_KEY_VALUE, "'"
+							+ PropertyKey.DATA_COLUMNNAME.getDisplayName()
+							+ "' has value of '" + this.dataColumnName
+							+ "'. It must be one of the following: "
+							+ record.toStringKeys() + "\nPlease check input.");
+		}
+
+		if (record.getIndex(this.filterColumnName) < 0) {
+			throw new KMZGeneratorException(
+					KMZGeneratorException.ERROR_CODE_INCORRECT_KEY_VALUE, "'"
+							+ PropertyKey.FILTER_COLUMNNAME.getDisplayName()
+							+ "' has value of '" + this.filterColumnName
+							+ "'. It must be one of the following: "
+							+ record.toStringKeys() + "\nPlease check input.");
+		}
+
+		if (record.getIndex(this.labelColumnName) < 0) {
+			throw new KMZGeneratorException(
+					KMZGeneratorException.ERROR_CODE_INCORRECT_KEY_VALUE, "'"
+							+ PropertyKey.LABEL_COLUMNNAME.getDisplayName()
+							+ "' has value of '" + this.labelColumnName
+							+ "'. It must be one of the following: "
+							+ record.toStringKeys() + "\nPlease check input.");
+		}
+
+	}
+
+	protected void binRecords(List<Record> records) {
+
+		for (int i = 0; i < this.numberOfBins; i++) {
+			this.binnedRecords.add(new ArrayList<Record>());
+		}
+
+		for (Record record : records) {
+
+			int binNumber = 0;
+			for (binNumber = 0; binNumber < this.bins.length; binNumber++) {
+
+				if (this.dataColumnIndex == -1) {
+					this.dataColumnIndex = record.getIndex(this.dataColumnName);
+				}
+
+				if (this.dataDisplayName == null) {
+					this.dataDisplayName = record
+							.getDisplayKey(this.dataColumnIndex);
+				}
+
+				if (new Double(record.getValue(this.dataColumnIndex)) < this.bins[binNumber]) {
+					break;
+				}
+			}
+
+			binNumber--;
+
+			this.binnedRecords.get(binNumber).add(record);
+		}
+	}
+
+	private void pushIndent() {
+		this.indent += BinnedPointSourceGenerator.INDENTATION;
+	}
+
+	private void popIndent() {
+		this.indent = indent.substring(BinnedPointSourceGenerator.INDENTATION
+				.length());
+	}
+
+	protected void writeDocument(Writer writer) throws IOException {
+
+		String fileName = this.inputFile.getName();
+		fileName = Utils.stripExtension(fileName);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		sb.append("<kml xmlns=\"http://earth.google.com/kml/2.1\">\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<Document>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<name>").append("Source file: ").append(
+				fileName).append("</name>\n");
+		sb.append(this.indent).append("<visibility>1</visibility>\n");
+		sb.append(this.indent).append("<open>1</open>\n");
+		sb.append(this.indent).append("<Snippet maxLines='2'>").append(
+				"This is a view of the ").append(
+				this.dataDisplayName.toLowerCase()).append(" for ").append(
+				this.filterDisplayName.toLowerCase()).append(" ").append(
+				this.filterValue).append(" with min cutoff of ").append(
+				this.dataMinimum).append(".\n</Snippet>\n");
+		sb.append(this.indent).append("<description>").append(
+				"This is a view of the ").append(
+				this.dataDisplayName.toLowerCase()).append(" for ").append(
+				this.filterDisplayName.toLowerCase()).append(" ").append(
+				this.filterValue).append(" with min cutoff of ").append(
+				this.dataMinimum).append(".\n").append("(Source file: ")
+				.append(fileName).append(")</description>\n");
+		writer.write(sb.toString());
+
+		this.writeLookAt(writer, Double.toString(-94), Double.toString(38),
+				Double.toString(4000000), Double.toString(10000), Double
+						.toString(0), Double.toString(0));
+
+		this.writeStyleMap(writer, "bin1", IMAGES_DIR + "/blue16_w.png");
+		this.writeStyleMap(writer, "bin2", IMAGES_DIR + "/green16_w.png");
+		this.writeStyleMap(writer, "bin3", IMAGES_DIR + "/yellow16_w.png");
+		this.writeStyleMap(writer, "bin4", IMAGES_DIR + "/orange16_w.png");
+		this.writeStyleMap(writer, "bin5", IMAGES_DIR + "/red16_w.png");
+
+		int count = 1;
+		for (List<Record> bin : this.binnedRecords) {
+			this.writeBinFolder(writer, bin, count++);
+		}
+
+		this.popIndent();
+		writer.write(this.indent);
+		writer.write("</Document>\n");
+		writer.write("</kml>\n");
+	}
+
+	protected void writeStyleMap(Writer writer, String styleMapName,
+			String imagePath) throws IOException {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(this.indent).append("<Style id=\"").append(
+				styleMapName + "List").append("\">>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<ListStyle>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<ItemIcon>>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<href>").append(imagePath).append(
+				"</href>>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</ItemIcon>>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</ListStyle>>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Style>\n");
+
+		sb.append(this.indent).append("<Style id=\"").append(styleMapName)
+				.append("_normal").append("\">\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<IconStyle>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<scale>.3</scale>\n");
+		sb.append(this.indent).append("<Icon>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<href>").append(imagePath).append(
+				"</href>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Icon>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</IconStyle>\n");
+		sb.append(this.indent).append("<LabelStyle>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<scale>0</scale>\n");
+		sb.append(this.indent).append("<color>00000000</color>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</LabelStyle>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Style>\n");
+
+		sb.append(this.indent).append("<Style id=\"").append(styleMapName)
+				.append("_highlighted").append("\">\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<IconStyle>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<scale>.3</scale>\n");
+		sb.append(this.indent).append("<Icon>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<href>").append(imagePath).append(
+				"</href>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Icon>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</IconStyle>\n");
+		sb.append(this.indent).append("<LabelStyle>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<scale>1</scale>\n");
+		sb.append(this.indent).append("<color>ffffffff</color>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</LabelStyle>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Style>\n");
+		sb.append(this.indent).append("<StyleMap id=\"").append(styleMapName)
+				.append("\">\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<Pair>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<key>normal</key>\n");
+		sb.append(this.indent).append("<styleUrl>#").append(styleMapName)
+				.append("_normal").append("</styleUrl>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Pair>\n");
+		sb.append(this.indent).append("<Pair>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<key>highlight</key>\n");
+		sb.append(this.indent).append("<styleUrl>#").append(styleMapName)
+				.append("_highlighted").append("</styleUrl>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Pair>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</StyleMap>\n");
+
+		writer.write(sb.toString());
+	}
+
+	protected void writeBinFolder(Writer writer, List<Record> records,
+			int binNumber) throws IOException {
+
+		StringBuilder sb = new StringBuilder();
+
+		double max = 0;
+		if (binNumber == this.numberOfBins) {
+			max = this.preProcessor.getMaxValue();
+		} else {
+			max = this.bins[binNumber];
+		}
+
+		sb.append(this.indent).append("<Folder>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<name>").append("Range: ").append(
+				Utils.round(this.bins[binNumber - 1], 3)).append(" to ")
+				.append(Utils.round(max, 3)).append("</name>\n");
+		sb.append(this.indent).append("<visibility>1</visibility>\n");
+		sb.append(this.indent).append("<description>").append("This bin has ")
+				.append(records.size()).append(" sites whose ").append(
+						this.dataDisplayName.toLowerCase()).append(" for ")
+				.append(this.filterDisplayName.toLowerCase()).append(" ")
+				.append(this.filterValue).append(" are between ").append(
+						Utils.round(this.bins[binNumber - 1], 3)).append(
+						" and ").append(Utils.round(max, 3)).append(
+						".</description>\n");
+		sb.append(this.indent).append("<styleUrl>").append("#bin").append(
+				binNumber).append("List").append("</styleUrl>\n");
+
+		writer.write(sb.toString());
+
+		this.writeLookAt(writer, Double.toString(-94), Double.toString(38),
+				Double.toString(4000000), Double.toString(10000), Double
+						.toString(0), Double.toString(0));
+
+		for (Record record : records) {
+			this.writePlacemark(writer, record);
+		}
+
+		this.popIndent();
+		writer.write(this.indent);
+		writer.write("</Folder>\n");
+	}
+
+	protected void writeLookAt(Writer writer, String lon, String lat,
+			String alt, String range, String tilt, String heading)
+			throws IOException {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.indent).append("<LookAt>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<longitude>").append(lon).append(
+				"</longitude>\n");
+		sb.append(this.indent).append("<latitude>").append(lat).append(
+				"</latitude>\n");
+		sb.append(this.indent).append("<altitude>").append(alt).append(
+				"</altitude>\n");
+		sb.append(this.indent).append("<range>").append(range).append(
+				"</range>\n");
+		sb.append(this.indent).append("<tilt>").append(tilt)
+				.append("</tilt>\n");
+		sb.append(this.indent).append("<heading>").append(heading).append(
+				"</heading>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</LookAt>\n");
+
+		writer.write(sb.toString());
+	}
+
+	protected void writePlacemark(Writer writer, Record record)
+			throws IOException {
+
+		if (this.labelColumnIndex == -1) {
+			this.labelColumnIndex = record.getIndex(this.labelColumnName);
+		}
+
+		if (this.labelDisplayName == null) {
+			this.labelDisplayName = record.getDisplayKey(this.labelColumnIndex);
+		}
+
+		if (this.dataColumnIndex == -1) {
+			this.dataColumnIndex = record.getIndex(this.dataColumnName);
+		}
+
+		if (this.dataDisplayName == null) {
+			this.dataDisplayName = record.getDisplayKey(this.dataColumnIndex);
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(this.indent).append("<Placemark>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<name>").append(
+				record.getValue(this.labelColumnIndex)).append(":  ").append(
+				record.getValue(this.dataColumnIndex)).append("</name>\n");
+		sb.append(this.indent).append("<Snippet maxLines='4'>\n");
+		this.pushIndent();
+		sb.append(this.indent).append(record.getDisplayKey(0)).append(": ")
+				.append(record.getValue(0)).append(this.indent).append(", ")
+				.append(record.getDisplayKey(1)).append(": ").append(
+						record.getValue(1)).append("\n");
+		sb.append(this.indent).append("Location: (").append(record.getLat())
+				.append(", ").append(record.getLon()).append(")\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Snippet>\n");
+		sb.append(this.indent).append("<description>\n");
+		this.pushIndent();
+		sb.append(this.indent).append("<![CDATA[\n");
+		this.pushIndent();
+
+		for (int i = 0; i < record.getColumnCount(); i++) {
+
+			String value = record.getValue(i);
+			if (value == null || value.isEmpty()) {
+				value = "N/A";
+			}
+
+			sb.append(this.indent).append(record.getDisplayKey(i)).append(": ")
+					.append(value).append("<br/>\n");
+		}
+
+		sb.append(this.indent).append("<p/>\n");
+		sb.append(this.indent).append("<table border='0'>\n");
+		sb.append(this.indent).append("]]>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</description>\n");
+		this.popIndent();
+
+		int binNumber = 0;
+		for (binNumber = 0; binNumber < this.bins.length; binNumber++) {
+			if (new Double(record.getValue(this.dataColumnIndex)) < this.bins[binNumber]) {
+				break;
+			}
+		}
+
+		sb.append(this.indent).append("<styleUrl>").append("#bin").append(
+				binNumber).append("</styleUrl>\n");
+
+		writer.write(sb.toString());
+
+		this.binCount[binNumber - 1]++;
+
+		this.writeLookAt(writer, record.getLon(), record.getLat(), Double
+				.toString(500000), Double.toString(10000), Double.toString(0),
+				Double.toString(0));
+
+		this.writePoint(writer, record.getLon(), record.getLat(), "0");
+		this.popIndent();
+		writer.write(this.indent);
+		writer.write("</Placemark>\n");
+	}
+
+	protected void writePoint(Writer writer, String lon, String lat, String alt)
+			throws IOException {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.indent).append("<Point>\n");
+		this.pushIndent();
+		sb.append(this.indent).append(
+				"<altitudeMode>relativeToGround</altitudeMode>\n");
+		sb.append(this.indent).append("<coordinates>").append(lon).append(",")
+				.append(lat).append(",").append(alt).append("</coordinates>\n");
+		this.popIndent();
+		sb.append(this.indent).append("</Point>\n");
+
+		writer.write(sb.toString());
+	}
+
+	public static void validateCLIInput(String[] args)
+			throws KMZGeneratorException {
+
+		CLIInputValidator.getInstance().validateInput(args);
+	}
+
+	public static void validateGUIInput(String[] args)
+			throws KMZGeneratorException {
+
+		GUIInputValidator.getInstance().validateInput(args);
+	}
+
+	public static String getInputFileName(String[] args) {
+
+		String retVal = null;
+
+		for (int i = 0; i < args.length; i++) {
+
+			if (CLIInputValidator.DATA_FILE_KEY.equals(args[i])
+					&& i < args.length - 1) {
+
+				retVal = args[i + 1];
+				break;
+			}
+		}
+
+		return retVal;
+	}
+
+	public static void zipResults(File tempFile, File outputFile)
+			throws IOException {
+
+		outputFile.getParentFile().mkdir();
+
+		String blueFilePath = IMAGES_DIR + "/blue16_w.png";
+		String greenFilePath = IMAGES_DIR + "/green16_w.png";
+		String yellowFilePath = IMAGES_DIR + "/yellow16_w.png";
+		String orangeFilePath = IMAGES_DIR + "/orange16_w.png";
+		String redFilePath = IMAGES_DIR + "/red16_w.png";
+
+		// These are the files to include in the ZIP file
+		String[] fileNames = new String[] { tempFile.getPath(),
+				"/" + blueFilePath, "/" + greenFilePath, "/" + yellowFilePath,
+				"/" + orangeFilePath, "/" + redFilePath };
+
+		String[] fakeNames = new String[] { tempFile.getName(), blueFilePath,
+				greenFilePath, yellowFilePath, orangeFilePath, redFilePath };
+
+		// Create a buffer for reading the files
+		byte[] buf = new byte[1024];
+
+		// Create the ZIP file
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
+				outputFile));
+
+		// Compress the files
+		for (int i = 0; i < fileNames.length; i++) {
+
+			InputStream in = null;
+			if (i == 0) {
+				in = new FileInputStream(fileNames[i]);
+			} else {
+
+				String fileName = fileNames[i];
+				in = BinnedPointSourceGenerator.class
+						.getResourceAsStream(fileName);
+				// in = new FileInputStream(resource.getPath());
+			}
+
+			// Add ZIP entry to output stream.
+			out.putNextEntry(new ZipEntry(fakeNames[i]));
+
+			// Transfer bytes from the file to the ZIP file
+			int len;
+			while ((len = in.read(buf)) > 0) {
+				out.write(buf, 0, len);
+			}
+
+			// Complete the entry
+			out.closeEntry();
+			in.close();
+		}
+
+		// Complete the ZIP file
+		out.close();
+
+		if (ConfigurationManager.getInstance().getValueAsBoolean(
+				ConfigurationManager.PropertyKey.SHOW_OUTPUT.getKey())) {
+			System.out.println("Successfully created file '"
+					+ outputFile.getAbsolutePath() + "'");
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		ConfigurationManager configManager = ConfigurationManager.getInstance();
+		configManager.setValue(ConfigurationManager.PropertyKey.SHOW_OUTPUT
+				.getKey(), Boolean.TRUE.toString());
+
+		boolean showOutput = ConfigurationManager.getInstance()
+				.getValueAsBoolean(
+						ConfigurationManager.PropertyKey.SHOW_OUTPUT.getKey());
+
+		try {
+
+			BinnedPointSourceGenerator.validateCLIInput(args);
+
+			PropertiesManager.getInstance().initProperties(args);
+
+			File tempFile = File.createTempFile("kml", ".kml");
+			// tempFile.getParentFile().mkdir();
+
+			File inputFile = new File(BinnedPointSourceGenerator
+					.getInputFileName(args));
+
+			//
+			// String key =
+			// PropertiesManager.PropertyKey.OUTPUT_OVERRIDE.getKey();
+			// String value = propertiesManager.getValue(key);
+			//
+			// if (!("true".equalsIgnoreCase(value) || "false"
+			// .equalsIgnoreCase(value))) {
+			//
+			// throw new IllegalInputException(
+			// IllegalInputException.ERROR_CODE_INCORRECT_VALUE,
+			// "Value of '" + key + "' is '" + value
+			// + "'. It must be either 'true' or 'false'.");
+			// }
+
+			// boolean override = Boolean.valueOf(value);
+			// String outputFileName = null;
+			// if (!override) {
+			String outputFileName = BinnedPointSourceGenerator
+					.createDefaultFileName(PropertiesManager.getInstance(),
+							inputFile.getName());
+			// } else {
+			//
+			// outputFileName = propertiesManager
+			// .getValue(PropertyKey.OUTPUT_FILENAME.getKey());
+			// if (!outputFileName.endsWith(".kmz")) {
+			// throw new IllegalInputException(
+			// IllegalInputException.ERROR_CODE_INCORRECT_VALUE,
+			// PropertyKey.OUTPUT_FILENAME.getKey()
+			// + " '"
+			// + key
+			// + "' is '"
+			// + outputFileName
+			// + "'. It must end with '.kmz' to be properly loaded by Google
+			// Earth.");
+			// }
+			// }
+
+			BinnedPointSourceGenerator generator = new BinnedPointSourceGenerator(
+					new CSVRecordReader(inputFile), inputFile, tempFile,
+					PropertiesManager.getInstance());
+			generator.generate();
+
+			File outputFile = new File(inputFile.getParentFile()
+					.getAbsolutePath()
+					+ "/" + outputFileName);
+
+			BinnedPointSourceGenerator.zipResults(tempFile, outputFile);
+
+		} catch (IOException e) {
+
+			if (showOutput) {
+				System.err.println("Error while generating kmz file: "
+						+ e.getLocalizedMessage() + "\nExiting.");
+			}
+			System.exit(-1);
+		} catch (KMZGeneratorException e) {
+
+			if (showOutput) {
+				System.err.println("Illegal input: " + e.getLocalizedMessage()
+						+ "\nExiting.");
+			}
+			System.exit(-1);
+		} catch (Exception e) {
+
+			if (showOutput) {
+				System.err.println("Error while generating kmz file: "
+						+ e.getLocalizedMessage() + "\nExiting.");
+			}
+			System.exit(-1);
+		}
+	}
+}

@@ -1,0 +1,8 @@
+Test Cases - Data Viewer
+------------------------
+1. View a Table
+2. Close Viewer
+3. View non-final Version
+4. Add Note
+5. Sort Order
+6. Row Filter

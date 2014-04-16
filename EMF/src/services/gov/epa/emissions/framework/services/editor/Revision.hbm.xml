@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.editor.Revision" table="revisions" schema="emf"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="datasetId"		column="dataset_id"		type="integer"				not-null="true"/>
+	<property name="version" 		column="version"		type="integer"					not-null="true" />
+	<property name="date" 			column="date_time"		type="java.util.Date"		not-null="true" 	length="10"/>
+	<property name="what" 			column="what"			type="java.lang.String"		not-null="true"/>
+	<property name="why" 			column="why"			type="java.lang.String"		not-null="true"/>
+	<property name="references" 	column="refers_notes"	type="java.lang.String"		not-null="true"/>
+    <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+    <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+
+  <many-to-one cascade="save-update"
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+
+  </class> 
+</hibernate-mapping>  

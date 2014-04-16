@@ -1,0 +1,12 @@
+#EMF Property File
+local.input.drive=D:\\
+remote.input.drive=
+
+local.output.drive=D:\\
+remote.output.drive=
+
+default.input.folder=emf_input
+default.output.folder=emf_output
+
+user.name=qunhe
+user.password=qunhe12345

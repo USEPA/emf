@@ -1,0 +1,20 @@
+VARIABLE,VALUE,DESCRIPTION
+SURROGATE SPECIFICATION FILE,D:\MIMS\mimssp_7_2005\java\surrogate_specification.csv,File containing settings for generating surrogates
+SHAPEFILE CATALOG,D:\MIMS\mimssp_7_2005\java\shapefile_catalog.csv,Shapefile names and map projection information
+SRGCREATE EXECUTABLE,D:\MIMS\\mimssp_7_2005\srgcreate.exe,Location of srgcreate executable
+SRGMERGE EXECUTABLE,D:\MIMS\mimssp_7_2005\srgmerge.exe ,Location of srgmerge executable
+DEBUG_OUTPUT,Y,Output debug control
+WRITE_HEADER,YES,
+OUTPUT_GRID_NAME,US36KM_148X112,"If Output Type is RegularGrid, this is a grid name, otherwise it is the name of a Shapefile in the Shapefile catalog that contains the output shapes (e.g. census tracts)"
+GRIDDESC,D:\MIMS\mimssp_7_2005\data\GRIDDESC.txt,List of available of grids (needed only for SMOKE surrogates)
+SURROGATE CODE FILE,D:\MIMS\mimssp_7_2005\data\surrogate_IDs.txt,List of surrogate codes and names 
+OUTPUT DIRECTORY,D:\MIMS\mimssp_7_2005\output\US36KM_148X112,Directory for individual surrogate files
+OUTPUT_SURROGATE_FILE,D:\MIMS\mimssp_7_2005\output\US36KM_148X112\US36KM_148X112_2005srgs.txt,name and path for the final merged surrogate file output from srgtool
+OUTPUT_SRGDESC_FILE,D:\MIMS\mimssp_7_2005\output\US36KM_148X112\surrogate_codes.txt,file with surrogate codes and description
+OUTPUT_FILE_TYPE,RegularGrid,Type of output shapes being generated - RegularGrid or ShapeFile
+OUTPUT_FILE_ELLIPSOID,SPHERE,output grid projection ellipsoid
+DATA_FILE_NAME_TYPE,ShapeFile,shapefile polygons with emission data : such as county or census boundaries.
+WEIGHT_FILE_TYPE,ShapeFile,shapefile with surrogate attributes
+DATA_FILE_NAME,us_counties,Shapefile name for data file
+DATA_ID_ATTR,FIPS_CODE,Attribute to identify emission data polygons
+GENERATION_FILE,srg_gen.txt,File that gives list of surrogates to generate

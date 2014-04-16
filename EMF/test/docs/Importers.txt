@@ -1,0 +1,56 @@
+Test Cases - Importers
+------------------------
+
+1. ORL Nonpoint Inventory (ARINV)
+2. ORL Nonroad Inventory (ARINV)
+3. ORL Onroad Inventory (MBINV)
+4. ORL Point Inventory (PTINV)
+5. Shapefile (External)
+6. External File (External)
+7. Temporal Cross Reference (A/M/PTREF)
+8. Temporal Profile (A/M/PTPRO)
+9. Comma Separated Values (CSV)
+10. Text file (Line-based)
+11. CEM Hour-Specific Point Inventory (PTHOUR)
+12. "Country, state, and county names and data (COSTCY)"
+13. Day-Specific Point Inventory (PTDAY)
+14. Inventory Table Data (INVTABLE)
+15. Point-Source Stack Replacements (PSTK)
+16. SMOKE Report
+17. Surrogate Descriptions (SRGDESC)
+18. Gridding Cross Reference (A/MGREF)
+19. Spatial Surrogates (A/MGPRO)
+20. Chemical Speciation Cross-Reference (GSREF)
+21. Chemical Speciation Profiles (GSPRO)
+22. NIF3.0 Point Inventory
+23. NIF3.0 Onroad Inventory
+24. NIF3.0 Nonpoint Inventory
+25. NIF3.0 Nonroad Inventory
+26. IDA Mobile
+27. IDA Nonpoint/Nonroad
+28. IDA Point
+29. Shapefile Catalog (CSV)
+30. Surrogate Tool Control Variables (CSV)
+31. Surrogate Specifications (CSV)
+32. Surrogate Tool Generation Controls (CSV)
+33. Surrogate Code Mapping (CSV)
+34. Area-to-point Conversions (Line-based),
+35. Grid Descriptions (Line-based),
+36. Report Configurations (Line-based),
+37. Growth and Controls Configurations (Line-based),
+38. Holiday Identifications (Line-based),
+39. BEIS3 Emission Factors (Line-based),
+40. Mobile Source Codes (Line-based),
+41. NonHAP VOC Calculation Exclusions (Line-based),
+42. SIC Descriptions (Line-based),
+43. SCC Descriptions (Line-based),
+44. Meteorology File (External),
+45. Model Ready Emissions File (External)
+
+46. Apply Pattern to filter files
+47. Select multiple files using File Chooser
+48. Create Multiple Datasets by choosing multiple files of same Dataset Type
+49. Import multiple files (of different types) as a single type. Should indicate error.
+50. Select one file, but choose Multiple Datasets.
+51. Select a single file for a dataset type that requires muliple data files(NIF, ShapeFile)
+

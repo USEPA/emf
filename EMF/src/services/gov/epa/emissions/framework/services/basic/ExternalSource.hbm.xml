@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class name="gov.epa.emissions.commons.data.ExternalSource" table="external_sources" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
+        <property name="listindex" column="list_index" type="integer"/>
+        <property name="datasource"	column="datasource" type="java.lang.String" not-null="true"/>
+    </class>
+</hibernate-mapping>

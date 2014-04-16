@@ -1,0 +1,10 @@
+Assumption
+
+1. file should consist atleast two colunns of data
+2.
+
+
+FileParser
+
+
+readAndStoreData()

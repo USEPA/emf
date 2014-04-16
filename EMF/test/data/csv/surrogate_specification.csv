@@ -1,0 +1,15 @@
+REGION,SURROGATE,SURROGATE CODE,SHAPEFILE,WEIGHT ATTRIBUTE,WEIGHT FUNCTION,FILTER FUNCTION,MERGE FUNTION,SECONDARY SURROGATE,TERTIARY SURROGATE,QUARTERNARY SURROGATE,DETAILS,COMMENTS
+USA,Population,100,pophu2k,POP2000,,,,,,,Total population from Census 2000 blocks,
+USA,Housing,110,pophu2k,HSE_UNITS,,,,,,,Total Housing Units from Census 2000,
+USA,Urban Population ,120,pophu2k,URBAN,,,,Population,,,Total urban population from Census 2000,URBAN2 in Surrogate Source sheet.
+USA,Residential Heating - Natural Gas,150,us_heat,UTIL_GAS,,,,Housing,,,Number of Housing Units using Utility Gas for primary heating,
+USA,Total Road Miles,240,usrds_2000,,CLASS1_03_+CLASS2_03_+CLASS3_03_+CLASS4_03_,,,Population,,,"Sum of rural primary, urban primary, rural secondary and urban secondary road miles.  ",
+USA,Urban Primary Road Miles,200,usrds_2000,CLASS1_03_,,NEWRD_CLAS = 1,,Total Road Miles,Population,,Road Miles of Urban Primary Roads,No FRDCLASS. Should use NEWRD_CLAS and CLASS1_03_ ?
+USA,3/4 Total Roadway Miles plus 1/4 Population,255,,,,,0.75*Total Road Miles+0.25*Population,Population,,,Combination of  3/4 total road miles surrogate ratio and 1/4 population surrogate ratio,
+USA,Land  ,340,us_lw2k,AREA,,H2O_CODE=2,,,,,"Land Area *data for this surrogate is contained in SMOKE-ready bgpro files,  not ampro files.  This is because there are no source categories that use this surrogate to allocate county-level emissions.  However, it is needed for biogenic processing.",
+USA,Rural Land Area,400,rural_land,AREA,,RL_FLAG=Rural Land,,Land,,,Land Area that is not within an area designated as an Urbanized Area or an Urban Cluster.  Determined by intersecting NLCD land area with US Census spatial information representing areas not classified as Urbanized Area or as Urban Clusters ,No rural_land in Sources of Surrogate sheet (it use us_urban).  Is RURAL_LA_2 in different unit?  Use AREA for area computation?
+USA,Total Agriculture,310,us_ag2k,AREA,,"GRID_CODE=61,81,82,83,84",,Rural Land Area,,,"sum of the following NLCD areas:   Pasture/Hay,  Grains, Row Crops, Fallow Land and Orchards/Vineyards",
+USA,Industrial Land,505,us_lu2k,,IND1+IND2+IND3+IND4+IND5+IND6,,,,,,Sum of building square footage from the following FEMA categories:  IND1 + IND2 + IND3 + IND4 + IND5 + IND6,
+USA,Heavy and High Tech Industrial (IND1 + IND5),570,us_lu2k,,IND1+IND5,,,Industrial Land,,,sum of building square footage from the following FEMA categories:  IND1 + IND5,Total Industrial in Table1. Available U.S. Surrogates is the same as Industrial Land?
+USA,Forest external,328,YES,NO,,,0.5*../data/surrogates|forest+0.5*Rural Land,../data/surrogates|mypop,,,,
+NA,Population,100,YES,,,,"Population[US];Population[Canada],Population[Mexico]",,,,,

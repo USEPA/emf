@@ -1,0 +1,1036 @@
+CMName,CMAbbreviation,MajorPoll,ControlTechnology,SourceGroup,Sector,Class,EquipLife,NEIDeviceCode,DateReviewed,DataSource,Description
+None; ICI Boilers - Coal/Wall,N0110,NOx,None,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+None;ICI Boilers - Coal/Wall (Large Sources),N0110L,NOx,None,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+None;ICI Boilers - Coal/Wall (Small Sources),N0110S,NOx,None,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+SNCR; ICI Boilers - Coal/Wall,N0111,NOx,SNCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+SNCR;ICI Boilers - Coal/Wall (Large Sources),N0111L,NOx,SNCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+SNCR;ICI Boilers - Coal/Wall (Small Sources),N0111S,NOx,SNCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+LNB; ICI Boilers - Coal/Wall,N0113,NOx,LNB,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+LNB;ICI Boilers - Coal/Wall (Large Sources),N0113L,NOx,LNB,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+LNB;ICI Boilers - Coal/Wall (Small Sources),N0113S,NOx,LNB,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+SCR; ICI Boilers - Coal/Wall,N0114,NOx,SCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+SCR;ICI Boilers - Coal/Wall (Large Sources),N0114L,NOx,SCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+SCR;ICI Boilers - Coal/Wall (Small Sources),N0114S,NOx,SCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,,,2006,1,
+None; ICI Boilers - Coal/FBC,N0120,NOx,None,ICI Boilers - Coal/FBC,PTNONIPM,Known,,,2006,1,
+None;ICI Boilers - Coal/FBC (Large Sources),N0120L,NOx,None,ICI Boilers - Coal/FBC,PTNONIPM,Known,,,2006,1,
+None;ICI Boilers - Coal/FBC (Small Sources),N0120S,NOx,None,ICI Boilers - Coal/FBC,PTNONIPM,Known,,,2006,1,
+SNCR - Urea; ICI Boilers - Coal/FBC,N0121,NOx,SNCR - Urea,ICI Boilers - Coal/FBC,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - Coal/FBC (Large Sources),N0121L,NOx,SNCR - Urea,ICI Boilers - Coal/FBC,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - Coal/FBC (Small Sources),N0121S,NOx,SNCR - Urea,ICI Boilers - Coal/FBC,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Coal/Stoker,N0130,NOx,None,ICI Boilers - Coal/Stoker,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Coal/Stoker (Large Sources),N0130L,NOx,None,ICI Boilers - Coal/Stoker,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Coal/Stoker (Small Sources),N0130S,NOx,None,ICI Boilers - Coal/Stoker,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - Coal/Stoker,N0131,NOx,SNCR,ICI Boilers - Coal/Stoker,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Coal/Stoker (Large Sources),N0131L,NOx,SNCR,ICI Boilers - Coal/Stoker,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Coal/Stoker (Small Sources),N0131S,NOx,SNCR,ICI Boilers - Coal/Stoker,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Coal/Cyclone,N0140,NOx,None,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Coal/Cyclone (Large Sources),N0140L,NOx,None,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Coal/Cyclone (Small Sources),N0140S,NOx,None,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - Coal/Cyclone,N0141,NOx,SNCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Coal/Cyclone (Large Sources),N0141L,NOx,SNCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Coal/Cyclone (Small Sources),N0141S,NOx,SNCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+Coal Reburn; ICI Boilers - Coal/Cyclone,N0142,NOx,Coal Reburn,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+Coal Reburn;ICI Boilers - Coal/Cyclone (Large Sources),N0142L,NOx,Coal Reburn,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+Coal Reburn;ICI Boilers - Coal/Cyclone (Small Sources),N0142S,NOx,Coal Reburn,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - Coal/Cyclone,N0143,NOx,SCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Coal/Cyclone (Large Sources),N0143L,NOx,SCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Coal/Cyclone (Small Sources),N0143S,NOx,SCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+NGR; ICI Boilers - Coal/Cyclone,N0144,NOx,NGR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+NGR;ICI Boilers - Coal/Cyclone (Large Sources),N0144L,NOx,NGR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+NGR;ICI Boilers - Coal/Cyclone (Small Sources),N0144S,NOx,NGR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Residual Oil,N0150,NOx,None,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Residual Oil (Large Sources),N0150L,NOx,None,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Residual Oil (Small Sources),N0150S,NOx,None,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB; ICI Boilers - Residual Oil,N0151,NOx,LNB,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Residual Oil (Large Sources),N0151L,NOx,LNB,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Residual Oil (Small Sources),N0151S,NOx,LNB,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR; ICI Boilers - Residual Oil,N0152,NOx,LNB + FGR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Residual Oil (Large Sources),N0152L,NOx,LNB + FGR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Residual Oil (Small Sources),N0152S,NOx,LNB + FGR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - Residual Oil,N0153,NOx,SCR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Residual Oil (Large Sources),N0153L,NOx,SCR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Residual Oil (Small Sources),N0153S,NOx,SCR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - Residual Oil,N0154,NOx,SNCR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Residual Oil (Large Sources),N0154L,NOx,SNCR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Residual Oil (Small Sources),N0154S,NOx,SNCR,ICI Boilers - Residual Oil,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Distillate Oil,N0160,NOx,None,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Distillate Oil (Large Sources),N0160L,NOx,None,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Distillate Oil (Small Sources),N0160S,NOx,None,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB; ICI Boilers - Distillate Oil,N0161,NOx,LNB,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Distillate Oil (Large Sources),N0161L,NOx,LNB,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Distillate Oil (Small Sources),N0161S,NOx,LNB,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR; ICI Boilers - Distillate Oil,N0162,NOx,LNB + FGR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Distillate Oil (Large Sources),N0162L,NOx,LNB + FGR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Distillate Oil (Small Sources),N0162S,NOx,LNB + FGR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - Distillate Oil,N0163,NOx,SCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Distillate Oil (Large Sources),N0163L,NOx,SCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Distillate Oil (Small Sources),N0163S,NOx,SCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - Distillate Oil,N0164,NOx,SNCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Distillate Oil (Large Sources),N0164L,NOx,SNCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Distillate Oil (Small Sources),N0164S,NOx,SNCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Natural Gas,N0170,NOx,None,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Natural Gas (Large Sources),N0170L,NOx,None,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Natural Gas (Small Sources),N0170S,NOx,None,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB; ICI Boilers - Natural Gas,N0171,NOx,LNB,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Natural Gas (Large Sources),N0171L,NOx,LNB,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Natural Gas (Small Sources),N0171S,NOx,LNB,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR; ICI Boilers - Natural Gas,N0172,NOx,LNB + FGR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Natural Gas (Large Sources),N0172L,NOx,LNB + FGR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Natural Gas (Small Sources),N0172S,NOx,LNB + FGR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+OT + WI; ICI Boilers - Natural Gas,N0173,NOx,OT + WI,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+OT + WI;ICI Boilers - Natural Gas (Large Sources),N0173L,NOx,OT + WI,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+OT + WI;ICI Boilers - Natural Gas (Small Sources),N0173S,NOx,OT + WI,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - Natural Gas,N0174,NOx,SCR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Natural Gas (Large Sources),N0174L,NOx,SCR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Natural Gas (Small Sources),N0174S,NOx,SCR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - Natural Gas,N0175,NOx,SNCR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Natural Gas (Large Sources),N0175L,NOx,SNCR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Natural Gas (Small Sources),N0175S,NOx,SNCR,ICI Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Wood/Bark/Stoker,N0180,NOx,None,ICI Boilers - Wood/Bark/Stoker,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Wood/Bark/Stoker (Large Sources),N0180L,NOx,None,ICI Boilers - Wood/Bark/Stoker,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Wood/Bark/Stoker (Small Sources),N0180S,NOx,None,ICI Boilers - Wood/Bark/Stoker,PTNONIPM,Known,,,2006,1
+SNCR - Urea; ICI Boilers - Wood/Bark/Stoker,N0181,NOx,SNCR - Urea,ICI Boilers - Wood/Bark/Stoker,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - Wood/Bark/Stoker (Large Sources),N0181L,NOx,SNCR - Urea,ICI Boilers - Wood/Bark/Stoker,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - Wood/Bark/Stoker (Small Sources),N0181S,NOx,SNCR - Urea,ICI Boilers - Wood/Bark/Stoker,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Wood/Bark/FBC,N0190,NOx,None,ICI Boilers - Wood/Bark/FBC,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Wood/Bark/FBC (Large Sources),N0190L,NOx,None,ICI Boilers - Wood/Bark/FBC,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Wood/Bark/FBC (Small Sources),N0190S,NOx,None,ICI Boilers - Wood/Bark/FBC,PTNONIPM,Known,,,2006,1
+SNCR - Ammonia; ICI Boilers - Wood/Bark/FBC,N0191,NOx,SNCR - Ammonia,ICI Boilers - Wood/Bark/FBC,PTNONIPM,Known,,,2006,1
+SNCR - Ammonia;ICI Boilers - Wood/Bark/FBC (Large Sources),N0191L,NOx,SNCR - Ammonia,ICI Boilers - Wood/Bark/FBC,PTNONIPM,Known,,,2006,1
+SNCR - Ammonia;ICI Boilers - Wood/Bark/FBC (Small Sources),N0191S,NOx,SNCR - Ammonia,ICI Boilers - Wood/Bark/FBC,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - MSW/Stoker,N0200,NOx,None,ICI Boilers - MSW/Stoker,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - MSW/Stoker (Large Sources),N0200L,NOx,None,ICI Boilers - MSW/Stoker,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - MSW/Stoker (Small Sources),N0200S,NOx,None,ICI Boilers - MSW/Stoker,PTNONIPM,Known,,,2006,1
+SNCR - Urea; ICI Boilers - MSW/Stoker,N0201,NOx,SNCR - Urea,ICI Boilers - MSW/Stoker,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - MSW/Stoker (Large Sources),N0201L,NOx,SNCR - Urea,ICI Boilers - MSW/Stoker,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - MSW/Stoker (Small Sources),N0201S,NOx,SNCR - Urea,ICI Boilers - MSW/Stoker,PTNONIPM,Known,,,2006,1
+None; Internal Combustion Engines - Oil,N0210,NOx,None,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+None;Internal Combustion Engines - Oil (Large Sources),N0210L,NOx,None,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+None;Internal Combustion Engines - Oil (Small Sources),N0210S,NOx,None,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+IR; Internal Combustion Engines - Oil,N0211,NOx,IR,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+IR;Internal Combustion Engines - Oil (Large Sources),N0211L,NOx,IR,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+IR;Internal Combustion Engines - Oil (Small Sources),N0211S,NOx,IR,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+SCR; Internal Combustion Engines - Oil,N0214,NOx,SCR,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+SCR;Internal Combustion Engines - Oil (Large Sources),N0214L,NOx,SCR,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+SCR;Internal Combustion Engines - Oil (Small Sources),N0214S,NOx,SCR,Internal Combustion Engines - Oil,PTNONIPM,Known,,,2006,1
+NSCR; Rich Burn Internal Combustion Engines -,N0215,NOx,NSCR,Rich Burn Internal Combustion Engines -,PTNONIPM,Known,,,2006,1
+NSCR;Rich Burn Internal Combustion Engines - (Large Sources),N0215L,NOx,NSCR,Rich Burn Internal Combustion Engines -,PTNONIPM,Known,,,2006,1
+NSCR;Rich Burn Internal Combustion Engines - (Small Sources),N0215S,NOx,NSCR,Rich Burn Internal Combustion Engines -,PTNONIPM,Known,,,2006,1
+None; Internal Combustion Engines - Gas,N0220,NOx,None,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+None;Internal Combustion Engines - Gas (Large Sources),N0220L,NOx,None,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+None;Internal Combustion Engines - Gas (Small Sources),N0220S,NOx,None,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+IR; Internal Combustion Engines - Gas,N0221,NOx,IR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+L-E (Medium Speed); Internal Combustion Engines - Gas,N02210,NOx,L-E (Medium Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+L-E (Medium Speed);Internal Combustion Engines - Gas (Large Sources),N02210L,NOx,L-E (Medium Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+L-E (Medium Speed);Internal Combustion Engines - Gas (Small Sources),N02210S,NOx,L-E (Medium Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+L-E (Low Speed); Internal Combustion Engines - Gas,N02211,NOx,L-E (Low Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+L-E (Low Speed);Internal Combustion Engines - Gas (Large Sources),N02211L,NOx,L-E (Low Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+L-E (Low Speed);Internal Combustion Engines - Gas (Small Sources),N02211S,NOx,L-E (Low Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+SCR; Internal Combustion Engines - Gas,N02212,NOx,SCR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+SCR;Internal Combustion Engines - Gas (Large Sources),N02212L,NOx,SCR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+SCR;Internal Combustion Engines - Gas (Small Sources),N02212S,NOx,SCR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+NSCR; Rich Burn Internal Combustion Engines (2),N02213NSCR,NOx,NSCR,Rich Burn Internal Combustion Engines -,PTNONIPM,Known,,,2006,1
+SNCR; Internal Combustion Engines - Gas,N02213SNCR,NOx,SNCR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+IR;Internal Combustion Engines - Gas (Large Sources),N0221L,NOx,IR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+IR;Internal Combustion Engines - Gas (Small Sources),N0221S,NOx,IR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+AF RATIO; Internal Combustion Engines - Gas,N0224,NOx,AF RATIO,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+AF RATIO;Internal Combustion Engines - Gas (Large Sources),N0224L,NOx,AF RATIO,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+AF RATIO;Internal Combustion Engines - Gas (Small Sources),N0224S,NOx,AF RATIO,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+AF + IR; Internal Combustion Engines - Gas,N0227,NOx,AF + IR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+AF + IR;Internal Combustion Engines - Gas (Large Sources),N0227L,NOx,AF + IR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+AF + IR;Internal Combustion Engines - Gas (Small Sources),N0227S,NOx,AF + IR,Internal Combustion Engines - Gas,PTNONIPM,Known,,,2006,1
+None; Gas Turbines - Oil,N0230,NOx,None,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+None;Gas Turbines - Oil (Large Sources),N0230L,NOx,None,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+None;Gas Turbines - Oil (Small Sources),N0230S,NOx,None,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+Water Injection; Gas Turbines - Oil,N0231,NOx,Water Injection,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+Water Injection;Gas Turbines - Oil (Large Sources),N0231L,NOx,Water Injection,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+Water Injection;Gas Turbines - Oil (Small Sources),N0231S,NOx,Water Injection,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti; Gas Turbines - Oil,N0232,NOx,SCR + Water Injecti,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti;Gas Turbines - Oil (Large Sources),N0232L,NOx,SCR + Water Injecti,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti;Gas Turbines - Oil (Small Sources),N0232S,NOx,SCR + Water Injecti,Gas Turbines - Oil,PTNONIPM,Known,,,2006,1
+None; Gas Turbines - Natural Gas,N0240,NOx,None,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Gas Turbines - Natural Gas (Large Sources),N0240L,NOx,None,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Gas Turbines - Natural Gas (Small Sources),N0240S,NOx,None,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+Water Injection; Gas Turbines - Natural Gas,N0241,NOx,Water Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+Water Injection;Gas Turbines - Natural Gas (Large Sources),N0241L,NOx,Water Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+Water Injection;Gas Turbines - Natural Gas (Small Sources),N0241S,NOx,Water Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+Steam Injection; Gas Turbines - Natural Gas,N0242,NOx,Steam Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+Steam Injection;Gas Turbines - Natural Gas (Large Sources),N0242L,NOx,Steam Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+Steam Injection;Gas Turbines - Natural Gas (Small Sources),N0242S,NOx,Steam Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB; Gas Turbines - Natural Gas,N0243,NOx,LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Gas Turbines - Natural Gas (Large Sources),N0243L,NOx,LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Gas Turbines - Natural Gas (Small Sources),N0243S,NOx,LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + LNB; Gas Turbines - Natural Gas,N0244,NOx,SCR + LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + LNB;Gas Turbines - Natural Gas (Large Sources),N0244L,NOx,SCR + LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + LNB;Gas Turbines - Natural Gas (Small Sources),N0244S,NOx,SCR + LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + Steam Injecti; Gas Turbines - Natural Gas,N0245,NOx,SCR + Steam Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + Steam Injecti;Gas Turbines - Natural Gas (Large Sources),N0245L,NOx,SCR + Steam Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + Steam Injecti;Gas Turbines - Natural Gas (Small Sources),N0245S,NOx,SCR + Steam Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti; Gas Turbines - Natural Gas,N0246,NOx,SCR + Water Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti;Gas Turbines - Natural Gas (Large Sources),N0246L,NOx,SCR + Water Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti;Gas Turbines - Natural Gas (Small Sources),N0246S,NOx,SCR + Water Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,,,2006,1
+None; Process Heaters - Distillate Oil,N0250,NOx,None,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Distillate Oil (Large Sources),N0250L,NOx,None,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Distillate Oil (Small Sources),N0250S,NOx,None,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB; Process Heaters - Distillate Oil,N0251,NOx,LNB,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Distillate Oil (Large Sources),N0251L,NOx,LNB,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Distillate Oil (Small Sources),N0251S,NOx,LNB,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Distillate Oil (Large Sources),N0252L,NOx,LNB + FGR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Distillate Oil (Small Sources),N0252S,NOx,LNB + FGR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR; Process Heaters - Distillate Oil,N0253,NOx,SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Distillate Oil (Large Sources),N0253L,NOx,SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Distillate Oil (Small Sources),N0253S,NOx,SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+ULNB; Process Heaters - Distillate Oil,N0254,NOx,ULNB,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Distillate Oil (Large Sources),N0254L,NOx,ULNB,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Distillate Oil (Small Sources),N0254S,NOx,ULNB,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR; Process Heaters - Distillate Oil,N0255,NOx,SCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Distillate Oil (Large Sources),N0255L,NOx,SCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Distillate Oil (Small Sources),N0255S,NOx,SCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + SNCR; Process Heaters - Distillate Oil,N0256,NOx,LNB + SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Distillate Oil (Large Sources),N0256L,NOx,LNB + SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Distillate Oil (Small Sources),N0256S,NOx,LNB + SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + SCR; Process Heaters - Distillate Oil,N0257,NOx,LNB + SCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Distillate Oil (Large Sources),N0257L,NOx,LNB + SCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Distillate Oil (Small Sources),N0257S,NOx,LNB + SCR,Process Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+None; Process Heaters - Residual Oil,N0260,NOx,None,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Residual Oil (Large Sources),N0260L,NOx,None,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Residual Oil (Small Sources),N0260S,NOx,None,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Residual Oil (Large Sources),N0261L,NOx,LNB + FGR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Residual Oil (Small Sources),N0261S,NOx,LNB + FGR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB; Process Heaters - Residual Oil,N0262,NOx,LNB,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Residual Oil (Large Sources),N0262L,NOx,LNB,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Residual Oil (Small Sources),N0262S,NOx,LNB,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+SNCR; Process Heaters - Residual Oil,N0263,NOx,SNCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Residual Oil (Large Sources),N0263L,NOx,SNCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Residual Oil (Small Sources),N0263S,NOx,SNCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+ULNB; Process Heaters - Residual Oil,N0264,NOx,ULNB,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Residual Oil (Large Sources),N0264L,NOx,ULNB,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Residual Oil (Small Sources),N0264S,NOx,ULNB,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + SNCR; Process Heaters - Residual Oil,N0265,NOx,LNB + SNCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Residual Oil (Large Sources),N0265L,NOx,LNB + SNCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Residual Oil (Small Sources),N0265S,NOx,LNB + SNCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+SCR; Process Heaters - Residual Oil,N0266,NOx,SCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Residual Oil (Large Sources),N0266L,NOx,SCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Residual Oil (Small Sources),N0266S,NOx,SCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + SCR; Process Heaters - Residual Oil,N0267,NOx,LNB + SCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Residual Oil (Large Sources),N0267L,NOx,LNB + SCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Residual Oil (Small Sources),N0267S,NOx,LNB + SCR,Process Heaters - Residual Oil,PTNONIPM,Known,,,2006,1
+None; Process Heaters - Natural Gas,N0270,NOx,None,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Natural Gas (Large Sources),N0270L,NOx,None,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Natural Gas (Small Sources),N0270S,NOx,None,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB; Process Heaters - Natural Gas,N0271,NOx,LNB,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Natural Gas (Large Sources),N0271L,NOx,LNB,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Natural Gas (Small Sources),N0271S,NOx,LNB,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Natural Gas (Large Sources),N0272L,NOx,LNB + FGR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Natural Gas (Small Sources),N0272S,NOx,LNB + FGR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR; Process Heaters - Natural Gas,N0273,NOx,SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Natural Gas (Large Sources),N0273L,NOx,SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Natural Gas (Small Sources),N0273S,NOx,SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+ULNB; Process Heaters - Natural Gas,N0274,NOx,ULNB,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Natural Gas (Large Sources),N0274L,NOx,ULNB,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Natural Gas (Small Sources),N0274S,NOx,ULNB,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR; Process Heaters - Natural Gas,N0275,NOx,SCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Natural Gas (Large Sources),N0275L,NOx,SCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Natural Gas (Small Sources),N0275S,NOx,SCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + SNCR; Process Heaters - Natural Gas,N0276,NOx,LNB + SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Natural Gas (Large Sources),N0276L,NOx,LNB + SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Natural Gas (Small Sources),N0276S,NOx,LNB + SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + SCR; Process Heaters - Natural Gas,N0277,NOx,LNB + SCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Natural Gas (Large Sources),N0277L,NOx,LNB + SCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Natural Gas (Small Sources),N0277S,NOx,LNB + SCR,Process Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+None; Adipic Acid Manufacturing,N0280,NOx,None,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+None;Adipic Acid Manufacturing (Large Sources),N0280L,NOx,None,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+None;Adipic Acid Manufacturing (Small Sources),N0280S,NOx,None,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Thermal Reduction; Adipic Acid Manufacturing,N0281,NOx,Thermal Reduction,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Thermal Reduction;Adipic Acid Manufacturing (Large Sources),N0281L,NOx,Thermal Reduction,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Thermal Reduction;Adipic Acid Manufacturing (Small Sources),N0281S,NOx,Thermal Reduction,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Extended Absorption; Adipic Acid Manufacturing,N0282,NOx,Extended Absorption,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Extended Absorption;Adipic Acid Manufacturing (Large Sources),N0282L,NOx,Extended Absorption,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Extended Absorption;Adipic Acid Manufacturing (Small Sources),N0282S,NOx,Extended Absorption,Adipic Acid Manufacturing,PTNONIPM,Known,,,2006,1
+None; Nitric Acid Manufacturing,N0290,NOx,None,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+None;Nitric Acid Manufacturing (Large Sources),N0290L,NOx,None,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+None;Nitric Acid Manufacturing (Small Sources),N0290S,NOx,None,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Extended Absorption; Nitric Acid Manufacturing,N0291,NOx,Extended Absorption,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Extended Absorption;Nitric Acid Manufacturing (Large Sources),N0291L,NOx,Extended Absorption,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+Extended Absorption;Nitric Acid Manufacturing (Small Sources),N0291S,NOx,Extended Absorption,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+SCR; Nitric Acid Manufacturing,N0292,NOx,SCR,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+SCR;Nitric Acid Manufacturing (Large Sources),N0292L,NOx,SCR,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+SCR;Nitric Acid Manufacturing (Small Sources),N0292S,NOx,SCR,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+NSCR; Nitric Acid Manufacturing,N0293,NOx,NSCR,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+NSCR;Nitric Acid Manufacturing (Large Sources),N0293L,NOx,NSCR,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+NSCR;Nitric Acid Manufacturing (Small Sources),N0293S,NOx,NSCR,Nitric Acid Manufacturing,PTNONIPM,Known,,,2006,1
+None; Glass Manufacturing - Container,N0300,NOx,None,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+None;Glass Manufacturing - Container (Large Sources),N0300L,NOx,None,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+None;Glass Manufacturing - Container (Small Sources),N0300S,NOx,None,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+Electric Boost; Glass Manufacturing - Container,N0301,NOx,Electric Boost,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+Electric Boost;Glass Manufacturing - Container (Large Sources),N0301L,NOx,Electric Boost,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+Electric Boost;Glass Manufacturing - Container (Small Sources),N0301S,NOx,Electric Boost,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+Cullet Preheat; Glass Manufacturing - Container,N0302,NOx,Cullet Preheat,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+Cullet Preheat;Glass Manufacturing - Container (Large Sources),N0302L,NOx,Cullet Preheat,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+Cullet Preheat;Glass Manufacturing - Container (Small Sources),N0302S,NOx,Cullet Preheat,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+LNB; Glass Manufacturing - Container,N0303,NOx,LNB,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+LNB;Glass Manufacturing - Container (Large Sources),N0303L,NOx,LNB,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+LNB;Glass Manufacturing - Container (Small Sources),N0303S,NOx,LNB,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+SNCR; Glass Manufacturing - Container,N0304,NOx,SNCR,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+SNCR;Glass Manufacturing - Container (Large Sources),N0304L,NOx,SNCR,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+SNCR;Glass Manufacturing - Container (Small Sources),N0304S,NOx,SNCR,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+SCR; Glass Manufacturing - Container,N0305,NOx,SCR,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+SCR;Glass Manufacturing - Container (Large Sources),N0305L,NOx,SCR,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+SCR;Glass Manufacturing - Container (Small Sources),N0305S,NOx,SCR,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+OXY-Firing; Glass Manufacturing - Container,N0306,NOx,OXY-Firing,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+OXY-Firing;Glass Manufacturing - Container (Large Sources),N0306L,NOx,OXY-Firing,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+OXY-Firing;Glass Manufacturing - Container (Small Sources),N0306S,NOx,OXY-Firing,Glass Manufacturing - Container,PTNONIPM,Known,,,2006,1
+None; Glass Manufacturing - Flat,N0310,NOx,None,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+None;Glass Manufacturing - Flat (Large Sources),N0310L,NOx,None,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+None;Glass Manufacturing - Flat (Small Sources),N0310S,NOx,None,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+Electric Boost; Glass Manufacturing - Flat,N0311,NOx,Electric Boost,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+Electric Boost;Glass Manufacturing - Flat (Large Sources),N0311L,NOx,Electric Boost,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+Electric Boost;Glass Manufacturing - Flat (Small Sources),N0311S,NOx,Electric Boost,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+LNB; Glass Manufacturing - Flat,N0312,NOx,LNB,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+LNB;Glass Manufacturing - Flat (Large Sources),N0312L,NOx,LNB,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+LNB;Glass Manufacturing - Flat (Small Sources),N0312S,NOx,LNB,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+SNCR; Glass Manufacturing - Flat,N0313,NOx,SNCR,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+SNCR;Glass Manufacturing - Flat (Large Sources),N0313L,NOx,SNCR,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+SNCR;Glass Manufacturing - Flat (Small Sources),N0313S,NOx,SNCR,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+SCR; Glass Manufacturing - Flat,N0314,NOx,SCR,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+SCR;Glass Manufacturing - Flat (Large Sources),N0314L,NOx,SCR,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+SCR;Glass Manufacturing - Flat (Small Sources),N0314S,NOx,SCR,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+OXY-Firing; Glass Manufacturing - Flat,N0315,NOx,OXY-Firing,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+OXY-Firing;Glass Manufacturing - Flat (Large Sources),N0315L,NOx,OXY-Firing,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+OXY-Firing;Glass Manufacturing - Flat (Small Sources),N0315S,NOx,OXY-Firing,Glass Manufacturing - Flat,PTNONIPM,Known,,,2006,1
+None; Glass Manufacturing - Pressed,N0320,NOx,None,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+None;Glass Manufacturing - Pressed (Large Sources),N0320L,NOx,None,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+None;Glass Manufacturing - Pressed (Small Sources),N0320S,NOx,None,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+Electric Boost; Glass Manufacturing - Pressed,N0321,NOx,Electric Boost,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+Electric Boost;Glass Manufacturing - Pressed (Large Sources),N0321L,NOx,Electric Boost,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+Electric Boost;Glass Manufacturing - Pressed (Small Sources),N0321S,NOx,Electric Boost,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+Cullet Preheat; Glass Manufacturing - Pressed,N0322,NOx,Cullet Preheat,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+Cullet Preheat;Glass Manufacturing - Pressed (Large Sources),N0322L,NOx,Cullet Preheat,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+Cullet Preheat;Glass Manufacturing - Pressed (Small Sources),N0322S,NOx,Cullet Preheat,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+LNB; Glass Manufacturing - Pressed,N0323,NOx,LNB,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+LNB;Glass Manufacturing - Pressed (Large Sources),N0323L,NOx,LNB,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+LNB;Glass Manufacturing - Pressed (Small Sources),N0323S,NOx,LNB,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+SNCR; Glass Manufacturing - Pressed,N0324,NOx,SNCR,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+SNCR;Glass Manufacturing - Pressed (Large Sources),N0324L,NOx,SNCR,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+SNCR;Glass Manufacturing - Pressed (Small Sources),N0324S,NOx,SNCR,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+SCR; Glass Manufacturing - Pressed,N0325,NOx,SCR,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+SCR;Glass Manufacturing - Pressed (Large Sources),N0325L,NOx,SCR,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+SCR;Glass Manufacturing - Pressed (Small Sources),N0325S,NOx,SCR,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+OXY-Firing; Glass Manufacturing - Pressed,N0326,NOx,OXY-Firing,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+OXY-Firing;Glass Manufacturing - Pressed (Large Sources),N0326L,NOx,OXY-Firing,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+OXY-Firing;Glass Manufacturing - Pressed (Small Sources),N0326S,NOx,OXY-Firing,Glass Manufacturing - Pressed,PTNONIPM,Known,,,2006,1
+None; Cement Manufacturing - Dry,N0330,NOx,None,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+None;Cement Manufacturing - Dry (Large Sources),N0330L,NOx,None,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+None;Cement Manufacturing - Dry (Small Sources),N0330S,NOx,None,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing; Cement Manufacturing - Dry,N0331,NOx,Mid-Kiln Firing,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing;Cement Manufacturing - Dry (Large Sources),N0331L,NOx,Mid-Kiln Firing,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing;Cement Manufacturing - Dry (Small Sources),N0331S,NOx,Mid-Kiln Firing,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+LNB; Cement Manufacturing - Dry,N0332,NOx,LNB,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+LNB;Cement Manufacturing - Dry (Large Sources),N0332L,NOx,LNB,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+LNB;Cement Manufacturing - Dry (Small Sources),N0332S,NOx,LNB,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SNCR - Urea Based; Cement Manufacturing - Dry,N0333,NOx,SNCR - Urea Based,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SNCR - Urea Based;Cement Manufacturing - Dry (Large Sources),N0333L,NOx,SNCR - Urea Based,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SNCR - Urea Based;Cement Manufacturing - Dry (Small Sources),N0333S,NOx,SNCR - Urea Based,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SNCR - NH3 Based; Cement Manufacturing - Dry,N0334,NOx,SNCR - NH3 Based,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SNCR - NH3 Based;Cement Manufacturing - Dry (Large Sources),N0334L,NOx,SNCR - NH3 Based,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SNCR - NH3 Based;Cement Manufacturing - Dry (Small Sources),N0334S,NOx,SNCR - NH3 Based,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SCR; Cement Manufacturing - Dry,N0335,NOx,SCR,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SCR;Cement Manufacturing - Dry (Large Sources),N0335L,NOx,SCR,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+SCR;Cement Manufacturing - Dry (Small Sources),N0335S,NOx,SCR,Cement Manufacturing - Dry,PTNONIPM,Known,,,2006,1
+None; Cement Manufacturing - Wet,N0340,NOx,None,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+None;Cement Manufacturing - Wet (Large Sources),N0340L,NOx,None,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+None;Cement Manufacturing - Wet (Small Sources),N0340S,NOx,None,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing; Cement Manufacturing - Wet,N0341,NOx,Mid-Kiln Firing,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing;Cement Manufacturing - Wet (Large Sources),N0341L,NOx,Mid-Kiln Firing,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing;Cement Manufacturing - Wet (Small Sources),N0341S,NOx,Mid-Kiln Firing,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+LNB; Cement Manufacturing - Wet,N0342,NOx,LNB,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+LNB;Cement Manufacturing - Wet (Large Sources),N0342L,NOx,LNB,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+LNB;Cement Manufacturing - Wet (Small Sources),N0342S,NOx,LNB,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+SCR; Cement Manufacturing - Wet,N0343,NOx,SCR,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+SCR;Cement Manufacturing - Wet (Large Sources),N0343L,NOx,SCR,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+SCR;Cement Manufacturing - Wet (Small Sources),N0343S,NOx,SCR,Cement Manufacturing - Wet,PTNONIPM,Known,,,2006,1
+None; Iron & Steel Mills - Reheating,N0350,NOx,None,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+None;Iron & Steel Mills - Reheating (Large Sources),N0350L,NOx,None,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+None;Iron & Steel Mills - Reheating (Small Sources),N0350S,NOx,None,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LEA; Iron & Steel Mills - Reheating,N0351,NOx,LEA,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LEA;Iron & Steel Mills - Reheating (Large Sources),N0351L,NOx,LEA,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LEA;Iron & Steel Mills - Reheating (Small Sources),N0351S,NOx,LEA,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LNB; Iron & Steel Mills - Reheating,N0352,NOx,LNB,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LNB;Iron & Steel Mills - Reheating (Large Sources),N0352L,NOx,LNB,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LNB;Iron & Steel Mills - Reheating (Small Sources),N0352S,NOx,LNB,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LNB + FGR; Iron & Steel Mills - Reheating,N0353,NOx,LNB + FGR,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron & Steel Mills - Reheating (Large Sources),N0353L,NOx,LNB + FGR,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron & Steel Mills - Reheating (Small Sources),N0353S,NOx,LNB + FGR,Iron & Steel Mills - Reheating,PTNONIPM,Known,,,2006,1
+None; Iron & Steel Mills - Annealing,N0360,NOx,None,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+None;Iron & Steel Mills - Annealing (Large Sources),N0360L,NOx,None,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+None;Iron & Steel Mills - Annealing (Small Sources),N0360S,NOx,None,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB; Iron & Steel Mills - Annealing,N0361,NOx,LNB,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB;Iron & Steel Mills - Annealing (Large Sources),N0361L,NOx,LNB,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB;Iron & Steel Mills - Annealing (Small Sources),N0361S,NOx,LNB,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + FGR; Iron & Steel Mills - Annealing,N0362,NOx,LNB + FGR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron & Steel Mills - Annealing (Large Sources),N0362L,NOx,LNB + FGR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron & Steel Mills - Annealing (Small Sources),N0362S,NOx,LNB + FGR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+SNCR; Iron & Steel Mills - Annealing,N0363,NOx,SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+SNCR;Iron & Steel Mills - Annealing (Large Sources),N0363L,NOx,SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+SNCR;Iron & Steel Mills - Annealing (Small Sources),N0363S,NOx,SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + SNCR; Iron & Steel Mills - Annealing,N0364,NOx,LNB + SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Iron & Steel Mills - Annealing (Large Sources),N0364L,NOx,LNB + SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Iron & Steel Mills - Annealing (Small Sources),N0364S,NOx,LNB + SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+SCR; Iron & Steel Mills - Annealing,N0365,NOx,SCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+SCR;Iron & Steel Mills - Annealing (Large Sources),N0365L,NOx,SCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+SCR;Iron & Steel Mills - Annealing (Small Sources),N0365S,NOx,SCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + SCR; Iron & Steel Mills - Annealing,N0366,NOx,LNB + SCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + SCR;Iron & Steel Mills - Annealing (Large Sources),N0366L,NOx,LNB + SCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+LNB + SCR;Iron & Steel Mills - Annealing (Small Sources),N0366S,NOx,LNB + SCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,,,2006,1
+None; Iron & Steel Mills - Galvanizing,N0370,NOx,None,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+None;Iron & Steel Mills - Galvanizing (Large Sources),N0370L,NOx,None,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+None;Iron & Steel Mills - Galvanizing (Small Sources),N0370S,NOx,None,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+LNB; Iron & Steel Mills - Galvanizing,N0371,NOx,LNB,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+LNB;Iron & Steel Mills - Galvanizing (Large Sources),N0371L,NOx,LNB,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+LNB;Iron & Steel Mills - Galvanizing (Small Sources),N0371S,NOx,LNB,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+LNB + FGR; Iron & Steel Mills - Galvanizing,N0372,NOx,LNB + FGR,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron & Steel Mills - Galvanizing (Large Sources),N0372L,NOx,LNB + FGR,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron & Steel Mills - Galvanizing (Small Sources),N0372S,NOx,LNB + FGR,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,,,2006,1
+None; Municipal Waste Combustors,N0380,NOx,None,Municipal Waste Combustors,PTNONIPM,Known,,,2006,1
+None;Municipal Waste Combustors (Large Sources),N0380L,NOx,None,Municipal Waste Combustors,PTNONIPM,Known,,,2006,1
+None;Municipal Waste Combustors (Small Sources),N0380S,NOx,None,Municipal Waste Combustors,PTNONIPM,Known,,,2006,1
+SNCR; Municipal Waste Combustors,N0381,NOx,SNCR,Municipal Waste Combustors,PTNONIPM,Known,,,2006,1
+SNCR;Municipal Waste Combustors (Large Sources),N0381L,NOx,SNCR,Municipal Waste Combustors,PTNONIPM,Known,,,2006,1
+SNCR;Municipal Waste Combustors (Small Sources),N0381S,NOx,SNCR,Municipal Waste Combustors,PTNONIPM,Known,,,2006,1
+None; Medical Waste Incinerators,N0390,NOx,None,Medical Waste Incinerators,PTNONIPM,Known,,,2006,1
+None;Medical Waste Incinerators (Large Sources),N0390L,NOx,None,Medical Waste Incinerators,PTNONIPM,Known,,,2006,1
+None;Medical Waste Incinerators (Small Sources),N0390S,NOx,None,Medical Waste Incinerators,PTNONIPM,Known,,,2006,1
+SNCR; Medical Waste Incinerators,N0391,NOx,SNCR,Medical Waste Incinerators,PTNONIPM,Known,,,2006,1
+SNCR;Medical Waste Incinerators (Large Sources),N0391L,NOx,SNCR,Medical Waste Incinerators,PTNONIPM,Known,,,2006,1
+SNCR;Medical Waste Incinerators (Small Sources),N0391S,NOx,SNCR,Medical Waste Incinerators,PTNONIPM,Known,,,2006,1
+None; Open Burning,N0400,NOx,None,Open Burning,PTNONIPM,Known,,,2006,1
+None;Open Burning (Large Sources),N0400L,NOx,None,Open Burning,PTNONIPM,Known,,,2006,1
+None;Open Burning (Small Sources),N0400S,NOx,None,Open Burning,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Process Gas,N0410,NOx,None,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Process Gas (Large Sources),N0410L,NOx,None,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Process Gas (Small Sources),N0410S,NOx,None,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+LNB; ICI Boilers - Process Gas,N0411,NOx,LNB,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Process Gas (Large Sources),N0411L,NOx,LNB,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Process Gas (Small Sources),N0411S,NOx,LNB,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR; ICI Boilers - Process Gas,N0412,NOx,LNB + FGR,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Process Gas (Large Sources),N0412L,NOx,LNB + FGR,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Process Gas (Small Sources),N0412S,NOx,LNB + FGR,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+OT + WI; ICI Boilers - Process Gas,N0413,NOx,OT + WI,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+OT + WI;ICI Boilers - Process Gas (Large Sources),N0413L,NOx,OT + WI,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+OT + WI;ICI Boilers - Process Gas (Small Sources),N0413S,NOx,OT + WI,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - Process Gas,N0414,NOx,SCR,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Process Gas (Large Sources),N0414L,NOx,SCR,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Process Gas (Small Sources),N0414S,NOx,SCR,ICI Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Coke,N0420,NOx,None,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Coke (Large Sources),N0420L,NOx,None,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Coke (Small Sources),N0420S,NOx,None,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - Coke,N0421,NOx,SNCR,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Coke (Large Sources),N0421L,NOx,SNCR,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Coke (Small Sources),N0421S,NOx,SNCR,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+LNB; ICI Boilers - Coke,N0423,NOx,LNB,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Coke (Large Sources),N0423L,NOx,LNB,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Coke (Small Sources),N0423S,NOx,LNB,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - Coke,N0424,NOx,SCR,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Coke (Large Sources),N0424L,NOx,SCR,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Coke (Small Sources),N0424S,NOx,SCR,ICI Boilers - Coke,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - LPG,N0430,NOx,None,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - LPG (Large Sources),N0430L,NOx,None,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - LPG (Small Sources),N0430S,NOx,None,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+LNB; ICI Boilers - LPG,N0431,NOx,LNB,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - LPG (Large Sources),N0431L,NOx,LNB,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - LPG (Small Sources),N0431S,NOx,LNB,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+LNB + FGR; ICI Boilers - LPG,N0432,NOx,LNB + FGR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - LPG (Large Sources),N0432L,NOx,LNB + FGR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - LPG (Small Sources),N0432S,NOx,LNB + FGR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - LPG,N0433,NOx,SCR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - LPG (Large Sources),N0433L,NOx,SCR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - LPG (Small Sources),N0433S,NOx,SCR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - LPG,N0434,NOx,SNCR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - LPG (Large Sources),N0434L,NOx,SNCR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - LPG (Small Sources),N0434S,NOx,SNCR,ICI Boilers - LPG,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Bagasse,N0440,NOx,None,ICI Boilers - Bagasse,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Bagasse (Large Sources),N0440L,NOx,None,ICI Boilers - Bagasse,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Bagasse (Small Sources),N0440S,NOx,None,ICI Boilers - Bagasse,PTNONIPM,Known,,,2006,1
+SNCR - Urea; ICI Boilers - Bagasse,N0441,NOx,SNCR - Urea,ICI Boilers - Bagasse,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - Bagasse (Large Sources),N0441L,NOx,SNCR - Urea,ICI Boilers - Bagasse,PTNONIPM,Known,,,2006,1
+SNCR - Urea;ICI Boilers - Bagasse (Small Sources),N0441S,NOx,SNCR - Urea,ICI Boilers - Bagasse,PTNONIPM,Known,,,2006,1
+None; ICI Boilers - Liquid Waste,N0450,NOx,None,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Liquid Waste (Large Sources),N0450L,NOx,None,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+None;ICI Boilers - Liquid Waste (Small Sources),N0450S,NOx,None,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+LNB; ICI Boilers - Liquid Waste,N0451,NOx,LNB,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Liquid Waste (Large Sources),N0451L,NOx,LNB,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+LNB;ICI Boilers - Liquid Waste (Small Sources),N0451S,NOx,LNB,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+LNB + FGR; ICI Boilers - Liquid Waste,N0452,NOx,LNB + FGR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Liquid Waste (Large Sources),N0452L,NOx,LNB + FGR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+LNB + FGR;ICI Boilers - Liquid Waste (Small Sources),N0452S,NOx,LNB + FGR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+SCR; ICI Boilers - Liquid Waste,N0453,NOx,SCR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Liquid Waste (Large Sources),N0453L,NOx,SCR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+SCR;ICI Boilers - Liquid Waste (Small Sources),N0453S,NOx,SCR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+SNCR; ICI Boilers - Liquid Waste,N0454,NOx,SNCR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Liquid Waste (Large Sources),N0454L,NOx,SNCR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+SNCR;ICI Boilers - Liquid Waste (Small Sources),N0454S,NOx,SNCR,ICI Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+"None; IC Engines - Gas, Diesel, LPG",N0460,NOx,None,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"None;IC Engines - Gas, Diesel, LPG (Large Sources)",N0460L,NOx,None,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"None;IC Engines - Gas, Diesel, LPG (Small Sources)",N0460S,NOx,None,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"IR; IC Engines - Gas, Diesel, LPG",N0461,NOx,IR,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"IR;IC Engines - Gas, Diesel, LPG (Large Sources)",N0461L,NOx,IR,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"IR;IC Engines - Gas, Diesel, LPG (Small Sources)",N0461S,NOx,IR,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"SCR; IC Engines - Gas, Diesel, LPG",N0464,NOx,SCR,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"SCR;IC Engines - Gas, Diesel, LPG (Large Sources)",N0464L,NOx,SCR,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"SCR;IC Engines - Gas, Diesel, LPG (Small Sources)",N0464S,NOx,SCR,"IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"NSCR; Rich Burn IC Engines - Gas, Diesel, LPG",N0465,NOx,NSCR,"Rich Burn IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"NSCR;Rich Burn IC Engines - Gas, Diesel, LPG (Large Sources)",N0465L,NOx,NSCR,"Rich Burn IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+"NSCR;Rich Burn IC Engines - Gas, Diesel, LPG (Small Sources)",N0465S,NOx,NSCR,"Rich Burn IC Engines - Gas, Diesel, LPG",PTNONIPM,Known,,,2006,1
+None; Process Heaters - Process Gas,N0470,NOx,None,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Process Gas (Large Sources),N0470L,NOx,None,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Process Gas (Small Sources),N0470S,NOx,None,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB; Process Heaters - Process Gas,N0471,NOx,LNB,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Process Gas (Large Sources),N0471L,NOx,LNB,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Process Gas (Small Sources),N0471S,NOx,LNB,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR; Process Heaters - Process Gas,N0472,NOx,LNB + FGR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Process Gas (Large Sources),N0472L,NOx,LNB + FGR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Process Gas (Small Sources),N0472S,NOx,LNB + FGR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+SNCR; Process Heaters - Process Gas,N0473,NOx,SNCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Process Gas (Large Sources),N0473L,NOx,SNCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Process Gas (Small Sources),N0473S,NOx,SNCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+ULNB; Process Heaters - Process Gas,N0474,NOx,ULNB,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Process Gas (Large Sources),N0474L,NOx,ULNB,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Process Gas (Small Sources),N0474S,NOx,ULNB,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+SCR; Process Heaters - Process Gas,N0475,NOx,SCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Process Gas (Large Sources),N0475L,NOx,SCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Process Gas (Small Sources),N0475S,NOx,SCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + SNCR; Process Heaters - Process Gas,N0476,NOx,LNB + SNCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Process Gas (Large Sources),N0476L,NOx,LNB + SNCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Process Gas (Small Sources),N0476S,NOx,LNB + SNCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + SCR; Process Heaters - Process Gas,N0477,NOx,LNB + SCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Process Gas (Large Sources),N0477L,NOx,LNB + SCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Process Gas (Small Sources),N0477S,NOx,LNB + SCR,Process Heaters - Process Gas,PTNONIPM,Known,,,2006,1
+None; Process Heaters - LPG,N0480,NOx,None,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+None;Process Heaters - LPG (Large Sources),N0480L,NOx,None,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+None;Process Heaters - LPG (Small Sources),N0480S,NOx,None,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB; Process Heaters - LPG,N0481,NOx,LNB,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - LPG (Large Sources),N0481L,NOx,LNB,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - LPG (Small Sources),N0481S,NOx,LNB,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + FGR; Process Heaters - LPG,N0482,NOx,LNB + FGR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - LPG (Large Sources),N0482L,NOx,LNB + FGR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - LPG (Small Sources),N0482S,NOx,LNB + FGR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+SNCR; Process Heaters - LPG,N0483,NOx,SNCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - LPG (Large Sources),N0483L,NOx,SNCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - LPG (Small Sources),N0483S,NOx,SNCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+ULNB; Process Heaters - LPG,N0484,NOx,ULNB,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - LPG (Large Sources),N0484L,NOx,ULNB,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - LPG (Small Sources),N0484S,NOx,ULNB,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+SCR; Process Heaters - LPG,N0485,NOx,SCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - LPG (Large Sources),N0485L,NOx,SCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - LPG (Small Sources),N0485S,NOx,SCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + SNCR; Process Heaters - LPG,N0486,NOx,LNB + SNCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - LPG (Large Sources),N0486L,NOx,LNB + SNCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - LPG (Small Sources),N0486S,NOx,LNB + SNCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + SCR; Process Heaters - LPG,N0487,NOx,LNB + SCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - LPG (Large Sources),N0487L,NOx,LNB + SCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - LPG (Small Sources),N0487S,NOx,LNB + SCR,Process Heaters - LPG,PTNONIPM,Known,,,2006,1
+None; Process Heaters - Other Fuel,N0490,NOx,None,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Other Fuel (Large Sources),N0490L,NOx,None,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+None;Process Heaters - Other Fuel (Small Sources),N0490S,NOx,None,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + FGR; Process Heaters - Other Fuel,N0491,NOx,LNB + FGR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Other Fuel (Large Sources),N0491L,NOx,LNB + FGR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + FGR;Process Heaters - Other Fuel (Small Sources),N0491S,NOx,LNB + FGR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB; Process Heaters - Other Fuel,N0492,NOx,LNB,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Other Fuel (Large Sources),N0492L,NOx,LNB,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB;Process Heaters - Other Fuel (Small Sources),N0492S,NOx,LNB,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+SNCR; Process Heaters - Other Fuel,N0493,NOx,SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Other Fuel (Large Sources),N0493L,NOx,SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+SNCR;Process Heaters - Other Fuel (Small Sources),N0493S,NOx,SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+ULNB; Process Heaters - Other Fuel,N0494,NOx,ULNB,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Other Fuel (Large Sources),N0494L,NOx,ULNB,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+ULNB;Process Heaters - Other Fuel (Small Sources),N0494S,NOx,ULNB,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + SNCR; Process Heaters - Other Fuel,N0495,NOx,LNB + SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Other Fuel (Large Sources),N0495L,NOx,LNB + SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + SNCR;Process Heaters - Other Fuel (Small Sources),N0495S,NOx,LNB + SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+SCR; Process Heaters - Other Fuel,N0496,NOx,SCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Other Fuel (Large Sources),N0496L,NOx,SCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+SCR;Process Heaters - Other Fuel (Small Sources),N0496S,NOx,SCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + SCR; Process Heaters - Other Fuel,N0497,NOx,LNB + SCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Other Fuel (Large Sources),N0497L,NOx,LNB + SCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+LNB + SCR;Process Heaters - Other Fuel (Small Sources),N0497S,NOx,LNB + SCR,Process Heaters - Other Fuel,PTNONIPM,Known,,,2006,1
+None; Gas Turbines - Jet Fuel,N0500,NOx,None,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+None;Gas Turbines - Jet Fuel (Large Sources),N0500L,NOx,None,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+None;Gas Turbines - Jet Fuel (Small Sources),N0500S,NOx,None,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+Water Injection; Gas Turbines - Jet Fuel,N0501,NOx,Water Injection,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+Water Injection;Gas Turbines - Jet Fuel (Large Sources),N0501L,NOx,Water Injection,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+Water Injection;Gas Turbines - Jet Fuel (Small Sources),N0501S,NOx,Water Injection,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti; Gas Turbines - Jet Fuel,N0502,NOx,SCR + Water Injecti,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti;Gas Turbines - Jet Fuel (Large Sources),N0502L,NOx,SCR + Water Injecti,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+SCR + Water Injecti;Gas Turbines - Jet Fuel (Small Sources),N0502S,NOx,SCR + Water Injecti,Gas Turbines - Jet Fuel,PTNONIPM,Known,,,2006,1
+None; Engine Testing - Natural Gas,N0510,NOx,None,Engine Testing - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Engine Testing - Natural Gas (Large Sources),N0510L,NOx,None,Engine Testing - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Engine Testing - Natural Gas (Small Sources),N0510S,NOx,None,Engine Testing - Natural Gas,PTNONIPM,Known,,,2006,1
+None; Engine Testing - Diesel GT,N0520,NOx,None,Engine Testing - Diesel GT,PTNONIPM,Known,,,2006,1
+None;Engine Testing - Diesel GT (Large Sources),N0520L,NOx,None,Engine Testing - Diesel GT,PTNONIPM,Known,,,2006,1
+None;Engine Testing - Diesel GT (Small Sources),N0520S,NOx,None,Engine Testing - Diesel GT,PTNONIPM,Known,,,2006,1
+None; Engine Testing - Oil IC,N0530,NOx,None,Engine Testing - Oil IC,PTNONIPM,Known,,,2006,1
+None;Engine Testing - Oil IC (Large Sources),N0530L,NOx,None,Engine Testing - Oil IC,PTNONIPM,Known,,,2006,1
+None;Engine Testing - Oil IC (Small Sources),N0530S,NOx,None,Engine Testing - Oil IC,PTNONIPM,Known,,,2006,1
+None; Space Heaters - Distillate Oil,N0540,NOx,None,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+None;Space Heaters - Distillate Oil (Large Sources),N0540L,NOx,None,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+None;Space Heaters - Distillate Oil (Small Sources),N0540S,NOx,None,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB; Space Heaters - Distillate Oil,N0541,NOx,LNB,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB;Space Heaters - Distillate Oil (Large Sources),N0541L,NOx,LNB,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB;Space Heaters - Distillate Oil (Small Sources),N0541S,NOx,LNB,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR; Space Heaters - Distillate Oil,N0542,NOx,LNB + FGR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;Space Heaters - Distillate Oil (Large Sources),N0542L,NOx,LNB + FGR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+LNB + FGR;Space Heaters - Distillate Oil (Small Sources),N0542S,NOx,LNB + FGR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR; Space Heaters - Distillate Oil,N0543,NOx,SCR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR;Space Heaters - Distillate Oil (Large Sources),N0543L,NOx,SCR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SCR;Space Heaters - Distillate Oil (Small Sources),N0543S,NOx,SCR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR; Space Heaters - Distillate Oil,N0544,NOx,SNCR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR;Space Heaters - Distillate Oil (Large Sources),N0544L,NOx,SNCR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+SNCR;Space Heaters - Distillate Oil (Small Sources),N0544S,NOx,SNCR,Space Heaters - Distillate Oil,PTNONIPM,Known,,,2006,1
+None; Space Heaters - Natural Gas,N0550,NOx,None,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Space Heaters - Natural Gas (Large Sources),N0550L,NOx,None,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+None;Space Heaters - Natural Gas (Small Sources),N0550S,NOx,None,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB; Space Heaters - Natural Gas,N0551,NOx,LNB,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Space Heaters - Natural Gas (Large Sources),N0551L,NOx,LNB,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Space Heaters - Natural Gas (Small Sources),N0551S,NOx,LNB,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR; Space Heaters - Natural Gas,N0552,NOx,LNB + FGR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Space Heaters - Natural Gas (Large Sources),N0552L,NOx,LNB + FGR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Space Heaters - Natural Gas (Small Sources),N0552S,NOx,LNB + FGR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+OT + WI; Space Heaters - Natural Gas,N0553,NOx,OT + WI,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+OT + WI;Space Heaters - Natural Gas (Large Sources),N0553L,NOx,OT + WI,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+OT + WI;Space Heaters - Natural Gas (Small Sources),N0553S,NOx,OT + WI,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR; Space Heaters - Natural Gas,N0554,NOx,SCR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR;Space Heaters - Natural Gas (Large Sources),N0554L,NOx,SCR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SCR;Space Heaters - Natural Gas (Small Sources),N0554S,NOx,SCR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR; Space Heaters - Natural Gas,N0555,NOx,SNCR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR;Space Heaters - Natural Gas (Large Sources),N0555L,NOx,SNCR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+SNCR;Space Heaters - Natural Gas (Small Sources),N0555S,NOx,SNCR,Space Heaters - Natural Gas,PTNONIPM,Known,,,2006,1
+None; Ammonia - NG-Fired Reformers,N0560,NOx,None,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+None;Ammonia - NG-Fired Reformers (Large Sources),N0560L,NOx,None,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+None;Ammonia - NG-Fired Reformers (Small Sources),N0560S,NOx,None,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB; Ammonia - NG-Fired Reformers,N0561,NOx,LNB,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB;Ammonia - NG-Fired Reformers (Large Sources),N0561L,NOx,LNB,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB;Ammonia - NG-Fired Reformers (Small Sources),N0561S,NOx,LNB,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB + FGR; Ammonia - NG-Fired Reformers,N0562,NOx,LNB + FGR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB + FGR;Ammonia - NG-Fired Reformers (Large Sources),N0562L,NOx,LNB + FGR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB + FGR;Ammonia - NG-Fired Reformers (Small Sources),N0562S,NOx,LNB + FGR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+OT + WI; Ammonia - NG-Fired Reformers,N0563,NOx,OT + WI,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+OT + WI;Ammonia - NG-Fired Reformers (Large Sources),N0563L,NOx,OT + WI,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+OT + WI;Ammonia - NG-Fired Reformers (Small Sources),N0563S,NOx,OT + WI,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+SCR; Ammonia - NG-Fired Reformers,N0564,NOx,SCR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+SCR;Ammonia - NG-Fired Reformers (Large Sources),N0564L,NOx,SCR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+SCR;Ammonia - NG-Fired Reformers (Small Sources),N0564S,NOx,SCR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+SNCR; Ammonia - NG-Fired Reformers,N0565,NOx,SNCR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+SNCR;Ammonia - NG-Fired Reformers (Large Sources),N0565L,NOx,SNCR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+SNCR;Ammonia - NG-Fired Reformers (Small Sources),N0565S,NOx,SNCR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,,,2006,1
+None; Ammonia - Oil-Fired Reformers,N0570,NOx,None,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+None;Ammonia - Oil-Fired Reformers (Large Sources),N0570L,NOx,None,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+None;Ammonia - Oil-Fired Reformers (Small Sources),N0570S,NOx,None,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB; Ammonia - Oil-Fired Reformers,N0571,NOx,LNB,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB;Ammonia - Oil-Fired Reformers (Large Sources),N0571L,NOx,LNB,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB;Ammonia - Oil-Fired Reformers (Small Sources),N0571S,NOx,LNB,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB + FGR; Ammonia - Oil-Fired Reformers,N0572,NOx,LNB + FGR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB + FGR;Ammonia - Oil-Fired Reformers (Large Sources),N0572L,NOx,LNB + FGR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+LNB + FGR;Ammonia - Oil-Fired Reformers (Small Sources),N0572S,NOx,LNB + FGR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+SCR; Ammonia - Oil-Fired Reformers,N0573,NOx,SCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+SCR;Ammonia - Oil-Fired Reformers (Large Sources),N0573L,NOx,SCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+SCR;Ammonia - Oil-Fired Reformers (Small Sources),N0573S,NOx,SCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+SNCR; Ammonia - Oil-Fired Reformers,N0574,NOx,SNCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+SNCR;Ammonia - Oil-Fired Reformers (Large Sources),N0574L,NOx,SNCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+SNCR;Ammonia - Oil-Fired Reformers (Small Sources),N0574S,NOx,SNCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,,,2006,1
+None; Lime Kilns,N0580,NOx,None,Lime Kilns,PTNONIPM,Known,,,2006,1
+None;Lime Kilns (Large Sources),N0580L,NOx,None,Lime Kilns,PTNONIPM,Known,,,2006,1
+None;Lime Kilns (Small Sources),N0580S,NOx,None,Lime Kilns,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing; Lime Kilns,N0581,NOx,Mid-Kiln Firing,Lime Kilns,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing;Lime Kilns (Large Sources),N0581L,NOx,Mid-Kiln Firing,Lime Kilns,PTNONIPM,Known,,,2006,1
+Mid-Kiln Firing;Lime Kilns (Small Sources),N0581S,NOx,Mid-Kiln Firing,Lime Kilns,PTNONIPM,Known,,,2006,1
+LNB; Lime Kilns,N0582,NOx,LNB,Lime Kilns,PTNONIPM,Known,,,2006,1
+LNB;Lime Kilns (Large Sources),N0582L,NOx,LNB,Lime Kilns,PTNONIPM,Known,,,2006,1
+LNB;Lime Kilns (Small Sources),N0582S,NOx,LNB,Lime Kilns,PTNONIPM,Known,,,2006,1
+None; Comm./Inst. Incinerators,N0590,NOx,None,Comm./Inst. Incinerators,PTNONIPM,Known,,,2006,1
+None;Comm./Inst. Incinerators (Large Sources),N0590L,NOx,None,Comm./Inst. Incinerators,PTNONIPM,Known,,,2006,1
+None;Comm./Inst. Incinerators (Small Sources),N0590S,NOx,None,Comm./Inst. Incinerators,PTNONIPM,Known,,,2006,1
+SNCR; Comm./Inst. Incinerators,N0591,NOx,SNCR,Comm./Inst. Incinerators,PTNONIPM,Known,,,2006,1
+SNCR;Comm./Inst. Incinerators (Large Sources),N0591L,NOx,SNCR,Comm./Inst. Incinerators,PTNONIPM,Known,,,2006,1
+SNCR;Comm./Inst. Incinerators (Small Sources),N0591S,NOx,SNCR,Comm./Inst. Incinerators,PTNONIPM,Known,,,2006,1
+None; Indust. Incinerators,N0600,NOx,None,Indust. Incinerators,PTNONIPM,Known,,,2006,1
+None;Indust. Incinerators (Large Sources),N0600L,NOx,None,Indust. Incinerators,PTNONIPM,Known,,,2006,1
+None;Indust. Incinerators (Small Sources),N0600S,NOx,None,Indust. Incinerators,PTNONIPM,Known,,,2006,1
+SNCR; Indust. Incinerators,N0601,NOx,SNCR,Indust. Incinerators,PTNONIPM,Known,,,2006,1
+SNCR;Indust. Incinerators (Large Sources),N0601L,NOx,SNCR,Indust. Incinerators,PTNONIPM,Known,,,2006,1
+SNCR;Indust. Incinerators (Small Sources),N0601S,NOx,SNCR,Indust. Incinerators,PTNONIPM,Known,,,2006,1
+None; Sulfate Pulping - Recovery Furnaces,N0610,NOx,None,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+None;Sulfate Pulping - Recovery Furnaces (Large Sources),N0610L,NOx,None,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+None;Sulfate Pulping - Recovery Furnaces (Small Sources),N0610S,NOx,None,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+LNB; Sulfate Pulping - Recovery Furnaces,N0611,NOx,LNB,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+LNB;Sulfate Pulping - Recovery Furnaces (Large Sources),N0611L,NOx,LNB,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+LNB;Sulfate Pulping - Recovery Furnaces (Small Sources),N0611S,NOx,LNB,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+LNB + FGR; Sulfate Pulping - Recovery Furnaces,N0612,NOx,LNB + FGR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+LNB + FGR;Sulfate Pulping - Recovery Furnaces (Large Sources),N0612L,NOx,LNB + FGR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+LNB + FGR;Sulfate Pulping - Recovery Furnaces (Small Sources),N0612S,NOx,LNB + FGR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+OT + WI; Sulfate Pulping - Recovery Furnaces,N0613,NOx,OT + WI,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+OT + WI;Sulfate Pulping - Recovery Furnaces (Large Sources),N0613L,NOx,OT + WI,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+OT + WI;Sulfate Pulping - Recovery Furnaces (Small Sources),N0613S,NOx,OT + WI,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+SCR; Sulfate Pulping - Recovery Furnaces,N0614,NOx,SCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+SCR;Sulfate Pulping - Recovery Furnaces (Large Sources),N0614L,NOx,SCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+SCR;Sulfate Pulping - Recovery Furnaces (Small Sources),N0614S,NOx,SCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+SNCR; Sulfate Pulping - Recovery Furnaces,N0615,NOx,SNCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+SNCR;Sulfate Pulping - Recovery Furnaces (Large Sources),N0615L,NOx,SNCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+SNCR;Sulfate Pulping - Recovery Furnaces (Small Sources),N0615S,NOx,SNCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,,,2006,1
+None; Ammonia Prod; Feedstock Desulfurization,N0620,NOx,None,Ammonia Prod; Feedstock Desulfurization,PTNONIPM,Known,,,2006,1
+None;Ammonia Prod; Feedstock Desulfurization (Large Sources),N0620L,NOx,None,Ammonia Prod; Feedstock Desulfurization,PTNONIPM,Known,,,2006,1
+None;Ammonia Prod; Feedstock Desulfurization (Small Sources),N0620S,NOx,None,Ammonia Prod; Feedstock Desulfurization,PTNONIPM,Known,,,2006,1
+LNB + FGR; Ammonia Prod; Feedstock Desulfurization,N0622,NOx,LNB + FGR,Ammonia Prod; Feedstock Desulfurization,PTNONIPM,Known,,,2006,1
+LNB + FGR;Ammonia Prod; Feedstock Desulfurization (Large Sources),N0622L,NOx,LNB + FGR,Ammonia Prod; Feedstock Desulfurization,PTNONIPM,Known,,,2006,1
+LNB + FGR;Ammonia Prod; Feedstock Desulfurization (Small Sources),N0622S,NOx,LNB + FGR,Ammonia Prod; Feedstock Desulfurization,PTNONIPM,Known,,,2006,1
+None; Plastics Prod-Specific; (ABS) Resin,N0630,NOx,None,Plastics Prod-Specific; (ABS) Resin,PTNONIPM,Known,,,2006,1
+None;Plastics Prod-Specific; (ABS) Resin (Large Sources),N0630L,NOx,None,Plastics Prod-Specific; (ABS) Resin,PTNONIPM,Known,,,2006,1
+None;Plastics Prod-Specific; (ABS) Resin (Small Sources),N0630S,NOx,None,Plastics Prod-Specific; (ABS) Resin,PTNONIPM,Known,,,2006,1
+LNB + FGR; Plastics Prod-Specific; (ABS) Resin,N0632,NOx,LNB + FGR,Plastics Prod-Specific; (ABS) Resin,PTNONIPM,Known,,,2006,1
+LNB + FGR;Plastics Prod-Specific; (ABS) Resin (Large Sources),N0632L,NOx,LNB + FGR,Plastics Prod-Specific; (ABS) Resin,PTNONIPM,Known,,,2006,1
+LNB + FGR;Plastics Prod-Specific; (ABS) Resin (Small Sources),N0632S,NOx,LNB + FGR,Plastics Prod-Specific; (ABS) Resin,PTNONIPM,Known,,,2006,1
+None; Starch Mfg; Combined Operations,N0640,NOx,None,Starch Mfg; Combined Operations,PTNONIPM,Known,,,2006,1
+None;Starch Mfg; Combined Operations (Large Sources),N0640L,NOx,None,Starch Mfg; Combined Operations,PTNONIPM,Known,,,2006,1
+None;Starch Mfg; Combined Operations (Small Sources),N0640S,NOx,None,Starch Mfg; Combined Operations,PTNONIPM,Known,,,2006,1
+LNB + FGR; Starch Mfg; Combined Operations,N0642,NOx,LNB + FGR,Starch Mfg; Combined Operations,PTNONIPM,Known,,,2006,1
+LNB + FGR;Starch Mfg; Combined Operations (Large Sources),N0642L,NOx,LNB + FGR,Starch Mfg; Combined Operations,PTNONIPM,Known,,,2006,1
+LNB + FGR;Starch Mfg; Combined Operations (Small Sources),N0642S,NOx,LNB + FGR,Starch Mfg; Combined Operations,PTNONIPM,Known,,,2006,1
+None; By-Product Coke Mfg; Oven Underfiring,N0650,NOx,None,By-Product Coke Mfg; Oven Underfiring,PTNONIPM,Known,,,2006,1
+None;By-Product Coke Mfg; Oven Underfiring (Large Sources),N0650L,NOx,None,By-Product Coke Mfg; Oven Underfiring,PTNONIPM,Known,,,2006,1
+None;By-Product Coke Mfg; Oven Underfiring (Small Sources),N0650S,NOx,None,By-Product Coke Mfg; Oven Underfiring,PTNONIPM,Known,,,2006,1
+SNCR; By-Product Coke Mfg; Oven Underfiring,N0653,NOx,SNCR,By-Product Coke Mfg; Oven Underfiring,PTNONIPM,Known,,,2006,1
+SNCR;By-Product Coke Mfg; Oven Underfiring (Large Sources),N0653L,NOx,SNCR,By-Product Coke Mfg; Oven Underfiring,PTNONIPM,Known,,,2006,1
+SNCR;By-Product Coke Mfg; Oven Underfiring (Small Sources),N0653S,NOx,SNCR,By-Product Coke Mfg; Oven Underfiring,PTNONIPM,Known,,,2006,1
+None; Pri Cop Smel; Reverb Smelt Furn,N0660,NOx,None,Pri Cop Smel; Reverb Smelt Furn,PTNONIPM,Known,,,2006,1
+None;Pri Cop Smel; Reverb Smelt Furn (Large Sources),N0660L,NOx,None,Pri Cop Smel; Reverb Smelt Furn,PTNONIPM,Known,,,2006,1
+None;Pri Cop Smel; Reverb Smelt Furn (Small Sources),N0660S,NOx,None,Pri Cop Smel; Reverb Smelt Furn,PTNONIPM,Known,,,2006,1
+LNB + FGR; Pri Cop Smel; Reverb Smelt Furn,N0662,NOx,LNB + FGR,Pri Cop Smel; Reverb Smelt Furn,PTNONIPM,Known,,,2006,1
+LNB + FGR;Pri Cop Smel; Reverb Smelt Furn (Large Sources),N0662L,NOx,LNB + FGR,Pri Cop Smel; Reverb Smelt Furn,PTNONIPM,Known,,,2006,1
+LNB + FGR;Pri Cop Smel; Reverb Smelt Furn (Small Sources),N0662S,NOx,LNB + FGR,Pri Cop Smel; Reverb Smelt Furn,PTNONIPM,Known,,,2006,1
+None; Iron Prod; Blast Furn; Blast Htg Stoves,N0670,NOx,None,Iron Prod; Blast Furn; Blast Htg Stoves,PTNONIPM,Known,,,2006,1
+None;Iron Prod; Blast Furn; Blast Htg Stoves (Large Sources),N0670L,NOx,None,Iron Prod; Blast Furn; Blast Htg Stoves,PTNONIPM,Known,,,2006,1
+None;Iron Prod; Blast Furn; Blast Htg Stoves (Small Sources),N0670S,NOx,None,Iron Prod; Blast Furn; Blast Htg Stoves,PTNONIPM,Known,,,2006,1
+LNB + FGR; Iron Prod; Blast Furn; Blast Htg Stoves,N0673,NOx,LNB + FGR,Iron Prod; Blast Furn; Blast Htg Stoves,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron Prod; Blast Furn; Blast Htg Stoves (Large Sources),N0673L,NOx,LNB + FGR,Iron Prod; Blast Furn; Blast Htg Stoves,PTNONIPM,Known,,,2006,1
+LNB + FGR;Iron Prod; Blast Furn; Blast Htg Stoves (Small Sources),N0673S,NOx,LNB + FGR,Iron Prod; Blast Furn; Blast Htg Stoves,PTNONIPM,Known,,,2006,1
+None; Steel Prod; Soaking Pits,N0680,NOx,None,Steel Prod; Soaking Pits,PTNONIPM,Known,,,2006,1
+None;Steel Prod; Soaking Pits (Large Sources),N0680L,NOx,None,Steel Prod; Soaking Pits,PTNONIPM,Known,,,2006,1
+None;Steel Prod; Soaking Pits (Small Sources),N0680S,NOx,None,Steel Prod; Soaking Pits,PTNONIPM,Known,,,2006,1
+LNB + FGR; Steel Prod; Soaking Pits,N0682,NOx,LNB + FGR,Steel Prod; Soaking Pits,PTNONIPM,Known,,,2006,1
+LNB + FGR;Steel Prod; Soaking Pits (Large Sources),N0682L,NOx,LNB + FGR,Steel Prod; Soaking Pits,PTNONIPM,Known,,,2006,1
+LNB + FGR;Steel Prod; Soaking Pits (Small Sources),N0682S,NOx,LNB + FGR,Steel Prod; Soaking Pits,PTNONIPM,Known,,,2006,1
+None; Fuel Fired Equip; Process Htrs; Pro Gas,N0690,NOx,None,Fuel Fired Equip; Process Htrs; Pro Gas,PTNONIPM,Known,,,2006,1
+None;Fuel Fired Equip; Process Htrs; Pro Gas (Large Sources),N0690L,NOx,None,Fuel Fired Equip; Process Htrs; Pro Gas,PTNONIPM,Known,,,2006,1
+None;Fuel Fired Equip; Process Htrs; Pro Gas (Small Sources),N0690S,NOx,None,Fuel Fired Equip; Process Htrs; Pro Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR; Fuel Fired Equip; Process Htrs; Pro Gas,N0692,NOx,LNB + FGR,Fuel Fired Equip; Process Htrs; Pro Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Fuel Fired Equip; Process Htrs; Pro Gas (Large Sources),N0692L,NOx,LNB + FGR,Fuel Fired Equip; Process Htrs; Pro Gas,PTNONIPM,Known,,,2006,1
+LNB + FGR;Fuel Fired Equip; Process Htrs; Pro Gas (Small Sources),N0692S,NOx,LNB + FGR,Fuel Fired Equip; Process Htrs; Pro Gas,PTNONIPM,Known,,,2006,1
+None; Sec Alum Prod; Smelting Furn/Reverb,N0700,NOx,None,Sec Alum Prod; Smelting Furn/Reverb,PTNONIPM,Known,,,2006,1
+None;Sec Alum Prod; Smelting Furn/Reverb (Large Sources),N0700L,NOx,None,Sec Alum Prod; Smelting Furn/Reverb,PTNONIPM,Known,,,2006,1
+None;Sec Alum Prod; Smelting Furn/Reverb (Small Sources),N0700S,NOx,None,Sec Alum Prod; Smelting Furn/Reverb,PTNONIPM,Known,,,2006,1
+LNB; Sec Alum Prod; Smelting Furn/Reverb,N0701,NOx,LNB,Sec Alum Prod; Smelting Furn/Reverb,PTNONIPM,Known,,,2006,1
+LNB;Sec Alum Prod; Smelting Furn/Reverb (Large Sources),N0701L,NOx,LNB,Sec Alum Prod; Smelting Furn/Reverb,PTNONIPM,Known,,,2006,1
+LNB;Sec Alum Prod; Smelting Furn/Reverb (Small Sources),N0701S,NOx,LNB,Sec Alum Prod; Smelting Furn/Reverb,PTNONIPM,Known,,,2006,1
+None; Steel Foundries; Heat Treating Furn,N0710,NOx,None,Steel Foundries; Heat Treating Furn,PTNONIPM,Known,,,2006,1
+None;Steel Foundries; Heat Treating Furn (Large Sources),N0710L,NOx,None,Steel Foundries; Heat Treating Furn,PTNONIPM,Known,,,2006,1
+None;Steel Foundries; Heat Treating Furn (Small Sources),N0710S,NOx,None,Steel Foundries; Heat Treating Furn,PTNONIPM,Known,,,2006,1
+LNB; Steel Foundries; Heat Treating Furn,N0711,NOx,LNB,Steel Foundries; Heat Treating Furn,PTNONIPM,Known,,,2006,1
+LNB;Steel Foundries; Heat Treating Furn (Large Sources),N0711L,NOx,LNB,Steel Foundries; Heat Treating Furn,PTNONIPM,Known,,,2006,1
+LNB;Steel Foundries; Heat Treating Furn (Small Sources),N0711S,NOx,LNB,Steel Foundries; Heat Treating Furn,PTNONIPM,Known,,,2006,1
+None; Fuel Fired Equip; Furnaces; Natural Gas,N0720,NOx,None,Fuel Fired Equip; Furnaces; Natural Gas,PTNONIPM,Known,,,2006,1
+None;Fuel Fired Equip; Furnaces; Natural Gas (Large Sources),N0720L,NOx,None,Fuel Fired Equip; Furnaces; Natural Gas,PTNONIPM,Known,,,2006,1
+None;Fuel Fired Equip; Furnaces; Natural Gas (Small Sources),N0720S,NOx,None,Fuel Fired Equip; Furnaces; Natural Gas,PTNONIPM,Known,,,2006,1
+LNB; Fuel Fired Equip; Furnaces; Natural Gas,N0721,NOx,LNB,Fuel Fired Equip; Furnaces; Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Fuel Fired Equip; Furnaces; Natural Gas (Large Sources),N0721L,NOx,LNB,Fuel Fired Equip; Furnaces; Natural Gas,PTNONIPM,Known,,,2006,1
+LNB;Fuel Fired Equip; Furnaces; Natural Gas (Small Sources),N0721S,NOx,LNB,Fuel Fired Equip; Furnaces; Natural Gas,PTNONIPM,Known,,,2006,1
+None; Asphaltic Conc; Rotary Dryer; Conv Plant,N0730,NOx,None,Asphaltic Conc; Rotary Dryer; Conv Plant,PTNONIPM,Known,,,2006,1
+None;Asphaltic Conc; Rotary Dryer; Conv Plant (Large Sources),N0730L,NOx,None,Asphaltic Conc; Rotary Dryer; Conv Plant,PTNONIPM,Known,,,2006,1
+None;Asphaltic Conc; Rotary Dryer; Conv Plant (Small Sources),N0730S,NOx,None,Asphaltic Conc; Rotary Dryer; Conv Plant,PTNONIPM,Known,,,2006,1
+LNB; Asphaltic Conc; Rotary Dryer; Conv Plant,N0731,NOx,LNB,Asphaltic Conc; Rotary Dryer; Conv Plant,PTNONIPM,Known,,,2006,1
+LNB;Asphaltic Conc; Rotary Dryer; Conv Plant (Large Sources),N0731L,NOx,LNB,Asphaltic Conc; Rotary Dryer; Conv Plant,PTNONIPM,Known,,,2006,1
+LNB;Asphaltic Conc; Rotary Dryer; Conv Plant (Small Sources),N0731S,NOx,LNB,Asphaltic Conc; Rotary Dryer; Conv Plant,PTNONIPM,Known,,,2006,1
+None; Ceramic Clay Mfg; Drying,N0740,NOx,None,Ceramic Clay Mfg; Drying,PTNONIPM,Known,,,2006,1
+None;Ceramic Clay Mfg; Drying (Large Sources),N0740L,NOx,None,Ceramic Clay Mfg; Drying,PTNONIPM,Known,,,2006,1
+None;Ceramic Clay Mfg; Drying (Small Sources),N0740S,NOx,None,Ceramic Clay Mfg; Drying,PTNONIPM,Known,,,2006,1
+LNB; Ceramic Clay Mfg; Drying,N0741,NOx,LNB,Ceramic Clay Mfg; Drying,PTNONIPM,Known,,,2006,1
+LNB;Ceramic Clay Mfg; Drying (Large Sources),N0741L,NOx,LNB,Ceramic Clay Mfg; Drying,PTNONIPM,Known,,,2006,1
+LNB;Ceramic Clay Mfg; Drying (Small Sources),N0741S,NOx,LNB,Ceramic Clay Mfg; Drying,PTNONIPM,Known,,,2006,1
+None; Coal Cleaning-Thrml Dryer; Fluidized Bed,N0750,NOx,None,Coal Cleaning-Thrml Dryer; Fluidized Bed,PTNONIPM,Known,,,2006,1
+None;Coal Cleaning-Thrml Dryer; Fluidized Bed (Large Sources),N0750L,NOx,None,Coal Cleaning-Thrml Dryer; Fluidized Bed,PTNONIPM,Known,,,2006,1
+None;Coal Cleaning-Thrml Dryer; Fluidized Bed (Small Sources),N0750S,NOx,None,Coal Cleaning-Thrml Dryer; Fluidized Bed,PTNONIPM,Known,,,2006,1
+LNB; Coal Cleaning-Thrml Dryer; Fluidized Bed,N0753,NOx,LNB,Coal Cleaning-Thrml Dryer; Fluidized Bed,PTNONIPM,Known,,,2006,1
+LNB;Coal Cleaning-Thrml Dryer; Fluidized Bed (Large Sources),N0753L,NOx,LNB,Coal Cleaning-Thrml Dryer; Fluidized Bed,PTNONIPM,Known,,,2006,1
+LNB;Coal Cleaning-Thrml Dryer; Fluidized Bed (Small Sources),N0753S,NOx,LNB,Coal Cleaning-Thrml Dryer; Fluidized Bed,PTNONIPM,Known,,,2006,1
+None; Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,N0760,NOx,None,Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,PTNONIPM,Known,,,2006,1
+None;Fbrglass Mfg; Txtle-Type Fbr; Recup Furn (Large Sources),N0760L,NOx,None,Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,PTNONIPM,Known,,,2006,1
+None;Fbrglass Mfg; Txtle-Type Fbr; Recup Furn (Small Sources),N0760S,NOx,None,Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,PTNONIPM,Known,,,2006,1
+LNB; Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,N0763,NOx,LNB,Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,PTNONIPM,Known,,,2006,1
+LNB;Fbrglass Mfg; Txtle-Type Fbr; Recup Furn (Large Sources),N0763L,NOx,LNB,Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,PTNONIPM,Known,,,2006,1
+LNB;Fbrglass Mfg; Txtle-Type Fbr; Recup Furn (Small Sources),N0763S,NOx,LNB,Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,PTNONIPM,Known,,,2006,1
+None; Sand/Gravel; Dryer,N0770,NOx,None,Sand/Gravel; Dryer,PTNONIPM,Known,,,2006,1
+None;Sand/Gravel; Dryer (Large Sources),N0770L,NOx,None,Sand/Gravel; Dryer,PTNONIPM,Known,,,2006,1
+None;Sand/Gravel; Dryer (Small Sources),N0770S,NOx,None,Sand/Gravel; Dryer,PTNONIPM,Known,,,2006,1
+LNB + FGR; Sand/Gravel; Dryer,N0772,NOx,LNB + FGR,Sand/Gravel; Dryer,PTNONIPM,Known,,,2006,1
+LNB + FGR;Sand/Gravel; Dryer (Large Sources),N0772L,NOx,LNB + FGR,Sand/Gravel; Dryer,PTNONIPM,Known,,,2006,1
+LNB + FGR;Sand/Gravel; Dryer (Small Sources),N0772S,NOx,LNB + FGR,Sand/Gravel; Dryer,PTNONIPM,Known,,,2006,1
+None; Fluid Cat Cracking Units; Cracking Unit,N0780,NOx,None,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Known,,,2006,1
+None;Fluid Cat Cracking Units; Cracking Unit (Large Sources),N0780L,NOx,None,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Known,,,2006,1
+None;Fluid Cat Cracking Units; Cracking Unit (Small Sources),N0780S,NOx,None,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Known,,,2006,1
+LNB + FGR; Fluid Cat Cracking Units; Cracking Unit,N0782,NOx,LNB + FGR,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Known,,,2006,1
+LNB + FGR;Fluid Cat Cracking Units; Cracking Unit (Large Sources),N0782L,NOx,LNB + FGR,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Known,,,2006,1
+LNB + FGR;Fluid Cat Cracking Units; Cracking Unit (Small Sources),N0782S,NOx,LNB + FGR,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Known,,,2006,1
+None; Conv Coating of Prod; Acid Cleaning Bath,N0790,NOx,None,Conv Coating of Prod; Acid Cleaning Bath,PTNONIPM,Known,,,2006,1
+None;Conv Coating of Prod; Acid Cleaning Bath (Large Sources),N0790L,NOx,None,Conv Coating of Prod; Acid Cleaning Bath,PTNONIPM,Known,,,2006,1
+None;Conv Coating of Prod; Acid Cleaning Bath (Small Sources),N0790S,NOx,None,Conv Coating of Prod; Acid Cleaning Bath,PTNONIPM,Known,,,2006,1
+LNB; Conv Coating of Prod; Acid Cleaning Bath,N0791,NOx,LNB,Conv Coating of Prod; Acid Cleaning Bath,PTNONIPM,Known,,,2006,1
+LNB;Conv Coating of Prod; Acid Cleaning Bath (Large Sources),N0791L,NOx,LNB,Conv Coating of Prod; Acid Cleaning Bath,PTNONIPM,Known,,,2006,1
+LNB;Conv Coating of Prod; Acid Cleaning Bath (Small Sources),N0791S,NOx,LNB,Conv Coating of Prod; Acid Cleaning Bath,PTNONIPM,Known,,,2006,1
+None; Natural Gas Prod; Compressors,N0800,NOx,None,Natural Gas Prod; Compressors,PTNONIPM,Known,,,2006,1
+None;Natural Gas Prod; Compressors (Large Sources),N0800L,NOx,None,Natural Gas Prod; Compressors,PTNONIPM,Known,,,2006,1
+None;Natural Gas Prod; Compressors (Small Sources),N0800S,NOx,None,Natural Gas Prod; Compressors,PTNONIPM,Known,,,2006,1
+SCR; Natural Gas Prod; Compressors,N08012,NOx,SCR,Natural Gas Prod; Compressors,PTNONIPM,Known,,,2006,1
+SCR;Natural Gas Prod; Compressors (Large Sources),N08012L,NOx,SCR,Natural Gas Prod; Compressors,PTNONIPM,Known,,,2006,1
+SCR;Natural Gas Prod; Compressors (Small Sources),N08012S,NOx,SCR,Natural Gas Prod; Compressors,PTNONIPM,Known,,,2006,1
+None; In-Process; Bituminous Coal; Cement Kiln,N0810,NOx,None,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Known,,,2006,1
+None;In-Process; Bituminous Coal; Cement Kiln (Large Sources),N0810L,NOx,None,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Known,,,2006,1
+None;In-Process; Bituminous Coal; Cement Kiln (Small Sources),N0810S,NOx,None,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Known,,,2006,1
+SNCR - urea based; In-Process; Bituminous Coal; Cement Kiln,N0813,NOx,SNCR - urea based,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Known,,,2006,1
+SNCR - urea based;In-Process; Bituminous Coal; Cement Kiln (Large Sources),N0813L,NOx,SNCR - urea based,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Known,,,2006,1
+SNCR - urea based;In-Process; Bituminous Coal; Cement Kiln (Small Sources),N0813S,NOx,SNCR - urea based,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Known,,,2006,1
+None; In-Process; Bituminous Coal; Lime Kiln,N0820,NOx,None,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Known,,,2006,1
+None;In-Process; Bituminous Coal; Lime Kiln (Large Sources),N0820L,NOx,None,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Known,,,2006,1
+None;In-Process; Bituminous Coal; Lime Kiln (Small Sources),N0820S,NOx,None,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Known,,,2006,1
+SNCR - urea based; In-Process; Bituminous Coal; Lime Kiln,N0823,NOx,SNCR - urea based,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Known,,,2006,1
+SNCR - urea based;In-Process; Bituminous Coal; Lime Kiln (Large Sources),N0823L,NOx,SNCR - urea based,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Known,,,2006,1
+SNCR - urea based;In-Process; Bituminous Coal; Lime Kiln (Small Sources),N0823S,NOx,SNCR - urea based,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Known,,,2006,1
+None; In-Process Fuel Use;Bituminous Coal; Gen,N0830,NOx,None,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Known,,,2006,1
+None;In-Process Fuel Use;Bituminous Coal; Gen (Large Sources),N0830L,NOx,None,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Known,,,2006,1
+None;In-Process Fuel Use;Bituminous Coal; Gen (Small Sources),N0830S,NOx,None,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Known,,,2006,1
+SNCR; In-Process Fuel Use;Bituminous Coal; Gen,N0831,NOx,SNCR,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Known,,,2006,1
+SNCR;In-Process Fuel Use;Bituminous Coal; Gen (Large Sources),N0831L,NOx,SNCR,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Known,,,2006,1
+SNCR;In-Process Fuel Use;Bituminous Coal; Gen (Small Sources),N0831S,NOx,SNCR,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Known,,,2006,1
+None; In-Process Fuel Use; Residual Oil; Gen,N0840,NOx,None,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Known,,,2006,1
+None;In-Process Fuel Use; Residual Oil; Gen (Large Sources),N0840L,NOx,None,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Known,,,2006,1
+None;In-Process Fuel Use; Residual Oil; Gen (Small Sources),N0840S,NOx,None,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Known,,,2006,1
+LNB; In-Process Fuel Use; Residual Oil; Gen,N0842,NOx,LNB,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Known,,,2006,1
+LNB;In-Process Fuel Use; Residual Oil; Gen (Large Sources),N0842L,NOx,LNB,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Known,,,2006,1
+LNB;In-Process Fuel Use; Residual Oil; Gen (Small Sources),N0842S,NOx,LNB,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Known,,,2006,1
+None; In-Process Fuel Use; Natural Gas; Gen,N0850,NOx,None,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Known,,,2006,1
+None;In-Process Fuel Use; Natural Gas; Gen (Large Sources),N0850L,NOx,None,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Known,,,2006,1
+None;In-Process Fuel Use; Natural Gas; Gen (Small Sources),N0850S,NOx,None,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Known,,,2006,1
+LNB; In-Process Fuel Use; Natural Gas; Gen,N0851,NOx,LNB,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Known,,,2006,1
+LNB;In-Process Fuel Use; Natural Gas; Gen (Large Sources),N0851L,NOx,LNB,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Known,,,2006,1
+LNB;In-Process Fuel Use; Natural Gas; Gen (Small Sources),N0851S,NOx,LNB,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Known,,,2006,1
+None; In-Proc;Process Gas;Coke Oven/Blast Furn,N0860,NOx,None,In-Proc;Process Gas;Coke Oven/Blast Furn,PTNONIPM,Known,,,2006,1
+None;In-Proc;Process Gas;Coke Oven/Blast Furn (Large Sources),N0860L,NOx,None,In-Proc;Process Gas;Coke Oven/Blast Furn,PTNONIPM,Known,,,2006,1
+None;In-Proc;Process Gas;Coke Oven/Blast Furn (Small Sources),N0860S,NOx,None,In-Proc;Process Gas;Coke Oven/Blast Furn,PTNONIPM,Known,,,2006,1
+LNB + FGR; In-Proc;Process Gas;Coke Oven/Blast Furn,N0862,NOx,LNB + FGR,In-Proc;Process Gas;Coke Oven/Blast Furn,PTNONIPM,Known,,,2006,1
+LNB + FGR;In-Proc;Process Gas;Coke Oven/Blast Furn (Large Sources),N0862L,NOx,LNB + FGR,In-Proc;Process Gas;Coke Oven/Blast Furn,PTNONIPM,Known,,,2006,1
+LNB + FGR;In-Proc;Process Gas;Coke Oven/Blast Furn (Small Sources),N0862S,NOx,LNB + FGR,In-Proc;Process Gas;Coke Oven/Blast Furn,PTNONIPM,Known,,,2006,1
+None; In-Process; Process Gas; Coke Oven Gas,N0870,NOx,None,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Known,,,2006,1
+None;In-Process; Process Gas; Coke Oven Gas (Large Sources),N0870L,NOx,None,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Known,,,2006,1
+None;In-Process; Process Gas; Coke Oven Gas (Small Sources),N0870S,NOx,None,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Known,,,2006,1
+LNB; In-Process; Process Gas; Coke Oven Gas,N0871,NOx,LNB,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Known,,,2006,1
+LNB;In-Process; Process Gas; Coke Oven Gas (Large Sources),N0871L,NOx,LNB,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Known,,,2006,1
+LNB;In-Process; Process Gas; Coke Oven Gas (Small Sources),N0871S,NOx,LNB,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Known,,,2006,1
+None; Surf Coat Oper;Coating Oven Htr;Nat Gas,N0880,NOx,None,Surf Coat Oper;Coating Oven Htr;Nat Gas,PTNONIPM,Known,,,2006,1
+None;Surf Coat Oper;Coating Oven Htr;Nat Gas (Large Sources),N0880L,NOx,None,Surf Coat Oper;Coating Oven Htr;Nat Gas,PTNONIPM,Known,,,2006,1
+None;Surf Coat Oper;Coating Oven Htr;Nat Gas (Small Sources),N0880S,NOx,None,Surf Coat Oper;Coating Oven Htr;Nat Gas,PTNONIPM,Known,,,2006,1
+LNB; Surf Coat Oper;Coating Oven Htr;Nat Gas,N0881,NOx,LNB,Surf Coat Oper;Coating Oven Htr;Nat Gas,PTNONIPM,Known,,,2006,1
+LNB;Surf Coat Oper;Coating Oven Htr;Nat Gas (Large Sources),N0881L,NOx,LNB,Surf Coat Oper;Coating Oven Htr;Nat Gas,PTNONIPM,Known,,,2006,1
+LNB;Surf Coat Oper;Coating Oven Htr;Nat Gas (Small Sources),N0881S,NOx,LNB,Surf Coat Oper;Coating Oven Htr;Nat Gas,PTNONIPM,Known,,,2006,1
+None; Solid Waste Disp;Gov;Other Incin;Sludge,N0890,NOx,None,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Known,,,2006,1
+None;Solid Waste Disp;Gov;Other Incin;Sludge (Large Sources),N0890L,NOx,None,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Known,,,2006,1
+None;Solid Waste Disp;Gov;Other Incin;Sludge (Small Sources),N0890S,NOx,None,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Known,,,2006,1
+SNCR; Solid Waste Disp;Gov;Other Incin;Sludge,N0891,NOx,SNCR,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Known,,,2006,1
+SNCR;Solid Waste Disp;Gov;Other Incin;Sludge (Large Sources),N0891L,NOx,SNCR,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Known,,,2006,1
+SNCR;Solid Waste Disp;Gov;Other Incin;Sludge (Small Sources),N0891S,NOx,SNCR,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Known,,,2006,1
+Biosolid Injection Technology; Cement Kilns,NCEMK,NOx,Biosolid Injection Technology,Cement Kilns,PTNONIPM,Known,,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Coal,P2011,PM10,Fabric Filter (Pulse Jet Type),Industrial Boilers - Coal,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Coal,P2012,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Coal,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Industrial Boilers - Coal,P2013,PM10,Fabric Filter - Reverse-Air Cleaned Type,Industrial Boilers - Coal,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Industrial Boilers - Coal,P2014,PM10,Venturi Scrubber,Industrial Boilers - Coal,PTNONIPM,Known,10,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood,P2021,PM10,Fabric Filter (Pulse Jet Type),Industrial Boilers - Wood,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Wood,P2022,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Wood,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Industrial Boilers - Wood,P2023,PM10,Fabric Filter - Reverse-Air Cleaned Type,Industrial Boilers - Wood,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Industrial Boilers - Wood,P2024,PM10,Venturi Scrubber,Industrial Boilers - Wood,PTNONIPM,Known,10,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Oil,P2031,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Oil,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Industrial Boilers - Oil,P2032,PM10,Venturi Scrubber,Industrial Boilers - Oil,PTNONIPM,Known,10,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Liquid Waste,P2041,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Liquid Waste,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Commercial Institutional Boilers - Coal,P2051,PM10,Fabric Filter (Pulse Jet Type),Commercial Institutional Boilers - Coal,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Commercial Institutional Boilers - Coal,P2052,PM10,Dry ESP-Wire Plate Type,Commercial Institutional Boilers - Coal,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Commercial Institutional Boilers - Coal,P2053,PM10,Fabric Filter - Reverse-Air Cleaned Type,Commercial Institutional Boilers - Coal,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Commercial Institutional Boilers - Wood,P2061,PM10,Fabric Filter (Pulse Jet Type),Commercial Institutional Boilers - Wood,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Commercial Institutional Boilers - Wood,P2062,PM10,Dry ESP-Wire Plate Type,Commercial Institutional Boilers - Wood,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Commercial Institutional Boilers - Wood,P2063,PM10,Fabric Filter - Reverse-Air Cleaned Type,Commercial Institutional Boilers - Wood,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Commercial Institutional Boilers - Oil,P2071,PM10,Dry ESP-Wire Plate Type,Commercial Institutional Boilers - Oil,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Copper,P2081,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Copper,P2082,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Copper,P2083,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Copper,P2084,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Lead,P2091,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Lead,P2092,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Lead,P2093,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Lead,P2094,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Zinc,P2101,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Zinc,P2102,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Zinc,P2103,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Zinc,P2104,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Aluminum,P2111,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Aluminum,P2112,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Aluminum,P2113,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Aluminum,P2114,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Other,P2121,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Other,P2122,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Other,P2123,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Other,P2124,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Coke,P2131,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Coke,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Coke,P2132,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Coke,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Coke,P2133,PM10,Venturi Scrubber,Ferrous Metals Processing - Coke,PTNONIPM,Known,10,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Ferroalloy Production,P2141,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Ferrous Metals Processing - Ferroalloy Production,P2142,PM10,Dry ESP-Wire Plate Type,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Ferroalloy Production,P2143,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Ferrous Metals Processing - Iron & Steel Production,P2151,PM10,Fabric Filter (Pulse Jet Type),Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Iron & Steel Production,P2152,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Ferrous Metals Processing - Iron & Steel Production,P2153,PM10,Dry ESP-Wire Plate Type,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Ferrous Metals Processing - Iron & Steel Production,P2154,PM10,Wet ESP - Wire Plate Type,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Iron & Steel Production,P2155,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Iron & Steel Production,P2156,PM10,Venturi Scrubber,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,10,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Gray Iron Foundaries,P2161,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,P2163,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,20,,2006,1
+Impingement-plate scrubber;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,P2164,PM10,Impingement-plate scrubber,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,10,,2006,1
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,P2165,PM10,Venturi Scrubber,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,10,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Ferrous Metals Processing - Steel Foundaries,P2171,PM10,Fabric Filter (Pulse Jet Type),Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Steel Foundaries,P2172,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Steel Foundaries,P2175,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Steel Foundaries,P2176,PM10,Venturi Scrubber,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,10,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Cement Manufacture,P2181,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Cement Manufacture,P2182,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Mineral Products - Cement Manufacture,P2183,PM10,Dry ESP-Wire Plate Type,Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Cement Manufacture,P2184,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Cement Manufacture,P2185,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Coal Cleaning,P2191,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Coal Cleaning,P2192,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Coal Cleaning,P2193,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Coal Cleaning,P2194,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Mineral Products - Coal Cleaning,P2195,PM10,Venturi Scrubber,Mineral Products - Coal Cleaning,PTNONIPM,Known,10,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Stone Quarrying & Processing,P2201,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Stone Quarrying & Processing,P2202,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Mineral Products - Stone Quarrying & Processing,P2203,PM10,Dry ESP-Wire Plate Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Mineral Products - Stone Quarrying & Processing,P2204,PM10,Wet ESP - Wire Plate Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Stone Quarrying & Processing,P2205,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Stone Quarrying & Processing,P2206,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1
+Venturi Scrubber;(PM10) Mineral Products - Stone Quarrying & Processing,P2207,PM10,Venturi Scrubber,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,10,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other,P2211,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Other,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Other,P2212,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Other,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Mineral Products - Other,P2213,PM10,Dry ESP-Wire Plate Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Mineral Products - Other,P2214,PM10,Wet ESP - Wire Plate Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Other,P2215,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Other,P2216,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Asphalt Manufacture,P2221,PM10,Fabric Filter (Pulse Jet Type),Asphalt Manufacture,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Mech. Shaker Type);(PM10) Asphalt Manufacture,P2222,PM10,Fabric Filter (Mech. Shaker Type),Asphalt Manufacture,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Asphalt Manufacture,P2223,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Asphalt Manufacture,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Asphalt Manufacture,P2224,PM10,Fabric Filter - Reverse-Air Cleaned Type,Asphalt Manufacture,PTNONIPM,Known,20,,2006,1
+Fabric Filter (Pulse Jet Type);(PM10) Grain Milling,P2231,PM10,Fabric Filter (Pulse Jet Type),Grain Milling,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Grain Milling,P2232,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Grain Milling,PTNONIPM,Known,20,,2006,1
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Grain Milling,P2233,PM10,Fabric Filter - Reverse-Air Cleaned Type,Grain Milling,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Wood Pulp & Paper,P2241,PM10,Dry ESP-Wire Plate Type,Wood Pulp & Paper,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Wood Pulp & Paper,P2242,PM10,Wet ESP - Wire Plate Type,Wood Pulp & Paper,PTNONIPM,Known,20,,2006,1
+Wet ESP - Wire Plate Type;(PM10) Chemical Manufacture,P2251,PM10,Wet ESP - Wire Plate Type,Chemical Manufacture,PTNONIPM,Known,20,,2006,1
+Dry ESP-Wire Plate Type;(PM10) Municipal Waste Incineration,P2261,PM10,Dry ESP-Wire Plate Type,Municipal Waste Incineration,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Fabricated Metal Products - Abrasive Blasting,P2271,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Fabricated Metal Products - Abrasive Blasting,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Fabricated Metal Products - Machining,P2281,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Fabricated Metal Products - Machining,PTNONIPM,Known,20,,2006,1
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Fabricated Metal Products - Welding,P2291,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Fabricated Metal Products - Welding,PTNONIPM,Known,20,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Coal,P3201,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Coal,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Wood,P3202,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Wood,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Oil,P3203,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Oil,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Liquid Waste,P3204,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Coal,P3205,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Coal,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Wood,P3206,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Wood,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Oil,P3207,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Oil,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Copper,P3208,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Lead,P3209,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Zinc,P3210,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Aluminum,P3211,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Other,P3212,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Coke,P3213,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Coke,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Ferroalloy Production,P3214,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Iron & Steel Production,P3215,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,P3216,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Steel Foundaries,P3217,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Cement Manufacture,P3218,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Cement Manufacture,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Coal Cleaning,P3219,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Coal Cleaning,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Stone Quarrying & Processing,P3220,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Other,P3221,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Other,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Asphalt Manufacture,P3222,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Asphalt Manufacture,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Chemical Manufacture,P3225,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Chemical Manufacture,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Coal,P3226,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Coal,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - LPG,P3227,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - LPG,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Liquid Waste,P3228,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Natural Gas,P3229,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Process Gas,P3230,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Solid Waste,P3231,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Solid Waste,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation -  Coke,P3232,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation -  Coke,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Bagasse,P3233,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Bagasse,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - LPG,P3234,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - LPG,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Liquid Waste,P3235,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Liquid Waste,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Natural Gas,P3236,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Natural Gas,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Oil,P3237,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Oil,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Solid Waste,P3238,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Solid Waste,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Wood,P3239,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Wood,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Other,P3240,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Coke,P3241,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Coke,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - LPG,P3242,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - LPG,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Natural Gas,P3243,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Process Gas,P3244,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Solid Waste,P3245,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Solid Waste,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Coal,P4201,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Coal,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Wood,P4202,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Wood,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Oil,P4203,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Oil,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Liquid Waste,P4204,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Coal,P4205,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Coal,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Wood,P4206,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Wood,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Oil,P4207,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Oil,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Copper,P4208,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Lead,P4209,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Zinc,P4210,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Aluminum,P4211,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Other,P4212,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Coke,P4213,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Coke,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Ferroalloy Production,P4214,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Iron & Steel Production,P4215,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,P4216,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Steel Foundaries,P4217,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Cement Manufacture,P4218,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Cement Manufacture,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Coal Cleaning,P4219,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Coal Cleaning,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Stone Quarrying & Processing,P4220,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Other,P4221,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Other,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Asphalt Manufacture,P4222,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Asphalt Manufacture,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Chemical Manufacture,P4225,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Chemical Manufacture,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Coal,P4226,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Coal,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - LPG,P4227,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - LPG,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Liquid Waste,P4228,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Natural Gas,P4229,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Process Gas,P4230,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Solid Waste,P4231,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Solid Waste,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation -  Coke,P4232,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation -  Coke,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Bagasse,P4233,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Bagasse,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - LPG,P4234,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - LPG,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Liquid Waste,P4235,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Liquid Waste,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Natural Gas,P4236,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Natural Gas,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Oil,P4237,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Oil,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Solid Waste,P4238,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Solid Waste,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Wood,P4239,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Wood,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Other,P4240,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Coke,P4241,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Coke,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - LPG,P4242,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - LPG,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Natural Gas,P4243,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Natural Gas,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Process Gas,P4244,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Process Gas,PTNONIPM,Known,,,2006,1
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Solid Waste,P4245,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Solid Waste,PTNONIPM,Known,,,2006,1
+SCAQMD Proposed Rule 1148.1; Oil and Natural Gas Production - Fugitiv,V30302,VOC,SCAQMD Proposed Rule 1148.1,Oil and Natural Gas Production - Fugitiv,PTNONIPM,Known,3,,2006,1
+Permanent Total Enclosure (PTE; Flexographic Printing,V40201,VOC,Permanent Total Enclosure (PTE,Flexographic Printing,PTNONIPM,Known,15,,2006,1
+"Permanent Total Enclosure (PTE; Fabric Printing, Coating and Dyeing",V40202,VOC,Permanent Total Enclosure (PTE,"Fabric Printing, Coating and Dyeing",PTNONIPM,Known,15,,2006,1
+Permanent Total Enclosure (PTE; Metal Can Surface Coating,V40203,VOC,Permanent Total Enclosure (PTE,Metal Can Surface Coating,PTNONIPM,Known,15,,2006,1
+Permanent Total Enclosure (PTE; Metal Furniture Surface Coating,V40204,VOC,Permanent Total Enclosure (PTE,Metal Furniture Surface Coating,PTNONIPM,Known,15,,2006,1
+Permanent Total Enclosure (PTE; Paper and Other Web Coating,V40205,VOC,Permanent Total Enclosure (PTE,Paper and Other Web Coating,PTNONIPM,Known,15,,2006,1
+Permanent Total Enclosure (PTE; Product and Package Roto and Screen Prin,V40206,VOC,Permanent Total Enclosure (PTE,Product and Package Roto and Screen Prin,PTNONIPM,Known,15,,2006,1
+Permanent Total Enclosure (PTE; Publication Rotogravure Printing,V40207,VOC,Permanent Total Enclosure (PTE,Publication Rotogravure Printing,PTNONIPM,Known,15,,2006,1

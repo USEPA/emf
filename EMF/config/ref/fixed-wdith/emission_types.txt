@@ -1,0 +1,11 @@
+20   Average Sunday
+21   Average Monday
+22   Average Tuesday
+23   Average Wednesday
+24   Average Thursday
+25   Average Friday
+26   Average Saturday
+27   Average Weekday
+28   Average Weekend Day
+29   Average Day in Period
+30   Entire period total

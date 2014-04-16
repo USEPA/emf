@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.casemanagement.outputs.CaseOutput" table="outputs" schema="cases"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+ 	
+ 	<property name="caseId" column="case_id" type="integer" not-null="true"/>
+ 	<property name="jobId" column="job_id" type="integer" not-null="true"/>
+ 	<property name="datasetId" column="dataset_id" type="integer" not-null="false"/>
+	<property name="name" column="name" type="java.lang.String" not-null="true"/>
+	<property name="execName" column="exec_name" type="java.lang.String" not-null="false"/>
+	<property name="message" column="message" type="java.lang.String" not-null="false"/>
+	<property name="status" column="status" type="java.lang.String" not-null="false"/>
+	
+  </class> 
+</hibernate-mapping>  

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project name="FatJar EMF_fat.jar (experimental)" default="main" basedir=".">
+    <!-- this file was created by Fat-Jar Eclipse Plug-in -->
+    <!-- the ANT-Export is in a very early stage, so this -->
+    <!-- is only experimental, ANT 1.6 or above is        -->
+    <!-- required, feedback is always welcome:            -->
+    <!--       http://sourceforge.net/projects/fjep       -->
+    <!-- uncomment the following lines if using ANT outside Eclipse -->
+    <!--
+        <property name="fjepPath" value="reference:file:plugins/net.sf.fjep.fatjar_0.0.31/fatjar.jar"/>
+        <taskdef name="fatjar.build" classname="net.sf.fjep.anttask.FJBuildTask" classpath="${fjepPath}"/>
+        <typedef name="fatjar.manifest" classname="net.sf.fjep.anttask.FJManifestType" classpath="${fjepPath}"/>
+        <typedef name="fatjar.exclude" classname="net.sf.fjep.anttask.FJExcludeType" classpath="${fjepPath}"/>
+        <typedef name="fatjar.jarsource" classname="net.sf.fjep.anttask.FJJarSourceType" classpath="${fjepPath}"/>
+        <typedef name="fatjar.filesource" classname="net.sf.fjep.anttask.FJFileSourceType" classpath="${fjepPath}"/>
+    -->
+    <!-- uncomment the above lines to use ANT outside of Eclipse -->
+    <target name="main">
+        <fatjar.build output="EMF_fat.jar">
+            <fatjar.manifest mainclass="gov.epa.emissions.framework.install.installer.EMFClient"/>
+            <fatjar.filesource path="C:\Users\Jizhen\workspace\EMF\build\eclipse" relpath="">
+                <fatjar.exclude relpath="gov/epa/emissions/common/"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/client/"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/install/installer/install-settings.txt"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/install/installer/logo.ico"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/install/shortcut - Copy.bat"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/install/shortcut - Copy.inf"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/services/"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/tasks/"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/ui/"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/utils/"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/ConcurrentTaskRunner$TaskDelegate.class"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/ConcurrentTaskRunner.class"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/EmfMockObjectTestCase.class"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/TaskRunner.class"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/Utils.class"/>
+                <fatjar.exclude relpath="gov/epa/emissions/framework/UtilsTestCase.class"/>
+                <fatjar.exclude relpath="properties/"/>
+                <fatjar.exclude relpath="clearAll.jpeg"/>
+                <fatjar.exclude relpath="epa-logo.gif"/>
+                <fatjar.exclude relpath="hibernate-configuration-3.0.dtd"/>
+                <fatjar.exclude relpath="hibernate.cfg.xml"/>
+                <fatjar.exclude relpath="i18n.properties"/>
+                <fatjar.exclude relpath="i18n_ja.properties"/>
+                <fatjar.exclude relpath="images.properties"/>
+                <fatjar.exclude relpath="log4j.properties"/>
+                <fatjar.exclude relpath="logo2.JPG"/>
+                <fatjar.exclude relpath="selectAll.jpeg"/>
+            </fatjar.filesource>
+        </fatjar.build>
+    </target>
+</project>

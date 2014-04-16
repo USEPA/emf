@@ -1,0 +1,562 @@
+CMName,CMAbbreviation,MajorPoll,ControlTechnology,SourceGroup,Sector,Class,EquipLife,NEIDeviceCode,DateReviewed,DataSource,Description
+AF + IR; Internal Combustion Engines - Gas,NAFRIICGS,NOx,AF + IR,Internal Combustion Engines - Gas,PTNONIPM,Known,15,,2006,1|35,Abbreviation was N0227
+AF RATIO; Internal Combustion Engines - Gas,NAFRICGS,NOx,AF RATIO,Internal Combustion Engines - Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0224
+Amine Scrubbing; Sulfur Recovery Plants - Elemental Sulfur (Claus: 2 Stage w/o control (92-95% removal)),SAMSCSRP95,SO2,Amine Scrubbing,Sulfur Recovery Plants - Elemental Sulfur (Claus: 2 Stage w/o control (92-95% removal)),PTNONIPM,Known,15,,2006,1,S0601
+Amine Scrubbing; Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (95-96% removal)),SAMSCSRP96,SO2,Amine Scrubbing,Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (95-96% removal)),PTNONIPM,Known,15,,2006,1,S0701
+Amine Scrubbing; Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (96-97% removal)),SAMSCSRP97,SO2,Amine Scrubbing,Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (96-97% removal)),PTNONIPM,Known,15,,2006,1,S0801
+Biosolid Injection Technology; Cement Kilns,NBINTCEMK,NOx,Biosolid Injection Technology,Cement Kilns,PTNONIPM,Known,15,,2006,1,Abbreviation was NCEMK
+Biosolid Injection; Cement Manufacturing,NDBIOCM,NOx,Biosolid Injection,Cement Manufacturing,PTNONIPM,Emerging,15,,,40,
+Catalyst Additive;Petroleum Refinery Catalytic and Thermal Cracking Units,SCATPETCRK,SO2,Catalyst Additive,Petroleum Refinery Catalytic and Thermal Cracking Units,PTNONIPM,Known,,,2006,28|29, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Asphalt Manufacture,PCUIMASMN,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Asphalt Manufacture,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Chemical Manufacture,PCUIMCHMN,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Chemical Manufacture,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Coal,PCUIMCIBCL,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Coal,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Liquid Waste,PCUIMCIBLW,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - LPG,PCUIMCIBLP,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - LPG,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Natural Gas,PCUIMCIBNG,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Natural Gas,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Oil,PCUIMCIBOL,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Oil,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Process Gas,PCUIMCIBPG,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Process Gas,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Solid Waste,PCUIMCIBSW,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Solid Waste,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Commercial Institutional Boilers - Wood,PCUIMCIBWD,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Commercial Institutional Boilers - Wood,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation -  Coke,PCUIMEGCE,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation -  Coke,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Bagasse,PCUIMEGBE,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Bagasse,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Coal,PCUIMEGCL,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Coal,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Liquid Waste,PCUIMEGLW,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Liquid Waste,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - LPG,PCUIMEGLP,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - LPG,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Natural Gas,PCUIMEGNG,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Natural Gas,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Oil,PCUIMEGOL,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Oil,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Solid Waste,PCUIMEGSW,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Solid Waste,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Electric Generation - Wood,PCUIMEGWD,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Electric Generation - Wood,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Coke,PCUIMMPCE,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Coke,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Ferroalloy Production,PCUIMMPFP,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,PCUIMKMPGI,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Iron & Steel Production,PCUIMMPIS,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Other,PCUIMMPOR,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Ferrous Metals Processing - Steel Foundaries,PCUIMMISF,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Coal,PCUIMIBCL,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Coal,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Coke,PCUIMIBCE,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Coke,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Liquid Waste,PCUIMIBLW,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - LPG,PCUIMIBLP,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - LPG,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Natural Gas,PCUIMIBNG,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Natural Gas,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Oil,PCUIMIBOL,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Oil,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Process Gas,PCUIMIBPG,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Process Gas,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Solid Waste,PCUIMIBSW,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Solid Waste,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Industrial Boilers - Wood,PCUIMIBWD,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Industrial Boilers - Wood,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Cement Manufacture,PCUIMMICM,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Cement Manufacture,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Coal Cleaning,PCUIMMICC,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Coal Cleaning,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Other,PCUIMMIOR,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Other,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Mineral Products - Stone Quarrying & Processing,PCUIMMISQ,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Aluminum,PCUIMNMPAM,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Copper,PCUIMNMPCR,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Lead,PCUIMNMPLD,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Other,PCUIMNMPOR,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1, 
+CEM Upgrade and Increased Monitoring Frequency of PM Controls;(PM10) Non-Ferrous Metals Processing - Zinc,PCUIMNMPZC,PM10,CEM Upgrade and Increased Monitoring Frequency of PM Controls,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,,,2006,1, 
+Coal Reburn; ICI Boilers - Coal/Cyclone,NCLRBIBCC,NOx,Coal Reburn,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,20,,2006,1,Abbreviation was N0142
+Coal Washing; Utility Boilers - Coal Fired,SCWSHUBCF,SO2,Coal Washing,Utility Boilers - Coal Fired,PTIPM,Known,,,2006,1,SUT-W
+Cullet Preheat; Glass Manufacturing - Container,NCLPTGMCN,NOx,Cullet Preheat,Glass Manufacturing - Container,PTNONIPM,Known,10,,2006,1,Abbreviation was N0302
+Cullet Preheat; Glass Manufacturing - Pressed,NCUPHGMPD,NOx,Cullet Preheat,Glass Manufacturing - Pressed,PTNONIPM,Known,10,,2006,1,Abbreviation was N0322
+Diesel Oxidation Catalyst (DPF infeasible);IC Diesel Engine,PDIEOXCAT,PM10,Diesel Oxidation Catalyst (DPF infeasible),IC Diesel Engine,PTNONIPM,Known,,,2006,24, 
+Diesel Particulate Filter; Internal Combustion Engines,PDPFICE,PM2_5,Diesel Particulate Filter,Internal Combustion Engines,PTNONIPM,Emerging,,,,39,Applies diesel particulate filter retrofits to stationary internal combustion engines.
+Diesel Particulate Filter;IC Diesel Engine,PDIEPRTFIL,PM10,Diesel Particulate Filter,IC Diesel Engine,PTNONIPM,Known,,,2006,24, 
+Dry ESP-Wire Plate Type; Utility Boilers - Coal,PDESPWPUBC,PM10,Dry ESP-Wire Plate Type,Utility Boilers - Coal,PTIPM,Known,,,2006,1,PUDESP
+Dry ESP-Wire Plate Type; Utility Boilers - Oil,PDESPWPUBO,PM10,Dry ESP-Wire Plate Type,Utility Boilers - Oil,PTIPM,Known,,,2006,1,PUDESP
+Dry ESP-Wire Plate Type;(PM10) Commercial Institutional Boilers - Coal,PDESPCIBCL,PM10,Dry ESP-Wire Plate Type,Commercial Institutional Boilers - Coal,PTNONIPM,Known,20,,2006,1,P2052
+Dry ESP-Wire Plate Type;(PM10) Commercial Institutional Boilers - Oil,PDESPCIBOL,PM10,Dry ESP-Wire Plate Type,Commercial Institutional Boilers - Oil,PTNONIPM,Known,20,,2006,1,P2071
+Dry ESP-Wire Plate Type;(PM10) Commercial Institutional Boilers - Wood,PDESPCIBWD,PM10,Dry ESP-Wire Plate Type,Commercial Institutional Boilers - Wood,PTNONIPM,Known,20,,2006,1,P2062
+Dry ESP-Wire Plate Type;(PM10) Ferrous Metals Processing - Ferroalloy Production,PDESPMPFP,PM10,Dry ESP-Wire Plate Type,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,20,,2006,1,P2142
+Dry ESP-Wire Plate Type;(PM10) Ferrous Metals Processing - Iron & Steel Production,PDESPMPIS,PM10,Dry ESP-Wire Plate Type,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1,P2153
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Coal,PDESPIBCL,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Coal,PTNONIPM,Known,20,,2006,1,P2012
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Liquid Waste,PDESPIBLW,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Liquid Waste,PTNONIPM,Known,20,,2006,1,P2041
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Oil,PDESPIBOL,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Oil,PTNONIPM,Known,20,,2006,1,P2031
+Dry ESP-Wire Plate Type;(PM10) Industrial Boilers - Wood,PDESPIBWD,PM10,Dry ESP-Wire Plate Type,Industrial Boilers - Wood,PTNONIPM,Known,20,,2006,1,P2022
+Dry ESP-Wire Plate Type;(PM10) Mineral Products - Cement Manufacture,PDESPMICM,PM10,Dry ESP-Wire Plate Type,Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1,P2183
+Dry ESP-Wire Plate Type;(PM10) Mineral Products - Other,PDESPMIOR,PM10,Dry ESP-Wire Plate Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1,P2213
+Dry ESP-Wire Plate Type;(PM10) Mineral Products - Stone Quarrying & Processing,PDESPMISQ,PM10,Dry ESP-Wire Plate Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1,P2203
+Dry ESP-Wire Plate Type;(PM10) Municipal Waste Incineration,PDESPMUWI,PM10,Dry ESP-Wire Plate Type,Municipal Waste Incineration,PTNONIPM,Known,20,,2006,1,P2261
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Aluminum,PDESPMPAM,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1,P2112
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Copper,PDESPMPCR,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1,P2082
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Lead,PDESPMPLD,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1,P2092
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Other,PDESPMPOR,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1,P2122
+Dry ESP-Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Zinc,PDESPMPZC,PM10,Dry ESP-Wire Plate Type,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1,P2102
+Dry ESP-Wire Plate Type;(PM10) Wood Pulp & Paper,PDESPWDPP,PM10,Dry ESP-Wire Plate Type,Wood Pulp & Paper,PTNONIPM,Known,20,,2006,1,P2241
+Dual absorption; Primary Lead Smelters - Sintering,SDLABPLSS,SO2,Dual absorption,Primary Lead Smelters - Sintering,PTNONIPM,Known,15,,2006,1,S2801
+Dual absorption; Primary Zinc Smelters - Sintering,SDLABPZSS,SO2,Dual absorption,Primary Zinc Smelters - Sintering,PTNONIPM,Known,15,,2006,1,S2901
+Electric Boost; Glass Manufacturing - Container,NELBOGMCN,NOx,Electric Boost,Glass Manufacturing - Container,PTNONIPM,Known,10,,2006,1,Abbreviation was N0301
+Electric Boost; Glass Manufacturing - Flat,NELBOGMFT,NOx,Electric Boost,Glass Manufacturing - Flat,PTNONIPM,Known,10,,2006,1,Abbreviation was N0311
+Electric Boost; Glass Manufacturing - Pressed,NELBOGMPD,NOx,Electric Boost,Glass Manufacturing - Pressed,PTNONIPM,Known,10,,2006,1,Abbreviation was N0321
+ESP; Oil fired boiler,PESPOFBOIL,PM2_5,ESP,Oil fired boiler,PTNONIPM,Emerging,,,,39,
+ESP;Petroleum Refinery Catalytic and Thermal Cracking Units,PESPPETCRK,PM10,ESP,Petroleum Refinery Catalytic and Thermal Cracking Units,PTNONIPM,Known,,,2006,25, 
+Extended Absorption; Adipic Acid Manufacturing,NEXABADMF,NOx,Extended Absorption,Adipic Acid Manufacturing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0282
+Extended Absorption; Nitric Acid Manufacturing,NEXABNAMF,NOx,Extended Absorption,Nitric Acid Manufacturing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0291
+Fabric Filter - Mechanical Shaker; Utility Boilers - Coal,PFFMSUBC2,PM10,Fabric Filter - Mechanical Shaker,Utility Boilers - Coal,PTIPM,Known,,,2006,1,PUTILC
+Fabric Filter - Mechanical Shaker; Utility Boilers - Gas/Oil,PFFMSUBG,PM10,Fabric Filter - Mechanical Shaker,Utility Boilers - Gas/Oil,PTIPM,Known,,,2006,1,PUTILG
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Asphalt Manufacture,PFFRAASMN,PM10,Fabric Filter - Reverse-Air Cleaned Type,Asphalt Manufacture,PTNONIPM,Known,20,,2006,1,P2224
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Commercial Institutional Boilers - Coal,PFFRACIBCL,PM10,Fabric Filter - Reverse-Air Cleaned Type,Commercial Institutional Boilers - Coal,PTNONIPM,Known,20,,2006,1,P2053
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Commercial Institutional Boilers - Wood,PFFRACIBWD,PM10,Fabric Filter - Reverse-Air Cleaned Type,Commercial Institutional Boilers - Wood,PTNONIPM,Known,20,,2006,1,P2063
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Coke,PFFRAMPCE,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Coke,PTNONIPM,Known,20,,2006,1,P2132
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Ferroalloy Production,PFFRAMPFP,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,20,,2006,1,P2143
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,PFFRAMPGI,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,20,,2006,1,P2163
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Iron & Steel Production,PFFRAMPIS,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1,P2155
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Ferrous Metals Processing - Steel Foundaries,PFFRAMPSF,PM10,Fabric Filter - Reverse-Air Cleaned Type,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,20,,2006,1,P2175
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Grain Milling,PFFRAGRMG,PM10,Fabric Filter - Reverse-Air Cleaned Type,Grain Milling,PTNONIPM,Known,20,,2006,1,P2233
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Industrial Boilers - Coal,PFFRAIBCL,PM10,Fabric Filter - Reverse-Air Cleaned Type,Industrial Boilers - Coal,PTNONIPM,Known,20,,2006,1,P2013
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Industrial Boilers - Wood,PFFRAIBWD,PM10,Fabric Filter - Reverse-Air Cleaned Type,Industrial Boilers - Wood,PTNONIPM,Known,20,,2006,1,P2023
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Cement Manufacture,PFFRAMICM,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1,P2185
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Coal Cleaning,PFFRAMICC,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1,P2194
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Other,PFFRAMIOR,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1,P2216
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Mineral Products - Stone Quarrying & Processing,PFFRAMISQ,PM10,Fabric Filter - Reverse-Air Cleaned Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1,P2206
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Aluminum,PFFRAMPAM,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1,P2114
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Copper,PFFRAMPCR,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1,P2084
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Lead,PFFRAMPLD,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1,P2094
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Other,PFFRAMPOR,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1,P2124
+Fabric Filter - Reverse-Air Cleaned Type;(PM10) Non-Ferrous Metals Processing - Zinc,PFFRAMPZC,PM10,Fabric Filter - Reverse-Air Cleaned Type,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1,P2104
+Fabric Filter (Mech. Shaker Type); Utility Boilers - Coal,PFFMSUBC,PM10,Fabric Filter (Mech. Shaker Type),Utility Boilers - Coal,PTIPM,Known,,,2006,1,PUMECH
+Fabric Filter (Mech. Shaker Type);(PM10) Asphalt Manufacture,PFFMSASMN,PM10,Fabric Filter (Mech. Shaker Type),Asphalt Manufacture,PTNONIPM,Known,20,,2006,1,P2222
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Coke,PFFMSMPCE,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Coke,PTNONIPM,Known,20,,2006,1,P2131
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Ferroalloy Production,PFFMSMPFP,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,20,,2006,1,P2141
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Gray Iron Foundaries,PFFMSMPGI,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,20,,2006,1,P2161
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Iron & Steel Production,PFFMSMPIS,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1,P2152
+Fabric Filter (Mech. Shaker Type);(PM10) Ferrous Metals Processing - Steel Foundaries,PFFMSMPSF,PM10,Fabric Filter (Mech. Shaker Type),Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,20,,2006,1,P2172
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Cement Manufacture,PFFMSMICM,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1,P2182
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Coal Cleaning,PFFMSMICC,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1,P2192
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Other,PFFMSMIOR,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Other,PTNONIPM,Known,20,,2006,1,P2212
+Fabric Filter (Mech. Shaker Type);(PM10) Mineral Products - Stone Quarrying & Processing,PFFMSMISQ,PM10,Fabric Filter (Mech. Shaker Type),Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1,P2202
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Aluminum,PFFMSMPAM,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1,P2111
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Copper,PFFMSMPCR,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1,P2081
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Lead,PFFMSMPLD,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1,P2091
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Other,PFFMSMPOR,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1,P2121
+Fabric Filter (Mech. Shaker Type);(PM10) Non-Ferrous Metals Processing - Zinc,PFFMSMPZC,PM10,Fabric Filter (Mech. Shaker Type),Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1,P2101
+Fabric Filter (Pulse Jet Type); Utility Boilers - Coal,PFFPJUBC,PM10,Fabric Filter (Pulse Jet Type),Utility Boilers - Coal,PTIPM,Known,,,2006,1,PUPUJT
+Fabric Filter (Pulse Jet Type);(PM10) Asphalt Manufacture,PFFPJASMN,PM10,Fabric Filter (Pulse Jet Type),Asphalt Manufacture,PTNONIPM,Known,20,,2006,1,P2221
+Fabric Filter (Pulse Jet Type);(PM10) Commercial Institutional Boilers - Coal,PFFPJCIBCL,PM10,Fabric Filter (Pulse Jet Type),Commercial Institutional Boilers - Coal,PTNONIPM,Known,20,,2006,1,P2051
+Fabric Filter (Pulse Jet Type);(PM10) Commercial Institutional Boilers - Wood,PFFPJCIBWD,PM10,Fabric Filter (Pulse Jet Type),Commercial Institutional Boilers - Wood,PTNONIPM,Known,20,,2006,1,P2061
+Fabric Filter (Pulse Jet Type);(PM10) Ferrous Metals Processing - Iron & Steel Production,PFFPJMPIS,PM10,Fabric Filter (Pulse Jet Type),Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1,P2151
+Fabric Filter (Pulse Jet Type);(PM10) Ferrous Metals Processing - Steel Foundaries,PFFPJMPSF,PM10,Fabric Filter (Pulse Jet Type),Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,20,,2006,1,P2171
+Fabric Filter (Pulse Jet Type);(PM10) Grain Milling,PFFPJGRMG,PM10,Fabric Filter (Pulse Jet Type),Grain Milling,PTNONIPM,Known,20,,2006,1,P2231
+Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Coal,PFFPJIBCL,PM10,Fabric Filter (Pulse Jet Type),Industrial Boilers - Coal,PTNONIPM,Known,20,,2006,1,P2011
+Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood,PFFPJIBWD,PM10,Fabric Filter (Pulse Jet Type),Industrial Boilers - Wood,PTNONIPM,Known,20,,2006,1,P2021
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Cement Manufacture,PFFPJMICM,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1,P2181
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Coal Cleaning,PFFPJMICC,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1,P2191
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other,PFFPJMIOR,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Other,PTNONIPM,Known,20,,2006,1,P2211
+Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Stone Quarrying & Processing,PFFPJMISQ,PM10,Fabric Filter (Pulse Jet Type),Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1,P2201
+Fabric Filter (Reverse-Air Cleaned Type); Utility Boilers - Coal,PFFRAUBC,PM10,Fabric Filter (Reverse-Air Cleaned Type),Utility Boilers - Coal,PTIPM,Known,,,2006,1,PUREVA
+FGD Wet Scrubber; Utility Boilers - High Sulfur Content,SFGDWUBHS,SO2,FGD Wet Scrubber,Utility Boilers - High Sulfur Content,PTIPM,Known,15,,2006,1,SUT-H
+FGD Wet Scrubber; Utility Boilers - Medium Sulfur Content,SFGDWUBMS,SO2,FGD Wet Scrubber,Utility Boilers - Medium Sulfur Content,PTIPM,Known,15,,2006,1,SUT-M
+FGD Wet Scrubber; Utility Boilers - Very High Sulfur Conte,SFGDWUBVHS,SO2,FGD Wet Scrubber,Utility Boilers - Very High Sulfur Conte,PTIPM,Known,15,,2006,1,SUT-VH
+FGD; Bituminous/Subbituminous Coal (Commercial/Institutional Boilers),SFGDSCBBCL,SO2,FGD,Bituminous/Subbituminous Coal (Commercial/Institutional Boilers),PTNONIPM,Known,15,,2006,1,S2101
+FGD; Bituminous/Subbituminous Coal (Industrial Boilers),SFGDSIBBC,SO2,FGD,Bituminous/Subbituminous Coal (Industrial Boilers),PTNONIPM,Known,15,,2006,1,S1901
+FGD; By-Product Coke Manufacturing (Coke Oven Plants),SFGDSCMOC,SO2,Coke Oven Gas Desulfurization,By-Product Coke Manufacturing (Coke Oven Plants),PTNONIPM,Known,15,,2006,1,S1201A
+FGD; By-Product Coke Manufacturing (Other Processes),SFGDSCMOP,SO2,FGD,By-Product Coke Manufacturing (Other Processes),PTNONIPM,Known,15,,2006,1,S1201B
+FGD; In-process Fuel Use - Bituminous/Subbituminous Coal,SFGDSIPFBC,SO2,FGD,In-process Fuel Use - Bituminous/Subbituminous Coal,PTNONIPM,Known,15,,2006,1,S2201
+FGD; Lignite (Industrial Boilers),SFGDSIBLG,SO2,FGD,Lignite (Industrial Boilers),PTNONIPM,Known,15,,2006,1,S2301
+FGD; Mineral Products Industry,SFGDSMIPR,SO2,FGD,Mineral Products Industry,PTNONIPM,Known,15,,2006,1,S1601
+FGD; Petroleum Industry,SFGDSPETR,SO2,FGD,Petroleum Industry,PTNONIPM,Known,15,,2006,1,S1801
+FGD; Process Heaters (Oil and Gas Production Industry),SFGDSPHOG,SO2,FGD,Process Heaters (Oil and Gas Production Industry),PTNONIPM,Known,15,,2006,1,S1301
+FGD; Pulp and Paper Industry (Sulfate Pulping),SFGDSPPSP,SO2,FGD,Pulp and Paper Industry (Sulfate Pulping),PTNONIPM,Known,15,,2006,1,S1701
+FGD; Residual Oil (Commercial/Institutional Boilers),SFGDSCBRO,SO2,FGD,Residual Oil (Commercial/Institutional Boilers),PTNONIPM,Known,15,,2006,1,S2401
+FGD; Residual Oil (Industrial Boilers),SFGDSIBRO,SO2,FGD,Residual Oil (Industrial Boilers),PTNONIPM,Known,15,,2006,1,S2001
+FGD; Steam Generating Unit-Coal/Oil,SFGDSSGCO,SO2,FGD,Steam Generating Unit-Coal/Oil,PTNONIPM,Known,15,,2006,1,S2601
+Flare; Petroleum Flare,VFLAFLA,VOC,Flare,Petroleum Flare,PTNONIPM,Known,,,,40,
+Flue Gas Desulfurization; ICI Boilers (coal),SFGDICB,SO2,Flue Gas Desulfurization,ICI Boilers,PTNONIPM,Known,,,2006,26, 
+Flue Gas Desulfurization; ICI Boilers (residual oil),SFGDICBOIL,SO2,Flue Gas Desulfurization,ICI Boilers,PTNONIPM,Known,,,2006,26, 
+Fuel Switch - High to Low S Content; Utility Boilers - High Sulfur Content,SFWHLUBHS,SO2,Fuel Switch - High to Low S Content,Utility Boilers - High Sulfur Content,PTIPM,Known,,,2006,1,SUT-S
+Fuel Switching; External Combustion Boilers2,SFUELSWECB,SO2,Fuel Switching,External Combustion Boilers2,PTNONIPM,Emerging,,,,39,"This control transfers a home-heating oil fuel control to industrial boilers by substituting red dye distillate oil for high-sulfur fuel. Distillate has 500 ppm versus 2,500 to 3,000 ppm for high-sulfur diesel."
+IDIS; Bituminous/Subbituminous Coal (Industrial Boilers),SIDISIBBCL,SO2,IDIS,Bituminous/Subbituminous Coal (Industrial Boilers),PTNONIPM,Known,30,,2006,1,S3000
+IDIS; Lignite (Industrial Boilers),SIDISIBLG,SO2,IDIS,Lignite (Industrial Boilers),PTNONIPM,Known,30,,2006,1,S3003
+Impingement-plate scrubber;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,PISCRMPGI,PM10,Impingement-plate scrubber,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,10,,2006,1,P2164
+Increase % Conversion ro Meet NSPS (99.7); Sulfuric Acid Plants - Contact Absorber (93% Conversion),SNS93SACA,SO2,Increase % Conversion ro Meet NSPS (99.7),Sulfuric Acid Plants - Contact Absorber (93% Conversion),PTNONIPM,Known,15,,2006,1,S0501
+Increase % Conversion ro Meet NSPS (99.7); Sulfuric Acid Plants - Contact Absorber (97% Conversion),SNS97SACA,SO2,Increase % Conversion ro Meet NSPS (99.7),Sulfuric Acid Plants - Contact Absorber (97% Conversion),PTNONIPM,Known,15,,2006,1,S0401
+Increase % Conversion ro Meet NSPS (99.7); Sulfuric Acid Plants - Contact Absorber (98% Conversion),SNS98SACA,SO2,Increase % Conversion ro Meet NSPS (99.7),Sulfuric Acid Plants - Contact Absorber (98% Conversion),PTNONIPM,Known,15,,2006,1,S0301
+Increase % Conversion ro Meet NSPS (99.7); Sulfuric Acid Plants - Contact Absorber (99% Conversion),SNS99SACA,SO2,Increase % Conversion ro Meet NSPS (99.7),Sulfuric Acid Plants - Contact Absorber (99% Conversion),PTNONIPM,Known,15,,2006,1,S0201
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Asphalt Manufacture,PIMFQASMN,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Asphalt Manufacture,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Chemical Manufacture,PIMFQCHMN,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Chemical Manufacture,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Coal,PIMFQCIBCL,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Coal,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Liquid Waste,PIMFQCIBLW,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - LPG,PIMFQCIBLP,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - LPG,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Natural Gas,PIMFQCIBNG,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Natural Gas,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Oil,PIMFQCIBOL,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Oil,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Process Gas,PIMFQCIBPG,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Process Gas,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Solid Waste,PIMFQCIBSW,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Solid Waste,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Commercial Institutional Boilers - Wood,PIMFQCIBWD,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Commercial Institutional Boilers - Wood,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation -  Coke,PIMFQEGCE,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation -  Coke,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Bagasse,PIMFQEGBE,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Bagasse,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Coal,PIMFQEGCL,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Coal,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Liquid Waste,PIMFQEGLW,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Liquid Waste,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - LPG,PIMFQEGLP,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - LPG,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Natural Gas,PIMFQEGNG,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Natural Gas,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Oil,PIMFQEGOL,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Oil,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Solid Waste,PIMFQEGSW,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Solid Waste,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Electric Generation - Wood,PIMFQEGWD,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Electric Generation - Wood,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Coke,PIMFQMPCE,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Coke,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Ferroalloy Production,PIMFQMPFP,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Ferroalloy Production,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,PIMFQMPGI,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Iron & Steel Production,PIMFQMPIS,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Other,PIMFQMPOR,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Ferrous Metals Processing - Steel Foundaries,PIMFQMPSF,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Coal,PIMFQIBCL,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Coal,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Coke,PIMFQIBCE,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Coke,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Liquid Waste,PIMFQIBLW,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Liquid Waste,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - LPG,PIMFQIBLP,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - LPG,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Natural Gas,PIMFQIBNG,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Natural Gas,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Oil,PIMFQIBOL,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Oil,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Process Gas,PIMFQIBPG,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Process Gas,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Solid Waste,PIMFQIBSW,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Solid Waste,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Industrial Boilers - Wood,PIMFQIBWD,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Industrial Boilers - Wood,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Cement Manufacture,PIMFQMICM,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Cement Manufacture,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Coal Cleaning,PIMFQMICC,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Coal Cleaning,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Other,PIMFQMIOR,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Other,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Mineral Products - Stone Quarrying & Processing,PIMFQMISQ,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Aluminum,PIMFQNMPAM,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Copper,PIMFQNMPCR,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Lead,PIMFQNMPLD,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Other,PIMFQNMPOR,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,,,2006,1, 
+Increased Monitoring Frequency (IMF) of PM Controls;(PM10) Non-Ferrous Metals Processing - Zinc,PIMFQNMPZC,PM10,Increased Monitoring Frequency (IMF) of PM Controls,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,,,2006,1, 
+In-duct sorbent injection;ICI Boilers (coal),SSRBINJICB,SO2,In-duct Sorbent Injection,ICI Boilers,PTNONIPM,Known,,,2006,26, 
+"IR; IC Engines - Gas, Diesel, LPG",NIRICGD,NOx,IR,IC Engines - Gas/ Diesel/ LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0461
+IR; Internal Combustion Engines - Gas,NIRICGS,NOx,IR,Internal Combustion Engines - Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0221
+IR; Internal Combustion Engines - Oil,NIRICOL,NOx,IR,Internal Combustion Engines - Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0211
+IR; Reciprocating IC Engines - Oil,NIRRICOIL,NOx,IR,Reciprocating IC Engines - Oil,PTNONIPM,Known,15,,2006,1|35, 
+L-E (Low Speed); Internal Combustion Engines - Gas,NLELSICGS,NOx,L-E (Low Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N02211
+L-E (Medium Speed); Internal Combustion Engines - Gas,NLEMSICGS,NOx,L-E (Medium Speed),Internal Combustion Engines - Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N02210
+LEA; Iron & Steel Mills - Reheating,NLEAISRH,NOx,LEA,Iron & Steel Mills - Reheating,PTNONIPM,Known,10,,2006,1,Abbreviation was N0351
+LNB + FGR + Over Fire Air; ICI Boilers - Gas,NLNBFGROFA,NOx,LNB + FGR + Over Fire Air,ICI Boilers - Gas,PTNONIPM,Known,15,,2006,26|36, 
+LNB + FGR; Ammonia - NG-Fired Reformers,NLNBFFRNG,NOx,LNB + FGR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,10,,2006,1,Abbreviation was N0562
+LNB + FGR; Ammonia - Oil-Fired Reformers,NLNBFFROL,NOx,LNB + FGR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,10,,2006,1,Abbreviation was N0572
+LNB + FGR; Ammonia Prod; Feedstock Desulfurization,NLNBFAPFD,NOx,LNB + FGR,Ammonia Prod; Feedstock Desulfurization,PTNONIPM,Known,10,,2006,1,Abbreviation was N0622
+LNB + FGR; Fluid Cat Cracking Units; Cracking Unit,NLNBFFCCU,NOx,LNB + FGR,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Known,15,,2006,1,Abbreviation was N0782
+"LNB + FGR; Fuel Fired Equip, Process Heaters",NLNBFGRPH,NOX,LNB + FGR,Fuel Fired Equip/ Process Heaters,PTNONIPM,Known,15,,2006,32|36, 
+LNB + FGR; Fuel Fired Equip; Process Htrs; Pro Gas,NLNBFFPHP,NOx,LNB + FGR,Fuel Fired Equip; Process Htrs; Pro Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0692
+LNB + FGR; ICI Boilers - Distillate Oil,NLNBFIBDO,NOx,LNB + FGR,ICI Boilers - Distillate Oil,PTNONIPM,Known,10,,2006,1,Abbreviation was N0162
+LNB + FGR; ICI Boilers - Liquid Waste,NLNBFIBLW,NOx,LNB + FGR,ICI Boilers - Liquid Waste,PTNONIPM,Known,10,,2006,1,Abbreviation was N0452
+LNB + FGR; ICI Boilers - LPG,NLNBFIBLP,NOx,LNB + FGR,ICI Boilers - LPG,PTNONIPM,Known,10,,2006,1,Abbreviation was N0432
+LNB + FGR; ICI Boilers - Natural Gas,NLNBFIBNG,NOx,LNB + FGR,ICI Boilers - Natural Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0172
+LNB + FGR; ICI Boilers - Process Gas,NLNBFIBPG,NOx,LNB + FGR,ICI Boilers - Process Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0412
+LNB + FGR; ICI Boilers - Residual Oil,NLNBFIBRO,NOx,LNB + FGR,ICI Boilers - Residual Oil,PTNONIPM,Known,10,,2006,1,Abbreviation was N0152
+LNB + FGR; In-Proc;Process Gas;Coke Oven/Blast Furn,NLNBFCOBF,NOx,LNB + FGR,In-Proc;Process Gas;Coke Oven/Blast Furn,PTNONIPM,Known,15,,2006,1,Abbreviation was N0862
+LNB + FGR; Iron & Steel Mills - Annealing,NLNBFISAN,NOx,LNB + FGR,Iron & Steel Mills - Annealing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0362
+LNB + FGR; Iron & Steel Mills - Galvanizing,NLNBFISGV,NOx,LNB + FGR,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,9,,2006,1,Abbreviation was N0372
+LNB + FGR; Iron & Steel Mills - Reheating,NLNBFISRH,NOx,LNB + FGR,Iron & Steel Mills - Reheating,PTNONIPM,Known,5,,2006,1,Abbreviation was N0353
+LNB + FGR; Iron Prod; Blast Furn; Blast Htg Stoves,NLNBFIPBH,NOx,LNB + FGR,Iron Prod; Blast Furn; Blast Htg Stoves,PTNONIPM,Known,5,,2006,1,Abbreviation was N0673
+LNB + FGR; Plastics Prod-Specific; (ABS) Resin,NLNBFPPAR,NOx,LNB + FGR,Plastics Prod-Specific; (ABS) Resin,PTNONIPM,Known,15,,2006,1,Abbreviation was N0632
+LNB + FGR; Pri Cop Smel; Reverb Smelt Furn,NLNBFCSRS,NOx,LNB + FGR,Pri Cop Smel; Reverb Smelt Furn,PTNONIPM,Known,10,,2006,1,Abbreviation was N0662
+LNB + FGR; Process Heaters - LPG1,NLNBFPHLP,NOx,LNB + FGR,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0482
+LNB + FGR; Process Heaters - LPG2,NLNBFPHLG,NOx,LNB + FGR,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1|35, 
+LNB + FGR; Process Heaters - Other Fuel,NLNBFPHOF,NOx,LNB + FGR,Process Heaters - Other Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0491
+LNB + FGR; Process Heaters - Process Gas,NLNBFPHPG,NOx,LNB + FGR,Process Heaters - Process Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0472
+LNB + FGR; Sand/Gravel; Dryer,NLNBFSGDR,NOx,LNB + FGR,Sand/Gravel; Dryer,PTNONIPM,Known,15,,2006,1,Abbreviation was N0772
+LNB + FGR; Space Heaters - Distillate Oil,NLNBFSHDO,NOx,LNB + FGR,Space Heaters - Distillate Oil,PTNONIPM,Known,10,,2006,1,Abbreviation was N0542
+LNB + FGR; Space Heaters - Natural Gas,NLNBFSHNG,NOx,LNB + FGR,Space Heaters - Natural Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0552
+LNB + FGR; Starch Mfg; Combined Operations,NLNBFSMCO,NOx,LNB + FGR,Starch Mfg; Combined Operations,PTNONIPM,Known,15,,2006,1,Abbreviation was N0642
+LNB + FGR; Steel Prod; Soaking Pits,NLNBFSPSP,NOx,LNB + FGR,Steel Prod; Soaking Pits,PTNONIPM,Known,10,,2006,1,Abbreviation was N0682
+LNB + FGR; Sulfate Pulping - Recovery Furnaces,NLNBFSPRF,NOx,LNB + FGR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,10,,2006,1,Abbreviation was N0612
+LNB + FGR;Process Heaters - Distillate Oil,NLNBFPHDO,NOx,LNB + FGR,Process Heaters - Distillate Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0252
+LNB + FGR;Process Heaters - Natural Gas,NLNBFPHNG,NOx,LNB + FGR,Process Heaters - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0272
+LNB + FGR;Process Heaters - Residual Oil ,NLNBFPHRO,NOx,LNB + FGR,Process Heaters - Residual Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0261
+"LNB + Over Fire Air; ICI Boilers - Coal, bituminous",NLNBOFAICB,NOx,LNB + Over Fire Air,ICI Boilers - Coal/ bituminous,PTNONIPM,Known,15,,2003,26|35, 
+"LNB + Over Fire Air; ICI Boilers - Coal, subbituminous",NLNBOFAICS,NOx,LNB + Over Fire Air,ICI Boilers - Coal/ subbituminous,PTNONIPM,Known,15,,2003,26|35, 
+LNB + Over Fire Air; ICI Boilers - Gas,NLNBOAICBG,NOx,LNB + Over Fire Air,ICI Boilers - Gas,PTNONIPM,Known,15,,2006,26|35, 
+LNB + Over Fire Air; ICI Boilers - Oil,NLNBOAICBO,NOx,LNB + Over Fire Air,ICI Boilers - Oil,PTNONIPM,Known,15,,2006,26|35, 
+LNB + SCR; Iron & Steel Mills - Annealing,NLNBSISAN,NOx,LNB + SCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0366
+LNB + SCR; Process Heaters - Distillate Oil,NDLNBSPHDO,NOx,LNB + SCR,Process Heaters - Distillate Oil,PTNONIPM,Emerging,15,,,38,
+LNB + SCR; Process Heaters - Distillate Oil2,NLNBSPHDO,NOx,LNB + SCR,Process Heaters - Distillate Oil2,PTNONIPM,Known,15,,2006,1,Abbreviation was N0257
+LNB + SCR; Process Heaters - LPG,NLNBSPHLP,NOx,LNB + SCR,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0487
+LNB + SCR; Process Heaters - Natural Gas,NDLNBSPHNG,NOx,LNB + SCR,Process Heaters - Natural Gas,PTNONIPM,Emerging,15,,,38,
+LNB + SCR; Process Heaters - Natural Gas2,NLNBSPHNG,NOx,LNB + SCR,Process Heaters - Natural Gas2,PTNONIPM,Known,15,,2006,1,Abbreviation was N0277
+LNB + SCR; Process Heaters - Other Fuel,NLNBSPHOF,NOx,LNB + SCR,Process Heaters - Other Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0497
+LNB + SCR; Process Heaters - Process Gas,NDLNBSPHPG,NOx,LNB + SCR,Process Heaters - Process Gas,PTNONIPM,Emerging,15,,,38,
+LNB + SCR; Process Heaters - Process Gas2,NLNBSPHPG,NOx,LNB + SCR,Process Heaters - Process Gas2,PTNONIPM,Known,15,,2006,1,Abbreviation was N0477
+LNB + SCR; Process Heaters - Residual Oil,NDLNBSPHRO,NOx,LNB + SCR,Process Heaters - Residual Oil,PTNONIPM,Emerging,15,,,38,
+LNB + SCR; Process Heaters - Residual Oil2,NLNBSPHRO,NOx,LNB + SCR,Process Heaters - Residual Oil2,PTNONIPM,Known,15,,2006,1,Abbreviation was N0267
+LNB + SNCR; Iron & Steel Mills - Annealing,NLNBNISAN,NOx,LNB + SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0364
+LNB + SNCR; Process Heaters - Distillate & Residual Oil,NLNBNPHRO,NOx,LNB + SNCR,Process Heaters - Distillate & Residual Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0265
+LNB + SNCR; Process Heaters - Distillate Oil,NLNBNPHDO,NOx,LNB + SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0256
+LNB + SNCR; Process Heaters - LPG,NLNBNPHLP,NOx,LNB + SNCR,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0486
+LNB + SNCR; Process Heaters - Natural Gas,NLNBNPHNG,NOx,LNB + SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0276
+LNB + SNCR; Process Heaters - Other Fuel,NLNBNPHOF,NOx,LNB + SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0495
+LNB + SNCR; Process Heaters - Process Gas,NLNBNPHPG,NOx,LNB + SNCR,Process Heaters - Process Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0476
+LNB; Ammonia - NG-Fired Reformers,NLNBUFRNG,NOx,LNB,Ammonia - NG-Fired Reformers,PTNONIPM,Known,10,,2006,1,Abbreviation was N0561
+LNB; Ammonia - Oil-Fired Reformers,NLNBUFROL,NOx,LNB,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,10,,2006,1,Abbreviation was N0571
+LNB; Asphaltic Conc; Rotary Dryer; Conv Plant,NLNBUACCP,NOx,LNB,Asphaltic Conc; Rotary Dryer; Conv Plant,PTNONIPM,Known,15,,2006,1,Abbreviation was N0731
+LNB; Cement Manufacturing - Dry,NLNBUCMDY,NOx,LNB,Cement Manufacturing - Dry,PTNONIPM,Known,15,,2006,1,Abbreviation was N0332
+LNB; Cement Manufacturing - Wet,NLNBUCMWT,NOx,LNB,Cement Manufacturing - Wet,PTNONIPM,Known,15,,2006,1,Abbreviation was N0342
+LNB; Ceramic Clay Mfg; Drying,NLNBUCCMD,NOx,LNB,Ceramic Clay Mfg; Drying,PTNONIPM,Known,15,,2006,1,Abbreviation was N0741
+LNB; Coal Cleaning-Thrml Dryer; Fluidized Bed,NLNBUCCFB,NOx,LNB,Coal Cleaning-Thrml Dryer; Fluidized Bed,PTNONIPM,Known,10,,2006,1,Abbreviation was N0753
+LNB; Conv Coating of Prod; Acid Cleaning Bath,NLNBUCCAB,NOx,LNB,Conv Coating of Prod; Acid Cleaning Bath,PTNONIPM,Known,15,,2006,1,Abbreviation was N0791
+LNB; Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,NLNBUFMTF,NOx,LNB,Fbrglass Mfg; Txtle-Type Fbr; Recup Furn,PTNONIPM,Known,3,,2006,1,Abbreviation was N0763
+LNB; Fuel Fired Equip; Furnaces; Natural Gas,NLNBUFFNG,NOx,LNB,Fuel Fired Equip; Furnaces; Natural Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0721
+LNB; Gas Turbines - Natural Gas,NLNBUGTNG,NOx,LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0243
+LNB; Glass Manufacturing - Container,NLNBUGMCN,NOx,LNB,Glass Manufacturing - Container,PTNONIPM,Known,10,,2006,1,Abbreviation was N0303
+LNB; Glass Manufacturing - Flat,NLNBUGMFT,NOx,LNB,Glass Manufacturing - Flat,PTNONIPM,Known,3,,2006,1,Abbreviation was N0312
+LNB; Glass Manufacturing - Pressed,NLNBUGMPD,NOx,LNB,Glass Manufacturing - Pressed,PTNONIPM,Known,10,,2006,1,Abbreviation was N0323
+"LNB; ICI Boilers - Coal, subbituminous",NLNBICB,NOx,LNB,ICI Boilers - Coal/ subbituminous,PTNONIPM,Known,10,,2003,26|35, 
+LNB; ICI Boilers - Coal/Wall,NLNBUIBCW,NOx,LNB,ICI Boilers - Coal/Wall,PTNONIPM,Known,10,,2006,1,Abbreviation was N0113
+LNB; ICI Boilers - Coke,NLNBUIBCK,NOx,LNB,ICI Boilers - Coke,PTNONIPM,Known,10,,2006,1,Abbreviation was N0423
+LNB; ICI Boilers - Distillate Oil,NLNBUIBDO,NOx,LNB,ICI Boilers - Distillate Oil,PTNONIPM,Known,10,,2006,1,Abbreviation was N0161
+LNB; ICI Boilers - Liquid Waste,NLNBUIBLW,NOx,LNB,ICI Boilers - Liquid Waste,PTNONIPM,Known,10,,2006,1,Abbreviation was N0451
+LNB; ICI Boilers - LPG,NLNBUIBLP,NOx,LNB,ICI Boilers - LPG,PTNONIPM,Known,10,,2006,1,Abbreviation was N0431
+LNB; ICI Boilers - Natural Gas,NLNBUIBNG,NOx,LNB,ICI Boilers - Natural Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0171
+LNB; ICI Boilers - Process Gas,NLNBUIBPG,NOx,LNB,ICI Boilers - Process Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0411
+LNB; ICI Boilers - Residual Oil,NLNBUIBRO,NOx,LNB,ICI Boilers - Residual Oil,PTNONIPM,Known,10,,2006,1,Abbreviation was N0151
+LNB; ICI Natural Gas Space Heaters and Water Heaters,NLNBICISWH,NOX,LNB,ICI Space and Water Heaters,PTNONIPM,Known,10,,1996,31|35, 
+LNB; In-Process Fuel Use; Natural Gas; Gen,NLNBUNGGN,NOx,LNB,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Known,15,,2006,1,Abbreviation was N0851
+LNB; In-Process Fuel Use; Residual Oil; Gen,NLNBUROGN,NOx,LNB,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Known,15,,2006,1,Abbreviation was N0842
+LNB; In-Process; Process Gas; Coke Oven Gas,NLNBUPGCO,NOx,LNB,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0871
+LNB; Iron & Steel Mills - Annealing,NLNBUISAN,NOx,LNB,Iron & Steel Mills - Annealing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0361
+LNB; Iron & Steel Mills - Galvanizing,NLNBUISGV,NOx,LNB,Iron & Steel Mills - Galvanizing,PTNONIPM,Known,9,,2006,1,Abbreviation was N0371
+LNB; Iron & Steel Mills - Reheating,NLNBUISRH,NOx,LNB,Iron & Steel Mills - Reheating,PTNONIPM,Known,5,,2006,1,Abbreviation was N0352
+LNB; Lime Kilns,NLNBULMKN,NOx,LNB,Lime Kilns,PTNONIPM,Known,15,,2006,1,Abbreviation was N0582
+LNB; Process Heaters - Distillate Oil,NLNBUPHDO,NOx,LNB,Process Heaters - Distillate Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0251
+LNB; Process Heaters - LPG1,NLNBPHLP,NOx,LNB,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0481
+LNB; Process Heaters - LPG2,NLNBUPHLG,NOx,LNB,Process Heaters - LPG,PTNONIPM,Known,10,,2006,1|36, 
+LNB; Process Heaters - Natural Gas,NLNBUPHNG,NOx,LNB,Process Heaters - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0271
+LNB; Process Heaters - Other Fuel,NLNBUPHOF,NOx,LNB,Process Heaters - Other Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0492
+LNB; Process Heaters - Process Gas,NLNBUPHPG,NOx,LNB,Process Heaters - Process Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0471
+LNB; Process Heaters - Residual Oil,NLNBUPHRO,NOx,LNB,Process Heaters - Residual Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0262
+LNB; Sec Alum Prod; Smelting Furn/Reverb,NLNBSASF,NOx,LNB,Sec Alum Prod; Smelting Furn/Reverb,PTNONIPM,Known,10,,2006,1,Abbreviation was N0701
+LNB; Space Heaters - Distillate Oil,NLNBUSHDO,NOx,LNB,Space Heaters - Distillate Oil,PTNONIPM,Known,10,,2006,1,Abbreviation was N0541
+LNB; Space Heaters - Natural Gas,NLNBUSHNG,NOx,LNB,Space Heaters - Natural Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0551
+LNB; Steel Foundries; Heat Treating Furn,NLNBUSFHT,NOx,LNB,Steel Foundries; Heat Treating Furn,PTNONIPM,Known,10,,2006,1,Abbreviation was N0711
+LNB; Sulfate Pulping - Recovery Furnaces,NLNBUSPRF,NOx,LNB,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,10,,2006,1,Abbreviation was N0611
+LNB; Surf Coat Oper;Coating Oven Htr;Nat Gas,NLNBUCHNG,NOx,LNB,Surf Coat Oper;Coating Oven Htr;Nat Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0881
+LNB; Utility Boiler - Bit Coal/Wall,NLNBUUBCW,NOx,LNB,Utility Boiler - Coal/Wall,PTIPM,Known,15,,2006,1,N00901
+LNB; Utility Boiler - Subbit Coal/Wall,NLNBUUBCW2,NOx,LNB,Utility Boiler - Coal/Wall2,PTIPM,Known,15,,2006,1,N00906
+LNBO; Utility Boiler - Bit Coal/Wall,NLNBOUBCW,NOx,LNBO,Utility Boiler - Coal/Wall,PTIPM,Known,15,,2006,1,N00902
+LNBO; Utility Boiler - Subbit Coal/Wall,NLNBOUBCW2,NOx,LNBO,Utility Boiler - Coal/Wall2,PTIPM,Known,15,,2006,1,N00907
+LNC1; Utility Boiler - Bit Coal/Tangential,NLNC1UBCT,NOx,LNC1,Utility Boiler - Coal/Tangential,PTIPM,Known,15,,2006,1,N00903
+LNC1; Utility Boiler - Subbit Coal/Tangential,NLNC1UBCT2,NOx,LNC1,Utility Boiler - Coal/Tangential1,PTIPM,Known,15,,2006,1,N00908
+LNC2; Utility Boiler - Bit Coal/Tangential,NLNC2UBCT,NOx,LNC2,Utility Boiler - Coal/Tangential,PTIPM,Known,15,,2006,1,N00904
+LNC2; Utility Boiler - Subbit Coal/Tangential,NLNC2UBCT2,NOx,LNC2,Utility Boiler - Coal/Tangential2,PTIPM,Known,15,,2006,1,N00909
+LNC3; Utility Boiler - Bit Coal/Tangential,NLNC3UBCT,NOx,LNC3,Utility Boiler - Coal/Tangential,PTIPM,Known,15,,2006,1,N00905
+LNC3; Utility Boiler - Subbit Coal/Tangential,NLNC3UBCT2,NOx,LNC3,Utility Boiler - Coal/Tangential3,PTIPM,Known,15,,2006,1,N00910
+"Low Emission Combustion; Industrial NG ICE, 2cycle (lean)",NLECINGIC2,NOx,Low Emission Combustion,"Industrial NG ICE, 2cycle (lean)",PTNONIPM,Known,,,,40,
+Low Emission Combustion;Lean Burn IC Engines - Gas,NLECICEGAS,NOx,Low Emission Combustion,Lean Burn IC Engine - Gas,PTNONIPM,Known,10,,2000,34|35, 
+Low Sulfur Fuel; ICI Boilers (distillate oil),SLSFICB,SO2,Low Sulfur Fuel,ICI Boilers,PTNONIPM,Emerging,,,2006,27, 
+Mid-Kiln Firing; Cement Manufacturing - Dry,NMKFRCMDY,NOx,Mid-Kiln Firing,Cement Manufacturing - Dry,PTNONIPM,Known,15,,2006,1,Abbreviation was N0331
+Mid-Kiln Firing; Cement Manufacturing - Wet,NMKFRCMWT,NOx,Mid-Kiln Firing,Cement Manufacturing - Wet,PTNONIPM,Known,15,,2006,1,Abbreviation was N0341
+Mid-Kiln Firing; Lime Kilns,NMKFRLMKN,NOx,Mid-Kiln Firing,Lime Kilns,PTNONIPM,Known,15,,2006,1,Abbreviation was N0581
+"NGR; External Combustion Boilers, Elec Gen, Nat Gas (1)",NNGRECBNG1,NOx,NGR,"External Combustion Boilers, Elec Gen, Nat Gas (1)",PTNONIPM,Known,,,,40,
+"NGR; External Combustion Boilers, Elec Gen, Nat Gas (2)",NNGRECBNG2,NOx,NGR,"External Combustion Boilers, Elec Gen, Nat Gas (2)",PTNONIPM,Known,,,,40,
+"NGR; External Combustion Boilers, Elec Gen, Nat Gas (3)",NNGRECBNG3,NOx,NGR,"External Combustion Boilers, Elec Gen, Nat Gas (3)",PTNONIPM,Known,,,,40,
+NGR; ICI Boilers - Coal/Cyclone,NNGRIBCC,NOx,NGR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,20,,2006,1,Abbreviation was N0144
+NGR; Utility Boiler - Coal/Tangential,NNGR_UBCT,NOx,NGR,Utility Boiler - Coal/Tangential,PTIPM,Known,20,,2006,1,N00202
+NGR; Utility Boiler - Coal/Wall,NNGR_UBCW,NOx,NGR,Utility Boiler - Coal/Wall,PTIPM,Known,20,,2006,1,N00102
+NGR; Utility Boiler - Cyclone,NNGR_UBCY,NOx,NGR,Utility Boiler - Cyclone,PTIPM,Known,20,,2006,1,N00702
+NGR; Utility Boiler - Oil-Gas/Tangential,NNGR_UBOT,NOx,NGR,Utility Boiler - Oil-Gas/Tangential,PTIPM,Known,20,,2006,1,N00602
+NGR; Utility Boiler - Oil-Gas/Wall,NNGR_UBOW,NOx,NGR,Utility Boiler - Oil-Gas/Wall,PTIPM,Known,20,,2006,1,N00502
+NSCR; Nitric Acid Manufacturing,NSNCRNAMF,NOx,NSCR,Nitric Acid Manufacturing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0293
+"NSCR; Rich Burn IC Engines - Gas, Diesel, LPG",NSNCRRBGD,NOx,NSCR,Rich Burn IC Engines - Gas/ Diesel/ LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0465
+NSCR; Rich Burn Internal Combustion Engines -,NSNCRRBIC,NOx,NSCR,Rich Burn Internal Combustion Engines -,PTNONIPM,Known,15,,2006,1,Abbreviation was N0215
+NSCR; Rich Burn Internal Combustion Engines (2),NSNCRRBIC2,NOx,NSCR,Rich Burn Internal Combustion Engines -,PTNONIPM,Known,15,,2006,1|37,Abbreviation was N02213NSCR
+OT + WI; Ammonia - NG-Fired Reformers,NOTWIFRNG,NOx,OT + WI,Ammonia - NG-Fired Reformers,PTNONIPM,Known,10,,2006,1,Abbreviation was N0563
+OT + WI; ICI Boilers - Natural Gas,NOTWIIBNG,NOx,OT + WI,ICI Boilers - Natural Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0173
+OT + WI; ICI Boilers - Process Gas,NOTWIIBPG,NOx,OT + WI,ICI Boilers - Process Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0413
+OT + WI; Space Heaters - Natural Gas,NOTWISHNG,NOx,OT + WI,Space Heaters - Natural Gas,PTNONIPM,Known,10,,2006,1,Abbreviation was N0553
+OT + WI; Sulfate Pulping - Recovery Furnaces,NOTWISPRF,NOx,OT + WI,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,10,,2006,1,Abbreviation was N0613
+OXY-Firing; Glass Manufacturing - Container,NOXYFGMCN,NOx,OXY-Firing,Glass Manufacturing - Container,PTNONIPM,Known,10,,2006,1,Abbreviation was N0306
+OXY-Firing; Glass Manufacturing - Flat,NOXYFGMFT,NOx,OXY-Firing,Glass Manufacturing - Flat,PTNONIPM,Known,10,,2006,1,Abbreviation was N0315
+OXY-Firing; Glass Manufacturing - General,NDOXYFGMG,NOx,OXY-Firing,Glass Manufacturing - General,PTNONIPM,Emerging,10,,,38,
+OXY-Firing; Glass Manufacturing - Pressed,NOXYFGMPD,NOx,OXY-Firing,Glass Manufacturing - Pressed,PTNONIPM,Known,10,,2006,1,Abbreviation was N0326
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Asphalt Manufacture,PPFCCASMN,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Asphalt Manufacture,PTNONIPM,Known,20,,2006,1,P2223
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Fabricated Metal Products - Abrasive Blasting,PPFCCFMAB,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Fabricated Metal Products - Abrasive Blasting,PTNONIPM,Known,20,,2006,1,P2271
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Fabricated Metal Products - Machining,PPFCCFMMG,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Fabricated Metal Products - Machining,PTNONIPM,Known,20,,2006,1,P2281
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Fabricated Metal Products - Welding,PPFCCFMWG,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Fabricated Metal Products - Welding,PTNONIPM,Known,20,,2006,1,P2291
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Grain Milling,PPFCCGRMG,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Grain Milling,PTNONIPM,Known,20,,2006,1,P2232
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Cement Manufacture,PPFCCMICM,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Cement Manufacture,PTNONIPM,Known,20,,2006,1,P2184
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Coal Cleaning,PPFCCMICC,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Coal Cleaning,PTNONIPM,Known,20,,2006,1,P2193
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Other,PPFCCMIOR,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1,P2215
+Paper/Nonwoven Filters - Cartridge Collector Type;(PM10) Mineral Products - Stone Quarrying & Processing,PPFCCMISQ,PM10,Paper/Nonwoven Filters - Cartridge Collector Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1,P2205
+"Permanent Total Enclosure (PTE; Fabric Printing, Coating and Dyeing",VPTENFPCD,VOC,Permanent Total Enclosure (PTE,Fabric Printing/ Coating and Dyeing,PTNONIPM,Known,15,,2006,1, 
+Permanent Total Enclosure (PTE; Flexographic Printing,VPTENFLPR,VOC,Permanent Total Enclosure (PTE,Flexographic Printing,PTNONIPM,Known,15,,2006,1, 
+Permanent Total Enclosure (PTE; Metal Can Surface Coating,VPTENMCSC,VOC,Permanent Total Enclosure (PTE,Metal Can Surface Coating,PTNONIPM,Known,15,,2006,1, 
+Permanent Total Enclosure (PTE; Metal Furniture Surface Coating,VPTENMFSC,VOC,Permanent Total Enclosure (PTE,Metal Furniture Surface Coating,PTNONIPM,Known,15,,2006,1, 
+Permanent Total Enclosure (PTE; Paper and Other Web Coating,VPTENPOWC,VOC,Permanent Total Enclosure (PTE,Paper and Other Web Coating,PTNONIPM,Known,15,,2006,1, 
+Permanent Total Enclosure (PTE; Product and Package Roto and Screen Prin,VPTENPPRS,VOC,Permanent Total Enclosure (PTE,Product and Package Roto and Screen Prin,PTNONIPM,Known,15,,2006,1, 
+Permanent Total Enclosure (PTE; Publication Rotogravure Printing,VPTENPRPG,VOC,Permanent Total Enclosure (PTE,Publication Rotogravure Printing,PTNONIPM,Known,15,,2006,1, 
+Reduced Evaporation; Printing/Publishing,VREEVPRPU,VOC,Petroleum and Solvent Evaporation,Printing/Publishing,POINT,Known,,,,Section 183(e) CTG for Group III Source Categories - Aug 2007,
+Reduced Evaporation; Surface Coating Operations; Large Appliances,VREEVSCOL,VOC,Petroleum and Solvent Evaporation,Surface Coating Operations,POINT,Known,,,,Section 183(e) CTG for Group III Source Categories - Aug 2007,
+Reduced Evaporation; Surface Coating Operations; Metal Furniture Operation,VREEVSCOM,VOC,Petroleum and Solvent Evaporation,Surface Coating Operations,POINT,Known,,,,Section 183(e) CTG for Group III Source Categories - Aug 2007,
+Reduced Evaporation; Surface Coating Operations; Paper Coating,VREEVSCOP,VOC,Petroleum and Solvent Evaporation,Surface Coating Operations,POINT,Known,,,,Section 183(e) CTG for Group III Source Categories - Aug 2007,
+Repowering to Natural Gas; Utility Boilers - Coal Fired,SRPNGUBCF,SO2,Repowering to Natural Gas,Utility Boilers - Coal Fired,PTIPM,Known,10,,2006,1,SUT-R
+SCAQMD Proposed Rule 1148.1; Oil and Natural Gas Production - Fugitiv,V1148ONGPF,VOC,SCAQMD Proposed Rule 1148.1,Oil and Natural Gas Production - Fugitiv,PTNONIPM,Known,3,,2006,1, 
+SCR + LNB; Gas Turbines - Natural Gas,NSCRLGTNG,NOx,SCR + LNB,Gas Turbines - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0244
+SCR + Steam Injecti; Gas Turbines - Natural Gas,NSCRSGTNG,NOx,SCR + Steam Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0245
+SCR + Water Injecti; Gas Turbines - Jet Fuel,NSCRWGTJF,NOx,SCR + Water Injecti,Gas Turbines - Jet Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0502
+SCR + Water Injecti; Gas Turbines - Natural Gas,NSCRWGTNG,NOx,SCR + Water Injecti,Gas Turbines - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0246
+SCR + Water Injecti; Gas Turbines - Oil,NSCRWGTOL,NOx,SCR + Water Injecti,Gas Turbines - Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0232
+SCR; Ammonia - NG-Fired Reformers,NDSCRFRNG,NOx,SCR,Ammonia - NG-Fired Reformers,PTNONIPM,Emerging,20,,,38,
+SCR; Ammonia - NG-Fired Reformers2,NSCRFRNG,NOx,SCR,Ammonia - NG-Fired Reformers2,PTNONIPM,Known,20,,2006,1,Abbreviation was N0564
+SCR; Ammonia - Oil-Fired Reformers,NSCRFROL,NOx,SCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,20,,2006,1,Abbreviation was N0573
+SCR; Cement Manufacturing - Dry,NDSCRCMDY,NOx,SCR,Cement Manufacturing - Dry,PTNONIPM,Emerging,15,,,38,
+SCR; Cement Manufacturing - Wet,NDSCRCMWT,NOx,SCR,Cement Manufacturing - Wet,PTNONIPM,Emerging,15,,,38,
+SCR; Cement Manufacturing - Dry2,NSCRCMDY,NOx,SCR,Cement Manufacturing ?Çô Dry2,PTNONIPM,Known,15,,2006,1,Abbreviation was N0335
+SCR; Cement Manufacturing - Wet2,NSCRCMWT,NOx,SCR,Cement Manufacturing ?Çô Wet2,PTNONIPM,Known,15,,2006,1,Abbreviation was N0343
+SCR; Fluid Cat Cracking Units; Cracking Unit,NDLNBFFCCU,NOx,SCR,Fluid Cat Cracking Units; Cracking Unit,PTNONIPM,Emerging,15,,,38,
+SCR; Glass Manufacturing - Container,NSCRGMCN,NOx,SCR,Glass Manufacturing - Container,PTNONIPM,Known,10,,2006,1,Abbreviation was N0305
+SCR; Glass Manufacturing - Flat,NSCRGMFT,NOx,SCR,Glass Manufacturing - Flat,PTNONIPM,Known,10,,2006,1,Abbreviation was N0314
+SCR; Glass Manufacturing - Pressed,NSCRGMPD,NOx,SCR,Glass Manufacturing - Pressed,PTNONIPM,Known,10,,2006,1,Abbreviation was N0325
+"SCR; IC Engines - Gas, Diesel, LPG",NSCRICGD,NOx,SCR,IC Engines - Gas/ Diesel/ LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0464
+SCR; ICI Boilers - Coal,NSCRIBCOAL,NOx,SCR,ICI Boilers - Coal,PTNONIPM,Known,20,,2003,26|36, 
+SCR; ICI Boilers - Coal/Cyclone,NSCRIBCC,NOx,SCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,20,,2006,1,Abbreviation was N0143
+SCR; ICI Boilers - Coal/FBC,NDSNCRIBCF,NOx,SCR,ICI Boilers - Coal/FBC,PTNONIPM,Emerging,20,,,38,
+SCR; ICI Boilers - Coal/Stoker,NDSNCRIBCS,NOx,SCR,ICI Boilers - Coal/Stoker,PTNONIPM,Emerging,20,,,38,
+SCR; ICI Boilers - Coal/Wall,NSCRIBCW,NOx,SCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,20,,2006,1,Abbreviation was N0114
+SCR; ICI Boilers - Coke,NDSCRIBCK,NOx,SCR,ICI Boilers - Coke,PTNONIPM,Emerging,20,,,38,
+SCR; ICI Boilers - Distillate Oil,NSCRIBDO,NOx,SCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,20,,2006,1,Abbreviation was N0163
+SCR; ICI Boilers - Gas,NSCRICBG,NOx,SCR,ICI Boilers - Gas,PTNONIPM,Known,20,,2006,26|36, 
+SCR; ICI Boilers - Liquid Waste,NDSCRIBLW,NOx,SCR,ICI Boilers - Liquid Waste,PTNONIPM,Emerging,20,,,38,
+SCR; ICI Boilers - Liquid Waste2,NSCRIBLW,NOx,SCR,ICI Boilers - Liquid Waste2,PTNONIPM,Known,20,,2006,1,Abbreviation was N0453
+SCR; ICI Boilers - LPG,NDSCRIBLP,NOx,SCR,ICI Boilers - LPG,PTNONIPM,Emerging,20,,,38,
+SCR; ICI Boilers - LPG2,NSCRIBLP,NOx,SCR,ICI Boilers - LPG2,PTNONIPM,Known,20,,2006,1,Abbreviation was N0433
+SCR; ICI Boilers - Natural Gas,NSCRIBNG,NOx,SCR,ICI Boilers - Natural Gas,PTNONIPM,Known,20,,2006,1,Abbreviation was N0174
+SCR; ICI Boilers - Process Gas,NDSCRIBPG,NOx,SCR,ICI Boilers - Process Gas,PTNONIPM,Emerging,20,,,38,
+SCR; ICI Boilers - Process Gas2,NSCRIBPG,NOx,SCR,ICI Boilers - Process Gas2,PTNONIPM,Known,20,,2006,1,Abbreviation was N0414
+SCR; ICI Boilers - Residual Oil,NSCRIBRO,NOx,SCR,ICI Boilers - Residual Oil,PTNONIPM,Known,20,,2006,1,Abbreviation was N0153
+SCR; ICI Boilers - Wood/Bark/Waste,NDSNCRIBW,NOx,SCR,ICI Boilers - Wood/Bark/Waste,PTNONIPM,Emerging,20,,,38,
+SCR; ICI Boilers - Coke2,NSCRIBCK,NOx,SCR,ICI Boilers ?Çô Coke2,PTNONIPM,Known,20,,2006,1,Abbreviation was N0424
+SCR; Indust. Incinerators,NDSNCRIDIN,NOx,SCR,Indust. Incinerators,PTNONIPM,Emerging,20,,,38,
+SCR; In-Process Fuel Use; Natural Gas; Gen,NDLNBUNGGN,NOx,SCR,In-Process Fuel Use; Natural Gas; Gen,PTNONIPM,Emerging,15,,,38,
+SCR; In-Process Fuel Use; Residual Oil; Gen,NDLNBUROGN,NOx,SCR,In-Process Fuel Use; Residual Oil; Gen,PTNONIPM,Emerging,15,,,38,
+SCR; In-Process Fuel Use;Bituminous Coal; Gen,NDSNCRBCGN,NOx,SCR,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Emerging,20,,,38,
+SCR; In-Process; Bituminous Coal; Cement Kiln,NDSNCRBCCK,NOx,SCR,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Emerging,15,,,38,
+SCR; In-Process; Bituminous Coal; Lime Kiln,NDSNCRBCLK,NOx,SCR,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Emerging,15,,,38,
+SCR; In-Process; Process Gas; Coke Oven Gas,NDLNBFPGCO,NOx,SCR,In-Process; Process Gas; Coke Oven Gas,PTNONIPM,Emerging,15,,,38,
+SCR; In-Process; Process Gas; Coke Oven Gas2,NDLNBUPGCO,NOx,SCR,In-Process; Process Gas; Coke Oven Gas2,PTNONIPM,Emerging,15,,,38,
+SCR; Internal Combustion Engines - Gas,NSCRICGS,NOx,SCR,Internal Combustion Engines - Gas,PTNONIPM,Known,20,,2006,1|33|36,Abbreviation was N02212
+SCR; Internal Combustion Engines - Oil,NSCRICOL,NOx,SCR,Internal Combustion Engines - Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0214
+SCR; Iron & Steel Mills - Annealing,NDSCRISAN,NOx,SCR,Iron & Steel Mills - Annealing,PTNONIPM,Emerging,10,,,38,
+SCR; Iron & Steel Mills - Annealing2,NSCRISAN,NOx,SCR,Iron & Steel Mills - Annealing2,PTNONIPM,Known,10,,2006,1,Abbreviation was N0365
+SCR; Natural Gas Prod; Compressors,NSCRNGCP,NOx,SCR,Natural Gas Prod; Compressors,PTNONIPM,Known,15,,2006,1,Abbreviation was N08012
+SCR; Nitric Acid Manufacturing,NDSNCRNAMF,NOx,SCR,Nitric Acid Manufacturing,PTNONIPM,Emerging,10,,,38,
+SCR; Nitric Acid Manufacturing2,NSCRNAMF,NOx,SCR,Nitric Acid Manufacturing2,PTNONIPM,Known,10,,2006,1,Abbreviation was N0292
+SCR; Process Heaters - Distillate Oil,NSCRPHDO,NOx,SCR,Process Heaters - Distillate Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0255
+SCR; Process Heaters - LPG,NSCRPHLP,NOx,SCR,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0485
+SCR; Process Heaters - Natural Gas,NSCRPHNG,NOx,SCR,Process Heaters - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0275
+SCR; Process Heaters - Other Fuel,NSCRPHOF,NOx,SCR,Process Heaters - Other Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0496
+SCR; Process Heaters - Process Gas,NSCRPHPG,NOx,SCR,Process Heaters - Process Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0475
+SCR; Process Heaters - Residual Oil,NSCRPHRO,NOx,SCR,Process Heaters - Residual Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0266
+SCR; Pulp and Paper - Natural Gas - Incinerators,NDSNCRPPNG,NOx,SCR,Pulp and Paper - Natural Gas - Incinerators,PTNONIPM,Emerging,,,,38,
+SCR; Reciprocating IC Engines - Oil,NSCRRICOIL,NOx,SCR,Reciprocating IC Engines - Oil,PTNONIPM,Known,15,,2000,37, 
+SCR; Solid Waste Disp;Gov;Other Incin;Sludge,NDSNCRSWIN,NOx,SCR,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Emerging,20,,,38,
+SCR; Space Heaters - Distillate Oil,NSCRSHDO,NOx,SCR,Space Heaters - Distillate Oil,PTNONIPM,Known,20,,2006,1,Abbreviation was N0543
+SCR; Space Heaters - Natural Gas,NSCRSHNG,NOx,SCR,Space Heaters - Natural Gas,PTNONIPM,Known,20,,2006,1,Abbreviation was N0554
+SCR; Sulfate Pulping - Recovery Furnaces,NDSCRSPRF,NOx,SCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Emerging,20,,,38,
+SCR; Sulfate Pulping - Recovery Furnaces2,NSCRSPRF,NOx,SCR,Sulfate Pulping - Recovery Furnaces2,PTNONIPM,Known,20,,2006,1,Abbreviation was N0614
+SCR; Taconite Iron Ore Processing  - Induration - Coal or Gas,NDSCRFEP,NOx,SCR,Taconite Iron Ore Processing  - Induration - Coal or Gas,PTNONIPM,Known,,,,38,
+SCR; Utility Boiler - Coal/Tangential,NSCR_UBCT,NOx,SCR,Utility Boiler - Coal/Tangential,PTIPM,Known,20,,2006,1,N00203
+SCR; Utility Boiler - Coal/Wall,NSCR_UBCW,NOx,SCR,Utility Boiler - Coal/Wall,PTIPM,Known,20,,2006,1,N00103
+SCR; Utility Boiler - Cyclone,NSCR_UBCY,NOx,SCR,Utility Boiler - Cyclone,PTIPM,Known,20,,2006,1,N00703
+SCR; Utility Boiler - Oil-Gas/Tangential,NSCR_UBOT,NOx,SCR,Utility Boiler - Oil-Gas/Tangential,PTIPM,Known,20,,2006,1,N00603
+SCR; Utility Boiler - Oil-Gas/Wall,NSCR_UBOW,NOx,SCR,Utility Boiler - Oil-Gas/Wall,PTIPM,Known,20,,2006,1,N00503
+SCR;ICI Boilers - Oil,NSCRICBO,NOx,SCR,ICI Boilers - Oil,PTNONIPM,Known,20,,2006,26|36, 
+Scrubbing;Petroleum Refinery Process Heaters,SSCRBPETPH,SO2,Scrubbing,Petroleum Refinery Process Heaters,PTNONIPM,Known,,,2006,28, 
+SDA; Bituminous/Subbituminous Coal (Industrial Boilers),SSDA_IBBCL,SO2,SDA,Bituminous/Subbituminous Coal (Industrial Boilers),PTNONIPM,Known,30,,2006,1,S3001
+SDA; Lignite (Industrial Boilers),SSDA_IBLG,SO2,SDA,Lignite (Industrial Boilers),PTNONIPM,Known,30,,2006,1,S3004
+SNCR - Ammonia; ICI Boilers - Wood/Bark/FBC,NSNCRIBWF,NOx,SNCR - Ammonia,ICI Boilers - Wood/Bark/FBC,PTNONIPM,Known,20,,2006,1,Abbreviation was N0191
+SNCR - NH3 Based; Cement Manufacturing - Dry,NSNCNCMDY,NOx,SNCR - NH3 Based,Cement Manufacturing - Dry,PTNONIPM,Known,15,,2006,1,Abbreviation was N0334
+SNCR - Urea Based; Cement Manufacturing - Dry,NSNCRCMDY,NOx,SNCR - Urea Based,Cement Manufacturing - Dry,PTNONIPM,Known,15,,2006,1,Abbreviation was N0333
+SNCR - urea based; In-Process; Bituminous Coal; Cement Kiln,NSNCRBCCK,NOx,SNCR - urea based,In-Process; Bituminous Coal; Cement Kiln,PTNONIPM,Known,15,,2006,1,Abbreviation was N0813
+SNCR - urea based; In-Process; Bituminous Coal; Lime Kiln,NSNCRBCLK,NOx,SNCR - urea based,In-Process; Bituminous Coal; Lime Kiln,PTNONIPM,Known,15,,2006,1,Abbreviation was N0823
+SNCR - Urea; ICI Boilers - Bagasse,NSNCRIBGA,NOx,SNCR - Urea,ICI Boilers - Bagasse,PTNONIPM,Known,20,,2006,1,Abbreviation was N0441
+SNCR - Urea; ICI Boilers - Coal/FBC,NSNCRIBCF,NOx,SNCR - Urea,ICI Boilers - Coal/FBC,PTNONIPM,Known,20,,2006,1,Abbreviation was N0121
+SNCR - Urea; ICI Boilers - MSW/Stoker,NSNCRIBMS,NOx,SNCR - Urea,ICI Boilers - MSW/Stoker,PTNONIPM,Known,20,,2006,1,Abbreviation was N0201
+SNCR - Urea; ICI Boilers - Wood/Bark/Stoker,NSNCRIBWS,NOx,SNCR - Urea,ICI Boilers - Wood/Bark/Stoker,PTNONIPM,Known,20,,2006,1,Abbreviation was N0181
+SNCR; Ammonia - NG-Fired Reformers,NSNCRFRNG,NOx,SNCR,Ammonia - NG-Fired Reformers,PTNONIPM,Known,20,,2006,1,Abbreviation was N0565
+SNCR; Ammonia - Oil-Fired Reformers,NSNCRFROL,NOx,SNCR,Ammonia - Oil-Fired Reformers,PTNONIPM,Known,20,,2006,1,Abbreviation was N0574
+SNCR; By-Product Coke Mfg; Oven Underfiring,NSNCRCMOU,NOx,SNCR,By-Product Coke Mfg; Oven Underfiring,PTNONIPM,Known,10,,2006,1,Abbreviation was N0653
+SNCR; Comm./Inst. Incinerators,NSNCRCIIN,NOx,SNCR,Comm./Inst. Incinerators,PTNONIPM,Known,20,,2006,1,Abbreviation was N0591
+"SNCR; External Combustion Boilers, Elec Gen, Anth Coal (1)",NSNCRECBE1,NOx,SNCR,"External Combustion Boilers, Elec Gen, Anth Coal (1)",PTNONIPM,Known,,,,40,
+"SNCR; External Combustion Boilers, Elec Gen, Dis Oil",NSNCRECBDO,NOx,SNCR,"External Combustion Boilers, Elec Gen, Dis Oil",PTNONIPM,Known,,,,40,
+"SNCR; External Combustion Boilers, Elec Gen, Res Oil (1)",NSNCRECBR1,NOx,SNCR,"External Combustion Boilers, Elec Gen, Res Oil (1)",PTNONIPM,Known,,,,40,
+"SNCR; External Combustion Boilers, Elec Gen, Res Oil (2)",NSNCRECBR2,NOx,SNCR,"External Combustion Boilers, Elec Gen, Res Oil (2)",PTNONIPM,Known,,,,40,
+"SNCR; External Combustion Boilers, Elec Gen, Solid Waste",NSNCRECBSW,NOx,SNCR,"External Combustion Boilers, Elec Gen, Solid Waste",PTNONIPM,Known,,,,40,
+"SNCR; External Combustion Boilers, Elec Gen, Sub/Bit Coal (2)",NSNCRECBE2,NOx,SNCR,"External Combustion Boilers, Elec Gen, Sub/Bit Coal (2)",PTNONIPM,Known,,,,40,
+"SNCR; External Combustion Boilers, Elec Gen, Sub/Bit Coal (3)",NSNCRECBE3,NOx,SNCR,"External Combustion Boilers, Elec Gen, Sub/Bit Coal (3)",PTNONIPM,Known,,,,40,
+"SNCR; External Combustion Boilers, Elec Gen, Sub/Bit Coal (4)",NSNCRECBE4,NOx,SNCR,"External Combustion Boilers, Elec Gen, Sub/Bit Coal (4)",PTNONIPM,Known,,,,40,
+SNCR; Glass Manufacturing - Container,NSNCRGMCN,NOx,SNCR,Glass Manufacturing - Container,PTNONIPM,Known,10,,2006,1,Abbreviation was N0304
+SNCR; Glass Manufacturing - Flat,NSNCRGMFT,NOx,SNCR,Glass Manufacturing - Flat,PTNONIPM,Known,10,,2006,1,Abbreviation was N0313
+SNCR; Glass Manufacturing - Pressed,NSNCRGMPD,NOx,SNCR,Glass Manufacturing - Pressed,PTNONIPM,Known,10,,2006,1,Abbreviation was N0324
+SNCR; ICI Boilers - Coal,NSNCRIBC,NOx,SNCR,ICI Boilers - Coal,PTNONIPM,Known,20,,2003,26|35, 
+SNCR; ICI Boilers - Coal/Cyclone,NSNCRIBCC,NOx,SNCR,ICI Boilers - Coal/Cyclone,PTNONIPM,Known,20,,2006,1,Abbreviation was N0141
+SNCR; ICI Boilers - Coal/Stoker,NSNCRIBCS,NOx,SNCR,ICI Boilers - Coal/Stoker,PTNONIPM,Known,20,,2006,1,Abbreviation was N0131
+SNCR; ICI Boilers - Coal/Wall,NSNCRIBCW,NOx,SNCR,ICI Boilers - Coal/Wall,PTNONIPM,Known,20,,2006,1,Abbreviation was N0111
+SNCR; ICI Boilers - Coke,NSNCRIBCK,NOx,SNCR,ICI Boilers - Coke,PTNONIPM,Known,20,,2006,1,Abbreviation was N0421
+SNCR; ICI Boilers - Distillate Oil,NSNCRIBDO,NOx,SNCR,ICI Boilers - Distillate Oil,PTNONIPM,Known,20,,2006,1,Abbreviation was N0164
+SNCR; ICI Boilers - Gas,NSNCRICBG,NOx,SNCR,ICI Boilers - Gas,PTNONIPM,Known,20,,2006,26|35, 
+SNCR; ICI Boilers - Liquid Waste,NSNCRIBLW,NOx,SNCR,ICI Boilers - Liquid Waste,PTNONIPM,Known,20,,2006,1,Abbreviation was N0454
+SNCR; ICI Boilers - LPG,NSNCRIBLP,NOx,SNCR,ICI Boilers - LPG,PTNONIPM,Known,20,,2006,1,Abbreviation was N0434
+SNCR; ICI Boilers - Natural Gas,NSNCRIBNG,NOx,SNCR,ICI Boilers - Natural Gas,PTNONIPM,Known,20,,2006,1,Abbreviation was N0175
+SNCR; ICI Boilers - Residual Oil,NSNCRIBRO,NOx,SNCR,ICI Boilers - Residual Oil,PTNONIPM,Known,20,,2006,1,Abbreviation was N0154
+SNCR; Indust. Incinerators,NSNCRIDIN,NOx,SNCR,Indust. Incinerators,PTNONIPM,Known,20,,2006,1,Abbreviation was N0601
+"SNCR; Industrial NG ICE, 4cycle (rich)",NSNCRINGI4,NOx,SNCR,"Industrial NG ICE, 4cycle (rich)",PTNONIPM,Known,,,,40,
+SNCR; In-Process Fuel Use;Bituminous Coal; Gen,NSNCRBCGN,NOx,SNCR,In-Process Fuel Use;Bituminous Coal; Gen,PTNONIPM,Known,20,,2006,1,Abbreviation was N0831
+SNCR; Internal Combustion Engines - Gas,NSNCRICGS,NOx,SNCR,Internal Combustion Engines - Gas,PTNONIPM,Known,20,,2006,1,Abbreviation was N02213SNCR
+SNCR; Iron & Steel Mills - Annealing,NSNCRISAN,NOx,SNCR,Iron & Steel Mills - Annealing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0363
+SNCR; Medical Waste Incinerators,NSNCRMWIN,NOx,SNCR,Medical Waste Incinerators,PTNONIPM,Known,20,,2006,1,Abbreviation was N0391
+SNCR; Municipal Waste Combustors,NSNCRMWCB,NOx,SNCR,Municipal Waste Combustors,PTNONIPM,Known,20,,2006,1,Abbreviation was N0381
+SNCR; Process Heaters - Distillate Oil,NSNCRPHDO,NOx,SNCR,Process Heaters - Distillate Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0253
+SNCR; Process Heaters - LPG,NSNCRPHLP,NOx,SNCR,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0483
+SNCR; Process Heaters - Natural Gas,NSNCRPHNG,NOx,SNCR,Process Heaters - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0273
+SNCR; Process Heaters - Other Fuel,NSNCRPHOF,NOx,SNCR,Process Heaters - Other Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0493
+SNCR; Process Heaters - Process Gas,NSNCRPHPG,NOx,SNCR,Process Heaters - Process Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0473
+SNCR; Process Heaters - Residual Oil,NSNCRPHRO,NOx,SNCR,Process Heaters - Residual Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0263
+SNCR; Solid Waste Disp;Gov;Other Incin;Sludge,NSNCRSWIN,NOx,SNCR,Solid Waste Disp;Gov;Other Incin;Sludge,PTNONIPM,Known,20,,2006,1,Abbreviation was N0891
+SNCR; Space Heaters - Distillate Oil,NSNCRSHDO,NOx,SNCR,Space Heaters - Distillate Oil,PTNONIPM,Known,20,,2006,1,Abbreviation was N0544
+SNCR; Space Heaters - Natural Gas,NSNCRSHNG,NOx,SNCR,Space Heaters - Natural Gas,PTNONIPM,Known,20,,2006,1,Abbreviation was N0555
+SNCR; Sulfate Pulping - Recovery Furnaces,NSNCRSPRF,NOx,SNCR,Sulfate Pulping - Recovery Furnaces,PTNONIPM,Known,20,,2006,1,Abbreviation was N0615
+SNCR; Utility Boiler - Coal/Tangential,NSNCRUBCT,NOx,SNCR,Utility Boiler - Coal/Tangential,PTIPM,Known,20,,2006,1,N00201
+SNCR; Utility Boiler - Coal/Wall,NSNCRUBCW,NOx,SNCR,Utility Boiler - Coal/Wall,PTIPM,Known,20,,2006,1,N00101
+SNCR; Utility Boiler - Cyclone,NSNCRUBCY,NOx,SNCR,Utility Boiler - Cyclone,PTIPM,Known,20,,2006,1,N00701
+SNCR; Utility Boiler - Oil-Gas/Tangential,NSNCRUBOT,NOx,SNCR,Utility Boiler - Oil-Gas/Tangential,PTIPM,Known,20,,2006,1,N00601
+SNCR; Utility Boiler - Oil-Gas/Wall,NSNCRUBOW,NOx,SNCR,Utility Boiler - Oil-Gas/Wall,PTIPM,Known,20,,2006,1,N00501
+SNCR;ICI Boilers - Oil,NSNCRICBO,NOx,SNCR,ICI Boilers - Oil,PTNONIPM,Known,20,,2006,26|35, 
+Spray Dryer Absorber;Cement Kilns (dry process),SSPRADRKL,SO2,Spray Dry Absorber,Cement Kilns,PTNONIPM,Known,,,2006,, 
+Spray Dryer Absorber;Cement Kilns (preheater),SSPRAPRKL,SO2,Spray Dry Absorber,Cement Kilns,PTNONIPM,Known,,,2006,, 
+Spray Dryer Absorber;Cement Kilns (preheater/precalciner),SSPRAPRPR,SO2,Spray Dry Absorber,Cement Kilns,PTNONIPM,Known,,,2006,, 
+Steam Injection; Gas Turbines - Natural Gas,NSTINGTNG,NOx,Steam Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0242
+Sulfur Recovery and/or Tail Gas Treatment; Sulfur Recovery Plants - Elemental Sulfur (Claus: 2 Stage w/o control (92-95% removal)),SSRTGSRP95,SO2,Sulfur Recovery and/or Tail Gas Treatment,Sulfur Recovery Plants - Elemental Sulfur (Claus: 2 Stage w/o control (92-95% removal)),PTNONIPM,Known,15,,2006,1,S0602
+Sulfur Recovery and/or Tail Gas Treatment; Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (95-96% removal)),SSRTGSRP96,SO2,Sulfur Recovery and/or Tail Gas Treatment,Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (95-96% removal)),PTNONIPM,Known,15,,2006,1,S0702
+Sulfur Recovery and/or Tail Gas Treatment; Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (96-97% removal)),SSRTGSRP97,SO2,Sulfur Recovery and/or Tail Gas Treatment,Sulfur Recovery Plants - Elemental Sulfur (Claus: 3 Stage w/o control (96-97% removal)),PTNONIPM,Known,15,,2006,1,S0802
+Sulfur Recovery and/or Tail Gas Treatment; Sulfur Recovery Plants - Elemental Sulfur Production (Not Classified),SSRTGSRPNC,SO2,Sulfur Recovery and/or Tail Gas Treatment,Sulfur Recovery Plants - Elemental Sulfur Production (Not Classified),PTNONIPM,Known,15,,2006,1,S1001
+Sulfur Recovery and/or Tail Gas Treatment; Sulfur Recovery Plants - Sulfur Removal Process (99.9% removal),SSRTGSRP99,SO2,Sulfur Recovery and/or Tail Gas Treatment,Sulfur Recovery Plants - Sulfur Removal Process (99.9% removal),PTNONIPM,Known,15,,2006,1,S0901
+Sulfuric Acid Plant; Primary Metals Industry,SSADPPRMTL,SO2,Sulfuric Acid Plant,Primary Metals Industry,PTNONIPM,Known,15,,2006,1,S1401
+FGD; Secondary Metal Production,SFGDSECMP,SO2,FGD,Secondary Metal Production,PTNONIPM,Known,15,,2006,1,S1501
+Thermal Reduction; Adipic Acid Manufacturing,NTHRDADMF,NOx,Thermal Reduction,Adipic Acid Manufacturing,PTNONIPM,Known,10,,2006,1,Abbreviation was N0281
+ULNB; Process Heaters - Distillate Oil,NULNBPHDO,NOx,ULNB,Process Heaters - Distillate Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0254
+ULNB; Process Heaters - LPG,NULNBPHLP,NOx,ULNB,Process Heaters - LPG,PTNONIPM,Known,15,,2006,1,Abbreviation was N0484
+ULNB; Process Heaters - Natural Gas,NULNBPHNG,NOx,ULNB,Process Heaters - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0274
+ULNB; Process Heaters - Other Fuel,NULNBPHOF,NOx,ULNB,Process Heaters - Other Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0494
+ULNB; Process Heaters - Process Gas,NULNBPHPG,NOx,ULNB,Process Heaters - Process Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0474
+ULNB; Process Heaters - Residual Oil,NULNBPHRO,NOx,ULNB,Process Heaters - Residual Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0264
+Venturi scrubber; Catalytic cracking units,PVENTCCU,PM2_5,Venturi scrubber,Catalytic cracking units,PTNONIPM,Emerging,,,,39,
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Coke,PVSCRMPCE,PM10,Venturi Scrubber,Ferrous Metals Processing - Coke,PTNONIPM,Known,10,,2006,1,P2133
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Gray Iron Foundaries,PVSCRMPGI,PM10,Venturi Scrubber,Ferrous Metals Processing - Gray Iron Foundaries,PTNONIPM,Known,10,,2006,1,P2165
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Iron & Steel Production,PVSCRMPIS,PM10,Venturi Scrubber,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,10,,2006,1,P2156
+Venturi Scrubber;(PM10) Ferrous Metals Processing - Steel Foundaries,PVSCRMPSF,PM10,Venturi Scrubber,Ferrous Metals Processing - Steel Foundaries,PTNONIPM,Known,10,,2006,1,P2176
+Venturi Scrubber;(PM10) Industrial Boilers - Coal,PVESCIBCL,PM10,Venturi Scrubber,Industrial Boilers - Coal,PTNONIPM,Known,10,,2006,1,P2014
+Venturi Scrubber;(PM10) Industrial Boilers - Oil,PVESCIBOL,PM10,Venturi Scrubber,Industrial Boilers - Oil,PTNONIPM,Known,10,,2006,1,P2032
+Venturi Scrubber;(PM10) Industrial Boilers - Wood,PVESCIBWD,PM10,Venturi Scrubber,Industrial Boilers - Wood,PTNONIPM,Known,10,,2006,1,P2024
+Venturi Scrubber;(PM10) Mineral Products - Coal Cleaning,PVSCRMICC,PM10,Venturi Scrubber,Mineral Products - Coal Cleaning,PTNONIPM,Known,10,,2006,1,P2195
+Venturi Scrubber;(PM10) Mineral Products - Stone Quarrying & Processing,PVSCRMISQ,PM10,Venturi Scrubber,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,10,,2006,1,P2207
+Wastewater; Petroleum Wastewater,VWWPWW,VOC,Wastewater,Petroleum Wastewater,PTNONIPM,Known,,,,40,
+Water Injection; Gas Turbines - Jet Fuel,NWTINGTJF,NOx,Water Injection,Gas Turbines - Jet Fuel,PTNONIPM,Known,15,,2006,1,Abbreviation was N0501
+Water Injection; Gas Turbines - Natural Gas,NWTINGTNG,NOx,Water Injection,Gas Turbines - Natural Gas,PTNONIPM,Known,15,,2006,1,Abbreviation was N0241
+Water Injection; Gas Turbines - Oil,NWTINGTOL,NOx,Water Injection,Gas Turbines - Oil,PTNONIPM,Known,15,,2006,1,Abbreviation was N0231
+"Water Injection;Combustion Turbine, Aeroderivative Gas Turbine",NWIGTAGT,NOx,Water Injection,Gas Turbines,PTNONIPM,Known,15,,2005,20|35, 
+Wet ESP - Wire Plate Type;(PM10) Chemical Manufacture,PWESPCHMN,PM10,Wet ESP - Wire Plate Type,Chemical Manufacture,PTNONIPM,Known,20,,2006,1,P2251
+Wet ESP - Wire Plate Type;(PM10) Ferrous Metals Processing - Iron & Steel Production,PWESPMPIS,PM10,Wet ESP - Wire Plate Type,Ferrous Metals Processing - Iron & Steel Production,PTNONIPM,Known,20,,2006,1,P2154
+Wet ESP - Wire Plate Type;(PM10) Mineral Products - Other,PWESPMIOR,PM10,Wet ESP - Wire Plate Type,Mineral Products - Other,PTNONIPM,Known,20,,2006,1,P2214
+Wet ESP - Wire Plate Type;(PM10) Mineral Products - Stone Quarrying & Processing,PWESPMISQ,PM10,Wet ESP - Wire Plate Type,Mineral Products - Stone Quarrying & Processing,PTNONIPM,Known,20,,2006,1,P2204
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Aluminum,PWESPMPAM,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Aluminum,PTNONIPM,Known,20,,2006,1,P2113
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Copper,PWESPMPCR,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Copper,PTNONIPM,Known,20,,2006,1,P2083
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Lead,PWESPMPLD,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Lead,PTNONIPM,Known,20,,2006,1,P2093
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Other,PWESPMPOR,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Other,PTNONIPM,Known,20,,2006,1,P2123
+Wet ESP - Wire Plate Type;(PM10) Non-Ferrous Metals Processing - Zinc,PWESPMPZC,PM10,Wet ESP - Wire Plate Type,Non-Ferrous Metals Processing - Zinc,PTNONIPM,Known,20,,2006,1,P2103
+Wet ESP - Wire Plate Type;(PM10) Wood Pulp & Paper,PWESPWDPP,PM10,Wet ESP - Wire Plate Type,Wood Pulp & Paper,PTNONIPM,Known,20,,2006,1,P2242
+Wet FGD; Bituminous/Subbituminous Coal (Industrial Boilers),SWFGSIBBCL,SO2,Wet FGD,Bituminous/Subbituminous Coal (Industrial Boilers),PTNONIPM,Known,30,,2006,1,S3002
+Wet FGD; Lignite (Industrial Boilers),SWFGDIBLG,SO2,Wet FGD,Lignite (Industrial Boilers),PTNONIPM,Known,30,,2006,1,S3005
+Wet FGD; Residual Oil (Industrial Boilers),SWFGDIBRO,SO2,Wet FGD,Residual Oil (Industrial Boilers),PTNONIPM,Known,30,,2006,1,S3006
+Wet Gas Scrubber;Cement Kilns (dry process),SSCRBDRKL,SO2,Wet Gas Scrubber,Cement Kilns,PTNONIPM,Known,,,2006,, 
+Wet Gas Scrubber;Cement Kilns (preheater),SSCRBPRKL,SO2,Wet Gas Scrubber,Cement Kilns,PTNONIPM,Known,,,2006,, 
+Wet Gas Scrubber;Cement Kilns (preheater/precalciner),SSCRBPRPR,SO2,Wet Gas Scrubber,Cement Kilns,PTNONIPM,Known,,,2006,, 
+Wet Gas Scrubber;Cement Kilns (wet process),SSCRBCEMKL,SO2,Wet Gas Scrubber,Cement Kilns,PTNONIPM,Known,,,2006,, 
+Wet Gas Scrubber;Petroleum Refinery Catalytic and Thermal Cracking Units,SSCRBPETCK,SO2,Wet Gas Scrubber,Petroleum Refinery Catalytic and Thermal Cracking Units,PTNONIPM,Known,,,2006,28|29, 
+FGD; Inorganic Chemical Manufacture,SFGDSINCM,SO2,FGD,Inorganic Chemical Manufacture,PTNONIPM,Known,15,0,2006,1,S1101

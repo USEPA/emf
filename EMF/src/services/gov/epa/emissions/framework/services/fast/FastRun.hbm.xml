@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.fast.FastRun" table="fast_runs" schema="fast"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="name" column="name"	type="java.lang.String"	not-null="true"/>
+	<property name="description" column="description" type="java.lang.String"/>
+	<property name="abbreviation" column="abbreviation"	type="java.lang.String"	not-null="true"/>
+	<many-to-one
+            name="grid" 
+            class="gov.epa.emissions.framework.services.fast.Grid"
+            column="grid_id"/> 
+	<property name="runStatus" column="run_status"	type="java.lang.String"/>
+	<many-to-one
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+	<property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="startDate" column="start_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="completionDate" column="completion_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+  	<property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="copiedFrom" column="copied_from" type="java.lang.String" not-null="false"/>
+	<many-to-one name="invTableDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="invtable_dataset_id"/>
+    <property name="invTableDatasetVersion" column="invtable_dataset_version" type="integer"/>
+	<many-to-one name="speciesMapppingDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="species_mapping_dataset_id"/>
+    <property name="speciesMapppingDatasetVersion" column="species_mapping_dataset_version" type="integer"/>
+	<many-to-one name="transferCoefficientsDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="transfer_coefficients_dataset_id"/>
+    <property name="transferCoefficientsDatasetVersion" column="transfer_coefficients_dataset_version" type="integer"/>
+
+	<many-to-one name="cancerRiskDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="cancer_risk_dataset_id"/>
+    <property name="cancerRiskDatasetVersion" column="cancer_risk_dataset_version" type="integer"/>
+	<many-to-one name="domainPopulationDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="domain_population_dataset_id"/>
+    <property name="domainPopulationDatasetVersion" column="domain_population_dataset_version" type="integer"/>
+
+	<array name="outputSectors" table="fast_run_output_sectors" schema="fast">
+    	<key column="fast_run_id" not-null="true"/>
+    	<list-index column="list_index"/>
+		<many-to-many class="gov.epa.emissions.commons.data.Sector" column="sector_id"/>
+	</array>
+	
+	<array name="inventories" table="fast_run_inventories" schema="fast">
+    	<key column="fast_run_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<composite-element class="gov.epa.emissions.framework.services.fast.FastRunInventory">
+			<property name="version" column="inventory_dataset_version" type="integer" not-null="true"/>
+        	<many-to-one name="dataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="inventory_dataset_id" not-null="true" cascade="none"/>
+    	</composite-element>
+	</array>
+
+  </class> 
+</hibernate-mapping>  

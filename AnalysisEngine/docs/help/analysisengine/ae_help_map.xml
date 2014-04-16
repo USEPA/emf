@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN" "http://java.sun.com/products/javahelp/map_1_0.dtd">
+
+<map version="1.0">
+  <mapID target="sensitivity_intro" url="html/Analysis_Engine_intro.htm" />
+  <mapID target="Sensitivity_Installation" url="html/Analysis_Engine_Installation.htm" />
+  <mapID target="Sensitivity_Basic_Display" url="html/Analysis_Engine_Basic_Display.htm" />
+  <mapID target="Sensitivity_Command_Line_Approach" url="html/Analysis_Engine_Command_Line_Approach.htm" />
+  <mapID target="Sensitivity_import_function" url="html/Analysis_Engine_import_function.htm" />
+  <mapID target="Sensitivity_recent_files_function" url="html/Analysis_Engine_recent_files_function.htm" />
+  <mapID target="Sensitivity_export_function" url="html/Analysis_Engine_export_function.htm" />
+  <mapID target="Sensitivity_save_and_load_configuration" url="html/Analysis_Engine_save_and_load_configuration.htm" />
+  <mapID target="Sensitivity_load_configuration" url="html/Analysis_Engine_load_configuration.htm" />
+  <mapID target="Sensitivity_sort_columns_function" url="html/Analysis_Engine_sort_column_function.htm" />
+  <mapID target="Sensitivity_show_largest_rows_function" url="html/Analysis_Engine_show_largest_function.htm" />
+  <mapID target="show_smallest_rows_function" url="html/Analysis_Engine__show_smallest_rows_function.htm" />
+  <mapID target="Sensitivity_filter_rows_function" url="html/Analysis_Engine_show_smallest_rows_function.htm" />
+  <mapID target="sensitivity_show_hide_columns_function" url="html/Analysis_Engine_statistics_selection_function.htm" />
+  <mapID target="sensitivity_Format_columns_function" url="html/Analysis_Engine_Format_columns_function.htm" />
+  <mapID target="sensitivity_statistics_selection_function" url="html/Analysis_Engine_statistics_selection_tab.htm" />
+  <mapID target="sensitivity_statistics_percentile_function" url="html/Analysis_Engine_statistics_percentile_function.htm" />
+  <mapID target="sensitivity_statistics_histogram_function" url="html/Analysis_Engine_statistics_histogram_function.htm" />
+  <mapID target="analysis_engine_tool_analysis_engine_statistics_correlation_function_htm" url="html/Analysis_Engine_statistics_correlation_function.htm" />
+  <mapID target="analysis_engine_tool_analysis_engine_statistics_regression_function_htm" url="html/Analysis_Engine_statistics_regression_function.htm" />
+  <mapID target="analysis_engine_tool_analysis_engine_statistics_weka_function_htm" url="html/Analysis_Engine_statistics_weka_function.htm" />
+  <mapID target="sensitivity_Choosing_Plot_Types" url="html/Analysis_Engine_Choosing_Plot_Types.htm" />
+  <mapID target="Sensitivity_Plot_Parameters" url="html/Analysis_Engine_Plot_Parameters.htm" />
+  <mapID target="Sensitivity_Plot_Parameters_Glossary" url="html/Analysis_Engine_Plot_Parameters_Glossary.htm" />
+</map>

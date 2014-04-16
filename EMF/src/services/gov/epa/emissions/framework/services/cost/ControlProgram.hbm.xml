@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.cost.ControlProgram" table="control_programs" schema="emf"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="name" column="name"	type="java.lang.String"	not-null="true"/>
+	<property name="description" column="description" type="java.lang.String"/>
+  	<property name="startDate" column="start_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="endDate" column="end_date" type="java.util.Date" not-null="false" length="4"/>
+
+	<many-to-one
+        name="controlProgramType" 
+        class="gov.epa.emissions.framework.services.cost.ControlProgramType"
+        column="control_program_type_id" not-null="true" />
+
+	<many-to-one name="dataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id" not-null="true"/>
+	<property name="datasetVersion" column="dataset_version" type="integer" not-null="true"/>
+
+	<many-to-one 
+		name="creator" 
+		class="gov.epa.emissions.commons.security.User" 
+		column="creator_id"/>
+		 
+	<property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+  	<property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+
+	<array name="technologies" table="control_program_technologies">
+    	<key column="control_program_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<many-to-many class="gov.epa.emissions.framework.services.cost.data.ControlTechnology" column="control_technology_id"/>
+	</array>
+
+	<array name="controlMeasures" table="control_program_measures">
+    	<key column="control_program_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<many-to-many class="gov.epa.emissions.framework.services.cost.ControlMeasure" column="control_measure_id"/>
+	</array>
+
+  </class> 
+</hibernate-mapping>

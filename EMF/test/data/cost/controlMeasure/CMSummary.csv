@@ -1,0 +1,33 @@
+CMName,CMAbbreviation,MajorPoll,ControlTechnology,SourceGroup,Sector,Class,EquipLife,NEIDeviceCode,DateReviewed,DataSource,Description
+Vacuum Sweeping; Paved Roads (All),PPVAC000,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 1),PPVAC110,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 2),PPVAC130,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 3),PPVAC150,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 4),PPVAC170,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 5),PPVAC190,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 6),PPVAC210,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 7),PPVAC230,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 8),PPVAC250,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 9),PPVAC270,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 10),PPVAC290,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 11),PPVAC310,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Vacuum Sweeping; Paved Roads (Unknown 12),PPVAC330,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|11|12,
+Chemical Stabilization; Unpaved Roads (All),PUCHS000,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|3|7|9,
+Chemical Stabilization; Unpaved Roads (Unknown 1),PUCHS150,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|3|7|9,
+Chemical Stabilization; Unpaved Roads (Unknown 2),PUCHS170,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|3|7|9
+Chemical Stabilization; Unpaved Roads (Unknown 3),PUCHS190,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|3|7|9
+Chemical Stabilization; Unpaved Roads (Unknown 4),PUCHS210,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|3|7|9
+Hot Asphalt Paving; Unpaved Roads (All),PUHAP000,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|3
+Hot Asphalt Paving; Unpaved Roads (Unknown 1),PUHAP270,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|3
+Hot Asphalt Paving; Unpaved Roads (Unknown 2),PUHAP290,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|3
+Hot Asphalt Paving; Unpaved Roads (Unknown 3),PUHAP310,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|3
+Hot Asphalt Paving; Unpaved Roads (Unknown 4),PUHAP330,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|3
+Bale Stack/Propane Burning; Agricultural Burning,PAGBU,PM10,Bale Stack/Propane Burning,Agricultural Burning,NONPT,Known,,,1998,1|2|3|4|23
+Soil Conservation Plans; Agricultural Tilling,PAGTL,PM10,Soil Conservation Plans,Agricultural Tilling,NONPT,Known,,,1997,1|2|5|6
+Watering; Beef Cattle Feedlots,PCATFWAT,PM10,Watering,Beef Cattle Feedlots,NONPT,Known,10,,1998,1|2|13|14
+Dust Control Plan; Construction Activities,PCONWATCHM,PM10,Dust Control Plan,Construction Activities,AFDUST,Known,,,1997,1|2|5|15|16
+Increase Fuel Moisture; Prescribed Burning,PPRBRNFULM,PM10,Increase Fuel Moisture,Prescribed Burning,PTFIRE,Known,,,1997,1|2|17|18|23
+Education and Advisory Program; Residential Wood Combustion,PRESWDEDAD,PM10,Education and Advisory Program,Residential Wood Combustion,NONPT,Emerging,,,1997,1|2|5
+NSPS Compliant Wood Stove; Residential Wood Combustion,PRESWDCSTV,PM10,NSPS Compliant Wood Stove,Residential Wood Combustion,NONPT,Known,,,2005,1|2|19
+Catalytic Oxidizer; Conveyorized Charbroilers,PCHRBCATOX,PM10,Catalytic Oxidizer,Conveyorized Charbroilers,NONPT,Known,10,,2005,1|2|20|21
+ESP for Commercial Cooking; Conveyorized Charbroilers,PCHRBESP,PM10,ESP for Commercial Cooking,Conveyorized Charbroilers,NONPT,Known,,,2006,22

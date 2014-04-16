@@ -1,0 +1,15 @@
+REGION,SURROGATE,SURROGATE CODE,GENERATE,QUALITY ASSURE
+USA,Population,100,NO,YES
+USA,Housing,110,NO,YES
+USA,Urban Population ,120,NO,YES
+USA,Residential Heating - Natural Gas,150,NO,YES
+USA,Total Road Miles,240,NO,YES
+USA,Urban Primary Road Miles,200,NO,YES
+USA,3/4 Total Roadway Miles plus 1/4 Population,255,YES,
+USA,Land  ,340,NO,YES
+USA,Rural Land Area,400,YES,YES
+USA,Total Agriculture,310,YES,YES
+USA,Industrial Land,505,NO,YES
+USA,Heavy and High Tech Industrial (IND1 + IND5),570,NO,YES
+USA,Forest external,328,YES,NO
+NA,Population,100,YES,

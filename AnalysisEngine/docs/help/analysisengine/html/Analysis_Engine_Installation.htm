@@ -1,0 +1,426 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+
+
+
+
+<head>
+
+<title>Analysis_Engine_Installation</title>
+
+
+
+ <meta HTTP-EQUIV=Content-Type CONTENT="text/html; charset=windows-1252">
+<meta name=date content="11 9, 2001 2:26:37 PM">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=1>
+<meta name=layout-height content=1916>
+<meta name=layout-width content=657>
+
+
+
+
+ <link rel="StyleSheet" href="../MIMS_Style.css">
+
+
+
+ <META NAME="generator" CONTENT="RoboHelp by eHelp Corporation www.ehelp.com">
+</head>
+
+
+
+
+<body>
+
+<p style="font-size: large;
+			font-family: Arial;
+			margin-bottom: 0pt;
+			font-weight: bold;"><span><font size=5 style="font-size: large;
+			font-family: Arial;
+			margin-bottom: 0pt;
+			font-weight: bold;"><B><span><span style="font-size: large;
+															font-family: Arial;
+															font-weight: bold;"><font size=5 style="font-size: large;
+															font-family: Arial;
+															font-weight: bold;"><B><img src="../images/limeheader.jpg" x-save-file="TRUE" x-save-method="compute-relative" style="border: none;
+			float: none;
+			width: 210px;
+			height: 34px;
+			border-style: none;
+			border-style: none;" width="210" height="34" border="0"></B></font></span></span></B></font></span></p>
+
+<h3 style="margin-top: 0pt;
+			margin-bottom: 0pt;
+			font-size: 14pt;">Installing the Analysis Engine Tool</h3>
+
+&nbsp;<img src="../images/horiz_lime_med.jpg" x-save-file="TRUE" x-save-method="compute-relative" x-maintain-ratio="TRUE" style="height: 3px;
+			width: 515px;
+			float: none;
+			border-style: none;
+			border-style: none;" height="3" width="515" border="0"> 
+
+<p style="font-family: Arial;
+			font-weight: normal;
+			font-style: normal;
+			font-size: 12pt;">The Analysis Engine has been packaged within 
+ the MIMS Framework. &nbsp;The 
+ MIMS framework relies on the operation of other publicly available software 
+ programs (Java Runtime Environment and R), so these programs must also 
+ be installed to operate the Analysis Engine. &nbsp;The 
+ MIMS framework is designed to operate in the Java Runtime Environment 
+ (version 1.4 or higher). &nbsp;Below 
+ you will find instructions on:</p>
+
+<p style="font-family: Arial;
+			font-weight: normal;
+			font-style: normal;
+			font-size: 12pt;"><a href="..\#java_check">Checking your current 
+ version of the Java Runtime Environment in Windows</a></p>
+
+<p style="font-family: Arial;
+			font-weight: normal;
+			font-style: normal;
+			font-size: 12pt;"><a href="..\#windows_install">Installing 
+ the Analysis Engine for Windows Systems</a></p>
+
+<p style="font-family: Arial;
+			font-weight: normal;
+			font-style: normal;
+			font-size: 12pt;"><a href="..\#unix_install">Installing the 
+ Analysis Engine for UNIX Systems</a></p>
+
+<p style="font-family: Arial;
+			font-weight: normal;
+			font-style: normal;
+			font-size: 12pt;"><a href="..\#R_install">Installing R Statistical 
+ Software</a></p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;
+			font-weight: bold;
+			font-style: italic;"><a name=java_check></a>Checking your current 
+ version of the Java Runtime Environment in Windows:</p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">Using the Windows Start menu:</p>
+
+<ol style="list-style: decimal;"
+	type=1>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 0pt;
+								margin-bottom: 5pt;
+								font-size: 12pt;">Select <span style="font-weight: bold;"><B>Find</B></span></p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 0pt;
+								margin-bottom: 5pt;
+								font-size: 12pt;">Select the <span style="font-weight: bold;"><B>File 
+ or Folder</B></span> menu option</p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 0pt;
+								margin-bottom: 5pt;
+								font-size: 12pt;">Search for java.exe on 
+ local drives. Check the <span style="font-style: italic;"><I>Include subfolders</I></span> 
+ check box and then click the <span style="font-weight: bold;"><B>Find Now</B></span> 
+ button.</p></li>
+</ol>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">If you find the file, use a DOS prompt to 
+ put yourself in the file's directory. &nbsp;If 
+ you have more than one copy, check the one in the Windows or WINNT directory 
+ first.</p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">If, for example, java.exe is in the folder 
+ c:\Windows\system\, you would type</p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">&gt; cd windows\system </p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">at a command prompt (i.e., a DOS window). 
+ Note that in DOS, file names must be reduced to 8 characters or fewer.</p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">Then type:</p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">&gt; java -version</p>
+
+<p style="font-family: Arial;
+			margin-top: 0pt;
+			margin-bottom: 5pt;
+			font-size: 12pt;">at the command prompt. &nbsp;The 
+ Analysis Engine has not been tested with versions higher than Java 1.4.</p>
+
+<p style="font-family: Arial;
+			font-weight: bold;
+			font-size: 12pt;
+			font-style: italic;"><a name=windows_install></a>Installing 
+ the Analysis Engine for Windows Systems:</p>
+
+<ol style="list-style: decimal;"
+	type=1>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Install the Java 1.4 
+ Java Runtime Environment (for non-developers) or Java Development Kit, 
+ available for free from Sun at <a href="http://java.sun.com/j2se/">http://java.sun.com/j2se/</a>. 
+ &nbsp;Note that 
+ some problems have been observed with Java 1.4.1 on Windows XP operating 
+ systems, and Java 1.4.2 is recommended.</p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Download the MIMS Framework 
+ installation file from <a href="http://www.epa.gov/asmdnerl/mims/software/index.html">http://www.epa.gov/asmdnerl/mims/software/index.html</a>.</p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Execute the downloaded 
+ zip file (mims_rel.exe) or run PKUNZIP on (mims_rel.zip) to extract the 
+ MIMS files. </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Edit the batch file bin\runTable.bat 
+ to set the TABLEAPPHOME variable to the directory where MIMS is installed 
+ (default is c:\mims). </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Put Java 1.4 (or higher) 
+ and the R software on the path (using system properties on NT; this will 
+ not take effect until after a system reboot) or edit runTable.bat to explicitly 
+ refer to the Java and R executables. The Java installations from Sun contain 
+ a bin directory, which contains the Java executable. </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">After the R statistical 
+ software is installed (see below), double-click runTable.bat or its shortcut 
+ (Windows 98/Me) to start the Analysis Engine. </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">On-line help is available.</p></li>
+</ol>
+
+<p style="font-family: Arial;
+			font-style: italic;
+			font-weight: bold;
+			font-size: 12pt;"><a name=unix_install></a>Installing the Analysis 
+ Engine for UNIX Systems and MacOS:</p>
+
+<ol style="list-style: decimal;"
+	type=1>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Have the system administrator 
+ install the Java 1.4 Java Runtime Environment (for non-developers) or 
+ Java Development Kit, available for free from Sun at <a href="http://java.sun.com/j2se/">http://java.sun.com/j2se/</a>. 
+ </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Download the MIMS installation 
+ file from <a href="http://www.epa.gov/asmdnerl/mims/software/index.html">http://www.epa.gov/asmdnerl/mims/software/index.html</a>. 
+ </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Expand and untar the 
+ downloaded compressed tar file. </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Edit the shell script 
+ file bin/runTable.sh to set the TABLEAPPHOME variable to the directory 
+ where the MIMS framework is installed (default is ${USER}/mims). &nbsp;For 
+ MacOS installations, the path should be edited to &quot;/Users/${USER}/mims&quot; 
+ to take advantage of the usual installation path. &nbsp;Also 
+ make sure that the path to the Java executable (variable &quot;JAVA&quot;) 
+ is correct in the runTable.sh script. </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt;
+				font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;"><span style="font-family: Arial; font-size: 12pt;"><font size=3 style="font-size:12pt;">Put 
+ Java and R on the path and set the </font></span><span style="font-family: Arial;
+														margin-top: 5pt;
+														margin-bottom: 0pt;
+														font-size: 12pt;"><font size=3 style="font-size:12pt;">JAVA_HOME 
+ environment variable to point to the installation of Java.</font></span></p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">After the R statistical 
+ software is installed (see below), execute the runTable.sh to start the 
+ Analysis Engine. </p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">On-line help is available. 
+ </p></li>
+</ol>
+
+<p style="font-family: Arial;
+			font-style: italic;
+			font-weight: bold;
+			font-size: 12pt;"><a name=R_install></a>Installing R Statistical 
+ Software:</p>
+
+<p style="font-family: Arial;
+			margin-top: 5pt;
+			margin-bottom: 0pt;
+			font-size: 12pt;">The R software provides options for plot 
+ types, layouts, and output formats not found in the Analysis Engine or 
+ the MIMS framework alone. The Analysis Engine will work only if R has 
+ been installed and is in the runTable.bat paths. </p>
+
+<ol style="list-style: decimal;"
+	type=1>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Click &quot;Download 
+ CRAN&quot; at <a href="http://www.r-project.org/">http://www.r-project.org/</a> 
+ and choose the appropriate link and operating system. &nbsp;Then 
+ download the base version of the R statistical software. &nbsp;The 
+ R versions 1.9.1 and 2.0.1 have been successfully used with MIMS.</p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Read the Readme file 
+ for instructions on installing the package. &nbsp;Then 
+ install the base R package according to these instructions. &nbsp;Note 
+ the directory where the package is installed.</p></li>
+	
+	<li style="font-family: Arial;
+				font-size: 11pt;
+				/*begin!kadov{{*/ font-family: Arial;
+				font-size: 12pt; /*}}end!kadov*/ " class="kadov-p"><p style="font-family: Arial;
+								margin-top: 5pt;
+								margin-bottom: 0pt;
+								font-size: 12pt;">Open the runTable.bat 
+ file with a text editor (e.g., Microsoft WordPad). &nbsp;In 
+ the line following the statement &quot;<span style="font-family: 'Courier New', monospace;">add 
+ location of R executable to PATH (used for generating plots)</span>,&quot; 
+ be sure that the directory path matches the one you specified in Step 
+ 2. &nbsp;Save 
+ and close this file.</p></li>
+</ol>
+
+<p style="font-family: Arial;
+			margin-top: 5pt;
+			margin-bottom: 0pt;
+			font-size: 12pt;">For on-line Help within the Analysis Engine, 
+ select the <span style="font-weight: bold;"><B>Help/User Guide</B></span> menu 
+ option.</p>
+
+<p>&nbsp;</p>
+<div id='NavBar' STYLE='text-align:left;' align='left'><nobr><font size=1 color='#c0c0c0' style='font-size:9pt;' ><a href='Analysis_Engine_intro.htm'><img src='../images/bsscnav4.gif' width=27 height=19 border=no></a><a href='Analysis_Engine_Basic_Display.htm'><img src='../images/bsscnav5.gif' width=27 height=19 border=no></a></font></nobr>
+</div>
+</body>
+
+</html>

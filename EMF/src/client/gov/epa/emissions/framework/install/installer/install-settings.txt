@@ -1,0 +1,32 @@
+EMF Client Installer Extractor
+
+http://www.ie.unc.edu/cempd/projects/emf/install
+
+This is an executable version of the EMF Client Installer.  The installer should start automatically after the package is expanded, but it may take a few seconds.
+
+To download updates to the EMF client software, run the installer again by double clicking on the EMF Client Installer icon on your desktop.
+
+
+Default:
+
+C:\Program Files\EMF Client Installer
+
+
+Execute:
+
+$targetdir$\runinstaller.bat
+
+
+Shortcut:
+
+$startmenu$\EMF Client Installer\Installer.lnk
+
+$startmenu$\EMF Client Installer\Uninstall.lnk
+
+$desktop$\EMF Client Installer.lnk
+
+$targetdir$\emf-client-installer.jar
+
+$targetdir$\uninstall.jar
+
+

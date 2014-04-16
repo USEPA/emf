@@ -1,0 +1,99 @@
+# Speciation profile for CMAQ
+#   CB-IV speciation for TOG only (not VOC)
+#   PM2.5 speciation for CMAQ species
+#   Additional special MOBILE6 profiles
+#   Additional special SO2 profiles that generate SULF (not mass conserving)
+#   
+#   Revision history
+#      Changed 030102 to add MOBILE6 profiles
+#      8/3/03 Added BEIS3 profiles with profile BV309 (note that these
+#             need to be revised for significant figures)
+#
+0000  CO               CO                       1            28             1
+0000  ISOP             ISOP                     1         68.12             1
+0000  NH3              NH3                      1            17             1
+0000  NO               NO                       1            30             1
+0000  NOX              NO                    0.90            46          0.90
+0000  NOX              NO2                   0.10            46          0.10
+0000  OVOC             NR                     0.5           148          0.05
+0000  OVOC             OLE                    0.5           148           0.1
+0000  OVOC             PAR                    8.5           148          0.85
+0000  SO2              SO2                      1            64             1
+0000  SOX              SO2                      1            64             1
+0000  TERP             ALD2                   1.5        136.23           0.3
+0000  TERP             OLE                    0.5        136.23           0.1
+0000  TERP             PAR                      6        136.23           0.6
+0000  TERP             TERPB                    1        136.23             1 
+0000  TOG              ALD2         0.00076307911             1     0.0242491
+0000  TOG              ETH          0.00128917577             1     0.0459
+0000  TOG              FORM         0.00052468891             1     0.0157325
+0000  TOG              ISOP         0.00005871991             1         0.004
+0000  TOG              NR           0.01291847348             1     0.2825161
+0000  TOG              OLE          0.00189860497             1     0.0514366
+0000  TOG              PAR          0.02697941252             1     0.4930442
+0000  TOG              TOL          0.00059254117             1     0.0464625
+0000  TOG              XYL          0.00039811056             1      0.036259
+M300  NOX              NO                    0.62            30          0.62
+M300  NOX              NO2                   0.05            46          0.05
+BV309 ISOP             ISOP                   1.0            60        1.1333
+BV309 NO               NO                     1.0            14        2.1429
+BV309 OVOC             NR                     0.5           120        0.0617
+BV309 OVOC             OLE                    0.5           120        0.1233
+BV309 OVOC             PAR                    8.5           120        1.0483
+BV309 MONO             ALD2                   1.5           120        0.3400
+BV309 MONO             OLE                    0.5           120        0.1133
+BV309 MONO             PAR                    6.0           120        0.6800
+BV309 MONO             TERPB                  1.0           120        1.1333
+M6PMa SO4              PSO4                1.0000        1.0000        1.0000
+M6PMa OCARB25          POA                 1.0000        1.0000        1.0000
+M6PMa ECARB25          PEC                 1.0000        1.0000        1.0000
+M6PMa BRAKE25          PMFINE              1.0000        1.0000        1.0000
+M6PMa TIRE25           PMFINE              1.0000        1.0000        1.0000
+M6PMa OCARBPMC         PMC                 1.0000        1.0000        1.0000
+M6PMa ECARBPMC         PMC                 1.0000        1.0000        1.0000
+M6PMa GASPMC           PMC                 1.0000        1.0000        1.0000
+M6PMa BRAKEPMC         PMC                 1.0000        1.0000        1.0000
+M6PMa TIREPMC          PMC                 1.0000        1.0000        1.0000
+M6Plg GASPM25          POA                 0.7100        1.0000        0.7100
+M6Plg GASPM25          PEC                 0.2900        1.0000        0.2900
+M6Phd GASPM25          POA                 0.2000        1.0000        0.2000
+M6Phd GASPM25          PEC                 0.8000        1.0000        0.8000
+M6Pld GASPM25          POA                 0.3300        1.0000        0.3300
+M6Pld GASPM25          PEC                 0.6700        1.0000        0.6700
+95014 SO2              SO2                      1            64             1
+95014 SO2              SULF           0.022565789            98   0.022565789
+87514 SO2              SO2                      1            64             1
+87514 SO2              SULF                0.0245            98        0.0245
+75014 SO2              SO2                      1            64             1
+75014 SO2              SULF           0.028583333            98   0.028583333
+99010 SO2              SO2                      1            64             1
+99010 SO2              SULF           0.015467172            98   0.015467172
+95014 SOX              SO2                      1            64             1
+95014 SOX              SULF           0.022565789            98   0.022565789
+87514 SOX              SO2                      1            64             1
+87514 SOX              SULF                0.0245            98        0.0245
+75014 SOX              SO2                      1            64             1
+75014 SOX              SULF           0.028583333            98   0.028583333
+99010 SOX              SO2                      1            64             1
+99010 SOX              SULF           0.015467172            98   0.015467172
+99999 PM2_5            PMFINE              1.0000        1.0000        1.0000
+99999 PMC              PMC                 1.0000        1.0000        1.0000
+99999 PMC_PRE          PMC                 1.0000        1.0000        1.0000
+99999 EC2_5            PEC                 1.0000        1.0000        1.0000
+99999 OC2_5            POA                 1.0000        1.0000        1.0000
+99999 SO4_2_5          PSO4                1.0000        1.0000        1.0000
+99999 OTHER2_5         PMFINE              1.0000        1.0000        1.0000
+0001  TOG              FORM             0.01398601399             1      0.42
+0001  TOG              NR               0.00678927681             1    0.1089
+0001  TOG              PAR              0.02764771201             1    0.4711
+0002  TOG              FORM             0.01621711622             1     0.487
+0002  TOG              NR               0.00040816327             1     0.006
+0002  TOG              PAR              0.03515196792             1     0.507
+0003  TOG              FORM             0.00266400266             1      0.08
+0003  TOG              NR               0.03848462685             1 0.6077333
+0003  TOG              PAR              0.02022000631             1 0.2922667
+0003  TOG              TOL              0.00021706099             1      0.02
+0004  TOG              FORM             0.00253080253             1     0.076
+0004  TOG              NR               0.02224006282             1   0.33694
+0004  TOG              OLE              0.00415874525             1    0.0875
+0004  TOG              PAR              0.03234123706             1   0.49956

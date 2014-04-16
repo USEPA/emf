@@ -1,0 +1,789 @@
+<?xml version="1.0"?>
+<project name="EMF" default="core" basedir=".">
+
+	<!--  =================== Properties ====================================== -->
+	<property file="build.properties" />
+	<property file="${user.home}/build.properties" />
+
+	<property name="env" environment="env" value="env" />
+	<property name="J2EE_HOME" value="${env.J2EE_HOME}" />
+	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
+	<property name="src.dir" value="src" />
+	<property name="src.client.dir" value="${src.dir}/client" />
+	<property name="src.contract.dir" value="${src.dir}/contract" />
+	<property name="src.services.dir" value="${src.dir}/services" />
+	<property name="src.common.dir" value="${src.dir}/common" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="res.dir" value="res" />
+
+	<property name="test.dir" value="test" />
+	<property name="test.unit.dir" value="${test.dir}/unit" />
+	<property name="test.integration.dir" value="${test.dir}/integration" />
+	<property name="test.persistence.dir" value="${test.dir}/persistence" />
+	<property name="test.commons.dir" value="${test.dir}/commons" />
+	<property name="test.uat.dir" value="${test.dir}/uat" />
+
+	<property name="build.home" value="${basedir}/build/sandbox" />
+	<property name="web.dir" value="web" />
+	<property name="meta-inf.dir" value="META-INF" />
+	<property name="build.dist.dir" value="${build.home}/dist" />
+	<property name="build.web-inf.dir" value="${build.dist.dir}/WEB-INF" />
+	<property name="build.meta-inf.dir" value="${build.dist.dir}/${meta-inf.dir}" />
+	<property name="build.classes.dir" value="${build.web-inf.dir}/classes" />
+
+	<property name="reports.dir" value="${build.home}/reports" />
+	<property name="reports.unittests.dir" value="${reports.dir}/unit-tests" />
+	<property name="reports.integrationtests.dir" value="${reports.dir}/integration-tests" />
+	<property name="reports.persistencetests.dir" value="${reports.dir}/persistence-tests" />
+	<property name="reports.uat.dir" value="${reports.dir}/uat-tests" />
+
+	<property name="app.name" value="emf" />
+	<property name="app.path" value="/${app.name}" />
+
+	<!-- Tomcat properties-->
+	<property name="tomcat.webapps" value="${tomcat.home}/webapps" />
+	<property name="war-path" value="file:///${tomcat.webapps}/${app.name}.war" />
+
+	<property name="tomcat.manager.url" value="http://${tomcat.server}:8080/manager" />
+	<property name="tomcat.start.prefix" value="-jar -Duser.dir=${tomcat.home} -Djava.endorsed.dirs=${tomcat.home}/common/endorsed ${tomcat.memory.vmargs} ${tomcat.home}/bin/bootstrap.jar" />
+	<property name="tomcat.start" value="${tomcat.start.prefix} start" />
+	<property name="tomcat.start.debug.prefix" value="-jar -Duser.dir=${tomcat.home} -Djava.endorsed.dirs=${tomcat.home}/common/endorsed ${tomcat.memory.vmargs} ${tomcat.debug.vmargs} ${tomcat.home}/bin/bootstrap.jar" />
+	<property name="tomcat.start.debug" value="${tomcat.start.debug.prefix} start" />
+
+	<property name="tomcat.stop.prefix" value="-jar -Duser.dir=${tomcat.home} ${tomcat.home}/bin/bootstrap.jar" />
+	<property name="tomcat.stop" value="${tomcat.stop.prefix} stop" />
+	
+	<property name="win7.tomcat.start.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}&quot;/common/endorsed ${tomcat.memory.vmargs} -classpath &quot;${tomcat.home}&quot;/bin/bootstrap.jar;&quot;${tomcat.home}&quot;/bin/tomcat-juli.jar org.apache.catalina.startup.Bootstrap" />
+<!--	<property name="win7.tomcat.start.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}&quot;/common/endorsed ${tomcat.memory.vmargs} -classpath C:\Apache_Software_Foundation\Tomcat_7.0\bin\bootstrap.jar;C:\Apache_Software_Foundation\Tomcat_7.0\bin\tomcat-juli.jar &quot;${tomcat.home}&quot;/bin/bootstrap.jar" />-->
+	<property name="win7.tomcat.start" value="${win7.tomcat.start.prefix} start" />
+	
+	<property name="win7.tomcat.start.debug.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}&quot;/common/endorsed ${tomcat.memory.vmargs} ${tomcat.debug.vmargs} -classpath &quot;${tomcat.home}&quot;/bin/bootstrap.jar;&quot;${tomcat.home}&quot;/bin/tomcat-juli.jar org.apache.catalina.startup.Bootstrap" />
+	<property name="win7.tomcat.start.debug" value="${win7.tomcat.start.debug.prefix} start" />
+
+	<property name="win7.tomcat.stop.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -classpath &quot;${tomcat.home}&quot;/bin/bootstrap.jar;&quot;${tomcat.home}&quot;/bin/tomcat-juli.jar org.apache.catalina.startup.Bootstrap" />
+<!--	<property name="win7.tomcat.stop.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; &quot;${tomcat.home}&quot;/bin/bootstrap.jar" />-->
+	<property name="win7.tomcat.stop" value="${win7.tomcat.stop.prefix} stop" />
+	
+
+	<property name="" value="" />
+	<!-- end Tomcat properties -->
+
+	<path id="classpath">
+		<pathelement location="${build.classes.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!--  =================== Custom Tomcat Ant Tasks ====================================== -->
+	<!-- To use Ant tasks to interact w/ Tomcat, copy "server/lib/catalina-ant.jar" 
+        from your Tomcat installation into the "lib" directory of your Ant installation.
+     
+        For more information about the Manager web application, and the functionality
+        of these tasks, see <http://localhost:8080/tomcat-docs/manager-howto.html>.
+    -->
+
+	<taskdef file="tomcatTasks.properties" />
+
+	<!--  ===================START Basic Targets ====================================== -->
+	<target name="init">
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.web-inf.dir}" />
+		<mkdir dir="${build.meta-inf.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${reports.unittests.dir}" />
+		<mkdir dir="${reports.integrationtests.dir}" />
+		<mkdir dir="${reports.persistencetests.dir}" />
+		<mkdir dir="${reports.uat.dir}" />
+	</target>
+
+
+	<target name="clean">
+		<delete includeemptydirs="true" failonerror="no">
+			<fileset dir="${build.home}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="compile-contract" depends="clean, init, compile-contract-no-clean-init" />
+
+	<target name="compile-contract-no-clean-init">
+		<antcall target="do-compile">
+			<param name="compile.src" value="${src.contract.dir}" />
+		</antcall>
+	</target>
+
+	<target name="compile-client" depends="clean, init, compile-client-no-clean-init" />
+
+	<target name="compile-client-no-clean-init" depends="compile-contract-no-clean-init">
+		<antcall target="do-compile">
+			<param name="compile.src" value="${src.client.dir}" />
+		</antcall>
+		<antcall target="copy-client-resources">
+			<param name="target.dir" value="${build.classes.dir}" />
+		</antcall>
+	</target>
+
+	<target name="compile-services" depends="clean, init, compile-contract-no-clean-init" />
+
+	<target name="compile-services-no-clean-init" depends="compile-contract-no-clean-init">
+		<antcall target="do-compile">
+			<param name="compile.src" value="${src.services.dir}" />
+		</antcall>
+		<antcall target="copy-services-resources">
+			<param name="resources.root" value="${src.services.dir}" />
+		</antcall>
+	</target>
+
+	<target name="build-version" depends="clean, init, build-version-no-clean-init" description="Build EMF version" />
+
+	<target name="update-version-for-deploy" depends="clean, init, update-version-for-deploy-no-clean-init" description="Update EMF version file for deployment" />
+
+	<target name="build-version-no-clean-init" description="Build EMF version">
+
+		<antcall target="do-compile">
+			<param name="compile.src" value="${src.common.dir}" />
+		</antcall>
+
+		<java classname="gov.epa.emissions.common.version.EMFVersionPropertiesBuilder" fork="true" failonerror="true" classpathref="classpath">
+			<arg value="/res/properties/version_generated.properties" />
+		</java>
+	</target>
+
+	<target name="update-version-for-deploy-no-clean-init" description="Update EMF version file for deployment">
+
+		<antcall target="do-compile">
+			<param name="compile.src" value="${src.common.dir}" />
+		</antcall>
+
+		<java classname="gov.epa.emissions.common.version.EMFVersionPropertiesUpdater" fork="true" failonerror="true" classpathref="classpath">
+			<arg value="/res/properties/version_for_deploy.properties" />
+		</java>
+	</target>
+
+	<target name="compile-src" depends="clean, init, compile-src-no-clean-init" />
+
+	<target name="compile-src-no-clean-init" depends="build-version-no-clean-init, compile-contract-no-clean-init, compile-client-no-clean-init, compile-services-no-clean-init" />
+
+	<target name="do-compile">
+		<javac srcdir="${compile.src}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+	</target>
+
+	<target name="copy-client-resources">
+		<copy todir="${target.dir}">
+			<fileset dir="${res.dir}" includes="**/*" />
+		</copy>
+	</target>
+
+	<target name="copy-services-resources">
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${resources.root}" includes="**/*.properties" />
+			<fileset dir="${resources.root}" includes="**/*.xml" />
+			<fileset dir="${resources.root}" includes="**/*.dtd" />
+		</copy>
+	</target>
+
+	<target name="compile-tests" depends="clean, init, compile-tests-no-clean-init" />
+
+	<target name="compile-tests-no-clean-init" depends="compile-src-no-clean-init">
+		<javac srcdir="${test.commons.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+		<javac srcdir="${test.unit.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+		<javac srcdir="${test.integration.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+		<javac srcdir="${test.persistence.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+		<javac srcdir="${test.uat.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+	</target>
+
+	<target name="compile" depends="clean, init, compile-no-clean-init" />
+
+	<target name="compile-no-clean-init" depends="compile-src-no-clean-init, compile-tests-no-clean-init" />
+	<!--  ===============END  Basic ====================================== -->
+
+
+	<!--  ===============START  Tests ====================================== -->
+	<target name="unit-tests" depends="compile">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath refid="classpath" />
+			<formatter type="xml" />
+
+			<batchtest fork="yes" todir="${reports.unittests.dir}">
+				<fileset dir="${test.unit.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="integration-tests" depends="compile" description="Integration of Client and Web Services">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath refid="classpath" />
+			<formatter type="xml" />
+			<batchtest fork="yes" haltonfailure="yes" todir="${reports.integrationtests.dir}">
+				<fileset dir="${test.integration.dir}">
+					<include name="**/emissions/framework/**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+
+
+	<target name="persistence-tests" depends="compile" description="Tests Persistence using Hibernate">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath refid="classpath" />
+			<formatter type="xml" />
+			<batchtest fork="yes" todir="${reports.persistencetests.dir}">
+				<fileset dir="${test.persistence.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="uat-tests" depends="compile">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath refid="classpath" />
+			<formatter type="xml" />
+
+			<batchtest fork="yes" todir="${reports.uat.dir}">
+				<fileset dir="${test.uat.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="setup-reference-schema-for-test" depends="compile" description="Sets up Reference schema for test">
+		<java classname="gov.epa.emissions.commons.io.reference.ReferenceDatasourceSetup" fork="true" failonerror="true" classpathref="classpath">
+			<arg line="test/postgres.conf config/ref/delimited" />
+		</java>
+	</target>
+
+	<target name="setup-reference-schema" depends="compile" description="Sets up Reference schema for production mode">
+		<java classname="gov.epa.emissions.commons.io.reference.ReferenceDatasourceSetup" fork="true" failonerror="true" classpathref="classpath">
+			<arg line="config/db/postgres-reference-schema.conf config/ref/delimited" />
+		</java>
+	</target>
+
+	<!-- All tests -->
+	<target name="all-dev-tests" depends="unit-tests, integration-tests, persistence-tests" />
+	<target name="all-tests" depends="all-dev-tests, uat-tests" />
+	<target name="run-uat" description="Deploys application to Tomcat, runs all UAT tests, and stops Tomcat">
+		<antcall target="run-webservice-tests">
+			<param name="tests-target" value="uat-tests" />
+		</antcall>
+	</target>
+
+	<!-- Continuous Integration target -->
+	<target name="ci-build" depends="compile, unit-tests, app-dist" description="Continuous Integration build" />
+
+	<!-- DEFAULT target-->
+	<target name="core" description="Runs ALL (except UAT AND Webservices) tests" depends="clean, init, all-dev-tests" />
+
+	<!-- Runs Integration & Persistance Test !-->
+	<target name="Integration AND Persistane Tests" description="runs Intergration AND Persistance Test" depends="clean, init, integration-tests, persistence-tests" />
+
+	<target name="moksha" description="Deploys application to Tomcat, runs ALL tests, and stops Tomcat">
+		<antcall target="run-webservice-tests">
+			<param name="tests-target" value="all-tests" />
+		</antcall>
+	</target>
+
+	<target name="run-webservice-tests" depends="tomcat-stop, simple-deploy" description="delegate target used by other targets to run integration tests">
+		<!-- start tomcat & (all tests + stop tomcat) in parallel -->
+		<parallel>
+			<ant target="tomcat-start" />
+			<sequential>
+				<echo message="starting tests.." />
+				<ant target="${tests-target}" />
+				<ant target="tomcat-stop" />
+			</sequential>
+		</parallel>
+	</target>
+	<!--  ===============END  Tests ====================================== -->
+
+
+
+	<!--  ===============START CVS Targets ====================================== -->
+	<target name="cvs-properties-load">
+		<property file=".cvs" />
+	</target>
+	<target name="cvs-username-check" depends="cvs-properties-load" unless="cvs.username">
+		<echo message="Please create a .cvs file in your project home directory w/ the following properties:" />
+		<echo message="username='cvs username'" />
+	</target>
+
+	<target name="cvs-update" depends="cvs-username-check" if="cvs.username">
+		<cvs command="update" cvsroot=":pserver:${cvs.username}@cvs.sourceforge.net:/cvsroot/emisview" quiet="yes" reallyquiet="yes" failonerror="yes" />
+		<echo message="EMF update is complete." />
+	</target>
+
+	<target name="pre-checkin" depends="cvs-update, compile, unit-tests" />
+	<!--  ===============END CVS Targets ====================================== -->
+
+	<!--  =============START Client Distribution ====================================== -->
+	<target name="client-env">
+		<property name="client.dist" value="${build.home}/client" />
+		<property name="client.dist.lib" value="${client.dist}/lib" />
+		<property name="client.dist.dir" value="${build.home}/deploy/client" />
+		<property name="client.jar" value="${client.dist}/${app.name}-client.jar" />
+		<property name="client.dist.ref" value="${client.dist}/config/ref/delimited" />
+		<property name="scc.ref.dir" value="config/ref/delimited" />
+		<property name="linuxscripts.dir" value="${basedir}/deploy/linux_scripts" />
+		<property name="linuxclient.dir" value="${linuxscripts.dir}/client" />
+		<property name="clientzip.dir" value="${build.home}/EMFClient" />
+	</target>
+
+	<target name="client-dist-sandbox" depends="clean, init, client-dist-sandbox-no-clean-init" description="Builds the sandbox for EMF Client distribution" />
+
+	<target name="client-dist-sandbox-no-clean-init" depends="compile-client-no-clean-init, client-env" description="Builds the sandbox for EMF Client distribution">
+		<mkdir dir="${client.dist}" />
+		<mkdir dir="${client.dist.dir}" />
+		<mkdir dir="${client.dist.lib}" />
+		<mkdir dir="${client.dist.ref}" />
+
+		<!--copy files while preserving dates modified -->
+		<copy todir="${client.dist.lib}" preservelastmodified="true">
+			<fileset dir="${lib.dir}">
+				<exclude name="dev/**" />
+				<exclude name="tomcat/**" />
+			</fileset>
+		</copy>
+		<jar jarfile="${client.dist}/${app.name}-client.jar" basedir="${build.classes.dir}">
+			<include name="**/*" />
+		</jar>
+		<copy todir="${client.dist}" preservelastmodified="true">
+			<fileset dir="${basedir}">
+				<include name="launch-client.bat" />
+				<include name="client.xml" />
+			</fileset>
+			<fileset dir="${build.classes.dir}">
+				<include name="*.properties" />
+			</fileset>
+			<fileset dir="${linuxclient.dir}">
+				<include name="EMFClient.*" />
+			</fileset>
+		</copy>
+		<copy todir="${client.dist.ref}" preservelastmodified="true">
+			<fileset dir="config/ref/delimited">
+				<include name="**" />
+			</fileset>
+		</copy>
+	</target>
+
+
+	<target name="client-dist" depends="client-dist-sandbox" description="Builds the EMF Client distribution, zips and tars it up">
+
+		<!-- zip and tar that directory up, placing it under the EMFClient archive dir -->
+		<tar tarfile="${build.home}/EMFClient.tar">
+			<tarfileset dir="${client.dist}" prefix="EMFClient" />
+		</tar>
+		<gzip zipfile="${build.home}/EMFClient.tar.gz" src="${build.home}/EMFClient.tar" />
+		<zip destfile="${build.home}/EMFClient.zip">
+			<zipfileset dir="${client.dist}" prefix="EMFClient" />
+		</zip>
+
+	</target>
+
+	<target name="client-dist(only jar)" depends="clean, init, client-dist-jar-only-no-clean-init" description="Builds the EMF Client jar file excluding dependent jar file" />
+
+	<target name="client-dist-jar-only-no-clean-init" depends="compile-client-no-clean-init" description="Builds the EMF Client jar file excluding dependent jar file">
+		<jar jarfile="${build.home}/${app.name}-client.jar" basedir="${build.classes.dir}">
+			<include name="**/*" />
+		</jar>
+
+	</target>
+
+	<!-- <target name="client-installer-dist" depends="clean, init, compile-client, client-env, client-dist-sandbox, commons-dist" description="Builds the EMF Client installer distribution files excluding dependent jar file"> -->
+	<target name="client-installer-dist" depends="clean, init, compile-client, client-env, client-dist, commons-dist" description="Builds the EMF Client installer distribution files excluding dependent jar file">
+
+		<jar jarfile="${client.dist.dir}/${app.name}-client.jar">
+			<fileset dir="${build.classes.dir}" includes="**/*" />
+			<fileset dir="." includes="${scc.ref.dir}/scc.txt" />
+		</jar>
+
+		<zip zipfile="${client.dist.dir}/${app.name}-client.zip">
+			<fileset dir="${build.classes.dir}" includes="**/*" />
+			<fileset dir="." includes="${scc.ref.dir}/scc.txt" />
+		</zip>
+
+		<jar jarfile="${client.dist.dir}/emf-client-installer.jar">
+			<fileset dir="${build.classes.dir}" includes="gov/epa/emissions/framework/install/installer/*" />
+
+			<fileset dir="${build.classes.dir}" includes="logo.JPG" />
+
+			<manifest>
+				<attribute name="Main-Class" value="gov.epa.emissions.framework.install.installer.EMFClient" />
+			</manifest>
+		</jar>
+
+		<ant dir="${commons.basedir}" target="do-dist" inheritall="false" />
+		<copy tofile="${client.dist.dir}/epa-commons.jar">
+			<fileset dir="${commons.basedir}/build/sandbox" includes="*.jar" />
+		</copy>
+
+		<copy todir="${client.dist.dir}" file="./src/client/gov/epa/emissions/framework/install/installer/runinstaller.bat" />
+
+		<java classname="gov.epa.emissions.framework.install.installer.CreateDownloadFilesList" fork="true" failonerror="true">
+			<arg value="${lib.dir}" />
+			<arg value="${client.dist.dir}" />
+			<classpath>
+				<pathelement location="${client.jar}" />
+				<fileset dir="${client.dist.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</java>
+		
+		<tar tarfile="${build.home}/EMFClientInstaller.tar">
+			<tarfileset dir="${client.dist.dir}" prefix="EMFClientInstaller" />
+		</tar>
+		
+		<gzip zipfile="${build.home}/EMFClientInstaller.tar.gz" src="${build.home}/EMFClientInstaller.tar" />
+		
+		<zip destfile="${build.home}/EMFClientInstaller.zip">
+			<zipfileset dir="${client.dist.dir}" prefix="EMFClientInstaller" />
+		</zip>
+		
+	</target>
+
+	<target name="client-installer-dist-no-clean-init" depends="compile-client-no-clean-init, client-dist-sandbox-no-clean-init" description="Builds the EMF Client installer distribution files excluding dependent jar file">
+
+		<jar jarfile="${client.dist.dir}/emf-client-installer.jar">
+			<fileset dir="${build.classes.dir}" includes="gov/epa/emissions/framework/install/installer/*" />
+
+			<fileset dir="${build.classes.dir}" includes="logo.JPG" />
+
+			<manifest>
+				<attribute name="Main-Class" value="gov.epa.emissions.framework.install.installer.EMFClient" />
+			</manifest>
+		</jar>
+
+		<jar jarfile="${client.dist.dir}/${app.name}-client.jar" basedir="${build.classes.dir}">
+			<include name="**/*" />
+		</jar>
+
+		<copy todir="${client.dist.dir}" file="${basedir}/lib/epa-commons.jar" failonerror="true" />
+		<copy todir="${client.dist.dir}" file="${basedir}/lib/analysis-engine.jar" failonerror="true" />
+		<copy todir="${client.dist.dir}" file="${src.client.dir}/gov/epa/emissions/framework/install/installer/runinstaller.bat" failonerror="true" />
+
+		<java classname="gov.epa.emissions.framework.install.installer.CreateDownloadFilesList" fork="true" failonerror="true">
+			<arg value="${lib.dir}" />
+			<arg value="${client.dist.dir}" />
+			<classpath>
+				<pathelement location="${client.jar}" />
+				<fileset dir="${client.dist.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="run-client" depends="client-env, client-dist-sandbox" description="Runs the EMF Client">
+		<property name="userprefs" location="${user.home}/EMFPrefs.txt" />
+		<java classname="gov.epa.emissions.framework.client.EMFClient" fork="true" failonerror="true">
+			<classpath>
+				<pathelement location="${client.jar}" />
+				<fileset dir="${client.dist.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<jvmarg value="-DUSER_PREFERENCES=${userprefs}" />
+		</java>
+	</target>
+
+	<!--  =============END Client Distribution ====================================== -->
+
+	<!--  =============START SERVICES Distribution ====================================== -->
+	<target name="services-dist-prepare" depends="clean, init, services-dist-prepare-no-clean-init" />
+
+	<target name="services-dist-prepare-no-clean-init" depends="compile-no-clean-init">
+		<copy todir="${build.meta-inf.dir}">
+			<fileset dir="${web.dir}/${meta-inf.dir}" />
+		</copy>
+		<copy todir="${build.dist.dir}">
+			<fileset dir="${web.dir}" />
+		</copy>
+		<copy todir="${build.web-inf.dir}/lib">
+			<fileset dir="${lib.dir}">
+				<exclude name="dev/**" />
+				<exclude name="tomcat/**" />
+				<exclude name="axis-1.4/**" />
+				<exclude name="xerces-2.10.0/**" />
+			</fileset>
+		</copy>
+		<copy todir="${build.web-inf.dir}/lib">
+			<fileset dir="${lib.dir}/axis-1.4">
+			</fileset>
+		</copy>
+		<copy todir="${build.web-inf.dir}/lib">
+			<fileset dir="${lib.dir}/xerces-2.10.0">
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="app-dist" depends="clean, init, app-dist-no-clean-init" description="Create EMF Services(server) binary distribution" />
+
+	<target name="app-dist-no-clean-init" depends="services-dist-prepare-no-clean-init" description="Create EMF Services(server) binary distribution">
+		<jar jarfile="${build.home}/${app.name}.war" basedir="${build.dist.dir}" />
+	</target>
+
+	<target name="build-emf-for-teamcity" depends="init, app-dist-no-clean-init, client-installer-dist-no-clean-init" description="Creates an entire EMF distribution build. NOTE: Does NOT clean, as TeamCity does that. Cleaning will cause dependency problems!" />
+	<!--  =============END Services Distribution ====================================== -->
+
+	<!--  =============START Tomcat Deployment Targets ====================================== -->
+	<target name="apps-list" description="List installed applications ">
+		<list url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" />
+	</target>
+
+	<target name="simple-deploy" depends="app-dist" description="Removes (if present) an existing installation and copies the new War to Tomcat webapps folder">
+		<delete file="${tomcat.webapps}/${app.name}.war" />
+		<delete dir="${tomcat.webapps}/${app.name}" />
+		<delete dir="${tomcat.home}/work/Standalone/localhost/emf" />
+		<copy todir="${tomcat.webapps}" file="${build.home}/${app.name}.war" />
+	</target>
+
+	<target name="redeploy" depends="tomcat-stop, simple-deploy, tomcat-start" description="Stops Tomcat, deploys EMF, and starts Tomcat" />
+
+	<target name="tomcat-restart" depends="tomcat-stop, tomcat-start" />
+
+	<target name="tomcat-start">
+		<echo message="Starting with: ${tomcat.start}" />
+		<!-- Note Linux executable -->
+		<exec executable="${jdk.home}/bin/java.exe" dir="${build.home}" output="${build.home}/tomcat-start.txt" error="${build.home}/tomcat-start-error.txt" failonerror="yes">
+			<arg line="${tomcat.start}" />
+		</exec>
+	</target>
+	
+	<target name="tomcat-start-with-debug">
+		<echo message="Starting with debug: ${tomcat.start.debug}" />
+		<!-- Note Linux executable -->
+		<exec executable="${jdk.home}/bin/java.exe" dir="${build.home}" output="${build.home}/tomcat-start.txt" error="${build.home}/tomcat-start-error.txt" failonerror="yes">
+			<arg line="${tomcat.start.debug}" />
+		</exec>
+	</target>
+
+	<target name="tomcat-stop">
+		<exec executable="${jdk.home}/bin/java.exe" dir="${build.home}" output="${build.home}/tomcat-stop.txt" error="${build.home}/tomcat-stop-error.txt" failonerror="false">
+			<arg line="${tomcat.stop}" />
+		</exec>
+		<echo>
+		</echo>
+		<echo message="Tomcat stopped." />
+	</target>
+	
+	<target name="win7-redeploy-all" depends="win7-tomcat-stop, analysisengine-dist, commons-dist, simple-deploy, win7-tomcat-start" description="Stops Tomcat, deploys EMF, and starts Tomcat" />
+	<target name="win7-redeploy-emf" depends="win7-tomcat-stop, simple-deploy, win7-tomcat-start" description="Stops Tomcat, deploys EMF, and starts Tomcat" />
+	
+	<target name="win7-redeploy-debug-all" depends="win7-tomcat-stop, analysisengine-dist, commons-dist, simple-deploy, win7-tomcat-start-with-debug" description="Stops Tomcat, deploys EMF, and starts Tomcat" />
+	<target name="win7-redeploy-debug-emf" depends="win7-tomcat-stop, simple-deploy, win7-tomcat-start-with-debug" description="Stops Tomcat, deploys EMF, and starts Tomcat" />
+	
+	<target name="win7-tomcat-restart" depends="win7-tomcat-stop, win7-tomcat-start" />
+	
+	<target name="win7-tomcat-start">
+		<echo message="Starting with: ${win7.tomcat.start}" />
+		<!-- Note Linux executable -->
+		<exec executable="${jdk.home}/bin/java.exe" dir="${build.home}" output="${build.home}/tomcat-start.txt" error="${build.home}/tomcat-start-error.txt" failonerror="yes">
+			<arg line="${win7.tomcat.start}" />
+		</exec>
+	</target>	
+	
+	<target name="win7-tomcat-start-with-debug">
+		<echo message="Starting with debug: ${win7.tomcat.start.debug}" />
+		<!-- Note Linux executable -->
+		<exec executable="${jdk.home}/bin/java.exe" dir="${build.home}" output="${build.home}/tomcat-start.txt" error="${build.home}/tomcat-start-error.txt" failonerror="yes">
+			<arg line="${win7.tomcat.start.debug}" />
+		</exec>
+	</target>	
+	
+	<target name="win7-tomcat-stop">
+		<echo message="Stopping Tomcat7 with: ${win7.tomcat.stop}" />
+		<exec executable="${jdk.home}/bin/java.exe" dir="${build.home}" output="${build.home}/tomcat-stop.txt" error="${build.home}/tomcat-stop-error.txt" failonerror="false">
+			<arg line="${win7.tomcat.stop}" />
+		</exec>
+		<echo message="Tomcat stopped." />
+	</target>	
+
+	<!--  ===============END  Tomcat Deployment Targets ====================================== -->
+
+	<!--  ===============START DB setup scripts =============== -->
+	<target name="app-schema-setup">
+		<antcall target="schema-setup">
+			<param name="db.name" value="${appDatabase.name}" />
+		</antcall>
+	</target>
+
+	<target name="test-schema-setup">
+		<antcall target="schema-setup">
+			<param name="db.name" value="${testDatabase.name}" />
+		</antcall>
+	</target>
+
+	<target name="schema-setup" depends="data-schema-setup,cost-schema-setup,case-schema-setup" />
+
+	<target name="data-schema-setup">
+		<exec executable="psql.exe" error="${build.home}/db-setup-error.txt" failonerror="yes">
+			<arg line="-d ${db.name} -U ${database.username} -f deploy/db/data/Data.setup" />
+		</exec>
+	</target>
+
+	<target name="cost-schema-setup">
+		<exec executable="psql.exe" error="${build.home}/db-setup-error.txt" failonerror="yes">
+			<arg line="-d ${db.name} -U ${database.username} -f deploy/db/cost/Cost.setup" />
+		</exec>
+	</target>
+
+	<target name="case-schema-setup">
+		<exec executable="psql.exe" error="${build.home}/db-setup-error.txt" failonerror="yes">
+			<arg line="-d ${db.name} -U ${database.username} -f deploy/db/case/Case.setup" />
+		</exec>
+	</target>
+	<!--  ===============END DB setup scripts =============== -->
+
+	<!--  ===============START  Coverage Targets =============================== -->
+	<path id="cobertura.classpath">
+		<fileset dir="${lib.dir}/dev/cobertura">
+			<include name="**/*.jar" />
+		</fileset>
+		<path refid="classpath" />
+	</path>
+
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+	<property name="coverage.dir" value="${reports.dir}/coverage" />
+	<property name="instrumented.dir" value="${coverage.dir}/instrumented" />
+	<property name="reports.xml.dir" value="${coverage.dir}/tests/xml" />
+	<property name="reports.html.dir" value="${coverage.dir}/tests/html" />
+	<property name="coverage.xml.dir" value="${coverage.dir}/coverage/xml" />
+	<property name="coverage.html.dir" value="${coverage.dir}/coverage/html" />
+
+	<target name="coverage-init">
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${instrumented.dir}" />
+		<mkdir dir="${reports.xml.dir}" />
+		<mkdir dir="${reports.html.dir}" />
+		<mkdir dir="${coverage.xml.dir}" />
+		<mkdir dir="${coverage.html.dir}" />
+	</target>
+
+	<target name="instrument" depends="coverage-init">
+		<delete file="cobertura.ser" />
+
+		<cobertura-instrument todir="${instrumented.dir}">
+			<ignore regex="org.apache.log4j.*" />
+			<fileset dir="${build.classes.dir}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<target name="run-instrumented-tests" depends="compile, instrument">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath location="${instrumented.dir}" />
+			<classpath refid="classpath" />
+			<formatter type="xml" />
+
+			<batchtest fork="yes" todir="${reports.xml.dir}">
+				<fileset dir="${test.unit.dir}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${reports.xml.dir}">
+			<fileset dir="${reports.xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${reports.html.dir}" />
+		</junitreport>
+	</target>
+
+	<target name="coverage-check">
+		<cobertura-check branchrate="34" totallinerate="100" />
+	</target>
+
+	<target name="xml-coverage-report">
+		<cobertura-report srcdir="${src.client.dir}}" destdir="${coverage.xml.dir}" format="xml" />
+		<cobertura-report srcdir="${src.contract.dir}}" destdir="${coverage.xml.dir}" format="xml" />
+		<cobertura-report srcdir="${src.services.dir}}" destdir="${coverage.xml.dir}" format="xml" />
+	</target>
+
+	<target name="html-coverage-report">
+		<cobertura-report destdir="${coverage.html.dir}">
+			<fileset dir="${src.client.dir}">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${src.contract.dir}">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${src.services.dir}">
+				<include name="**/*.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
+
+	<target name="coverage" depends="compile,instrument,run-instrumented-tests,xml-coverage-report,html-coverage-report" description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports." />
+	<!--  ===============END Coverage Targets =============================== -->
+
+	<!--  ===============START Launch EMF ============================== -->
+	<!-- format preferences -->
+	<property name="url" value="http://localhost:8080/emf/services" />
+	<property name="format_pref" location="sort_filter_selection_panel_format_pref.txt" />
+	<target name="launch-EMF">
+		<java classname="gov.epa.emissions.framework.client.EMFClient" classpathref="classpath" fork="true" failonerror="true">
+			<jvmarg value="-DUSER_PREFERENCES=${format_pref}" />
+			<arg line="${url}" />
+
+		</java>
+	</target>
+	<!--  ===============END Launch EMF ============================== -->
+
+	<!--  ===============START EMF-dependent modules ============================== -->
+	<!-- Commons -->
+	<target name="commons.basedir.check">
+		<property name="commons.basedir" value="${basedir}/../${commons.project.name}" />
+		<echo message="Checking existence of Commons project in '${commons.basedir}'"/>
+		<available file="${commons.basedir}" property="commons.basedir.present" />
+	</target>
+
+	<target name="commons-dist-warning" depends="commons.basedir.check" unless="commons.basedir.present">
+		<property name="parent.basedir" value="${basedir}/.." />
+		<echo message="You need to checkout Commons module from CVS into ${commons.basedir} before attempting to build the Commons codebase" />
+	</target>
+
+	<target name="commons-dist" depends="commons.basedir.check, commons-dist-warning" if="commons.basedir.present">
+		<ant dir="${commons.basedir}" target="do-dist" inheritall="false" />
+		<copy todir="${lib.dir}">
+			<fileset dir="${commons.basedir}/build/sandbox" includes="*.jar" />
+		</copy>
+	</target>
+
+	<!-- Analysis Engine -->
+	<target name="analysisengine.basedir.check">
+		<property name="analysisengine.basedir" value="${basedir}/../${analysisengine.project.name}" />
+		<echo message="Checking existence of AnalysisEngine project in '${analysisengine.basedir}'"/>
+		<available file="${analysisengine.basedir}" property="analysisengine.basedir.present" />
+	</target>
+
+	<target name="analysisengine-dist-warning" depends="analysisengine.basedir.check" unless="analysisengine.basedir.present">
+		<property name="parent.basedir" value="${basedir}/.." />
+		<echo message="You need to checkout the AnalysisEngine module from CVS into ${analysisengine.basedir} before attempting to build the AnalysisEngine codebase" />
+	</target>
+
+	<target name="analysisengine-dist" depends="analysisengine.basedir.check, analysisengine-dist-warning" if="analysisengine.basedir.present">
+		<ant dir="${analysisengine.basedir}" target="do-dist" inheritall="false" />
+		<copy todir="${lib.dir}">
+			<fileset dir="${analysisengine.basedir}/build/sandbox" includes="*.jar" />
+		</copy>
+	</target>
+
+	<target name="kml-generator-dist">
+		<property name="kml.basedir" value="${basedir}/../KML" />
+		<ant dir="${kml.basedir}" target="exec-dist" inheritall="false" />
+		<copy todir="${lib.dir}">
+			<fileset dir="${kml.basedir}/build/dist" includes="*.jar" />
+		</copy>
+	</target>
+
+	<!--  ===============END EMF-dependent modules ============================== -->
+
+</project>
+

@@ -1,0 +1,592 @@
+#List ControlTechology First; Followed by SCC description,,,,,,Production=Known; Development=Emerging; Obsolete; Hypothetical,,Look at the NEI tables for these values,,,
+CMName,CMAbbreviation,MajorPoll,ControlTechnology,SourceGroup,Sector,Class,EquipLife,NEIDeviceCode,DateReviewed,DataSource,Description
+Vacuum Sweeping;Paved Roads (UnKnown 1),PPVAC110,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 2),PPVAC130,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 3),PPVAC150,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 4),PPVAC170,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 5),PPVAC190,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 6),PPVAC210,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 7),PPVAC230,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 8),PPVAC250,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 9),PPVAC270,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 10),PPVAC290,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 11),PPVAC310,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Vacuum Sweeping;Paved Roads (UnKnown 12),PPVAC330,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1|2|12|13,
+Chemical Stabilization;Unpaved Roads (UnKnown 1),PUCHS150,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|4|8|10,
+Chemical Stabilization;Unpaved Roads (UnKnown 2),PUCHS170,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|4|8|10,
+Chemical Stabilization;Unpaved Roads (UnKnown 3),PUCHS190,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|4|8|10
+Chemical Stabilization;Unpaved Roads (UnKnown 4),PUCHS210,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,1|2|4|8|10
+Hot Asphalt Paving;Unpaved Roads (UnKnown 1),PUHAP270,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|4
+Hot Asphalt Paving;Unpaved Roads (UnKnown 2),PUHAP290,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|4
+Hot Asphalt Paving;Unpaved Roads (UnKnown 3),PUHAP310,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|4
+Hot Asphalt Paving;Unpaved Roads (UnKnown 4),PUHAP330,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|4
+"Whole Field, Propaning, Stack;Agricultural Burning",PAGBU,PM10,Bale Stack/Propane Burning,Agricultural Burning,NONPT,Known,,,1998,1|2|3|4|5
+Soil Conservation;Agricultural Tilling,PAGTL,PM10,Soil Conservation Plans,Agricultural Tilling,NONPT,Known,,,1997,1|2|6|7
+Watering;Beef Cattle Feedlots (Dust Kickup),PCATFWAT,PM10,Watering,Beef Cattle Feedlots,NONPT,Known,10,,1998,1|2|14|15
+"Dust Control Plan;Residential, Industrial, Commercial, Institutional, Road Construction",PCONWATCHM,PM10,Dust Control Plan,Construction Activities,AFDUST,Known,,,1997,1|2|6|16|17
+Fuel Moisture Content;Prescribed Forest Burns,PPRBRNFULM,PM10,Increase Fuel Moisture,Prescribed Burning,PTFIRE,Known,,,1997,1|2|3|18|19
+Substitution of landfilling for open burning; Open Burns,PLNDFILBRN,PM10,Substitution of landfilling for open burning,Open Burning,NONPT,Emerging,,,2006,84
+"Advisory Program;Wood Burning Fireplaces, Stoves",PRESWDEDAD,PM10,Education and Advisory Program,Residential Wood Combustion,NONPT,Known,,,1997,1|2|6
+NSPS Compliant Stove;Wood Burning Fireplaces - 1,PRESWDSTV1,PM10,NSPS Compliant Wood Stove,Residential Wood Combustion,NONPT,Known,,,2005,1|2|20
+NSPS Compliant Stove;Wood Burning Fireplaces - 2,PRESWDSTV2,PM10,NSPS Compliant Wood Stove,Residential Wood Combustion,NONPT,Known,,,2005,1|2|20
+Catalytic Oxidizer;Commercial Cooking (Charbroiling) - 1,PCHRBCAOX1,PM10,Catalytic Oxidizer,Conveyorized Charbroilers,NONPT,Known,10,,2005,1|2|21|22
+Catalytic Oxidizer;Commercial Cooking (Charbroiling) - 2,PCHRBCAOX2,PM10,Catalytic Oxidizer,Conveyorized Charbroilers,NONPT,Known,10,,2005,1|2|21|22
+ESP;Commercial Cooking (Charbroiling),PCHRBESP,PM10,ESP for Commercial Cooking,Conveyorized Charbroilers,NONPT,Known,,,2006,1|2|23
+ESP;Commercial Cooking -- large underfired grilling operations,PCHRBESPSM,PM10,ESP,Commercial Cooking -- large underfired grilling operations,NONPT,Known,,,2006,2
+HDD Nonroad Engine Retrofit;Off-Highway Diesel Vehicles,PHDDRETRO,PM10,HDD Nonroad Engine Retrofit,Nonroad Heavy Duty Diesel,NONROAD,Known,,,1997,1|2|3
+Chemical Additives to Waste;Residential Distillate Oil Combustion,SCHMADDHOM,SO2,Chemical Additives to Waste,Residential Nonpoint Source,NONPT,Known,,,,1
+MACT;Dry Cleaning  - Perchloroethyl,VDCPERMACT,VOC,MACT,Dry Cleaning  - Perchloroethyl,NONPT,Known,,,,1
+Reformulation (Fed Rule);Architectural Coatings,VARCTAIMFR,VOC,Reformulation (Fed Rule),Architectural Coatings,NONPT,Known,,,1998,1|2|9|24|25
+Reformulation (Phase I);Architectural Coatings,VARCTSCPH1,VOC,Reformulation (Phase I),Architectural Coatings,NONPT,Known,,,1999,1|2|25|26|27
+Reformulation (Phase II);Architectural Coatings,VARCTSCPH2,VOC,Reformulation (Phase II),Architectural Coatings,NONPT,Known,,,1996,1|2|28|29
+Reformulation (OTC Rule);Architectural Coatings,VARCTAIMOT,VOC,Reformulation (OTC Rule),Architectural Coatings,NONPT,Emerging,,,2005,1|2|30|31
+Reformulation (Phase III);Architectural Coatings,VARCTSCPH3,VOC,Reformulation (Phase III),Architectural Coatings,NONPT,Known,,,1996,1|2|13
+Reformulation (Fed Rule);Traffic Markings,VTMAIMFR,VOC,Reformulation (Fed Rule),Traffic Markings,NONPT,Known,,,1997,1|2|9|24|25
+Reformulation (Phase I);Traffic Markings,VTMSCPH1,VOC,Reformulation (Phase I),Traffic Markings,NONPT,Known,,,1996,1|2|25|26|27
+Reformulation (Phase II);Traffic Markings,VTMSCPH2,VOC,Reformulation (Phase II),Traffic Markings,NONPT,Known,,,1996,1|2|28|29
+Reformulation (Phase III);Traffic Markings,VTMSCPH3,VOC,Reformulation (Phase III),Traffic Markings,NONPT,Known,,,1996,1|2|13
+Reformulation (Fed Rule);Industrial Maintenance Coating,VINCTAIMFR,VOC,Reformulation (Fed Rule),Industrial Maintenance Coating,NONPT,Known,,,1997,1|2|9|24|25
+Reformulation (Phase I);Industrial Maintenance Coating,VINCTSCPH1,VOC,Reformulation (Phase I),Industrial Maintenance Coating,NONPT,Known,,,1999,1|2|25|26|27
+Reformulation (Phase II);Industrial Maintenance Coating,VINCTSCPH2,VOC,Reformulation (Phase II),Industrial Maintenance Coating,NONPT,Known,,,1996,1|2|28|29
+Reformulation (Phase III);Industrial Maintenance Coating,VINCTSCPH3,VOC,Reformulation (Phase III),Industrial Maintenance Coating,NONPT,Known,,,1996,1|2|13
+MACT;Metal Coil & Can Coating,VMCCCMACT,VOC,MACT,Metal Coil & Can Coating,NONPT,Known,,,1997,1|2|32
+Process Modification;Metal Coil & Can Coating,VMCCCBAQMD,VOC,Process Modification,Metal Coil & Can Coating,NONPT,Known,,,1999,1|2|33
+Incineration;Metal Coil & Can Coating,VMCCCINC,VOC,Incineration,Metal Coil & Can Coating,NONPT,Known,,,1998,1|2|14
+MACT;Wood Product Surface Coating,VWDCTMACT1,VOC,MACT,Wood Product Surface Coating,NONPT,Known,,,1997,1|2|32|34
+Reformulation;Wood Product Surface Coating,VWDCTS1104,VOC,Reformulation,Wood Product Surface Coating,NONPT,Known,,,1999,1|2|27|35
+Incineration;Wood Product Surface Coating,VWDCTINC,VOC,Incineration,Wood Product Surface Coating,NONPT,Known,,,1999,1
+MACT;Wood Furniture Surface Coating,VWDCTMACT2,VOC,MACT,Wood Furniture Surface Coating,NONPT,Known,,,1997,1|2|14
+CTG;Wood Furniture Surface Coating,VWDCTCTG,VOC,CTG,Wood Furniture Surface Coating,NONPT,Known,,,1999,1|2|36
+Add-On Controls;Wood Furniture Surface Coating,VWDCTADDON,VOC,Add-On Controls,Wood Furniture Surface Coating,NONPT,Known,10,,1999,1|2|13|36
+Reformulation;Adhesives - Industrial,VINADS1168,VOC,Reformulation,Adhesives - Industrial,NONPT,Known,,,1997,1|2|6|37|38
+MACT;Open Top Degreasing,VDEGMACT,VOC,MACT,Open Top Degreasing,NONPT,Known,,,1998,1|2|14|39|40
+Reformulation-Process Modification;Open Top Degreasing,VDEGS1122A,VOC,Reformulation-Process Modification,Open Top Degreasing,NONPT,Known,,,1997,1|2|38|41
+Process Modification;Open Top Degreasing,VDEGS1122B,VOC,Process Modification,Open Top Degreasing,NONPT,Known,,,1997,1|2|38|41
+Incineration;Paper Surface Coating,VPACTINC,VOC,Incineration,Paper Surface Coating,NONPT,Known,,,1998,1|2|5
+MACT;Cold Cleaning,VCLDMACT,VOC,MACT,Cold Cleaning,NONPT,Known,,,2005,1|2|14|39|40
+Reformulation-Process Modification (OTC Rule);Cold Cleaning,VCLDOTC,VOC,Reformulation-Process Modification (OTC Rule),Cold Cleaning,NONPT,Known,,,2005,1|2|42|43
+Reformulation-Process Modification;Cold Cleaning,VCLDS1122A,VOC,Reformulation-Process Modification,Cold Cleaning,NONPT,Known,,,1997,1|2|38|41
+Process Modification;Cold Cleaning,VCLDS1122B,VOC,Process Modification,Cold Cleaning,NONPT,Known,,,1997,1|2|38|41
+Reformulation-Process Modification;Rubber/Plastics Mfg,VRBPLS1145,VOC,Reformulation-Process Modification,Rubber/Plastics Mfg,NONPT,Known,,,1996,1|2|38
+"MACT;Metal Furn, Appliances, Parts",VMTFNMACT,VOC,MACT,"Metal Furn, Appliances, Parts",NONPT,Known,,,1997,1|2|32|44
+"Reformulation-Process Modification;Metal Furn, Appliances, Parts",VMTFNS1107,VOC,Reformulation-Process Modification,"Metal Furn, Appliances, Parts",NONPT,Known,,,1996,1|2|38|45
+Reformulation;Automobile Refinishing,VATRFFR1,VOC,Reformulation,Automobile Refinishing,NONPT,Known,,,1998,1|2|5|46
+BARCT;Automobile Refinishing,VATRFBARCT,VOC,BARCT,Automobile Refinishing,NONPT,Known,,,1994,1|2|47
+Reformulation-Process Modification (OTC Rule);Automobile Refinishing,VATRFOTC,VOC,Reformulation-Process Modification (OTC Rule),Automobile Refinishing,NONPT,Emerging,,,2005,1|2|43
+Reformulation-Process Modification (Fed Rule);Automobile Refinishing,VATRFFR2,VOC,Reformulation-Process Modification (Fed Rule),Automobile Refinishing,NONPT,Known,,,1994,1|2|48|49|50
+"MACT;Machn, Electric, Railroad Ctng",VMERCMACT,VOC,MACT,"Machn, Electric, Railroad Ctng",NONPT,Known,,,1997,1|2|6|51
+"Reformulation-Process Modification;Machn, Electric, Railroad Ctng",VMERCS1107,VOC,Reformulation-Process Modification,"Machn, Electric, Railroad Ctng",NONPT,Known,,,1994,1|2|38|45
+"Reformulation-Process Modification (OTC Rule);Machn, Electric, Railroad Ctng",VMERCOTC,VOC,Reformulation-Process Modification (OTC Rule),"Machn, Electric, Railroad Ctng",NONPT,Emerging,,,2005,1|2|43
+Reformulation;Aerosol Paints,VARPTTIER2,VOC,Reformulation,Aerosol Paints,NONPT,Known,,,,1
+Reformulation (Fed Rule);Consumer Solvents,VCSOLVFR,VOC,Reformulation (Fed Rule),Consumer Solvents,NONPT,Known,,,1999,1|2|52|53|54|55|56
+Reformulation (OTC Rule);Consumer Solvents,VCSOLVOTC,VOC,Reformulation (OTC Rule),Consumer Solvents,NONPT,Known,,,2005,1|2|31|57
+Reformulation (ARB Phase I);Consumer Solvents,VCSOLVARB1,VOC,Reformulation (ARB Phase I),Consumer Solvents,NONPT,Known,,,1999,1|2|58
+Reformulation (ARB Phase II);Consumer Solvents,VCSOLVARB2,VOC,Reformulation (ARB Phase II),Consumer Solvents,NONPT,Emerging,,,1999,1
+MACT;Aircraft Surface Coating,VAIRCMACT,VOC,MACT,Aircraft Surface Coating,NONPT,Known,,,1998,1|2|59|60
+Reformulation-Process Modification;Aircraft Surface Coating,VAIRCOTC,VOC,Reformulation-Process Modification,Aircraft Surface Coating,NONPT,Emerging,,,2005,1|2|43
+MACT;Marine Surface Coating,VMARCMACT,VOC,MACT,Marine Surface Coating,NONPT,Known,,,1998,1|2|5|61|62|63
+Reformulation-Process Modification;Marine Surface Coating,VMARCOTC,VOC,Reformulation-Process Modification,Marine Surface Coating,NONPT,Emerging,,,2005,1|2|43
+Incineration;Marine Surface Coating,VMARCINC,VOC,Incineration,Marine Surface Coating,NONPT,Known,,,1998,1|2|14
+MACT;Electrical/Electronic Coating,VEECTMACT,VOC,MACT,Electrical/Electronic Coating,NONPT,Known,,,1997,1|2|32
+Reformulation-Process Modification;Electrical/Electronic Coating,VEECTS1164,VOC,Reformulation-Process Modification,Electrical/Electronic Coating,NONPT,Known,,,1997,1|2|6|7|47|64|65
+MACT;Motor Vehicle Coating,VMVCTMACT,VOC,MACT,Motor Vehicle Coating,NONPT,Known,,,1998,1|2|46|66
+Incineration;Motor Vehicle Coating,VMVCTINC,VOC,Incineration,Motor Vehicle Coating,NONPT,Known,,,1998,1|2|14
+Reformulation (Fed Rule);Consumer Adhesives,VCSADFR,VOC,Reformulation (Fed Rule),Consumer Adhesives,NONPT,Known,,,1999,1|2|52|53|55
+Reformulation (OTC Rule);Consumer Adhesives,VCSADOTC,VOC,Reformulation (OTC Rule),Consumer Adhesives,NONPT,Known,,,2005,1|2|31|57
+Reformulation (ARB Phase I);Consumer Adhesives,VCSADARB1,VOC,Reformulation (ARB Phase I),Consumer Adhesives,NONPT,Known,,,1999,1|2|58
+Reformulation (ARB Phase II);Consumer Adhesives,VCSADARB2,VOC,Reformulation (ARB Phase II),Consumer Adhesives,NONPT,Emerging,,,1999,1
+Incineration;Bakery Products,VBAKEINC,VOC,Incineration,Bakery Products,NONPT,Known,10,,1997,1|2|67|68|69|70|71
+Reformulation-Process Modification;Cutback Asphalt,VASPHREFRM,VOC,Reformulation-Process Modification,Cutback Asphalt,NONPT,Known,,,1997,1|2|72
+Process Modification;SOCMI Fugitives,VFUGEQMAN1,VOC,Process Modification,SOCMI Fugitives,NONPT,Known,,,,1
+Process Modification;Petroleum Refinery Fugitives,VFUGEQMAN2,VOC,Process Modification,Petroleum Refinery Fugitives,NONPT,Known,,,,1
+Process Modification;Oil and Natural Gas Production,VOGSEQMAN,VOC,Process Modification,Oil and Natural Gas Production,NONPT,Known,,,1996,1|2
+Gas Recovery;Municipal Solid Waste Landfill,VSWASRECOV,VOC,Gas Recovery,Municipal Solid Waste Landfill,NONPT,Known,,,1999,1|2|72
+Reformulation;Pesticide Application,VPESTFR,VOC,Reformulation,Pesticide Application,NONPT,Known,,,1999,1|2|74|75
+LPV Relief Valve;Stage II Service Stations,VSTGIILPV1,VOC,LPV Relief Valve,Stage II Service Stations,NONPT,Known,10,,1999,1|2|76|77
+LPV Relief Valve;Stage II Service Stations - Underground Tanks,VSTGIILPV2,VOC,LPV Relief Valve,Stage II Service Stations - Underground Tanks,NONPT,Known,10,,1999,1|2|76|77
+RACT;Graphic Arts,VGARTRACT,VOC,RACT,Graphic Arts,NONPT,Known,,,1999,1|2|78
+Equipment Modification;Portable Gasoline Containers,VFULCNTOTC,VOC,Equipment Modification,Portable Gasoline Containers,NONPT,Emerging,,,2005,1|2|43
+Reformulation;Nonroad - Gas(2-stroke)-Rec Eq,VNRFG60001,VOC,Reformulation,Nonroad - Gas(2-stroke)-Rec Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(2-stroke)-Const Eq,VNRFG60002,VOC,Reformulation,Nonroad - Gas(2-stroke)-Const Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(2-stroke)-Ind Eq,VNRFG60003,VOC,Reformulation,Nonroad - Gas(2-stroke)-Ind Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(2-stroke)-Lawn-Garden Eq,VNRFG60004,VOC,Reformulation,Nonroad - Gas(2-stroke)-Lawn-Garden Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(2-stroke)-Com Eq,VNRFG60006,VOC,Reformulation,Nonroad - Gas(2-stroke)-Com Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(2-stroke)-Log Eq,VNRFG60007,VOC,Reformulation,Nonroad - Gas(2-stroke)-Log Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(2-stroke)-Airport Eq,VNRFG60008,VOC,Reformulation,Nonroad - Gas(2-stroke)-Airport Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Rec Eq,VNRFG65001,VOC,Reformulation,Nonroad - Gas(4-stroke)-Rec Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Const Eq,VNRFG65002,VOC,Reformulation,Nonroad - Gas(4-stroke)-Const Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Ind Eq,VNRFG65003,VOC,Reformulation,Nonroad - Gas(4-stroke)-Ind Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Lawn-Garden Eq,VNRFG65004,VOC,Reformulation,Nonroad - Gas(4-stroke)-Lawn-Garden Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Ag Eq,VNRFG65005,VOC,Reformulation,Nonroad - Gas(4-stroke)-Ag Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Com Eq,VNRFG65006,VOC,Reformulation,Nonroad - Gas(4-stroke)-Com Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Log Eq,VNRFG65007,VOC,Reformulation,Nonroad - Gas(4-stroke)-Log Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Airport Eq,VNRFG65008,VOC,Reformulation,Nonroad - Gas(4-stroke)-Airport Eq,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(2-stroke)-Pleasure Craft,VNRFG82005,VOC,Reformulation,Nonroad - Gas(2-stroke)-Pleasure Craft,NONROAD,Known,,,1997,1|2|6
+Reformulation;Nonroad - Gas(4-stroke)-Pleasure Craft,VNRFG82010,VOC,Reformulation,Nonroad - Gas(4-stroke)-Pleasure Craft,NONROAD,Known,,,1997,1|2|6
+No Control (base year = 1996);Electric Utility Coal Combustion,NNCEGU96,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 1999);Electric Utility Coal Combustion,NNCEGU99,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2000);Electric Utility Coal Combustion,NNCEGU00,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2002);Electric Utility Coal Combustion,NNCEGU02,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2003);Electric Utility Coal Combustion,NNCEGU03,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2005);Electric Utility Coal Combustion,NNCEGU05,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2006);Electric Utility Coal Combustion,NNCEGU06,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2007);Electric Utility Coal Combustion,NNCEGU07,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2008);Electric Utility Coal Combustion,NNCEGU08,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2010);Electric Utility Coal Combustion,NNCEGU10,NOx,No Control,Electric Utility Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 1996);Industrial Coal Combustion,NNCCOL96,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 1999);Industrial Coal Combustion,NNCCOL99,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2000);Industrial Coal Combustion,NNCCOL00,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2002);Industrial Coal Combustion,NNCCOL02,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2003);Industrial Coal Combustion,NNCCOL03,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2005);Industrial Coal Combustion,NNCCOL05,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2006);Industrial Coal Combustion,NNCCOL06,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2007);Industrial Coal Combustion,NNCCOL07,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2008);Industrial Coal Combustion,NNCCOL08,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+No Control (base year = 2010);Industrial Coal Combustion,NNCCOL10,NOx,No Control,Industrial Coal Combustion,NONPT,Known,,,,1
+RACT to 50 tpy (LNB) (base year = 1996);Industrial Coal Combustion,NR50COL96,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 1999);Industrial Coal Combustion,NR50COL99,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2000);Industrial Coal Combustion,NR50COL00,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2002);Industrial Coal Combustion,NR50COL02,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2003);Industrial Coal Combustion,NR50COL03,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2005);Industrial Coal Combustion,NR50COL05,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2006);Industrial Coal Combustion,NR50COL06,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2007);Industrial Coal Combustion,NR50COL07,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2008);Industrial Coal Combustion,NR50COL08,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2010);Industrial Coal Combustion,NR50COL10,NOx,RACT to 50 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 1996);Industrial Coal Combustion,NR25COL96,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 1999);Industrial Coal Combustion,NR25COL99,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2000);Industrial Coal Combustion,NR25COL00,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2002);Industrial Coal Combustion,NR25COL02,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2003);Industrial Coal Combustion,NR25COL03,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2005);Industrial Coal Combustion,NR25COL05,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2006);Industrial Coal Combustion,NR25COL06,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2007);Industrial Coal Combustion,NR25COL07,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2008);Industrial Coal Combustion,NR25COL08,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2010);Industrial Coal Combustion,NR25COL10,NOx,RACT to 25 tpy (LNB),Industrial Coal Combustion,NONPT,Known,10,,1998,1|2|5|80
+No Control (base year = 1996);Industrial Oil Combustion,NNCOIL96,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 1999);Industrial Oil Combustion,NNCOIL99,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2000);Industrial Oil Combustion,NNCOIL00,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2002);Industrial Oil Combustion,NNCOIL02,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2003);Industrial Oil Combustion,NNCOIL03,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2005);Industrial Oil Combustion,NNCOIL05,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2006);Industrial Oil Combustion,NNCOIL06,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2007);Industrial Oil Combustion,NNCOIL07,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2008);Industrial Oil Combustion,NNCOIL08,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2010);Industrial Oil Combustion,NNCOIL10,NOx,No Control,Industrial Oil Combustion,NONPT,Known,,,,1
+RACT to 50 tpy (LNB) (base year = 1996);Industrial Oil Combustion,NR50OIL96,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 1999);Industrial Oil Combustion,NR50OIL99,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2000);Industrial Oil Combustion,NR50OIL00,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2002);Industrial Oil Combustion,NR50OIL02,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2003);Industrial Oil Combustion,NR50OIL03,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2005);Industrial Oil Combustion,NR50OIL05,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2006);Industrial Oil Combustion,NR50OIL06,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2007);Industrial Oil Combustion,NR50OIL07,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2008);Industrial Oil Combustion,NR50OIL08,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2010);Industrial Oil Combustion,NR50OIL10,NOx,RACT to 50 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 1996);Industrial Oil Combustion,NR25OIL96,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 1999);Industrial Oil Combustion,NR25OIL99,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2000);Industrial Oil Combustion,NR25OIL00,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2002);Industrial Oil Combustion,NR25OIL02,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2003);Industrial Oil Combustion,NR25OIL03,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2005);Industrial Oil Combustion,NR25OIL05,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2006);Industrial Oil Combustion,NR25OIL06,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2007);Industrial Oil Combustion,NR25OIL07,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2008);Industrial Oil Combustion,NR25OIL08,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2010);Industrial Oil Combustion,NR25OIL10,NOx,RACT to 25 tpy (LNB),Industrial Oil Combustion,NONPT,Known,10,,1998,1|2|5|80
+No Control (base year = 1996);Industrial NG Combustion,NNCNGC96,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 1999);Industrial NG Combustion,NNCNGC99,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2000);Industrial NG Combustion,NNCNGC00,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2002);Industrial NG Combustion,NNCNGC02,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2003);Industrial NG Combustion,NNCNGC03,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2005);Industrial NG Combustion,NNCNGC05,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2006);Industrial NG Combustion,NNCNGC06,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2007);Industrial NG Combustion,NNCNGC07,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2008);Industrial NG Combustion,NNCNGC08,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+No Control (base year = 2010);Industrial NG Combustion,NNCNGC10,NOx,No Control,Industrial NG Combustion,NONPT,Known,,,,1
+RACT to 50 tpy (LNB) (base year = 1996);Industrial NG Combustion,NR50NGC96,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 1999);Industrial NG Combustion,NR50NGC99,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2000);Industrial NG Combustion,NR50NGC00,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2002);Industrial NG Combustion,NR50NGC02,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2003);Industrial NG Combustion,NR50NGC03,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2005);Industrial NG Combustion,NR50NGC05,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2006);Industrial NG Combustion,NR50NGC06,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2007);Industrial NG Combustion,NR50NGC07,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2008);Industrial NG Combustion,NR50NGC08,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 50 tpy (LNB) (base year = 2010);Industrial NG Combustion,NR50NGC10,NOx,RACT to 50 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 1996);Industrial NG Combustion,NR25NGC96,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 1999);Industrial NG Combustion,NR25NGC99,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2000);Industrial NG Combustion,NR25NGC00,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2002);Industrial NG Combustion,NR25NGC02,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2003);Industrial NG Combustion,NR25NGC03,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2005);Industrial NG Combustion,NR25NGC05,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2006);Industrial NG Combustion,NR25NGC06,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2007);Industrial NG Combustion,NR25NGC07,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2008);Industrial NG Combustion,NR25NGC08,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+RACT to 25 tpy (LNB) (base year = 2010);Industrial NG Combustion,NR25NGC10,NOx,RACT to 25 tpy (LNB),Industrial NG Combustion,NONPT,Known,10,,1998,1|2|5|80
+No Control (base year = 1996);Industrial Combustion - Other,NNCINCB96,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 1999);Industrial Combustion - Other,NNCINCB99,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2000);Industrial Combustion - Other,NNCINCB00,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2002);Industrial Combustion - Other,NNCINCB02,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2003);Industrial Combustion - Other,NNCINCB03,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2005);Industrial Combustion - Other,NNCINCB05,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2006);Industrial Combustion - Other,NNCINCB06,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2007);Industrial Combustion - Other,NNCINCB07,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2008);Industrial Combustion - Other,NNCINCB08,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 2010);Industrial Combustion - Other,NNCINCB10,NOx,No Control,Industrial Combustion - Other,NONPT,Known,,,,1
+No Control (base year = 1996);Commercial/Insitutional - Coal,NNCCMCB96,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 1999);Commercial/Insitutional - Coal,NNCCMCB99,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2000);Commercial/Insitutional - Coal,NNCCMCB00,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2002);Commercial/Insitutional - Coal,NNCCMCB02,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2003);Commercial/Insitutional - Coal,NNCCMCB03,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2005);Commercial/Insitutional - Coal,NNCCMCB05,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2006);Commercial/Insitutional - Coal,NNCCMCB06,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2007);Commercial/Insitutional - Coal,NNCCMCB07,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2008);Commercial/Insitutional - Coal,NNCCMCB08,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 2010);Commercial/Insitutional - Coal,NNCCMCB10,NOx,No Control,Commercial/Insitutional - Coal,NONPT,Known,,,,1
+No Control (base year = 1996);Commercial/Insitutional - Oil,NNCCMOIL96,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 1999);Commercial/Insitutional - Oil,NNCCMOIL99,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2000);Commercial/Insitutional - Oil,NNCCMOIL00,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2002);Commercial/Insitutional - Oil,NNCCMOIL02,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2003);Commercial/Insitutional - Oil,NNCCMOIL03,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2005);Commercial/Insitutional - Oil,NNCCMOIL05,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2006);Commercial/Insitutional - Oil,NNCCMOIL06,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2007);Commercial/Insitutional - Oil,NNCCMOIL07,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2008);Commercial/Insitutional - Oil,NNCCMOIL08,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 2010);Commercial/Insitutional - Oil,NNCCMOIL10,NOx,No Control,Commercial/Insitutional - Oil,NONPT,Known,,,,1
+No Control (base year = 1996);Commercial/Institutional - NG,NNCCMNGC96,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 1999);Commercial/Institutional - NG,NNCCMNGC99,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2000);Commercial/Institutional - NG,NNCCMNGC00,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2002);Commercial/Institutional - NG,NNCCMNGC02,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2003);Commercial/Institutional - NG,NNCCMNGC03,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2005);Commercial/Institutional - NG,NNCCMNGC05,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2006);Commercial/Institutional - NG,NNCCMNGC06,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2007);Commercial/Institutional - NG,NNCCMNGC07,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2008);Commercial/Institutional - NG,NNCCMNGC08,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+No Control (base year = 2010);Commercial/Institutional - NG,NNCCMNGC10,NOx,No Control,Commercial/Institutional - NG,NONPT,Known,,,,1
+Water heater replacement (base year = 1996);Commercial/Institutional - NG,NWHCMNGC96,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 1999);Commercial/Institutional - NG,NWHCMNGC99,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2000);Commercial/Institutional - NG,NWHCMNGC00,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2002);Commercial/Institutional - NG,NWHCMNGC02,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2003);Commercial/Institutional - NG,NWHCMNGC03,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2005);Commercial/Institutional - NG,NWHCMNGC05,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2006);Commercial/Institutional - NG,NWHCMNGC06,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2007);Commercial/Institutional - NG,NWHCMNGC07,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2008);Commercial/Institutional - NG,NWHCMNGC08,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2010);Commercial/Institutional - NG,NWHCMNGC10,NOx,Water heater replacement,Commercial/Institutional - NG,NONPT,Known,13,,1997,1|2|6|80|81
+LNB (1997 AQMD) (base year = 1996);Commercial/Institutional - NG,NLNCMNGC96,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 1999);Commercial/Institutional - NG,NLNCMNGC99,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2000);Commercial/Institutional - NG,NLNCMNGC00,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2002);Commercial/Institutional - NG,NLNCMNGC02,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2003);Commercial/Institutional - NG,NLNCMNGC03,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2005);Commercial/Institutional - NG,NLNCMNGC05,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2006);Commercial/Institutional - NG,NLNCMNGC06,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2007);Commercial/Institutional - NG,NLNCMNGC07,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2008);Commercial/Institutional - NG,NLNCMNGC08,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2010);Commercial/Institutional - NG,NLNCMNGC10,NOx,LNB (1997 AQMD),Commercial/Institutional - NG,NONPT,Known,,,,1
+Water heater + LNB Space heaters (base year = 1996);Commercial/Institutional - NG,NWLCMNGC96,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 1999);Commercial/Institutional - NG,NWLCMNGC99,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2000);Commercial/Institutional - NG,NWLCMNGC00,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2002);Commercial/Institutional - NG,NWLCMNGC02,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2003);Commercial/Institutional - NG,NWLCMNGC03,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2005);Commercial/Institutional - NG,NWLCMNGC05,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2006);Commercial/Institutional - NG,NWLCMNGC06,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2007);Commercial/Institutional - NG,NWLCMNGC07,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2008);Commercial/Institutional - NG,NWLCMNGC08,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2010);Commercial/Institutional - NG,NWLCMNGC10,NOx,Water heater + LNB Space heaters,Commercial/Institutional - NG,NONPT,Known,20,,1997,1|2|6|38
+No Control (base year = 1996);Commercial/Instituional - Other,NNCCMOT96,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 1999);Commercial/Instituional - Other,NNCCMOT99,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2000);Commercial/Instituional - Other,NNCCMOT00,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2002);Commercial/Instituional - Other,NNCCMOT02,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2003);Commercial/Instituional - Other,NNCCMOT03,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2005);Commercial/Instituional - Other,NNCCMOT05,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2006);Commercial/Instituional - Other,NNCCMOT06,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2007);Commercial/Instituional - Other,NNCCMOT07,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2008);Commercial/Instituional - Other,NNCCMOT08,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 2010);Commercial/Instituional - Other,NNCCMOT10,NOx,No Control,Commercial/Instituional - Other,NONPT,Known,,,,1
+No Control (base year = 1996);Residential - Other,NNCRSOT96,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 1999);Residential - Other,NNCRSOT99,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2000);Residential - Other,NNCRSOT00,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2002);Residential - Other,NNCRSOT02,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2003);Residential - Other,NNCRSOT03,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2005);Residential - Other,NNCRSOT05,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2006);Residential - Other,NNCRSOT06,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2007);Residential - Other,NNCRSOT07,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2008);Residential - Other,NNCRSOT08,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 2010);Residential - Other,NNCRSOT10,NOx,No Control,Residential - Other,NONPT,Known,,,,1
+No Control (base year = 1996);Residential NG,NNCRSNGC96,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 1999);Residential NG,NNCRSNGC99,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2000);Residential NG,NNCRSNGC00,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2002);Residential NG,NNCRSNGC02,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2003);Residential NG,NNCRSNGC03,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2005);Residential NG,NNCRSNGC05,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2006);Residential NG,NNCRSNGC06,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2007);Residential NG,NNCRSNGC07,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2008);Residential NG,NNCRSNGC08,NOx,No Control,Residential NG,NONPT,Known,,,,1
+No Control (base year = 2010);Residential NG,NNCRSNGC10,NOx,No Control,Residential NG,NONPT,Known,,,,1
+Water heater replacement (base year = 1996);Residential NG,NWHRSNGC96,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 1999);Residential NG,NWHRSNGC99,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2000);Residential NG,NWHRSNGC00,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2002);Residential NG,NWHRSNGC02,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2003);Residential NG,NWHRSNGC03,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2005);Residential NG,NWHRSNGC05,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2006);Residential NG,NWHRSNGC06,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2007);Residential NG,NWHRSNGC07,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2008);Residential NG,NWHRSNGC08,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+Water heater replacement (base year = 2010);Residential NG,NWHRSNGC10,NOx,Water heater replacement,Residential NG,NONPT,Known,13,,1997,1|2|6|80|81
+LNB (1997 AQMD) (base year = 1996);Residential NG,NLNRSNGC96,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 1999);Residential NG,NLNRSNGC99,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2000);Residential NG,NLNRSNGC00,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2002);Residential NG,NLNRSNGC02,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2003);Residential NG,NLNRSNGC03,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2005);Residential NG,NLNRSNGC05,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2006);Residential NG,NLNRSNGC06,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2007);Residential NG,NLNRSNGC07,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2008);Residential NG,NLNRSNGC08,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+LNB (1997 AQMD) (base year = 2010);Residential NG,NLNRSNGC10,NOx,LNB (1997 AQMD),Residential NG,NONPT,Known,,,,1
+Water heater + LNB Space heaters (base year = 1996);Residential NG,NWLRSNGC96,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 1999);Residential NG,NWLRSNGC99,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2000);Residential NG,NWLRSNGC00,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2002);Residential NG,NWLRSNGC02,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2003);Residential NG,NWLRSNGC03,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2005);Residential NG,NWLRSNGC05,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2006);Residential NG,NWLRSNGC06,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2007);Residential NG,NWLRSNGC07,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2008);Residential NG,NWLRSNGC08,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+Water heater + LNB Space heaters (base year = 2010);Residential NG,NWLRSNGC10,NOx,Water heater + LNB Space heaters,Residential NG,NONPT,Known,20,,1997,1|2|6|38
+No Control (base year = 1996);Residential Wood,NNCRSWD96,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 1999);Residential Wood,NNCRSWD99,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2000);Residential Wood,NNCRSWD00,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2002);Residential Wood,NNCRSWD02,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2003);Residential Wood,NNCRSWD03,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2005);Residential Wood,NNCRSWD05,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2006);Residential Wood,NNCRSWD06,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2007);Residential Wood,NNCRSWD07,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2008);Residential Wood,NNCRSWD08,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 2010);Residential Wood,NNCRSWD10,NOx,No Control,Residential Wood,NONPT,Known,,,,1
+No Control (base year = 1996);Total Area Oil Combustion,NNCTLOIL96,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 1999);Total Area Oil Combustion,NNCTLOIL99,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2000);Total Area Oil Combustion,NNCTLOIL00,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2002);Total Area Oil Combustion,NNCTLOIL02,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2003);Total Area Oil Combustion,NNCTLOIL03,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2005);Total Area Oil Combustion,NNCTLOIL05,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2006);Total Area Oil Combustion,NNCTLOIL06,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2007);Total Area Oil Combustion,NNCTLOIL07,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2008);Total Area Oil Combustion,NNCTLOIL08,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 2010);Total Area Oil Combustion,NNCTLOIL10,NOx,No Control,Total Area Oil Combustion,NONPT,Known,,,,1
+No Control (base year = 1996);Total Area Other Combustion,NNCTLOT96,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 1999);Total Area Other Combustion,NNCTLOT99,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2000);Total Area Other Combustion,NNCTLOT00,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2002);Total Area Other Combustion,NNCTLOT02,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2003);Total Area Other Combustion,NNCTLOT03,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2005);Total Area Other Combustion,NNCTLOT05,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2006);Total Area Other Combustion,NNCTLOT06,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2007);Total Area Other Combustion,NNCTLOT07,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2008);Total Area Other Combustion,NNCTLOT08,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 2010);Total Area Other Combustion,NNCTLOT10,NOx,No Control,Total Area Other Combustion,NONPT,Known,,,,1
+No Control (base year = 1996);Food & Kindred,NNCFD96,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 1999);Food & Kindred,NNCFD99,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2000);Food & Kindred,NNCFD00,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2002);Food & Kindred,NNCFD02,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2003);Food & Kindred,NNCFD03,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2005);Food & Kindred,NNCFD05,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2006);Food & Kindred,NNCFD06,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2007);Food & Kindred,NNCFD07,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2008);Food & Kindred,NNCFD08,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 2010);Food & Kindred,NNCFD10,NOx,No Control,Food & Kindred,NONPT,Known,,,,1
+No Control (base year = 1996);Metals Production,NNCMP96,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 1999);Metals Production,NNCMP99,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2000);Metals Production,NNCMP00,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2002);Metals Production,NNCMP02,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2003);Metals Production,NNCMP03,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2005);Metals Production,NNCMP05,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2006);Metals Production,NNCMP06,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2007);Metals Production,NNCMP07,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2008);Metals Production,NNCMP08,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 2010);Metals Production,NNCMP10,NOx,No Control,Metals Production,NONPT,Known,,,,1
+No Control (base year = 1996);Bakeries,NNCBK96,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 1999);Bakeries,NNCBK99,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2000);Bakeries,NNCBK00,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2002);Bakeries,NNCBK02,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2003);Bakeries,NNCBK03,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2005);Bakeries,NNCBK05,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2006);Bakeries,NNCBK06,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2007);Bakeries,NNCBK07,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2008);Bakeries,NNCBK08,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 2010);Bakeries,NNCBK10,NOx,No Control,Bakeries,NONPT,Known,,,,1
+No Control (base year = 1996);Miscellaneous Industrial Processes,NNCMI96,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 1999);Miscellaneous Industrial Processes,NNCMI99,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2000);Miscellaneous Industrial Processes,NNCMI00,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2002);Miscellaneous Industrial Processes,NNCMI02,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2003);Miscellaneous Industrial Processes,NNCMI03,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2005);Miscellaneous Industrial Processes,NNCMI05,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2006);Miscellaneous Industrial Processes,NNCMI06,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2007);Miscellaneous Industrial Processes,NNCMI07,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2008);Miscellaneous Industrial Processes,NNCMI08,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2010);Miscellaneous Industrial Processes,NNCMI10,NOx,No Control,Miscellaneous Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 1996);Petroleum Refining,NNCPET96,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 1999);Petroleum Refining,NNCPET99,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2000);Petroleum Refining,NNCPET00,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2002);Petroleum Refining,NNCPET02,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2003);Petroleum Refining,NNCPET03,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2005);Petroleum Refining,NNCPET05,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2006);Petroleum Refining,NNCPET06,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2007);Petroleum Refining,NNCPET07,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2008);Petroleum Refining,NNCPET08,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 2010);Petroleum Refining,NNCPET10,NOx,No Control,Petroleum Refining,NONPT,Known,,,,1
+No Control (base year = 1996);Oil & Gas Production,NNCOGP96,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 1999);Oil & Gas Production,NNCOGP99,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2000);Oil & Gas Production,NNCOGP00,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2002);Oil & Gas Production,NNCOGP02,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2003);Oil & Gas Production,NNCOGP03,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2005);Oil & Gas Production,NNCOGP05,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2006);Oil & Gas Production,NNCOGP06,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2007);Oil & Gas Production,NNCOGP07,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2008);Oil & Gas Production,NNCOGP08,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 2010);Oil & Gas Production,NNCOGP10,NOx,No Control,Oil & Gas Production,NONPT,Known,,,,1
+No Control (base year = 1996);Miscellaneous Non-Industrial Processes,NNCMNI96,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 1999);Miscellaneous Non-Industrial Processes,NNCMNI99,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2000);Miscellaneous Non-Industrial Processes,NNCMNI00,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2002);Miscellaneous Non-Industrial Processes,NNCMNI02,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2003);Miscellaneous Non-Industrial Processes,NNCMNI03,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2005);Miscellaneous Non-Industrial Processes,NNCMNI05,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2006);Miscellaneous Non-Industrial Processes,NNCMNI06,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2007);Miscellaneous Non-Industrial Processes,NNCMNI07,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2008);Miscellaneous Non-Industrial Processes,NNCMNI08,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 2010);Miscellaneous Non-Industrial Processes,NNCMNI10,NOx,No Control,Miscellaneous Non-Industrial Processes,NONPT,Known,,,,1
+No Control (base year = 1996);Bulk Terminals,NNCBULK96,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 1999);Bulk Terminals,NNCBULK99,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2000);Bulk Terminals,NNCBULK00,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2002);Bulk Terminals,NNCBULK02,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2003);Bulk Terminals,NNCBULK03,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2005);Bulk Terminals,NNCBULK05,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2006);Bulk Terminals,NNCBULK06,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2007);Bulk Terminals,NNCBULK07,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2008);Bulk Terminals,NNCBULK08,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 2010);Bulk Terminals,NNCBULK10,NOx,No Control,Bulk Terminals,NONPT,Known,,,,1
+No Control (base year = 1996);Service Stations - Stage I,NNCSTG196,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 1999);Service Stations - Stage I,NNCSTG199,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2000);Service Stations - Stage I,NNCSTG100,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2002);Service Stations - Stage I,NNCSTG102,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2003);Service Stations - Stage I,NNCSTG103,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2005);Service Stations - Stage I,NNCSTG105,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2006);Service Stations - Stage I,NNCSTG106,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2007);Service Stations - Stage I,NNCSTG107,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2008);Service Stations - Stage I,NNCSTG108,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 2010);Service Stations - Stage I,NNCSTG110,NOx,No Control,Service Stations - Stage I,NONPT,Known,,,,1
+No Control (base year = 1996);Service Stations - Stage II,NNCSTG296,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 1999);Service Stations - Stage II,NNCSTG299,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2000);Service Stations - Stage II,NNCSTG200,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2002);Service Stations - Stage II,NNCSTG202,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2003);Service Stations - Stage II,NNCSTG203,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2005);Service Stations - Stage II,NNCSTG205,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2006);Service Stations - Stage II,NNCSTG206,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2007);Service Stations - Stage II,NNCSTG207,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2008);Service Stations - Stage II,NNCSTG208,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 2010);Service Stations - Stage II,NNCSTG210,NOx,No Control,Service Stations - Stage II,NONPT,Known,,,,1
+No Control (base year = 1996);Service Stations - Underground Tank,NNCUTANK96,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 1999);Service Stations - Underground Tank,NNCUTANK99,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2000);Service Stations - Underground Tank,NNCUTANK00,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2002);Service Stations - Underground Tank,NNCUTANK02,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2003);Service Stations - Underground Tank,NNCUTANK03,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2005);Service Stations - Underground Tank,NNCUTANK05,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2006);Service Stations - Underground Tank,NNCUTANK06,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2007);Service Stations - Underground Tank,NNCUTANK07,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2008);Service Stations - Underground Tank,NNCUTANK08,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 2010);Service Stations - Underground Tank,NNCUTANK10,NOx,No Control,Service Stations - Underground Tank,NONPT,Known,,,,1
+No Control (base year = 1996);On-Site Incineration,NNCINCIN96,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 1999);On-Site Incineration,NNCINCIN99,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2000);On-Site Incineration,NNCINCIN00,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2002);On-Site Incineration,NNCINCIN02,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2003);On-Site Incineration,NNCINCIN03,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2005);On-Site Incineration,NNCINCIN05,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2006);On-Site Incineration,NNCINCIN06,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2007);On-Site Incineration,NNCINCIN07,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2008);On-Site Incineration,NNCINCIN08,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 2010);On-Site Incineration,NNCINCIN10,NOx,No Control,On-Site Incineration,NONPT,Known,,,,1
+No Control (base year = 1996);Open Burning,NNCOBURN96,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 1999);Open Burning,NNCOBURN99,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2000);Open Burning,NNCOBURN00,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2002);Open Burning,NNCOBURN02,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2003);Open Burning,NNCOBURN03,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2005);Open Burning,NNCOBURN05,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2006);Open Burning,NNCOBURN06,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2007);Open Burning,NNCOBURN07,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2008);Open Burning,NNCOBURN08,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 2010);Open Burning,NNCOBURN10,NOx,No Control,Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 1996);Open Burning,NEPOBRUN96,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 1999);Open Burning,NEPOBRUN99,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2000);Open Burning,NEPOBRUN00,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2002);Open Burning,NEPOBRUN02,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2003);Open Burning,NEPOBRUN03,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2005);Open Burning,NEPOBRUN05,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2006);Open Burning,NEPOBRUN06,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2007);Open Burning,NEPOBRUN07,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2008);Open Burning,NEPOBRUN08,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+Episodic Ban (Daily Only) (base year = 2010);Open Burning,NEPOBRUN10,NOx,Episodic Ban (Daily Only),Open Burning,NONPT,Known,,,1996,1|2|6|80
+No Control (base year = 1996);POTWs,NNCPOTW96,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 1999);POTWs,NNCPOTW99,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2000);POTWs,NNCPOTW00,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2002);POTWs,NNCPOTW02,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2003);POTWs,NNCPOTW03,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2005);POTWs,NNCPOTW05,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2006);POTWs,NNCPOTW06,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2007);POTWs,NNCPOTW07,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2008);POTWs,NNCPOTW08,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 2010);POTWs,NNCPOTW10,NOx,No Control,POTWs,NONPT,Known,,,,1
+No Control (base year = 1996);TSDFs,NNCTSDF96,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 1999);TSDFs,NNCTSDF99,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2000);TSDFs,NNCTSDF00,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2002);TSDFs,NNCTSDF02,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2003);TSDFs,NNCTSDF03,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2005);TSDFs,NNCTSDF05,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2006);TSDFs,NNCTSDF06,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2007);TSDFs,NNCTSDF07,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2008);TSDFs,NNCTSDF08,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 2010);TSDFs,NNCTSDF10,NOx,No Control,TSDFs,NONPT,Known,,,,1
+No Control (base year = 1996);Agricultural Burning,NNCABURN96,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 1999);Agricultural Burning,NNCABURN99,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2000);Agricultural Burning,NNCABURN00,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2002);Agricultural Burning,NNCABURN02,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2003);Agricultural Burning,NNCABURN03,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2005);Agricultural Burning,NNCABURN05,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2006);Agricultural Burning,NNCABURN06,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2007);Agricultural Burning,NNCABURN07,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2008);Agricultural Burning,NNCABURN08,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+No Control (base year = 2010);Agricultural Burning,NNCABURN10,NOx,No Control,Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 1996);Agricultural Burning,NEPABURN96,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 1999);Agricultural Burning,NEPABURN99,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2000);Agricultural Burning,NEPABURN00,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2002);Agricultural Burning,NEPABURN02,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2003);Agricultural Burning,NEPABURN03,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2005);Agricultural Burning,NEPABURN05,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2006);Agricultural Burning,NEPABURN06,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2007);Agricultural Burning,NEPABURN07,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2008);Agricultural Burning,NEPABURN08,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+Seasonal Ban (Ozone Season Daily Only) (base year = 2010);Agricultural Burning,NEPABURN10,NOx,Seasonal Ban (Ozone Season Daily Only),Agricultural Burning,NONPT,Known,,,1997,1|2|6
+SCR (base year = 1996);Diesel Locomotives,NSCRLOCO96,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 1999);Diesel Locomotives,NSCRLOCO99,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2000);Diesel Locomotives,NSCRLOCO00,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2002);Diesel Locomotives,NSCRLOCO02,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2003);Diesel Locomotives,NSCRLOCO03,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2005);Diesel Locomotives,NSCRLOCO05,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2006);Diesel Locomotives,NSCRLOCO06,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2007);Diesel Locomotives,NSCRLOCO07,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2008);Diesel Locomotives,NSCRLOCO08,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+SCR (base year = 2010);Diesel Locomotives,NSCRLOCO10,NOx,SCR,Diesel Locomotives,ALM,Known,,,2004,1|2|79
+Chemical Additives to Waste;Cattle Feedlots,ACHMADDBFL,NH3,Chemical Additives to Waste,Cattle Feedlots,AG,Known,,,2000,1|2|82
+Chemical Additives to Waste;Poultry Operations,ACHMADDCHK,NH3,Chemical Additives to Waste,Poultry Operations,AG,Known,,,1999,1|2|82|83
+Chemical Additives to Waste;Hog Operations,ACHMADDHOG,NH3,Chemical Additives to Waste,Hog Operations,AG,Known,,,1999,1|2|82
+Emergent Control; Swine,AEMRGHOG,NH3,Emergent Control,Hog Operations,AG,Emerging,,,2006,84
+Emergent Control; Dairy,AEMRGDIARY,NH3,Emergent Control,Dairy Operations,AG,Emerging,,,2006,84
+Intermodal - shift of transportation of goods from truck to rail transport; Class 8 HDDV,VMODESHIFT,VOC,Intermodal - shift of transportation of goods from truck to rail transport,Class 8 HDDVs,ON-ROAD,Known,,,2006,85
+Eliminate Long Duration Idling with Truck Stop Electrification; Class 8 HDDV,VTRKSTPELE,VOC,Eliminate Long Duration Idling with Truck Stop Electrification,Class 8 HDDVs,ON-ROAD,Known,,,2006,85|86
+Eliminate Long Duration Idling with Mobile Idle Reduction Technologies; Class 8 HDDV,VIDLEMOD,VOC,Eliminate Long Duration Idling with Mobile Idle Reduction Technologies,Class 8 HDDVs,ON-ROAD,Known,,,2006,85|86
+Diesel Retrofit  - Diesel Oxidation Catalysts;School Bus,VDEOXCATSB,VOC,Diesel Retrofit  - Diesel Oxidation Catalysts,School Bus,ON-ROAD,Known,,,2006,86|87|88
+Diesel Retrofit - Catalyzed Diesel Particulate Filters;School Bus,VDEPFCATSB,VOC,Diesel Retrofit - Catalyzed Diesel Particulate Filters,School Bus,ON-ROAD,Known,,,2006,86|87|88
+Diesel Retrofit  - Diesel Oxidation Catalysts;Class 6 & 7 HDDVs,VDEOXCAT67,VOC,Diesel Retrofit  - Diesel Oxidation Catalysts,Class 6 & 7 HDDVs,ON-ROAD,Known,,,2006,86|87|88
+Diesel Retrofit - Catalyzed Diesel Particulate Filters;Class 6 & 7 HDDVs,VDEPFCAT67,VOC,Diesel Retrofit - Catalyzed Diesel Particulate Filters,Class 6 & 7 HDDVs,ON-ROAD,Known,,,2006,86|87|88
+Diesel Retrofit  - Diesel Oxidation Catalysts;Class 8B HDDVs,VDEOXCATHD,VOC,Diesel Retrofit  - Diesel Oxidation Catalysts,Class 8B HDDVs,ON-ROAD,Known,,,2006,86|87|88
+Diesel Retrofit - Catalyzed Diesel Particulate Filters;Class 8B HDDVs,VDEPFCATHD,VOC,Diesel Retrofit - Catalyzed Diesel Particulate Filters,Class 8B HDDVs,ON-ROAD,Known,,,2006,86|87|88
+Low Sulfur Fuel; Residential Heating (heating oil),SLSFRESHET,SO2,Low Sulfur Fuel,Residential Heating,NONPT,Known,,,2006,89
+SCR; Internal Combustion Engines - Gas,NSCRICGS,NOX,SCR,Internal Combustion Engines - Gas,NONPT,Known,,,2006,90
+"LNB; Water Heater, Space Heater - Natural Gas",NLNBSPWHNG,NOX,LNB,"Water Heater, Space Heater - Natural Gas",NONPT,Known,,,2006,2

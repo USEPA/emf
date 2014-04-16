@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+  <class name="gov.epa.emissions.framework.services.casemanagement.parameters.CaseParameter" table="cases_parameters" schema="cases"> 
+ 	            <id name="id" type="integer" column="id">
+	                <generator class="identity"/>
+ 	            </id>
+
+    			<property name="caseID" column="case_id" type="integer" not-null="true"/>
+    			<property name="parentCaseId" column="parent_case_id" type="integer" not-null="false"/>
+    			<property name="jobId" column="case_job_id" type="integer" not-null="false"/>
+    			<property name="value"	column="env_value"	type="java.lang.String"	not-null="false"/>
+      			<property name="notes"	column="notes"	type="java.lang.String"	not-null="false"/>
+      			<property name="purpose"	column="purpose"	type="java.lang.String"	not-null="false"/>
+				<property name="required"	column="required"	type="boolean"	not-null="false"/>
+				<property name="local"	column="local"	type="boolean"	not-null="false"/>
+				<property name="order" column="exec_order" type="float" not-null="false"/>
+    			<property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
+  
+    			<many-to-one 
+   					name="parameterName"
+        			class="gov.epa.emissions.framework.services.casemanagement.parameters.ParameterName"
+        			column="param_name_id"
+        			insert="true"/> 
+
+    			<many-to-one
+   					name="sector" 
+        			class="gov.epa.emissions.commons.data.Sector"
+        			column="sector_id"/> 
+        			
+        		<many-to-one
+         			name="region" 
+        			class="gov.epa.emissions.framework.services.data.GeoRegion"
+        			column="region_id"/> 
+
+    			<many-to-one
+   					name="program" 
+        			class="gov.epa.emissions.framework.services.casemanagement.CaseProgram"
+        			column="program_id"
+        			insert="true"/>  
+
+    			<many-to-one
+   					name="envVar" 
+        			class="gov.epa.emissions.framework.services.casemanagement.parameters.ParameterEnvVar"
+        			column="env_vars_id"
+        			insert="true"/>  
+
+    			<many-to-one
+   					name="type" 
+        			class="gov.epa.emissions.framework.services.casemanagement.parameters.ValueType"
+        			column="val_type_id"/>
+ 
+  </class> 
+</hibernate-mapping>  

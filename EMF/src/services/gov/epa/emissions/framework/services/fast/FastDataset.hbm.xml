@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.fast.FastDataset" table="fast_datasets" schema="fast"> 
+
+    <id name="id" column="dataset_id">
+        <generator class="foreign">
+            <param name="property">dataset</param>
+        </generator>
+    </id>
+    <one-to-one name="dataset" class="gov.epa.emissions.framework.services.data.EmfDataset" constrained="true"/>
+
+<!--
+<composite-id>
+        <key-many-to-one name="dataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id"/>
+</composite-id>
+ 	<id name="id" type="integer" column="dataset_id">
+        <key-many-to-one name="dataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id"/>
+ 	</id>
+	
+	<many-to-one
+            name="dataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="dataset_id" not-null="true"/> 
+-->
+  	<property name="addedDate" column="added_date" type="java.util.Date" not-null="true" length="4"/>
+	 <one-to-one name="fastNonPointDataset" class="gov.epa.emissions.framework.services.fast.FastNonPointDataset"/>
+  </class> 
+</hibernate-mapping>  

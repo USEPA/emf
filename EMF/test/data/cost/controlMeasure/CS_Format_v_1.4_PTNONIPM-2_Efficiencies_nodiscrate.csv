@@ -1,0 +1,1036 @@
+CMAbbreviation,Pollutant,Locale,Effective Date,ExistingMeasureAbbr,NEIExistingDevCode,ControlEfficiency,CostYear,CostPerTon,RuleEff,RulePen,EquationType,CapRecFactor,DiscountRate,Details
+N0110,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0110L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0110S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0111,NOx,,,,,40.00%,1990,950,100,100,cpton,0.0944,,
+N0111L,NOx,,,,,40.00%,1990,840,100,100,cpton,0.0944,,Applied to large source types
+N0111S,NOx,,,,,40.00%,1990,1040,100,100,cpton,0.0944,,Applied to small source types
+N0113,NOx,,,,,50.00%,1990,1280,100,100,cpton,0.1424,,
+N0113L,NOx,,,,,50.00%,1990,1090,100,100,cpton,0.1424,,Applied to large source types
+N0113S,NOx,,,,,50.00%,1990,1460,100,100,cpton,0.1424,,Applied to small source types
+N0114,NOx,,,,,90.00%,1990,1170,100,100,cpton,0.0944,,
+N0114L,NOx,,,,,90.00%,1990,1070,100,100,cpton,0.0944,,Applied to large source types
+N0114S,NOx,,,,,90.00%,1990,1260,100,100,cpton,0.0944,,Applied to small source types
+N0120,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0120L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0120S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0121,NOx,,,,,75.00%,1990,790,100,100,cpton,0.0944,,
+N0121L,NOx,,,,,75.00%,1990,670,100,100,cpton,0.0944,,Applied to large source types
+N0121S,NOx,,,,,75.00%,1990,900,100,100,cpton,0.0944,,Applied to small source types
+N0130,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0130L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0130S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0131,NOx,,,,,40.00%,1990,920,100,100,cpton,0.0944,,
+N0131L,NOx,,,,,40.00%,1990,817,100,100,cpton,0.0944,,Applied to large source types
+N0131S,NOx,,,,,40.00%,1990,1015,100,100,cpton,0.0944,,Applied to small source types
+N0140,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0140L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0140S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0141,NOx,,,,,35.00%,1990,770,100,100,cpton,0.0944,,
+N0141L,NOx,,,,,35.00%,1990,700,100,100,cpton,0.0944,,Applied to large source types
+N0141S,NOx,,,,,35.00%,1990,840,100,100,cpton,0.0944,,Applied to small source types
+N0142,NOx,,,,,50.00%,1990,420,100,100,cpton,0.0944,,
+N0142L,NOx,,,,,50.00%,1990,300,100,100,cpton,0.0944,,Applied to large source types
+N0142S,NOx,,,,,50.00%,1990,1570,100,100,cpton,0.0944,,Applied to small source types
+N0143,NOx,,,,,90.00%,1990,760,100,100,cpton,0.0944,,
+N0143L,NOx,,,,,90.00%,1990,700,100,100,cpton,0.0944,,Applied to large source types
+N0143S,NOx,,,,,90.00%,1990,820,100,100,cpton,0.0944,,Applied to small source types
+N0144,NOx,,,,,55.00%,1990,480,100,100,cpton,0.0944,,
+N0144L,NOx,,,,,55.00%,1990,300,100,100,cpton,0.0944,,Applied to large source types
+N0144S,NOx,,,,,55.00%,1990,1570,100,100,cpton,0.0944,,Applied to small source types
+N0150,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0150L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0150S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0151,NOx,,,,,50.00%,1990,410,100,100,cpton,0.1424,,
+N0151L,NOx,,,,,50.00%,1990,430,100,100,cpton,0.1424,,Applied to large source types
+N0151S,NOx,,,,,50.00%,1990,400,100,100,cpton,0.1424,,Applied to small source types
+N0152,NOx,,,,,60.00%,1990,760,100,100,cpton,0.1424,,
+N0152L,NOx,,,,,60.00%,1990,390,100,100,cpton,0.1424,,Applied to large source types
+N0152S,NOx,,,,,60.00%,1990,1120,100,100,cpton,0.1424,,Applied to small source types
+N0153,NOx,,,,,80.00%,1990,1140,100,100,cpton,0.0944,,
+N0153L,NOx,,,,,80.00%,1990,810,100,100,cpton,0.0944,,Applied to large source types
+N0153S,NOx,,,,,80.00%,1990,1480,100,100,cpton,0.0944,,Applied to small source types
+N0154,NOx,,,,,50.00%,1990,1810,100,100,cpton,0.0944,,
+N0154L,NOx,,,,,50.00%,1990,1050,100,100,cpton,0.0944,,Applied to large source types
+N0154S,NOx,,,,,50.00%,1990,2580,100,100,cpton,0.0944,,Applied to small source types
+N0160,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0160L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0160S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0161,NOx,,,,,50.00%,1990,1630,100,100,cpton,0.1424,,
+N0161L,NOx,,,,,50.00%,1990,2070,100,100,cpton,0.1424,,Applied to large source types
+N0161S,NOx,,,,,50.00%,1990,1180,100,100,cpton,0.1424,,Applied to small source types
+N0162,NOx,,,,,60.00%,1990,1630,100,100,cpton,0.1424,,
+N0162L,NOx,,,,,60.00%,1990,760,100,100,cpton,0.1424,,Applied to large source types
+N0162S,NOx,,,,,60.00%,1990,2490,100,100,cpton,0.1424,,Applied to small source types
+N0163,NOx,,,,,80.00%,1990,2150,100,100,cpton,0.0944,,
+N0163L,NOx,,,,,80.00%,1990,1510,100,100,cpton,0.0944,,Applied to large source types
+N0163S,NOx,,,,,80.00%,1990,2780,100,100,cpton,0.0944,,Applied to small source types
+N0164,NOx,,,,,50.00%,1990,3270,100,100,cpton,0.0944,,
+N0164L,NOx,,,,,50.00%,1990,1890,100,100,cpton,0.0944,,Applied to large source types
+N0164S,NOx,,,,,50.00%,1990,4640,100,100,cpton,0.0944,,Applied to small source types
+N0170,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0170L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0170S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0171,NOx,,,,,50.00%,1990,740,100,100,cpton,0.1424,,
+N0171L,NOx,,,,,50.00%,1990,650,100,100,cpton,0.1424,,Applied to large source types
+N0171S,NOx,,,,,50.00%,1990,820,100,100,cpton,0.1424,,Applied to small source types
+N0172,NOx,,,,,60.00%,1990,1580,100,100,cpton,0.1424,,
+N0172L,NOx,,,,,60.00%,1990,590,100,100,cpton,0.1424,,Applied to large source types
+N0172S,NOx,,,,,60.00%,1990,2560,100,100,cpton,0.1424,,Applied to small source types
+N0173,NOx,,,,,65.00%,1990,500,100,100,cpton,0.1424,,
+N0173L,NOx,,,,,65.00%,1990,320,100,100,cpton,0.1424,,Applied to large source types
+N0173S,NOx,,,,,65.00%,1990,680,100,100,cpton,0.1424,,Applied to small source types
+N0174,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.0944,,
+N0174L,NOx,,,,,80.00%,1990,1210,100,100,cpton,0.0944,,Applied to large source types
+N0174S,NOx,,,,,80.00%,1990,2230,100,100,cpton,0.0944,,Applied to small source types
+N0175,NOx,,,,,50.00%,1990,2730,100,100,cpton,0.0944,,
+N0175L,NOx,,,,,50.00%,1990,1570,100,100,cpton,0.0944,,Applied to large source types
+N0175S,NOx,,,,,50.00%,1990,3870,100,100,cpton,0.0944,,Applied to small source types
+N0180,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0180L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0180S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0181,NOx,,,,,55.00%,1990,1190,100,100,cpton,0.0944,,
+N0181L,NOx,,,,,55.00%,1990,930,100,100,cpton,0.0944,,Applied to large source types
+N0181S,NOx,,,,,55.00%,1990,1440,100,100,cpton,0.0944,,Applied to small source types
+N0190,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0190L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0190S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0191,NOx,,,,,55.00%,1990,1140,100,100,cpton,0.0944,,
+N0191L,NOx,,,,,55.00%,1990,960,100,100,cpton,0.0944,,Applied to large source types
+N0191S,NOx,,,,,55.00%,1990,1320,100,100,cpton,0.0944,,Applied to small source types
+N0200,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0200L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0200S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0201,NOx,,,,,55.00%,1990,1470,100,100,cpton,0.0944,,
+N0201L,NOx,,,,,55.00%,1990,1250,100,100,cpton,0.0944,,Applied to large source types
+N0201S,NOx,,,,,55.00%,1990,1690,100,100,cpton,0.0944,,Applied to small source types
+N0210,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0210L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0210S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0211,NOx,,,,,25.00%,1990,640,100,100,cpton,0.1098,,
+N0211L,NOx,,,,,25.00%,1990,490,100,100,cpton,0.1098,,Applied to large source types
+N0211S,NOx,,,,,25.00%,1990,770,100,100,cpton,0.1098,,Applied to small source types
+N0214,NOx,,,,,90.00%,1990,1630,100,100,cpton,0.1098,,
+N0214L,NOx,,,,,80.00%,1990,920,100,100,cpton,0.1098,,Applied to large source types
+N0214S,NOx,,,,,80.00%,1990,2340,100,100,cpton,0.1098,,Applied to small source types
+N0215,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,
+N0215L,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,Applied to large source types
+N0215S,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,Applied to small source types
+N0220,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0220L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0220S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0221,NOx,,,,,20.00%,1990,790,100,100,cpton,0.1098,,
+N02210,NOx,,,,,87.00%,1990,380,100,100,cpton,0.1098,,
+N02210L,NOx,,,,,87.00%,1990,380,100,100,cpton,0.1098,,Applied to large source types
+N02210S,NOx,,,,,87.00%,1990,380,100,100,cpton,0.1098,,Applied to small source types
+N02211,NOx,,,,,87.00%,1990,176,100,100,cpton,0.1098,,
+N02211L,NOx,,,,,87.00%,1990,630,100,100,cpton,0.1098,,Applied to large source types
+N02211S,NOx,,,,,87.00%,1990,1680,100,100,cpton,0.1098,,Applied to small source types
+N02212,NOx,,,,,90.00%,1990,305,100,100,cpton,0.1098,,
+N02212,NOx,,,,,90.00%,1990,533,100,100,cpton,0.1098,,Applied to large source types
+N02212,NOx,,,,,90.00%,1990,2769,100,100,cpton,0.1098,,Applied to small source types
+N02213NSCR,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,
+N02213SNCR,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,Applied to large source types
+N0221L,NOx,,,,,20.00%,1990,550,100,100,cpton,0.1098,,Applied to large source types
+N0221S,NOx,,,,,20.00%,1990,1020,100,100,cpton,0.1098,,Applied to small source types
+N0224,NOx,,,,,20.00%,1990,970,100,100,cpton,0.1098,,
+N0224L,NOx,,,,,20.00%,1990,380,100,100,cpton,0.1098,,Applied to large source types
+N0224S,NOx,,,,,20.00%,1990,1570,100,100,cpton,0.1098,,Applied to small source types
+N0227,NOx,,,,,30.00%,1990,950,100,100,cpton,0.1098,,
+N0227L,NOx,,,,,30.00%,1990,460,100,100,cpton,0.1098,,Applied to large source types
+N0227S,NOx,,,,,30.00%,1990,1440,100,100,cpton,0.1098,,Applied to small source types
+N0230,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0230L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0230S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0231,NOx,,,,,68.00%,1990,970,100,100,cpton,0.1098,,
+N0231L,NOx,,,,,68.00%,1990,650,100,100,cpton,0.1098,,Applied to large source types
+N0231S,NOx,,,,,68.00%,1990,1290,100,100,cpton,0.1098,,Applied to small source types
+N0232,NOx,,,,,90.00%,1990,1660,100,100,cpton,0.1098,,
+N0232L,NOx,,,,,90.00%,1990,1010,100,100,cpton,0.1098,,Applied to large source types
+N0232S,NOx,,,,,90.00%,1990,2300,100,100,cpton,0.1098,,Applied to small source types
+N0240,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0240L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0240S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0241,NOx,,,,,76.00%,1990,1120,100,100,cpton,0.1098,,
+N0241L,NOx,,,,,76.00%,1990,730,100,100,cpton,0.1098,,Applied to large source types
+N0241S,NOx,,,,,76.00%,1990,1510,100,100,cpton,0.1098,,Applied to small source types
+N0242,NOx,,,,,80.00%,1990,770,100,100,cpton,0.1098,,
+N0242L,NOx,,,,,80.00%,1990,500,100,100,cpton,0.1098,,Applied to large source types
+N0242S,NOx,,,,,80.00%,1990,1040,100,100,cpton,0.1098,,Applied to small source types
+N0243,NOx,,,,,84.00%,1990,300,100,100,cpton,0.1098,,
+N0243L,NOx,,,,,84.00%,1990,100,100,100,cpton,0.1098,,Applied to large source types
+N0243S,NOx,,,,,68.00%,1990,490,100,100,cpton,0.1098,,Applied to small source types
+N0244,NOx,,,,,94.00%,1990,1590,100,100,cpton,0.1098,,
+N0244L,NOx,,,,,94.00%,1990,600,100,100,cpton,0.1098,,Applied to large source types
+N0244S,NOx,,,,,94.00%,1990,2570,100,100,cpton,0.1098,,Applied to small source types
+N0245,NOx,,,,,95.00%,1990,1430,100,100,cpton,0.1098,,
+N0245L,NOx,,,,,95.00%,1990,840,100,100,cpton,0.1098,,Applied to large source types
+N0245S,NOx,,,,,95.00%,1990,2010,100,100,cpton,0.1098,,Applied to small source types
+N0246,NOx,,,,,95.00%,1990,1930,100,100,cpton,0.1098,,
+N0246L,NOx,,,,,95.00%,1990,1130,100,100,cpton,0.1098,,Applied to large source types
+N0246S,NOx,,,,,95.00%,1990,2730,100,100,cpton,0.1098,,Applied to small source types
+N0250,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0250L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0250S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0251,NOx,,,,,45.00%,1990,2230,100,100,cpton,0.1098,,
+N0251L,NOx,,,,,45.00%,1990,970,100,100,cpton,0.1098,,Applied to large source types
+N0251S,NOx,,,,,45.00%,1990,3470,100,100,cpton,0.1098,,Applied to small source types
+N0252L,NOx,,,,,48.00%,1990,1680,100,100,cpton,0.1098,,Applied to large source types
+N0252S,NOx,,,,,48.00%,1990,4250,100,100,cpton,0.1098,,Applied to small source types
+N0253,NOx,,,,,60.00%,1990,2450,100,100,cpton,0.1098,,
+N0253L,NOx,,,,,60.00%,1990,1720,100,100,cpton,0.1098,,Applied to large source types
+N0253S,NOx,,,,,60.00%,1990,3180,100,100,cpton,0.1098,,Applied to small source types
+N0254,NOx,,,,,74.00%,1990,1380,100,100,cpton,0.1098,,
+N0254L,NOx,,,,,74.00%,1990,610,100,100,cpton,0.1098,,Applied to large source types
+N0254S,NOx,,,,,74.00%,1990,2140,100,100,cpton,0.1098,,Applied to small source types
+N0255,NOx,,,,,75.00%,1990,7630,100,100,cpton,0.1098,,
+N0255L,NOx,,,,,75.00%,1990,6030,100,100,cpton,0.1098,,Applied to large source types
+N0255S,NOx,,,,,75.00%,1990,9230,100,100,cpton,0.1098,,Applied to small source types
+N0256,NOx,,,,,78.00%,1990,2750,100,100,cpton,0.1098,,
+N0256L,NOx,,,,,78.00%,1990,1880,100,100,cpton,0.1098,,Applied to large source types
+N0256S,NOx,,,,,78.00%,1990,3620,100,100,cpton,0.1098,,Applied to small source types
+N0257,NOx,,,,,92.00%,1990,7190,100,100,cpton,0.1098,,
+N0257L,NOx,,,,,92.00%,1990,5250,100,100,cpton,0.1098,,Applied to large source types
+N0257S,NOx,,,,,92.00%,1990,9120,100,100,cpton,0.1098,,Applied to small source types
+N0260,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0260L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0260S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0261L,NOx,,,,,34.00%,1990,1380,100,100,cpton,0.1098,,Applied to large source types
+N0261S,NOx,,,,,34.00%,1990,3490,100,100,cpton,0.1098,,Applied to small source types
+N0262,NOx,,,,,37.00%,1990,1620,100,100,cpton,0.1098,,
+N0262L,NOx,,,,,37.00%,1990,710,100,100,cpton,0.1098,,Applied to large source types
+N0262S,NOx,,,,,37.00%,1990,2520,100,100,cpton,0.1098,,Applied to small source types
+N0263,NOx,,,,,60.00%,1990,1510,100,100,cpton,0.1098,,
+N0263L,NOx,,,,,60.00%,1990,1100,100,100,cpton,0.1098,,Applied to large source types
+N0263S,NOx,,,,,60.00%,1990,1930,100,100,cpton,0.1098,,Applied to small source types
+N0264,NOx,,,,,73.00%,1990,830,100,100,cpton,0.1098,,
+N0264L,NOx,,,,,73.00%,1990,360,100,100,cpton,0.1098,,Applied to large source types
+N0264S,NOx,,,,,73.00%,1990,1290,100,100,cpton,0.1098,,Applied to small source types
+N0265,NOx,,,,,75.00%,1990,1770,100,100,cpton,0.1098,,
+N0265L,NOx,,,,,75.00%,1990,1240,100,100,cpton,0.1098,,Applied to large source types
+N0265S,NOx,,,,,75.00%,1990,2300,100,100,cpton,0.1098,,Applied to small source types
+N0266,NOx,,,,,75.00%,1990,4470,100,100,cpton,0.1098,,
+N0266L,NOx,,,,,75.00%,1990,3590,100,100,cpton,0.1098,,Applied to large source types
+N0266S,NOx,,,,,75.00%,1990,5350,100,100,cpton,0.1098,,Applied to small source types
+N0267,NOx,,,,,91.00%,1990,4290,100,100,cpton,0.1098,,
+N0267L,NOx,,,,,91.00%,1990,3160,100,100,cpton,0.1098,,Applied to large source types
+N0267S,NOx,,,,,91.00%,1990,5420,100,100,cpton,0.1098,,Applied to small source types
+N0270,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0270L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0270S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0271,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0271L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0271S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0272L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0272S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0273,NOx,,,,,60.00%,1990,2400,100,100,cpton,0.1098,,
+N0273L,NOx,,,,,60.00%,1990,1950,100,100,cpton,0.1098,,Applied to large source types
+N0273S,NOx,,,,,60.00%,1990,2850,100,100,cpton,0.1098,,Applied to small source types
+N0274,NOx,,,,,75.00%,1990,1350,100,100,cpton,0.1098,,
+N0274L,NOx,,,,,75.00%,1990,1200,100,100,cpton,0.1098,,Applied to large source types
+N0274S,NOx,,,,,75.00%,1990,1500,100,100,cpton,0.1098,,Applied to small source types
+N0275,NOx,,,,,75.00%,1990,10110,100,100,cpton,0.1098,,
+N0275L,NOx,,,,,75.00%,1990,8160,100,100,cpton,0.1098,,Applied to large source types
+N0275S,NOx,,,,,75.00%,1990,12040,100,100,cpton,0.1098,,Applied to small source types
+N0276,NOx,,,,,80.00%,1990,3050,100,100,cpton,0.1098,,
+N0276L,NOx,,,,,80.00%,1990,2590,100,100,cpton,0.1098,,Applied to large source types
+N0276S,NOx,,,,,80.00%,1990,3520,100,100,cpton,0.1098,,Applied to small source types
+N0277,NOx,,,,,88.00%,1990,9800,100,100,cpton,0.1098,,
+N0277L,NOx,,,,,88.00%,1990,8020,100,100,cpton,0.1098,,Applied to large source types
+N0277S,NOx,,,,,88.00%,1990,11560,100,100,cpton,0.1098,,Applied to small source types
+N0280,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0280L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0280S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0281,NOx,,,,,81.00%,1990,420,100,100,cpton,0.1424,,
+N0281L,NOx,,,,,81.00%,1990,420,100,100,cpton,0.1424,,Applied to large source types
+N0281S,NOx,,,,,81.00%,1990,420,100,100,cpton,0.1424,,Applied to small source types
+N0282,NOx,,,,,86.00%,1990,90,100,100,cpton,0.1424,,
+N0282L,NOx,,,,,86.00%,1990,90,100,100,cpton,0.1424,,Applied to large source types
+N0282S,NOx,,,,,86.00%,1990,90,100,100,cpton,0.1424,,Applied to small source types
+N0290,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0290L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0290S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0291,NOx,,,,,95.00%,1990,480,100,100,cpton,0.1424,,
+N0291L,NOx,,,,,95.00%,1990,480,100,100,cpton,0.1424,,Applied to large source types
+N0291S,NOx,,,,,95.00%,1990,480,100,100,cpton,0.1424,,Applied to small source types
+N0292,NOx,,,,,97.00%,1990,590,100,100,cpton,0.1424,,
+N0292L,NOx,,,,,97.00%,1990,590,100,100,cpton,0.1424,,Applied to large source types
+N0292S,NOx,,,,,97.00%,1990,590,100,100,cpton,0.1424,,Applied to small source types
+N0293,NOx,,,,,98.00%,1990,550,100,100,cpton,0.1424,,
+N0293L,NOx,,,,,98.00%,1990,550,100,100,cpton,0.1424,,Applied to large source types
+N0293S,NOx,,,,,98.00%,1990,550,100,100,cpton,0.1424,,Applied to small source types
+N0300,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0300L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0300S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0301,NOx,,,,,10.00%,1990,7150,100,100,cpton,0.1424,,
+N0301L,NOx,,,,,10.00%,1990,7150,100,100,cpton,0.1424,,Applied to large source types
+N0301S,NOx,,,,,10.00%,1990,7150,100,100,cpton,0.1424,,Applied to small source types
+N0302,NOx,,,,,25.00%,1990,940,100,100,cpton,0.1424,,
+N0302L,NOx,,,,,25.00%,1990,940,100,100,cpton,0.1424,,Applied to large source types
+N0302S,NOx,,,,,25.00%,1990,940,100,100,cpton,0.1424,,Applied to small source types
+N0303,NOx,,,,,40.00%,1990,1690,100,100,cpton,0.1424,,
+N0303L,NOx,,,,,40.00%,1990,1690,100,100,cpton,0.1424,,Applied to large source types
+N0303S,NOx,,,,,40.00%,1990,1690,100,100,cpton,0.1424,,Applied to small source types
+N0304,NOx,,,,,40.00%,1990,1770,100,100,cpton,0.1424,,
+N0304L,NOx,,,,,40.00%,1990,1770,100,100,cpton,0.1424,,Applied to large source types
+N0304S,NOx,,,,,40.00%,1990,1770,100,100,cpton,0.1424,,Applied to small source types
+N0305,NOx,,,,,75.00%,1990,2200,100,100,cpton,0.1424,,
+N0305L,NOx,,,,,75.00%,1990,2200,100,100,cpton,0.1424,,Applied to large source types
+N0305S,NOx,,,,,75.00%,1990,2200,100,100,cpton,0.1424,,Applied to small source types
+N0306,NOx,,,,,85.00%,1990,4590,100,100,cpton,0.1424,,
+N0306L,NOx,,,,,85.00%,1990,4590,100,100,cpton,0.1424,,Applied to large source types
+N0306S,NOx,,,,,85.00%,1990,4590,100,100,cpton,0.1424,,Applied to small source types
+N0310,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0310L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0310S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0311,NOx,,,,,10.00%,1990,2320,100,100,cpton,0.1424,,
+N0311L,NOx,,,,,10.00%,1990,2320,100,100,cpton,0.1424,,Applied to large source types
+N0311S,NOx,,,,,10.00%,1990,2320,100,100,cpton,0.1424,,Applied to small source types
+N0312,NOx,,,,,40.00%,1990,700,100,100,cpton,0.3811,,
+N0312L,NOx,,,,,40.00%,1990,700,100,100,cpton,0.3811,,Applied to large source types
+N0312S,NOx,,,,,40.00%,1990,700,100,100,cpton,0.3811,,Applied to small source types
+N0313,NOx,,,,,40.00%,1990,740,100,100,cpton,0.1424,,
+N0313L,NOx,,,,,40.00%,1990,740,100,100,cpton,0.1424,,Applied to large source types
+N0313S,NOx,,,,,40.00%,1990,740,100,100,cpton,0.1424,,Applied to small source types
+N0314,NOx,,,,,75.00%,1990,710,100,100,cpton,0.1424,,
+N0314L,NOx,,,,,75.00%,1990,710,100,100,cpton,0.1424,,Applied to large source types
+N0314S,NOx,,,,,75.00%,1990,710,100,100,cpton,0.1424,,Applied to small source types
+N0315,NOx,,,,,85.00%,1990,1900,100,100,cpton,0.1424,,
+N0315L,NOx,,,,,85.00%,1990,1900,100,100,cpton,0.1424,,Applied to large source types
+N0315S,NOx,,,,,85.00%,1990,1900,100,100,cpton,0.1424,,Applied to small source types
+N0320,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0320L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0320S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0321,NOx,,,,,10.00%,1990,8760,100,100,cpton,0.1424,,
+N0321L,NOx,,,,,10.00%,1990,8760,100,100,cpton,0.1424,,Applied to large source types
+N0321S,NOx,,,,,10.00%,1990,8760,100,100,cpton,0.1424,,Applied to small source types
+N0322,NOx,,,,,25.00%,1990,810,100,100,cpton,0.1424,,
+N0322L,NOx,,,,,25.00%,1990,810,100,100,cpton,0.1424,,Applied to large source types
+N0322S,NOx,,,,,25.00%,1990,810,100,100,cpton,0.1424,,Applied to small source types
+N0323,NOx,,,,,40.00%,1990,1500,100,100,cpton,0.1424,,
+N0323L,NOx,,,,,40.00%,1990,1500,100,100,cpton,0.1424,,Applied to large source types
+N0323S,NOx,,,,,40.00%,1990,1500,100,100,cpton,0.1424,,Applied to small source types
+N0324,NOx,,,,,40.00%,1990,1640,100,100,cpton,0.1424,,
+N0324L,NOx,,,,,40.00%,1990,1640,100,100,cpton,0.1424,,Applied to large source types
+N0324S,NOx,,,,,40.00%,1990,1640,100,100,cpton,0.1424,,Applied to small source types
+N0325,NOx,,,,,75.00%,1990,2530,100,100,cpton,0.1424,,
+N0325L,NOx,,,,,75.00%,1990,2530,100,100,cpton,0.1424,,Applied to large source types
+N0325S,NOx,,,,,75.00%,1990,2530,100,100,cpton,0.1424,,Applied to small source types
+N0326,NOx,,,,,85.00%,1990,3900,100,100,cpton,0.1424,,
+N0326L,NOx,,,,,85.00%,1990,3900,100,100,cpton,0.1424,,Applied to large source types
+N0326S,NOx,,,,,85.00%,1990,3900,100,100,cpton,0.1424,,Applied to small source types
+N0330,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0330L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0330S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0331,NOx,,,,,30.00%,1997,55,100,100,cpton,0.1098,,
+N0331L,NOx,,,,,30.00%,1997,55,100,100,cpton,0.1098,,Applied to large source types
+N0331S,NOx,,,,,30.00%,1997,55,100,100,cpton,0.1098,,Applied to small source types
+N0332,NOx,,,,,25.00%,1997,440,100,100,cpton,0.1098,,
+N0332L,NOx,,,,,25.00%,1997,440,100,100,cpton,0.1098,,Applied to large source types
+N0332S,NOx,,,,,25.00%,1997,440,100,100,cpton,0.1098,,Applied to small source types
+N0333,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,
+N0333L,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,Applied to large source types
+N0333S,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,Applied to small source types
+N0334,NOx,,,,,50.00%,1990,850,100,100,cpton,0.1098,,
+N0334L,NOx,,,,,50.00%,1990,850,100,100,cpton,0.1098,,Applied to large source types
+N0334S,NOx,,,,,50.00%,1990,850,100,100,cpton,0.1098,,Applied to small source types
+N0335,NOx,,,,,80.00%,1990,3370,100,100,cpton,0.1098,,
+N0335L,NOx,,,,,80.00%,1990,3370,100,100,cpton,0.1098,,Applied to large source types
+N0335S,NOx,,,,,80.00%,1990,3370,100,100,cpton,0.1098,,Applied to small source types
+N0340,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0340L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0340S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0341,NOx,,,,,30.00%,1997,55,100,100,cpton,0.1098,,
+N0341L,NOx,,,,,30.00%,1997,55,100,100,cpton,0.1098,,Applied to large source types
+N0341S,NOx,,,,,30.00%,1997,55,100,100,cpton,0.1098,,Applied to small source types
+N0342,NOx,,,,,25.00%,1997,440,100,100,cpton,0.1098,,
+N0342L,NOx,,,,,25.00%,1997,440,100,100,cpton,0.1098,,Applied to large source types
+N0342S,NOx,,,,,25.00%,1997,440,100,100,cpton,0.1098,,Applied to small source types
+N0343,NOx,,,,,80.00%,1990,2880,100,100,cpton,0.1098,,
+N0343L,NOx,,,,,80.00%,1990,2880,100,100,cpton,0.1098,,Applied to large source types
+N0343S,NOx,,,,,80.00%,1990,2880,100,100,cpton,0.1098,,Applied to small source types
+N0350,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0350L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0350S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0351,NOx,,,,,13.00%,1990,1320,100,100,cpton,0.1424,,
+N0351L,NOx,,,,,13.00%,1990,1320,100,100,cpton,0.1424,,Applied to large source types
+N0351S,NOx,,,,,13.00%,1990,1320,100,100,cpton,0.1424,,Applied to small source types
+N0352,NOx,,,,,66.00%,1990,300,100,100,cpton,0.2439,,
+N0352L,NOx,,,,,66.00%,1990,300,100,100,cpton,0.2439,,Applied to large source types
+N0352S,NOx,,,,,66.00%,1990,300,100,100,cpton,0.2439,,Applied to small source types
+N0353,NOx,,,,,77.00%,1990,380,100,100,cpton,0.2439,,
+N0353L,NOx,,,,,77.00%,1990,380,100,100,cpton,0.2439,,Applied to large source types
+N0353S,NOx,,,,,77.00%,1990,380,100,100,cpton,0.2439,,Applied to small source types
+N0360,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0360L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0360S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0361,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,
+N0361L,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to large source types
+N0361S,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to small source types
+N0362,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,
+N0362L,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,Applied to large source types
+N0362S,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,Applied to small source types
+N0363,NOx,,,,,60.00%,1990,1640,100,100,cpton,0.1424,,
+N0363L,NOx,,,,,60.00%,1990,1640,100,100,cpton,0.1424,,Applied to large source types
+N0363S,NOx,,,,,60.00%,1990,1640,100,100,cpton,0.1424,,Applied to small source types
+N0364,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.1424,,
+N0364L,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.1424,,Applied to large source types
+N0364S,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.1424,,Applied to small source types
+N0365,NOx,,,,,85.00%,1990,3830,100,100,cpton,0.1424,,
+N0365L,NOx,,,,,85.00%,1990,3830,100,100,cpton,0.1424,,Applied to large source types
+N0365S,NOx,,,,,85.00%,1990,3830,100,100,cpton,0.1424,,Applied to small source types
+N0366,NOx,,,,,90.00%,1990,4080,100,100,cpton,0.1424,,
+N0366L,NOx,,,,,90.00%,1990,4080,100,100,cpton,0.1424,,Applied to large source types
+N0366S,NOx,,,,,90.00%,1990,4080,100,100,cpton,0.1424,,Applied to small source types
+N0370,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0370L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0370S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0371,NOx,,,,,50.00%,1990,490,100,100,cpton,0.1535,,
+N0371L,NOx,,,,,50.00%,1990,490,100,100,cpton,0.1535,,Applied to large source types
+N0371S,NOx,,,,,50.00%,1990,490,100,100,cpton,0.1535,,Applied to small source types
+N0372,NOx,,,,,60.00%,1990,580,100,100,cpton,0.1535,,
+N0372L,NOx,,,,,60.00%,1990,580,100,100,cpton,0.1535,,Applied to large source types
+N0372S,NOx,,,,,60.00%,1990,580,100,100,cpton,0.1535,,Applied to small source types
+N0380,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0380L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0380S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0381,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,
+N0381L,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to large source types
+N0381S,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to small source types
+N0390,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0390L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0390S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0391,NOx,,,,,45.00%,1990,4510,100,100,cpton,0.0944,,
+N0391L,NOx,,,,,45.00%,1990,4510,100,100,cpton,0.0944,,Applied to large source types
+N0391S,NOx,,,,,45.00%,1990,4510,100,100,cpton,0.0944,,Applied to small source types
+N0400,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0400L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0400S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0410,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0410L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0410S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0411,NOx,,,,,50.00%,1990,740,100,100,cpton,0.1424,,
+N0411L,NOx,,,,,50.00%,1990,650,100,100,cpton,0.1424,,Applied to large source types
+N0411S,NOx,,,,,50.00%,1990,820,100,100,cpton,0.1424,,Applied to small source types
+N0412,NOx,,,,,60.00%,1990,1580,100,100,cpton,0.1424,,
+N0412L,NOx,,,,,60.00%,1990,590,100,100,cpton,0.1424,,Applied to large source types
+N0412S,NOx,,,,,60.00%,1990,2560,100,100,cpton,0.1424,,Applied to small source types
+N0413,NOx,,,,,65.00%,1990,500,100,100,cpton,0.1424,,
+N0413L,NOx,,,,,65.00%,1990,320,100,100,cpton,0.1424,,Applied to large source types
+N0413S,NOx,,,,,65.00%,1990,680,100,100,cpton,0.1424,,Applied to small source types
+N0414,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.0944,,
+N0414L,NOx,,,,,80.00%,1990,1210,100,100,cpton,0.0944,,Applied to large source types
+N0414S,NOx,,,,,80.00%,1990,2230,100,100,cpton,0.0944,,Applied to small source types
+N0420,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0420L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0420S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0421,NOx,,,,,40.00%,1990,950,100,100,cpton,0.0944,,
+N0421L,NOx,,,,,40.00%,1990,840,100,100,cpton,0.0944,,Applied to large source types
+N0421S,NOx,,,,,40.00%,1990,1040,100,100,cpton,0.0944,,Applied to small source types
+N0423,NOx,,,,,50.00%,1990,1280,100,100,cpton,0.1424,,
+N0423L,NOx,,,,,50.00%,1990,1090,100,100,cpton,0.1424,,Applied to large source types
+N0423S,NOx,,,,,50.00%,1990,1460,100,100,cpton,0.1424,,Applied to small source types
+N0424,NOx,,,,,70.00%,1990,1170,100,100,cpton,0.0944,,
+N0424L,NOx,,,,,70.00%,1990,1070,100,100,cpton,0.0944,,Applied to large source types
+N0424S,NOx,,,,,70.00%,1990,1260,100,100,cpton,0.0944,,Applied to small source types
+N0430,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0430L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0430S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0431,NOx,,,,,50.00%,1990,1630,100,100,cpton,0.1424,,
+N0431L,NOx,,,,,50.00%,1990,2070,100,100,cpton,0.1424,,Applied to large source types
+N0431S,NOx,,,,,50.00%,1990,1180,100,100,cpton,0.1424,,Applied to small source types
+N0432,NOx,,,,,60.00%,1990,1630,100,100,cpton,0.1424,,
+N0432L,NOx,,,,,60.00%,1990,760,100,100,cpton,0.1424,,Applied to large source types
+N0432S,NOx,,,,,60.00%,1990,2490,100,100,cpton,0.1424,,Applied to small source types
+N0433,NOx,,,,,80.00%,1990,2150,100,100,cpton,0.0944,,
+N0433L,NOx,,,,,80.00%,1990,1510,100,100,cpton,0.0944,,Applied to large source types
+N0433S,NOx,,,,,80.00%,1990,2780,100,100,cpton,0.0944,,Applied to small source types
+N0434,NOx,,,,,50.00%,1990,3270,100,100,cpton,0.0944,,
+N0434L,NOx,,,,,50.00%,1990,1890,100,100,cpton,0.0944,,Applied to large source types
+N0434S,NOx,,,,,50.00%,1990,4640,100,100,cpton,0.0944,,Applied to small source types
+N0440,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0440L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0440S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0441,NOx,,,,,55.00%,1990,1190,100,100,cpton,0.0944,,
+N0441L,NOx,,,,,55.00%,1990,930,100,100,cpton,0.0944,,Applied to large source types
+N0441S,NOx,,,,,55.00%,1990,1440,100,100,cpton,0.0944,,Applied to small source types
+N0450,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0450L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0450S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0451,NOx,,,,,50.00%,1990,410,100,100,cpton,0.1424,,
+N0451L,NOx,,,,,50.00%,1990,430,100,100,cpton,0.1424,,Applied to large source types
+N0451S,NOx,,,,,50.00%,1990,400,100,100,cpton,0.1424,,Applied to small source types
+N0452,NOx,,,,,60.00%,1990,760,100,100,cpton,0.1424,,
+N0452L,NOx,,,,,60.00%,1990,390,100,100,cpton,0.1424,,Applied to large source types
+N0452S,NOx,,,,,60.00%,1990,1120,100,100,cpton,0.1424,,Applied to small source types
+N0453,NOx,,,,,80.00%,1990,1140,100,100,cpton,0.0944,,
+N0453L,NOx,,,,,80.00%,1990,810,100,100,cpton,0.0944,,Applied to large source types
+N0453S,NOx,,,,,80.00%,1990,1480,100,100,cpton,0.0944,,Applied to small source types
+N0454,NOx,,,,,50.00%,1990,1810,100,100,cpton,0.0944,,
+N0454L,NOx,,,,,50.00%,1990,1050,100,100,cpton,0.0944,,Applied to large source types
+N0454S,NOx,,,,,50.00%,1990,2580,100,100,cpton,0.0944,,Applied to small source types
+N0460,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0460L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0460S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0461,NOx,,,,,25.00%,1990,640,100,100,cpton,0.1098,,
+N0461L,NOx,,,,,25.00%,1990,490,100,100,cpton,0.1098,,Applied to large source types
+N0461S,NOx,,,,,25.00%,1990,770,100,100,cpton,0.1098,,Applied to small source types
+N0464,NOx,,,,,80.00%,1990,1630,100,100,cpton,0.1098,,
+N0464L,NOx,,,,,80.00%,1990,920,100,100,cpton,0.1098,,Applied to large source types
+N0464S,NOx,,,,,80.00%,1990,2340,100,100,cpton,0.1098,,Applied to small source types
+N0465,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,
+N0465L,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,Applied to large source types
+N0465S,NOx,,,,,90.00%,1990,342,100,100,cpton,0.1098,,Applied to small source types
+N0470,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0470L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0470S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0471,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0471L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0471S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0472,NOx,,,,,55.00%,1990,2830,100,100,cpton,0.1098,,
+N0472L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0472S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0473,NOx,,,,,60.00%,1990,2400,100,100,cpton,0.1098,,
+N0473L,NOx,,,,,60.00%,1990,1950,100,100,cpton,0.1098,,Applied to large source types
+N0473S,NOx,,,,,60.00%,1990,2850,100,100,cpton,0.1098,,Applied to small source types
+N0474,NOx,,,,,75.00%,1990,1350,100,100,cpton,0.1098,,
+N0474L,NOx,,,,,75.00%,1990,1200,100,100,cpton,0.1098,,Applied to large source types
+N0474S,NOx,,,,,75.00%,1990,1500,100,100,cpton,0.1098,,Applied to small source types
+N0475,NOx,,,,,75.00%,1990,10110,100,100,cpton,0.1098,,
+N0475L,NOx,,,,,75.00%,1990,8160,100,100,cpton,0.1098,,Applied to large source types
+N0475S,NOx,,,,,75.00%,1990,12040,100,100,cpton,0.1098,,Applied to small source types
+N0476,NOx,,,,,80.00%,1990,3050,100,100,cpton,0.1098,,
+N0476L,NOx,,,,,80.00%,1990,2590,100,100,cpton,0.1098,,Applied to large source types
+N0476S,NOx,,,,,80.00%,1990,3520,100,100,cpton,0.1098,,Applied to small source types
+N0477,NOx,,,,,88.00%,1990,9800,100,100,cpton,0.1098,,
+N0477L,NOx,,,,,88.00%,1990,8020,100,100,cpton,0.1098,,Applied to large source types
+N0477S,NOx,,,,,88.00%,1990,11560,100,100,cpton,0.1098,,Applied to small source types
+N0480,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0480L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0480S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0481,NOx,,,,,45.00%,1990,2230,100,100,cpton,0.1098,,
+N0481L,NOx,,,,,45.00%,1990,970,100,100,cpton,0.1098,,Applied to large source types
+N0481S,NOx,,,,,45.00%,1990,3470,100,100,cpton,0.1098,,Applied to small source types
+N0482,NOx,,,,,48.00%,1990,2970,100,100,cpton,0.1098,,
+N0482L,NOx,,,,,48.00%,1990,1680,100,100,cpton,0.1098,,Applied to large source types
+N0482S,NOx,,,,,48.00%,1990,4250,100,100,cpton,0.1098,,Applied to small source types
+N0483,NOx,,,,,60.00%,1990,2450,100,100,cpton,0.1098,,
+N0483L,NOx,,,,,60.00%,1990,1720,100,100,cpton,0.1098,,Applied to large source types
+N0483S,NOx,,,,,60.00%,1990,3180,100,100,cpton,0.1098,,Applied to small source types
+N0484,NOx,,,,,74.00%,1990,1380,100,100,cpton,0.1098,,
+N0484L,NOx,,,,,74.00%,1990,610,100,100,cpton,0.1098,,Applied to large source types
+N0484S,NOx,,,,,74.00%,1990,2140,100,100,cpton,0.1098,,Applied to small source types
+N0485,NOx,,,,,75.00%,1990,7630,100,100,cpton,0.1098,,
+N0485L,NOx,,,,,75.00%,1990,6030,100,100,cpton,0.1098,,Applied to large source types
+N0485S,NOx,,,,,75.00%,1990,9230,100,100,cpton,0.1098,,Applied to small source types
+N0486,NOx,,,,,78.00%,1990,2750,100,100,cpton,0.1098,,
+N0486L,NOx,,,,,78.00%,1990,1880,100,100,cpton,0.1098,,Applied to large source types
+N0486S,NOx,,,,,78.00%,1990,3620,100,100,cpton,0.1098,,Applied to small source types
+N0487,NOx,,,,,92.00%,1990,7190,100,100,cpton,0.1098,,
+N0487L,NOx,,,,,92.00%,1990,5250,100,100,cpton,0.1098,,Applied to large source types
+N0487S,NOx,,,,,92.00%,1990,9120,100,100,cpton,0.1098,,Applied to small source types
+N0490,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0490L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0490S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0491,NOx,,,,,34.00%,1990,2430,100,100,cpton,0.1098,,
+N0491L,NOx,,,,,34.00%,1990,1380,100,100,cpton,0.1098,,Applied to large source types
+N0491S,NOx,,,,,34.00%,1990,3490,100,100,cpton,0.1098,,Applied to small source types
+N0492,NOx,,,,,37.00%,1990,1620,100,100,cpton,0.1098,,
+N0492L,NOx,,,,,37.00%,1990,710,100,100,cpton,0.1098,,Applied to large source types
+N0492S,NOx,,,,,37.00%,1990,2520,100,100,cpton,0.1098,,Applied to small source types
+N0493,NOx,,,,,60.00%,1990,1510,100,100,cpton,0.1098,,
+N0493L,NOx,,,,,60.00%,1990,1100,100,100,cpton,0.1098,,Applied to large source types
+N0493S,NOx,,,,,60.00%,1990,1930,100,100,cpton,0.1098,,Applied to small source types
+N0494,NOx,,,,,73.00%,1990,830,100,100,cpton,0.1098,,
+N0494L,NOx,,,,,73.00%,1990,360,100,100,cpton,0.1098,,Applied to large source types
+N0494S,NOx,,,,,73.00%,1990,1290,100,100,cpton,0.1098,,Applied to small source types
+N0495,NOx,,,,,75.00%,1990,1770,100,100,cpton,0.1098,,
+N0495L,NOx,,,,,75.00%,1990,1240,100,100,cpton,0.1098,,Applied to large source types
+N0495S,NOx,,,,,75.00%,1990,2300,100,100,cpton,0.1098,,Applied to small source types
+N0496,NOx,,,,,75.00%,1990,4470,100,100,cpton,0.1098,,
+N0496L,NOx,,,,,75.00%,1990,3590,100,100,cpton,0.1098,,Applied to large source types
+N0496S,NOx,,,,,75.00%,1990,5350,100,100,cpton,0.1098,,Applied to small source types
+N0497,NOx,,,,,91.00%,1990,4290,100,100,cpton,0.1098,,
+N0497L,NOx,,,,,91.00%,1990,3160,100,100,cpton,0.1098,,Applied to large source types
+N0497S,NOx,,,,,91.00%,1990,5420,100,100,cpton,0.1098,,Applied to small source types
+N0500,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0500L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0500S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0501,NOx,,,,,68.00%,1990,970,100,100,cpton,0.1098,,
+N0501L,NOx,,,,,68.00%,1990,650,100,100,cpton,0.1098,,Applied to large source types
+N0501S,NOx,,,,,68.00%,1990,1290,100,100,cpton,0.1098,,Applied to small source types
+N0502,NOx,,,,,90.00%,1990,1660,100,100,cpton,0.1098,,
+N0502L,NOx,,,,,90.00%,1990,1010,100,100,cpton,0.1098,,Applied to large source types
+N0502S,NOx,,,,,90.00%,1990,2300,100,100,cpton,0.1098,,Applied to small source types
+N0510,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0510L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0510S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0520,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0520L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0520S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0530,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0530L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0530S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0540,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0540L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0540S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0541,NOx,,,,,50.00%,1990,1630,100,100,cpton,0.1424,,
+N0541L,NOx,,,,,50.00%,1990,2070,100,100,cpton,0.1424,,Applied to large source types
+N0541S,NOx,,,,,50.00%,1990,1180,100,100,cpton,0.1424,,Applied to small source types
+N0542,NOx,,,,,60.00%,1990,1630,100,100,cpton,0.1424,,
+N0542L,NOx,,,,,60.00%,1990,760,100,100,cpton,0.1424,,Applied to large source types
+N0542S,NOx,,,,,60.00%,1990,2490,100,100,cpton,0.1424,,Applied to small source types
+N0543,NOx,,,,,80.00%,1990,2150,100,100,cpton,0.0944,,
+N0543L,NOx,,,,,80.00%,1990,1510,100,100,cpton,0.0944,,Applied to large source types
+N0543S,NOx,,,,,80.00%,1990,2780,100,100,cpton,0.0944,,Applied to small source types
+N0544,NOx,,,,,50.00%,1990,3270,100,100,cpton,0.0944,,
+N0544L,NOx,,,,,50.00%,1990,1890,100,100,cpton,0.0944,,Applied to large source types
+N0544S,NOx,,,,,50.00%,1990,4640,100,100,cpton,0.0944,,Applied to small source types
+N0550,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0550L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0550S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0551,NOx,,,,,50.00%,1990,740,100,100,cpton,0.1424,,
+N0551L,NOx,,,,,50.00%,1990,650,100,100,cpton,0.1424,,Applied to large source types
+N0551S,NOx,,,,,50.00%,1990,820,100,100,cpton,0.1424,,Applied to small source types
+N0552,NOx,,,,,60.00%,1990,1580,100,100,cpton,0.1424,,
+N0552L,NOx,,,,,60.00%,1990,590,100,100,cpton,0.1424,,Applied to large source types
+N0552S,NOx,,,,,60.00%,1990,2560,100,100,cpton,0.1424,,Applied to small source types
+N0553,NOx,,,,,65.00%,1990,500,100,100,cpton,0.1424,,
+N0553L,NOx,,,,,65.00%,1990,320,100,100,cpton,0.1424,,Applied to large source types
+N0553S,NOx,,,,,65.00%,1990,680,100,100,cpton,0.1424,,Applied to small source types
+N0554,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.0944,,
+N0554L,NOx,,,,,80.00%,1990,1210,100,100,cpton,0.0944,,Applied to large source types
+N0554S,NOx,,,,,80.00%,1990,2230,100,100,cpton,0.0944,,Applied to small source types
+N0555,NOx,,,,,50.00%,1990,2730,100,100,cpton,0.0944,,
+N0555L,NOx,,,,,50.00%,1990,1570,100,100,cpton,0.0944,,Applied to large source types
+N0555S,NOx,,,,,50.00%,1990,3870,100,100,cpton,0.0944,,Applied to small source types
+N0560,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0560L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0560S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0561,NOx,,,,,50.00%,1990,740,100,100,cpton,0.1424,,
+N0561L,NOx,,,,,50.00%,1990,650,100,100,cpton,0.1424,,Applied to large source types
+N0561S,NOx,,,,,50.00%,1990,820,100,100,cpton,0.1424,,Applied to small source types
+N0562,NOx,,,,,60.00%,1990,1580,100,100,cpton,0.1424,,
+N0562L,NOx,,,,,60.00%,1990,590,100,100,cpton,0.1424,,Applied to large source types
+N0562S,NOx,,,,,60.00%,1990,2560,100,100,cpton,0.1424,,Applied to small source types
+N0563,NOx,,,,,65.00%,1990,500,100,100,cpton,0.1424,,
+N0563L,NOx,,,,,65.00%,1990,320,100,100,cpton,0.1424,,Applied to large source types
+N0563S,NOx,,,,,65.00%,1990,680,100,100,cpton,0.1424,,Applied to small source types
+N0564,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.0944,,
+N0564L,NOx,,,,,80.00%,1990,1210,100,100,cpton,0.0944,,Applied to large source types
+N0564S,NOx,,,,,80.00%,1990,2230,100,100,cpton,0.0944,,Applied to small source types
+N0565,NOx,,,,,50.00%,1990,2730,100,100,cpton,0.0944,,
+N0565L,NOx,,,,,50.00%,1990,1570,100,100,cpton,0.0944,,Applied to large source types
+N0565S,NOx,,,,,50.00%,1990,3870,100,100,cpton,0.0944,,Applied to small source types
+N0570,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0570L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0570S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0571,NOx,,,,,50.00%,1990,410,100,100,cpton,0.1424,,
+N0571L,NOx,,,,,50.00%,1990,430,100,100,cpton,0.1424,,Applied to large source types
+N0571S,NOx,,,,,50.00%,1990,400,100,100,cpton,0.1424,,Applied to small source types
+N0572,NOx,,,,,60.00%,1990,760,100,100,cpton,0.1424,,
+N0572L,NOx,,,,,60.00%,1990,390,100,100,cpton,0.1424,,Applied to large source types
+N0572S,NOx,,,,,60.00%,1990,1120,100,100,cpton,0.1424,,Applied to small source types
+N0573,NOx,,,,,80.00%,1990,1140,100,100,cpton,0.0944,,
+N0573L,NOx,,,,,80.00%,1990,810,100,100,cpton,0.0944,,Applied to large source types
+N0573S,NOx,,,,,80.00%,1990,1480,100,100,cpton,0.0944,,Applied to small source types
+N0574,NOx,,,,,50.00%,1990,1810,100,100,cpton,0.0944,,
+N0574L,NOx,,,,,50.00%,1990,1050,100,100,cpton,0.0944,,Applied to large source types
+N0574S,NOx,,,,,50.00%,1990,2580,100,100,cpton,0.0944,,Applied to small source types
+N0580,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0580L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0580S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0581,NOx,,,,,30.00%,1990,460,100,100,cpton,0.1098,,
+N0581L,NOx,,,,,30.00%,1990,460,100,100,cpton,0.1098,,Applied to large source types
+N0581S,NOx,,,,,30.00%,1990,460,100,100,cpton,0.1098,,Applied to small source types
+N0582,NOx,,,,,30.00%,1990,560,100,100,cpton,0.1098,,
+N0582L,NOx,,,,,30.00%,1990,560,100,100,cpton,0.1098,,Applied to large source types
+N0582S,NOx,,,,,30.00%,1990,560,100,100,cpton,0.1098,,Applied to small source types
+N0590,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0590L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0590S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0591,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,
+N0591L,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to large source types
+N0591S,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to small source types
+N0600,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0600L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0600S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0601,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,
+N0601L,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to large source types
+N0601S,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to small source types
+N0610,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0610L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0610S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0611,NOx,,,,,50.00%,1990,740,100,100,cpton,0.1424,,
+N0611L,NOx,,,,,50.00%,1990,650,100,100,cpton,0.1424,,Applied to large source types
+N0611S,NOx,,,,,50.00%,1990,820,100,100,cpton,0.1424,,Applied to small source types
+N0612,NOx,,,,,60.00%,1990,1580,100,100,cpton,0.1424,,
+N0612L,NOx,,,,,60.00%,1990,590,100,100,cpton,0.1424,,Applied to large source types
+N0612S,NOx,,,,,60.00%,1990,2560,100,100,cpton,0.1424,,Applied to small source types
+N0613,NOx,,,,,65.00%,1990,500,100,100,cpton,0.1424,,
+N0613L,NOx,,,,,65.00%,1990,320,100,100,cpton,0.1424,,Applied to large source types
+N0613S,NOx,,,,,65.00%,1990,680,100,100,cpton,0.1424,,Applied to small source types
+N0614,NOx,,,,,80.00%,1990,1720,100,100,cpton,0.0944,,
+N0614L,NOx,,,,,80.00%,1990,1210,100,100,cpton,0.0944,,Applied to large source types
+N0614S,NOx,,,,,80.00%,1990,2230,100,100,cpton,0.0944,,Applied to small source types
+N0615,NOx,,,,,50.00%,1990,2730,100,100,cpton,0.0944,,
+N0615L,NOx,,,,,50.00%,1990,1570,100,100,cpton,0.0944,,Applied to large source types
+N0615S,NOx,,,,,50.00%,1990,3870,100,100,cpton,0.0944,,Applied to small source types
+N0620,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0620L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0620S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0622,NOx,,,,,60.00%,1990,1580,100,100,cpton,0.1424,,
+N0622L,NOx,,,,,60.00%,1990,590,100,100,cpton,0.1424,,Applied to large source types
+N0622S,NOx,,,,,60.00%,1990,2560,100,100,cpton,0.1424,,Applied to small source types
+N0630,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0630L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0630S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0632,NOx,,,,,55.00%,1990,2830,100,100,cpton,0.1098,,
+N0632L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0632S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0640,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0640L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0640S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0642,NOx,,,,,55.00%,1990,2830,100,100,cpton,0.1098,,
+N0642L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0642S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0650,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0650L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0650S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0653,NOx,,,,,60.00%,1990,1640,100,100,cpton,0.1424,,
+N0653L,NOx,,,,,60.00%,1990,1640,100,100,cpton,0.1424,,Applied to large source types
+N0653S,NOx,,,,,60.00%,1990,1640,100,100,cpton,0.1424,,Applied to small source types
+N0660,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0660L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0660S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0662,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,
+N0662L,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,Applied to large source types
+N0662S,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,Applied to small source types
+N0670,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0670L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0670S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0673,NOx,,,,,77.00%,1990,380,100,100,cpton,0.2439,,
+N0673L,NOx,,,,,77.00%,1990,380,100,100,cpton,0.2439,,Applied to large source types
+N0673S,NOx,,,,,77.00%,1990,380,100,100,cpton,0.2439,,Applied to small source types
+N0680,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0680L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0680S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0682,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,
+N0682L,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,Applied to large source types
+N0682S,NOx,,,,,60.00%,1990,750,100,100,cpton,0.1424,,Applied to small source types
+N0690,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0690L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0690S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0692,NOx,,,,,55.00%,1990,2830,100,100,cpton,0.1098,,
+N0692L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0692S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0700,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0700L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0700S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0701,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,
+N0701L,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to large source types
+N0701S,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to small source types
+N0710,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0710L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0710S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0711,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,
+N0711L,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to large source types
+N0711S,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to small source types
+N0720,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0720L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0720S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0721,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,
+N0721L,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to large source types
+N0721S,NOx,,,,,50.00%,1990,570,100,100,cpton,0.1424,,Applied to small source types
+N0730,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0730L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0730S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0731,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0731L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0731S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0740,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0740L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0740S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0741,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0741L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0741S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0750,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0750L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0750S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0753,NOx,,,,,50.00%,1990,1280,100,100,cpton,0.1424,,
+N0753L,NOx,,,,,50.00%,1990,1090,100,100,cpton,0.1424,,Applied to large source types
+N0753S,NOx,,,,,50.00%,1990,1460,100,100,cpton,0.1424,,Applied to small source types
+N0760,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0760L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0760S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0763,NOx,,,,,40.00%,1990,1690,100,100,cpton,0.3811,,
+N0763L,NOx,,,,,40.00%,1990,1690,100,100,cpton,0.3811,,Applied to large source types
+N0763S,NOx,,,,,40.00%,1990,1690,100,100,cpton,0.3811,,Applied to small source types
+N0770,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0770L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0770S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0772,NOx,,,,,55.00%,1990,2830,100,100,cpton,0.1098,,
+N0772L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0772S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0780,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0780L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0780S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0782,NOx,,,,,55.00%,1990,2830,100,100,cpton,0.1098,,
+N0782L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0782S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0790,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0790L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0790S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0791,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0791L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0791S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0800,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0800L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0800S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N08012,NOx,,,,,20.00%,1990,1651,100,100,cpton,0.1098,,
+N08012L,NOx,,,,,20.00%,1990,533,100,100,cpton,0.1098,,Applied to large source types
+N08012S,NOx,,,,,20.00%,1990,2769,100,100,cpton,0.1098,,Applied to small source types
+N0810,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0810L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0810S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0813,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,
+N0813L,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,Applied to large source types
+N0813S,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,Applied to small source types
+N0820,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0820L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0820S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0823,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,
+N0823L,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,Applied to large source types
+N0823S,NOx,,,,,50.00%,1990,770,100,100,cpton,0.1098,,Applied to small source types
+N0830,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0830L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0830S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0831,NOx,,,,,40.00%,1990,1100,100,100,cpton,0.0944,,
+N0831L,NOx,,,,,40.00%,1990,940,100,100,cpton,0.0944,,Applied to large source types
+N0831S,NOx,,,,,40.00%,1990,1260,100,100,cpton,0.0944,,Applied to small source types
+N0840,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0840L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0840S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0842,NOx,,,,,37.00%,1990,1620,100,100,cpton,0.1098,,
+N0842L,NOx,,,,,37.00%,1990,710,100,100,cpton,0.1098,,Applied to large source types
+N0842S,NOx,,,,,37.00%,1990,2520,100,100,cpton,0.1098,,Applied to small source types
+N0850,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0850L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0850S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0851,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0851L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0851S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0860,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0860L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0860S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0862,NOx,,,,,55.00%,1990,2830,100,100,cpton,0.1098,,
+N0862L,NOx,,,,,55.00%,1990,2470,100,100,cpton,0.1098,,Applied to large source types
+N0862S,NOx,,,,,55.00%,1990,3190,100,100,cpton,0.1098,,Applied to small source types
+N0870,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0870L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0870S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0871,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0871L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0871S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0880,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0880L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0880S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0881,NOx,,,,,50.00%,1990,2000,100,100,cpton,0.1098,,
+N0881L,NOx,,,,,50.00%,1990,1800,100,100,cpton,0.1098,,Applied to large source types
+N0881S,NOx,,,,,50.00%,1990,2200,100,100,cpton,0.1098,,Applied to small source types
+N0890,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,
+N0890L,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to large source types
+N0890S,NOx,,,,,0.00%,1990,0,100,100,cpton,0,,Applied to small source types
+N0891,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,
+N0891L,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to large source types
+N0891S,NOx,,,,,45.00%,1990,1130,100,100,cpton,0.0944,,Applied to small source types
+NCEMK,NOx,,,,,23.00%,1997,310,100,100,cpton,0.1098,,Applied to large source types
+P2011,PM10,,,,,99.00%,1998,117,100,100,cpton,,,
+P2012,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2013,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2014,PM10,,,,,82.00%,1995,751,100,100,cpton,,
+P2021,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2022,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2023,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2024,PM10,,,,,93.00%,1995,751,100,100,cpton,,
+P2031,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2032,PM10,,,,,92.00%,1995,751,100,100,cpton,,
+P2041,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2051,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2052,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2053,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2061,PM10,,,,,80.00%,1998,117,100,100,cpton,,
+P2062,PM10,,,,,90.00%,1995,110,100,100,cpton,,
+P2063,PM10,,,,,80.00%,1998,148,100,100,cpton,,
+P2071,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2081,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2082,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2083,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2084,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2091,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2092,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2093,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2094,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2101,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2102,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2103,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2104,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2111,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2112,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2113,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2114,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2121,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2122,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2123,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2124,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2131,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2132,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2133,PM10,,,,,93.00%,1995,751,100,100,cpton,,
+P2141,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2142,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2143,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2151,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2152,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2153,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2154,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2155,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2156,PM10,,,,,73.00%,1995,751,100,100,cpton,,
+P2161,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2163,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2164,PM10,,,,,64.00%,1995,431,100,100,cpton,,
+P2165,PM10,,,,,94.00%,1995,751,100,100,cpton,,
+P2171,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2172,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2175,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2176,PM10,,,,,73.00%,1995,751,100,100,cpton,,
+P2181,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2182,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2183,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2184,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2185,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2191,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2192,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2193,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2194,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2195,PM10,,,,,99.00%,1995,751,100,100,cpton,,
+P2201,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2202,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2203,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2204,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2205,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2206,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2207,PM10,,,,,95.00%,1995,751,100,100,cpton,,
+P2211,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2212,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2213,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2214,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2215,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2216,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2221,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2222,PM10,,,,,99.00%,1998,126,100,100,cpton,,
+P2223,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2224,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2231,PM10,,,,,99.00%,1998,117,100,100,cpton,,
+P2232,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2233,PM10,,,,,99.00%,1998,148,100,100,cpton,,
+P2241,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2242,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2251,PM10,,,,,99.00%,1995,220,100,100,cpton,,
+P2261,PM10,,,,,98.00%,1995,110,100,100,cpton,,
+P2271,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2281,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P2291,PM10,,,,,99.00%,1998,142,100,100,cpton,,
+P3201,PM10,,,,,6.50%,2003,620,100,100,cpton,,
+P3202,PM10,,,,,6.50%,2003,620,100,100,cpton,,
+P3203,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3204,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3205,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3206,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3207,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3208,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3209,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3210,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3211,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3212,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3213,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3214,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3215,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3216,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3217,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3218,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3219,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3220,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3221,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3222,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3225,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3226,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3227,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3228,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3229,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3230,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3231,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3232,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3233,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3234,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3235,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3236,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3237,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3238,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3239,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3240,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3241,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3242,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3243,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3244,PM10,,,,,6.50%,2003,620,100,100,cpton
+P3245,PM10,,,,,6.50%,2003,620,100,100,cpton
+P4201,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4202,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4203,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4204,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4205,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4206,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4207,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4208,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4209,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4210,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4211,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4212,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4213,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4214,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4215,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4216,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4217,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4218,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4219,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4220,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4221,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4222,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4225,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4226,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4227,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4228,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4229,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4230,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4231,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4232,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4233,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4234,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4235,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4236,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4237,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4238,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4239,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4240,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4241,PM10,,,,,7.70%,2003,5200,100,100,cpton
+P4242,PM10,,,,,7.70%,2003,5200,100,100,cpton,,
+P4243,PM10,,,,,7.70%,2003,5200,100,100,cpton,,
+P4244,PM10,,,,,7.70%,2003,5200,100,100,cpton,,
+P4245,PM10,,,,,7.70%,2003,5200,100,100,cpton,,
+V30302,VOC,,,,,14.00%,2004,2483,100,100,cpton,0,
+V40201,VOC,,,,,90.00%,1993,9947,100,100,cpton,0.1098,
+V40202,VOC,,,,,97.00%,1997,1343,100,100,cpton,0.1098,
+V40203,VOC,,,,,95.00%,2002,8469,100,100,cpton,0.1098,
+V40204,VOC,,,,,95.00%,1998,19321,100,100,cpton,0.1098,
+V40205,VOC,,,,,95.00%,1998,1503,100,100,cpton,0.1098,
+V40206,VOC,,,,,96.00%,1993,12770,100,100,cpton,0.1098,
+V40207,VOC,,,,,95.00%,1993,2422,100,100,cpton,0.1098,

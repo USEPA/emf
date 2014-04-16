@@ -1,0 +1,23 @@
+#EMF Client/Installer - Preferences
+#comments '#'
+#preference specified by key,value pair separted by '='
+#case sensitive
+#white spaces and line terminators can be escaped by ''
+#If the value aren't specified then default value will be empty string
+#Use '/' for path separator for file names
+
+web.site=http://www.ie.unc.edu/cempd/projects/emf/install/
+emf.install.folder=C:/
+server.import.folder=
+server.export.folder=
+server.address=http://sage.nesc.epa.gov:8080/emf/services
+java.home=C:/Program Files/Java/jre6
+local.temp.dir=C:/
+r.home=C:/Program Files/R/rw2000/bin
+
+
+#Analysis Engine Preferences
+format.double.decimal_places=2
+format.double.option=Standard_Notation
+#legal options: Standard_Notation,Scientific_Notation, Dollars, Percentage, Custom
+format.double.significant_digits=0

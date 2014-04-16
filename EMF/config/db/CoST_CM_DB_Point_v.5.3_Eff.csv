@@ -1,0 +1,1335 @@
+CMAbbreviation,Pollutant,Locale,Effective Date,ExistingMeasureAbbr,NEIExistingDevCode,MinEmissions,MaxEmissions,ControlEfficiency,CostYear,CostPerTon,RuleEff,RulePen,EquationType,CapRecFactor,DiscountRate,CapAnnRatio,IncrementalCPT,Details
+NAFRICGS,NOx,,,,,365,,20.00%,1990,380,100,100,cpton,0.1098,,1.5,380,Applied to large source types
+NAFRICGS,NOx,,,,,0,365,20.00%,1990,1570,100,100,cpton,0.1098,,2.8,1570,Applied to small source types
+NAFRIICGS,NOx,,,,,365,,30.00%,1990,460,100,100,cpton,0.1098,,1.2,150,Applied to large source types
+NAFRIICGS,NOx,,,,,0,365,30.00%,1990,1440,100,100,cpton,0.1098,,2.6,270,Applied to small source types
+NBINTCEMK,NOx,,,,,,,23.00%,1997,310,100,100,cpton,0.1098,,7.3,,Applied to large source types
+NCLPTGMCN,NOx,,,,,0,365,25.00%,1990,940,100,100,cpton,0.1424,,4.5,940,Applied to small source types
+NCLPTGMCN,NOx,,,,,365,,25.00%,1990,940,100,100,cpton,0.1424,,4.5,940,Applied to large source types
+NCLRBIBCC,NOx,,,,,365,,50.00%,1990,300,100,100,cpton,0.0944,,2,300,Applied to large source types
+NCLRBIBCC,NOx,,,,,0,365,50.00%,1990,1570,100,100,cpton,0.0944,,2,1570,Applied to small source types
+NCUPHGMPD,NOx,,,,,365,,25.00%,1990,810,100,100,cpton,0.1424,,4.5,810,Applied to large source types
+NCUPHGMPD,NOx,,,,,0,365,25.00%,1990,810,100,100,cpton,0.1424,,4.5,810,Applied to small source types
+NDBIOCM,NOx,,,,,,,40.00%,1999,336.7,100,100,cpton,,,,,
+NDLNBFFCCU,NOx,,,,,,,90.00%,1999,3457,100,100,cpton,,,,,
+NDLNBFPGCO,NOx,,,,,,,90.00%,1999,6371,100,100,cpton,,,,,
+NDLNBSPHDO,NOx,,,,,,,90.00%,1999,8687,100,100,cpton,,,,,
+NDLNBSPHNG,NOx,,,,,,,90.00%,1999,12378,100,100,cpton,,,,,
+NDLNBSPHPG,NOx,,,,,,,90.00%,1999,12378,100,100,cpton,,,,,
+NDLNBSPHRO,NOx,,,,,,,90.00%,1999,5240,100,100,cpton,,,,,
+NDLNBUNGGN,NOx,,,,,,,90.00%,1999,4953,100,100,cpton,,,,,
+NDLNBUPGCO,NOx,,,,,,,90.00%,1999,4953,100,100,cpton,,,,,
+NDLNBUROGN,NOx,,,,,,,90.00%,1999,4458,100,100,cpton,,,,,
+NDOXYFGMG,NOx,,,,,,,85.00%,1999,4277,100,100,cpton,,,,,
+NDSCRCMDY,NOx,,,,,,,90.00%,1999,4636,100,100,cpton,,,,,
+NDSCRCMWT,NOx,,,,,,,90.00%,1999,3962,100,100,cpton,,,,,
+NDSCRFEP,NOx,,,,,,,90.00%,1999,5269,100,100,cpton,,,,,
+NDSCRFRNG,NOx,,,,,,,90.00%,1999,2366,100,100,cpton,,,,,
+NDSCRIBCK,NOx,,,,,,,90.00%,1999,1610,100,100,cpton,,,,,
+NDSCRIBLP,NOx,,,,,,,90.00%,1990,2958,100,100,cpton,,,,,
+NDSCRIBLW,NOx,,,,,,,90.00%,1999,1568,100,100,cpton,,,,,
+NDSCRIBPG,NOx,,,,,,,90.00%,1999,2366,100,100,cpton,,,,,
+NDSCRISAN,NOx,,,,,,,90.00%,1999,5269,100,100,cpton,,,,,
+NDSCRSPRF,NOx,,,,,,,90.00%,1999,2366,100,100,cpton,,,,,
+NDSCRSPRF,NOx,,,,,,,80.00%,1990,1720,100,100,cpton,,,,,
+NDSNCRBCCK,NOx,,,,,,,90.00%,1999,2119,100,100,cpton,,,,,
+NDSNCRBCGN,NOx,,,,,,,90.00%,1999,3027,100,100,cpton,,,,,
+NDSNCRBCLK,NOx,,,,,,,90.00%,1999,2119,100,100,cpton,,,,,
+NDSNCRIBCF,NOx,,,,,,,90.00%,1999,1159,100,100,cpton,,,,,
+NDSNCRIBCS,NOx,,,,,,,90.00%,1999,2531,100,100,cpton,,,,,
+NDSNCRIBW,NOx,,,,,,,90.00%,1999,3274,100,100,cpton,,,,,
+NDSNCRIDIN,NOx,,,,,,,90.00%,1999,3109,100,100,cpton,,,,,
+NDSNCRNAMF,NOx,,,,,,,90.00%,1999,812,100,100,cpton,,,,,
+NDSNCRPPNG,NOx,,,,,,,90.00%,1999,3109,100,100,cpton,,,,,
+NDSNCRSWIN,NOx,,,,,,,90.00%,1999,3109,100,100,cpton,,,,,
+NELBOGMCN,NOx,,,,,365,,10.00%,1990,7150,100,100,cpton,0.1424,,0,7150,Applied to large source types
+NELBOGMCN,NOx,,,,,0,365,10.00%,1990,7150,100,100,cpton,0.1424,,0,7150,Applied to small source types
+NELBOGMFT,NOx,,,,,365,,10.00%,1990,2320,100,100,cpton,0.1424,,0,2320,Applied to large source types
+NELBOGMFT,NOx,,,,,0,365,10.00%,1990,2320,100,100,cpton,0.1424,,0,2320,Applied to small source types
+NELBOGMPD,NOx,,,,,365,,10.00%,1990,8760,100,100,cpton,0.1424,,0,8760,Applied to large source types
+NELBOGMPD,NOx,,,,,0,365,10.00%,1990,2320,100,100,cpton,0.1424,,0,8760,Applied to small source types
+NEXABADMF,NOx,,,,,365,,86.00%,1990,90,100,100,cpton,0.1424,,6.7,90,Applied to large source types
+NEXABADMF,NOx,,,,,0,365,86.00%,1990,90,100,100,cpton,0.1424,,6.7,90,Applied to small source types
+NEXABNAMF,NOx,,,,,365,,95.00%,1990,480,100,100,cpton,0.1424,,8.1,480,Applied to large source types
+NEXABNAMF,NOx,,,,,0,365,95.00%,1990,480,100,100,cpton,0.1424,,8.1,480,Applied to small source types
+NIRICGD,NOx,,,,,365,,25.00%,1990,490,100,100,cpton,0.1098,,0.6,490,Applied to large source types
+NIRICGD,NOx,,,,,0,365,25.00%,1990,770,100,100,cpton,0.1098,,1.1,770,Applied to small source types
+NIRICGS,NOx,,,,,365,,20.00%,1990,550,100,100,cpton,0.1098,,0.7,550,Applied to large source types
+NIRICGS,NOx,,,,,0,365,20.00%,1990,1020,100,100,cpton,0.1098,,1.2,1020,Applied to small source types
+NIRICOL,NOx,,,,,0,365,25.00%,1990,770,100,100,cpton,0.1098,,1.1,770,Applied to small source types
+NIRICOL,NOx,,,,,365,,25.00%,1990,490,100,100,cpton,0.1098,,0.6,490,Applied to large source types
+NIRRICOIL,NOx,,,,,,,25.00%,1999,770,100,100,cpton,,,1.1,, 
+NLEAISRH,NOx,,,,,365,,13.00%,1990,1320,100,100,cpton,0.1424,,3.8,1320,Applied to large source types
+NLEAISRH,NOx,,,,,0,365,13.00%,1990,1320,100,100,cpton,0.1424,,3.8,1320,Applied to small source types
+NLECICEGAS,NOX,,,,,,,87.00%,1993,422,100,100,cpton,,,2.3,, 
+NLECINGIC2,NOx,,,,,,,87.00%,1999,521,100,100,cpton,,,,,
+NLELSICGS,NOx,,,,,365,,87.00%,1990,630,100,100,cpton,0.1098,,,,Applied to large source types
+NLELSICGS,NOx,,,,,0,365,87.00%,1990,1680,100,100,cpton,0.1098,,,,Applied to small source types
+NLEMSICGS,NOx,,,,,0,365,87.00%,1990,380,100,100,cpton,0.1098,,,,Applied to small source types
+NLEMSICGS,NOx,,,,,365,,87.00%,1990,380,100,100,cpton,0.1098,,,,Applied to large source types
+NLNBFAPFD,NOx,,,,,365,,60.00%,1990,590,100,100,cpton,0.1424,,7.5,280,Applied to large source types
+NLNBFAPFD,NOx,,,,,0,365,60.00%,1990,2560,100,100,cpton,0.1424,,5.9,2470,Applied to small source types
+NLNBFCOBF,NOx,,,,,365,,55.00%,1990,2470,100,100,cpton,0.1098,,6.8,830,Applied to large source types
+NLNBFCOBF,NOx,,,,,0,365,55.00%,1990,3190,100,100,cpton,0.1098,,6.9,1430,Applied to small source types
+NLNBFCSRS,NOx,,,,,365,,60.00%,1990,750,100,100,cpton,0.1424,,7,250,Applied to large source types
+NLNBFCSRS,NOx,,,,,0,365,60.00%,1990,750,100,100,cpton,0.1424,,7,250,Applied to small source types
+NLNBFFCCU,NOx,,,,,0,365,55.00%,1990,3190,100,100,cpton,0.1098,,6.9,1430,Applied to small source types
+NLNBFFCCU,NOx,,,,,365,,55.00%,1990,2470,100,100,cpton,0.1098,,6.8,830,Applied to large source types
+NLNBFFPHP,NOx,,,,,0,365,55.00%,1990,3190,100,100,cpton,0.1098,,6.9,1430,Applied to small source types
+NLNBFFPHP,NOx,,,,,365,,55.00%,1990,2470,100,100,cpton,0.1098,,6.8,830,Applied to large source types
+NLNBFFRNG,NOx,,,,,0,365,60.00%,1990,2560,100,100,cpton,0.1424,,5.9,2470,Applied to small source types
+NLNBFFRNG,NOx,,,,,365,,60.00%,1990,590,100,100,cpton,0.1424,,7.5,280,Applied to large source types
+NLNBFFROL,NOx,,,,,365,,60.00%,1990,390,100,100,cpton,0.1424,,7.5,190,Applied to large source types
+NLNBFFROL,NOx,,,,,0,365,60.00%,1990,1120,100,100,cpton,0.1424,,5.9,1080,Applied to small source types
+NLNBFGROFA,NOX,,,,,365,,80.00%,2003,368,100,100,cpton,,,7.8,, 
+NLNBFGROFA,NOX,,,,,0,365,80.00%,2003,1278,100,100,cpton,,,7.8,, 
+NLNBFGRPH,NOx,,,,,,,50.00%,1990,570,100,100,cpton,0.1098,,7.3,, 
+NLNBFIBDO,NOx,,,,,0,365,60.00%,1990,2490,100,100,cpton,0.1424,,5.9,1090,Applied to small source types
+NLNBFIBDO,NOx,,,,,365,,60.00%,1990,760,100,100,cpton,0.1424,,7.5,370,Applied to large source types
+NLNBFIBLP,NOx,,,,,365,,60.00%,1990,760,100,100,cpton,0.1424,,7.5,370,Applied to large source types
+NLNBFIBLP,NOx,,,,,0,365,60.00%,1990,2490,100,100,cpton,0.1424,,5.9,1090,Applied to small source types
+NLNBFIBLW,NOx,,,,,0,365,60.00%,1990,1120,100,100,cpton,0.1424,,5.9,1080,Applied to small source types
+NLNBFIBLW,NOx,,,,,365,,60.00%,1990,390,100,100,cpton,0.1424,,7.5,190,Applied to large source types
+NLNBFIBNG,NOx,,,,,365,,60.00%,1990,590,100,100,cpton,0.1424,,7.5,280,Applied to large source types
+NLNBFIBNG,NOx,,,,,0,365,60.00%,1990,2560,100,100,cpton,0.1424,,5.9,2470,Applied to small source types
+NLNBFIBPG,NOx,,,,,365,,60.00%,1990,590,100,100,cpton,0.1424,,7.5,280,Applied to large source types
+NLNBFIBPG,NOx,,,,,0,365,60.00%,1990,2560,100,100,cpton,0.1424,,5.9,2470,Applied to small source types
+NLNBFIBRO,NOx,,,,,0,365,60.00%,1990,1120,100,100,cpton,0.1424,,5.9,1080,Applied to small source types
+NLNBFIBRO,NOx,,,,,365,,60.00%,1990,390,100,100,cpton,0.1424,,7.5,190,Applied to large source types
+NLNBFIPBH,NOx,,,,,365,,77.00%,1990,380,100,100,cpton,0.2439,,4.1,150,Applied to large source types
+NLNBFIPBH,NOx,,,,,0,365,77.00%,1990,380,100,100,cpton,0.2439,,4.1,150,Applied to small source types
+NLNBFISAN,NOx,,,,,365,,60.00%,1990,750,100,100,cpton,0.1424,,7,250,Applied to large source types
+NLNBFISAN,NOx,,,,,0,365,60.00%,1990,750,100,100,cpton,0.1424,,7,250,Applied to small source types
+NLNBFISGV,NOx,,,,,365,,60.00%,1990,580,100,100,cpton,0.1535,,6.5,190,Applied to large source types
+NLNBFISGV,NOx,,,,,0,365,60.00%,1990,580,100,100,cpton,0.1535,,6.5,190,Applied to small source types
+NLNBFISRH,NOx,,,,,0,365,77.00%,1990,380,100,100,cpton,0.2439,,4.1,150,Applied to small source types
+NLNBFISRH,NOx,,,,,365,,77.00%,1990,380,100,100,cpton,0.2439,,4.1,150,Applied to large source types
+NLNBFPHDO,NOx,,,,,365,,48.00%,1990,1680,100,100,cpton,0.1098,,6.8,16680,Applied to large source types
+NLNBFPHDO,NOx,,,,,0,365,48.00%,1990,4250,100,100,cpton,0.1098,,7.1,19540,Applied to small source types
+NLNBFPHLG,NOx,,,,,0,365,48.00%,1990,4200,100,100,cpton,0.1098,,7.1,,Applied to small source types
+NLNBFPHLG,NOx,,,,,365,,55.00%,1990,3200,100,100,cpton,0.1098,,7.1,,Applied to small source types
+NLNBFPHLP,NOx,,,,,365,,48.00%,1990,1680,100,100,cpton,0.1098,,6.8,16680,Applied to large source types
+NLNBFPHLP,NOx,,,,,0,365,48.00%,1990,4250,100,100,cpton,0.1098,,7.1,19540,Applied to small source types
+NLNBFPHNG,NOx,,,,,0,365,55.00%,1990,4200,100,100,cpton,0.1098,,6.9,15580,Applied to small source types
+NLNBFPHNG,NOx,,,,,365,,55.00%,1990,3200,100,100,cpton,0.1098,,6.8,9160,Applied to large source types
+NLNBFPHOF,NOx,,,,,0,365,34.00%,1990,3490,100,100,cpton,0.1098,,7.1,3490,Applied to small source types
+NLNBFPHOF,NOx,,,,,365,,34.00%,1990,1380,100,100,cpton,0.1098,,6.8,1380,Applied to large source types
+NLNBFPHPG,NOx,,,,,365,,55.00%,1990,3200,100,100,cpton,0.1098,,6.8,9160,Applied to large source types
+NLNBFPHPG,NOx,,,,,0,365,55.00%,1990,4200,100,100,cpton,0.1098,,6.9,15580,Applied to small source types
+NLNBFPHRO,NOx,,,,,365,,34.00%,1990,1380,100,100,cpton,0.1098,,6.8,1380,Applied to large source types
+NLNBFPHRO,NOx,,,,,0,365,34.00%,1990,3490,100,100,cpton,0.1098,,7.1,3490,Applied to small source types
+NLNBFPPAR,NOx,,,,,0,365,55.00%,1990,3190,100,100,cpton,0.1098,,6.9,1430,Applied to small source types
+NLNBFPPAR,NOx,,,,,365,,55.00%,1990,2470,100,100,cpton,0.1098,,6.8,830,Applied to large source types
+NLNBFSGDR,NOx,,,,,0,365,55.00%,1990,3190,100,100,cpton,0.1098,,6.9,1430,Applied to small source types
+NLNBFSGDR,NOx,,,,,365,,55.00%,1990,2470,100,100,cpton,0.1098,,6.8,830,Applied to large source types
+NLNBFSHDO,NOx,,,,,365,,60.00%,1990,760,100,100,cpton,0.1424,,7.5,370,Applied to large source types
+NLNBFSHDO,NOx,,,,,0,365,60.00%,1990,2500,100,100,cpton,0.1424,,5.9,1090,Applied to small source types
+NLNBFSHNG,NOx,,,,,0,365,60.00%,1990,2650,100,100,cpton,0.1424,,5.9,2470,Applied to small source types
+NLNBFSHNG,NOx,,,,,365,,60.00%,1990,590,100,100,cpton,0.1424,,7.5,280,Applied to large source types
+NLNBFSMCO,NOx,,,,,0,365,55.00%,1990,3190,100,100,cpton,0.1098,,6.9,1430,Applied to small source types
+NLNBFSMCO,NOx,,,,,365,,55.00%,1990,2470,100,100,cpton,0.1098,,6.8,830,Applied to large source types
+NLNBFSPRF,NOx,,,,,365,,60.00%,1990,590,100,100,cpton,0.1424,,7.5,280,Applied to large source types
+NLNBFSPRF,NOx,,,,,0,365,60.00%,1990,2560,100,100,cpton,0.1424,,5.9,2470,Applied to small source types
+NLNBFSPSP,NOx,,,,,365,,60.00%,1990,750,100,100,cpton,0.1424,,7,250,Applied to large source types
+NLNBFSPSP,NOx,,,,,0,365,60.00%,1990,750,100,100,cpton,0.1424,,7,250,Applied to small source types
+NLNBICB,NOX,,,,,365,,51.00%,2003,256,100,100,cpton,,,4.5,, 
+NLNBICB,NOX,,,,,0,365,51.00%,2003,850,100,100,cpton,,,4.5,, 
+NLNBICISWH,NOX,,,,,,,7.00%,1990,1230,100,100,cpton,,,5.5,, 
+NLNBNISAN,NOx,,,,,0,365,80.00%,1990,1720,100,100,cpton,0.1424,,3.7,1320,Applied to small source types
+NLNBNISAN,NOx,,,,,365,,80.00%,1990,1720,100,100,cpton,0.1424,,3.7,1320,Applied to large source types
+NLNBNPHDO,NOx,,,,,0,365,78.00%,1990,3620,100,100,cpton,0.1098,,6.5,3830,Applied to small source types
+NLNBNPHDO,NOx,,,,,365,,78.00%,1990,1880,100,100,cpton,0.1098,,5.9,3150,Applied to large source types
+NLNBNPHLP,NOx,,,,,0,365,78.00%,1990,3620,100,100,cpton,0.1098,,6.5,3830,Applied to small source types
+NLNBNPHLP,NOx,,,,,365,,78.00%,1990,1880,100,100,cpton,0.1098,,5.9,3150,Applied to large source types
+NLNBNPHNG,NOx,,,,,365,,80.00%,1990,2590,100,100,cpton,0.1098,,6.4,3900,Applied to large source types
+NLNBNPHNG,NOx,,,,,0,365,80.00%,1990,3520,100,100,cpton,0.1098,,6.7,6600,Applied to small source types
+NLNBNPHOF,NOx,,,,,365,,75.00%,1990,1240,100,100,cpton,0.1098,,5.5,1760,Applied to large source types
+NLNBNPHOF,NOx,,,,,0,365,75.00%,1990,2300,100,100,cpton,0.1098,,6.4,2080,Applied to small source types
+NLNBNPHPG,NOx,,,,,0,365,80.00%,1990,3520,100,100,cpton,0.1098,,6.7,6600,Applied to small source types
+NLNBNPHPG,NOx,,,,,365,,80.00%,1990,2590,100,100,cpton,0.1098,,6.4,3900,Applied to large source types
+NLNBNPHRO,NOx,,,,,365,,75.00%,1990,1240,100,100,cpton,0.1098,,5.5,1760,Applied to large source types
+NLNBNPHRO,NOx,,,,,0,365,75.00%,1990,2300,100,100,cpton,0.1098,,6.4,2080,Applied to small source types
+NLNBOAICBG,NOX,,,,,365,,60.00%,2003,280,100,100,cpton,,,2.7,, 
+NLNBOAICBG,NOX,,,,,0,365,60.00%,2003,1052,100,100,cpton,,,2.7,, 
+NLNBOAICBO,NOX,,,,,365,,50.00%,2003,306,100,100,cpton,,,2.9,, 
+NLNBOAICBO,NOX,,,,,0,365,30.00%,2003,1052,100,100,cpton,,,2.9,, 
+NLNBOFAICB,NOX,,,,,365,,51.00%,2003,392,100,100,cpton,,,3.3,, 
+NLNBOFAICB,NOX,,,,,0,365,51.00%,2003,1239,100,100,cpton,,,3.3,, 
+NLNBOFAICS,NOX,,,,,0,365,65.00%,2003,972,100,100,cpton,,,3.1,, 
+NLNBOFAICS,NOX,,,,,365,,65.00%,2003,306,100,100,cpton,,,3.1,, 
+NLNBOUBCW,NOx,,,,,,,55.9,1999,,100,100,cpton,,7,,,
+NLNBOUBCW2,NOx,,,,,,,55.3,1999,,100,100,cpton,,7,,,
+NLNBPHLP,NOx,,,,,0,365,45.00%,1990,3470,100,100,cpton,0.1098,,7.3,3470,Applied to small source types
+NLNBPHLP,NOx,,,,,365,,45.00%,1990,970,100,100,cpton,0.1098,,7.3,970,Applied to large source types
+NLNBSASF,NOx,,,,,0,365,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to small source types
+NLNBSASF,NOx,,,,,365,,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to large source types
+NLNBSISAN,NOx,,,,,0,365,90.00%,1990,4080,100,100,cpton,0.1424,,5.1,3720,Applied to small source types
+NLNBSISAN,NOx,,,,,365,,90.00%,1990,4080,100,100,cpton,0.1424,,5.1,3720,Applied to large source types
+NLNBSPHDO,NOx,,,,,365,,92.00%,1990,5250,100,100,cpton,0.1098,,7,9430,Applied to large source types
+NLNBSPHDO,NOx,,,,,0,365,92.00%,1990,9120,100,100,cpton,0.1098,,6.5,15350,Applied to small source types
+NLNBSPHLP,NOx,,,,,0,365,92.00%,1990,11500,100,100,cpton,0.1098,,6.5,15350,Applied to small source types
+NLNBSPHLP,NOx,,,,,365,,92.00%,1990,9120,100,100,cpton,0.1098,,7,9430,Applied to large source types
+NLNBSPHNG,NOx,,,,,365,,88.00%,1990,9120,100,100,cpton,0.1098,,6.4,16310,Applied to large source types
+NLNBSPHNG,NOx,,,,,0,365,88.00%,1990,11500,100,100,cpton,0.1098,,6.8,27910,Applied to small source types
+NLNBSPHOF,NOx,,,,,365,,91.00%,1990,3160,100,100,cpton,0.1098,,7,4840,Applied to large source types
+NLNBSPHOF,NOx,,,,,0,365,91.00%,1990,5420,100,100,cpton,0.1098,,6.6,7680,Applied to small source types
+NLNBSPHPG,NOx,,,,,365,,88.00%,1990,9102,100,100,cpton,0.1098,,6.4,16310,Applied to large source types
+NLNBSPHPG,NOx,,,,,0,365,88.00%,1990,11500,100,100,cpton,0.1098,,6.8,27910,Applied to small source types
+NLNBSPHRO,NOx,,,,,0,365,90.00%,1990,5420,100,100,cpton,0.1098,,6.6,7680,Applied to small source types
+NLNBSPHRO,NOx,,,,,365,,90.00%,1990,3160,100,100,cpton,0.1098,,7,4840,Applied to large source types
+NLNBUACCP,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUACCP,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUCCAB,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUCCAB,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUCCFB,NOx,,,,,0,365,50.00%,2003,1000,100,100,cpton,0.1424,,4.5,1460,Applied to small source types
+NLNBUCCFB,NOx,,,,,365,,50.00%,2003,200,100,100,cpton,0.1424,,4.5,1090,Applied to large source types
+NLNBUCCMD,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUCCMD,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUCHNG,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUCHNG,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUCMDY,NOx,,,,,0,365,34.00%,2004,733,100,100,cpton,0.1098,,5,440,Applied to small source types
+NLNBUCMDY,NOx,,,,,365,,34.00%,2004,733,100,100,cpton,0.1098,,5,440,Applied to large source types
+NLNBUCMWT,NOx,,,,,365,,34.00%,2004,733,100,100,cpton,0.1098,,5,440,Applied to large source types
+NLNBUCMWT,NOx,,,,,0,365,34.00%,2004,733,100,100,cpton,0.1098,,5,440,Applied to small source types
+NLNBUFFNG,NOx,,,,,365,,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to large source types
+NLNBUFFNG,NOx,,,,,0,365,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to small source types
+NLNBUFMTF,NOx,,,,,0,365,40.00%,1990,1690,100,100,cpton,0.3811,,2.2,1690,Applied to small source types
+NLNBUFMTF,NOx,,,,,365,,40.00%,1990,1690,100,100,cpton,0.3811,,2.2,1690,Applied to large source types
+NLNBUFRNG,NOx,,,,,0,365,50.00%,1990,820,100,100,cpton,0.1424,,5.5,820,Applied to small source types
+NLNBUFRNG,NOx,,,,,365,,50.00%,1990,650,100,100,cpton,0.1424,,5.5,650,Applied to large source types
+NLNBUFROL,NOx,,,,,0,365,50.00%,1990,400,100,100,cpton,0.1424,,5.5,400,Applied to small source types
+NLNBUFROL,NOx,,,,,365,,50.00%,1990,430,100,100,cpton,0.1424,,5.5,430,Applied to large source types
+NLNBUGMCN,NOx,,,,,365,,40.00%,1990,700,100,100,cpton,0.1424,,2.2,1690,Applied to large source types
+NLNBUGMCN,NOx,,,,,0,365,40.00%,1990,700,100,100,cpton,0.1424,,2.2,1690,Applied to small source types
+NLNBUGMFT,NOx,,,,,0,365,40.00%,1990,700,100,100,cpton,0.3811,,2.2,700,Applied to small source types
+NLNBUGMFT,NOx,,,,,365,,40.00%,1990,700,100,100,cpton,0.3811,,2.2,700,Applied to large source types
+NLNBUGMPD,NOx,,,,,365,,40.00%,1990,1500,100,100,cpton,0.1424,,2.2,1500,Applied to large source types
+NLNBUGMPD,NOx,,,,,0,365,40.00%,1990,1500,100,100,cpton,0.1424,,2.2,1500,Applied to small source types
+NLNBUGTNG,NOx,,,,,0,365,68.00%,1990,490,100,100,cpton,0.1098,,9.1,540,Applied to small source types
+NLNBUGTNG,NOx,,,,,365,,84.00%,1990,100,100,100,cpton,0.1098,,9.1,140,Applied to large source types
+NLNBUIBCK,NOx,,,,,0,365,50.00%,1990,1460,100,100,cpton,0.1424,,4.5,1460,Applied to small source types
+NLNBUIBCK,NOx,,,,,365,,50.00%,1990,1090,100,100,cpton,0.1424,,4.5,1090,Applied to large source types
+NLNBUIBCW,NOx,,,,,0,365,50.00%,1990,1460,100,100,cpton,0.1424,,4.5,1460,Applied to small source types
+NLNBUIBCW,NOx,,,,,365,,50.00%,1990,1090,100,100,cpton,0.1424,,4.5,1090,Applied to large source types
+NLNBUIBDO,NOx,,,,,365,,50.00%,1990,2070,100,100,cpton,0.1424,,5.5,2070,Applied to large source types
+NLNBUIBDO,NOx,,,,,0,365,50.00%,1990,1180,100,100,cpton,0.1424,,5.5,1180,Applied to small source types
+NLNBUIBLP,NOx,,,,,0,365,50.00%,1990,1180,100,100,cpton,0.1424,,5.5,1180,Applied to small source types
+NLNBUIBLP,NOx,,,,,365,,50.00%,1990,2070,100,100,cpton,0.1424,,5.5,2070,Applied to large source types
+NLNBUIBLW,NOx,,,,,365,,50.00%,1990,430,100,100,cpton,0.1424,,5.5,430,Applied to large source types
+NLNBUIBLW,NOx,,,,,0,365,50.00%,1990,400,100,100,cpton,0.1424,,5.5,400,Applied to small source types
+NLNBUIBNG,NOx,,,,,0,365,50.00%,1990,820,100,100,cpton,0.1424,,5.5,820,Applied to small source types
+NLNBUIBNG,NOx,,,,,365,,50.00%,1990,650,100,100,cpton,0.1424,,5.5,650,Applied to large source types
+NLNBUIBPG,NOx,,,,,0,365,50.00%,1990,820,100,100,cpton,0.1424,,5.5,820,Applied to small source types
+NLNBUIBPG,NOx,,,,,365,,50.00%,1990,650,100,100,cpton,0.1424,,5.5,650,Applied to large source types
+NLNBUIBRO,NOx,,,,,365,,50.00%,1990,430,100,100,cpton,0.1424,,5.5,430,Applied to large source types
+NLNBUIBRO,NOx,,,,,0,365,50.00%,1990,400,100,100,cpton,0.1424,,5.5,400,Applied to small source types
+NLNBUISAN,NOx,,,,,365,,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to large source types
+NLNBUISAN,NOx,,,,,0,365,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to small source types
+NLNBUISGV,NOx,,,,,0,365,50.00%,1990,490,100,100,cpton,0.1535,,6.5,490,Applied to small source types
+NLNBUISGV,NOx,,,,,365,,50.00%,1990,490,100,100,cpton,0.1535,,6.5,490,Applied to large source types
+NLNBUISRH,NOx,,,,,365,,66.00%,1990,300,100,100,cpton,0.2439,,4.1,300,Applied to large source types
+NLNBUISRH,NOx,,,,,0,365,66.00%,1990,300,100,100,cpton,0.2439,,4.1,300,Applied to small source types
+NLNBULMKN,NOx,,,,,0,365,30.00%,1990,560,100,100,cpton,0.1098,,5,560,Applied to small source types
+NLNBULMKN,NOx,,,,,365,,30.00%,1990,560,100,100,cpton,0.1098,,5,560,Applied to large source types
+NLNBUNGGN,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUNGGN,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUPGCO,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUPGCO,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUPHDO,NOx,,,,,365,,45.00%,1990,970,100,100,cpton,0.1098,,7.3,970,Applied to large source types
+NLNBUPHDO,NOx,,,,,0,365,45.00%,1990,3470,100,100,cpton,0.1098,,7.3,3470,Applied to small source types
+NLNBUPHLG,NOx,,,,,,,50.00%,1990,3740,100,100,cpton,0.1098,,2,,Applied to small source types
+NLNBUPHNG,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUPHNG,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUPHOF,NOx,,,,,365,,37.00%,1990,710,100,100,cpton,0.1098,,7.3,710,Applied to large source types
+NLNBUPHOF,NOx,,,,,0,365,37.00%,1990,2520,100,100,cpton,0.1098,,7.3,2520,Applied to small source types
+NLNBUPHPG,NOx,,,,,0,365,50.00%,1990,2200,100,100,cpton,0.1098,,7.3,2200,Applied to small source types
+NLNBUPHPG,NOx,,,,,365,,50.00%,1990,1800,100,100,cpton,0.1098,,7.3,1800,Applied to large source types
+NLNBUPHRO,NOx,,,,,365,,37.00%,1990,710,100,100,cpton,0.1098,,7.3,710,Applied to large source types
+NLNBUPHRO,NOx,,,,,0,365,37.00%,1990,2520,100,100,cpton,0.1098,,7.3,2520,Applied to small source types
+NLNBUROGN,NOx,,,,,365,,37.00%,1990,710,100,100,cpton,0.1098,,7.3,710,Applied to large source types
+NLNBUROGN,NOx,,,,,0,365,37.00%,1990,2520,100,100,cpton,0.1098,,7.3,2520,Applied to small source types
+NLNBUSFHT,NOx,,,,,365,,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to large source types
+NLNBUSFHT,NOx,,,,,0,365,50.00%,1990,570,100,100,cpton,0.1424,,7,570,Applied to small source types
+NLNBUSHDO,NOx,,,,,365,,50.00%,1990,2070,100,100,cpton,0.1424,,5.5,2070,Applied to large source types
+NLNBUSHDO,NOx,,,,,0,365,50.00%,1990,1180,100,100,cpton,0.1424,,5.5,1180,Applied to small source types
+NLNBUSHNG,NOx,,,,,0,365,50.00%,1990,820,100,100,cpton,0.1424,,5.5,820,Applied to small source types
+NLNBUSHNG,NOx,,,,,365,,50.00%,1990,650,100,100,cpton,0.1424,,5.5,650,Applied to large source types
+NLNBUSPRF,NOx,,,,,365,,50.00%,1990,650,100,100,cpton,0.1424,,5.5,650,Applied to large source types
+NLNBUSPRF,NOx,,,,,0,365,50.00%,1990,820,100,100,cpton,0.1424,,5.5,820,Applied to small source types
+NLNBUUBCW,NOx,,,,,,,41,1999,,100,100,cpton,,7,,,
+NLNBUUBCW2,NOx,,,,,,,40.3,1999,,100,100,cpton,,7,,,
+NLNC1UBCT,NOx,,,,,,,33.1,1999,,100,100,cpton,,7,,,
+NLNC1UBCT2,NOx,,,,,,,43.3,1999,,100,100,cpton,,7,,,
+NLNC2UBCT,NOx,,,,,,,12.71,1999,,100,100,cpton,,7,,,
+NLNC2UBCT2,NOx,,,,,,,48.3,1999,,100,100,cpton,,7,,,
+NLNC3UBCT,NOx,,,,,,,53.1,1999,,100,100,cpton,,7,,,
+NLNC3UBCT2,NOx,,,,,,,58.3,1999,,100,100,cpton,,7,,,
+NMKFRCMDY,NOx,,,,,0,365,37.00%,2004,595,100,100,cpton,0.1098,,3.4,55,Applied to small source types
+NMKFRCMDY,NOx,,,,,365,,37.00%,2004,595,100,100,cpton,0.1098,,3.4,55,Applied to large source types
+NMKFRCMWT,NOx,,,,,0,365,37.00%,2004,595,100,100,cpton,0.1098,,3.6,55,Applied to small source types
+NMKFRCMWT,NOx,,,,,365,,37.00%,2004,595,100,100,cpton,0.1098,,3.6,55,Applied to large source types
+NMKFRLMKN,NOx,,,,,365,,30.00%,1990,460,100,100,cpton,0.1098,,3.4,460,Applied to large source types
+NMKFRLMKN,NOx,,,,,0,365,30.00%,1990,460,100,100,cpton,0.1098,,3.4,460,Applied to small source types
+NNGR_UBCT,NOx,,,,,,,50,1990,,100,100,cpton,,7,,,
+NNGR_UBCW,NOx,,,,,,,50,1990,,100,100,cpton,,7,,,
+NNGR_UBCY,NOx,,,,,,,50,1990,,100,100,cpton,,7,,,
+NNGR_UBOT,NOx,,,,,,,50,1990,,100,100,cpton,,7,,,
+NNGR_UBOW,NOx,,,,,,,50,1990,,100,100,cpton,,7,,,
+NNGRECBNG1,NOx,,,,,,,50.00%,1999,1951.3,100,100,cpton,,,,,
+NNGRECBNG2,NOx,,,,,,,50.00%,1999,1951.3,100,100,cpton,,,,,
+NNGRECBNG3,NOx,,,,,,,50.00%,1999,1951.3,100,100,cpton,,,,,
+NNGRIBCC,NOx,,,,,0,365,55.00%,1990,1570,100,100,cpton,0.0944,,2,1570,Applied to small source types
+NNGRIBCC,NOx,,,,,365,,55.00%,1990,300,100,100,cpton,0.0944,,2,300,Applied to large source types
+NOTWIFRNG,NOx,,,,,365,,65.00%,1990,320,100,100,cpton,0.1424,,2.9,320,Applied to large source types
+NOTWIFRNG,NOx,,,,,0,365,65.00%,1990,680,100,100,cpton,0.1424,,2.9,680,Applied to small source types
+NOTWIIBNG,NOx,,,,,0,365,65.00%,1990,680,100,100,cpton,0.1424,,2.9,680,Applied to small source types
+NOTWIIBNG,NOx,,,,,365,,65.00%,1990,320,100,100,cpton,0.1424,,2.9,320,Applied to large source types
+NOTWIIBPG,NOx,,,,,0,365,65.00%,1990,680,100,100,cpton,0.1424,,2.9,680,Applied to small source types
+NOTWIIBPG,NOx,,,,,365,,65.00%,1990,320,100,100,cpton,0.1424,,2.9,320,Applied to large source types
+NOTWISHNG,NOx,,,,,0,365,65.00%,1990,680,100,100,cpton,0.1424,,2.9,680,Applied to small source types
+NOTWISHNG,NOx,,,,,365,,65.00%,1990,320,100,100,cpton,0.1424,,2.9,320,Applied to large source types
+NOTWISPRF,NOx,,,,,365,,65.00%,1990,320,100,100,cpton,0.1424,,2.9,320,Applied to large source types
+NOTWISPRF,NOx,,,,,0,365,65.00%,1990,680,100,100,cpton,0.1424,,2.9,680,Applied to small source types
+NOXYFGMCN,NOx,,,,,0,365,85.00%,1990,4590,100,100,cpton,0.1424,,2.7,4590,Applied to small source types
+NOXYFGMCN,NOx,,,,,365,,85.00%,1990,4590,100,100,cpton,0.1424,,2.7,4590,Applied to large source types
+NOXYFGMFT,NOx,,,,,365,,85.00%,1990,1900,100,100,cpton,0.1424,,2.7,1900,Applied to large source types
+NOXYFGMFT,NOx,,,,,0,365,85.00%,1990,1900,100,100,cpton,0.1424,,2.7,1900,Applied to small source types
+NOXYFGMPD,NOx,,,,,0,365,85.00%,1990,3900,100,100,cpton,0.1424,,2.7,3900,Applied to small source types
+NOXYFGMPD,NOx,,,,,365,,85.00%,1990,3900,100,100,cpton,0.1424,,2.7,3900,Applied to large source types
+NSCR_UBCT,NOx,,,,,,,90,1999,,100,100,cpton,,7,,,
+NSCR_UBCW,NOx,,,,,,,90,1999,,100,100,cpton,,7,,,
+NSCR_UBCY,NOx,,,,,,,90,1999,,100,100,cpton,,7,,,
+NSCR_UBOT,NOx,,,,,,,80,1990,,100,100,cpton,,7,,,
+NSCR_UBOW,NOx,,,,,,,80,1990,,100,100,cpton,,7,,,
+NSCRCMDY,NOx,,,,,0,365,80.00%,1999,3370,100,100,cpton,0.1098,,4.4,3370,Applied to small source types
+NSCRCMDY,NOx,,,,,365,,80.00%,1999,3370,100,100,cpton,0.1098,,4.4,3370,Applied to large source types
+NSCRCMWT,NOx,,,,,365,,80.00%,1999,2880,100,100,cpton,0.1098,,4.4,2880,Applied to large source types
+NSCRCMWT,NOx,,,,,0,365,80.00%,1999,2880,100,100,cpton,0.1098,,4.4,2880,Applied to small source types
+NSCRFRNG,NOx,,,,,0,365,80.00%,1990,2230,100,100,cpton,0.0944,,10,2860,Applied to small source types
+NSCRFRNG,NOx,,,,,365,,80.00%,1990,1210,100,100,cpton,0.0944,,9.6,1410,Applied to large source types
+NSCRFROL,NOx,,,,,0,365,80.00%,1990,1480,100,100,cpton,0.0944,,10,1910,Applied to small source types
+NSCRFROL,NOx,,,,,365,,80.00%,1990,810,100,100,cpton,0.0944,,9.6,940,Applied to large source types
+NSCRGMCN,NOx,,,,,0,365,75.00%,1990,2200,100,100,cpton,0.1424,,1.8,2200,Applied to small source types
+NSCRGMCN,NOx,,,,,365,,75.00%,1990,2200,100,100,cpton,0.1424,,1.8,2200,Applied to large source types
+NSCRGMFT,NOx,,,,,0,365,75.00%,1990,3370,100,100,cpton,0.1424,,2.2,710,Applied to small source types
+NSCRGMFT,NOx,,,,,365,,75.00%,1990,710,100,100,cpton,0.1424,,2.2,710,Applied to large source types
+NSCRGMPD,NOx,,,,,365,,75.00%,1990,2530,100,100,cpton,0.1424,,1.3,2530,Applied to large source types
+NSCRGMPD,NOx,,,,,0,365,75.00%,1990,2530,100,100,cpton,0.1424,,1.3,2530,Applied to small source types
+NSCRIBCC,NOx,,,,,365,,90.00%,1990,700,100,100,cpton,0.0944,,6.3,700,Applied to large source types
+NSCRIBCC,NOx,,,,,0,365,90.00%,1990,820,100,100,cpton,0.0944,,7,820,Applied to small source types
+NSCRIBCK,NOx,,,,,365,,70.00%,1990,1070,100,100,cpton,0.0944,,6.5,700,Applied to large source types
+NSCRIBCK,NOx,,,,,0,365,70.00%,1990,1260,100,100,cpton,0.0944,,7.1,910,Applied to small source types
+NSCRIBCOAL,NOX,,,,,365,,80.00%,2003,876,100,100,cpton,,,7,, 
+NSCRIBCOAL,NOX,,,,,0,365,80.00%,2003,2141,100,100,cpton,,,7,, 
+NSCRIBCW,NOx,,,,,0,365,90.00%,1990,1260,100,100,cpton,0.0944,,7.1,910,Applied to small source types
+NSCRIBCW,NOx,,,,,365,,90.00%,1990,1070,100,100,cpton,0.0944,,6.5,700,Applied to large source types
+NSCRIBDO,NOx,,,,,0,365,80.00%,1990,2780,100,100,cpton,0.0944,,10,3570,Applied to small source types
+NSCRIBDO,NOx,,,,,365,,80.00%,1990,1510,100,100,cpton,0.0944,,9.6,1750,Applied to large source types
+NSCRIBLP,NOx,,,,,0,365,80.00%,1990,2780,100,100,cpton,0.0944,,10,3570,Applied to small source types
+NSCRIBLP,NOx,,,,,365,,80.00%,1990,1510,100,100,cpton,0.0944,,9.6,1750,Applied to large source types
+NSCRIBLW,NOx,,,,,365,,80.00%,1990,810,100,100,cpton,0.0944,,9.6,940,Applied to large source types
+NSCRIBLW,NOx,,,,,0,365,80.00%,1990,1480,100,100,cpton,0.0944,,10,1910,Applied to small source types
+NSCRIBNG,NOx,,,,,365,,80.00%,1990,1210,100,100,cpton,0.0944,,9.6,1410,Applied to large source types
+NSCRIBNG,NOx,,,,,0,365,80.00%,1990,2230,100,100,cpton,0.0944,,10,2860,Applied to small source types
+NSCRIBPG,NOx,,,,,0,365,80.00%,1990,2230,100,100,cpton,0.0944,,10,2860,Applied to small source types
+NSCRIBPG,NOx,,,,,365,,80.00%,1990,1210,100,100,cpton,0.0944,,9.6,1410,Applied to large source types
+NSCRIBRO,NOx,,,,,365,,80.00%,1990,810,100,100,cpton,0.0944,,9.6,940,Applied to large source types
+NSCRIBRO,NOx,,,,,0,365,80.00%,1990,1480,100,100,cpton,0.0944,,10,1910,Applied to small source types
+NSCRICBG,NOX,,,,,0,365,80.00%,2003,2933,100,100,cpton,,,7,, 
+NSCRICBG,NOX,,,,,365,,80.00%,2003,986,100,100,cpton,,,7,, 
+NSCRICBO,NOX,,,,,365,,80.00%,2003,760,100,100,cpton,,,7,, 
+NSCRICBO,NOX,,,,,0,365,80.00%,2003,2014,100,100,cpton,,,7,, 
+NSCRICGD,NOx,,,,,365,,80.00%,1990,920,100,100,cpton,0.1098,,2.2,920,Applied to large source types
+NSCRICGD,NOx,,,,,0,365,80.00%,1990,2340,100,100,cpton,0.1098,,1.8,2340,Applied to small source types
+NSCRICGS,NOX,,,,,,,90.00%,1990,2769,100,100,cpton,,,7,, 
+NSCRICOL,NOx,,,,,365,,80.00%,1990,920,100,100,cpton,0.1098,,2.2,920,Applied to large source types
+NSCRICOL,NOx,,,,,0,365,80.00%,1990,2340,100,100,cpton,0.1098,,1.8,2340,Applied to small source types
+NSCRISAN,NOx,,,,,365,,85.00%,1990,3830,100,100,cpton,0.1424,,5,3830,Applied to large source types
+NSCRISAN,NOx,,,,,0,365,85.00%,1990,3830,100,100,cpton,0.1424,,5,3830,Applied to small source types
+NSCRLGTNG,NOx,,,,,365,,94.00%,1990,600,100,100,cpton,0.1098,,4,6720,Applied to large source types
+NSCRLGTNG,NOx,,,,,0,365,94.00%,1990,2570,100,100,cpton,0.1098,,4,19120,Applied to small source types
+NSCRNAMF,NOx,,,,,0,365,97.00%,1990,590,100,100,cpton,0.1424,,2.5,590,Applied to small source types
+NSCRNAMF,NOx,,,,,365,,97.00%,1990,590,100,100,cpton,0.1424,,2.5,590,Applied to large source types
+NSCRNGCP,NOx,,,,,365,,20.00%,1990,533,100,100,cpton,0.1098,,,,Applied to large source types
+NSCRNGCP,NOx,,,,,0,365,20.00%,1990,2769,100,100,cpton,0.1098,,,,Applied to small source types
+NSCRPHDO,NOx,,,,,365,,75.00%,1990,6030,100,100,cpton,0.1098,,7,6030,Applied to large source types
+NSCRPHDO,NOx,,,,,0,365,75.00%,1990,9230,100,100,cpton,0.1098,,6.4,9230,Applied to small source types
+NSCRPHLP,NOx,,,,,365,,75.00%,1990,5350,100,100,cpton,0.1098,,7,6030,Applied to large source types
+NSCRPHLP,NOx,,,,,0,365,75.00%,1990,12040,100,100,cpton,0.1098,,6.4,9230,Applied to small source types
+NSCRPHNG,NOx,,,,,365,,75.00%,1990,8160,100,100,cpton,0.1098,,6.3,8160,Applied to large source types
+NSCRPHNG,NOx,,,,,0,365,75.00%,1990,12040,100,100,cpton,0.1098,,6.7,12040,Applied to small source types
+NSCRPHOF,NOx,,,,,365,,75.00%,1990,3590,100,100,cpton,0.1098,,6.9,3590,Applied to large source types
+NSCRPHOF,NOx,,,,,0,365,75.00%,1990,5350,100,100,cpton,0.1098,,6.5,5350,Applied to small source types
+NSCRPHPG,NOx,,,,,0,365,75.00%,1990,12040,100,100,cpton,0.1098,,6.7,12040,Applied to small source types
+NSCRPHPG,NOx,,,,,365,,75.00%,1990,8160,100,100,cpton,0.1098,,6.3,8160,Applied to large source types
+NSCRPHRO,NOx,,,,,0,365,75.00%,1990,5350,100,100,cpton,0.1098,,6.5,5350,Applied to small source types
+NSCRPHRO,NOx,,,,,365,,75.00%,1990,3590,100,100,cpton,0.1098,,6.9,3590,Applied to large source types
+NSCRRICOIL,NOX,,,,,,,80.00%,1993,1066,100,100,cpton,,,7,, 
+NSCRSGTNG,NOx,,,,,0,365,95.00%,1990,2010,100,100,cpton,0.1098,,3,8960,Applied to small source types
+NSCRSGTNG,NOx,,,,,365,,95.00%,1990,840,100,100,cpton,0.1098,,3,3290,Applied to large source types
+NSCRSHDO,NOx,,,,,365,,80.00%,1990,1510,100,100,cpton,0.0944,,9.6,1750,Applied to large source types
+NSCRSHDO,NOx,,,,,0,365,80.00%,1990,2780,100,100,cpton,0.0944,,10,3570,Applied to small source types
+NSCRSHNG,NOx,,,,,0,365,80.00%,1990,2860,100,100,cpton,0.0944,,10,2860,Applied to small source types
+NSCRSHNG,NOx,,,,,365,,80.00%,1990,1210,100,100,cpton,0.0944,,9.6,1410,Applied to large source types
+NSCRSPRF,NOx,,,,,365,,80.00%,1990,1210,100,100,cpton,0.0944,,9.6,1410,Applied to large source types
+NSCRSPRF,NOx,,,,,0,365,80.00%,1990,2230,100,100,cpton,0.0944,,10,2860,Applied to small source types
+NSCRWGTJF,NOx,,,,,365,,90.00%,1990,1010,100,100,cpton,0.1098,,2.3,2280,Applied to large source types
+NSCRWGTJF,NOx,,,,,0,365,90.00%,1990,2300,100,100,cpton,0.1098,,2.8,7850,Applied to small source types
+NSCRWGTNG,NOx,,,,,0,365,95.00%,1990,2730,100,100,cpton,0.1098,,2.8,9570,Applied to small source types
+NSCRWGTNG,NOx,,,,,365,,95.00%,1990,1130,100,100,cpton,0.1098,,2.2,3180,Applied to large source types
+NSCRWGTOL,NOx,,,,,0,365,90.00%,1990,2300,100,100,cpton,0.1098,,2.8,7850,Applied to small source types
+NSCRWGTOL,NOx,,,,,365,,90.00%,1990,1010,100,100,cpton,0.1098,,2.3,2280,Applied to large source types
+NSNCNCMDY,NOx,,,,,365,,50.00%,1999,850,100,100,cpton,0.1098,,3.3,850,Applied to large source types
+NSNCNCMDY,NOx,,,,,0,365,50.00%,1999,850,100,100,cpton,0.1098,,3.3,850,Applied to small source types
+NSNCRBCCK,NOx,,,,,365,,50.00%,1999,770,100,100,cpton,0.1098,,1.6,770,Applied to large source types
+NSNCRBCCK,NOx,,,,,0,365,50.00%,1999,770,100,100,cpton,0.1098,,1.6,770,Applied to small source types
+NSNCRBCGN,NOx,,,,,0,365,40.00%,1990,1260,100,100,cpton,0.0944,,1.2,1260,Applied to small source types
+NSNCRBCGN,NOx,,,,,365,,40.00%,1990,940,100,100,cpton,0.0944,,1.2,940,Applied to large source types
+NSNCRBCLK,NOx,,,,,0,365,50.00%,1990,770,100,100,cpton,0.1098,,1.6,770,Applied to small source types
+NSNCRBCLK,NOx,,,,,365,,50.00%,1990,770,100,100,cpton,0.1098,,1.6,770,Applied to large source types
+NSNCRCIIN,NOx,,,,,365,,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to large source types
+NSNCRCIIN,NOx,,,,,0,365,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to small source types
+NSNCRCMDY,NOx,,,,,0,365,50.00%,1990,770,100,100,cpton,0.1098,,2.1,770,Applied to small source types
+NSNCRCMDY,NOx,,,,,365,,50.00%,1990,770,100,100,cpton,0.1098,,2.1,770,Applied to large source types
+NSNCRCMOU,NOx,,,,,0,365,60.00%,1990,1640,100,100,cpton,0.1424,,2.7,1640,Applied to small source types
+NSNCRCMOU,NOx,,,,,365,,60.00%,1990,1640,100,100,cpton,0.1424,,2.7,1640,Applied to large source types
+NSNCRECBDO,NOx,,,,,,,50.00%,1999,4038.45,100,100,cpton,,,,,
+NSNCRECBE1,NOx,,,,,,,40.00%,1999,1136.2,100,100,cpton,,,,,
+NSNCRECBE2,NOx,,,,,,,40.00%,1999,1136.2,100,100,cpton,,,,,
+NSNCRECBE3,NOx,,,,,,,40.00%,1999,1136.2,100,100,cpton,,,,,
+NSNCRECBE4,NOx,,,,,,,40.00%,1999,1136.2,100,100,cpton,,,,,
+NSNCRECBR1,NOx,,,,,,,50.00%,1999,2235.35,100,100,cpton,,,,,
+NSNCRECBR2,NOx,,,,,,,50.00%,1999,2235.35,100,100,cpton,,,,,
+NSNCRECBSW,NOx,,,,,,,50.00%,1999,2235.35,100,100,cpton,,,,,
+NSNCRFRNG,NOx,,,,,0,365,50.00%,1990,3870,100,100,cpton,0.0944,,9.4,2900,Applied to small source types
+NSNCRFRNG,NOx,,,,,365,,50.00%,1990,1570,100,100,cpton,0.0944,,8.2,840,Applied to large source types
+NSNCRFROL,NOx,,,,,0,365,50.00%,1990,2580,100,100,cpton,0.0944,,9.4,1940,Applied to small source types
+NSNCRFROL,NOx,,,,,365,,50.00%,1990,1050,100,100,cpton,0.0944,,8.2,560,Applied to large source types
+NSNCRGMCN,NOx,,,,,365,,40.00%,1990,1770,100,100,cpton,0.1424,,2.4,1770,Applied to large source types
+NSNCRGMCN,NOx,,,,,0,365,40.00%,1990,1770,100,100,cpton,0.1424,,2.4,1770,Applied to small source types
+NSNCRGMFT,NOx,,,,,0,365,40.00%,1990,740,100,100,cpton,0.1424,,2.4,740,Applied to small source types
+NSNCRGMFT,NOx,,,,,365,,40.00%,1990,740,100,100,cpton,0.1424,,2.4,740,Applied to large source types
+NSNCRGMPD,NOx,,,,,0,365,40.00%,1990,1640,100,100,cpton,0.1424,,2.4,1640,Applied to small source types
+NSNCRGMPD,NOx,,,,,365,,40.00%,1990,1640,100,100,cpton,0.1424,,2.4,1640,Applied to large source types
+NSNCRIBC,NOX,,,,,0,365,40.00%,2003,2073,100,100,cpton,,,5.8,, 
+NSNCRIBC,NOX,,,,,365,,40.00%,2003,1285,100,100,cpton,,,5.8,, 
+NSNCRIBCC,NOx,,,,,365,,35.00%,1990,700,100,100,cpton,0.0944,,6.4,700,Applied to large source types
+NSNCRIBCC,NOx,,,,,0,365,35.00%,1990,840,100,100,cpton,0.0944,,7.5,840,Applied to small source types
+NSNCRIBCF,NOx,,,,,0,365,75.00%,1990,900,100,100,cpton,0.0944,,5.2,900,Applied to small source types
+NSNCRIBCF,NOx,,,,,365,,75.00%,1990,670,100,100,cpton,0.0944,,5.2,670,Applied to large source types
+NSNCRIBCK,NOx,,,,,365,,40.00%,1990,840,100,100,cpton,0.0944,,6.6,260,Applied to large source types
+NSNCRIBCK,NOx,,,,,0,365,40.00%,1990,1040,100,100,cpton,0.0944,,7.7,400,Applied to small source types
+NSNCRIBCS,NOx,,,,,365,,40.00%,1990,817,100,100,cpton,0.0944,,6.6,703,Applied to large source types
+NSNCRIBCS,NOx,,,,,0,365,40.00%,1990,1015,100,100,cpton,0.0944,,7.7,873,Applied to small source types
+NSNCRIBCW,NOx,,,,,365,,40.00%,1990,840,100,100,cpton,0.0944,,6.6,260,Applied to large source types
+NSNCRIBCW,NOx,,,,,0,365,40.00%,1990,1040,100,100,cpton,0.0944,,7.7,400,Applied to small source types
+NSNCRIBDO,NOx,,,,,365,,50.00%,1990,1890,100,100,cpton,0.0944,,8.2,1010,Applied to large source types
+NSNCRIBDO,NOx,,,,,0,365,50.00%,1990,4640,100,100,cpton,0.0944,,9.4,3470,Applied to small source types
+NSNCRIBGA,NOx,,,,,0,365,55.00%,1990,1440,100,100,cpton,0.0944,,6.3,1440,Applied to small source types
+NSNCRIBGA,NOx,,,,,365,,55.00%,1990,930,100,100,cpton,0.0944,,6.8,930,Applied to large source types
+NSNCRIBLP,NOx,,,,,0,365,50.00%,1990,4640,100,100,cpton,0.0944,,9.4,3470,Applied to small source types
+NSNCRIBLP,NOx,,,,,365,,50.00%,1990,1890,100,100,cpton,0.0944,,8.2,1010,Applied to large source types
+NSNCRIBLW,NOx,,,,,365,,50.00%,1990,1050,100,100,cpton,0.0944,,8.2,560,Applied to large source types
+NSNCRIBLW,NOx,,,,,0,365,50.00%,1990,2580,100,100,cpton,0.0944,,9.4,1940,Applied to small source types
+NSNCRIBMS,NOx,,,,,0,365,55.00%,1990,1690,100,100,cpton,0.0944,,6.8,1690,Applied to small source types
+NSNCRIBMS,NOx,,,,,365,,55.00%,1990,1250,100,100,cpton,0.0944,,6.2,1250,Applied to large source types
+NSNCRIBNG,NOx,,,,,0,365,50.00%,1990,3870,100,100,cpton,0.0944,,9.4,2900,Applied to small source types
+NSNCRIBNG,NOx,,,,,365,,50.00%,1990,1570,100,100,cpton,0.0944,,8.2,840,Applied to large source types
+NSNCRIBRO,NOx,,,,,0,365,50.00%,1990,2580,100,100,cpton,0.0944,,9.4,1940,Applied to small source types
+NSNCRIBRO,NOx,,,,,365,,50.00%,1990,1050,100,100,cpton,0.0944,,8.2,560,Applied to large source types
+NSNCRIBWF,NOx,,,,,0,365,55.00%,1990,1320,100,100,cpton,0.0944,,4.1,1320,Applied to small source types
+NSNCRIBWF,NOx,,,,,365,,55.00%,1990,960,100,100,cpton,0.0944,,4.1,960,Applied to large source types
+NSNCRIBWS,NOx,,,,,365,,55.00%,1990,930,100,100,cpton,0.0944,,6.8,930,Applied to large source types
+NSNCRIBWS,NOx,,,,,0,365,55.00%,1990,1440,100,100,cpton,0.0944,,6.3,1440,Applied to small source types
+NSNCRICBG,NOX,,,,,0,365,40.00%,2003,1052,100,100,cpton,,,5.2,, 
+NSNCRICBG,NOX,,,,,365,,40.00%,2003,280,100,100,cpton,,,5.2,, 
+NSNCRICBO,NOX,,,,,365,,40.00%,2003,1485,100,100,cpton,,,5.5,, 
+NSNCRICBO,NOX,,,,,0,365,40.00%,2003,2367,100,100,cpton,,,5.5,, 
+NSNCRICGS,NOx,,,,,,,90.00%,1990,342,100,100,cpton,0.1098,,4.4,,Applied to large source types
+NSNCRIDIN,NOx,,,,,365,,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to large source types
+NSNCRIDIN,NOx,,,,,0,365,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to small source types
+NSNCRINGI4,NOx,,,,,,,90.00%,1999,422,100,100,cpton,,,,,
+NSNCRISAN,NOx,,,,,0,365,60.00%,1990,1640,100,100,cpton,0.1424,,2.7,1640,Applied to small source types
+NSNCRISAN,NOx,,,,,365,,60.00%,1990,1640,100,100,cpton,0.1424,,2.7,1640,Applied to large source types
+NSNCRMWCB,NOx,,,,,365,,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to large source types
+NSNCRMWCB,NOx,,,,,0,365,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to small source types
+NSNCRMWIN,NOx,,,,,365,,45.00%,1990,4510,100,100,cpton,0.0944,,4.1,4510,Applied to large source types
+NSNCRMWIN,NOx,,,,,0,365,45.00%,1990,4510,100,100,cpton,0.0944,,4.1,4510,Applied to small source types
+NSNCRNAMF,NOx,,,,,0,365,98.00%,1990,550,100,100,cpton,0.1424,,2.4,550,Applied to small source types
+NSNCRNAMF,NOx,,,,,365,,98.00%,1990,550,100,100,cpton,0.1424,,2.4,550,Applied to large source types
+NSNCRPHDO,NOx,,,,,0,365,60.00%,1990,3180,100,100,cpton,0.1098,,6.2,3180,Applied to small source types
+NSNCRPHDO,NOx,,,,,365,,60.00%,1990,1720,100,100,cpton,0.1098,,5.2,1720,Applied to large source types
+NSNCRPHLP,NOx,,,,,0,365,60.00%,1990,3180,100,100,cpton,0.1098,,6.2,3180,Applied to small source types
+NSNCRPHLP,NOx,,,,,365,,60.00%,1990,1720,100,100,cpton,0.1098,,5.2,1720,Applied to large source types
+NSNCRPHNG,NOx,,,,,0,365,60.00%,1990,2850,100,100,cpton,0.1098,,6.4,2850,Applied to small source types
+NSNCRPHNG,NOx,,,,,365,,60.00%,1990,1950,100,100,cpton,0.1098,,5.7,1950,Applied to large source types
+NSNCRPHOF,NOx,,,,,0,365,60.00%,1990,1930,100,100,cpton,0.1098,,6,1930,Applied to small source types
+NSNCRPHOF,NOx,,,,,365,,60.00%,1990,1100,100,100,cpton,0.1098,,4.8,1100,Applied to large source types
+NSNCRPHPG,NOx,,,,,365,,60.00%,1990,1950,100,100,cpton,0.1098,,5.7,1950,Applied to large source types
+NSNCRPHPG,NOx,,,,,0,365,60.00%,1990,2850,100,100,cpton,0.1098,,6.4,2850,Applied to small source types
+NSNCRPHRO,NOx,,,,,365,,60.00%,1990,1100,100,100,cpton,0.1098,,4.8,1100,Applied to large source types
+NSNCRPHRO,NOx,,,,,0,365,60.00%,1990,1930,100,100,cpton,0.1098,,6,1930,Applied to small source types
+NSNCRRBGD,NOx,,,,,365,,90.00%,1993,342,100,100,cpton,0.1098,,,,Applied to large source types
+NSNCRRBGD,NOx,,,,,0,365,90.00%,1993,342,100,100,cpton,0.1098,,2,342,Applied to small source types
+NSNCRRBIC,NOx,,,,,0,365,90.00%,1990,342,100,100,cpton,0.1098,,2,342,Applied to small source types
+NSNCRRBIC,NOx,,,,,365,,90.00%,1990,342,100,100,cpton,0.1098,,,,Applied to large source types
+NSNCRRBIC2,NOx,,,,,,,90.00%,1990,342,100,100,cpton,0.1098,,3.4,, 
+NSNCRSHDO,NOx,,,,,365,,50.00%,1990,1890,100,100,cpton,0.0944,,8.2,1010,Applied to large source types
+NSNCRSHDO,NOx,,,,,0,365,50.00%,1990,4640,100,100,cpton,0.0944,,9.4,3470,Applied to small source types
+NSNCRSHNG,NOx,,,,,365,,50.00%,1990,1570,100,100,cpton,0.0944,,8.2,840,Applied to large source types
+NSNCRSHNG,NOx,,,,,0,365,50.00%,1990,3870,100,100,cpton,0.0944,,9.4,2900,Applied to small source types
+NSNCRSPRF,NOx,,,,,365,,50.00%,1990,1570,100,100,cpton,0.0944,,8.2,840,Applied to large source types
+NSNCRSPRF,NOx,,,,,0,365,50.00%,1990,3870,100,100,cpton,0.0944,,9.4,2900,Applied to small source types
+NSNCRSWIN,NOx,,,,,0,365,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to small source types
+NSNCRSWIN,NOx,,,,,365,,45.00%,1990,1130,100,100,cpton,0.0944,,4.1,1130,Applied to large source types
+NSNCRUBCT,NOx,,,,,,,35,1990,,100,100,cpton,,7,,,
+NSNCRUBCW,NOx,,,,,,,35,1990,,100,100,cpton,,7,,,
+NSNCRUBCY,NOx,,,,,,,35,1990,,100,100,cpton,,7,,,
+NSNCRUBOT,NOx,,,,,,,50,1990,,100,100,cpton,,7,,,
+NSNCRUBOW,NOx,,,,,,,50,1990,,100,100,cpton,,7,,,
+NSTINGTNG,NOx,,,,,0,365,80.00%,1990,1040,100,100,cpton,0.1098,,3.7,1040,Applied to small source types
+NSTINGTNG,NOx,,,,,365,,80.00%,1990,500,100,100,cpton,0.1098,,2.9,500,Applied to large source types
+NTHRDADMF,NOx,,,,,0,365,81.00%,1990,420,100,100,cpton,0.1424,,2.3,420,Applied to small source types
+NTHRDADMF,NOx,,,,,365,,81.00%,1990,420,100,100,cpton,0.1424,,2.3,420,Applied to large source types
+NULNBPHDO,NOx,,,,,365,,74.00%,1990,610,100,100,cpton,0.1098,,7.3,610,Applied to large source types
+NULNBPHDO,NOx,,,,,0,365,74.00%,1990,2140,100,100,cpton,0.1098,,7.3,2140,Applied to small source types
+NULNBPHLP,NOx,,,,,365,,74.00%,1990,610,100,100,cpton,0.1098,,7.3,610,Applied to large source types
+NULNBPHLP,NOx,,,,,0,365,74.00%,1990,2140,100,100,cpton,0.1098,,7.3,2140,Applied to small source types
+NULNBPHNG,NOx,,,,,0,365,75.00%,1990,1500,100,100,cpton,0.1098,,7.3,1500,Applied to small source types
+NULNBPHNG,NOx,,,,,365,,75.00%,1990,1200,100,100,cpton,0.1098,,7.3,1200,Applied to large source types
+NULNBPHOF,NOx,,,,,365,,73.00%,1990,360,100,100,cpton,0.1098,,7.3,360,Applied to large source types
+NULNBPHOF,NOx,,,,,0,365,73.00%,1990,1290,100,100,cpton,0.1098,,7.3,1290,Applied to small source types
+NULNBPHPG,NOx,,,,,365,,75.00%,1990,1200,100,100,cpton,0.1098,,7.3,1200,Applied to large source types
+NULNBPHPG,NOx,,,,,0,365,75.00%,1990,1500,100,100,cpton,0.1098,,7.3,1500,Applied to small source types
+NULNBPHRO,NOx,,,,,365,,73.00%,1990,360,100,100,cpton,0.1098,,7.3,360,Applied to large source types
+NULNBPHRO,NOx,,,,,0,365,73.00%,1990,1290,100,100,cpton,0.1098,,7.3,1290,Applied to small source types
+NWIGTAGT,NOX,,,,,,,40.00%,2005,44000,100,100,cpton,,,2.8,, 
+NWTINGTJF,NOx,,,,,0,365,68.00%,1990,1290,100,100,cpton,0.1098,,2.9,1290,Applied to small source types
+NWTINGTJF,NOx,,,,,365,,68.00%,1990,650,100,100,cpton,0.1098,,1.6,650,Applied to large source types
+NWTINGTNG,NOx,,,,,365,,76.00%,1990,730,100,100,cpton,0.1098,,1.6,730,Applied to large source types
+NWTINGTNG,NOx,,,,,0,365,76.00%,1990,1510,100,100,cpton,0.1098,,3.1,1510,Applied to small source types
+NWTINGTOL,NOx,,,,,0,365,68.00%,1990,1290,100,100,cpton,0.1098,,2.9,1290,Applied to small source types
+NWTINGTOL,NOx,,,,,365,,68.00%,1990,650,100,100,cpton,0.1098,,1.6,650,Applied to large source types
+PCUIMASMN,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMASMN,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCHMN,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCHMN,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCHMN,PM_METALS,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBCL,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBCL,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBLP,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBLP,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBLW,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBLW,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBNG,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBNG,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBOL,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBOL,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBPG,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBPG,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBSW,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBSW,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBWD,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMCIBWD,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGBE,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGBE,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCE,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCE,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGCL,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCL,PM_METALS,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCL,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGLP,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGLP,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGLW,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGLW,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGNG,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGNG,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGOL,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGOL,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGSW,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGSW,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGWD,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMEGWD,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBCE,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBCE,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBCL,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBCL,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBLP,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBLP,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBLW,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBLW,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBNG,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBNG,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBOL,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBOL,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBPG,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBPG,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBSW,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBSW,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBWD,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMIBWD,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMKMPGI,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMKMPGI,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMICC,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMICC,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMICM,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMICM,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMIOR,PM_METALS,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMIOR,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMIOR,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMISF,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMISF,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMISQ,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMISQ,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMPCE,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMPCE,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPFP,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMPFP,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPIS,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMMPIS,PM_METALS,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPIS,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPOR,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPOR,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMNMPAM,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMNMPAM,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPCR,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPCR,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMNMPLD,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPLD,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMNMPOR,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMNMPOR,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPZC,PM10,,,,,,,7.70%,2003,5200,100,100,cpton,,,,, 
+PCUIMNMPZC,PM2_5,,,,,,,7.70%,,,100,100,,,,,, 
+PDESPCIBCL,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPCIBCL,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPCIBCL,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPCIBCL,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPCIBOL,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPCIBOL,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPCIBOL,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPCIBOL,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPCIBWD,EC,,,,,,,90.00%,,,100,100,,,,,, 
+PDESPCIBWD,PM10,,,,,,,90.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPCIBWD,OC,,,,,,,90.00%,,,100,100,,,,,, 
+PDESPCIBWD,PM2_5,,,,,,,90.00%,,,100,100,,,,,, 
+PDESPIBCL,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBCL,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBCL,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBCL,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPIBLW,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBLW,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPIBLW,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBLW,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBOL,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBOL,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBOL,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPIBOL,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBWD,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBWD,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBWD,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPIBWD,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMICM,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMICM,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMICM,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMICM,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMIOR,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMIOR,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMIOR,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMIOR,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMISQ,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMISQ,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMISQ,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMISQ,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPAM,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMPAM,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPAM,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPAM,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPCR,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPCR,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPCR,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPCR,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMPFP,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMPFP,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPFP,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPFP,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPIS,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPIS,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPIS,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMPIS,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPLD,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPLD,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMPLD,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPLD,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPOR,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMPOR,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPOR,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPOR,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPZC,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPZC,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPZC,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMPZC,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMUWI,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPMUWI,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPMUWI,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPWDPP,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPWDPP,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPWDPP,PM10,,,,,,,98.00%,1995,110,100,100,cpton,,7.00%,,, 
+PDESPWDPP,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PDESPWPUBC,PM2_5,,,,,,,95,1995,,100,100,cpton,,7,,,
+PDESPWPUBC,PM10,,,,,,,98,1995,,100,100,cpton,,7,,,
+PDESPWPUBO,PM2_5,,,,,,,95,1995,,100,100,cpton,,7,,,
+PDESPWPUBO,PM10,,,,,,,98,1995,,100,100,cpton,,7,,,
+PDIEOXCAT,PM10,,,,,,,20.00%,2003,1500,100,100,cpton,,,,,Cost effectiveness is based on the combined CO/HC/NOx and PM reduction
+PDIEPRTFIL,PM10,,,,,,,85.00%,2003,10500,100,100,cpton,,,,,Cost effectiveness is based on the combined CO/HC and PM reduction; Development measure from PM NAAQS RIA
+PDPFICE,PM2_5,,,,,,,90.00%,1999,9100,100,100,cpton,,,,,
+PESPOFBOIL,PM2_5,,,,,,,75.00%,1999,5400,100,100,cpton,,,,,
+PESPPETCRK,PM10,,,,,,,95.00%,1999,5050,100,100,cpton,,,,, 
+PFFMSASMN,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSASMN,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSASMN,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSASMN,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMICC,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMICC,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMICC,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMICC,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMICM,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMICM,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMICM,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMICM,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMIOR,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMIOR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMIOR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMIOR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMISQ,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMISQ,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMISQ,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMISQ,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPAM,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPAM,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPAM,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPAM,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPCE,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPCE,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPCE,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPCE,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPCR,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPCR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPCR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPCR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPFP,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPFP,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPFP,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPFP,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPGI,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPGI,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPGI,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPGI,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPIS,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPIS,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPIS,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPIS,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPLD,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPLD,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPLD,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPLD,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPOR,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPOR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPOR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPOR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPSF,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSMPSF,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPSF,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPSF,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPZC,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPZC,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPZC,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFMSMPZC,PM10,,,,,,,99.00%,1998,126,100,100,cpton,,7.00%,,, 
+PFFMSUBC,PM2_5,,,,,,,95,1990,,100,100,cpton,,7,,,
+PFFMSUBC,PM2_5,,,,,,,99,1998,,100,100,cpton,,7,,,
+PFFMSUBC,PM10,,,,,,,99.5,1998,,100,100,cpton,,7,,,
+PFFMSUBC,PM10,,,,,,,95,1990,,100,100,cpton,,7,,,
+PFFMSUBG,PM2_5,,,,,,,95,1990,,100,100,cpton,,7,,,
+PFFMSUBG,PM10,,,,,,,95,1990,,100,100,cpton,,7,,,
+PFFPJASMN,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJASMN,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJASMN,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJASMN,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJCIBCL,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJCIBCL,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJCIBCL,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJCIBCL,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJCIBWD,PM2_5,,,,,,,80.00%,,,100,100,,,,,, 
+PFFPJCIBWD,PM10,,,,,,,80.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJCIBWD,OC,,,,,,,80.00%,,,100,100,,,,,, 
+PFFPJCIBWD,EC,,,,,,,80.00%,,,100,100,,,,,, 
+PFFPJGRMG,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJGRMG,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJGRMG,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJGRMG,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJIBCL,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJIBCL,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJIBCL,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJIBCL,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJIBWD,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJIBWD,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJIBWD,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJIBWD,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMICC,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMICC,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJMICC,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMICC,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMICM,PM_METALS,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMICM,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJMICM,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMICM,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMICM,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMIOR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMIOR,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJMIOR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMIOR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMISQ,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMISQ,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMISQ,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJMISQ,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMPIS,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMPIS,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMPIS,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJMPIS,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMPSF,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMPSF,PM10,,,,,,,99.00%,1998,117,100,100,cpton,,7.00%,,, 
+PFFPJMPSF,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJMPSF,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFPJUBC,PM2_5,,,,,,,99,1998,,100,100,cpton,,7,,,
+PFFPJUBC,PM10,,,,,,,99,1998,,100,100,cpton,,7,,,
+PFFRAASMN,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAASMN,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAASMN,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAASMN,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRACIBCL,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRACIBCL,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRACIBCL,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRACIBCL,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRACIBWD,PM10,,,,,,,80.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRACIBWD,PM2_5,,,,,,,80.00%,,,100,100,,,,,, 
+PFFRACIBWD,EC,,,,,,,80.00%,,,100,100,,,,,, 
+PFFRACIBWD,OC,,,,,,,80.00%,,,100,100,,,,,, 
+PFFRAGRMG,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAGRMG,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAGRMG,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAGRMG,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAIBCL,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAIBCL,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAIBCL,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAIBCL,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAIBWD,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAIBWD,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAIBWD,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAIBWD,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMICC,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMICC,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMICC,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMICC,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMICM,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMICM,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMICM,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMICM,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMIOR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMIOR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMIOR,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMIOR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMISQ,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMISQ,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMISQ,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMISQ,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPAM,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPAM,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPAM,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPAM,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPCE,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPCE,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPCE,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPCE,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPCR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPCR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPCR,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPCR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPFP,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPFP,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPFP,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPFP,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPGI,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPGI,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPGI,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPGI,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPIS,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPIS,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPIS,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPIS,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPLD,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPLD,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPLD,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPLD,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPOR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPOR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPOR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPOR,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPSF,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPSF,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPSF,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPSF,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPZC,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPZC,PM10,,,,,,,99.00%,1998,148,100,100,cpton,,7.00%,,, 
+PFFRAMPZC,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAMPZC,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PFFRAUBC,PM2_5,,,,,,,99,1998,,100,100,cpton,,7,,,
+PFFRAUBC,PM10,,,,,,,99,1998,,100,100,cpton,,7,,,
+PIMFQASMN,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQASMN,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCHMN,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCHMN,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBCL,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCIBCL,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBLP,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBLP,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCIBLW,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCIBLW,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBNG,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBNG,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCIBOL,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCIBOL,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBPG,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBPG,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCIBSW,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBSW,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQCIBWD,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBWD,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGBE,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGBE,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGCE,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGCE,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGCL,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGCL,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGLP,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGLP,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGLW,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGLW,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGNG,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGNG,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGOL,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGOL,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGSW,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGSW,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQEGWD,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGWD,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBCE,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBCE,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBCL,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBCL,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBLP,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBLP,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBLW,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBLW,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBNG,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBNG,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBOL,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBOL,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBPG,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBPG,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBSW,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBSW,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBWD,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQIBWD,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMICC,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMICC,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMICM,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMICM,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMIOR,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMIOR,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMISQ,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMISQ,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMPCE,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMPCE,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPFP,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMPFP,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPGI,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPGI,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMPIS,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMPIS,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPOR,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPOR,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMPSF,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQMPSF,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPAM,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQNMPAM,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPCR,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQNMPCR,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPLD,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQNMPLD,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPOR,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPOR,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQNMPZC,PM10,,,,,,,6.50%,2003,620,100,100,cpton,,,,, 
+PIMFQNMPZC,PM2_5,,,,,,,6.50%,,,100,100,,,,,, 
+PISCRMPGI,PM2_5,,,,,,,64.00%,,,100,100,,,,,, 
+PISCRMPGI,OC,,,,,,,64.00%,,,100,100,,,,,, 
+PISCRMPGI,PM10,,,,,,,64.00%,1995,431,100,100,cpton,,7.00%,,, 
+PISCRMPGI,EC,,,,,,,64.00%,,,100,100,,,,,, 
+PPFCCASMN,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCASMN,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCASMN,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCASMN,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCFMAB,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCFMAB,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCFMAB,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCFMAB,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCFMMG,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCFMMG,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCFMWG,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCFMWG,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCFMWG,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCFMWG,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCGRMG,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCGRMG,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCGRMG,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCGRMG,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMICC,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMICC,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMICC,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMICC,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCMICM,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMICM,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMICM,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMICM,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCMIOR,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCMIOR,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMIOR,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMIOR,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMISQ,OC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMISQ,EC,,,,,,,99.00%,,,100,100,,,,,, 
+PPFCCMISQ,PM10,,,,,,,99.00%,1998,142,100,100,cpton,,7.00%,,, 
+PPFCCMISQ,PM2_5,,,,,,,99.00%,,,100,100,,,,,, 
+PVENTCCU,PM2_5,,,,,,,90.00%,1999,1300,100,100,cpton,,,,,
+PVESCIBCL,PM10,,,,,,,82.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVESCIBCL,OC,,,,,,,50.00%,,,100,100,,,,,, 
+PVESCIBCL,EC,,,,,,,50.00%,,,100,100,,,,,, 
+PVESCIBCL,PM2_5,,,,,,,50.00%,,,100,100,,,,,, 
+PVESCIBOL,PM2_5,,,,,,,89.00%,,,100,100,,,,,, 
+PVESCIBOL,PM10,,,,,,,92.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVESCIBOL,OC,,,,,,,89.00%,,,100,100,,,,,, 
+PVESCIBOL,EC,,,,,,,89.00%,,,100,100,,,,,, 
+PVESCIBWD,PM10,,,,,,,93.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVESCIBWD,OC,,,,,,,92.00%,,,100,100,,,,,, 
+PVESCIBWD,EC,,,,,,,92.00%,,,100,100,,,,,, 
+PVESCIBWD,PM2_5,,,,,,,92.00%,,,100,100,,,,,, 
+PVSCRMICC,PM10,,,,,,,99.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVSCRMICC,PM2_5,,,,,,,98.00%,,,100,100,,,,,, 
+PVSCRMICC,OC,,,,,,,98.00%,,,100,100,,,,,, 
+PVSCRMICC,EC,,,,,,,98.00%,,,100,100,,,,,, 
+PVSCRMISQ,OC,,,,,,,90.00%,,,100,100,,,,,, 
+PVSCRMISQ,EC,,,,,,,90.00%,,,100,100,,,,,, 
+PVSCRMISQ,PM2_5,,,,,,,90.00%,,,100,100,,,,,, 
+PVSCRMISQ,PM10,,,,,,,95.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVSCRMPCE,EC,,,,,,,89.00%,,,100,100,,,,,, 
+PVSCRMPCE,OC,,,,,,,89.00%,,,100,100,,,,,, 
+PVSCRMPCE,PM2_5,,,,,,,89.00%,,,100,100,,,,,, 
+PVSCRMPCE,PM10,,,,,,,93.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVSCRMPGI,OC,,,,,,,94.00%,,,100,100,,,,,, 
+PVSCRMPGI,PM10,,,,,,,94.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVSCRMPGI,PM2_5,,,,,,,94.00%,,,100,100,,,,,, 
+PVSCRMPGI,EC,,,,,,,94.00%,,,100,100,,,,,, 
+PVSCRMPIS,OC,,,,,,,25.00%,,,100,100,,,,,, 
+PVSCRMPIS,PM10,,,,,,,73.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVSCRMPIS,EC,,,,,,,25.00%,,,100,100,,,,,, 
+PVSCRMPIS,PM2_5,,,,,,,25.00%,,,100,100,,,,,, 
+PVSCRMPSF,OC,,,,,,,25.00%,,,100,100,,,,,, 
+PVSCRMPSF,PM10,,,,,,,73.00%,1995,751,100,100,cpton,,7.00%,,, 
+PVSCRMPSF,EC,,,,,,,25.00%,,,100,100,,,,,, 
+PVSCRMPSF,PM2_5,,,,,,,25.00%,,,100,100,,,,,, 
+PWESPCHMN,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPCHMN,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPCHMN,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPCHMN,PM_METALS,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPCHMN,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMIOR,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMIOR,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMIOR,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMIOR,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPMISQ,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMISQ,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMISQ,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPMISQ,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPAM,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPAM,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPAM,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPMPAM,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPCR,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPCR,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPCR,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPMPCR,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPIS,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPIS,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPIS,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPMPIS,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPLD,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPLD,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPLD,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPMPLD,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPOR,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPOR,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPOR,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPMPOR,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPZC,EC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPZC,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPZC,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPMPZC,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPWDPP,PM2_5,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPWDPP,OC,,,,,,,95.00%,,,100,100,,,,,, 
+PWESPWDPP,PM10,,,,,,,99.00%,1995,220,100,100,cpton,,7.00%,,, 
+PWESPWDPP,EC,,,,,,,95.00%,,,100,100,,,,,, 
+SAMSCSRP95,SO2,,,,,,,98.4,1990,,100,100,5,0.1098,,,,
+SAMSCSRP96,SO2,,,,,,,97.8,1990,,100,100,5,0.1098,,,,
+SAMSCSRP97,SO2,,,,,,,97.1,1990,,100,100,5,0.1098,,,,
+SCATPETCRK,SO2,,,,,,,43.00%,2004,1493,100,100,cpton,,,,, 
+SCWSHUBCF,SO2,,,,,,,35,1997,320,100,100,cpton,,7,,,
+SDLABPLSS,SO2,,,,,,,99,1990,,100,100,4,0.1098,,,,
+SDLABPZSS,SO2,,,,,,,99,1990,,100,100,4,0.1098,,,,
+SFGDICB,SO2,,,,,,,90.00%,2003,1109,100,100,cpton,,,,,Combined Low and High sulfur coal CPTON values into single value as CoST has no means to track High versus Low Sulfur coal
+SFGDICBOIL,SO2,,,,,,,90.00%,1999,2898,100,100,cpton,,,,,Actual CPTON is based on boiler capacity but CoST CM DB does not track boiler capacity
+SFGDSCBBCL,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSCBRO,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSCMOC,SO2,,,,,,,90,1990,,100,100,6,0.1098,,,,
+SFGDSCMOP,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSIBBC,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSIBLG,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSIBRO,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSMIPR,SO2,,,,,,,50,1990,,100,100,3,0.1098,,,,
+SFGDSPETR,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSECMP,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSPHOG,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSPPSP,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDSSGCO,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFGDWUBHS,SO2,,,,,,,90,1990,0,100,100,cpton,,7,,,
+SFGDWUBMS,SO2,,,,,,,90,1990,0,100,100,cpton,,7,,,
+SFGDWUBVHS,SO2,,,,,,,90,1990,0,100,100,cpton,,7,,,
+SFGDSIPFBC,SO2,,,,,,,90,1990,,100,100,3,0.1098,,,,
+SFUELSWECB,SO2,,,,,,,75.00%,1999,2350,100,100,cpton,,,,,
+SFUELSWECB,PM2_5,,,,,,,80.00%,,,100,100,cpton,,,,,
+SFWHLUBHS,SO2,,,,,,,60,1995,140,100,100,cpton,,7,,,
+SIDISIBBCL,SO2,,,,,,,40,1999,,100,100,cpton,0.1098,7,,,
+SIDISIBLG,SO2,,,,,,,40,1999,,100,100,cpton,0.1098,7,,,
+SLSFICB,SO2,,,,,,,80.00%,1999,2350,100,100,cpton,,,,, 
+SLSFICB,PM2_5,,,,,,,80.00%,1999,0,100,100,cpton,,,,, 
+SNS93SACA,SO2,,,,,,,95,1990,,100,100,4,0.1098,,,,
+SNS97SACA,SO2,,,,,,,90,1990,,100,100,4,0.1098,,,,
+SNS98SACA,SO2,,,,,,,85,1990,,100,100,4,0.1098,,,,
+SNS99SACA,SO2,,,,,,,75,1990,,100,100,4,0.1098,7,,,
+SRPNGUBCF,SO2,,,,,,,99,1998,0,100,100,cpton,,7,,,
+SSADPPRMTL,SO2,,,,,,,70,1990,,100,100,3,0.1098,,,,
+SSCRBCEMKL,SO2,,,,,,,90.00%,2002,7000,100,100,cpton,,,,, 
+SSCRBDRKL,SO2,,,,,,,90.00%,2002,4000,100,100,cpton,,,,, 
+SSCRBPETCK,SO2,,,,,,,97.00%,2004,665,100,100,cpton,,,,, 
+SSCRBPETPH,SO2,,,,,,,96.00%,2004,26529,100,100,cpton,,,,, 
+SSCRBPRKL,SO2,,,,,,,90.00%,2002,35000,100,100,cpton,,,,, 
+SSCRBPRPR,SO2,,,,,,,90.00%,2002,25000,100,100,cpton,,,,, 
+SSDA_IBBCL,SO2,,,,,,,90,1999,,100,100,cpton,0.1098,7,,,
+SSDA_IBLG,SO2,,,,,,,90,1999,,100,100,cpton,0.1098,7,,,
+SSPRADRKL,SO2,,,,,,,90.00%,2002,4000,100,100,cpton,,,,, 
+SSPRAPRKL,SO2,,,,,,,90.00%,2002,35000,100,100,cpton,,,,, 
+SSPRAPRPR,SO2,,,,,,,90.00%,2002,25000,100,100,cpton,,,,, 
+SSRBINJICB,SO2,,,,,,,40.00%,2003,1069,100,100,cpton,,,,,Combined Low and High sulfur coal CPTON values into single value as CoST has no means to track High versus Low Sulfur coal
+SSRTGSRP95,SO2,,,,,,,99.84,1990,643,100,100,cpton,0.1098,7,,,
+SSRTGSRP96,SO2,,,,,,,99.78,1990,643,100,100,cpton,0.1098,7,,,
+SSRTGSRP97,SO2,,,,,,,99.71,1990,643,100,100,cpton,0.1098,7,,,
+SSRTGSRP99,SO2,,,,,,,90,1990,643,100,100,cpton,0.1098,7,,,
+SSRTGSRPNC,SO2,,,,,,,90,1990,643,100,100,cpton,0.1098,7,,,
+SWFGDIBLG,SO2,,,,,,,90,1999,,100,100,cpton,0.1098,7,,,
+SWFGDIBRO,SO2,,,,,,,90,1999,,100,100,cpton,0.1098,7,,,
+SWFGSIBBCL,SO2,,,,,,,90,1999,,100,100,cpton,0.1098,7,,,
+V1148ONGPF,VOC,,,,,,,14.00%,2004,2483,100,100,cpton,0,4.00%,,, 
+VFLAFLA,VOC,,,,,,,98.00%,1999,2700,100,100,cpton,,,,,
+VPTENFLPR,VOC,,,,,,,90.00%,1993,9947,100,100,cpton,0.1098,7.00%,,, 
+VPTENFPCD,VOC,,,,,,,97.00%,1997,1343,100,100,cpton,0.1098,7.00%,,, 
+VPTENMCSC,VOC,,,,,,,95.00%,2002,8469,100,100,cpton,0.1098,7.00%,,, 
+VPTENMFSC,VOC,,,,,,,95.00%,1998,19321,100,100,cpton,0.1098,7.00%,,, 
+VPTENPOWC,VOC,,,,,,,95.00%,1998,1503,100,100,cpton,0.1098,7.00%,,, 
+VPTENPPRS,VOC,,,,,,,96.00%,1993,12770,100,100,cpton,0.1098,7.00%,,, 
+VPTENPRPG,VOC,,,,,,,95.00%,1993,2422,100,100,cpton,0.1098,7.00%,,, 
+VWWPWW,VOC,,,,,,,65.00%,1999,2750,100,100,cpton,,,,,
+NIRICGD,NOx,,,,,365,,25.00%,1990,490,100,100,cpton,0.1098,,0.6,490,Applied to large source types
+NIRICOL,NOx,,,,,365,,25.00%,1990,490,100,100,cpton,0.1098,,0.6,490,Applied to large source types
+PIMFQASMN,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCHMN,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBCL,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBLP,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBLW,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBNG,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBOL,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBPG,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBSW,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBWD,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGBE,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGCE,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGCL,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGLP,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGLW,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGNG,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGOL,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGSW,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGWD,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBCE,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBCL,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBLP,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBLW,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBNG,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBOL,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBPG,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBSW,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBWD,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMICC,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMICM,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMIOR,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMISQ,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPCE,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPFP,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPGI,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPIS,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPOR,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPSF,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPAM,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPCR,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPLD,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPOR,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPZC,EC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQASMN,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCHMN,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBCL,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBLP,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBLW,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBNG,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBOL,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBPG,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBSW,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQCIBWD,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGBE,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGCE,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGCL,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGLP,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGLW,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGNG,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGOL,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGSW,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQEGWD,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBCE,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBCL,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBLP,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBLW,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBNG,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBOL,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBPG,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBSW,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQIBWD,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMICC,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMICM,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMIOR,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMISQ,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPCE,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPFP,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPGI,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPIS,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPOR,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQMPSF,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPAM,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPCR,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPLD,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPOR,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PIMFQNMPZC,OC,,,,,,,6.50%,,,100,100,,,,,, 
+PCUIMASMN,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCHMN,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBCL,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBLP,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBLW,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBNG,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBOL,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBPG,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBSW,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBWD,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGBE,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCE,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCL,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGLP,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGLW,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGNG,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGOL,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGSW,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGWD,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBCE,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBCL,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBLP,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBLW,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBNG,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBOL,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBPG,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBSW,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBWD,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMKMPGI,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMICC,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMICM,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMIOR,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMISF,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMISQ,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPCE,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPFP,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPIS,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPOR,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPAM,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPCR,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPLD,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPOR,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPZC,EC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMASMN,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCHMN,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBCL,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBLP,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBLW,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBNG,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBOL,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBPG,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBSW,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMCIBWD,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGBE,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCE,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGCL,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGLP,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGLW,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGNG,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGOL,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGSW,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMEGWD,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBCE,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBCL,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBLP,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBLW,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBNG,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBOL,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBPG,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBSW,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMIBWD,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMKMPGI,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMICC,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMICM,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMIOR,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMISF,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMISQ,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPCE,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPFP,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPIS,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMMPOR,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPAM,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPCR,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPLD,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPOR,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PCUIMNMPZC,OC,,,,,,,7.70%,,,100,100,,,,,, 
+PDESPMUWI,OC,,,,,,,95.00%,,,100,100,,,,,, 
+VREEVPRPU,VOC,,,,,,,90.00%,2006,1200,100,100,,,,,,
+VREEVSCOL,VOC,,,,,,,90.00%,2006,500,100,100,,,,,,
+VREEVSCOM,VOC,,,,,,,90.00%,2006,118,100,100,,,,,,
+VREEVSCOP,VOC,,,,,,,90.00%,2006,1200,100,100,,,,,,

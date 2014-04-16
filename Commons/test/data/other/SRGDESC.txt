@@ -1,0 +1,67 @@
+#GRID	US36KM_148X112	-2736000.000000	-2088000.000000	36000.000000	36000.000000	148	112	1	LAMBERT	meters	33.000000	45.000000	-97.000000	-97.000000	40.000000
+USA,100,"Population",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_100_NOFILL.txt
+USA,110,"Housing",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_110_NOFILL.txt
+USA,120,"Urban Population",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_120_FILL.txt
+USA,130,"Rural Population",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_130_FILL.txt
+USA,137,"Housing Change",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_137_NOFILL.txt
+USA,140,"Housing Change and Population",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_140_NOFILL.txt
+USA,150,"Residential Heating - Natural Gas",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_150_FILL.txt
+USA,160,"Residential Heating - Wood",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_160_FILL.txt
+USA,170,"Residential Heating - Distillate Oil",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_170_FILL.txt
+USA,180,"Residential Heating - Coal",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_180_FILL.txt
+USA,190,"Residential Heating - LP Gas",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_190_NOFILL.txt
+USA,200,"Urban Primary Road Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_200_FILL.txt
+USA,210,"Rural Primary Road Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_210_FILL.txt
+USA,220,"Urban Secondary Road Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_220_FILL.txt
+USA,230,"Rural Secondary Road Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_230_FILL.txt
+USA,240,"Total Road Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_240_FILL.txt
+USA,250,"Urban Primary plus Rural Primary",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_250_FILL.txt
+USA,255,"0.75 Total Roadway Miles plus 0.25 Population",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_255_NOFILL.txt
+USA,260,"Total Railroad Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_260_FILL.txt
+USA,270,"Class 1 Railroad Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_270_FILL.txt
+USA,280,"Class 2 and 3 Railroad Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_280_FILL.txt
+USA,300,"Low Intensity Residential",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_300_FILL.txt
+USA,310,"Total Agriculture",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_310_FILL.txt
+USA,311,"Total Agriculture without Orchards/Vineyards",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_311_FILL.txt
+USA,312,"Orchards/Vineyards",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_312_FILL.txt
+USA,320,"Forest Land",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_320_FILL.txt
+USA,330,"Strip Mines/Quarries",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_330_FILL.txt
+USA,340,"Land",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_340_NOFILL.txt
+USA,350,"Water",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_350_FILL.txt
+USA,400,"Rural Land Area",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_400_FILL.txt
+USA,500,"Commercial Land",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_500_NOFILL.txt
+USA,505,"Industrial Land",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_505_NOFILL.txt
+USA,510,"Commercial plus Industrial",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_510_NOFILL.txt
+USA,515,"Commercial plus Institutional Land",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_515_NOFILL.txt
+USA,520,"Commercial plus Industrial plus Institutional",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_520_NOFILL.txt
+USA,525,"Golf Courses plus Institutional plus Industrial plus Commercial",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_525_FILL.txt
+USA,527,"Single Family Residential",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_527_NOFILL.txt
+USA,530,"Residential  High Density",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_530_NOFILL.txt
+USA,535,"Residential + Commercial + Industrial + Institutional + Government",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_535_NOFILL.txt
+USA,540,"Retail Trade (COM1)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_540_NOFILL.txt
+USA,545,"Personal Repair (COM3)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_545_FILL.txt
+USA,550,"Retail Trade (COM1) plus Personal Repair (COM3)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_550_NOFILL.txt
+USA,555,"Professional/Technical (COM4) plus General Government (GOV1)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_555_FILL.txt
+USA,560,"Hospital (COM6)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_560_FILL.txt
+USA,565,"Medical Office/Clinic (COM7)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_565_FILL.txt
+USA,570,"Heavy and High Tech Industrial (IND1 + IND5)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_570_FILL.txt
+USA,575,"Light and High Tech Industrial (IND2 + IND5)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_575_FILL.txt
+USA,585,"Metals and Minerals Industrial (IND4)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_585_FILL.txt
+USA,590,"Heavy Industrial (IND1)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_590_FILL.txt
+USA,595,"Light Industrial (IND2)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_595_FILL.txt
+USA,596,"Industrial plus Institutional plus Hospitals",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_596_NOFILL.txt
+USA,600,"Gas Stations",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_600_FILL.txt
+USA,650,"Refineries and Tank Farms",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_650_FILL.txt
+USA,675,"Refineries and Tank Farms and Gas Stations",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_675_FILL.txt
+USA,700,"Airport Areas",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_700_FILL.txt
+USA,710,"Airport Points",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_710_NOFILL.txt
+USA,720,"Military Airports",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_720_FILL.txt
+USA,800,"Marine Ports",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_800_FILL.txt
+USA,807,"Navigable Waterway Miles",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_807_NOFILL.txt
+USA,810,"Navigable Waterway Activity",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_810_FILL.txt
+USA,850,"Golf Courses",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_850_FILL.txt
+USA,860,"Mines",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_860_FILL.txt
+USA,870,"Wastewater Treatment Facilities",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_870_FILL.txt
+USA,880,"Drycleaners",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_880_FILL.txt
+USA,890,"Commercial Timber",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_890_NOFILL.txt
+USA,580,"Food, Drug, Chemical Industrial (IND3)",/nas/uncch/depts/cep/emc/lran/mims/mimssp_7_2005/output/US36KM_148X112/USA_580_FILL.txt

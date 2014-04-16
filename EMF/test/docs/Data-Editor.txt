@@ -1,0 +1,12 @@
+Test Cases - Data Editor
+------------------------
+1. Create a Version
+2. Add a Note
+3. Specify a Revision
+4. Save Changes
+   -Add a row(above, below)
+   -Delete row/rows
+5. Apply Sort and Filter   
+6. Concurrency
+7. Discard Changes
+8. Mark a Version Final

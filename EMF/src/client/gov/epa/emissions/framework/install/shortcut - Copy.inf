@@ -1,0 +1,7 @@
+[version]
+signature=$chicago$
+[DefaultInstall]
+UpdateInis=Addlink
+[Addlink]
+setup.ini, progman.groups,, "group200=""EMF"""
+setup.ini, group200,, ""EMF Client",""""""C:/Users/training/tmp/EMFClient.bat"""""","C:/Users/training/tmp/config/preferences/logo.ico",0"

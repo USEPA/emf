@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="EMF">
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/common"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/webservices"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/persistence"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/commons"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/client"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/contract"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/services"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/res"/>
+        <property name="context-root" value="EMF"/>
+        <property name="java-output-path" value="/EMF/target/classes"/>
+    </wb-module>
+</project-modules>

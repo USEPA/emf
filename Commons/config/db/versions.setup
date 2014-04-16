@@ -1,0 +1,18 @@
+-- Table: emissions.versions
+
+DROP TABLE emissions.versions;
+CREATE TABLE emissions.versions
+(
+  id serial NOT NULL,
+  dataset_id int4 NOT NULL,
+  version int4 NOT NULL,
+  name varchar NOT NULL,
+  path text NULL DEFAULT ''::text,
+  final_version bool NOT NULL DEFAULT false,
+  date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  lock_owner varchar(255),  
+  lock_date timestamp,
+  CONSTRAINT versions_pkey PRIMARY KEY (id)
+) 
+WITHOUT OIDS;
+ALTER TABLE emissions.versions OWNER TO emf;

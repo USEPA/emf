@@ -1,0 +1,10 @@
+EP090032280002200      CMV Diesel Underway Emissions                                                             0  0  0  00 0 0   0       0    0    0      RA      ERG       
+EP090032280003200      CMV Residual Underway Emissions                                                           0  0  0  00 0 0   0       0    0    0      RA      ERG       
+EP090032282005010                                                                                                                                           A       EHPA      
+EP090032282005015                                                                                                                                           A       EHPA      
+EP090032282010005                                                                                                                                           A       EHPA      
+EP090032282020005                                                                                                                                           A       EHPA      
+EP090032282020010                                                                                                                                           A       EHPA      
+EP090032285002015                                                                                                                                           A       EHPA      
+EP090032285004015                                                                                                                                           A       EHPA      
+EP090032285006015                                                                                                                                           A       EHPA      

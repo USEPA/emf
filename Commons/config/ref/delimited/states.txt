@@ -1,0 +1,54 @@
+Country_Code,State_Code,State_Abbr,State_Name
+01,1,AL  ,Alabama  
+01,2,AK ,Alaska 
+01,4,AZ ,Arizona 
+01,5,AR ,Arkansas 
+01,6,CA ,California 
+01,8,CO ,Colorado 
+01,9,CT ,Connecticut 
+01,10,DE ,Delaware 
+01,11,DC ,District of Columbia 
+01,12,FL ,Florida 
+01,13,GA ,Georgia 
+01,15,HI ,Hawaii 
+01,16,ID ,Idaho 
+01,17,IL ,Illinois 
+01,18,IN ,Indiana 
+01,19,IA ,Iowa 
+01,20,KS ,Kansas 
+01,21,KY ,Kentucky 
+01,22,LA ,Louisiana 
+01,23,ME ,Maine 
+01,24,MD ,Maryland 
+01,25,MA ,Massachusetts 
+01,26,MI ,Michigan 
+01,27,MN ,Minnesota 
+01,28,MS ,Mississippi 
+01,29,MO ,Missouri 
+01,30,MT ,Montana 
+01,31,NE ,Nebraska 
+01,32,NV ,Nevada 
+01,33,NH ,New Hampshire 
+01,34,NJ ,New Jersey 
+01,35,NM ,New Mexico 
+01,36,NY ,New York 
+01,37,NC ,North Carolina 
+01,38,ND ,North Dakota 
+01,39,OH ,Ohio 
+01,40,OK ,Oklahoma 
+01,41,OR ,Oregon 
+01,42,PA ,Pennsylvania 
+01,72,PR ,Puerto Rico 
+01,44,RI ,Rhode Island 
+01,45,SC ,South Carolina 
+01,46,SD ,South Dakota 
+01,47,TN ,Tennessee 
+01,48,TX ,Texas 
+01,49,UT ,Utah 
+01,50,VT ,Vermont 
+01,78,VI ,Virgin Islands 
+01,51,VA ,Virginia 
+01,53,WA ,Washington 
+01,54,WV ,West Virginia 
+01,55,WI ,Wisconsin 
+01,56,WY ,Wyoming 

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+	<class name="gov.epa.emissions.framework.services.data.DatasetNote" table="datasets_notes" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+          
+        <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
+        <property name="version" column="version" type="integer" not-null="true" />
+		
+		<many-to-one cascade="save-update"
+            name="note" 
+            class="gov.epa.emissions.framework.services.data.Note"
+            column="note_id"/> 
+            
+    </class>
+</hibernate-mapping>  
+

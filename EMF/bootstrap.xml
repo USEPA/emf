@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project name="bootstrap-EMF" default="setup" basedir=".">
+
+	<property name="module" value="EMF" />
+
+	<target name="login">
+		<input addproperty="username" message="Please enter Username" />
+		<input addproperty="password" message="Please enter Password" />
+	</target>
+
+	<target name="setup" depends="login">
+		<input addproperty="dir" message="Please enter 'directory' where EMF needs to be setup" />
+		<property name="emf.dir" value="${dir}/EMF" />
+		<cvs command="co -d ${emf.dir} ${module}" cvsroot=":extssh:${username}:${password}@cvs.sourceforge.net:/cvsroot/emisview" quiet="no" reallyquiet="no" failonerror="yes" />
+		<echo message="Bootstrapping of EMF complete. The project was checked out into ${emf.dir}." />
+	</target>
+
+	<target name="update" depends="login">
+		<cvs command="update" cvsroot=":extssh:${username}:${password}@cvs.sourceforge.net:/cvsroot/emisview" quiet="yes" reallyquiet="yes" failonerror="yes" />
+		<echo message="EMF update is complete." />
+	</target>
+
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="EMF" default="run" basedir=".">
+
+
+	<!-- URL property can be overridden on command line-->
+	<property name="url" value="http://localhost:8080/emf/services" />
+
+	<!-- format preferences -->
+	<property name="format_pref" location="sort_filter_selection_panel_format_pref.txt" />
+
+	<path id="classpath">
+		<fileset dir="${basedir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+
+	<target name="run" description="Runs the EMF Client">
+		<java classname="gov.epa.emissions.framework.client.EMFClient" classpathref="classpath" fork="true" failonerror="true">
+			<jvmarg value="-DUSER_PREFERENCES=${format_pref}" />
+			<!-- URL property can be overridden on command line, using the '-D' option-->
+			<arg line="${url}" />
+
+		</java>
+	</target>
+
+</project>
+

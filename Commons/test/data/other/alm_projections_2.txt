@@ -1,0 +1,71 @@
+/PROJECTION 2000 2009/
+# comments on alm (aircraft, lomotives, marine)  projection factors (M. Strum, 3/1/2007) 2009 PROJECTION FACTORS:
+#  aircraft:   projection factors based on activity (itinerant information) growth projected by the Federal Aviation Administration (FAA) Terminal Area Forecast (TAF) System
+#  aircraft:   http://www.apo.data.faa.gov/main/taf.asp (publication date February 2006)
+# CMV (commercial marine): projection factors for residual fuel CMV for NH3 set equal to projection factors for residual fuel CMV for SO2 since they are based on fuel consumption.  OTAQ recommendation (Penny Carey) 3/05/2007
+# DESC Country/State/County code,SCC, Projection Factor, Pollutant, SIC,MACT ,PLANTID ,POINTID,STACK, SEGMENT, char4 ,char5, comment
+0,2280002100,0.991,CO,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Port emissions
+0,2280002100,1.065,NH3,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Port emissions
+0,2280002100,0.937,NOX,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Port emissions
+0,2280002100,0.951,PM10,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Port emissions
+0,2280002100,0.951,PM2_5,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Port emissions
+0,2280002100,0.583,SO2,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Port emissions
+0,2280002100,0.979,VOC,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Port emissions
+0,2280002200,0.991,CO,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Underway emissions
+0,2280002200,1.065,NH3,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Underway emissions
+0,2280002200,0.937,NOX,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Underway emissions
+0,2280002200,0.951,PM10,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Underway emissions
+0,2280002200,0.951,PM2_5,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Underway emissions
+0,2280002200,0.583,SO2,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Underway emissions
+0,2280002200,0.979,VOC,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Marine Vessels, Commercial;Diesel;Underway emissions
+0,2280003100,1.251,CO,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Port emissions
+0,2280003100,1.137,NH3,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - use SO2 value - Marine Vessels, Commercial;Residual;Port emissions
+0,2280003100,1.178,NOX,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Port emissions
+0,2280003100,1.217,PM10,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Port emissions
+0,2280003100,1.217,PM2_5,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Port emissions
+0,2280003100,1.137,SO2,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Port emissions
+0,2280003100,1.249,VOC,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Port emissions
+0,2280003200,1.251,CO,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Underway emissions
+0,2280003200,1.137,NH3,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - use SO2 value - Marine Vessels, Commercial;Residual;Underway emissions
+0,2280003200,1.178,NOX,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Underway emissions
+0,2280003200,1.217,PM10,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Underway emissions
+0,2280003200,1.217,PM2_5,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Underway emissions
+0,2280003200,1.137,SO2,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Underway emissions
+0,2280003200,1.249,VOC,,,,,,,, ! OTAQ (Clean Air Diesel Tier 4 rule) April 2004 - Marine Vessels, Commercial;Residual;Underway emissions
+0,2280004000,1.000,-9,,,,,,,, ! Assume flat - Marine Vessels, Commercial;Gasoline; Total; All Vessel Types
+0,2285002006,1.151,CO,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class I LH Railroad Equipment, Diesel,Line Haul Locomotives: Class I Operations
+0,2285002006,1.166,NH3,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class I LH Railroad Equipment, Diesel,Line Haul Locomotives: Class I Operations
+0,2285002006,0.783,NOX,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class I LH Railroad Equipment, Diesel,Line Haul Locomotives: Class I Operations
+0,2285002006,0.947,PM10,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class I LH Railroad Equipment, Diesel,Line Haul Locomotives: Class I Operations
+0,2285002006,0.947,PM2_5,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class I LH Railroad Equipment, Diesel,Line Haul Locomotives: Class I Operations
+0,2285002006,0.192,SO2,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class I LH Railroad Equipment, Diesel,Line Haul Locomotives: Class I Operations
+0,2285002006,0.995,VOC,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class I LH Railroad Equipment, Diesel,Line Haul Locomotives: Class I Operations
+0,2285002007,0.899,CO,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class II/III LH Railroad Equipment, Diesel,Line Haul Locomotives: Class II/III Operations
+0,2285002007,1.166,NH3,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class II/III LH Railroad Equipment, Diesel,Line Haul Locomotives: Class II/III Operations
+0,2285002007,1.006,NOX,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class II/III LH Railroad Equipment, Diesel,Line Haul Locomotives: Class II/III Operations
+0,2285002007,0.821,PM10,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class II/III LH Railroad Equipment, Diesel,Line Haul Locomotives: Class II/III Operations
+0,2285002007,0.821,PM2_5,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class II/III LH Railroad Equipment, Diesel,Line Haul Locomotives: Class II/III Operations
+0,2285002007,0.192,SO2,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class II/III LH Railroad Equipment, Diesel,Line Haul Locomotives: Class II/III Operations
+0,2285002007,0.864,VOC,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Class II/III LH Railroad Equipment, Diesel,Line Haul Locomotives: Class II/III Operations
+0,2285002008,1.005,CO,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Passenger Railroad Equipment, Diesel,Line Haul Locomotives: Passenger Trains (Amtrak)
+0,2285002008,1.166,NH3,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Passenger Railroad Equipment, Diesel,Line Haul Locomotives: Passenger Trains (Amtrak)
+0,2285002008,0.832,NOX,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Passenger Railroad Equipment, Diesel,Line Haul Locomotives: Passenger Trains (Amtrak)
+0,2285002008,0.836,PM10,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Passenger Railroad Equipment, Diesel,Line Haul Locomotives: Passenger Trains (Amtrak)
+0,2285002008,0.836,PM2_5,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Passenger Railroad Equipment, Diesel,Line Haul Locomotives: Passenger Trains (Amtrak)
+0,2285002008,0.192,SO2,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Passenger Railroad Equipment, Diesel,Line Haul Locomotives: Passenger Trains (Amtrak)
+0,2285002008,0.878,VOC,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Passenger Railroad Equipment, Diesel,Line Haul Locomotives: Passenger Trains (Amtrak)
+0,2285002009,0.991,CO,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Commuter Railroad Equipment, Diesel,Line Haul Locomotives: Commuter Lines
+0,2285002009,1.166,NH3,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Commuter Railroad Equipment, Diesel,Line Haul Locomotives: Commuter Lines
+0,2285002009,0.821,NOX,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Commuter Railroad Equipment, Diesel,Line Haul Locomotives: Commuter Lines
+0,2285002009,0.824,PM10,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Commuter Railroad Equipment, Diesel,Line Haul Locomotives: Commuter Lines
+0,2285002009,0.824,PM2_5,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Commuter Railroad Equipment, Diesel,Line Haul Locomotives: Commuter Lines
+0,2285002009,0.192,SO2,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Commuter Railroad Equipment, Diesel,Line Haul Locomotives: Commuter Lines
+0,2285002009,0.866,VOC,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Commuter Railroad Equipment, Diesel,Line Haul Locomotives: Commuter Lines
+0,2285002010,1.401,CO,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Switch Railroad Equipment, Diesel,Yard Locomotives
+0,2285002010,1.166,NH3,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Switch Railroad Equipment, Diesel,Yard Locomotives
+0,2285002010,1.152,NOX,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Switch Railroad Equipment, Diesel,Yard Locomotives
+0,2285002010,1.034,PM10,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Switch Railroad Equipment, Diesel,Yard Locomotives
+0,2285002010,1.034,PM2_5,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Switch Railroad Equipment, Diesel,Yard Locomotives
+0,2285002010,0.192,SO2,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Switch Railroad Equipment, Diesel,Yard Locomotives
+0,2285002010,1.938,VOC,,,,,,,, ! OTAQ (Loco/Marine rule) 2/14/2007 - Switch Railroad Equipment, Diesel,Yard Locomotives
+/END/

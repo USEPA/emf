@@ -1,0 +1,163 @@
+# Speciation cross-reference for CMAQ or MAQSIP
+#   For CB-IV speciation of VOC
+#   For CMAQ or MAQSIP speciation of PM2_5.  The PM2_5 x-ref entries
+#      from EPA website http://www.epa.gov/ttn/chief/emch/speciation/
+#      and file last updated 3/8/02.
+#
+# Revision history
+#   Last changed 3/31/03
+#
+/POINT DEFN/ 4 4
+0           0000 CO
+0           0000 EXH__CO! exhaust for MOBILE5
+0           0000 EXR__CO! running exhaust for MOBILE6
+0           0000 EXS__CO      ! start   exhaust for MOBILE6
+0           0000 ISOP
+0           0000 NH3
+0           0000 NO
+0           0000 NOX
+0           0000 EXH__NOX     ! exhaust for MOBILE5
+0           0000 EXR__NOX     ! running exhaust for MOBILE6
+0           0000 EXS__NOX     ! start   exhaust for MOBILE6
+0           0000 OVOC
+0           0000 VOC
+0           0000 ROG
+0           0000 SO2
+0           0000 SO4
+0           0000 SOX
+0           0000 TERP
+0           0000 EXR__SO2      ! running exhaust for MOBILE6
+0           0000 EXR__NH3      ! running exhaust for MOBILE6
+0          99999 PMC
+0          99999 PM2_5
+0          99999 PMC_PRE
+0          99999 EC2_5
+0          99999 OC2_5
+0          99999 SO4_2_5
+0          99999 OTHER2_5
+0           1313 EXH__VOC     ! exhaust for MOBILE5
+0           1305 EVP__VOC     ! other evaporative for MOBILE5
+0           1308 RNL__VOC     ! running loss for MOBILE5
+0           1306 WDL__VOC     ! weighted diurnal for MOBILE5
+0           1313 EXR__VOC     ! running exhaust for MOBILE6
+0           1313 EXS__VOC     ! start   exhaust for MOBILE6
+0           1305 EVR__VOC     ! running evaporative   for MOBILE6
+0           1306 RST__VOC     ! resting evaporative   for MOBILE5 and MOBILE6
+0           1306 DNL__VOC     ! diurnal evaporative   for MOBILE5 and MOBILE6
+0           1305 CRC__VOC     ! crankcase evaporative for MOBILE5 and MOBILE6
+0           1305 RFL__VOC     ! refueling evaporative for MOBILE5 and MOBILE6
+0           1307 HOT__VOC     ! hot loss evaporative  for MOBILE5 and MOBILE6
+0           1313 EXR__TOG     ! running exhaust for MOBILE6
+0           1313 EXS__TOG     ! start   exhaust for MOBILE6
+0           1305 EVR__TOG     ! running evaporative   for MOBILE6
+0           1306 RST__TOG     ! resting evaporative   for MOBILE5 and MOBILE6
+0           1306 DNL__TOG     ! diurnal evaporative   for MOBILE5 and MOBILE6
+0           1305 CRC__TOG     ! crankcase evaporative for MOBILE5 and MOBILE6
+0           1305 RFL__TOG     ! refueling evaporative for MOBILE5 and MOBILE6
+0           1307 HOT__TOG     ! hot loss evaporative  for MOBILE5 and MOBILE6
+0          M6PMa EXR__SO4     ! MOBILE6 defaults for gas vehicles
+0          M6PMa EXR__OCARB25
+0          M6PMa EXR__ECARB25
+0          M6PMa BRK__BRAKE25
+0          M6PMa TIR__TIRE25
+0          M6PMa EXR__OCARBPMC
+0          M6PMa EXR__ECARBPMC
+0          M6PMa EXR__GASPMC
+0          M6PMa BRK__BRAKEPMC
+0          M6PMa TIR__TIREPMC
+0          M6Plg EXR__GASPM25
+2230000000  1201 EXH__VOC      ! light duty diesel exhaust for MOBILE5
+2230000000  1201 EXR__VOC      ! ldd running exhaust for MOBILE6
+2230000000  1201 EXS__VOC      ! ldd start exhaust for MOBILE6
+2230000000  0078 DNL__VOC      ! zero for all ldd evaporative
+2230000000  0078 EVP__VOC
+2230000000  0078 EVR__VOC
+2230000000  0078 RFL__VOC
+2230000000  0078 RNL__VOC
+2230000000  0078 RST__VOC
+2230000000  0078 HOT__VOC
+2230000000  0078 CRC__VOC
+2230000000  1201 EXR__TOG      ! ldd running exhaust for MOBILE6
+2230000000  1201 EXS__TOG      ! ldd start exhaust for MOBILE6
+2230000000  0078 DNL__TOG      ! zero for all ldd evaporative
+2230000000  0078 EVR__TOG
+2230000000  0078 RFL__TOG
+2230000000  0078 RST__TOG
+2230000000  0078 HOT__TOG
+2230000000  0078 CRC__TOG
+2230000000 M6PMa EXR__SO4      ! light duty diesel-specific 
+2230000000 M6PMa EXR__OCARB25
+2230000000 M6PMa EXR__ECARB25
+2230000000 M6PMa BRK__BRAKE25
+2230000000 M6PMa TIR__TIRE25
+2230000000 M6PMa EXR__OCARBPMC
+2230000000 M6PMa EXR__ECARBPMC
+2230000000 M6PMa EXR__GASPMC
+2230000000 M6PMa BRK__BRAKEPMC
+2230000000 M6PMa TIR__TIREPMC
+2230000000 M6Pld EXR__GASPM25
+2230060000  1201 EXH__VOC      ! light duty diesel trucks exhaust for MOBILE5
+2230060000  1201 EXR__VOC      ! lddt running exhaust for MOBILE6
+2230060000  1201 EXS__VOC      ! lddt start exhaust for MOBILE6
+2230060000  0078 DNL__VOC      ! zero for all lddt evaporative
+2230060000  0078 EVP__VOC
+2230060000  0078 EVR__VOC
+2230060000  0078 RFL__VOC
+2230060000  0078 RNL__VOC
+2230060000  0078 RST__VOC
+2230060000  0078 HOT__VOC
+2230060000  0078 CRC__VOC
+2230060000  1201 EXR__TOG      ! ldd running exhaust for MOBILE6
+2230060000  1201 EXS__TOG      ! ldd start exhaust for MOBILE6
+2230060000  0078 DNL__TOG      ! zero for all ldd evaporative
+2230060000  0078 EVR__TOG
+2230060000  0078 RFL__TOG
+2230060000  0078 RST__TOG
+2230060000  0078 HOT__TOG
+2230060000  0078 CRC__TOG
+2230060000 M6PMa EXR__SO4      ! light duty diesel truck-specific 
+2230060000 M6PMa EXR__OCARB25
+2230060000 M6PMa EXR__ECARB25
+2230060000 M6PMa BRK__BRAKE25
+2230060000 M6PMa TIR__TIRE25
+2230060000 M6PMa EXR__OCARBPMC
+2230060000 M6PMa EXR__ECARBPMC
+2230060000 M6PMa EXR__GASPMC
+2230060000 M6PMa BRK__BRAKEPMC
+2230060000 M6PMa TIR__TIREPMC
+2230060000 M6Pld EXR__GASPM25
+2230070000  1201 EXH__VOC      ! heavy duty diesel trucks exhaust for MOBILE5
+2230070000  1201 EXR__VOC      ! hddt running exhaust for MOBILE6
+2230070000  1201 EXS__VOC      ! hddt start exhaust for MOBILE6
+2230070000  0078 DNL__VOC      ! zero for all hddt evaporative
+2230070000  0078 EVP__VOC
+2230070000  0078 EVR__VOC
+2230070000  0078 RFL__VOC
+2230070000  0078 RNL__VOC
+2230070000  0078 RST__VOC
+2230070000  0078 HOT__VOC
+2230070000  0078 CRC__VOC
+2230070000  1201 EXR__TOG      ! ldd running exhaust for MOBILE6
+2230070000  1201 EXS__TOG      ! ldd start exhaust for MOBILE6
+2230070000  0078 DNL__TOG      ! zero for all ldd evaporative
+2230070000  0078 EVR__TOG
+2230070000  0078 RFL__TOG
+2230070000  0078 RST__TOG
+2230070000  0078 HOT__TOG
+2230070000  0078 CRC__TOG
+2230070000 M6PMa EXR__SO4      ! heavy duty diesel trucks-specific 
+2230070000 M6PMa EXR__OCARB25
+2230070000 M6PMa EXR__ECARB25
+2230070000 M6PMa BRK__BRAKE25
+2230070000 M6PMa TIR__TIRE25
+2230070000 M6PMa EXR__OCARBPMC
+2230070000 M6PMa EXR__ECARBPMC
+2230070000 M6PMa EXR__GASPMC
+2230070000 M6PMa BRK__BRAKEPMC
+2230070000 M6PMa TIR__TIREPMC
+2230070000 M6Phd EXR__GASPM25
+10100101    1178  VOC
+10100102    1178  VOC
+2810060000  0307  VOC
+2820000000  0035  VOC
+2850000010 99999 PM2_5! heavy duty diesel trucks-specific

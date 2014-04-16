@@ -1,0 +1,12 @@
+########
+# Please copy it as build.properties (in the same folder as this file), 
+# and change the properties as needed
+
+
+# app
+app.name=analysis-engine
+app.version=0.1
+
+  
+# basic settings - use '/' as a separator
+jdk.home=<full path to JDK home - use '/' as a separator>

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.sms.SectorScenario" table="sector_scenario" schema="sms"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="name" column="name"	type="java.lang.String"	not-null="true"/>
+	<property name="description" column="description" type="java.lang.String"/>
+	<property name="abbreviation" column="abbreviation"	type="java.lang.String"	not-null="true"/>
+	<property name="runStatus" column="run_status"	type="java.lang.String"/>
+	<property name="shouldDoubleCount" column="should_double_count" type="boolean" not-null="false"/>
+	<property name="annotateInventoryWithEECS" column="annotate_inventory_with_eecs" type="boolean" not-null="false"/>
+	<property name="autoRunQASteps" column="auto_run_qa_steps" type="short"/>
+	<property name="annotatingEecsOption" column="annotating_eecs_option" type="short"/>
+		<many-to-one
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+    
+    	<many-to-one
+            name="project" 
+            class="gov.epa.emissions.commons.data.Project"
+            column="project_id"/> 
+            
+	<property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="startDate" column="start_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="completionDate" column="completion_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="copiedFrom" column="copied_from" type="java.lang.String" not-null="false"/>
+	<property name="exportDirectory" column="export_directory" type="java.lang.String" not-null="false"/>
+	<many-to-one name="eecsMapppingDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="eecs_mappping_dataset_id"/>
+    <property name="eecsMapppingDatasetVersion" column="eecs_mappping_dataset_version" type="integer"/>
+	<many-to-one name="sectorMapppingDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="sector_mappping_dataset_id"/>
+    <property name="sectorMapppingDatasetVersion" column="sector_mappping_dataset_version" type="integer"/>
+	<array name="sectors" table="sector_scenario_sector" schema="sms">
+    	<key column="sector_scenario_id" not-null="true"/>
+    	<list-index column="list_index"/>
+		<element column="sector_name" type="java.lang.String"	not-null="true"/>
+	</array>
+	<array name="inventories" table="sector_scenario_inventory" schema="sms">
+    	<key column="sector_scenario_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<composite-element class="gov.epa.emissions.framework.services.sms.SectorScenarioInventory">
+			<property name="version" column="inventory_dataset_version" type="integer" not-null="true"/>
+<!--			<property name="exportSector" column="export_sector" type="java.lang.Boolean" not-null="true"/>-->
+<!--			<property name="exportEECS" column="export_eecs" type="java.lang.Boolean" not-null="true"/>-->
+        	<many-to-one name="dataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="inventory_dataset_id" not-null="true" cascade="none"/>
+    	</composite-element>
+	</array>
+	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+  	<property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="deleteResults" column="delete_results" type="boolean" not-null="false"/>
+	<property name="exportOutput" column="export_output" type="java.lang.Boolean" not-null="true"/>
+	<property name="straightEecsMatch" column="straight_eecs_match" type="java.lang.Boolean" not-null="true"/>
+
+  </class> 
+</hibernate-mapping>  

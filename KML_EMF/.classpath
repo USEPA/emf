@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/ucar_ma2-2.2.18.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-jdk14.jar"/>
+	<classpathentry kind="lib" path="lib/grib-5.1.01.jar"/>
+	<classpathentry kind="lib" path="lib/bufr-1.1.00.jar"/>
+	<classpathentry kind="lib" path="lib/netcdf.jar"/>
+	<classpathentry kind="lib" path="lib/gt2-brewer-2.3.0.jar"/>
+	<classpathentry kind="output" path="build/sandbox"/>
+</classpath>

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob" table="cases_casejobs" schema="cases"> 
+ 	    <id name="id" type="integer" column="id">
+	         <generator class="identity"/>
+ 	    </id>
+ 	    
+ 	    <property name="name" column="name" type="java.lang.String" not-null="true"/>
+    	<property name="caseId" column="case_id" type="integer" not-null="true"/>
+    	<property name="parentCaseId" column="parent_case_id" type="integer" not-null="false"/>
+    	<property name="purpose" column="purpose" type="java.lang.String" not-null="false"/>
+    	<property name="jobNo" column ="job_num" type="float" not-null="false"/>
+		<property name="args" column="arguments" type="java.lang.String" not-null="false"/>
+		<property name="order" column="exec_order" type="integer" not-null="false"/>
+		<property name="version" column="version" type="integer" not-null="false"/>
+		<property name="runStartDate" column="start_date" type="java.util.Date" not-null="false"/>
+		<property name="runCompletionDate" column="complete_date" type="java.util.Date" not-null="false"/>
+		<property name="runNotes" column="run_notes" type="java.lang.String" not-null="false"/>
+		<property name="runLog" column="run_log" type="java.lang.String" not-null="false"/>
+		<property name="queOptions" column="que_option" type="java.lang.String" not-null="false"/>
+		<property name="path" column="path" type="java.lang.String" not-null="false"/>
+		<property name="idInQueue" column="q_id" type="java.lang.String" not-null="false"/>
+		<property name="local" column="local" type="boolean" not-null="false"/>
+		<property name="jobGroup" column="job_group" type="java.lang.String" not-null="false"/>
+		
+		<many-to-one
+         	name="sector" 
+        	class="gov.epa.emissions.commons.data.Sector"
+        	column="sector_id"/> 
+        	
+        <many-to-one
+         	name="region" 
+        	class="gov.epa.emissions.framework.services.data.GeoRegion"
+        	column="region_id"/> 
+
+		<many-to-one
+         	name="executable" 
+        	class="gov.epa.emissions.framework.services.casemanagement.jobs.Executable"
+        	column="exe_id"
+        	insert="true"/>   
+
+		<many-to-one
+         	name="runstatus" 
+        	class="gov.epa.emissions.framework.services.casemanagement.jobs.JobRunStatus"
+        	column="runstatus_id"/> 
+
+		<many-to-one
+         	name="host" 
+        	class="gov.epa.emissions.framework.services.casemanagement.jobs.Host"
+        	column="host_id"
+        	insert="true"/>  
+
+		<many-to-one
+         	name="user" 
+        	class="gov.epa.emissions.commons.security.User"
+        	column="user_id"/> 
+
+		<many-to-one
+         	name="runJobUser" 
+        	class="gov.epa.emissions.commons.security.User"
+        	column="running_user_id"/> 
+        	
+  		<array name="dependentJobs" table="cases.job_dependencies" cascade="save-update">
+    		<key column="job_id"/>
+    		<list-index column="list_index"/>
+    		<composite-element class="gov.epa.emissions.framework.services.casemanagement.jobs.DependentJob">
+				<property name="jobId" column="depend_job_id" type="integer" not-null="false"/>
+    		</composite-element>
+  		</array>
+		
+  </class> 
+</hibernate-mapping>   

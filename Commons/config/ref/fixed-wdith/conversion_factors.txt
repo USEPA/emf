@@ -1,0 +1,18 @@
+GR        GRAINS                     0.00006479891
+TON       TONS                         907.0294785
+E2TON     100 TONS                     90702.94785
+E3TON     1000 TONS                    907029.4785
+E6TON     MILLION TONS                 907029478.5
+LB        POUNDS                        0.45351474
+E2LB      100 POUNDS                     45.351474
+E3LB      1000 POUNDS                    453.51474
+E6LB      MILLION POUNDS                 453514.74
+NG        NANOGRAMS                 0.000000000001
+UG        MICROGRAMS                   0.000000001
+MILLIGRM  MILLIGRAMS                      0.000001
+G         GRAMS                              0.001
+KG        KILOGRAMS                            1.0
+E2KG      100 KILOGRAMS                      100.0
+MEGAGRAM  MEGAGRAMS                         1000.0
+TONNE     METRIC TONS                       1000.0
+KTONNE    1000 METRIC TONS               1000000.0

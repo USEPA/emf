@@ -1,0 +1,42 @@
+SHAPEFILE NAME,DIRECTORY,ELLIPSOID,PROJECTION,DESCRIPTION,DATA SOURCE,QUESTION
+cnty_tn_lcc,D:\MIMS\mimssp_7_2005\data\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",TN county boundaries, from UNC CEP machine,
+us_counties,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",US county boundary GIS data from Census 2000,US Census Bureau,
+tn_counties,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",US county boundary GIS data cliped from EPA data,
+county_bndy,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",US county boundary GIS data from EPA,
+pophu2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Population and housing units from Census 2000,US Census Bureau,
+vi_pophu2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Population and housing units from Census 2000 for Virginia Islands,,Right Projection?
+us_ph,D:\MIMS\emiss_shp2003\us\,,,The change in housing between 1990 and 2000,US Census Bureau,No Data
+us_heat,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Number of housing units in primary heating categories for each census block,US Census Bureau,1990 or 2000 census tracts?
+usrds_2000,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",primary and secondary roads for urban and rural areas,US Census Bureau - TIGER,Right Projection?
+vi_rds2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",primary and secondary roads for urban and rural areas for Virgin Islands,,Right Projection?
+us_rail2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Class 1-3 and unknown classified railroads,Bureau of Transportation Statistics - National Transportation Atlas Data & Census 2000 TIGER data,Right Projection?
+us_lowres,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Area of NLCD Low Intensity Residential Land,NLCD,Right Projection?
+us_ag2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97","Agricultural lands--Pasture/Hay,  Grains, Row Crops, Fallow Land and Orchards/Vineyards NLCD areas",NLCD,Right Projection?
+us_for2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",NLCD forest areas,NLCD,Right Projection?
+mines_nlcd,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Strip Mines/Quarries from NLCD,NLCD,Right Projection?
+us_lw2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",NLCD land and water areas,NLCD,Right Projection?
+rural_land,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Rural Land -- Land Area that is not within an area designated as an Urbanized Area or an Urban Cluster. ,US Census Bureau and NLCD,Right Projection?
+us_lu2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Building square footage for FEMA categories in 1990-based census tracts,FEMA,Right Projection?
+us_golf,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Point locations of golf courses-very incomplete data,FEMA,Right Projection?
+us_gas_sta,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Number of gas stations in 2000 census blocks,Spatial Insights - Business Counts Database,Right Projection?
+us_oil,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Point locations of oil refineries and tank farms,FEMA,Right Projection?
+airport_point,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Point locations of airports,variety of sources:  see Airport Points Documentation tab in this workbook,
+airport_area,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Areas for commercial airports plus runways,ESRI CD,
+military_air,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Point locations of military airports,BTS,Right Projection?
+ports2004,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Point locations of marine ports,"Bureau of Tranportation Statistics, USACE (US Army Corps of Engineers)",Right Projection?
+us_nav_h20,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Miles of waterways - navigable inland and intracoastal waterways,Bureau of Transportation Statistics - US Army Corps or Engineers,Right Projection?
+nav_water_activity,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Miles and activity for each river segment--navigable island and intracoastal waterways.,Bureau of Transportation Statistics - US Army Corps or Engineers,How to use LENGTH and CTY_ACTIV?
+mines_usgs,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Point locations of mineral operations and mines.,Minerals Information team of USGS,Right Projection?
+us_wwtp,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Point locations of wastewater treatment facilities (over 1200),FEMA,Right Projection?
+us_dryclean,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Number of dry cleaners in zipcode areas,US Census Bureau,Right Projection?
+us_timb,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Possible Timber Removal Locations,FIA - Forest Inventory Analysis - USFS,Right Projection?
+can_socio_econ,D:\MIMS\emiss_shp2003\canada\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Grided socio-economic data and total labor force 15 years and over by industry source,Extracted from 1996 Census of Population,
+can_rds,D:\MIMS\emiss_shp2003\canada\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Length of roads in km in grid cell,Provided by Environment Canada,
+mexmunic_new,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico polpulation data in counites,,
+mexico_air_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Airport locations for Mexico
+mexico_ports_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Ports locations for Mexico
+mexico_region,D:\SPAT\data\shapefiles\Mexico\mexico_region.shp,SPHERE,LATLON,Mexico State population
+mexico_rivers_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico rivers
+mexico_roads_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico roads
+mexico_rr_fips,D:\SPAT\data\shapefiles\Mexico,SPHERE,LATLON,Mexico railroads
+mex_hh,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico State population and housing units

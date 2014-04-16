@@ -1,0 +1,783 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+
+
+
+
+<head>
+
+<title>Analysis_Engine_Command_Line_Approach</title>
+
+
+
+ <meta HTTP-EQUIV=Content-Type CONTENT="text/html; charset=windows-1252">
+<meta name=date content="11 9, 2001 2:26:37 PM">
+<meta name=generator-major-version content=0.1>
+<meta name=generator-minor-version content=1>
+<meta name=filetype content=kadov>
+<meta name=filetype-version content=1>
+<meta name=page-count content=1>
+<meta name=layout-height content=1386>
+<meta name=layout-width content=1120>
+
+
+
+
+ <link rel="StyleSheet" href="../MIMS_Style.css">
+
+
+
+ <META NAME="generator" CONTENT="RoboHelp by eHelp Corporation www.ehelp.com">
+</head>
+
+
+
+
+<body>
+
+<p style="font-size: large;
+			font-family: Arial;
+			margin-bottom: 0pt;
+			font-weight: bold;"><img src="../images/limeheader.jpg" x-save-file="TRUE" x-save-method="compute-relative" style="border: none;
+											float: none;
+											width: 210px;
+											height: 34px;
+											border-style: none;
+											border-style: none;" width="210" height="34" border="0"></p>
+
+<h3 style="margin-top: 0pt;
+			margin-bottom: 0pt;
+			font-size: 14pt;"><span style="font-family: Arial;">Command 
+ Line Approach</span></h3>
+
+&nbsp;<img src="../images/horiz_lime_med.jpg" x-save-file="TRUE" x-save-method="compute-relative" x-maintain-ratio="TRUE" style="height: 3px;
+			width: 515px;
+			float: none;
+			border-style: none;
+			border-style: none;" height="3" width="515" border="0"> 
+
+<p style="font-family: Arial, sans-serif;">This manual focuses on the operation 
+ of the <span style="font-family: Arial;">Analysis Engine</span> through 
+ windows and dialog boxes. &nbsp;However, 
+ many of the plotting functions may also be carried out by line commands. 
+ &nbsp;Line commands 
+ are useful for repetitive production of plots and are most often used 
+ when another program (e.g., the MIMS Framework) produces the plots as 
+ part of a series of actions.</p>
+
+<p style="font-family: Arial, sans-serif;">To produce and save plots automatically, 
+ a template must first be <a href="Analysis_Engine_save_and_load_configuration.htm">saved 
+ to define the configuration</a>. &nbsp;This 
+ configuration file should be established through the user interface system. 
+ &nbsp;The configuration 
+ specifications include formatting, filtering, sorting, and plotting parameters. 
+ &nbsp;The configuration 
+ file path and name will then be included in the command line arguments.</p>
+
+<p style="font-family: Arial, sans-serif;">The command line should then 
+ appear as follows:</p>
+
+<p style="font-family: 'Courier New', monospace;">java -classpath <span 
+ style="font-style: italic;"><I>&lt;classpath&gt;</I></span> gov.epa.mims.analysisengine.table.TableApp 
+ &lt;<span style="font-style: italic;"><I>required arguments&gt; &lt;optional 
+ arguments&gt;</I></span></p>
+
+<p style="font-family: Arial, sans-serif;">The &lt;classpath&gt; argument 
+ specifies the directories and compressed files (e.g., *.jar files) that 
+ contain all of the class files needed for the application. &nbsp;To 
+ run the <span style="font-family: Arial;">Analysis Engine</span>, the 
+ &lt;classpath&gt; argument likely needs to appear as:</p>
+
+<p style="font-family: 'Courier New', monospace;">c:\mims\lib\mims.jar;c:\mims\lib\analysisengine_6_8.jar;c:\mims\lib\java_cup.jar;c:\mims\lib\colt.jar;c:\mims\</p>
+
+<p style="font-family: Arial, sans-serif;
+			color: #000000;
+			font-style: normal;">if c:\mims is the directory where the 
+ MIMS Framework and <span style="font-family: Arial;">Analysis Engine</span> 
+ are installed.</p>
+
+<p style="font-family: Arial, sans-serif;
+			color: #000000;
+			font-style: normal;">Descriptions of the required arguments 
+ are included below:</p>
+
+
+<div Align="left">
+<table x-use-null-cells style="width: 100%;
+				float: alignleft;
+				border-left-style: Outset;
+				border-left-width: 1px;
+				border-top-style: Outset;
+				border-top-width: 1px;
+				border-right-style: Outset;
+				border-right-width: 1px;
+				border-bottom-style: Outset;
+				border-bottom-width: 1px;
+				border-left-color: #c0c0c0;
+				border-right-color: #c0c0c0;
+				border-top-color: #c0c0c0;
+				border-bottom-color: #c0c0c0;" width="100%" BORDER="1">
+<col style="width: 37.743%;">
+<col style="width: 62.257%;">
+
+<tr>
+<td style="width: 37.743%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.743%>
+<p style="text-align: center; font-weight: bold;" Align="center">Syntax</td>
+<td style="width: 62.257%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.257%>
+<p style="text-align: center; font-weight: bold;" Align="center">Explanation</td></tr>
+
+<tr>
+<td style="width: 37.743%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.743%>
+<p>-fileNames &lt;name&gt;</td>
+<td style="width: 62.257%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.257%>
+<p>&lt;name&gt; represents the input data file with information to be plotted. 
+ &nbsp;At least 
+ one file name must be specified.</td></tr>
+
+<tr>
+<td style="width: 37.743%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.743%>
+<p>-fileType &lt;type&gt;</td>
+<td style="width: 62.257%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.257%>
+<p>Description of the input data file format. &nbsp;Valid 
+ types are Comma Separated File, Tab Delimited File, SMOKE Report File, 
+ TRIM.FaTE Sensitivity File, TRIM.FaTE Monte Carlo Inputs, COSU File, Fixed 
+ Column Width Format, Attribute-Relation File Format, DAVE Output File</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="width: 37.743%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.743%>
+<p>-delimiter &lt;delimiter&gt;</td>
+<td colspan=1
+	rowspan=1
+	style="width: 62.257%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.257%>
+<p style="font-style: normal; color: #000000;">&lt;delimiter&gt; represents 
+ a single character, such as a comma, tab, or | (pipe). &nbsp;This 
+ syntax is required only for DAVE Output file types and is optional for 
+ SMOKE Report File types</td></tr>
+
+<tr>
+<td style="width: 37.743%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.743%>
+<p>-hRows &lt;noOfRows&gt;</td>
+<td style="width: 62.257%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.257%>
+<p>NoOfRows represents the number of header rows in the input data file; 
+ required only if file type is set to Comma Separated File or Tab Delimited 
+ File</td></tr>
+</table>
+</div>
+<p style="font-family: Arial, sans-serif;
+			color: #000000;
+			font-style: normal;">Descriptions of the optional arguments 
+ are included below:</p>
+
+
+<div Align="left">
+<table x-use-null-cells style="width: 100%;
+				float: alignleft;
+				border-left-style: Outset;
+				border-left-width: 1px;
+				border-top-style: Outset;
+				border-top-width: 1px;
+				border-right-style: Outset;
+				border-right-width: 1px;
+				border-bottom-style: Outset;
+				border-bottom-width: 1px;
+				border-left-color: #c0c0c0;
+				border-right-color: #c0c0c0;
+				border-top-color: #c0c0c0;
+				border-bottom-color: #c0c0c0;" width="100%" BORDER="1">
+<col style="width: 37.909%;">
+<col style="width: 62.091%;">
+
+<tr>
+<td style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-weight: bold; text-align: center;" Align="center">Syntax</td>
+<td style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="text-align: center; font-weight: bold;" Align="center"><span style="font-weight: bold;"><B>Explanation</B></span></td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-style: normal; color: #000000;">-applyTableConfig &lt;true/false&gt;</td>
+<td colspan=1
+	rowspan=1
+	style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">When set to true, the plots 
+ are displayed with the filter/sort/format statements applied. &nbsp;When 
+ set to false, the entire data set is used in the plot. &nbsp;The 
+ default is true.</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-style: normal; color: #000000;">-configFile &lt;path&gt;</td>
+<td colspan=1
+	rowspan=1
+	style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">&lt;path&gt; represents 
+ the complete path and file name for the configuration file. &nbsp;The 
+ configuration file specifies the filters, sorting, and formatting that 
+ should be applied to the input data file. &nbsp;If 
+ -configFile is not specified, no configuration file is loaded and the 
+ user interface will appear to allow you to build the plots.</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-family: Arial, sans-serif;
+			font-style: normal;
+			color: #000000;">-exportFile &lt;FileName&gt;</td>
+<td colspan=1
+	rowspan=1
+	style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">&lt;FileName&gt; represents 
+ the name of the output plot image. &nbsp;The 
+ -outputDir, -exportFile, and -exportFormat specifications together specify 
+ the full directory and file name path for the output.</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-family: Arial, sans-serif;
+			font-style: normal;
+			color: #000000;">-exportFormat &lt;Format&gt;</td>
+<td colspan=1
+	rowspan=1
+	style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">&lt;Format&gt; specifies 
+ the file type that should be created for the plot image. &nbsp;Valid 
+ choices are PS, PDF, JPEG, PNG, or PTX. &nbsp;The 
+ default is PDF.</td></tr>
+
+<tr>
+<td style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-family: Arial, sans-serif;
+			font-style: normal;
+			color: #000000;">-outputDir &lt;directory&gt;</td>
+<td style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">&lt;directory&gt; represents 
+ the destination directory to which the plot images are saved. &nbsp;<span 
+ style="margin-top: 0pt; margin-bottom: 0pt;">If 
+ -outputDir &lt;directory&gt; is not specified, the user interface is displayed.</span></td></tr>
+
+<tr>
+<td style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-style: normal; color: #000000;">-showGUI &lt;true/false&gt;</td>
+<td style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">This argument with an entry 
+ of true or false determines whether or not the user interface is shown. 
+ &nbsp;The default 
+ setting is false.</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-style: normal; color: #000000;">-ShowPlots &lt;true/false&gt;</td>
+<td colspan=1
+	rowspan=1
+	style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">If showGUI is set to True, 
+ ShowPlots specifies that the plots be displayed using the Config File 
+ specified. &nbsp;If 
+ show GUI is set to False, -ShowPlots has no effect. &nbsp;The 
+ default setting for -ShowPlots is false.</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-style: normal; color: #000000;">-startPos &lt;startidx&gt;</td>
+<td colspan=1
+	rowspan=1
+	style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">&lt;startidx&gt; represents 
+ the first character of the file name that will be used to name the table 
+ during import.</td></tr>
+
+<tr>
+<td style="width: 37.909%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=37.909%>
+<p style="font-style: normal; color: #000000;">-endPos &lt;endidx&gt;</td>
+<td style="width: 62.091%;
+			border-left-width: 1px;
+			border-left-style: Inset;
+			border-left-color: #808080;
+			border-top-color: #808080;
+			border-top-style: Inset;
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-right-style: Inset;
+			border-right-color: #808080;
+			border-bottom-color: #808080;
+			border-bottom-style: Inset;
+			border-bottom-width: 1px;
+			padding-right: 10px;
+			padding-left: 10px;"
+	width=62.091%>
+<p style="font-style: normal; color: #000000;">&lt;endidx&gt; represents 
+ the first character of the file name that will be used to name the table 
+ during import.</td></tr>
+</table>
+</div>
+<p style="margin-top: 0pt;
+			margin-bottom: 0pt;
+			color: #ff0000;
+			font-style: italic;">&nbsp;</p>
+
+<p style="margin-top: 0pt;
+			margin-bottom: 0pt;
+			color: #ff0000;
+			font-style: italic;">&nbsp;</p>
+
+<p style="margin-top: 0pt;
+			margin-bottom: 0pt;
+			color: #ff0000;
+			font-style: italic;">&nbsp;</p>
+
+<p>&nbsp;</p>
+<div id='NavBar' STYLE='text-align:left;' align='left'><nobr><font size=1 color='#c0c0c0' style='font-size:9pt;' ><a href='Analysis_Engine_Basic_Display.htm'><img src='../images/bsscnav4.gif' width=27 height=19 border=no></a><a href='Analysis_Engine_import_function.htm'><img src='../images/bsscnav5.gif' width=27 height=19 border=no></a></font></nobr>
+</div>
+</body>
+
+</html>

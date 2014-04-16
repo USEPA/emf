@@ -1,0 +1,9 @@
+#TYPES=varchar(50)|varchar(128)|varchar(1)|varchar(1)|timestamp(29)|varchar(255)
+"EMIS_REL_PT_TYPE_CODE","EMIS_REL_POINT_TYPE_DESC","VALID_V20","VALID_V30","LAST MOD DATE","COMMENT"
+"01","FUGITIVE","Y","Y","",""
+"02","VERTICAL","Y","Y","",""
+"03","HORIZONTAL","Y","Y","",""
+"04","GOOSE NECK","Y","Y","",""
+"05","VERTICAL WITH RAIN CAP","Y","Y","",""
+"06","DOWNWARD-FACING VENT","Y","Y","",""
+"99","UNKNOWN",,"Y",,

@@ -1,0 +1,19 @@
+#IDA
+#TYPE       Motor Vehicle Activity Inventory
+#COUNTRY    US
+#YEAR       1999
+#DESC       NEI v2.0 VMT information - converted from database file, summed VMT values
+#DESC          for duplicate SCCs
+#DESC       North Carolina only
+#DATA       SPEED VMT
+#UNITS      "miles/hr" "10E6 miles/yr"
+37 001 0 2201001150 40.00 41.42
+37 001 0 2201001170 35.00 64.25
+37 001 0 2201001190 30.00 24.38
+37 001 0 2201001210 30.00 28.46
+37 001 0 2201001230 45.00 301.22
+37 001 0 2201001270 20.00 46.52
+37 001 0 2201001290 20.00 126.80
+37 001 0 2201001310 20.00 70.07
+37 001 0 2201001330 0.00 185.09
+37 001 0 2201020150 40.00 16.77

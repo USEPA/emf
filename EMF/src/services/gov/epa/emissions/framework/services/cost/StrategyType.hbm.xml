@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class name="gov.epa.emissions.framework.services.cost.StrategyType" table="strategy_types" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="java.lang.String" not-null="true" length="255"/>
+        <property name="description" column="description" type="java.lang.String" not-null="true"/>
+        <property name="defaultSortOrder" column="default_sortorder" type="java.lang.String" not-null="false"/>
+        <property name="strategyClassName" column="strategy_classname" type="java.lang.String" not-null="false"/>
+        
+    </class>
+</hibernate-mapping>

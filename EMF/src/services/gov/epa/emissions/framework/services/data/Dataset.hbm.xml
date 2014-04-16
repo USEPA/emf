@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping schema="emf" default-lazy="false">
+ <class name="gov.epa.emissions.framework.services.data.EmfDataset" table="datasets" schema="emf">
+  <id name="id" type="integer" column="id">
+   <generator class="identity"/>
+  </id>
+  <property name="name"					column="name"					type="java.lang.String"		not-null="true"/>
+  <property name="creator"				column="creator"				type="java.lang.String"		not-null="true"/>
+  <property name="creatorFullName"  	column="creator_full_name"		type="java.lang.String"		not-null="false"/>
+  <property name="status"				column="status"					type="java.lang.String"		not-null="false"/>
+
+  <many-to-one
+            name="datasetType" 
+            class="gov.epa.emissions.commons.data.DatasetType"
+            column="dataset_type"/> 
+
+  <many-to-one cascade="save-update"
+            name="intendedUse" 
+            class="gov.epa.emissions.commons.db.intendeduse.IntendedUse"
+            column="intended_use"/> 
+
+  <many-to-one cascade="save-update"
+            name="project" 
+            class="gov.epa.emissions.commons.data.Project"
+            column="project"/> 
+
+  <many-to-one cascade="save-update"
+            name="country" 
+            class="gov.epa.emissions.commons.data.Country"
+            column="country"/> 
+
+  <many-to-one cascade="save-update"
+            name="region" 
+            class="gov.epa.emissions.commons.data.Region"
+            column="region"/> 
+                  
+  <property name="units"				column="units"					type="java.lang.String"		not-null="false"/>
+  <property name="year"					column="year"					type="integer"				not-null="false"/>
+  <property name="defaultVersion"		column="default_version"		type="integer"			 	not-null="false"/>
+  <property name="temporalResolution"	column="temporal_resolution"	type="java.lang.String"		not-null="false"/>
+  <property name="startDateTime"		column="start_date_time"   		type="java.util.Date"		not-null="false"	length="4"/>
+  <property name="stopDateTime"			column="stop_date_time" 		type="java.util.Date"		not-null="false"	length="4"/>
+  <property name="description"			column="description"			type="java.lang.String"		not-null="false"/>
+  <property name="createdDateTime"		column="created_date_time" 		type="java.util.Date"		not-null="false"	length="4"/>
+  <property name="modifiedDateTime"		column="modified_date_time" 	type="java.util.Date"		not-null="false"	length="4"/>
+  <property name="accessedDateTime"		column="accessed_date_time" 	type="java.util.Date"		not-null="false"	length="4"/>        
+  <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+  <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+
+  <array name="sectors" table="datasets_sectors" cascade="save-update">
+    <key column="dataset_id" not-null="true"/>
+    <list-index column="list_index"/>
+    <many-to-many class="gov.epa.emissions.commons.data.Sector" column="sector_id"/>
+  </array>
+
+  <array name="internalSources" table="internal_sources" cascade="save-update">
+    <key column="dataset_id"/>
+    <list-index column="list_index"/>
+    <composite-element class="gov.epa.emissions.commons.data.InternalSource">
+		<property name="table"			column="table_name"						not-null="true"/>
+		<property name="type"			column="table_type"						not-null="true"/>
+		<property name="colsList"		column="table_columns"					not-null="false"/>
+		<property name="source"			column="datasource"						not-null="true"/>
+		<property name="sourceSize"		column="file_size" 		   	type="long" not-null="true"/>    
+    </composite-element>
+  </array>
+
+	<array name="keyVals" table="datasets_keywords" cascade="save-update">
+      <key column="dataset_id"/>
+      <list-index column="list_index"/>
+      <composite-element class="gov.epa.emissions.commons.data.KeyVal">
+	    <property name="value" column="value" not-null="true"/>	
+	    <property name="kwname" column="kwname" not-null="true"/>	
+	    <many-to-one  name="keyword" column="keyword_id" 
+	     class="gov.epa.emissions.commons.data.Keyword" cascade="save-update"/>
+      </composite-element>
+ 	</array>
+
+</class>
+</hibernate-mapping>

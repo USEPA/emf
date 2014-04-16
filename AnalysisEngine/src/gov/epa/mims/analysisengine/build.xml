@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================
+
+Build File for Analysis Engine
+Notes:
+   This is a build file for use with the Jakarta Ant java build tool.
+
+Build Instructions:   
+
+   To build, run
+
+         build.bat      (on Windows)
+
+    or
+
+         build.sh       (on Unix)
+
+   on the directory where this file is located.
+
+$Id: build.xml,v 1.2 2005/09/19 14:50:15 rhavaldar Exp $
+
+==================================================================== -->
+
+<project name="analysisengine" default="all">
+
+  <property name="name" value="AnalysisEngine"/>
+  <property name="Name" value="AnalysisEngine"/>   
+  <property name="version" value="0.1"/>
+  <property name="year" value="2004"/>
+
+  <!-- =================================================================== -->
+  <!-- Initializes the build process                                       -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <property name="root.dir" value="${basedir}/."/>
+    <property name="jar.dir" value="${root.dir}/lib"/>
+    <property name="src.dir" value="${root.dir}/src"/>
+    <property name="bin.dir" value="${root.dir}/bin"/>
+    <property name="build.dir" value="${root.dir}/classes"/>
+    <property name="docs.dir" value="${root.dir}/docs"/>
+    <property name="javadoc.dir" value="${root.dir}/docs/api"/>
+    <property name="samples.dir" value="${root.dir}/samples"/>
+    <property name="dist.dir" value="${name}-${version}"/>
+    <property name="build.compiler" value="modern"/>
+    <property name="build.compiler.emacs" value="off"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles all the sources                                     -->
+  <!-- =================================================================== -->
+  <target name="analysisengine" depends="init">
+    <javac srcdir="${src.dir}"
+           destdir="${build.dir}"
+           classpath="${classpath}"
+           optimize="on"
+           debug="off"
+           includes="gov/epa/mims/analysisengine/*.java gov/epa/mims/analysisengine/stats/*.java gov/epa/mims/analysisengine/table/*.java gov/epa/mims/analysisengine/gui/*.java gov/epa/mims/analysisengine/table/test/*.java gov/epa/mims/analysisengine/tree/test/*.java gov/epa/mims/analysisengine/rcommunicator/test/*.java"
+    />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the class package                                           -->
+  <!-- =================================================================== -->
+  <target name="analysisengine-jar" depends="analysisengine">
+  <copy todir="${build.dir}">
+	<fileset dir="${src.dir}">
+        <include name="**/*.jpeg"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.gif"/>
+	<include name="**/*.db"/>
+	<include name="**/*.env"/>
+	<include name="**/*.dat"/>
+	<include name="**/*.html"/>
+        <include name="**/*.htm"/>
+    </fileset>
+  </copy> 
+   <jar jarfile="${jar.dir}/${name}.jar"
+         basedir="${build.dir}"
+         includes="gov/epa/mims/analysisengine/*.class gov/epa/mims/analysisengine/exec/*.class gov/epa/mims/analysisengine/table/icons/*.* gov/epa/mims/analysisengine/rcommunicator/*.* gov/epa/mims/analysisengine/tree/*.class gov/epa/mims/analysisengine/stats/*.class gov/epa/mims/analysisengine/table/*.class gov/epa/mims/analysisengine/gui/*.class gov/epa/mims/analysisengine/gui/icons/lineStyles/*.* gov/epa/mims/analysisengine/gui/icons/symbols/*.*"
+    />
+  </target>
+
+  <target name="analysisengine-test-jar" depends="analysisengine">
+    <copy todir="${build.dir}">
+        <fileset dir="${src.dir}">
+        <include name="**/*.dat"/>
+    </fileset>
+  </copy>
+    <jar jarfile="${jar.dir}/${name}_test.jar"
+         basedir="${build.dir}"
+         includes="gov/epa/mims/analysisengine/rcommunicator/test/*.class gov/epa/mims/analysisengine/rcommunicator/test/*.dat gov/epa/mims/analysisengine/tree/test/*.class"
+    />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the source package                                          -->
+  <!-- =================================================================== -->
+  <target name="src-jar">
+    <jar jarfile="${jarname}-src-${version}.jar"
+         basedir="${root.dir}"
+         excludes="${jarname}-src-${version}.jar,classes/**,**/CVS/**, **/.#*,
+                   **/wipeout.*, **/Makefile.*, lib/xerces.jar, lib/ant.jar"
+    />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles all the necessary sources                                  -->
+  <!-- =================================================================== -->
+  <target name="all" depends="clean, analysisengine, analysisengine-jar, analysisengine-test-jar">
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Generates the API documentation                                     -->
+  <!-- =================================================================== -->
+  <target name="javadocs">
+    <mkdir dir="${javadoc.dir}"/>
+    <javadoc packagenames="${package}"
+             sourcepath="${src.dir}"
+             destdir="${javadoc.dir}"
+             classpath="${classpath}"
+             public="true"
+             author="true"
+             version="true"
+             splitindex="true"
+             header="${Name} API"
+             windowtitle="${Name} API"
+             doctitle="${Name} API Specification"
+    />  
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Display all the available targets                                   -->
+  <!-- =================================================================== -->
+  <target name="targets">
+    <echo message=""/>
+    <echo message="ANT build for ${Name} ${version}"/>
+    <echo message=""/>
+    <echo message="The following targets are available:"/>
+    <echo message="  targets    Lists the build targets."/>
+    <echo message="  clean      Cleans the build and distribution directories."/>
+    <echo message="  javadocs   Generates the API documentation (Java 1.4 only)."/>
+    <echo message="  all        Cleans and builds all the packages and examples."/>
+    <echo message="  analysisengine      Builds the analysis engine source."/>
+    <echo message="  bin-jar    Builds the binary JAR in the dist directory."/>
+    <echo message=""/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Cleans everything                                                   -->
+  <!-- =================================================================== -->
+  <target name="clean">
+    <delete dir="classes/org/mcnc/anr/yalta/analysisengine"/>
+  </target>
+
+</project>

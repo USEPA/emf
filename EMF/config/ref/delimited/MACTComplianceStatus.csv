@@ -1,0 +1,9 @@
+#TYPES=varchar(50)|varchar(255)|varchar(1)|varchar(1)|timestamp(29)|varchar(255)
+"MACT_COMPLI_STATUS_CODE","MACT_COMPLI_STATUS_DESC","VALID_V20","VALID_V30","LAST MOD DATE","COMMENT"
+"01","Major Source (>10/25 tpy), Compliance date has not yet occurred.","Y","Y","",""
+"02","Major Source (>10/25 tpy), Compliance date has occurred.","Y","Y","",""
+"03","Area Source (<10/25tpy) category listed in, and subject to, Section 112 &129 stnds.","Y","Y","",""
+"04","Area Source (<10/25tpy) category listed in, but not subject to, Section 112 &129 stnds as a synthetic minor.","Y","Y","",""
+"05","Area Source (<10/25tpy) category listed in, but not subject to, Section 112 &129 stnds as true area or natural minor source.","Y","Y","",""
+"06","Rule only affects major sources; area may be flagged","Y","Y",,
+"07","Rule only covers certain HAPs; all HAPs flagged","Y","Y",,

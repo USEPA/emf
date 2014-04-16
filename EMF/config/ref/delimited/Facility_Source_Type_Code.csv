@@ -1,0 +1,50 @@
+#TYPES=int4(10)|varchar(50)|varchar(255)
+"Code","Description","notes"
+100,"Airport","Incl facilities with aircraft, helicopter, or seaplane engine emissions.  Does NOT incl co-located facilites that support LTO engine emissions, such as terminals and maint hangers."
+101,"Marine Port",
+102,"Military Base",
+103,"Municipal Waste Combustor","Incl those that generate electricity"
+104,"Landfill",
+105,"Wastewater Treatment Facility",
+106,"Oil or Gas Field (On-shore)",
+107,"Tank Battery",
+108,"Gas Plant",
+109,"Off-shore Oil or Gas Platform",
+110,"Pipeline Compressor Station","Incl NG Transmission; does Not incl gas field gathering or processing facilities or gas plants"
+112,"Mines/Quarries","Other than sand and gravel"
+113,"Gravel or Sand Plant","Incl portable facilities"
+114,"Gasoline/Diesel Service Station",
+115,"Dry Cleaner - Petroleum Solvent/laundries",
+116,"Dry Cleaners - Perchloroethylene",
+117,"Auto Body Shops & Painters",
+118,"Animal Feedlots",
+119,"Crematories - Human",
+120,"Crematories - Animal",
+121,"Hot Mix Asphalt Plant","Incl portable facilities"
+123,"Concrete Batch Plant",
+124,"Portland Cement Manufacturing","Incl facilities with a kiln, some of which burn Haz Waste as part of their fuel"
+125,"Electricity Generation via Combustion","Incl facilities that are primarily fossil fuels, wood, biomass, LFG, POTW digester gas.  Does NOT incl MWCs, nuclear, wind, solar"
+126,"Petroleum Refinery",
+127,"Ethanol Biorefineries",
+128,"Soy Biofuel Plant",
+129,"Chemical Manufacturing",
+130,"Pharmaceutical Manufacturing",
+131,"Bulk Terminals/Bulk Plants",
+132,"Brick Manufacturing & Structural Clay",
+133,"Pulp and Paper Plant",
+134,"Plywood, Particleboard, OSB, etc",
+135,"Lumber/sawmills",
+136,"Woodwork, Furniture, Millwork",
+137,"Automobile/Truck Manufacturing",
+138,"Steel Mill",
+139,"Iron and Steel Foundries",
+140,"Primary Metal Production",
+141,"Secondary Metal Processing",
+142,"Breweries/Distilleries/Wineries",
+143,"Bakeries",
+144,"Printing/Publishing",
+145,"Textile Mill",
+146,"Grain Handling Facility",
+147,"Food Processing Facility",
+148,"Institutional - schools, hospitals, prisons",
+149,"Coke Battery",

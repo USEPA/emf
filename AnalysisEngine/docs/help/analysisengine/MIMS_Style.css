@@ -1,0 +1,16 @@
+h3 { font-size:14pt; font-family:arial, sans-serif; margin-top:0pt; margin-bottom:0pt;  }
+li.kadov-h3 { font-size:14pt; font-family:arial, sans-serif;  }
+p.tableheading { font-weight:bold; font-style:normal; font-family:arial, sans-serif; text-align:center; margin-top:0pt; margin-bottom:0pt;  }
+li.kadov-p-ctableheading { font-weight:bold; font-style:normal; font-family:arial, sans-serif; text-align:center;  }
+p.tableentry { font-family:arial, sans-serif; margin-top:0pt; margin-bottom:0pt; font-size:10pt;  }
+li.kadov-p-ctableentry { font-family:arial, sans-serif; font-size:10pt;  }
+p.bulletedlists { list-style:disc; font-family:arial, sans-serif; margin-top:2pt; margin-bottom:2pt;  }
+li.kadov-p-cbulletedlists { list-style:disc; font-family:arial, sans-serif;  }
+p.indexentry { font-family:arial, sans-serif; margin-top:0pt; margin-bottom:0pt; font-size:10pt;  }
+li.kadov-p-cindexentry { font-family:arial, sans-serif; font-size:10pt;  }
+span.expandtext { font-size:10pt; color:#800000; font-family:arial, sans-serif;  }
+p.index1 { font-size:10pt; font-family:arial, sans-serif; margin-top:0pt; margin-bottom:0pt;  }
+li.kadov-p-cindex1 { font-size:10pt; font-family:arial, sans-serif;  }
+body { font-family:arial, sans-serif;  }
+p.header { margin-top:0pt; margin-bottom:0pt; x-next-class:header; x-next-type:p;  }
+li.kadov-p-cheader {  }

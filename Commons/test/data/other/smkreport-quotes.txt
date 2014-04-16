@@ -1,0 +1,18 @@
+Stationary area
+Processed as Area sources
+Base inventory year      2002
+No gridding matrix applied
+No speciation matrix applied
+Temporal factors applied for episode from
+     Monday July 8, 2002   at 000000 to
+     Tuesday July 9, 2002   at 000000
+Annual total data basis in report
+Date       | Hour| SCC       | SCC Description                                                                                                                                                  | CO           | NOX          | VOC          | NH3          | SO2          | PM10         | PM2_5        | PMC
+           |     |           |                                                                                                                                                                  | [tons/hr]    | [tons/hr]    | [tons/hr]    | [tons/hr]    | [tons/hr]    | [tons/hr]    | [tons/hr]    | [tons/hr]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 07/08/2002|    02|2301040000| "Industrial Processes Chemical Manufacturing: SIC 28 Fugitive Emissions from Synthetic Organic Chem Manuf (NAPAP cat. 102) Total                                "|    0.00000E+00|   0.00000E+00|   0.29878E+01|   0.00000E+00|   0.00000E+00|   0.00000E+00|   0.00000E+00|   0.00000E+00
+ 07/08/2002|    02|2302000000| "Industrial Processes Food and Kindred Products: SIC 20 All Processes Total                                                                                     "|    0.13806E+00|   0.56879E+00|   0.30664E+00|   0.16379E-01|   0.11929E+00|   0.47551E+00|   0.21279E+00|   0.26273E+00
+ 07/08/2002|    02|2302002000| "Industrial Processes Food and Kindred Products: SIC 20 Commercial Charbroiling Total                                                                           "|    0.00000E+00|   0.00000E+00|   0.45644E+00|   0.00000E+00|   0.00000E+00|   0.33177E+01|   0.31802E+01|   0.13753E+00
+ 07/08/2002|    02|2302003000| "Description unavailable                                                                                                                                        "|    0.00000E+00|   0.00000E+00|   0.27113E-02|   0.00000E+00|   0.00000E+00|   0.63472E-01|   0.32899E-01|   0.30573E-01
+
+#########################################################################################################################################################################################################################################################################################################################

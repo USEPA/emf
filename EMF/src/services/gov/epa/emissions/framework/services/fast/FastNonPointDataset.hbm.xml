@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.fast.FastNonPointDataset" table="fast_nonpoint_datasets" schema="fast"> 
+    <id name="id" column="quasi_point_dataset_id">
+        <generator class="foreign">
+            <param name="property">fastDataset</param>
+        </generator>
+    </id>
+    <one-to-one name="fastDataset" constrained="true"/>
+
+<!-- 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>-->
+	
+	<many-to-one
+            name="griddedSMKDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="gridded_smk_dataset_id" not-null="true"/> 
+	<property name="griddedSMKDatasetVersion" column="gridded_smk_dataset_version" type="integer" not-null="true"  />
+	<many-to-one
+            name="baseNonPointDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="base_nonpoint_dataset_id" not-null="true"/> 
+	<property name="baseNonPointDatasetVersion" column="base_nonpoint_dataset_version" type="integer" not-null="true"  />
+	<many-to-one
+            name="invTableDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="invtable_dataset_id" not-null="true"/> 
+	<property name="invTableDatasetVersion" column="invtable_dataset_version" type="integer" not-null="true"  />
+	<many-to-one
+            name="grid" 
+            class="gov.epa.emissions.framework.services.fast.Grid"
+            column="grid_id"/> 
+<!--	<many-to-one
+            name="quasiPointDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="quasi_point_dataset_id"/>-->
+
+             
+  </class> 
+</hibernate-mapping>  

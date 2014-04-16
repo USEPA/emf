@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+	<class name="gov.epa.emissions.framework.services.data.QAStepResult" table="qa_step_results" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
+        <property name="version" column="version" type="integer" not-null="true"/>
+        <property name="qaStepId" column="qa_step_id" type="integer" not-null="true"/>
+        <property name="table" column="output_table" type="java.lang.String" not-null="false"/>
+        <property name="tableCreationStatus" column="table_creation_status" type="java.lang.String" not-null="false"/> 
+        <property name="tableCreationDate" column="table_creation_date" type="java.util.Date" not-null="false"/> 
+    </class>
+</hibernate-mapping>  
+

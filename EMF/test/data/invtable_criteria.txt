@@ -1,0 +1,7 @@
+#Name       CAS              SaroaR K FactorV M E A  NTI Units            Inventory data description               CAS description
+CO                           42101   Y     1 N     N   0 tons/yr          Carbon Monoxide                          n/a
+NOX                          42603   Y     1 N     N   0 tons/yr          Nitrogen oxides                          n/a
+VOC                          43104   Y     1 N     N   0 tons/yr          Volatile organic compounds               n/a
+NH3                          42500   Y     1 N     N   0 tons/yr          Ammonia                                  n/a
+SO2                          42401   Y     1 N     N   0 tons/yr          Sulfur Dioxide                           n/a
+PM10                         81102   Y     1 N     N   0 tons/yr          Particulate matter, 10 microns and less  n/a

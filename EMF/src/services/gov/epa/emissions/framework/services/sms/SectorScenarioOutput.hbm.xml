@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.sms.SectorScenarioOutput" table="sector_scenario_output" schema="sms"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="sectorScenarioId" column="sector_scenario_id" type="integer" not-null="true" />
+	<many-to-one name="type"
+		 class ="gov.epa.emissions.framework.services.sms.SectorScenarioOutputType"
+		 column="sector_scenario_output_type_id" unique="true" not-null="true"/>
+	<many-to-one name="outputDataset"
+		 class ="gov.epa.emissions.framework.services.data.EmfDataset"
+		 column="output_dataset_id" unique="true" not-null="false"/>
+	<many-to-one
+            name="inventoryDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="inventory_dataset_id" not-null="false"/> 
+	<property name="inventoryDatasetVersion" column="inventory_dataset_version" type="integer" not-null="false"  />
+	<property name="startDate" column="start_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="completionDate" column="completion_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="runStatus" column="run_status"	type="java.lang.String"	/>
+	
+  </class> 
+</hibernate-mapping>  

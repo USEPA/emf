@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.cost.ControlStrategy" table="control_strategies" schema="emf"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="name" column="name"	type="java.lang.String"	not-null="true"/>
+	<property name="description" column="description" type="java.lang.String"/>
+	<property name="runStatus" column="run_status"	type="java.lang.String"/>
+	<property name="discountRate" column="discount_rate" type="double"/>
+	<property name="totalCost" column="total_cost" type="double"/>
+	<property name="totalReduction" column="reduction" type="double"/>
+	<property name="costYear" column="cost_year" type="integer" not-null="false"/>
+	<property name="inventoryYear" column="analysis_year" type="integer" not-null="false"/>
+	<property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="startDate" column="start_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="completionDate" column="completion_date" type="java.util.Date" not-null="false" length="4"/>
+<!--	<property name="datasetVersion" column="dataset_version" type="integer" not-null="true"/>-->
+	<property name="filter" column="filter" type="string" not-null="false"/>
+	
+	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+  	<property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+<!--	<property name="countyFile" column="county_file" type="java.lang.String" not-null="false"/>-->
+	<property name="useCostEquations" column="use_cost_equations" type="boolean" not-null="false"/>
+
+    <property name="countyDatasetVersion" column="county_dataset_version" type="integer"/>
+	<property name="exportDirectory" column="export_directory" type="java.lang.String" not-null="false"/>
+	<property name="copiedFrom" column="copied_from" type="java.lang.String" not-null="false"/>
+	<property name="deleteResults" column="delete_results" type="boolean" not-null="false"/>
+	<property name="mergeInventories" column="merge_inventories" type="boolean" not-null="false"/>
+	<property name="includeUnspecifiedCosts" column="include_unspecified_costs" type="boolean" not-null="false"/>
+
+	<property name="isFinal" column="is_final" type="boolean" not-null="false"/>
+	
+	<property name="applyCAPMeasuresOnHAPPollutants" column="apply_cap_measures_on_hap_pollutants" type="boolean" not-null="false"/>
+
+
+	<many-to-one name="countyDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="county_dataset_id"/>
+
+	<one-to-one 
+		name="constraint" 
+		class="gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyConstraint" cascade="save-update"/>
+
+	<many-to-one cascade="save-update"
+            name="region" 
+            class="gov.epa.emissions.commons.data.Region"
+            column="region_id"/> 
+
+	<many-to-one
+            name="targetPollutant" 
+            class="gov.epa.emissions.commons.data.Pollutant"
+            column="pollutant_id"/> 
+            
+	<many-to-one cascade="save-update"
+            name="project" 
+            class="gov.epa.emissions.commons.data.Project"
+            column="project_id"/> 
+
+	<many-to-one
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator_id"/> 
+            
+<!--	<many-to-one cascade="none"
+            name="datasetType" 
+            class="gov.epa.emissions.commons.data.DatasetType"
+            column="dataset_type_id"/> -->
+
+	<many-to-one
+            name="strategyType" 
+            class="gov.epa.emissions.framework.services.cost.StrategyType"
+            column="strategy_type_id"/> 
+            
+<!--   	<array name="inputDatasets" table="input_datasets_control_strategies" cascade="none">
+    	<key column="control_strategy_id" not-null="true"/>
+	    <list-index column="list_index"/>
+    	<many-to-many class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id"/>
+
+			<property name="version" column="dataset_version" type="integer" not-null="true"/>
+
+    	<composite-element class="gov.epa.emissions.framework.services.data.EmfDataset">
+			<property name="version" column="dataset_version" type="integer" not-null="true"/>
+        	<many-to-one name="controlMeasure" class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id" not-null="true" cascade="save-update"/>
+    	</composite-element>
+	</array>-->
+
+	<array name="controlStrategyInputDatasets" table="input_datasets_control_strategies">
+    	<key column="control_strategy_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<composite-element class="gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset">
+			<property name="version" column="dataset_version" type="integer" not-null="true"/>
+        	<many-to-one name="inputDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id" not-null="true" cascade="none"/>
+    	</composite-element>
+	</array>
+
+	
+	<array name="controlMeasureClasses" table="control_strategy_classes">
+    	<key column="control_strategy_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<many-to-many class="gov.epa.emissions.framework.services.cost.ControlMeasureClass" column="control_measure_class_id"/>
+	</array>
+
+	<array name="controlMeasures" table="control_strategy_measures">
+    	<key column="control_strategy_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<composite-element class="gov.epa.emissions.framework.services.cost.ControlStrategyMeasure">
+		    <property name="ruleEffectiveness" column="rule_effectiveness" type="double"/>
+	        <property name="rulePenetration" column="rule_penetration" type="double"/>
+	        <property name="applyOrder" column="apply_order" type="double" not-null="true"/>
+	        <property name="regionDatasetVersion" column="region_dataset_version" type="integer"/>
+        	<many-to-one name="controlMeasure" class="gov.epa.emissions.framework.services.cost.LightControlMeasure" column="control_measure_id" not-null="true" cascade="none"/>
+        	<many-to-one name="regionDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="region_dataset_id" cascade="none"/>
+    	</composite-element>
+	</array>
+
+	<array name="controlPrograms" table="control_strategy_programs">
+    	<key column="control_strategy_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<many-to-many class="gov.epa.emissions.framework.services.cost.ControlProgram" column="control_program_id" />
+	</array>
+
+	<array name="targetPollutants" table="control_strategy_target_pollutants">
+    	<key column="control_strategy_id" not-null="true"/>
+    	<list-index column="list_index"/>
+    	<composite-element class="gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyTargetPollutant">
+			<many-to-one
+		            name="pollutant" 
+		            class="gov.epa.emissions.commons.data.Pollutant"
+		            column="pollutant_id"/> 
+			<property name="maxEmisReduction" column="max_emis_reduction" type="double"  not-null="false" />
+			<property name="maxControlEfficiency" column="max_control_efficiency" type="double"  not-null="false" />
+			<property name="minCostPerTon" column="min_cost_per_ton" type="double"  not-null="false" />
+			<property name="minAnnCost" column="min_ann_cost" type="double"  not-null="false" />
+			<property name="replacementControlMinEfficiencyDiff" column="replacement_control_min_eff_diff" type="double"  not-null="false" />
+			<property name="invFilter" column="inv_filter" type="string" not-null="false"/>
+			<many-to-one name="countyDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="county_dataset_id" not-null="false"/>
+		    <property name="countyDatasetVersion" column="county_dataset_version" type="integer" not-null="false"/>
+    	</composite-element>
+	</array>
+
+  </class> 
+</hibernate-mapping>  

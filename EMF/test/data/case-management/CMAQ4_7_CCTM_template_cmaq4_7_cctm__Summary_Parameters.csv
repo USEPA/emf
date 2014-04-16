@@ -1,0 +1,76 @@
+"#EMF_CASE_NAME=CMAQ4.7 CCTM template"
+"#EMF_CASE_ABBREVIATION=cmaq4.7_cctm_"
+"#EMF_CASE_DESCRIPTION="
+"#EMF_CASE_CATEGORY=CMAQ Template"
+"#EMF_PROJECT="
+"#EMF_SECTORS=chemtrans"
+"#EMF_CASE_COPIED_FROM="
+"#EMF_LAST_MODIFIED=Alexis Zubrow on 11/11/2008 13:00"
+"#EMF_IS_FINAL=false "
+"#EMF_IS_TEMPLATE=true"
+Tab,Parameter,Order,Envt. Var.,Sector,Job,Program,Value,Type,Reqd?,Local?,Last Modified,Notes,Purpose
+Summary,Model to Run,0,MODEL_LABEL,All sectors,All jobs for sector,All programs,"CMAQ",String,TRUE,TRUE,,,
+Summary,Model Version,0,MODEL_LABEL,All sectors,All jobs for sector,All programs,"v4.7",String,TRUE,TRUE,,,
+Summary,Modeling Region,0,,All sectors,All jobs for sector,All programs,"",String,TRUE,TRUE,,,
+Summary,Grid Name,0,IOAPI_GRIDNAME_1,All sectors,All jobs for sector,All programs,"",String,TRUE,TRUE,,,
+Summary,Grid Resolution,0,EMF_GRID,All sectors,All jobs for sector,All programs,"",String,TRUE,TRUE,,,
+Summary,Met Layers,0,,All sectors,All jobs for sector,All programs,null,Integer,TRUE,TRUE,,,
+Summary,Emission Layers,0,,All sectors,All jobs for sector,All programs,null,Integer,TRUE,TRUE,,,
+Summary,Downstream Model,0,EMF_AQM,All sectors,All jobs for sector,All programs,"",String,TRUE,TRUE,,,
+Summary,Speciation,0,EMF_SPC,All sectors,All jobs for sector,All programs,"",String,TRUE,TRUE,,,
+Summary,Meteorological Year,0,,All sectors,All jobs for sector,All programs,,String,TRUE,TRUE,,,
+Summary,Base Year,0,BASE_YEAR,All sectors,All jobs for sector,All programs,0,String,TRUE,TRUE,,,
+Summary,Future Year,0,FUTURE_YEAR,All sectors,All jobs for sector,All programs,0,String,TRUE,TRUE,,,
+Summary,Start Date & Time,0,EPI_STDATE_TIME,All sectors,All jobs for sector,All programs,,Date,TRUE,TRUE,,,
+Summary,End Date & Time,0,EPI_ENDATE_TIME,All sectors,All jobs for sector,All programs,,Date,TRUE,TRUE,,,
+Parameters,"Application",0.0,"APPL","All sectors","All jobs for sector","All programs","",String,true,true,09/10/2008 15:08,"",""
+Parameters,"Spheroid",0.0,"IOAPI_ISPH","All sectors","All jobs for sector","All programs","",Integer,true,true,09/10/2008 15:10,"",""
+Parameters,"Symmetric processing",1.5,"CTM_SYMPROC","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:47,"",""
+Parameters,"Executable",1.5,"EXEC","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:51,"",""
+Parameters,"Verbose WRITE3 logging",1.5,"IOAPI_LOG_WRITE","chemtrans","All jobs for sector","CCTM","",Boolean,true,true,09/10/2008 13:55,"",""
+Parameters,"Cloud diagnostic file",1.5,"CLD_DIAG","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:39,"",""
+Parameters,"Save derived vertical velocity",1.5,"CTM_WVEL","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:48,"",""
+Parameters,"Error if inconsistent input file",1.5,"FL_ERR_STOP","chemtrans","All jobs for sector","CCTM","",Boolean,true,true,09/10/2008 13:51,"",""
+Parameters,"Number of col and row processors",1.0,"NPCOL_NPROW","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:58,"",""
+Parameters,"Episode",0.5,"EPI","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:50,"",""
+Parameters,"In-line biogenic emissions",1.5,"CTM_BIOGEMIS","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:40,"",""
+Parameters,"Path Output top dir",2.0,"OUTDATA","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:58,"",""
+Parameters,"First day of run",0.0,"FIRSTDAY","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 14:54,"",""
+Parameters,"Number of time steps",1.0,"NSTEPS","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:55,"",""
+Parameters,"Maximum sync time",1.5,"CTM_MAXSYNC","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 13:42,"",""
+Parameters,"Process analysis begin and end cols",1.5,"PA_BCOL_ECOL","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:59,"",""
+Parameters,"Minimum sync time",1.5,"CTM_MINSYNC","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 13:44,"",""
+Parameters,"Path executable2",1.0,"BASE2","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:47,"",""
+Parameters,"Sea-salt emissions diagnostic file",1.5,"CTM_SSEMDIAG","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:46,"",""
+Parameters,"Year",0.0,"YEAR","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 15:00,"",""
+Parameters,"Year2",0.0,"YEAR2","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 15:00,"",""
+Parameters,"Process analysis begin and end levels",1.5,"PA_BLEV_ELEV","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:59,"",""
+Parameters,"Grid Name",0.0,"GRID_NAME","All sectors","All jobs for sector","All programs","",String,true,true,09/10/2008 13:52,"",""
+Parameters,"Path executable",1.0,"BASE","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:46,"",""
+Parameters,"Aerosol diagnostic file",1.5,"CTM_AERDIAG","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:40,"",""
+Parameters,"Year 2 digit",0.0,"YR","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 15:01,"",""
+Parameters,"Path Output2",2.3,"OUTDIR2","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:57,"",""
+Parameters,"Integrated average concentration begin and end levels",1.5,"ACONC_BLEV_ELEV","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:38,"",""
+Parameters,"Path Data",0.0,"M3DATA","All sectors","All jobs for sector","All programs","",String,true,true,08/04/2008 16:26,"",""
+Parameters,"NetCDF FFIOSPEC",2.0,"NETCDF_FFIOSPEC","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:58,"",""
+Parameters,"MPI max message passing buffer",2.0,"MP_EAGER_LIMIT","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 13:56,"",""
+Parameters,"Deposition velocity diagnostic file",1.5,"CTM_DEPV_FILE","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:41,"",""
+Parameters,"Start Time",1.0,"STTIME","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 15:00,"",""
+Parameters,"MPI turn off threading",2.0,"MP_SINGLE_THREAD","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:57,"",""
+Parameters,"Use percent urban in KZMIN calc",1.5,"KZMIN","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:56,"",""
+Parameters,"Configuration Name",0.5,"GFC","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:55,"",""
+Parameters,"In-line deposition velocity",1.5,"CTM_ILDEPV","chemtrans","All jobs for sector","CCTM","",Char,true,true,08/05/2008 09:55,"",""
+Parameters,"In-line plume rise emissions",1.5,"CTM_PT3DEMIS","chemtrans","All jobs for sector","CCTM","",Boolean,true,true,09/10/2008 13:45,"",""
+Parameters,"Timestep",1.0,"TSTEP","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 15:00,"",""
+Parameters,"Path Output permanent",2.0,"OUTPERM","chemtrans","All jobs for sector","CCTM","",String,true,true,11/11/2008 12:49,"","Mass storage location, where data will be eventually moved to."
+Parameters,"Check sum report",1.5,"CTM_CKSUM","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:41,"",""
+Parameters,"Photolysis diagnostic file",1.5,"CTM_PHOTDIAG","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:45,"",""
+Parameters,"Number of processors",1.0,"NPROCS","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 15:07,"",""
+Parameters,"Path Output1",2.2,"OUTDIR1","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:57,"",""
+Parameters,"Integrated average concentration species",1.5,"AVG_CONC_SPCS","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:38,"",""
+Parameters,"Episode2",0.5,"EPI2","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 14:50,"",""
+Parameters,"MPI run control",2.0,"MPI_SM_POOL","chemtrans","All jobs for sector","CCTM","",Integer,true,true,09/10/2008 13:57,"",""
+Parameters,"Inline deposition velocity with Pleim's bi-directional ammonia flux",1.5,"CTM_ABFLUX","chemtrans","All jobs for sector","CCTM","",Char,true,true,09/10/2008 13:39,"",""
+Parameters,"Execution ID",1.0,"EXECUTION_ID","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:50,"",""
+Parameters,"Process analysis begin and end rows",1.5,"PA_BROW_EROW","chemtrans","All jobs for sector","CCTM","",String,true,true,09/10/2008 13:58,"",""
+

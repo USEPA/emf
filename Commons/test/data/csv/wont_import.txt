@@ -1,0 +1,8 @@
+"CB05","Carbon Bond version 5","N","ENVIRON exported the assignments from Spec4Asn-8-10-06.xls sent by Marc Houyoux in Spec4Asn-8-10-06(from Carter).zip These assignments matches with Emitdb database released on 08/10/2006. The data were exported with 12 decimals to support the max accuracy","",""
+"CBIV","Carbon Bond version 4","Y","ENVIRON exported the assignments from Spec4Asn-8-10-06.xls sent by Marc Houyoux in Spec4Asn-8-10-06(from Carter).zip These assignments matches with Emitdb database released on 08/10/2006. The data were exported with 12 decimals to support the max accuracy","",""
+"SAPRC99","SAPRC99","Y","ENVIRON exported the assignments from Spec4Asn-8-10-06.xls sent by Marc Houyoux in Spec4Asn-8-10-06(from Carter).zip These assignments matches with Emitdb database released on 08/10/2006. The data were exported with 12 decimals to support the max accuracy","",""
+"SOA_CAMX45","SOA mechanism used in CAMx v4.5","N","ENVIRON created this mechanism assignment based on CB05 XYL&TOL assignments. 09-12-2007","",""
+"SOA_CAMX45_SP99","SOA mechanism used in CAMx v4.5","N","ENVIRON created this mechanism assignment based on SAPRC99 ARO1 and ARO2 assignments. 09-12-2007","",""
+"CMAQ_SAPRC99_SOA","SAPRC99 SOA mechanism for CMAQ 09-20-2007","N","Golam Sarwar - Edward Edney's SOA mechanism","",""
+"CMAQ_CB05_SOA","CB05 SOA mechanism for CMAQ 10-25-2007","N","Golam Sarwar - Edward Edney's SOA mechanism","",""
+"CMAQ_CB05_SOA_TX","CB05 SOA TOX mechanism for CMAQ","N","Allan Beidler","",""

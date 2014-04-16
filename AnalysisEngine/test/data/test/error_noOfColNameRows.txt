@@ -1,0 +1,40 @@
+Sensitivity Analysis for Benzo(A)Pyrene at time 01/03/1987 00:00:00 EST in units of _conc
+
+
+Output_Compartment; Property; Chemical; ObjectType; ObjectName; VE_Info; NumObjs; CV; Initial_Input; Perturbed_Input; %deltaInput; Initial_Output; Perturbed_Output; %deltaOutput; Sensitivity; Elasticity; Score; Absolute Score
+
+Air in Air_Source;DustDensity; ;Compartment;Air;Air_Source;2;3.000E-01;1.400E03;1.260E03;-1.000E01;5.999E-05;5.999E-05;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_ENE1;DustDensity; ;Compartment;Air;Air_Source;2;3.000E-01;1.400E03;1.260E03;-1.000E01;7.103E-06;7.103E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_NNE1;DustDensity; ;Compartment;Air;Air_Source;2;3.000E-01;1.400E03;1.260E03;-1.000E01;9.034E-06;9.034E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_River;DustDensity; ;Compartment;Air;Air_Source;2;3.000E-01;1.400E03;1.260E03;-1.000E01;7.302E-10;7.302E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_Pond;DustDensity; ;Compartment;Air;Air_Source;2;3.000E-01;1.400E03;1.260E03;-1.000E01;1.281E-10;1.281E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_Source;OrganicCarbonContent; ;Compartment;Surface water;SW_Pond;1;1.000E00;2.000E-02;1.800E-02;-1.000E01;5.999E-05;5.999E-05;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_ENE1;OrganicCarbonContent; ;Compartment;Surface water;SW_Pond;1;1.000E00;2.000E-02;1.800E-02;-1.000E01;7.103E-06;7.103E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_NNE1;OrganicCarbonContent; ;Compartment;Surface water;SW_Pond;1;1.000E00;2.000E-02;1.800E-02;-1.000E01;9.034E-06;9.034E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_River;OrganicCarbonContent; ;Compartment;Surface water;SW_Pond;1;1.000E00;2.000E-02;1.800E-02;-1.000E01;7.302E-10;7.302E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_Pond;OrganicCarbonContent; ;Compartment;Surface water;SW_Pond;1;1.000E00;2.000E-02;1.800E-02;-1.000E01;1.281E-10;1.281E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_Source;pH; ;Compartment;Surface water;SW_Pond;1;5.000E-02;6.800E00;6.120E00;-1.000E01;5.999E-05;5.999E-05;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_ENE1;pH; ;Compartment;Surface water;SW_Pond;1;5.000E-02;6.800E00;6.120E00;-1.000E01;7.103E-06;7.103E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_NNE1;pH; ;Compartment;Surface water;SW_Pond;1;5.000E-02;6.800E00;6.120E00;-1.000E01;9.034E-06;9.034E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_River;pH; ;Compartment;Surface water;SW_Pond;1;5.000E-02;6.800E00;6.120E00;-1.000E01;7.302E-10;7.302E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_Pond;pH; ;Compartment;Surface water;SW_Pond;1;5.000E-02;6.800E00;6.120E00;-1.000E01;1.281E-10;1.281E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_Source;vdep;Benzo(A)Pyrene;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;5.999E-05;5.999E-05;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_ENE1;vdep;Benzo(A)Pyrene;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;7.103E-06;7.103E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_NNE1;vdep;Benzo(A)Pyrene;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;9.034E-06;9.034E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_River;vdep;Benzo(A)Pyrene;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;7.302E-10;7.302E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_Pond;vdep;Benzo(A)Pyrene;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;1.281E-10;1.281E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_Source;vdep;Divalent Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;5.999E-05;5.999E-05;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_ENE1;vdep;Divalent Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;7.103E-06;7.103E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_NNE1;vdep;Divalent Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;9.034E-06;9.034E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_River;vdep;Divalent Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;7.302E-10;7.302E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_Pond;vdep;Divalent Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;1.281E-10;1.281E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_Source;vdep;Elemental Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;5.999E-05;5.999E-05;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_ENE1;vdep;Elemental Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;7.103E-06;7.103E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_NNE1;vdep;Elemental Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;9.034E-06;9.034E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_River;vdep;Elemental Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;7.302E-10;7.302E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_Pond;vdep;Elemental Mercury;Compartment;Air;Air_Source;2;3.000E-01;5.000E02;4.500E02;-1.000E01;1.281E-10;1.281E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_Source;WashoutRatio; ;Compartment;Air;Air_Source;2;3.000E-01;2.000E05;1.800E05;-1.000E01;5.999E-05;5.999E-05;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_ENE1;WashoutRatio; ;Compartment;Air;Air_Source;2;3.000E-01;2.000E05;1.800E05;-1.000E01;7.103E-06;7.103E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Air in Air_NNE1;WashoutRatio; ;Compartment;Air;Air_Source;2;3.000E-01;2.000E05;1.800E05;-1.000E01;9.034E-06;9.034E-06;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_River;WashoutRatio; ;Compartment;Air;Air_Source;2;3.000E-01;2.000E05;1.800E05;-1.000E01;7.302E-10;7.302E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00
+Surface water in SW_Pond;WashoutRatio; ;Compartment;Air;Air_Source;2;3.000E-01;2.000E05;1.800E05;-1.000E01;1.281E-10;1.281E-10;0.000E00;0.000E00;0.000E00;0.000E00;0.000E00

@@ -1,0 +1,18 @@
+#Original
+#Name       CAS              Saroa R K FactorV M E A  NTI Units            Inventory data description               CAS description
+CO          CO               42101   Y     1 N     N   0 tons/yr          Carbon Monoxide                          Carbon Monoxide                         
+NOX         NOX              42603   Y     1 N     N   0 tons/yr          Nitrogen oxides                          Nitrogen oxides                         
+THC         THC                      Y     1 N     N   0 tons/yr          Total hydrocarbons                       Total hydrocarbons                      
+VOC         VOC              43104   Y     1 N     N   0 tons/yr          Volatile organic compounds               Volatile organic compounds              
+TOG         TOG                      Y     1 N     N   0 tons/yr          Total organic compounds                  Total organic compounds                 
+NH3         NH3                      Y     1 N     N   0 tons/yr          Ammonia                                  Ammonia                                 
+SO2         SO2              42401   Y     1 N     N   0 tons/yr          Sulfur Dioxide                           Sulfur Dioxide                          
+SO4         SO4                      Y     1 N     N   0 tons/yr          Sulfate                                  Sulfate                                 
+SOX         SOX                      Y     1 N     N   0 tons/yr          Sulfur oxides                            Sulfur oxides                           
+PM10        PM10-PRI         81102   Y     1 N     N   0 tons/yr          Particulate matter, 10 microns and less  Particulate matter, 10 microns and less 
+PM2_5       PM25-PRI         88101   Y     1 N     N   0 tons/yr          Particulate matter, 2.5 microns and less Particulate matter, 2.5 microns and less
+PMC         PMC              88102   Y     1 N     N   0 tons/yr          Particulate matter, coarse               Particulate matter, coarse              
+BIO__NOX    BIO__NOX                 Y     1 N N N N   0 tons/yr          biogenic NOX - needed for Smkmerge       biogenic NOX - needed for Smkmerge      
+BIO__VOC                             Y     1 N N N N   0 tons/yr          biogenic VOC - needed for Smkmerge       biogenic VOC - needed for Smkmerge      
+EVP__VOC                     99901   Y     1 N     N   0 tons/yr          Reactive Organic Gases                   n/a
+EXH__VOC                     99902   Y     1 N     N   0 tons/yr          Reactive Organic Gases                   n/a

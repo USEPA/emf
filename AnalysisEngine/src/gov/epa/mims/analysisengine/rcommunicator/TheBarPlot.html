@@ -1,0 +1,338 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.73 [en] (X11; U; SunOS 5.7 sun4u) [Netscape]">
+</head>
+<body>
+&nbsp;
+<center>
+<h1>
+The BarPlot</h1></center>
+
+<center>
+<h2>
+Overview</h2></center>
+The BarPlot displays a 2-dimensional plot of categorical data. A category
+is represented by a DoubleSeries data object which contains a value for
+each element in the category. A category can be displayed as individual
+bars within a category or as a single stacked bar. The user can control
+the color and width of the bars as well as the separation between individual
+bars and the separation between categories. The bars can be drawn horizontally
+or vertically. The axes are fully configurable with settings for color;
+tickmark locations; tickmark label font, color, size and orientation; and
+total control over axis labels.
+<center>
+<h2>
+Basic Tree Structure</h2></center>
+
+<center>
+<p><br>Forest
+<br>|
+<br>DataSets
+<br>|
+<br>AnalysisOptions
+<br>|
+<br>Page
+<br>|
+<br>BarPlot</center>
+
+<p><br>
+<center>
+<h3>
+Basic Tree Structure Example Code</h3></center>
+
+<center><table BORDER COLS=1 WIDTH="60%" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE>// allocate components</td>
+</tr>
+
+<tr>
+<td>forest = Forest.getInstance();
+<br>dataSets = new DataSets();
+<br>analysisOptions = new AnalysisOptions();
+<br>page = new Page();
+<br>barPlot = new BarPlot();</td>
+</tr>
+
+<tr>
+<td>//build tree</td>
+</tr>
+
+<tr>
+<td>forest.add(dataSets);
+<br>dataSets.add(analysisOptions);
+<br>analysisOptions.add(page);
+<br>page.add(barPlot);</td>
+</tr>
+</table></center>
+
+<center>
+<h2>
+Adding Data</h2></center>
+The DoubleSeries.java object is initialized with a series of double values
+and then added to the DataSets tree component. The user associates a "key"
+java.lang.Object with the DoubleSeries. The "key" and the DoubleSeries
+objects are added to the DataSets tree component. The "key" is then added
+to the BarPlot component.
+<br>&nbsp;
+<center>
+<h3>
+example code</h3></center>
+
+<p>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<center><table BORDER COLS=1 WIDTH="75%" NOSAVE >
+<tr>
+<td>// allocate objects</td>
+</tr>
+
+<tr>
+<td>ds1 = new DoubleSeries();
+<br>ds2 = new DoubleSeries();
+<br>ds3 = new DoubleSeries();
+<br>ds4 = new DoubleSeries();</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td>// initialize data</td>
+</tr>
+
+<tr>
+<td>ds1.setData( new double[] {&nbsp; 0.41749691, 0.56145016, 1.57874680
+});
+<br>ds2.setData( <i>"initialization has been elided"</i> );
+<br>ds3.setData( <i>"initialization has been elided"</i> );
+<br>ds4.setData( <i>"initialization has been elided"</i> );</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td>// name data sets</td>
+</tr>
+
+<tr>
+<td>ds1.setName("My data set 1");
+<br>ds2.setName("My data set 2");
+<br>ds3.setName("My data set 3");
+<br>ds4.setName("My data set 4");</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td>// create unique Object keys</td>
+</tr>
+
+<tr>
+<td>Object key1 = new Integer(1);
+<br>Object key2 = new Integer(2);
+<br>Object key3 = new Integer(3);
+<br>Object key4 = new Integer(4);</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td>//add data to DataSets</td>
+</tr>
+
+<tr>
+<td>dataSets.add(ds1, key1);
+<br>dataSets.add(ds2, key2);
+<br>dataSets.add(ds3, key3);
+<br>dataSets.add(ds4, key4);</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td>// add data keys to Plot</td>
+</tr>
+
+<tr>
+<td>barPlot.addKey(key2);
+<br>barPlot.addKey(key3);
+<br>barPlot.addKey(key4);</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<center>
+<h2>
+Adding Analysis Options</h2></center>
+Analysis options are classes with methods for setting different display
+parameters. The AnalysisOptions component is not required to generate a
+plot; however, it is highly recommended since it is how user preferences
+are set.
+<br>&nbsp;
+<center>
+<h3>
+example code (controlling Bar data display)</h3></center>
+
+<p><br>
+<center><table BORDER COLS=1 WIDTH="75%" NOSAVE >
+<tr>
+<td>//create and initialize a BarType analysis option</td>
+</tr>
+
+<tr>
+<td>barType = new BarType();
+<br>barType.setColor( new Color[]{ Color.blue ,Color.red ,Color.green ,Color.yellow
+,} );&nbsp;
+<br>barType.setBorderColor( Color.green );
+<br>barType.setHorizontal( false );
+<br>barType.setStacked( false );
+<br>barType.setSpaceBetweenBars( 1.2 );
+<br>barType.setSpaceBetweenCategories( 2.0 );
+<br>barType.setWidth( new double[] { 0.5 } );</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+
+<tr>
+<td>// add BarType to AnalysisOptions</td>
+</tr>
+
+<tr>
+<td>analysisOptions.addOption( "BAR_TYPE" , barType );</td>
+</tr>
+</table></center>
+
+<center>
+<h3>
+Other AnalysisOptions for The BarPlot</h3></center>
+
+<p>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE>OPTION</td>
+
+<td>TYPE</td>
+</tr>
+
+<tr>
+<td></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td>XAXIS</td>
+
+<td><a href="../tree/Axis.html">gov.epa.mims.analysisengine.tree.Axis</a></td>
+</tr>
+
+<tr>
+<td>YAXIS</td>
+
+<td><a href="../tree/Axis.html">gov.epa.mims.analysisengine.tree.Axis</a></td>
+</tr>
+
+<tr>
+<td>GRID_TYPE</td>
+
+<td><a href="../tree/GridType.html">gov.epa.mims.analysisengine.tree.GridType</a></td>
+</tr>
+
+<tr>
+<td>OUTLINE_TYPE</td>
+
+<td><a href="../tree/OutlineType.html">gov.epa.mims.analysisengine.tree.OutlineType</a></td>
+</tr>
+
+<tr>
+<td>PLOT_TITLE</td>
+
+<td><a href="../tree/Text.html">gov.epa.mims.analysisengine.tree.Text</a></td>
+</tr>
+
+<tr>
+<td>PLOT_SUBTITLE</td>
+
+<td><a href="../tree/Text.html">gov.epa.mims.analysisengine.tree.Text</a></td>
+</tr>
+
+<tr>
+<td>PLOT_FOOTER</td>
+
+<td><a href="../tree/Text.html">gov.epa.mims.analysisengine.tree.Text</a></td>
+</tr>
+
+<tr>
+<td>WORLD_COORDINATES</td>
+
+<td>double[4]</td>
+</tr>
+
+<tr>
+<td>BAR_TYPE</td>
+
+<td><a href="../tree/BarType.html">gov.epa.mims.analysisengine.tree.BarType</a></td>
+</tr>
+
+<tr>
+<td></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+
+<td></td>
+</tr>
+</table>
+
+<p>For a complete list of AnalysisOptions see <a href="../tree/AnalysisOptions.html">AnalysisOptions.html</a>.
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

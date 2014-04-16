@@ -1,0 +1,4 @@
+Tab,JobName,Order,Sector,RunStatus,StartDate,CompletionDate,Executable,Arguments,Path,QueueOptions,JobGroup,Local,QueueID,User,Host,Notes,Purpose,DependsOn
+Jobs,"CCTM build",0,"chemtrans",Not Started,,,bldit.cctm,"",$BASE,"","",true,"","Alexis Zubrow", amber.nesc.epa.gov,"","",""
+Jobs,"CCTM run",0,"chemtrans",Not Started,,,$EXEC,"",mpirun -np $NPROCS $BASE2,"","",true,"","Alexis Zubrow", amber.nesc.epa.gov,"","",""
+

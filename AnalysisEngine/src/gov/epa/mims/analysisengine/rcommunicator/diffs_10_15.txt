@@ -1,0 +1,13 @@
+? diffs_10_15.txt
+Index: test/JUnitExampleHistogramPlot01.jpg
+===================================================================
+RCS file: /project/work3/mims/fwrep/mimsfw/gov/epa/mims/analysisengine/rcommunicator/test/JUnitExampleHistogramPlot01.jpg,v
+retrieving revision 1.3
+diff -w -r1.3 JUnitExampleHistogramPlot01.jpg
+Binary files /tmp/cvsAAAyQaiuU and JUnitExampleHistogramPlot01.jpg differ
+Index: test/JUnitExampleHistogramPlot01.png
+===================================================================
+RCS file: /project/work3/mims/fwrep/mimsfw/gov/epa/mims/analysisengine/rcommunicator/test/JUnitExampleHistogramPlot01.png,v
+retrieving revision 1.1
+diff -w -r1.1 JUnitExampleHistogramPlot01.png
+Binary files /tmp/cvsBAAzQaiuU and JUnitExampleHistogramPlot01.png differ

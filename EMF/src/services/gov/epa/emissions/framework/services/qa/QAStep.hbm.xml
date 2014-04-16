@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+	<class name="gov.epa.emissions.framework.services.data.QAStep" table="qa_steps" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+   
+        <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
+        <property name="version" column="version" type="integer" not-null="true"/>   
+	 	<property name="name" column="name" type="java.lang.String" not-null="true"/>
+		<many-to-one name="program"
+    		 class ="gov.epa.emissions.commons.data.QAProgram"
+			 column="qa_program_id" unique="true" not-null="false"
+	     />
+        <property name="programArguments" column="program_arguments" type="java.lang.String" not-null="false"/>
+		<property name="required" column="required" type="boolean" not-null="false"/>               
+        <property name="order" column="order_no" type="float" not-null="false"/> 
+        <property name="description" column="description" type="java.lang.String" not-null="false"/> 
+        <property name="status" column="status" type="java.lang.String" not-null="false"/> 
+        <property name="comments" column="comments" type="java.lang.String" not-null="false"/> 
+        <property name="date" column="date" type="java.util.Date" not-null="false"/> 
+        <property name="who" column="who" type="java.lang.String" not-null="false"/> 
+        <property name="configuration" column="configuration" type="java.lang.String" not-null="false"/>
+        <property name="outputFolder" column="output_folder" type="java.lang.String" not-null="false"/> 
+    </class>
+</hibernate-mapping>  
+

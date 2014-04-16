@@ -1,0 +1,2 @@
+IndexRemove D:\CEP\AnalysisEngine\src\gov\epa\analysisengine\
+StopWords stopwords.txt

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class name="gov.epa.emissions.commons.db.version.Version" table="versions" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
+        <property name="version" column="version" type="integer" not-null="true"/>
+        <property name="name" column="name" type="java.lang.String" not-null="true" length="255"/>
+        <property name="description" column="description" type="java.lang.String" not-null="true"/>
+        <property name="path" column="path" type="java.lang.String" not-null="true"/>
+        <property name="finalVersion" column="final_version" type="boolean"/>
+        <property name="lastModifiedDate" column="date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="numberRecords" column="number_records" type="integer" not-null="false"/> 
+
+    <many-to-one cascade="save-update"
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+
+    <many-to-one cascade="save-update"
+            name="intendedUse" 
+            class="gov.epa.emissions.commons.db.intendeduse.IntendedUse"
+            column="intended_use"/> 
+    
+    </class>
+</hibernate-mapping>

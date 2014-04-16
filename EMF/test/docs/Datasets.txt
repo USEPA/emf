@@ -1,0 +1,16 @@
+Test Cases - Datasets Browser
+--------------------------------------
+1.View Properties
+
+Test Cases - Dataset Properties Viewer
+--------------------------------------
+1. Verify Summary
+2. Verify Keywords - mandatory keywords missing
+3. Verify Tables
+
+
+Test Cases - Dataset Properties Editor
+--------------------------------------
+1. Edit Summary
+2. Edit Keywords
+3. Add a Note

@@ -1,0 +1,9 @@
+#TYPES=varchar(2)|varchar(2)|varchar(128)
+Country_Code,Country_abbr, Country_Name
+01,US,UNITED STATES
+02,CA,CANADA
+03,MX,MEXICO
+04,BA,BAHAMAS
+05,CU,CUBA
+06,DR,DOMINICAN REPUBLIC
+07,HA,HAITI

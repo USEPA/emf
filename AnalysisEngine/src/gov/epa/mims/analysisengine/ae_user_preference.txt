@@ -1,0 +1,4 @@
+#Format#
+format.double.significant_digits=3
+format.double.options=Scientific Notation #legal options: Standard Notation,Scientific Notation, Dollars, Percentage, Custom
+format.double.decimal_places=0

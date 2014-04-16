@@ -1,0 +1,10 @@
+" Num. of People/(# people) for Gender = M and  Race = sum and  Chemicals = Methylene chloride and  Start Years = 1999 and  Counties = Washington County and  Organs = Sum across all organ"
+
+"Columns are Source Types"
+"Risk Bins","SOURCE1","SOURCE1","SOURCE2","SOURCE2","BackgConc"
+"99999","0.0000E00","0.0000E00","0.0000E00","0.0000E00","0.0000E00"
+"30","0.0000E00","0.0000E00","0.0000E00","0.0000E00","0.0000E00"
+"10","0.0000E00","0.0000E00","0.0000E00","0.0000E00","0.0000E00"
+"0.001","5.9938E04","5.9938E04","5.9938E04","5.9938E04","5.9938E04"
+"1","0.0000E00","0.0000E00","0.0000E00","0.0000E00","0.0000E00"
+

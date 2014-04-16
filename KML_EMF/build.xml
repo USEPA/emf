@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<project name="KML" default="exec-dist" basedir=".">
+
+	<!--  =================== Properties ====================================== -->
+	<property file="build.properties" />
+
+	<property name="env" environment="env" value="env" />
+	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
+	<property name="src.dir" value="src" />
+	<property name="dev.team" value="UNC IE CEMPD" />
+
+	<property name="build.home" value="build/sandbox" />
+	<property name="dist.home" value="build/dist" />
+	<property name="lib.dir" value="lib" />
+	<property name="dist.lib" value="${dist.home}/lib" />
+	<property name="dist.file" value="kmlGen" />
+	<property name="zip.home" value="build/zip" />
+
+	<path id="classpath">
+		<pathelement location="${build.home}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${dist.home}" />
+		<mkdir dir="${dist.lib}" />
+		<mkdir dir="${zip.home}" />
+	</target>
+
+
+	<target name="clean">
+		<delete includeemptydirs="true" failonerror="no">
+			<fileset dir="${build.home}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="compile-src" depends="clean, init">
+		<javac srcdir="${src.dir}" destdir="${build.home}" classpathref="classpath" debug="on" />
+		<copy todir="${build.home}">
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build-version" depends="compile-src" description="Build kml generator version">
+		<java classname="gov.epa.emissions.googleearth.kml.version.VersionBuilder" fork="true" failonerror="true" classpathref="classpath">
+		</java>
+	</target>
+
+	<target name="compile" depends="build-version" />
+
+	<target name="exec-dist">
+		<antcall target="compile">
+		</antcall>
+
+		<!-- create a property containing all .jar files, prefix lib/, and seperated with a space -->
+		<pathconvert property="libs.mapper" pathsep=" ">
+			<mapper>
+				<chainedmapper>
+
+					<!-- remove absolute path -->
+					<flattenmapper />
+
+					<!-- add lib/ prefix -->
+					<globmapper from="*" to="lib/*" />
+				</chainedmapper>
+			</mapper>
+
+			<path>
+				<fileset dir="${lib.dir}">
+					<include name="**/gt2-brewer-2.3.0.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+
+		<copy todir="${dist.lib}">
+			<fileset dir="${lib.dir}">
+				<exclude name="**/junit.jar" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${dist.home}/extract" />
+
+		<copy todir="${dist.home}/extract">
+			<fileset dir="${lib.dir}">
+				<include name="**/gt2-brewer-2.3.0.jar" />
+			</fileset>
+		</copy>
+
+		<unzip src="${dist.home}/extract/gt2-brewer-2.3.0.jar" dest="${dist.home}/extract" />
+
+		<copy todir="${build.home}">
+			<fileset dir="${dist.home}/extract">
+				<exclude name="**/gt2-brewer-2.3.0.jar" />
+				<exclude name="**/META-INF/**" />
+			</fileset>
+		</copy>
+
+		<jar jarfile="${dist.home}/${app.name}.gui.jar" basedir="${build.home}">
+			<manifest>
+				<attribute name="Main-Class" value="gov.epa.emissions.googleearth.kml.gui.PointSourceGeneratorFrame" />
+			</manifest>
+		</jar>
+
+		<jar jarfile="${dist.home}/${cssi.app.name}.cmd.jar" basedir="${build.home}">
+			<manifest>
+				<attribute name="Main-Class" value="gov.epa.emissions.googleearth.CSSIRecordReader" />
+			</manifest>
+		</jar>
+
+
+		<jar jarfile="${dist.home}/${app.name}.cmd.jar" basedir="${build.home}">
+			<manifest>
+				<attribute name="Main-Class" value="gov.epa.emissions.googleearth.kml.generator.BinnedPointSourceGenerator" />
+			</manifest>
+		</jar>
+
+		<zip zipfile="${zip.home}/${dist.file}.zip">
+			<fileset dir="${dist.home}" />
+		</zip>
+	</target>
+
+</project>
+

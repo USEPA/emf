@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+    <class name="gov.epa.emissions.framework.services.basic.FileDownload" table="file_downloads" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="userId" column="user_id" type="integer" not-null="true"/>
+        <property name="type" column="type" type="java.lang.String" not-null="true" length="255"/>
+        <property name="absolutePath" column="absolute_path" type="java.lang.String" not-null="true" length="1024"/>
+        <property name="size" column="size" type="long" not-null="true"/>
+        <property name="url" column="url" type="java.lang.String" not-null="true"/>
+        <property name="timestamp" column="date" type="java.util.Date" not-null="true" length="10"/>
+        <property name="read" column="is_read" type="boolean" not-null="true"/>
+        <property name="overwrite" column="overwrite" type="boolean" not-null="true"/>
+    </class>
+</hibernate-mapping>  
+

@@ -1,0 +1,8 @@
+Test Cases - User Management 
+----------------------------
+
+1. Exit
+2. Exit w/ windows consisting of unsaved changes
+3. Logout w/ windows consisting unsaved changes
+4. Cascading Layout on opening multiple Windows
+5. Close all Windows (Window Menu)

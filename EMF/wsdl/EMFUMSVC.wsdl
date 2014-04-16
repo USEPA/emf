@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<wsdl:definitions targetNamespace="http://ben.cep.unc.edu:8080/emf-web/services/EMFUserManagerService" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://ben.cep.unc.edu:8080/emf-web/services/EMFUserManagerService" xmlns:intf="http://ben.cep.unc.edu:8080/emf-web/services/EMFUserManagerService" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <!-- 
+WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)
+
+  --> 
+ <wsdl:types>
+ <schema targetNamespace="http://ben.cep.unc.edu:8080/emf-web/services/EMFUserManagerService" xmlns="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://xml.apache.org/xml-soap" /> 
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/" /> 
+ <complexType name="ArrayOf_xsd_anyType">
+ <complexContent>
+ <restriction base="soapenc:Array">
+  <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:anyType[]" /> 
+  </restriction>
+  </complexContent>
+  </complexType>
+  </schema>
+ <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://ben.cep.unc.edu:8080/emf-web/services/EMFUserManagerService" /> 
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/" /> 
+ <complexType name="Vector">
+ <sequence>
+  <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType" /> 
+  </sequence>
+  </complexType>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="getAllUsersRequest" /> 
+ <wsdl:message name="getAllUsersResponse">
+  <wsdl:part name="getAllUsersReturn" type="impl:ArrayOf_xsd_anyType" /> 
+  </wsdl:message>
+ <wsdl:portType name="EMFUserManager">
+ <wsdl:operation name="getAllUsers">
+  <wsdl:input message="impl:getAllUsersRequest" name="getAllUsersRequest" /> 
+  <wsdl:output message="impl:getAllUsersResponse" name="getAllUsersResponse" /> 
+  </wsdl:operation>
+  </wsdl:portType>
+ <wsdl:binding name="EMFUserManagerServiceSoapBinding" type="impl:EMFUserManager">
+  <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" /> 
+ <wsdl:operation name="getAllUsers">
+  <wsdlsoap:operation soapAction="" /> 
+ <wsdl:input name="getAllUsersRequest">
+  <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://service.service.framework.emissions.epa.gov" use="encoded" /> 
+  </wsdl:input>
+ <wsdl:output name="getAllUsersResponse">
+  <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ben.cep.unc.edu:8080/emf-web/services/EMFUserManagerService" use="encoded" /> 
+  </wsdl:output>
+  </wsdl:operation>
+  </wsdl:binding>
+ <wsdl:service name="EMFUserManagerService">
+ <wsdl:port binding="impl:EMFUserManagerServiceSoapBinding" name="EMFUserManagerService">
+  <wsdlsoap:address location="http://ben.cep.unc.edu:8080/emf-web/services/EMFUserManagerService" /> 
+  </wsdl:port>
+  </wsdl:service>
+  </wsdl:definitions>

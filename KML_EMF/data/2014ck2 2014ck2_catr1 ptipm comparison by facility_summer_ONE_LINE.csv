@@ -1,0 +1,2 @@
+fips,plantid,lat,lon,nox_base,so2_base,nox_ctrl,so2_ctrl,nox_diff,nox_perc,so2_diff,so2_perc,winter so2_perc,winter plantid
+10003,1000300007,39.74002838,-75.50302124,,,206.7964792,440.9684963,206.7964792,2.07E+54,440.9684963,4.41E+54,6.33E+54,1000300007

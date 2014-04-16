@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+	<class name="gov.epa.emissions.framework.services.cost.ControlMeasure" table="control_measures" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+          
+        <property name="name" column="name" type="java.lang.String" not-null="true"/>
+        <property name="description" column="description" type="java.lang.String" not-null="false"/>
+        <property name="abbreviation" column="abbreviation" type="java.lang.String" not-null="false"/>
+        <property name="dataSouce" column="data_souce" type="java.lang.String" not-null="false"/>
+<!--        <property name="deviceCode" column="device_code" type="integer" not-null="false"/>-->
+        <property name="costYear" column="cost_year" type="integer" not-null="false"/>
+        <property name="equipmentLife" column="equipment_life" type="float" not-null="false"/>
+        <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="lastModifiedTime" column="last_modified_time" type="java.util.Date" not-null="false" length="4"/>
+        <property name="dateReviewed" column="date_reviewed" type="java.util.Date" not-null="false" length="4"/>
+        <property name="lastModifiedBy" column="last_modified_by" type="java.lang.String" not-null="true"/>
+
+        <many-to-one cascade="save-update"
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+ 
+        <many-to-one 
+            name="majorPollutant" 
+            class="gov.epa.emissions.commons.data.Pollutant"
+            column="major_pollutant"/> 
+            
+        <many-to-one cascade="save-update"
+            name="sourceGroup" 
+            class="gov.epa.emissions.commons.data.SourceGroup"
+            column="source_group"/> 
+            
+        <many-to-one cascade="save-update"
+            name="controlTechnology" 
+            class="gov.epa.emissions.framework.services.cost.data.ControlTechnology"
+            column="control_technology"/> 
+            
+  		<many-to-one 
+            name="cmClass" 
+            class="gov.epa.emissions.framework.services.cost.ControlMeasureClass"
+            column="cm_class_id"/> 
+  
+ 		<array name="sectors" table="control_measure_sectors" cascade="save-update">
+    		<key column="control_measure_id" not-null="true"/>
+    		<list-index column="list_index"/>
+    		<many-to-many class="gov.epa.emissions.commons.data.Sector" column="sector_id"/>
+  		</array>
+
+ 		<array name="references" table="control_measure_references" cascade="save-update">
+    		<key column="control_measure_id" not-null="true"/>
+    		<list-index column="list_index"/>
+    		<many-to-many class="gov.epa.emissions.commons.data.Reference" column="reference_id"/>
+  		</array>
+ 
+		<array name="equations" table="control_measure_equations">
+	    	<key column="control_measure_id" not-null="true"/>
+	    	<list-index column="list_index"/>
+	    	<composite-element class="gov.epa.emissions.framework.services.cost.ControlMeasureEquation">
+	        	<many-to-one name="equationType" class="gov.epa.emissions.framework.services.cost.EquationType" column="equation_type_id" not-null="true"/>
+        		<many-to-one name="pollutant" class="gov.epa.emissions.commons.data.Pollutant" column="pollutant_id" not-null="true"/> 
+		        <property name="costYear" column="cost_year" type="integer" not-null="true"/>
+		        <property name="value1" column="value1" type="double"/>
+		        <property name="value2" column="value2" type="double"/>
+		        <property name="value3" column="value3" type="double"/>
+		        <property name="value4" column="value4" type="double"/>
+		        <property name="value5" column="value5" type="double"/>
+		        <property name="value6" column="value6" type="double"/>
+		        <property name="value7" column="value7" type="double"/>
+		        <property name="value8" column="value8" type="double"/>
+		        <property name="value9" column="value9" type="double"/>
+		        <property name="value10" column="value10" type="double"/>
+		        <property name="value11" column="value11" type="double"/>
+	    	</composite-element>
+		</array>
+
+ 		<array name="months" table="control_measure_months">
+    		<key column="control_measure_id" not-null="true"/>
+    		<list-index column="list_index"/>
+	    	<composite-element class="gov.epa.emissions.framework.services.cost.ControlMeasureMonth">
+		        <property name="month" column="month" type="short"/>
+	    	</composite-element>
+  		</array>
+  		
+ 		<array name="neiDevices" table="control_measure_nei_devices">
+    		<key column="control_measure_id" not-null="true"/>
+    		<list-index column="list_index"/>
+	    	<composite-element class="gov.epa.emissions.framework.services.cost.ControlMeasureNEIDevice">
+		        <property name="neiDeviceCode" column="nei_device_code" type="integer"/>
+	    	</composite-element>
+  		</array>
+  		
+		<array name="properties" table="control_measure_properties">
+	    	<key column="control_measure_id" not-null="true"/>
+	    	<list-index column="list_index"/>
+	    	<composite-element class="gov.epa.emissions.framework.services.cost.ControlMeasureProperty">
+		        <property name="name" column="name" type="java.lang.String" not-null="true"/>
+		        <many-to-one name="category" class="gov.epa.emissions.framework.services.cost.ControlMeasurePropertyCategory" column="control_measure_property_category_id" not-null="true"/>
+		        <property name="units" column="units" type="java.lang.String" not-null="true"/>
+		        <property name="dataType" column="data_type" type="java.lang.String" not-null="true"/>
+		        <property name="dbFieldName" column="db_field_name" type="java.lang.String" not-null="true"/>
+		        <property name="value" column="value" type="java.lang.String" not-null="true"/>
+	    	</composite-element>
+		</array>
+
+    </class>
+</hibernate-mapping>

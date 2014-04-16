@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyConstraint" table="control_strategy_constraints" schema="emf"> 
+    <id name="controlStrategyId" column="control_strategy_id" />
+	<property name="maxEmisReduction" column="max_emis_reduction" type="double"  not-null="false" />
+	<property name="maxControlEfficiency" column="max_control_efficiency" type="double"  not-null="false" />
+	<property name="minCostPerTon" column="min_cost_per_ton" type="double"  not-null="false" />
+	<property name="minAnnCost" column="min_ann_cost" type="double"  not-null="false" />
+	<property name="domainWideEmisReduction" column="domain_wide_emis_reduction" type="double"  not-null="false" />
+	<property name="domainWidePctReduction" column="domain_wide_pct_reduction" type="double"  not-null="false" />
+	<property name="domainWidePctReductionIncrement" column="domain_wide_pct_reduction_increment" type="double"  not-null="false" />
+	<property name="domainWidePctReductionStart" column="domain_wide_pct_reduction_start" type="double"  not-null="false" />
+	<property name="domainWidePctReductionEnd" column="domain_wide_pct_reduction_end" type="double"  not-null="false" />
+	<property name="replacementControlMinEfficiencyDiff" column="replacement_control_min_eff_diff" type="double"  not-null="false" />
+	<property name="controlProgramMeasureMinPctRedDiff" column="control_program_measure_min_pct_red_diff" type="double"  not-null="false" />
+  </class> 
+</hibernate-mapping>  

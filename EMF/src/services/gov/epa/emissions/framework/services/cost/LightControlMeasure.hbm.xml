@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+	<class name="gov.epa.emissions.framework.services.cost.LightControlMeasure" table="control_measures" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+          
+        <property name="name" column="name" type="java.lang.String" not-null="true"/>
+        <property name="description" column="description" type="java.lang.String" not-null="false"/>
+        <property name="abbreviation" column="abbreviation" type="java.lang.String" not-null="false"/>
+        
+        <many-to-one 
+            name="majorPollutant" 
+            class="gov.epa.emissions.commons.data.Pollutant"
+            column="major_pollutant"/> 
+            
+        <many-to-one cascade="save-update"
+            name="controlTechnology" 
+            class="gov.epa.emissions.framework.services.cost.data.ControlTechnology"
+            column="control_technology"/> 
+            
+        <many-to-one cascade="save-update"
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+            
+        <many-to-one 
+            name="cmClass" 
+            class="gov.epa.emissions.framework.services.cost.ControlMeasureClass"
+            column="cm_class_id"/> 
+
+    </class>
+</hibernate-mapping>  
+

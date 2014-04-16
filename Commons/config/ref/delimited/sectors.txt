@@ -1,0 +1,15 @@
+Sector
+Point
+Non-Point
+Area
+Point IPM
+Point Non-IPM
+Point Fugitive Dust
+Fire
+Average Fire
+Agricultural
+Area Fugitive Dust
+Other Area
+Nonroad
+On Road
+Biogenic

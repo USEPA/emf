@@ -1,0 +1,1425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns='http://earth.google.com/kml/2.1'>
+    <Document>
+        <name>
+            egts3d_l.20000821.1.tx36vgr.2001nmp.ncf_CO_0
+        </name>
+        <visibility>
+            1
+        </visibility>
+        <open>
+            1
+        </open>
+        <ScreenOverlay>
+            <name>
+                Title
+            </name>
+            <Icon>
+                <href>
+                    images/title34653.png
+                </href>
+            </Icon>
+            <overlayXY x="0.2" y="1" xunits="fraction" yunits="fraction"/>
+            <screenXY x="0.2" y="1" xunits="fraction" yunits="fraction"/>
+            <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+            <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+        </ScreenOverlay>
+        <ScreenOverlay>
+            <name>
+                Legend
+            </name>
+            <Icon>
+                <href>
+                    images/legend34652.png
+                </href>
+            </Icon>
+            <overlayXY x="1" y="0.1" xunits="fraction" yunits="fraction"/>
+            <screenXY x="1" y="0.1" xunits="fraction" yunits="fraction"/>
+            <rotationXY x="0" y="0" xunits="fraction" yunits="fraction"/>
+            <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+        </ScreenOverlay>
+        <Style id="poly_clr0">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>0</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>7fc0c0c0</color>
+            </PolyStyle>
+        </Style>
+        <StyleMap id="clr_map0">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#poly_clr0</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#poly_clr0</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Style id="poly_clr1">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>0</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>ffff0000</color>
+            </PolyStyle>
+        </Style>
+        <StyleMap id="clr_map1">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#poly_clr1</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#poly_clr1</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Style id="poly_clr2">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>0</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>ffffff00</color>
+            </PolyStyle>
+        </Style>
+        <StyleMap id="clr_map2">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#poly_clr2</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#poly_clr2</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Style id="poly_clr3">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>0</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>ff00ff00</color>
+            </PolyStyle>
+        </Style>
+        <StyleMap id="clr_map3">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#poly_clr3</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#poly_clr3</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Style id="poly_clr4">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>0</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>ff00ffff</color>
+            </PolyStyle>
+        </Style>
+        <StyleMap id="clr_map4">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#poly_clr4</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#poly_clr4</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Style id="poly_clr5">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>0</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>ff00c8ff</color>
+            </PolyStyle>
+        </Style>
+        <StyleMap id="clr_map5">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#poly_clr5</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#poly_clr5</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Style id="poly_clr6">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>0</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>ff0000ff</color>
+            </PolyStyle>
+        </Style>
+        <StyleMap id="clr_map6">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#poly_clr6</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#poly_clr6</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Folder>
+            <name>VGid domain</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-102.0993,25.28512,0 -102.5988,39.63389,0 -102.1659,39.64381,0 -101.7495,25.29272,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-101.7495,25.29272,0 -102.1659,39.64381,0 -101.7329,39.65193,0 -101.3997,25.29893,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-101.3997,25.29893,0 -101.7329,39.65193,0 -101.2998,39.65825,0 -101.0498,25.30379,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-101.0498,25.30379,0 -101.2998,39.65825,0 -100.8665,39.66276,0 -100.6999,25.30724,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-100.6999,25.30724,0 -100.8665,39.66276,0 -100.4333,39.66547,0 -100.3500,25.30932,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-100.3500,25.30932,0 -100.4333,39.66547,0 -100.0127,39.66634,0 -100.0102,25.30998,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-100.0102,25.30998,0 -100.0127,39.66634,0 -99.59207,39.66552,0 -99.67052,25.30936,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-99.67052,25.30936,0 -99.59207,39.66552,0 -99.17149,39.66300,0 -99.33082,25.30743,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-99.33082,25.30743,0 -99.17149,39.66300,0 -98.75095,39.65878,0 -98.99113,25.30419,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-98.99113,25.30419,0 -98.75095,39.65878,0 -98.33049,39.65285,0 -98.65149,25.29964,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-98.65149,25.29964,0 -98.33049,39.65285,0 -97.91012,39.64524,0 -98.31189,25.29381,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-98.31189,25.29381,0 -97.91012,39.64524,0 -97.56975,39.63776,0 -98.03690,25.28808,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-98.03690,25.28808,0 -97.56975,39.63776,0 -97.27384,39.63044,0 -97.79781,25.28248,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-97.79781,25.28248,0 -97.27384,39.63044,0 -97.01658,39.62347,0 -97.58994,25.27715,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-97.58994,25.27715,0 -97.01658,39.62347,0 -96.79295,39.61668,0 -97.40921,25.27194,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-97.40921,25.27194,0 -96.79295,39.61668,0 -96.59850,39.61060,0 -97.25207,25.26728,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-97.25207,25.26728,0 -96.59850,39.61060,0 -96.42946,39.60487,0 -97.11544,25.26289,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-97.11544,25.26289,0 -96.42946,39.60487,0 -96.28250,39.59966,0 -96.99666,25.25889,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.99666,25.25889,0 -96.28250,39.59966,0 -96.15471,39.59513,0 -96.89336,25.25542,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.89336,25.25542,0 -96.15471,39.59513,0 -96.04362,39.59095,0 -96.80357,25.25221,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.80357,25.25221,0 -96.04362,39.59095,0 -95.94704,39.58712,0 -96.72549,25.24928,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.72549,25.24928,0 -95.94704,39.58712,0 -95.86306,39.58379,0 -96.65759,25.24673,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.65759,25.24673,0 -95.86306,39.58379,0 -95.79004,39.58090,0 -96.59856,25.24452,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.59856,25.24452,0 -95.79004,39.58090,0 -95.72654,39.57838,0 -96.54723,25.24259,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.54723,25.24259,0 -95.72654,39.57838,0 -95.67132,39.57620,0 -96.50259,25.24091,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.50259,25.24091,0 -95.67132,39.57620,0 -95.62333,39.57410,0 -96.46378,25.23930,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.46378,25.23930,0 -95.62333,39.57410,0 -95.57534,39.57199,0 -96.42498,25.23769,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.42498,25.23769,0 -95.57534,39.57199,0 -95.52735,39.56989,0 -96.38618,25.23608,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.38618,25.23608,0 -95.52735,39.56989,0 -95.47936,39.56779,0 -96.34737,25.23447,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.34737,25.23447,0 -95.47936,39.56779,0 -95.43137,39.56569,0 -96.30857,25.23286,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.30857,25.23286,0 -95.43137,39.56569,0 -95.38338,39.56358,0 -96.26977,25.23125,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.26977,25.23125,0 -95.38338,39.56358,0 -95.33540,39.56148,0 -96.23096,25.22963,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.23096,25.22963,0 -95.33540,39.56148,0 -95.28741,39.55938,0 -96.19216,25.22802,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.19216,25.22802,0 -95.28741,39.55938,0 -95.23942,39.55727,0 -96.15336,25.22641,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.15336,25.22641,0 -95.23942,39.55727,0 -95.19146,39.55497,0 -96.11457,25.22465,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.11457,25.22465,0 -95.19146,39.55497,0 -95.14350,39.55267,0 -96.07578,25.22288,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.07578,25.22288,0 -95.14350,39.55267,0 -95.09554,39.55037,0 -96.03699,25.22112,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-96.03699,25.22112,0 -95.09554,39.55037,0 -95.04758,39.54807,0 -95.99821,25.21936,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.99821,25.21936,0 -95.04758,39.54807,0 -94.99963,39.54577,0 -95.95943,25.21759,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.95943,25.21759,0 -94.99963,39.54577,0 -94.95168,39.54347,0 -95.92064,25.21583,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.92064,25.21583,0 -94.95168,39.54347,0 -94.90372,39.54117,0 -95.88185,25.21407,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.88185,25.21407,0 -94.90372,39.54117,0 -94.85576,39.53887,0 -95.84306,25.21230,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.84306,25.21230,0 -94.85576,39.53887,0 -94.80780,39.53657,0 -95.80428,25.21054,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.80428,25.21054,0 -94.80780,39.53657,0 -94.75988,39.53407,0 -95.76550,25.20862,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.76550,25.20862,0 -94.75988,39.53407,0 -94.71195,39.53157,0 -95.72674,25.20671,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.72674,25.20671,0 -94.71195,39.53157,0 -94.66403,39.52906,0 -95.68797,25.20479,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.68797,25.20479,0 -94.66403,39.52906,0 -94.61610,39.52657,0 -95.64920,25.20287,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.64920,25.20287,0 -94.61610,39.52657,0 -94.56818,39.52406,0 -95.61043,25.20096,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.61043,25.20096,0 -94.56818,39.52406,0 -94.52026,39.52156,0 -95.57166,25.19904,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.57166,25.19904,0 -94.52026,39.52156,0 -94.47234,39.51906,0 -95.53289,25.19712,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.53289,25.19712,0 -94.47234,39.51906,0 -94.42441,39.51656,0 -95.49413,25.19521,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.49413,25.19521,0 -94.42441,39.51656,0 -94.37649,39.51406,0 -95.45535,25.19329,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.45535,25.19329,0 -94.37649,39.51406,0 -94.32142,39.51096,0 -95.41079,25.19091,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.41079,25.19091,0 -94.32142,39.51096,0 -94.25809,39.50739,0 -95.35954,25.18818,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.35954,25.18818,0 -94.25809,39.50739,0 -94.18526,39.50328,0 -95.30061,25.18503,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.30061,25.18503,0 -94.18526,39.50328,0 -94.10150,39.49857,0 -95.23284,25.18141,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.23284,25.18141,0 -94.10150,39.49857,0 -94.00517,39.49314,0 -95.15490,25.17725,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.15490,25.17725,0 -94.00517,39.49314,0 -93.89445,39.48668,0 -95.06529,25.17231,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-95.06529,25.17231,0 -93.89445,39.48668,0 -93.76717,39.47897,0 -94.96227,25.16640,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-94.96227,25.16640,0 -93.76717,39.47897,0 -93.62080,39.47010,0 -94.84380,25.15960,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-94.84380,25.15960,0 -93.62080,39.47010,0 -93.45253,39.45965,0 -94.70757,25.15159,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-94.70757,25.15159,0 -93.45253,39.45965,0 -93.25912,39.44712,0 -94.55099,25.14199,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-94.55099,25.14199,0 -93.25912,39.44712,0 -93.03675,39.43252,0 -94.37093,25.13079,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-94.37093,25.13079,0 -93.03675,39.43252,0 -92.78120,39.41489,0 -94.16396,25.11727,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-94.16396,25.11727,0 -92.78120,39.41489,0 -92.48750,39.39393,0 -93.92603,25.10119,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-93.92603,25.10119,0 -92.48750,39.39393,0 -92.14996,39.36891,0 -93.65253,25.08201,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-93.65253,25.08201,0 -92.14996,39.36891,0 -91.72607,39.33580,0 -93.30896,25.05662,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-93.30896,25.05662,0 -91.72607,39.33580,0 -91.30264,39.30096,0 -92.96562,25.02991,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-92.96562,25.02991,0 -91.30264,39.30096,0 -90.87971,39.26440,0 -92.62256,25.00186,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-92.62256,25.00186,0 -90.87971,39.26440,0 -90.45723,39.22610,0 -92.27971,24.97247,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-92.27971,24.97247,0 -90.45723,39.22610,0 -90.03543,39.18610,0 -91.93728,24.94178,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-91.93728,24.94178,0 -90.03543,39.18610,0 -89.61407,39.14436,0 -91.59504,24.90976,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-91.59504,24.90976,0 -89.61407,39.14436,0 -89.19330,39.10092,0 -91.25311,24.87643,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-91.25311,24.87643,0 -89.19330,39.10092,0 -88.77312,39.05576,0 -90.91150,24.84177,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-90.91150,24.84177,0 -88.77312,39.05576,0 -88.35355,39.00890,0 -90.57022,24.80580,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-90.57022,24.80580,0 -88.35355,39.00890,0 -87.93464,38.96034,0 -90.22929,24.76851,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-90.22929,24.76851,0 -87.93464,38.96034,0 -87.51638,38.91009,0 -89.88871,24.72993,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-89.88871,24.72993,0 -87.51638,38.91009,0 -87.09894,38.85815,0 -89.54860,24.69003,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-89.54860,24.69003,0 -87.09894,38.85815,0 -86.68207,38.80451,0 -89.20876,24.64883,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-89.20876,24.64883,0 -86.68207,38.80451,0 -86.26594,38.74920,0 -88.86932,24.60634,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-88.86932,24.60634,0 -86.26594,38.74920,0 -85.85055,38.69220,0 -88.53028,24.56254,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-88.53028,24.56254,0 -85.85055,38.69220,0 -85.43105,38.63282,0 -88.18766,24.51690,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-88.18766,24.51690,0 -85.43105,38.63282,0 -85.01235,38.57173,0 -87.84547,24.46996,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.84547,24.46996,0 -85.01235,38.57173,0 -84.59448,38.50894,0 -87.50374,24.42168,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.50374,24.42168,0 -84.59448,38.50894,0 -84.17746,38.44446,0 -87.16246,24.37209,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+                <Placemark><styleUrl>clr_map0</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.16246,24.37209,0 -84.17746,38.44446,0 -83.76131,38.37828,0 -86.82166,24.32121,0</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 12:03:00</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 13:25:52</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T13:25:52Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 14:26:17</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T14:26:17Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 15:29:29</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T15:29:29Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 16:33:14</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T16:33:14Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 17:00:14</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T17:00:14Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 18:06:13</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T18:06:13Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.10464,30.68709,1 -87.04536,30.99967,1 -86.67124,30.94654,1 -86.73218,30.63427,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T18:06:13Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-85.98900,30.52422,1 -85.92479,30.83584,1 -85.55247,30.77827,1 -85.61831,30.46698,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T18:06:13Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 19:04:55</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T19:04:55Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.10464,30.68709,1 -87.04536,30.99967,1 -86.67124,30.94654,1 -86.73218,30.63427,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T19:04:55Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.73218,30.63427,1 -86.67124,30.94654,1 -86.29771,30.89193,1 -86.36029,30.57998,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T19:04:55Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.36029,30.57998,1 -86.29771,30.89193,1 -85.92479,30.83584,1 -85.98900,30.52422,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T19:04:55Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-85.98900,30.52422,1 -85.92479,30.83584,1 -85.55247,30.77827,1 -85.61831,30.46698,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T19:04:55Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 20:26:24</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map3</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.78095,30.38261,1 -86.73218,30.63427,1 -86.36029,30.57998,1 -86.41038,30.32858,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T20:26:24Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.10464,30.68709,1 -87.04536,30.99967,1 -86.67124,30.94654,1 -86.73218,30.63427,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T20:26:24Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.73218,30.63427,1 -86.67124,30.94654,1 -86.29771,30.89193,1 -86.36029,30.57998,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T20:26:24Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.36029,30.57998,1 -86.29771,30.89193,1 -85.92479,30.83584,1 -85.98900,30.52422,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T20:26:24Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-85.98900,30.52422,1 -85.92479,30.83584,1 -85.55247,30.77827,1 -85.61831,30.46698,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T20:26:24Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 21:48:33</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.10464,30.68709,1 -87.04536,30.99967,1 -86.67124,30.94654,1 -86.73218,30.63427,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T21:48:33Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.73218,30.63427,1 -86.67124,30.94654,1 -86.29771,30.89193,1 -86.36029,30.57998,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T21:48:33Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.36029,30.57998,1 -86.29771,30.89193,1 -85.92479,30.83584,1 -85.98900,30.52422,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T21:48:33Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-85.98900,30.52422,1 -85.92479,30.83584,1 -85.55247,30.77827,1 -85.61831,30.46698,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T21:48:33Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 22:16:05</name>
+            <open>0</open>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-87.10464,30.68709,1 -87.04536,30.99967,1 -86.67124,30.94654,1 -86.73218,30.63427,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T22:16:05Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.73218,30.63427,1 -86.67124,30.94654,1 -86.29771,30.89193,1 -86.36029,30.57998,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T22:16:05Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-86.36029,30.57998,1 -86.29771,30.89193,1 -85.92479,30.83584,1 -85.98900,30.52422,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T22:16:05Z</when></TimeStamp>
+                </Placemark>
+                <Placemark><styleUrl>clr_map1</styleUrl>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>-85.98900,30.52422,1 -85.92479,30.83584,1 -85.55247,30.77827,1 -85.61831,30.46698,1</coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <altitudeMode>clampToGround</altitudeMode>
+                    </Polygon>
+                    <TimeStamp><when>2000-08-21T22:16:05Z</when></TimeStamp>
+                </Placemark>
+        </Folder>
+        <Folder>
+            <name>VGid time: 23:48:55</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 00:33:47</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 01:05:09</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 02:24:33</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 03:42:00</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 04:36:39</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 05:02:18</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 06:42:56</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 07:20:17</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 08:04:48</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 09:13:59</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 10:43:40</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 11:52:33</name>
+            <open>0</open>
+        </Folder>
+        <Folder>
+            <name>VGid time: 12:51:03</name>
+            <open>0</open>
+        </Folder>
+            </Document>
+        </kml>

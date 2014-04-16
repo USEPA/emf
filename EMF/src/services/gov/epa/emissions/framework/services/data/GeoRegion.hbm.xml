@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.data.GeoRegion" table="georegions" schema="emf"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="name" column="name" type="java.lang.String"	not-null="true"/>
+	<property name="description" column="description" type="java.lang.String" not-null="false"/>
+	<property name="resolution"	column="resltn"	type="java.lang.String"	not-null="false"/>
+	<property name="ioapiName" column="ioapi_name" type="java.lang.String" not-null="false"/>
+	<property name="mapProjection" column="map_projtn" type="java.lang.String" not-null="false"/>
+	<property name="xorig"	column="xorig"	type="float" not-null="false"/>
+	<property name="yorig"	column="yorig"	type="float" not-null="false"/>
+	<property name="xcell"	column="xcell"	type="float" not-null="false"/>
+	<property name="ycell"	column="ycell"	type="float" not-null="false"/>
+	<property name="ncols"	column="ncols"	type="integer" not-null="false"/>
+	<property name="nrows"	column="nrows"	type="integer" not-null="false"/>
+	<property name="nthik"  column="nthik"  type="integer" not-null="false"/>
+	<property name="abbreviation" column="abbr" type="java.lang.String" not-null="true"/>
+	<property name="datasetId" column="ds_id" type="integer" not-null="false"/>
+	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+    <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+	
+	<many-to-one
+	  name="type"
+	  class="gov.epa.emissions.framework.services.data.RegionType"
+	  column="type_id"/>
+	  
+	<many-to-one
+	  name="version"
+	  class="gov.epa.emissions.commons.db.version.Version"
+	  column="version_id"/>
+	
+  </class> 
+</hibernate-mapping>  
+

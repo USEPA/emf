@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class name="gov.epa.emissions.commons.security.User" table="users" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="username" column="username" type="java.lang.String" not-null="true" length="255"/>
+        <property name="encryptedPassword" column="password" type="java.lang.String" not-null="true" length="255"/>
+        <property name="name" column="name" type="java.lang.String" not-null="true" length="255"/>
+        <property name="affiliation" column="affiliation" type="java.lang.String" not-null="true" length="255"/>
+        <property name="phone" column="phone" type="java.lang.String" not-null="true" length="15"/>
+        <property name="email" column="email" type="java.lang.String" not-null="true" length="255"/>
+        <property name="admin" column="is_admin" type="boolean"/>
+        <property name="accountDisabled" column="is_account_disabled" type="boolean"/>
+        <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="loggedIn" column="is_login" type="boolean"/>
+    </class>
+</hibernate-mapping>

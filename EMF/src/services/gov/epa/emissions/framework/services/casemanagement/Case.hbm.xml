@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.casemanagement.Case" table="cases" schema="cases"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="name"	column="name"	type="java.lang.String"	not-null="true"/>
+	<property name="description"	column="description"	type="java.lang.String"/>
+	<property name="runStatus" column="run_status" type="java.lang.String" not-null="false"/>
+    <property name="inputFileDir" column="input_file_dir" type="java.lang.String" not-null="false"/>
+    <property name="outputFileDir" column="output_file_dir" type="java.lang.String" not-null="false"/>
+  	<property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
+    <property name="templateUsed" column="template_used" type="java.lang.String" not-null="false"/>
+    <property name="caseTemplate" column="case_template" type="boolean" not-null="false"/>
+    <property name="isFinal" column="is_final" type="boolean" not-null="false"/>
+    <property name="numMetLayers" column="num_met_layers" type="integer" not-null="false"/>
+    <property name="numEmissionsLayers" column="num_emissions_layers" type="integer" not-null="false"/>
+    <property name="baseYear" column="base_year" type="integer" not-null="false"/>
+    <property name="futureYear" column="future_year" type="integer" not-null="false"/>
+    <property name="startDate" column="start_date" type="java.util.Date" not-null="false" length="4"/>
+    <property name="endDate" column="end_date" type="java.util.Date" not-null="false" length="4"/>
+	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+  	<property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="modelVersion" column="model_version" type="java.lang.String" not-null="false"/>
+  	
+	 <many-to-one cascade="save-update"
+            name="abbreviation" 
+            class="gov.epa.emissions.framework.services.casemanagement.Abbreviation"
+            column="abbreviation_id"/> 
+
+	 <many-to-one 
+            name="model" 
+            class="gov.epa.emissions.framework.services.casemanagement.ModelToRun"
+            column="model_to_run_id"/> 
+
+	 <many-to-one 
+            name="airQualityModel" 
+            class="gov.epa.emissions.framework.services.casemanagement.AirQualityModel"
+            column="air_quality_model_id"/> 
+
+	 <many-to-one 
+            name="caseCategory" 
+            class="gov.epa.emissions.framework.services.casemanagement.CaseCategory"
+            column="category_id"/> 
+
+	 <many-to-one 
+            name="emissionsYear" 
+            class="gov.epa.emissions.framework.services.casemanagement.EmissionsYear"
+            column="emissions_year_id"/> 
+
+	 <many-to-one 
+            name="meteorlogicalYear" 
+            class="gov.epa.emissions.framework.services.casemanagement.MeteorlogicalYear"
+            column="meteorlogical_year_id"/> 
+
+	 <many-to-one 
+            name="speciation" 
+            class="gov.epa.emissions.framework.services.casemanagement.Speciation"
+            column="speciation_id"/> 
+
+	 <many-to-one
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator_user_id"/> 
+
+	 <many-to-one
+            name="lastModifiedBy" 
+            class="gov.epa.emissions.commons.security.User"
+            column="user_id"/> 
+            
+	<many-to-one 
+            name="project" 
+            class="gov.epa.emissions.commons.data.Project"
+            column="project_id"/> 
+
+	<many-to-one
+            name="modelingRegion" 
+            class="gov.epa.emissions.commons.data.Region"
+            column="modeling_region_id"/> 
+
+	<many-to-one
+            name="controlRegion" 
+            class="gov.epa.emissions.commons.data.Region"
+            column="control_region_id"/> 
+           
+    <array name="sectors" table="case_sectors" schema="cases" cascade="save-update">
+    		<key column="case_id" not-null="true"/>
+    		<list-index column="list_index"/>
+    		<many-to-many class="gov.epa.emissions.commons.data.Sector" column="sector_id"/>
+  	</array>
+  	
+  	<array name="regions" table="case_regions" schema="cases">
+    		<key column="case_id" not-null="true"/>
+    		<list-index column="list_index"/>
+    		<many-to-many class="gov.epa.emissions.framework.services.data.GeoRegion" column="region_id"/>
+  	</array>
+
+  </class> 
+</hibernate-mapping>  
+

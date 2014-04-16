@@ -1,0 +1,11 @@
+Test Cases - User Management 
+----------------------------
+
+1. Login
+2. Register new User
+3. Update Profile
+4. Delete User (Admin)
+5. Update User (Admin)
+6. New User (Admin)
+7. Change User to Admin (Admin)
+8. Logout

@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<project name="AnalysisEngine" default="tests" basedir=".">
+
+	<!--  =================== Properties ====================================== -->
+	<property file="build.properties" />
+	<property file="${user.home}/build.properties" />
+
+	<property name="env" environment="env" value="env" />
+	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+
+	<property name="build.home" value="build/sandbox" />
+	<property name="build.dist.dir" value="${build.home}/dist" />
+	<property name="build.dist.dir.lib" value="${build.home}/dist/lib" />
+	<property name="build.classes.dir" value="${build.dist.dir}/classes" />
+
+	<property name="reports.dir" value="${build.home}/reports" />
+	<property name="reports.tests.dir" value="${reports.dir}/tests" />
+
+	<property name="test.unit.dir" value="test/unit" />
+
+	<property name="app.name" value="ae" />
+	<property name="app.path" value="/${app.name}" />
+
+
+	<path id="classpath">
+		<pathelement location="${build.classes.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${reports.dir}" />
+		<mkdir dir="${reports.tests.dir}" />
+	</target>
+
+
+	<target name="clean">
+		<delete includeemptydirs="true" failonerror="no">
+			<fileset dir="${build.home}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="compile-src" depends="clean, init">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile" depends="clean, init, compile-src" />
+
+	<target name="do-dist" depends="do-dist-jar-only" />
+
+	<target name="do-dist-jar-only" depends="compile">
+		<jar jarfile="${build.home}/${app.name}.jar" basedir="${build.classes.dir}" />
+	</target>
+
+	<target name="full-dist" depends="full-dist-sandbox" description="Builds the EMF Client distribution ">
+		<zip destfile="${build.home}/AnalysisEngine.zip" basedir="${build.dist.dir}" includes="lib/**,*.jar,*.bat,*.txt" />
+	</target>
+
+	<target name="full-dist-sandbox" depends="compile" description="Builds the sandbox for AE distribution">
+		<mkdir dir="${build.dist.dir}" />
+		<mkdir dir="${build.dist.dir.lib}" />
+
+		<copy todir="${build.dist.dir.lib}">
+			<fileset dir="${lib.dir}" />
+		</copy>
+		<jar jarfile="${build.dist.dir}/${app.name}.jar" basedir="${build.classes.dir}">
+			<include name="**/*" />
+		</jar>
+		<copy todir="${build.dist.dir}">
+			<fileset dir="${basedir}/deploy">
+				<include name="User_Prefs.txt" />
+				<include name="AnalysisEngine.bat" />
+				<include name="ReadMe.txt" />
+			</fileset>
+		</copy>
+	</target>
+
+
+	<!-- Test Targets -->
+
+	<target name="compile-tests" depends="clean, init, compile-src">
+		<javac srcdir="${test.unit.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+	</target>
+
+	<target name="do-tests">
+		<junit printsummary="yes" haltonfailure="no">
+			<classpath refid="classpath" />
+			<formatter type="xml" />
+			<batchtest fork="yes" todir="${reports.tests.dir}">
+				<fileset dir="${build.classes.dir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="tests" depends="compile-tests, do-tests" />
+
+</project>
+

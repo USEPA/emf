@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.data.Note" table="notes" schema="emf"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="name"			column="name"			type="java.lang.String"		not-null="true"		length="15"/>
+	<property name="date" 			column="date_time"		type="java.util.Date"		not-null="true" 	length="10"/>
+	<property name="details" 		column="details"		type="java.lang.String"		not-null="true"/>
+	<property name="references" 	column="refers_notes"	type="java.lang.String"		not-null="true"/>
+
+  <many-to-one cascade="save-update"
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+
+  <many-to-one cascade="save-update"
+            name="noteType" 
+            class="gov.epa.emissions.framework.services.data.NoteType"
+            column="type"/> 
+
+  </class> 
+</hibernate-mapping>  

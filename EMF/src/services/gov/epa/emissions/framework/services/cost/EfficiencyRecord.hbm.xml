@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+	<class name="gov.epa.emissions.framework.services.cost.data.EfficiencyRecord" table="control_measure_efficiencyrecords" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+		<many-to-one 
+             name="pollutant" 
+         	 class="gov.epa.emissions.commons.data.Pollutant"
+         	 column="pollutant_id"/> 
+        <property name="controlMeasureId" column="control_measures_id" not-null="true"/>
+     	<property name="recordId" column="record_id" type="integer" not-null="false"/> 
+		<property name="existingMeasureAbbr" column="existing_measure_abbr" type="java.lang.String" not-null="false"/>
+		<property name="existingDevCode" column="existing_dev_code" type="integer" not-null="false"/>
+		<property name="locale" column="locale" type="java.lang.String" not-null="false"/>
+		<property name="efficiency" column="efficiency" type="double" not-null="false"/>
+		<property name="costYear" column="cost_year" type="integer" not-null="false"/>
+		<property name="costPerTon" column="cost_per_ton" type="double" not-null="false"/>
+	    <property name="ruleEffectiveness" column="rule_effectiveness" type="float" not-null="false"/>
+        <property name="rulePenetration" column="rule_penetration" type="float" not-null="false"/>
+        <property name="equationType" column="equation_type" type="java.lang.String" not-null="false"/>
+        <property name="capRecFactor" column="cap_rec_factor" type="double" not-null="false"/>
+        <property name="discountRate" column="discount_rate" type="double" not-null="false"/>
+        <property name="detail" column="detail" type="java.lang.String" not-null="false"/>
+        <property name="effectiveDate" column="effective_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="lastModifiedBy" column="last_modified_by" type="java.lang.String" not-null="true"/>
+        <property name="lastModifiedTime" column="last_modified_time" type="java.util.Date" not-null="true" length="4"/>
+		<property name="refYrCostPerTon" column="ref_yr_cost_per_ton" type="double" not-null="false"/>
+        <property name="minEmis" column="min_emis" type="double" not-null="false"/>
+		<property name="maxEmis" column="max_emis" type="double" not-null="false"/>
+		<property name="capitalAnnualizedRatio" column="cap_ann_ratio" type="double" not-null="false"/>
+		<property name="incrementalCostPerTon" column="incremental_cost_per_ton" type="double" not-null="false"/>
+    </class>
+</hibernate-mapping>  
+

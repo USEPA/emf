@@ -1,0 +1,37 @@
+"#EMF_CASE_NAME=2002ac V3 CAP for EMF training"
+"#EMF_CASE_ABBREVIATION=2002acT"
+"#EMF_CASE_DESCRIPTION=Version 3 Platform (Spring) CAP only using NEI 2002 v3,CB05, SPECIATE4.0  for EVALUATION All 'oth' sectors removed - ie., Canada and Mexico, and offshore. For month-specific inputs, only January and July data included."
+"#EMF_CASE_CATEGORY=run SMOKE for CMAQ"
+"#EMF_PROJECT=2002-based platform"
+"#EMF_SECTORS=ptfire&alm&nonpt&ag&afdust&ptipm&ptnonipm&nonptfire&nonroad&onroad"
+"#EMF_CASE_COPIED_FROM=2002_Platformv2_CAPONLY_36"
+"#EMF_LAST_MODIFIED=EMF User on 09/06/2007 14:42"
+"#EMF_IS_FINAL=false "
+"#EMF_IS_TEMPLATE=false"
+Tab,Parameter,Order,Envt. Var.,Sector,Job,Program,Value,Type,Reqd?,Local?,Last Modified,Notes,Purpose
+Summary,Model to Run,0,MODEL_LABEL,,All jobs for sector,All programs,"SMOKE 2.3.2",String,TRUE,TRUE,,,
+Summary,Model Version,0,MODEL_LABEL,All sectors,All jobs for sector,All programs,"",String,TRUE,TRUE,,,
+Summary,Modeling Region,0,,All sectors,All jobs for sector,All programs,"National",String,TRUE,TRUE,,,
+Summary,Grid Name,0,IOAPI_GRIDNAME_1,All sectors,All jobs for sector,All programs,"US36KM_148X112",String,TRUE,TRUE,,,
+Summary,Grid Resolution,0,EMF_GRID,All sectors,All jobs for sector,All programs,"36km",String,TRUE,TRUE,,,
+Summary,Met Layers,0,,All sectors,All jobs for sector,All programs,null,Integer,TRUE,TRUE,,,
+Summary,Emission Layers,0,,All sectors,All jobs for sector,All programs,10,Integer,TRUE,TRUE,,,
+Summary,Downstream Model,0,EMF_AQM,All sectors,All jobs for sector,All programs,"CMAQ",String,TRUE,TRUE,,,
+Summary,Speciation,0,EMF_SPC,All sectors,All jobs for sector,All programs,"cmaq_cb05pm",String,TRUE,TRUE,,,
+Summary,Meteorological Year,0,,All sectors,All jobs for sector,All programs,2002,String,TRUE,TRUE,,,
+Summary,Base Year,0,BASE_YEAR,All sectors,All jobs for sector,All programs,0,String,TRUE,TRUE,,,
+Summary,Future Year,0,FUTURE_YEAR,All sectors,All jobs for sector,All programs,2002,String,TRUE,TRUE,,,
+Summary,Start Date & Time,0,EPI_STDATE_TIME,All sectors,All jobs for sector,All programs,06/08/0001 00:00,Date,TRUE,TRUE,,,
+Summary,End Date & Time,0,EPI_ENDATE_TIME,All sectors,All jobs for sector,All programs,07/13/0012 23:59,Date,TRUE,TRUE,,,
+Parameters,"SMOKE run type",0.0,"SMOKE_RUNTYPE","All sectors","All jobs for sector","n/a","emf",String,true,true,,"","Tells SMOKE scripts when being run from the EMF to change behavior"
+Parameters,"Case name",0.0,"CASE","All sectors","All jobs for sector","n/a","2002ac",String,true,true,,"",""
+Parameters,"I/O API sphere setting",0.0,"IOAPI_ISPH","All sectors","All jobs for sector","All Programs","19",String,true,false,,"",""
+Parameters,"Spinup duration",0.0,"SPINUP_DURATION","All sectors","All jobs for sector","All Programs","10",Integer,true,true,,"",""
+Parameters,"Check for duplicates",0.0,"RAW_DUP_CHECK","All sectors","All jobs for sector","All Programs","Y",String,true,true,,"",""
+Parameters,"Use pollutant conversion file?",0.0,"POLLUTANT_CONVERSION","All sectors","All jobs for sector","Spcmat","Y",String,true,true,,"",""
+Parameters,"Renormalize temporal profiles?",0.0,"RENORM_TPROF","All sectors","All jobs for sector","Temporal","Y",String,true,true,,"",""
+Parameters,"Output time zone",0.0,"OUTZONE","All sectors","All jobs for sector","All Programs","0",Integer,true,true,,"",""
+Parameters,"Temporal type",0.0,"L_TYPE","onroad","All jobs for sector","All programs for sector","week",String,true,true,,"",""
+Parameters,"Merge type",0.0,"M_TYPE","onroad","All jobs for sector","All programs for sector","week",String,true,true,,"",""
+Parameters,"Smkinven formula",0.0,"SMKINVEN_FORMULA","onroad","All jobs for sector","Smkinven","'EXH__PMC=EXH__PM10-EXH__PM2_5,BRK__PMC=BRK__PM10-BRK__PM2_5, TIR__PMC=TIR__PM10-TIR__PM2_5",String,true,true,,"",""
+

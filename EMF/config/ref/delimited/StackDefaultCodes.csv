@@ -1,0 +1,10 @@
+#TYPES=int4(10)|varchar(50)|varchar(50)
+"Default_Code","Description","Text_Code"
+0,"Original Value (not a default)","NONE"
+1,"SCC Default","SCC"
+2,"SIC Default","SIC"
+3,"National Default","NAT"
+4,"Calculated Value","CALC"
+5,"MACT Default","MACT"
+6,"State Revision","STATE"
+8,"CAMD Value","CAMD"

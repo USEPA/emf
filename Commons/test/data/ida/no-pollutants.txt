@@ -1,0 +1,15 @@
+#IDA
+#TYPE    Area Source Inventory
+#DESC    Includes mobile non-road sources
+#COUNTRY US
+
+#YEAR    1996
+#DESC    National Emissions Trends Inventory, version 3.11
+
+#DESC    Used for EPA's "heavy duty diesel" study
+#DESC    Transportable fraction correction for windblown dust already made to PM10 and PM25
+#DESC    North Carolina only
+
+#DATA  
+
+37  12102002000    0.0000    0.0000     0.0000   0.00  0  0.00    0.0000    0.0000     0.0000   0.00  0  0.00    0.0000    0.0000     0.0000   0.00  0  0.00  250.4871    0.6882     0.0000   0.00  0  0.00   13.5481    0.0372     0.0000   0.00  0  0.00    5.8644    0.0161     0.0000   0.00  0  0.00    0.0041    0.0000     0.0000   0.00  0  0.00

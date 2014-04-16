@@ -1,0 +1,16 @@
+Tab,JobName,Order,Sector,RunStatus,StartDate,CompletionDate,Executable,Arguments,Path,QueueOptions,JobGroup,Local,QueueID,User,Host,Notes,Purpose,DependsOn
+Jobs,"Annual alm",0,"alm",Not Started,,,smk_alm_2002ac.csh,"-q '1 2 3 4'",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","Marc Houyoux", localhost,"","",""
+Jobs,"Annual ag",0,"ag",Not Started,,,smk_ptipm_2002ac.csh,"-q '1 2 3 4'",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"Annual afdust",0,"afdust",Not Started,,,smk_afdust_2002ac.csh,"-q '1 2 3 4'",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"July ptipm",0,"ptipm",Not Started,,,smk_ptipm_2002ac.csh,"-m 7 Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"January ptfire",0,"ptfire",Not Started,,,smk_ptfire_2002ac.csh,"-m 1 N",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"July nonroad",0,"nonroad",Not Started,,,smk_nonroad_2002ac.csh,"-m 7 Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"Annual ptnonipm",0,"ptnonipm",Submitted,05/23/2007 13:59,,smk_ptnonipm_2002ac.csh,"-q '1 2 3 4' Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","Marc Houyoux", localhost,"","",""
+Jobs,"January ptipm",0,"ptipm",Submitted,05/23/2007 14:07,,smk_ptipm_2002ac.csh,"-m 1 Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","Marc Houyoux", localhost,"","",""
+Jobs,"July ptfire",0,"ptfire",Submitted,06/13/2007 10:31,,smk_ptfire_2002ac.csh,"-m 7 Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"January onroad",0,"onroad",Submitted,07/16/2007 16:35,,smk_onroad_2002ac.csh,"-m 1 Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","EMF User", localhost,"","",""
+Jobs,"July onroad",0,"onroad",Submitted,07/16/2007 16:41,,smk_onroad_2002ac.csh,"-m 7 Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"January nonroad",0,"nonroad",Submitted,07/23/2007 22:38,,smk_nonroad_2002ac.csh,"-m 1 Y",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","", localhost,"","",""
+Jobs,"Annual nonptfire",0,"nonptfire",Submitted,07/23/2007 11:59,,smk_nonptfire_2002ac.csh,"-q '1 2 3 4'",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","Marc Houyoux", localhost,"","",""
+Jobs,"Annual nonpoint",0,"nonpt",Not Started,,,smk_nonpt_2002ac.csh,"-q '1 2 3 4'",/home/training/emf_training/2002/smoke/subsys/v3/smoke23/scripts/cases/2002ac,"","",true,"","Marc Houyoux", localhost,"","",""
+

@@ -1,0 +1,7 @@
+CMName,CMAbbreviation,MajorPoll,ControlTechnology,SourceGroup,Sector,Class,EquipLife,NEIDeviceCode,DateReviewed,DataSource,Description
+Vacuum Sweeping; Paved Roads (All),PPVAC000,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,,
+Vacuum Sweeping; Paved Roads (Unknown 1),PPVAC110,PM10,Vacuum Sweeping,Paved Road,AFDUST,Known,8,,1999,1,
+Chemical Stabilization; Unpaved Roads (All),PUCHS000,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,2|4|6|8|10,
+Chemical Stabilization; Unpaved Roads (Unknown 1),PUCHS150,PM10,Chemical Stabilization,Unpaved Road,AFDUST,Known,,,1997,3|5|7|9|11,
+Hot Asphalt Paving; Unpaved Roads (All),PUHAP000,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,3|2|1
+Hot Asphalt Paving; Unpaved Roads (Unknown 1),PUHAP270,PM10,Hot Asphalt Paving,Unpaved Road,AFDUST,Known,40,,1999,1|2|13|4

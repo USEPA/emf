@@ -1,0 +1,11 @@
+########
+# Please copy it as build.properties (in the same folder as this file), 
+# and change the properties as needed
+
+
+# app
+app.name=epa-commons
+app.version=0.5
+
+# Project Names
+analysisengine.project.name=AnalysisEngine

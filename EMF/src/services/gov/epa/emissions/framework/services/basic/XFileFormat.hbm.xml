@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class name="gov.epa.emissions.commons.io.XFileFormat" table="file_formats" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="java.lang.String" not-null="true" length="255"/>
+        <property name="description" column="description" type="java.lang.String" not-null="false"/>
+        <property name="delimiter" column="delimiter" type="java.lang.String" not-null="false"/>
+        <property name="fixedFormat" column="fixed_format" type="boolean"/>
+        <property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="dateAdded" column="date_added" type="java.util.Date" not-null="false" length="4"/>
+        
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/> 
+
+        <array name="columns" table="fileformat_columns" cascade="save-update">
+      		<key column="file_format_id"/>
+      		<list-index column="list_index"/>
+		    <composite-element class="gov.epa.emissions.commons.io.Column">
+	        	<property name="name" column="name" type="java.lang.String" not-null="true"/>
+	        	<property name="sqlType" column="type" type="java.lang.String" not-null="true"/>
+	        	<property name="defaultValue" column="default_value" type="java.lang.String" not-null="false"/>
+	        	<property name="description" column="description" type="java.lang.String" not-null="false"/>
+	        	<property name="formatterClass" column="formatter" type="java.lang.String" not-null="false"/>
+	        	<property name="constraints" column="constraints" type="java.lang.String" not-null="false"/>
+	        	<property name="mandatory" column="mandatory" type="boolean"/>	
+	    		<property name="width" column="width" type="integer" not-null="false"/>
+	    		<property name="spaces" column="spaces" type="integer" not-null="false"/>
+	    		<property name="fixFormatStart" column="fix_format_start" type="integer" not-null="false"/>
+	    		<property name="fixFormatEnd" column="fix_format_end" type="integer" not-null="false"/>
+      		</composite-element>
+         </array>
+    
+    </class>
+</hibernate-mapping>
