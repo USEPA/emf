@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.data.QAProgram;
+import gov.epa.emissions.commons.data.QAStepTemplate;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -61,17 +62,19 @@ public class EditableDatasetTypePresenterImpl implements EditableDatasetTypePres
         editable.disposeView();
     }
 
-    public void doSave(String name, String description, KeyVal[] keyVals, String sortOrder) throws EmfException {
-        update(name, description, keyVals, sortOrder);
+    public void doSave(String name, String description, KeyVal[] keyVals, String sortOrder, QAStepTemplate[] templates) throws EmfException {
+        update(name, description, keyVals, sortOrder, templates);
         type = service().updateDatasetType(type);
         closeView();
     }
 
-    private void update(String name, String description, KeyVal[] keyVals, String sortOrder) throws EmfException {
+    private void update(String name, String description, KeyVal[] keyVals, String sortOrder
+            , QAStepTemplate[] templates) throws EmfException {
         type.setName(name);
         type.setDescription(description);
         type.setDefaultSortOrder(sortOrder);
-
+        type.setQaStepTemplates(templates);
+ 
         verifyDuplicates(keyVals);
         type.setKeyVals(keyVals);
         type.setLastModifiedDate(new Date());

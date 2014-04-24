@@ -137,7 +137,7 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
         EditableDatasetTypePresenter presenter = new EditableDatasetTypePresenterImpl((EmfSession) session.proxy(),
                 (EditableDatasetTypeView) view.proxy(), null, typeProxy);
 
-        presenter.doSave(name, desc, keyVals, sortOrder);
+        presenter.doSave(name, desc, keyVals, sortOrder, null);
     }
 
     public void testShouldFailWithErrorIfDuplicateKeywordsInKeyValsOnSave() {
@@ -161,7 +161,7 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
                 ((DatasetType) type.proxy()));
 
         try {
-            presenter.doSave(name, desc, keyVals, sortOrder);
+            presenter.doSave(name, desc, keyVals, sortOrder,null);
         } catch (EmfException e) {
             assertEquals("duplicate keyword: 'key1'", e.getMessage());
             return;
