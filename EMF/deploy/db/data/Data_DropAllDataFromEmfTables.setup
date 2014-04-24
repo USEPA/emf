@@ -1,0 +1,28 @@
+------------------------ Data Management tables ------------------------------
+DELETE FROM emf.datasets_sectors;
+DELETE FROM emissions.versions;
+DELETE FROM emf.countries;
+DELETE FROM emf.dataset_access_logs;
+DELETE FROM emf.dataset_types;
+DELETE FROM emf.datasets;
+DELETE FROM emf.properties;
+DELETE FROM emf.sectors;
+DELETE FROM emf.status;
+DELETE FROM emf.sector_criteria;
+DELETE FROM emf.datasets_keywords;
+DELETE FROM emf.keywords;
+DELETE FROM emf.dataset_types_keywords;
+DELETE FROM emf.external_sources;
+DELETE FROM emf.internal_sources;
+DELETE FROM emf.users;
+DELETE FROM emf.intended_uses;
+DELETE FROM emf.projects;
+DELETE FROM emf.regions;
+DELETE FROM emf.notes;
+DELETE FROM emf.note_types;
+DELETE FROM emf.revisions;
+DELETE FROM emf.datasets_notes;
+DELETE FROM emf.georegions;
+----------------------------- QA Management tables -------------------------------
+DELETE FROM emf.qa_steps;
+DELETE FROM emf.dataset_types_qa_step_templates;

@@ -1,0 +1,60 @@
+3, Value for SMK_MAXWARNING:  
+3,WARNING: Could not read "INDXD" from file "PDAY"
+3,WARNING: Duplicate records found for 
+3,WARNING: Hour-specific starting date/time 
+3,WARNING: If FILL_ANNUAL was set to Y in previous SMKINVEN
+3,>>--->> WARNING in subroutine 
+3,WARNING: Largest negative value for
+3,WARNING: Missing annual emissions for 
+3,WARNING: Missing control efficiency for 
+3,WARNING: Missing emission factor for 
+3,WARNING: Missing primary control code for 
+3,WARNING: Missing rule effectiveness for 
+3,WARNING: Missing rule penetration for 
+3,WARNING: No grouping criteria in PELVCONFIG will likely
+3,WARNING: output file already exists: 
+3,WARNING: Processing non-wildfire sources
+3,WARNING: Records in GSCNV file for pollutant 
+3,WARNING: Resetting negative value of 
+3,WARNING: Resetting number of time steps for report
+3,WARNING: SCC code is less than 8 characters long at line
+3,WARNING: Skipping requested output data 
+3,WARNING: Some base year rule effectiveness values 
+3,WARNING: Some base year rule penetration values 
+3,WARNING: Using average day emissions to fill in annual 
+3,WARNING: Missing SIC code at line
+3,WARNING: Missing average day emissions for
+3,WARNING: Different plant descriptions found for ORIS ID
+3,WARNING: Different FIPS codes found for ORIS ID
+3,WARNING: All emissions set to 0. for ORIS:
+3,WARNING: ORIS ID requested, but is not present in ASCII inventory file
+3,WARNING: Boiler requested, but is not present in ASCII inventory file
+3,WARNING: Pollutant .*for report .* not found     
+2,WARNING: .*  stack groups are outside of grid 
+2,WARNING: Inventory base year .* is inconsistent w
+2,WARNING: No kept pollutants found at line .* 
+2,WARNING: No speciation profiles found for pollutant 
+2,WARNING: Causing zeroing emissions due to missing surrogate .* for co/st/cy :: .*
+2,WARNING: Re-normalizing county total surrogate fractions of Co/St/Ct:  .* :: Surrogate: .* greater than 1 ::   .*
+2,WARNING: Stack diameter is equal to 0 at line .* :
+2,WARNING: State and/or county code is zero \(missing\) at 
+2,WARNING: Duplicate entry in GRIDDING x-ref file: 
+2,WARNING: Duplicate entry in SPECIATION x-ref file: 
+2,WARNING: Duplicate entry in TEMPORAL x-ref file: 
+2, WARNING: Some excluded CEM records contained years other than the base year 
+2,WARNING: Time zone .* in day-specific file at line .* does not match output time zone  
+2,WARNING: Hour-specific starting date/time of .*  @ .* is later than episode starting date/time of .* 
+2,WARNING: Hour-specific pollutant .* is not in inventory file, so it will be ignored
+2,WARNING: Skipping pollutant .* at line .* - not in inventory
+3,Value for SMK_MAXERROR:
+1, \*\*\* ERROR ABORT in subroutine
+1,ERROR: input file not found:
+1,Error reading REAL from
+1,Error creating netCDF file
+2,netCDF error number
+2,WARNING: Missing NFDRS code at line
+2, Time step error for file:  PDAY
+2, Region: .* Plant: .* Char1: .* Char2: ERROR Char3: .*
+
+
+

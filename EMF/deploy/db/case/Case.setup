@@ -1,0 +1,3 @@
+\i deploy/db/case/Case_DropAllEMFTables.setup
+\i deploy/db/case/Case_CreateEMFTables.setup
+\i deploy/db/case/Case_PopulateEmfDataTables.setup

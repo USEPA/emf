@@ -1,0 +1,93 @@
+DROP TABLE reference.pollutants;
+
+ALTER TABLE reference.gdplev ADD CONSTRAINT gdplev_pkey PRIMARY KEY (annual);
+ALTER TABLE reference.fips ADD CONSTRAINT fips_pkey PRIMARY KEY (costcy_fips);
+ALTER TABLE reference.mact_codes ADD CONSTRAINT mact_pkey PRIMARY KEY (mact_code);
+ALTER TABLE reference.naics_codes ADD CONSTRAINT naics_pkey PRIMARY KEY (naics_code);
+ALTER TABLE reference.countries ADD CONSTRAINT countries_pk PRIMARY KEY (country_code);
+ALTER TABLE reference.pollutant_codes ADD CONSTRAINT pollutant_codes_pkey PRIMARY KEY (pollutant_code);
+ALTER TABLE reference.states ADD CONSTRAINT states_pkey PRIMARY KEY (country_code, state_abbr);
+ALTER TABLE reference.scc ADD CONSTRAINT scc_pkey PRIMARY KEY (scc);
+ALTER TABLE reference.scc_codes ADD CONSTRAINT scc_codes_pkey PRIMARY KEY (scc);
+ALTER TABLE reference.sic_codes ADD CONSTRAINT sic_pkey PRIMARY KEY (sic);
+ALTER TABLE reference.state_county_fips_codes ADD CONSTRAINT state_county_fips_pkey PRIMARY KEY (state_county_fips_code);
+
+
+CREATE INDEX countries_abbr
+  ON reference.countries
+  USING btree
+  (country_code, country_abbr);
+
+CREATE INDEX gdplev_annual
+  ON reference.gdplev
+  USING btree
+  (annual);
+ALTER TABLE reference.gdplev CLUSTER ON gdplev_annual;
+
+CREATE INDEX fips_co_st
+  ON reference.fips
+  USING btree
+  (country_code, state_county_fips);
+
+CREATE INDEX fips_conum_st
+  ON reference.fips
+  USING btree
+  (country_num, state_county_fips);
+   
+-- DROP INDEX reference.fips_pk;
+    
+CREATE INDEX pollutant_codes_tonames
+  ON reference.pollutant_codes
+  USING btree
+  (pollutant_code, pollutant_code_desc);
+
+-- some day, merge SCC and SCC-codes
+-- also, merge FIPS with state_county_fips_codes
+
+CREATE INDEX invtable_names
+  ON reference.invtable
+  USING btree
+  (name);
+CREATE INDEX invtable_cas
+  ON reference.invtable
+  USING btree
+  (cas);
+
+-- 9/25/2008 - indexes for reference.rsm_inv_sectors table
+CREATE INDEX idx_rsm_inv_sectors_inv_sector
+  ON reference.rsm_inv_sectors
+  USING btree
+  (inv_sector);
+
+CREATE INDEX idx_rsm_inv_sectors_poll
+  ON reference.rsm_inv_sectors
+  USING btree
+  (pollutant);
+
+-- 9/25/2008 - indexes for reference.rsm_naa_fips table
+CREATE INDEX idx_rsm_naa_fips_fips
+  ON reference.rsm_naa_fips
+  USING btree
+  (fips);
+
+  
+
+CREATE INDEX sic_codes_sic
+  ON reference.sic_codes
+  USING btree
+  (sic);
+ALTER TABLE reference.sic_codes CLUSTER ON sic_codes_sic;
+
+CREATE INDEX naics_codes_sic
+  ON reference.naics_codes
+  USING btree
+  (naics_code);
+ALTER TABLE reference.naics_codes CLUSTER ON naics_codes_naics_code;
+
+CREATE INDEX mact_codes_mact_code
+  ON reference.mact_codes
+  USING btree
+  (mact_code);
+ALTER TABLE reference.mact_codes CLUSTER ON mact_codes_mact_code;
+
+  

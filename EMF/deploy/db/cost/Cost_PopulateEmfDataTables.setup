@@ -1,0 +1,276 @@
+-- emf.strategy_types
+insert into emf.strategy_types values(DEFAULT,'Max Emissions Reduction','Max Emissions Reduction', '', 'gov.epa.emissions.framework.services.cost.analysis.maxreduction.MaxEmsRedStrategy');
+insert into emf.strategy_types values(DEFAULT,'Least Cost','Least Cost', '', 'gov.epa.emissions.framework.services.cost.analysis.leastcost.StrategyTask');
+insert into emf.strategy_types values(DEFAULT,'Least Cost Curve','Least Cost Curve', '', 'gov.epa.emissions.framework.services.cost.analysis.leastcostcurve.StrategyTask');
+insert into emf.strategy_types (name, description, default_sortorder, strategy_classname) values ('Apply Measures In Series', 'Apply Measures In Series', '''''', 'gov.epa.emissions.framework.services.cost.analysis.applyMeasuresInSeries.StrategyTask');
+insert into emf.strategy_types values(DEFAULT,'Annotate Inventory','Annotate Inventory', '', 'gov.epa.emissions.framework.services.cost.analysis.annotateinventory.StrategyTask');
+insert into emf.strategy_types values(DEFAULT,'Project Future Year Inventory','Project Future Year Inventory', '', 'gov.epa.emissions.framework.services.cost.analysis.projectFutureYearInventory.StrategyTask');
+-- emf.strategy_types
+
+-- emf.strategy_result_types
+insert into emf.strategy_result_types (name, optional, classname) select 'Strategy Detailed Result', false, '';
+insert into emf.strategy_result_types (name, optional, classname) select 'Strategy Measure Summary', false, '';
+insert into emf.strategy_result_types (name, optional, classname) select 'Least Cost Control Measure Worksheet', false, '';
+insert into emf.strategy_result_types (name, optional, classname) select 'Controlled Inventory', false, '';
+insert into emf.strategy_result_types (name, optional, classname) select 'Least Cost Curve Summary', false, '';
+insert into emf.strategy_result_types (name, optional, classname) select 'Annotated Inventory', false, '';
+insert into emf.strategy_result_types (name, optional, classname) select 'Strategy Messages', false, '';
+insert into emf.strategy_result_types (name, optional, classname) select 'Strategy County Summary', false, 'gov.epa.emissions.framework.services.cost.analysis.StrategyCountySummaryTask';
+insert into emf.strategy_result_types (name, optional, classname) select 'Strategy Impact Summary', true, 'gov.epa.emissions.framework.services.cost.analysis.StrategyCountyImpactSummaryTask';
+insert into emf.strategy_result_types (name, optional, classname) select 'RSM Percent Reduction Summary', true, 'gov.epa.emissions.framework.services.cost.analysis.StrategyRSMPctRedSummaryTask';
+insert into emf.strategy_result_types (name) select 'Projected Future Year Inventory';
+insert into emf.strategy_result_types (name) select 'Strategy Summary';
+
+
+-- emf.strategy_result_types
+
+--emf.control_technologies
+insert into emf.control_technologies values (DEFAULT, 'Vacuum Sweeping', 'Vacuum Sweeping');
+insert into emf.control_technologies values (DEFAULT, 'Chemical Stabilization', 'Chemical Stabilization');
+insert into emf.control_technologies values (DEFAULT, 'Hot Asphalt Paving', 'Hot Asphalt Paving');
+insert into emf.control_technologies values (DEFAULT, 'Bale Stack/Propane Burning', 'Bale Stack/Propane Burning');
+insert into emf.control_technologies values (DEFAULT, 'Soil Conservation Plans', 'Soil Conservation Plans');
+insert into emf.control_technologies values (DEFAULT, 'Watering', 'Watering');
+insert into emf.control_technologies values (DEFAULT, 'Dust Control Plan', 'Dust Control Plan');
+insert into emf.control_technologies values (DEFAULT, 'Increase Fuel Moisture', 'Increase Fuel Moisture');
+insert into emf.control_technologies values (DEFAULT, 'NSPS Compliant Wood Stove', 'NSPS Compliant Wood Stove');
+insert into emf.control_technologies values (DEFAULT, 'Catalytic Oxidizer', 'Catalytic Oxidizer');
+insert into emf.control_technologies values (DEFAULT, 'ESP for Commercial Cooking', 'ESP for Commercial Cooking');
+--emf.control_technologies
+
+
+--emf.pollutants
+insert into emf.pollutants values (DEFAULT, 'NOX', 'Nitrogen Oxides');
+insert into emf.pollutants values (DEFAULT, 'PM10', 'Particulate Matter < 10 um');
+insert into emf.pollutants values (DEFAULT, 'PM2_5', 'Particular Mater < 2.5 um');
+insert into emf.pollutants values (DEFAULT, 'SO2', 'Sulfur Dioxide');
+insert into emf.pollutants values (DEFAULT, 'VOC', 'Volatile Organic Compounds');
+insert into emf.pollutants values (DEFAULT, 'CO', 'Carbon Monoxide');
+insert into emf.pollutants values (DEFAULT, 'CO2', 'Carbon Dioxide');
+insert into emf.pollutants values (DEFAULT, 'EC', 'Elemental Carbon');
+insert into emf.pollutants values (DEFAULT, 'OC', 'Organic Carbon');
+insert into emf.pollutants values (DEFAULT, 'NH3', 'Ammonia');
+insert into emf.pollutants values (DEFAULT, 'HG', 'Mercury');
+--insert into emf.pollutants values (DEFAULT, 'HFC', 'Hydrofluorocarbons');
+--insert into emf.pollutants values (DEFAULT, 'PFC', 'PFC');
+--insert into emf.pollutants values (DEFAULT, 'SF6', 'Sulfur Hexafluoride');
+--insert into emf.pollutants values (DEFAULT, 'N20', 'Dinitrogen Oxide');
+--emf.pollutants
+
+--emf.source_groups
+insert into emf.source_groups values (DEFAULT, 'Paved Road', 'Paved Road');
+insert into emf.source_groups values (DEFAULT, 'Unpaved Road', 'Unpaved Road');
+insert into emf.source_groups values (DEFAULT, 'Agricultural Burning', 'Agricultural Burning');
+insert into emf.source_groups values (DEFAULT, 'Agricultural Tilling', 'Agricultural Tilling');
+insert into emf.source_groups values (DEFAULT, 'Beef Cattle Feedlots', 'Beef Cattle Feedlots');
+insert into emf.source_groups values (DEFAULT, 'Construction Activities', 'Construction Activities');
+insert into emf.source_groups values (DEFAULT, 'Prescribed Burning', 'Prescribed Burning');
+insert into emf.source_groups values (DEFAULT, 'Residential Wood Combustion', 'Residential Wood Combustion');
+insert into emf.source_groups values (DEFAULT, 'Conveyorized Charbroilers', 'Conveyorized Charbroilers');
+--emf.source_groups
+
+--emf.control_measure_classes
+insert into emf.control_measure_classes values (DEFAULT, 'Known', 'Known');
+insert into emf.control_measure_classes values (DEFAULT, 'Emerging', 'Emerging');
+insert into emf.control_measure_classes values (DEFAULT, 'Hypothetical', 'Hypothetical');
+insert into emf.control_measure_classes values (DEFAULT, 'Obsolete', 'Obsolete');
+--emf.control_measure_classes
+
+--emf.control_program_types
+insert into emf.control_program_types values (DEFAULT, 'Plant Closure', 'Plant Closure',0);
+insert into emf.control_program_types values (DEFAULT, 'Projection', 'Projection',2);
+insert into emf.control_program_types values (DEFAULT, 'Control', 'Control',3);
+insert into emf.control_program_types values (DEFAULT, 'Allowable', 'Allowable',4);
+--emf.control_program_types
+
+--emf.equation_types
+-- Add Equations
+insert into emf.equation_types (name, description)
+select 'Type 1', 'EGU';
+insert into emf.equation_types (name, description)
+select 'Type 2', 'Non-EGU NOx';
+insert into emf.equation_types (name, description)
+select 'Type 3', 'Non-EGU SO2';
+insert into emf.equation_types (name, description)
+select 'Type 4', 'Non-EGU SO2';
+insert into emf.equation_types (name, description)
+select 'Type 5', 'Non-EGU SO2';
+insert into emf.equation_types (name, description)
+select 'Type 6', 'Non-EGU SO2';
+insert into emf.equation_types (name, description)
+select 'Type 7', 'Type 7';
+insert into emf.equation_types (name, description)
+select 'Type 8', 'Non-EGU PM';
+insert into emf.equation_types (name, description)
+select 'Type 9', 'EGU PM Control Equations';
+insert into emf.equation_types (name, description)
+select 'Type 10', 'ESP Upgrade';
+insert into emf.equation_types (name, description)
+select 'Type 11', 'SO2 Non EGU Control Equations';
+
+-- Add Eqaution Variables
+
+-- Type 2
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Annual Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Annual Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Capital Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Annual Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Annual Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+
+-- Type 1
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Fixed O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Variable O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Scaling Factor - Model Size (MW)', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Scaling Factor - Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capacity Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+
+-- Type 8
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Capital Control Cost Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical O&M Control Cost Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Default CPT Factor - Capital', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Default CPT Factor - O&M', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Default CPT Factor - Annualized', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+
+-- Type 10
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Variable O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Fixed O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Fixed O&M Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+
+-- 12/29/2009 -- forgot to add equation type variable definition...
+-- Type 11
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Low Default Cost Per Ton', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Low Boiler Capacity Range', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Medium Default Cost Per Ton', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Medium Boiler Capacity Range', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'High Default Cost Per Ton', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+
+-- Type 9
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Total Equipment Cost Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Total Equipment Cost Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Equipment To Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Electricity Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Electricity Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Dust Disposal Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Dust Disposal Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Bag Replacement Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Bag Replacement Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';

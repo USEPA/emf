@@ -1,0 +1,293 @@
+-- cases.parameter_env_vars
+CREATE TABLE cases.parameter_env_vars
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+)
+WITHOUT OIDS;
+-- cases.parameter_env_vars
+
+-- cases.value-types
+CREATE TABLE cases.value_types
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(32) NOT NULL UNIQUE
+)
+WITHOUT OIDS;
+-- cases.value-types
+
+-- cases.parameter_names
+CREATE TABLE cases.parameter_names
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+)
+WITHOUT OIDS;
+
+-- cases.parameter_names--
+-- 4/26/07 Added new tables to cases on case jobs
+--
+
+DROP TABLE IF EXISTS cases.cases_parameters CASCADE;
+
+-- cases.cases_parameters
+CREATE TABLE cases.cases_parameters
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  case_job_id int4 DEFAULT 0,
+  param_name_id int4  REFERENCES cases.parameter_names(id),
+  required bool DEFAULT false,
+  is_show bool DEFAULT false,
+  sector_id int4  REFERENCES emf.sectors(id),
+  program_id int4  REFERENCES cases.programs(id),
+  env_vars_id int4  REFERENCES cases.parameter_env_vars(id),
+  val_type_id int4  REFERENCES cases.value_types(id),
+  exec_order float,
+  env_value varchar(255),
+  purpose varchar(255),
+  notes text,
+  UNIQUE (case_id,param_name_id,sector_id,program_id,case_job_id) 
+) 
+WITHOUT OIDS;
+-- cases.cases_parameters
+
+-- 8/29/07 to change run job status from 'Succeeded' to 'Completed' etc
+update cases.case_jobrunstatus set name='Completed' where name='Succeeded';
+update cases.case_jobrunstatus set description='Completed' where name='Completed';
+insert into cases.case_jobrunstatus values(DEFAULT, 'Exporting', 'Exporting');
+
+-- 8/31/07 to add a column to jobs table 'job_key'
+ALTER TABLE cases.cases_casejobs ADD COLUMN job_key TEXT;
+
+-- 8/31/07 to add a job message table
+-- cases.job_messages
+CREATE TABLE cases.job_messages
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  exec_path varchar(255),
+  exec_name varchar(255),
+  period varchar(128),
+  message text,
+  message_type varchar(32),
+  status varchar(64),
+  remote_user varchar(128),
+  exec_modified_date timestamp,
+  received_time timestamp
+)
+WITHOUT OIDS;
+-- cases.job_messages
+
+-- add a new contraint to cases.cases table
+ALTER TABLE cases.cases ADD CONSTRAINT  unique_abbreviation  UNIQUE (abbreviation_id);
+
+-- 9/14/2007 added job_dependencies table
+-- cases.job_dependencies
+CREATE TABLE cases.job_dependencies
+(
+  id SERIAL PRIMARY KEY,
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  list_index int4,
+  depend_job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id)
+)
+WITHOUT OIDS;
+-- cases.job_dependencies
+
+-- 9/17/2007 map queue id to cases.case_jobs table
+--ALTER TABLE cases.cases_casejobs ADD COLUMN q_id int8 DEFAULT 0;
+
+-- 9/18/2007 change the q_id column to string type
+ALTER TABLE cases.cases_casejobs DROP COLUMN q_id;
+ALTER TABLE cases.cases_casejobs ADD COLUMN q_id VARCHAR(255);
+
+
+-- 9/28/2007: add persistance for task manager wait queue
+
+CREATE TABLE cases.taskmanager_persist
+(
+  id serial NOT NULL,
+  job_id integer NOT NULL,
+  case_id integer NOT NULL,
+  user_id integer NOT NULL,
+  CONSTRAINT taskmanager_persist_pkey PRIMARY KEY (id)
+) 
+WITHOUT OIDS;
+ALTER TABLE cases.taskmanager_persist OWNER TO emf;
+
+-- cases.outputs 11/27/2007
+CREATE TABLE cases.outputs
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  dataset_id int4 DEFAULT 0,
+  name varchar(255) NOT NULL,
+  exec_name varchar(255),
+  message text,
+  status varchar(64)
+)
+WITHOUT OIDS;
+-- cases.outputs
+
+-- 02/04/2008 add new columns to cases.cases_caseinputs and cases.cases_parameters
+ALTER TABLE cases.cases_caseinputs
+   ADD COLUMN last_modified_date timestamp without time zone;
+ALTER TABLE cases.cases_parameters
+   ADD COLUMN last_modified_date timestamp without time zone;
+   
+-- 02/27/2008 add new table to accomodate the new method of registering case outputs
+CREATE TABLE cases.output_queue
+(
+  id serial NOT NULL,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  name varchar(255),
+  exec_name varchar(255),
+  message text,
+  dataset_file varchar(255),
+  path varchar(255),
+  pattern varchar(255),
+  dataset_name varchar(255),
+  cr_date timestamp,
+  remote_user varchar(255),
+  dataset_type varchar(255),
+  status varchar(50)
+) 
+WITHOUT OIDS;
+-- cases.output_queue
+
+-- 3/8/2008 add a new column running_user_id to case_jobs table
+ALTER TABLE cases.cases_casejobs ADD COLUMN running_user_id int4 REFERENCES emf.users(id);
+
+-- 3/10/2008 add a new table casesjobkeys
+-- cases.casesjobkeys
+CREATE TABLE cases.casesjobkeys
+(
+  id serial NOT NULL,
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  key_value text,
+  UNIQUE(job_id, key_value)
+) 
+WITHOUT OIDS;
+-- cases.casesjobkeys
+
+-- 3/10/2008 drop job_key column from cases.case_jobs table
+ALTER TABLE cases.cases_casejobs DROP COLUMN job_key;
+
+-- 4/21/2008 add parent id column to cases.cases table
+ALTER TABLE cases.cases DROP COLUMN parent_id;
+
+-- 4/23/2008 add parent_case_id column
+ALTER TABLE cases.cases_casejobs ADD COLUMN parent_case_id int4 DEFAULT 0;
+ALTER TABLE cases.cases_caseinputs ADD COLUMN parent_case_id int4 DEFAULT 0;
+ALTER TABLE cases.cases_parameters ADD COLUMN parent_case_id int4 DEFAULT 0;
+
+-- 4/28/2008 add/change column names
+ALTER TABLE cases.cases_caseinputs RENAME COLUMN show TO local;
+ALTER TABLE cases.cases_parameters RENAME COLUMN is_show TO local;
+ALTER TABLE cases.cases_casejobs ADD COLUMN local bool DEFAULT true;
+
+-- 5/17/2008 add new column to cases.cases_casejobs
+ALTER TABLE cases.cases_casejobs
+   ADD COLUMN job_abbrev character varying(255);
+   
+-- 5/21/2008 cases.cases_sens
+CREATE TABLE cases.cases_sens
+(
+  id SERIAL PRIMARY KEY,
+  parent_case_id integer NOT NULL REFERENCES cases.cases(id),
+  sen_case_id integer NOT NULL REFERENCES cases.cases(id),
+  UNIQUE(parent_case_id, sen_case_id)
+) 
+WITHOUT OIDS;
+-- cases.cases_sens
+
+-- 5/23/08  cases.cases_casejobs
+ALTER TABLE cases.cases_casejobs RENAME COLUMN job_abbrev TO job_group;
+
+-- 7/23/2008 to add job into case input uniqueness check
+ALTER TABLE cases.cases_caseinputs DROP CONSTRAINT cases_caseinputs_case_id_key;
+ALTER TABLE cases.cases_caseinputs ADD CONSTRAINT caseinputs_uniqueness_key UNIQUE (case_id, input_name_id, sector_id, program_id, case_job_id);
+
+ALTER TABLE cases.cases_casejobs RENAME COLUMN job_abbrev TO job_group;
+
+-- 7/22/2008 add a new column model_to_runs to cases.parameter_names table
+ALTER TABLE cases.parameter_names ADD COLUMN model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id);
+ALTER TABLE cases.parameter_env_vars ADD COLUMN model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id);
+ALTER TABLE cases.inputnames ADD COLUMN model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id);
+ALTER TABLE cases.input_envt_vars ADD COLUMN model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id);
+
+ALTER TABLE cases.cases ADD COLUMN model_version varchar(64);
+
+-- 8/5/2008 to add constraints to persisted job tasks so that jobs won't be removed if it is still in active state
+ALTER TABLE cases.taskmanager_persist ADD CONSTRAINT job_id_foreign_key FOREIGN KEY (job_id) REFERENCES cases.cases_casejobs(id) MATCH SIMPLE;
+ALTER TABLE cases.taskmanager_persist ADD CONSTRAINT case_id_foreign_key FOREIGN KEY (case_id) REFERENCES cases.cases(id)  MATCH SIMPLE;
+ALTER TABLE cases.taskmanager_persist ADD CONSTRAINT user_id_foreign_key FOREIGN KEY (user_id) REFERENCES emf.users(id) MATCH SIMPLE;
+
+-- 8/6/2008 add a new column model_to_runs to cases.programs and cases.subdirs tables
+ALTER TABLE cases.programs ADD COLUMN model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id);
+ALTER TABLE cases.subdirs ADD COLUMN model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id);
+
+-- 8/7/2008 add model_to_run_id into uniqueness constraints in case programs, subdirs, input_names, input_env_vars, parameter_names, parameter_env_vars
+ALTER TABLE cases.inputnames DROP CONSTRAINT inputnames_name_key;
+ALTER TABLE cases.inputnames ADD CONSTRAINT inputnames_uniqueness_key UNIQUE (name, model_to_run_id);
+
+ALTER TABLE cases.input_envt_vars DROP CONSTRAINT input_envt_vars_name_key;
+ALTER TABLE cases.input_envt_vars ADD CONSTRAINT input_envt_vars_uniqueness_key UNIQUE (name, model_to_run_id);
+
+ALTER TABLE cases.parameter_names DROP CONSTRAINT parameter_names_name_key;
+ALTER TABLE cases.parameter_names ADD CONSTRAINT parameter_names_uniqueness_key UNIQUE (name, model_to_run_id);
+
+ALTER TABLE cases.parameter_env_vars DROP CONSTRAINT parameter_env_vars_name_key;
+ALTER TABLE cases.parameter_env_vars ADD CONSTRAINT parameter_env_vars_uniqueness_key UNIQUE (name, model_to_run_id);
+
+ALTER TABLE cases.programs DROP CONSTRAINT programs_name_key;
+ALTER TABLE cases.programs ADD CONSTRAINT programs_uniqueness_key UNIQUE (name, model_to_run_id);
+
+ALTER TABLE cases.subdirs DROP CONSTRAINT subdirs_name_key;
+ALTER TABLE cases.subdirs ADD CONSTRAINT subdirs_uniqueness_key UNIQUE (name, model_to_run_id);
+
+--8/8/2008 change uniqueness constraint on case parameters table
+ALTER TABLE cases.cases_parameters DROP CONSTRAINT cases_parameters_case_id_key;
+ALTER TABLE cases.cases_parameters ADD CONSTRAINT cases_parameters_case_id_key UNIQUE (case_id,param_name_id,env_vars_id,sector_id,case_job_id);
+
+--6/24/2009 add a new table for case & grids
+-- cases.case_regions
+CREATE TABLE cases.case_regions
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id) ,
+  list_index int4,
+  region_id int4 REFERENCES emf.georegions(id),
+  UNIQUE (case_id, region_id) 
+) 
+WITHOUT OIDS;
+-- cases.case_regions
+
+ALTER TABLE cases.cases_casejobs ADD COLUMN region_id int4 REFERENCES emf.georegions(id);
+ALTER TABLE cases.cases_caseinputs ADD COLUMN region_id int4 REFERENCES emf.georegions(id);
+ALTER TABLE cases.cases_parameters ADD COLUMN region_id int4 REFERENCES emf.georegions(id);
+
+ALTER TABLE cases.cases_caseinputs DROP CONSTRAINT caseinputs_uniqueness_key;
+ALTER TABLE cases.cases_caseinputs ADD CONSTRAINT cases_inputs_uniqueness_key UNIQUE (case_id, input_name_id, region_id, sector_id, program_id, case_job_id);
+ALTER TABLE cases.cases_parameters DROP CONSTRAINT cases_parameters_case_id_key;
+ALTER TABLE cases.cases_parameters ADD CONSTRAINT cases_parameters_uniqueness_key UNIQUE (case_id,param_name_id,env_vars_id,region_id,sector_id,case_job_id);
+
+-- 4/21/2010 update job uniqueness criterion
+ALTER TABLE cases.cases_casejobs DROP CONSTRAINT  cases_casejobs_case_id_key;
+ALTER TABLE cases.cases_casejobs ADD CONSTRAINT  cases_casejobs_case_id_key  UNIQUE (case_id, name, sector_id, region_id);
+
+-- 06/21/2010 -- null of case_caseinputts subdir_id column for external dataset types
+update cases.cases_caseinputs
+set subdir_id = null
+where dataset_id in (
+	select id
+	from emf.datasets
+	where dataset_type in (
+		select id
+		from emf.dataset_types
+		where "external" = true
+	)
+);

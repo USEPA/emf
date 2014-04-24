@@ -1,0 +1,418 @@
+-------------------------------------------------------------------------------
+--  CASE MANAGEMENT
+-------------------------------------------------------------------------------
+
+-- cases.case_abbreviations
+CREATE TABLE cases.case_abbreviations
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- cases.case_abbreviations
+
+-- cases.case_categories
+CREATE TABLE cases.case_categories
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- cases.case_categories
+
+-- cases.air_quality_models
+CREATE TABLE cases.air_quality_models
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- cases.air_quality_models
+
+-- cases.speciations
+CREATE TABLE cases.speciations
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- cases.speciations
+
+-- cases.model_to_runs
+CREATE TABLE cases.model_to_runs
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- cases.model_to_runs
+
+-- cases.programs
+CREATE TABLE cases.programs
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  model_to_run_id int4 REFERENCES cases.model_to_runs(id),
+  UNIQUE (name, model_to_run_id)
+) 
+WITHOUT OIDS;
+-- cases.programs
+
+-- cases.inputnames
+CREATE TABLE cases.inputnames
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  model_to_run_id int4 REFERENCES cases.model_to_runs(id),
+  UNIQUE (name, model_to_run_id)
+) 
+WITHOUT OIDS;
+-- cases.inputnames
+
+-- cases.input_envt_vars
+CREATE TABLE cases.input_envt_vars
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id),
+  UNIQUE (name, model_to_run_id)
+) 
+WITHOUT OIDS;
+-- cases.input_envt_vars
+
+-- cases.meteorlogical_years
+CREATE TABLE cases.meteorlogical_years
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- cases.meteorlogical_years
+
+-- cases.emissions_years
+CREATE TABLE cases.emissions_years
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- cases.emissions_years
+
+-- cases.subdirs
+CREATE TABLE cases.subdirs
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  model_to_run_id int4 REFERENCES cases.model_to_runs(id),
+  UNIQUE (name, model_to_run_id)
+) 
+WITHOUT OIDS;
+-- cases.subdirs
+
+-- cases.cases
+CREATE TABLE cases.cases
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(128) NOT NULL UNIQUE,
+  abbreviation_id int4 UNIQUE REFERENCES cases.case_abbreviations(id),
+  description text,
+  user_id int4  REFERENCES emf.users(id),
+  creator_user_id int4  REFERENCES emf.users(id),
+  model_to_run_id int4  REFERENCES cases.model_to_runs(id),
+  model_version varchar(64),
+  air_quality_model_id int4  REFERENCES cases.air_quality_models(id),
+  category_id int4  REFERENCES cases.case_categories(id),
+  project_id int4  REFERENCES emf.projects(id),
+  modeling_region_id int4  REFERENCES emf.regions(id),
+  control_region_id int4  REFERENCES emf.regions(id),
+  run_status varchar(128),
+  input_file_dir varchar(255),
+  output_file_dir varchar(255),
+  case_template bool DEFAULT false,
+  is_final bool DEFAULT false,
+  template_used varchar(128),
+  speciation_id int4 REFERENCES cases.speciations(id),
+  meteorlogical_year_id int4 REFERENCES cases.meteorlogical_years(id),
+  emissions_year_id int4 REFERENCES cases.emissions_years(id),
+  num_met_layers int4 DEFAULT 0,
+  num_emissions_layers int4 DEFAULT 0,
+  base_year int4 DEFAULT 0,
+  future_year int4 DEFAULT 0,
+  last_modified_date timestamp,
+  lock_owner varchar(64),
+  lock_date timestamp,
+  start_date timestamp,
+  end_date timestamp
+) 
+WITHOUT OIDS;
+-- cases.cases
+
+-- cases.case_sectors
+CREATE TABLE cases.case_sectors
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id) ,
+  list_index int4,
+  sector_id int4 REFERENCES emf.sectors(id),
+  UNIQUE (case_id,sector_id) 
+) 
+WITHOUT OIDS;
+-- cases.case_sectors
+
+-- cases.case_regions
+CREATE TABLE cases.case_regions
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id) ,
+  list_index int4,
+  region_id int4 REFERENCES emf.georegions(id),
+  UNIQUE (case_id, region_id) 
+) 
+WITHOUT OIDS;
+-- cases.case_regions
+
+-- cases.case_jobrunstatus
+CREATE TABLE cases.case_jobrunstatus
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(64) NOT NULL UNIQUE,
+  description text
+)
+WITHOUT OIDS;
+-- cases.case_jobrunstatus
+
+-- cases.hosts
+CREATE TABLE cases.hosts
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(64) NOT NULL UNIQUE,
+  ip_address varchar(32)
+)
+WITHOUT OIDS;
+-- cases.hosts
+
+-- cases.executables
+CREATE TABLE cases.executables
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(512) NOT NULL UNIQUE
+)
+WITHOUT OIDS;
+-- cases.executables
+
+-- cases.cases_casejobs
+CREATE TABLE cases.cases_casejobs
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  parent_case_id int4 DEFAULT 0,
+  name varchar(255) NOT NULL,
+  purpose text,
+  job_num float,
+  sector_id int4 REFERENCES emf.sectors(id),
+  region_id int4 REFERENCES emf.georegions(id),
+  arguments text,
+  exec_order int4,
+  version int4,
+  runstatus_id int4 REFERENCES cases.case_jobrunstatus(id),
+  start_date timestamp,
+  complete_date timestamp,
+  user_id int4 REFERENCES emf.users(id), 
+  running_user_id int4 REFERENCES emf.users(id),
+  run_notes text,
+  run_log text,
+  host_id int4 REFERENCES cases.hosts(id),
+  exe_id int4 REFERENCES cases.executables(id),
+  que_option varchar(255),
+  path varchar(255),
+  q_id varchar(255) ,
+  local bool DEFAULT true,
+  job_group varchar(255),
+  UNIQUE (case_id, name, sector_id, region_id)
+)
+WITHOUT OIDS;
+-- cases.cases_casejobs
+
+-- cases.cases_caseinputs
+CREATE TABLE cases.cases_caseinputs
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  parent_case_id int4 DEFAULT 0,
+  case_job_id int4 DEFAULT 0,
+  sub_dir varchar(255),
+  required bool DEFAULT false,
+  local bool DEFAULT false,
+  last_modified_date timestamp,
+  sector_id int4  REFERENCES emf.sectors(id),
+  region_id int4 REFERENCES emf.georegions(id),
+  program_id int4  REFERENCES cases.programs(id),
+  envt_vars_id int4  REFERENCES cases.input_envt_vars(id),
+  input_name_id int4  REFERENCES cases.inputnames(id),
+  dataset_id int4  REFERENCES emf.datasets(id),
+  version_id int4  REFERENCES emissions.versions(id),
+  dataset_type_id int4  REFERENCES emf.dataset_types(id),
+  subdir_id int4  REFERENCES cases.subdirs(id),
+  UNIQUE (case_id, input_name_id, region_id, sector_id, program_id, case_job_id)
+) 
+WITHOUT OIDS;
+-- cases.cases_caseinputs
+
+-- cases.parameter_env_vars
+CREATE TABLE cases.parameter_env_vars
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  model_to_run_id int4 default 1 REFERENCES cases.model_to_runs(id),
+  UNIQUE(name, model_to_run_id)
+)
+WITHOUT OIDS;
+-- cases.parameter_env_vars
+
+-- cases.value-types
+CREATE TABLE cases.value_types
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+)
+WITHOUT OIDS;
+-- cases.value-types
+
+-- cases.parameter_names
+CREATE TABLE cases.parameter_names
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  model_to_run_id int4  REFERENCES cases.model_to_runs(id),
+  UNIQUE(name, model_to_run_id)
+)
+WITHOUT OIDS;
+-- cases.parameter_names
+
+-- cases.cases_parameters
+CREATE TABLE cases.cases_parameters
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  parent_case_id int4 DEFAULT 0,
+  case_job_id int4 DEFAULT 0,
+  param_name_id int4  REFERENCES cases.parameter_names(id),
+  required bool DEFAULT false,
+  local bool DEFAULT false,
+  last_modified_date timestamp,
+  sector_id int4  REFERENCES emf.sectors(id),
+  region_id int4 REFERENCES emf.georegions(id),
+  program_id int4  REFERENCES cases.programs(id),
+  env_vars_id int4  REFERENCES cases.parameter_env_vars(id),
+  val_type_id int4  REFERENCES cases.value_types(id),
+  exec_order float,
+  env_value varchar(255),
+  purpose varchar(255),
+  notes text,
+  UNIQUE (case_id,param_name_id,env_vars_id,region_id,sector_id,case_job_id) 
+) 
+WITHOUT OIDS;
+-- cases.cases_parameters
+
+-- cases.job_messages
+CREATE TABLE cases.job_messages
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  exec_path varchar(255),
+  exec_name varchar(255),
+  period varchar(128),
+  message text,
+  message_type varchar(32),
+  status varchar(64),
+  remote_user varchar(128),
+  exec_modified_date timestamp,
+  received_time timestamp
+)
+WITHOUT OIDS;
+-- cases.job_messages
+
+-- cases.job_dependencies
+CREATE TABLE cases.job_dependencies
+(
+  id SERIAL PRIMARY KEY,
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  list_index int4,
+  depend_job_id int4 REFERENCES cases.cases_casejobs(id)
+)
+WITHOUT OIDS;
+-- cases.job_dependencies
+
+
+-- DROP TABLE cases.taskmanager_persist;
+
+CREATE TABLE cases.taskmanager_persist
+(
+  id serial NOT NULL,
+  job_id integer NOT NULL REFERENCES cases.cases_casejobs(id),
+  case_id integer NOT NULL REFERENCES cases.cases(id),
+  user_id integer NOT NULL REFERENCES emf.users(id),
+  CONSTRAINT taskmanager_persist_pkey PRIMARY KEY (id)
+) 
+WITHOUT OIDS;
+ALTER TABLE cases.taskmanager_persist OWNER TO emf;
+
+-- cases.outputs
+CREATE TABLE cases.outputs
+(
+  id SERIAL PRIMARY KEY,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  dataset_id int4 DEFAULT 0,
+  name varchar(255) NOT NULL,
+  exec_name varchar(255),
+  message text,
+  status varchar(64)
+)
+WITHOUT OIDS;
+-- cases.outputs
+
+-- cases.output_queue
+CREATE TABLE cases.output_queue
+(
+  id serial NOT NULL,
+  case_id int4 NOT NULL REFERENCES cases.cases(id),
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  name varchar(255),
+  exec_name varchar(255),
+  message text,
+  dataset_file varchar(255),
+  path varchar(255),
+  pattern varchar(255),
+  dataset_name varchar(255),
+  cr_date timestamp,
+  remote_user varchar(255),
+  dataset_type varchar(255),
+  status varchar(50)
+) 
+WITHOUT OIDS;
+-- cases.output_queue
+
+-- cases.casesjobkeys
+CREATE TABLE cases.casesjobkeys
+(
+  id serial NOT NULL,
+  job_id int4 NOT NULL REFERENCES cases.cases_casejobs(id),
+  key_value text,
+  UNIQUE (job_id, key_value)
+) 
+WITHOUT OIDS;
+-- cases.casesjobkeys
+
+-- cases.cases_sens
+CREATE TABLE cases.cases_sens
+(
+  id SERIAL PRIMARY KEY,
+  parent_case_id int4 NOT NULL REFERENCES cases.cases(id),
+  sen_case_id int4 NOT NULL REFERENCES cases.cases(id),
+  UNIQUE(parent_case_id, sen_case_id)
+) 
+WITHOUT OIDS;
+-- cases.cases_sens
+

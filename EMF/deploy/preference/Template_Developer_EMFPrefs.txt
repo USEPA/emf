@@ -1,0 +1,18 @@
+#EMF Property File
+local.input.drive=C:\\
+remote.input.drive=C:/
+
+local.output.drive=C:\\
+remote.output.drive=C:/
+
+default.input.folder=
+default.output.folder=
+
+user.name=emf
+user.password=emf12345
+
+#Format#
+format.double.decimal_places=2
+format.double.option=Standard_Notation
+#legal options: Standard_Notation,Scientific_Notation, Dollars, Percentage, Custom
+format.double.significant_digits=4

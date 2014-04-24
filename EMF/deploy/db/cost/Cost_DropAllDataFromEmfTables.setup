@@ -1,0 +1,25 @@
+-------------------Strategy tables ----------------------------------------------
+DELETE FROM emf.strategy_results;
+DELETE FROM emf.input_datasets_control_strategies;
+DELETE FROM emf.control_strategy_classes;
+DELETE FROM emf.control_strategy_measures;
+
+DELETE FROM emf.strategy_result_types;
+DELETE FROM emf.control_strategy_constraints;
+DELETE FROM emf.control_strategies;
+DELETE FROM emf.strategy_types;
+
+-------------------CoST Measure tables ----------------------------------------------
+DELETE FROM emf.control_measure_sccs;
+DELETE FROM emf.aggregrated_efficiencyrecords;
+DELETE FROM emf.control_measure_efficiencyrecords;
+DELETE FROM emf.control_measure_sectors;
+DELETE FROM emf.control_measures;
+DELETE FROM emf.pollutants;
+DELETE FROM emf.source_groups;
+DELETE FROM emf.control_technologies;
+DELETE FROM emf.control_measure_classes;
+DELETE FROM emf.control_measure_equations;
+DELETE FROM emf.equation_type_variables;
+DELETE FROM emf.equation_types;
+

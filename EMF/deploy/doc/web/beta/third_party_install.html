@@ -1,0 +1,441 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>The Emissions Modeling Framework (EMF) 3rd Party Software Installation and Configuration</title>
+		<meta name="Generator" content="EditPlus">
+		<meta name="Author" content="">
+		<meta name="Keywords" content="">
+		<meta name="Description" content="">
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		<link rel="stylesheet" type="text/css" href="emf.css">	
+	</head>
+	<body>
+		<h1 id="contents">3rd Party Software Installation and Configuration</h1>
+		<ul id="links">
+			<li><a href="#overview">Overview</a></li>
+			<li><a href="#brief">Very Brief Installation Instructions</a></li>
+			<li><a href="#permissions">Users and User Permissions</a></li>
+			<li><a href="#java">Java Details</a></li>
+			<li><a href="#tomcat">Tomcat Details</a></li>
+			<li><a href="#postgres">PostgreSQL Details</a></li>
+		</ul>
+
+		<h2 id="overview">Overview</h2>
+		<div class="section">
+			<p>This page will walk you through the installation of the Emissions Modeling Framework (EMF) 3rd party software.</p>
+			<p>For the following instructions, we will refer to the server which runs the EMF database as the
+			"EMFServer"<a href="#note1">1</a> and the server or cluster that runs SMOKE as the "SMOKEServer".
+			Although the EMFServer and the SMOKEServer could be the same computer, we strongly recommend that
+			they are two different systems. To simplify the instructions, we will give example installation
+			paths, user names, and Unix group names. In your installation, you may choose different installation
+			paths, user and group names, and passwords than explained below. If something must match these instructions
+			exactly, it will be noted in the text.</p>
+			<p>Many of the following Unix commands will likely need to be executed while logged in as &#8220;root&#8221; or using the
+			&#8220;sudo&#8221; command (depending on your system and your installation location).
+			</p>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+		
+		<h2 id="brief">Very Brief Installation Instructions</h2>
+		<div class="section">
+			<ol>
+				<li>Install Java Runtime Environment 6</li>
+				<li>Install Tomcat 6.0</li>
+				<li>Install PostgreSQL 8.3 and necessary contrib. packages: adminpack, tablefunc, postgis (1.3.x)</li>
+			</ol>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="permissions">Users and User Permissions</h2>
+		<div class="section">
+			<p>An aspect of the EMF system that often causes problems in a new installation is the subtle 
+			interaction of three different Unix accounts and the necessary permissions for this interaction
+			to work correctly. The three accounts (i.e., Unix user names) are postgres, the owner of the 
+			tomcat process (e.g., &#8220;emf&#8221;), and the accounts for those running SMOKE. For this
+			interaction to work correctly, the three accounts often need to read and sometimes write within
+			the same directories.
+			</p>
+			<h4>Complete the following steps:</h4>
+			<div class="section">
+				<ol>
+					<li>Create a group (or use an existing group), such as &#8220;emiss&#8221;, on both the
+					EMFServer and the SMOKEServer. You will want the emiss group to have the same GID on both
+					systems (check your system before selecting a GID):
+					
+					<div class="pre"># addgroup --system --gid 300 emiss</div>
+
+					<p>If <span class="pre">addgroup</span> is not available, alternatively use:</p>
+						<div class="pre"># groupadd -r -g 300 emiss</div>
+
+					</li>
+					<li>Create a new user, &#8220;emf&#8221;, on both the EMFServer and the SMOKEServer. For
+					ease of communication with EMF support, we recommend using this exact user name. Make the
+					emf user&#8217;s default group emiss. Ideally, you will want your SMOKE user(s) to use the
+					emiss group as their default group as well. You will want the emf user to have the same
+					UID on both systems (check your systems before selecting a UID):
+						<div class="pre"># adduser --no-create-home --ingroup emiss --UID 1030 emf</div>
+					        
+					    <p>Likewise, if <span class="pre">adduser</span> is not available, alternatively use:</p>
+						
+						<div class="pre"># useradd -M -g 1030 emf</div>
+					</li>
+				</ol>
+			</div>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="java">Java Details</h2>
+		<div class="section">
+			<p>If you do not already have it installed on your servers, download the latest
+			<a href="http://java.sun.com/javase/downloads/index.jsp" target="_blank">Java Runtime Environment 6</a>
+			(e.g., JRE 6u14) for your system. Typically, you will want to get the non-rpm download for your system.
+			Ideally, you will want to place the same version of Java in the same location on both your EMFServer and
+			your SMOKEServer. In the example below, this location is /user/local/java.</p>
+
+			<div class="pre"># mkdir /usr/local/java</div>
+			<div class="pre"># cp jre-6u14-linux-i586.bin /usr/local/java</div>
+			<div class="pre"># cd /usr/local/java</div>
+			<div class="pre"># chmod u+x jre-6u14-linux-i586.bin</div>
+			<div class="pre"># ./jre-6u14-linux-i586.bin</div>
+
+			<p>This will unpack the java bin and libraries under the directory, /usr/local/java /jre.6.0_14.
+			Note, if you already have JRE 6.x, you do not need to do this step.
+			</p>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="tomcat">Tomcat Details</h2>
+		<div class="section">
+	
+			<h4>Installing Tomcat:</h4>
+			<div class="section">
+				<p>For installation of Tomcat 6.0, perform the following steps:</p>
+	
+				<ol>
+					<li>Download the latest version of <a href="http://tomcat.apache.org/" target="_blank">Tomcat 6.0</a>,
+					specifically the Core tar file. Extract the Tomcat 6.0 download into your desired directory.
+					We recommend <em>/usr/local</em>:
+						<div class="pre"># tar xvzf apache-tomcat-6.0.20.tar.gz</div>
+					</li>
+					<li>Within the Tomcat directory, edit the file <em>conf/tomcat-users.xml</em>, add the following line
+					within the <tomcat-users> xml block but not within the comment field (note the password can be changed):					
+						<div class="pre">&lt;user username="admin" password="admin" roles="admin,manager"/&gt;</div>
+					</li>
+					<li>Download the <a href="http://jdbc.postgresql.org/" target="_blank">Postgres JDBC 4 jar</a>
+					(for PostgreSQL 8.3) and copy the jar file into Tomcat's <em>lib</em> directory.
+					</li>
+					<li>Change the owner and group permissions of the apache-tomcat directory to the emf user and emiss 
+					group (or whatever group you chose above). Note, in this configuration, the emf user will own all files created by the
+					apache-tomcat server:
+						<div class="pre"># chown -R emf:emiss /usr/local/apache-tomcat-6.0.20</div>
+					</li>
+					<li>Download <a href="http://www.ie.unc.edu/cempd/projects/emf/beta_testing/tomcat_user" target="_blank">our
+					Tomcat startup script</a>. You may need to modify the script so that TOMCAT_USER, CATALINA_HOME,
+					and JAVA_HOME match your system. Copy the file to /etc/init.d/tomcat
+					and make it executable:
+						<div class="pre"># chmod u+x  /etc/init.d/tomcat</div>
+					</li>				
+					<li>Start tomcat:
+						<div class="pre"># /etc/init.d/tomcat start</div>
+					</li>
+				</ol>
+	
+				<p>The startup script will echo to your screen the values for both CATALINA_HOME and JRE_HOME.</p>
+			</div>
+			
+			<h4>Testing Tomcat:</h4>
+			<div class="section">
+				<ol>
+					<li>First, see if the apache is running and owned by the emf user, using the command:
+						<div class="pre"># ps aux|grep apache</div>
+						
+						<p>If the tomcat server doesn't start, look at the logs under, <em>/usr/local/apache-tomcat-6.0.20/logs/catalina.out</em>.</p>
+					</li>
+					<li>Second, try connecting via a web browser from the EMFServer.  Go to the following URL via a web browser to access tomcat:
+						<div class="pre">http://localhost:8080</div>
+						
+						<p>If you can connect, click on "Tomcat Manager" and give your admin username and password to access the web application manager.</p>
+					</li>
+					<li>Third, try connecting from a web browser on another machine.  Use the URL or IP address of the EMFServer to connect:
+						<div class="pre">http://<em>&lt;EMF Server URL&gt;</em>:8080</div>
+	
+						<p>If you are not able to connect from a remote web browser, your Linux administrator may
+						need to open port 8080 in the EMFServer system firewall for the server to accept connections
+						from remote clients.
+						</p>	
+					</li>
+				</ol>
+			</div>
+			
+			<h4>Starting and Stopping Tomcat:</h4>
+			<div class="section">
+				<p>If the startup script is working properly, you will likely want it to automatically start on reboot
+				of your EMFServer. Depending on your system, you might use update-rc.d or chkconfig to add the script to
+				your startup process.
+				</p>
+				<p>There may be situations in which you want to restart tomcat.  To stop tomcat:
+					<div class="pre"># /etc/init.d/tomcat stop</div>
+				</p>
+				
+				<p>At times, this does not actually stop the process, so we recommend that you check for the process:
+					<div class="pre"># ps aux|grep apache</div>
+				</p>
+				<p>If the process is still there, kill it by hand.  After this process has finished, start tomcat again.</p>
+			</div>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="postgres">PostgreSQL Details</h2>
+		<div class="section">
+			<p>Install <a href="http://www.postgresql.org/" target="_blank">PostgreSQL 8.3</a>.
+			We will be using PostgreSQL 8.3.x, which is a fairly current version, but not the latest release.
+			There are multiple installation approaches. We will go through a pre-built binary approach in detail. Other
+			approaches are discussed later in this document.
+			</p> 
+	
+			<p>A key decision that you need to make prior to installing Postgres is the location of your
+			data directory for the postgres database (this is where the inventories and other data will be
+			stored within the database). We recommend installing the data directory in a location where it
+			can grow to store your inventory data and SMOKE output reports, but not model-ready emissions.
+			Ideally, this should be on fast disc, with sufficient size, connected directly to the EMFServer.
+			For best performance, the database directory should be on a different disc than the input 
+			directory for SMOKE (this latter directory is where the EMF will export files from the database
+			for SMOKE to run).
+			</p>
+			
+			<h4>Create a Postgres User:</h4>
+			<div class="section">
+				<p>If you already have postgres running or you are installing it through a package management
+				system, you probably do not need to create this user. If you are installing via the pre-built
+				binary, you should create it before running the installation. Create a postgres user in which
+				the default group is emiss:
+				
+					<div class="pre"># adduser --ingroup emiss postgres</div>
+				</p>
+				
+				<p>If <span class="pre">adduser</span> is not available, alternatively use:
+                	<div class="pre"># useradd -g emiss postgres</div>
+				</p>
+				
+				<p>This user name is a requirement. Setup the postgres user to give r/w permissions to the
+				emiss group. This is necessary because during the exporting of large inventories, postgres
+				will create a temporary file that the emf user needs to later remove. Add to postgres'
+				.bashrc, the following umask line:
+				
+					<div class="pre">umask 002</div>
+				</p>
+			</div>
+			
+			<h4>Pre-Built Binary Installation:</h4>
+			<div class="section">
+				<p>From the <a href="http://www.postgresql.org/" target="_blank">PostgreSQL</a> page, go to
+				"Downloads". Under "3rd party distributions", click on "Postgres Plus". This will redirect
+				you to the EnterpriseDB web page. Select the 8.3.x version of Postgres Plus that is appropriate
+				for you system. Extract the tar file on your EMFServer (note, the installation wizard will
+				install postgres in another location). Run the bin file to start the installation wizard.
+				</p>
+				<p>As you step through the installation wizard, you will go through the following steps:
+					<ul>
+						<li>Choose the install components: select default, both Database Server and Develop/Client Tools</li>
+						<li>Value Added Services: leave both items unchecked</li>
+						<li>Choose Install Folder: <em>/usr/local/PostgreSQL/8.3</em></li>
+						<li>Select operating system user: postgres</li>
+						<li>Configure your database server: set your data directory (e.g., <em>/data/pgsql_data</em>)</li>
+						<li>Configuration Options: leave default port (5432) and have postgres run on system startup</li>
+						<li>Enter DBA password: leave database super-user as "postgres", enter password</li>
+						<li>Pre-Installation Summary: review and click "Install"</li>
+					</ul>
+				</p>
+				
+				<p>After "Install Complete", click "Done".</p>
+				<p>If you make a mistake and decide to uninstall Postgres, there is a user-friendly script under <em>/usr/local/PostgreSQL/8.3/uninstall</em>.</p>
+			</div>
+			
+			<h4>Other installation approaches: Source, Package Management, or Existing Installation:</h4>
+			<div class="section">
+				<p>If for some reason the pre-built binary installation is not sufficient and you decide to
+				install PostgreSQL 8.3.x from source, through your package management system, or you already
+				have an existing setup, the following considerations should prepare your system for working with
+				the EMF. If you already have PostgreSQL 8.3 installed, we highly recommend that you backup your
+				database and stop your server before proceeding with any changes.
+				</p>
+				
+				<p>Your version of PostgreSQL needs to have been built with the tcl server-side language (i.e.,
+				configuration flag '--with-tcl'). You will also want to install the following contrib. packages:
+				adminpack and tablefunc. For more details on this build option and the contrib packages, see the documentation
+				for PostgreSQL 8.3 and/or your package management documentation. To see which contrib. packages are
+				already installed, check the followingdirectory: <em>/usr/local/PostgreSQL/8.3/share/contrib</em>.
+				</p>
+				
+				<p>Install <a href="http://postgis.refractions.net/">PostGIS 1.3.x</a>, the GIS extension to PostgreSQL.
+				Before going through the installation of the contrib package, make sure that the following prerequisites have
+				been installed: <a href="http://trac.osgeo.org/geos/" target="_blank">GEOS</a> (v3.0 or higher) and
+				<a href="http://trac.osgeo.org/proj/" target="_blank">PROJ.4</a> (v4.5 or higher). Note, if you have
+				installed through the pre-built	binary approach above, you will automatically install Postgis.
+				</p>
+				
+				<p>If you are interested in having a GUI for managing the database directly, install
+				<a href="http://www.pgadmin.org/" target="_blank">pgadminIII</a>. Note, you will need to have added the
+				contrib package adminpack before using pgadminIII. Note, if you have installed through the pre-built
+				binary approach above, you will automatically install pgadminIII.
+				</p>
+			</div>
+
+			<h4>Connecting to Database:</h4>
+			<div class="section">
+				<p>The first time you try to connect to the database, you should connect from
+				the EMFServer. To connect via pgadminIII, start the program from either	the application menu or from the
+				command line:
+					<div class="pre"># /usr/local/PostgreSQL/8.3/pgadmin3/bin/pgadmin3 &amp;</div>
+				</p>
+
+				<p>In the new pgadmin3 window, go to the "File" menu and click "Add Server": 
+					<ul>
+						<li>Name: pgsql_local (or some other name that indicates the server)</li>
+						<li>Host: localhost</li>
+						<li>Port: 5432</li>
+						<li>Maintenance DB: postgres</li>
+						<li>Username: postgres</li>
+						<li>Password:  (this is your database user's password)</li>
+						<li>Store password:  uncheck</li>
+						<li>Remaining options: leave as default</li>
+					</ul>
+				</p>
+				<p>After connecting to the server, you will see a list of available databases in the Object Browser panel
+				on the left side of the window. You can click on the plus sign next to any database to see the schemas,
+				tables, and	other objects available within each database.
+				</p>
+                
+                <p>It is possible to run PGAdminIII from a remote computer (e.g., a Windows machine) to connect to the Postgres
+                server.  To do this, install PGAdminIII on the computer of interest and use the Add server file menu to create
+                a link to the Postgres server you are trying to access.  On the EMF server machine, you need to give the 
+				remote computer permission to access the database by adding a line to the pg_hba.conf file in the Postgres data
+				directory.  If you wish to allow all IP addresses starting with 10.123 to connect, the line will look something like:
+					<div class="pre"> host all all 10.123.0.0/16 md5</div>
+					
+				<p>Alternatively, you can list specific IP addresses by specifying the IP address/32, or three-tier IP addresses by
+				specifying the IP address as 10.123.456.0/24.  Please see the Postgres documentation for more information on
+				the pg_hba.conf file.
+				</p>
+			</div>
+					
+			<h4>Post-Installation Configuration:</h4>
+			<div class="section">
+				<p>The final step is to configure the PostgreSQL server for the installation of the EMF server:
+					</p><ol>
+						<li>Download <a href="http://www.ie.unc.edu/cempd/projects/emf/beta_testing/postgresql.conf">the example postgresql.conf</a>.
+							You will want to modify the listen_address line to the IP address of your EMFServer:
+							<div class="pre">listen_addresses = 'localhost,152.2.76.31'</div>
+						</li>
+						<li>The rest of the configuration has been tuned for the EPA's server. If you find that the Postgres
+						server is not performing up to expectations, you might want to modify the shared_buffers value. If
+						you decide to modify other parameters, we recommend that you consult the PostgreSQL server configuration
+						instructions.
+						</li>
+						<li>After you have edited your local copy of this file, copy the configuration file to the postgres
+						data directory. Note, you will need to log in as the postgres user (Linux user) to modify these files:
+							<div class="pre"># su postgres</div>
+							<div class="pre"># cd /data/pgsql_data</div>
+							<div class="pre"># cp <em>&lt;path to config file&gt;</em>/postgresql.conf .</div>
+						</li>
+						<li>While logged in as the postgres user, you should also modify the pg_hba.conf. Edit the file
+						to reduce the level of security when accessing the database from the localhost (i.e. turn off passwords):
+							<div class="pre">local	all		postgres	trust</div>
+							<div class="pre">local 	all		all			trust</div>
+							
+							<p>This will reduce the number of passwords you will have to type during the EMF setup.
+							After the database has been populated with the EMF data, you can change the restrictions back to a
+							more strict configuration.
+							</p>
+						</li>
+						<li>Restart the postgres server for the above changes to be loaded into the system:
+							<div class="pre"># /etc/init.d/postgresql-8.3 restart</div>
+							
+							<p>Note for PostgreSQL installed through Postgres Plus, the startup script may be called "pgplus_83".</p>
+						</li>
+					</ol>
+				<p></p>
+			</div>
+
+			<h4>Verifying that your Database Server is Running</h4>
+				<div class="section">
+                	<p>Before proceeding further, ensure that your database server process
+					started successfully.  To show the postgres related processes, use the command:
+
+						<div class="pre">ps -elf | grep postg</div>
+
+					If you find that there are some postgres processes listed, then your server is running 
+					properly and move on to the next section.  <b>If there are no postgres processes, then your
+					server did not start properly</b>.  To determine the reason for the database server
+					not starting, review the contents of the server log file under the Postgres data directory.  It might be
+					called <span class="pre">serverlog</span>, or it may be in a <span class="pre">pg_log</span> subdirectory and called something like
+					<em>postgresql-20090828_131710.log</em>.  If the server log file contains an error like:
+						<div class="pre">
+							FATAL:  could not create shared memory segment: Invalid argument<br/>
+							DETAIL:  Failed system call was shmget(key=5432001, size=86466560, 03600).<br/>
+							HINT:  This error usually means that PostgreSQL's request for a shared memory segment<br/>
+							exceeded your kernel's SHMMAX parameter.  You can either reduce the request size or<br/>
+							reconfigure the kernel with larger SHMMAX.  To reduce the request size<br/>
+							(currently 86466560 bytes), reduce PostgreSQL's shared_buffers parameter<br/>
+							(currently 4096) and/or its max_connections parameter (currently 200).<br/>
+						</div>
+
+					then the server will not start because your system is preventing postgres from declaring 
+					a shared memory segment of the size specified in the shared_buffers parameter of your 
+					postgresql.conf file.  Instructions for updating this system setting on some types of servers
+					are available from <a href=http://www.redhat.com/docs/manuals/database/RHDB-2.1-Manual/admin_user/kernel-resources.html>http://www.redhat.com/docs/manuals/database/RHDB-2.1-Manual/admin_user/kernel-resources.html</a>.
+					</p>
+				</div>
+			<h4>Testing Tcl Procedural Language:</h4>
+			<div class="section">
+				<p>The pltcl procedural language is required for the EMF:
+					<ol>
+						<li>Check that you have the package <em>Tcl 8.4</em> on your system (via your package management system).</li>
+						<li>Test if you can create a new procedural language (pltcl) in the postgres database as the user <em>postgres</em>:
+							<div class="pre">$ /usr/local/PostgreSQL/8.3/bin/createlang -U postgres -d postgres pltcl</div>
+						</li>
+						<li>If this fails with a similar error message:
+							<div class="pre">ERROR: could not load library "/usr/local/PostgreSQL/8.3/lib/postgresql/pltcl.so": libtcl8.4.so:
+							cannot open shared object file: No such file or directory</div>
+							
+							<p>The problem is that the libtcl8.4.so likely has a different name. Make a
+							link in Postgres' lib directory to the Tcl library on your system, eg:
+								<div class="pre"># ln -s /usr/lib/libtcl8.4.so.0  /usr/local/PostgreSQL/8.3/lib/libtcl8.4.so</div>
+							</p>
+							<p>Rerun your test of adding the language.</p>
+						</li>
+						<li>Test if the language has been loaded:
+							<div class="pre">$ /usr/local/PostgreSQL/8.3/bin/createlang -l -U postgres -d postgres</div>
+						</li>
+					</ol>
+				<p></p>
+			</div>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2>Notes:</h2>
+		<div class="section">
+			<div id="note1">1: By "running the EMF", we mean the machine that will run postgres and tomcat.</div>
+		</div>
+
+		<div style="float: right; padding-bottom: 1em;"><a href="#contents">contents</a></div>
+
+</html>

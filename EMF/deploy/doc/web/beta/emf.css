@@ -1,0 +1,15 @@
+body {font-family: sans-serif;}
+h1 {color: #003; font-style: bold;}
+h2 {color: #003; font-style: italic;}
+h3 {color: #003;}
+h4 {padding-left: 0em;}
+#intro {padding-left: .5em;}
+#links {list-style-type: none; padding-left: .5em;}
+#links li {padding: .25em;}
+#links li a {font-size: 110%;}
+#reg_links {list-style-type: none; padding-left: .25em;}
+#reg_links li {padding: .25em;}
+div.section {margin: 1em;}
+div.pre {font-family: monospace; margin-left: 2em; margin-top: 1em; margin-bottom: 1em; font-size: 125%;}
+span.pre {font-family: monospace; font-size: 125%;}
+#sup {font-size: 0.75em; line-height: 0.5em}

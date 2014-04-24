@@ -1,0 +1,70 @@
+
+------------------------------------------- Data Management tables----------------------------
+--emissions.versions
+DROP TABLE emissions.versions CASCADE;
+--emissions.versions
+-- emf.users
+DROP TABLE emf.users CASCADE;
+--emf.users
+--
+--emf. status, countries, properties, sectors,sector criteria
+DROP TABLE emf.status CASCADE;
+DROP TABLE emf.properties CASCADE;
+--
+DROP TABLE emf.countries CASCADE;
+--
+DROP TABLE emf.sectors CASCADE;
+--
+DROP TABLE emf.sector_criteria CASCADE;
+--emf. status, countries, properties, sectors,sector criteria
+--
+--QA tables
+DROP TABLE emf.dataset_types_qa_step_templates CASCADE;
+DROP TABLE emf.qa_steps CASCADE;
+DROP TABLE emf.qa_step_results CASCADE;
+--QA table
+--
+-- emf ... KEYWORDS framework
+DROP TABLE emf.datasets_keywords CASCADE;
+DROP TABLE emf.keywords CASCADE;
+DROP TABLE emf.dataset_types_keywords CASCADE;
+-- emf ... KEYWORDS framework
+--
+-- emf.dataset_types
+DROP TABLE emf.dataset_types CASCADE;
+-- emf.dataset_types
+--
+-- emf.datasets
+DROP TABLE emf.datasets CASCADE;
+DROP TABLE emf.dataset_access_logs CASCADE;
+--emf.datasets
+--
+-- emf internal and external sources
+DROP TABLE emf.external_sources CASCADE;
+DROP TABLE emf.internal_sources CASCADE;
+-- emf internal and external sources
+--
+-- emf regions, projects and intended use
+DROP TABLE emf.intended_uses CASCADE;
+DROP TABLE emf.projects CASCADE;
+DROP TABLE emf.regions CASCADE;
+-- emf regions, projects and intended use
+--
+-- emf datasets_sectors
+DROP TABLE emf.datasets_sectors CASCADE;
+-- emf datasets_sectors
+--
+-- emf notes and note_types
+DROP TABLE emf.notes CASCADE;
+DROP TABLE emf.note_types CASCADE;
+-- emf notes and note_types
+--
+-- emf revisions
+DROP TABLE emf.revisions CASCADE;
+--
+-- emf qa_programs
+DROP TABLE emf.qa_programs CASCADE;
+-- emf emf datasets_notes
+DROP TABLE emf.datasets_notes CASCADE;
+
+DROP TABLE emf.georegions CASCADE;

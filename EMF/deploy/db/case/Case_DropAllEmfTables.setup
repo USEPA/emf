@@ -1,0 +1,27 @@
+--------------------------- Case Management tables ----------------------------------------
+DROP TABLE cases.cases CASCADE;
+DROP TABLE cases.emissions_years CASCADE;
+DROP TABLE cases.meteorlogical_years CASCADE;
+DROP TABLE cases.speciations CASCADE;
+DROP TABLE cases.grids CASCADE;
+DROP TABLE cases.air_quality_models CASCADE;
+DROP TABLE cases.case_categories CASCADE;
+DROP TABLE cases.case_abbreviations CASCADE;
+DROP TABLE cases.case_sectors CASCADE;
+DROP TABLE cases.grid_resolutions CASCADE;
+DROP TABLE cases.programs CASCADE;
+DROP TABLE cases.inputnames CASCADE;
+DROP TABLE cases.input_envt_vars CASCADE;
+DROP TABLE cases.cases_caseinputs CASCADE;
+DROP TABLE cases.model_to_runs CASCADE;
+DROP TABLE cases.subdirs CASCADE;
+DROP TABLE cases.hosts CASCADE;
+DROP TABLE cases.case_jobrunstatus CASCADE;
+DROP TABLE cases.executables CASCADE;
+DROP TABLE cases.cases_casejobs CASCADE;
+DROP TABLE cases.parameter_env_vars CASCADE;
+DROP TABLE cases.value_types CASCADE;
+DROP TABLE cases.parameter_names CASCADE;
+DROP TABLE cases.cases_parameters CASCADE;
+DROP TABLE cases.job_messages CASCADE;
+

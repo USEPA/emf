@@ -1,0 +1,138 @@
+<!doctype HTML PUBLIC -//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>The Emissions Modeling Framework (EMF) Control Strategy Tool (CoST)</title>
+		<link rel="stylesheet" type="text/css" href="emf.css" />	
+	</head>
+
+	<body>
+		<h1 id="contents">The Emissions Modeling Framework (EMF) Control Strategy Tool (CoST)</h1>
+
+		<ul id="links">
+			<li><a href="#brief">Very Brief Installation Instructions</a></li>
+			<li><a href="#cost">Install Control Strategy Tool (CoST) Training Materials</a></li>
+		</ul>
+
+		<h2 id="brief">Very Brief Installation Instructions</h2>
+		<div class="section">
+			<ol>
+				<li>Install Control Strategy Tool (CoST) Training Materials (optional)</li>
+			</ol>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="cost">Install Control Strategy Tool (CoST) Training Materials</h2>
+		<div class="section">
+			<h4>Complete the following steps:</h4>
+			<ol>
+				<li>
+					<p>Download the CoST supporting training tar file, control_strategy_training.tar.gz, and
+					the training manual, "CoST_UsersGuide_&lt;data&gt;.doc" from the EPA's ftp site:
+					</p>
+					<ul>
+						<li><b>FTP address</b>: scienceftp.epa.gov</li>
+						<li><b>login</b>: emfbeta</li>
+						<li><b>password</b>: 4aXqKhhu</li>
+					</ul>
+					<p/>											
+				</li>
+				<li>
+					<p>Untar the control_strategy_training.tar.gz file directory to your import directory
+					defined previously:
+						<div class="pre">$ tar xvzf control_strategy_training.tar.gz</div>	
+					</p>
+				</li>
+				<li>
+					<p>After you have untarred the supporting files, verify that the files have 'r' ('read') permissions
+					and directories have 'rx' ('read-execute') permissions for the "emiss" group. Remember that the "emf"
+					user will need to access these files.</p>
+				</li>
+				<li>
+					<p>Start the EMF client and login. Go to the <b>File</b> menu and select <b>Import</b>. This will
+					bring up the "Import Datasets" window. Import the following datasets using the dataset type, name
+					and file listed below.
+					</p>
+					<p><i>Note</i>: The dataset name (which is case-sensitive) and the dataset type must be the same as
+					listed in the table in order for the CoST training setup to work correctly. If you make a mistake
+					in the name, you can click the <b>Edit Properties</b> button from the "Dataset Manager: window and modify the name.
+					</p>				
+				
+					<table border="1">
+						<tr><th>File Name</th><th>Dataset Type</th><th>Dataset Name</th></tr>
+						<tr><td>control_strategy_training/inventories/ptnonipm/ptinv_ptnonipm_2020cc_22jun2009_v0_limited_orl.txt</td><td>ORL Point Inventory (PTINV)</td><td>ptnonipm_2020cc</td></tr>
+						<tr><td>control_strategy_training/inventories/ptnonipm/ptinv_ptnonipm_xportfrac_cap2002nei_09mar2007_v0_orl.txt</td><td>ORL Point Inventory (PTINV)</td><td>ptinv_ptnonipm_xportfrac_cap2002nei</td></tr>
+						<tr><td>control_strategy_training/county_files/070_Local_Counties_w_OTC_Statewide_csv_03jan2008_v0.csv</td><td>List of Counties (CSV)</td><td>070_Local_Counties_w_OTC_Statewide</td></tr>
+						<tr><td>control_strategy_training/county_files/070_Local_Counties_csv_29nov2007_v0.csv</td><td>List of Counties (CSV)</td><td>070_Local_Counties</td></tr>
+					</table>			
+					<p/>											
+				</li>
+				<li>
+					<p>(<i>Note</i>: For this next step, importing control measures, you must have administrative privileges.
+					If your EMF user does not have these privileges, log out and re-login as a user who does have administrative\
+					privileges.)
+					</p>
+					<p>From the EMF client, go to the <b>Manage</b> menu and select <b>Control Measures</b>. This will bring up
+					the "Control Measure Manager" window. Click the <b>Import</b> button to bring up the "Import Control Measures" window.
+					Click the <b>Browse</b> button and select the following files from the <span class="pre">control_strategy_training/control_measures</span>
+					directory to import area control measures:
+					</p>
+					<ul>
+						<li>CoST_CM_DB_Area_Sources_v.5.2 27_Sep_2007_Summary.csv</li>
+						<li>CoST_CM_DB_Area_Sources_v.5.2 27_Sep_2007_Efficiency.csv</li>
+						<li>CoST_CM_DB_Area_Sources_v.5.2 27_Sep_2007_SCC.csv</li>
+					</ul>
+					<p>Click the <b>Import</b> button. You can click the <b>Import Status</b> button every so often to see
+					the current status of the import process. The import is complete when the message "Completed importing
+					control measures" is displayed. Close the <i>Import Control Measures</i> window by clicking the <b>Done</b>
+					button.
+					</p>
+				</li>
+				<li>
+					<p>Repeat the process from the previous step and import the point measures using the following files:
+					</p>
+					<ul>
+						<li>CoST_CM_DB_Point_v.5.3_Summary.csv</li>
+						<li>CoST_CM_DB_Point_v.5.3_Eff.csv</li>
+						<li>CoST_CM_DB_Point_v.5.3_Equation.csv</li>
+						<li>CoST_CM_DB_Point_v.5.3_SCC.csv</li>
+					</ul>
+				</li>
+				<li>
+					<p>From the control_strategy_training directory, run the following command from the
+					command prompt (you may need to use the full path to psql):
+						<div class="pre">psql -d EMF -U emf -f setup_training_strategies.sql</div>	
+					</p>
+					<p>If the script executes successfully, the following message will be in STDOUT: "The training control
+					strategies have been successfully installed". If the success message is not in STDOUT, then look for
+					errors (look for "ERROR" message) in STDOUT. Any errors received will most likely be due to not importing
+					all the correct datasets listed in Step 4. Evaluate the error message to determine which datasets still
+					need to be imported.
+					</p>				
+				</li>
+				<li>
+					<p>The control strategy training support data has now been installed so that users will be able
+					to follow the training exercises. To ensure that the new example control strategies were properly
+					installed, go the <b>Manage</b> menu and select <b>Control Strategies</b>. This will bring up the
+					<i>Control Strategy Manager</i> window. Three example strategies should have been loaded into your
+					EMF system:
+					</p>
+					<ul>
+						<li>Maximum Emissions Reduction Example</li>
+						<li>Least Cost Example</li>
+						<li>Apply Measure In Series Example</li>
+					</ul>
+					<p>See the <b>Control Strategy Tool (CoST) Training Manual and User's Guide</b> for the training exercises.
+					For the <i>Advanced Exercises</i> in the user's guide, please utilize one of the ORL inventories that were
+					supplied with the 2005 emissions platform tar file, as opposed to the one listed in the exercise.
+					</p>				
+				</li>
+			</ol>
+		</div>
+
+		<div style="float: right; padding-bottom: 1em;"><a href="#contents">contents</a></div>
+		
+	</body>
+</html>

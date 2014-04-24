@@ -1,0 +1,23 @@
+--------------CoST Tables-----------------------------------------
+DROP TABLE emf.control_measures CASCADE;
+DROP TABLE emf.control_strategy_classes;
+DROP TABLE emf.control_strategy_measures;
+DROP TABLE emf.control_strategies CASCADE;
+DROP TABLE emf.input_datasets_control_strategies CASCADE;
+DROP TABLE emf.control_measure_sccs CASCADE;
+DROP TABLE emf.strategy_types;
+DROP TABLE emf.control_measure_efficiencyrecords CASCADE;
+DROP TABLE emf.strategy_results;
+DROP TABLE emf.strategy_result_types;
+DROP TABLE emf.control_measure_sectors;
+DROP TABLE emf.aggregrated_efficiencyrecords;
+DROP TABLE emf.control_technologies CASCADE;
+DROP TABLE emf.control_strategy_constraints;
+DROP TABLE emf.pollutants;
+DROP TABLE emf.source_groups;
+DROP TABLE emf.control_measure_classes;
+DROP TABLE emf.control_measure_equations;
+DROP TABLE emf.equation_type_variables;
+DROP TABLE emf.equation_types;
+DROP aggregate public.concatenate_with_ampersand(text);
+DROP FUNCTION public.join_with_ampersand(text,text);

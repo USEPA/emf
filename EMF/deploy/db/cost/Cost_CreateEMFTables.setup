@@ -1,0 +1,890 @@
+-- -------------CoST Tables--------------
+-- emf.pollutants
+CREATE TABLE emf.pollutants
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) UNIQUE NOT NULL,
+  description text,
+  lock_owner varchar(64),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.pollutants OWNER TO emf;
+CREATE INDEX pollutant_id
+  ON emf.pollutants
+  USING btree
+  (id);
+ALTER TABLE emf.pollutants CLUSTER ON pollutant_id;
+CREATE INDEX pollutant_name
+  ON emf.pollutants
+  USING btree
+  (name);
+-- emf.pollutants
+--
+-- emf.source_groups
+CREATE TABLE emf.source_groups
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) UNIQUE NOT NULL,
+  description text,
+  lock_owner varchar(64),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.source_groups OWNER TO emf;
+CREATE INDEX source_groups_id
+  ON emf.source_groups
+  USING btree
+  (id);
+ALTER TABLE emf.source_groups CLUSTER ON source_groups_id;
+CREATE INDEX source_groups_name
+  ON emf.source_groups
+  USING btree
+  (name);
+-- emf.source_groups
+--
+
+-- emf.control_measure_classes
+CREATE TABLE emf.control_measure_classes
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(64) NOT NULL UNIQUE,
+  description varchar(255)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_classes OWNER TO emf;
+CREATE INDEX control_measure_classes_id
+  ON emf.control_measure_classes
+  USING btree
+  (id);
+ALTER TABLE emf.control_measure_classes CLUSTER ON control_measure_classes_id;
+
+-- emf.control_measure_classes
+
+-- emf control_technologies
+CREATE TABLE emf.control_technologies
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(128) UNIQUE NOT NULL,
+  description text,
+  lock_owner varchar(64),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_technologies OWNER TO emf;
+CREATE INDEX control_technologies_id
+  ON emf.control_technologies
+  USING btree
+  (id);
+ALTER TABLE emf.control_technologies CLUSTER ON control_technologies_id;
+CREATE INDEX control_technologies_name
+  ON emf.control_technologies
+  USING btree
+  (name);
+-- emf control_technologies
+
+-- emf.control_measures
+CREATE TABLE emf.control_measures
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  abbreviation varchar(10) NOT NULL UNIQUE,
+  cm_class_id int4 REFERENCES emf.control_measure_classes(id),
+  description text,
+  device_code int4,
+  equipment_life real,
+  major_pollutant int4 REFERENCES emf.pollutants(id),
+  control_technology int4 REFERENCES emf.control_technologies(id),
+  source_group int4 REFERENCES emf.source_groups(id),
+  data_souce varchar(128),
+  creator int4  REFERENCES emf.users(id),
+  cost_year int4,
+  last_modified_time timestamp,
+  lock_owner varchar(64),
+  lock_date timestamp,
+  date_reviewed timestamp,
+  last_modified_by varchar(255) NOT NULL
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measures OWNER TO emf;
+CREATE INDEX measure_id
+  ON emf.control_measures
+  USING btree
+  (id);
+ALTER TABLE emf.control_measures CLUSTER ON measure_id;
+CREATE INDEX control_measures_control_technology
+   ON emf.control_measures (control_technology);
+CREATE INDEX control_measures_source_group
+  ON emf.control_measures
+  USING btree
+  (source_group);
+-- emf.control_measures
+
+
+-- emf.control_measure_sccs
+CREATE TABLE emf.control_measure_sccs
+(
+   id SERIAL PRIMARY KEY,
+   control_measures_id  int4 NOT NULL REFERENCES emf.control_measures(id),
+   name varchar(15),
+   status varchar(255),
+   UNIQUE(control_measures_id,name)
+)
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_sccs OWNER TO emf;
+CREATE INDEX measure_scc_measure_id
+  ON emf.control_measure_sccs
+  USING btree
+  (control_measures_id);
+CREATE INDEX measure_scc_scc
+  ON emf.control_measure_sccs
+  USING btree
+  (name);
+-- emf.control_measure_sccs
+
+-- emf.control_measure_efficiencyrecords
+CREATE TABLE emf.control_measure_efficiencyrecords
+(
+  id SERIAL PRIMARY KEY,
+  control_measures_id int4 NOT NULL REFERENCES emf.control_measures(id),
+  list_index int4,
+  record_id int4,
+  pollutant_id int4 NOT NULL REFERENCES emf.pollutants(id),
+  existing_measure_abbr varchar(10),
+  existing_dev_code int4,
+  locale varchar(10),
+  efficiency real,
+  percent_reduction real,
+  cost_year int4,
+  cost_per_ton real,
+  rule_effectiveness real,
+  rule_penetration real,
+  equation_type varchar(128),
+  cap_rec_factor real,
+  discount_rate real,
+  detail text,
+  effective_date timestamp,
+  last_modified_by varchar(255) NOT NULL,
+  last_modified_time timestamp NOT NULL,
+  ref_yr_cost_per_ton float4,
+  min_emis double precision,
+  max_emis double precision,
+  Cap_Ann_Ratio double precision,
+  Incremental_Cost_Per_Ton double precision,
+  UNIQUE (control_measures_id, pollutant_id, locale, existing_measure_abbr, existing_dev_code, effective_date, min_emis, max_emis)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_efficiencyrecords OWNER TO emf;
+CREATE INDEX effrec_min_max_emis
+  ON emf.control_measure_efficiencyrecords
+  USING btree
+  (min_emis, max_emis);
+CREATE INDEX er_locale
+  ON emf.control_measure_efficiencyrecords
+  USING btree
+  (locale);
+CREATE INDEX er_measureid
+  ON emf.control_measure_efficiencyrecords
+  USING btree
+  (control_measures_id);
+CREATE INDEX er_pollutantid
+  ON emf.control_measure_efficiencyrecords
+  USING btree
+  (pollutant_id);  
+-- emf.control_measure_efficiencyrecords
+
+-- emf control_measure_sectors
+CREATE TABLE emf.control_measure_sectors
+(
+  id SERIAL PRIMARY KEY,
+  control_measure_id int4 NOT NULL REFERENCES emf.control_measures(id) ,
+  list_index int4,
+  sector_id int4 REFERENCES emf.sectors (id),
+  UNIQUE (control_measure_id,sector_id) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_sectors OWNER TO emf;
+CREATE INDEX control_measure_sectors_measure_id
+  ON emf.control_measure_sectors
+  USING btree
+  (control_measure_id);  
+CREATE INDEX control_measure_sectors_sector_id
+  ON emf.control_measure_sectors
+  USING btree
+  (sector_id);  
+-- emf control_measure_sectors
+
+--added (10/16/09) for use with control measures
+-- emf control_measure_references
+CREATE TABLE emf.control_measure_references
+(
+  id SERIAL PRIMARY KEY,
+  control_measure_id int4 NOT NULL REFERENCES emf.control_measures(id) ,
+  list_index int4,
+  reference_id int4 REFERENCES emf.references (id),
+  UNIQUE (control_measure_id, reference_id)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_references OWNER TO emf;
+CREATE INDEX control_measure_references_id
+  ON control_measure_references
+  USING btree
+  (id);
+CREATE INDEX control_measure_references_measure_id
+  ON control_measure_references
+  USING btree
+  (control_measure_id);
+CREATE INDEX control_measure_references_reference_id
+  ON control_measure_references
+  USING btree
+  (reference_id);
+-- emf control_measure_references
+
+-- emf.strategy_types
+CREATE TABLE emf.strategy_types
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  description text NOT NULL,
+  default_sortorder text NULL DEFAULT '',
+  strategy_classname varchar(255),
+  lock_owner varchar(255),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.strategy_types OWNER TO emf;
+CREATE INDEX strategy_types_id
+   ON emf.strategy_types (id);
+ALTER TABLE emf.strategy_types CLUSTER ON strategy_types_id;
+-- emf.strategy_types
+
+
+-- emf.control_strategies
+CREATE TABLE emf.control_strategies
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  description text,
+  run_status varchar(255),
+  region_id int4 REFERENCES emf.regions(id),
+  project_id int4 REFERENCES emf.projects (id),
+  discount_rate real,
+  total_cost real,
+  reduction real,
+  cost_year int4,
+  analysis_year int4,
+  creator_id int4 REFERENCES emf.users(id),
+  last_modified_date timestamp,
+  start_date timestamp,
+  completion_date timestamp,
+  strategy_type_id int4 REFERENCES emf.strategy_types(id),
+  pollutant_id int4 REFERENCES emf.pollutants(id),
+  filter text,
+  lock_owner varchar(255),
+  lock_date timestamp,
+  county_file character varying,
+  county_dataset_id int4 REFERENCES emf.datasets (id),
+  county_dataset_version int4,
+  use_cost_equations boolean,
+  export_directory character varying,
+  delete_results boolean DEFAULT true,
+  merge_inventories boolean DEFAULT false,
+  include_unspecified_costs boolean DEFAULT true,
+  copied_from varchar(255)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_strategies OWNER TO emf;
+CREATE INDEX control_strategies_id
+  ON emf.control_strategies
+  USING btree
+  (id);
+ALTER TABLE emf.control_strategies CLUSTER ON control_strategies_id;
+CREATE INDEX fki_strategy_county_dataset
+  ON emf.control_strategies
+  USING btree
+  (county_dataset_id);
+-- emf.control_strategies
+
+-- emf.control_strategy_classes
+CREATE TABLE emf.control_strategy_classes
+(
+  id SERIAL PRIMARY KEY,
+  control_strategy_id int4 NOT NULL REFERENCES emf.control_strategies(id) ,
+  control_measure_class_id int4 REFERENCES emf.control_measure_classes (id),
+  list_index int4,
+  UNIQUE (control_strategy_id,control_measure_class_id) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_strategy_classes OWNER TO emf;
+CREATE INDEX control_strategy_classes_measure_class_id
+  ON emf.control_strategy_classes
+  USING btree
+  (control_measure_class_id);
+
+CREATE INDEX control_strategy_classes_strategy_id
+  ON emf.control_strategy_classes
+  USING btree
+  (control_strategy_id);
+-- emf.control_strategy_classes
+
+-- emf.control_strategy_measures
+CREATE TABLE emf.control_strategy_measures
+(
+  id SERIAL PRIMARY KEY,
+  control_strategy_id int4 NOT NULL REFERENCES emf.control_strategies(id) ,
+  control_measure_id int4 NOT NULL REFERENCES emf.control_measures (id),
+  list_index int4 NOT NULL,
+  include bool NOT NULL DEFAULT true,
+  rule_effectiveness double precision,
+  rule_penetration double precision,
+  apply_order double precision,
+  region_dataset_id integer,
+  region_dataset_version integer,
+  UNIQUE (control_strategy_id,control_measure_id) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_strategy_measures OWNER TO emf;
+CREATE INDEX control_strategy_measures_apply_order
+  ON emf.control_strategy_measures
+  USING btree
+  (apply_order);
+CREATE INDEX control_strategy_strategy_id
+  ON emf.control_strategy_measures
+  USING btree
+  (control_strategy_id);
+CREATE INDEX control_strategy_measure_id
+  ON emf.control_strategy_measures
+  USING btree
+  (control_measure_id);
+-- emf.control_strategy_measures
+
+-- emf.input_datasets_control_strategies
+CREATE TABLE emf.input_datasets_control_strategies
+(
+  id SERIAL PRIMARY KEY,
+  control_strategy_id int4 NOT NULL REFERENCES emf.control_strategies(id),
+  list_index int4,
+  dataset_id int4 REFERENCES emf.datasets (id),
+  dataset_version integer
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.input_datasets_control_strategies OWNER TO emf;
+CREATE INDEX input_datasets_control_strategies_dataset_id
+  ON emf.input_datasets_control_strategies
+  USING btree
+  (dataset_id);
+
+CREATE INDEX input_datasets_control_strategies_strat_id
+  ON emf.input_datasets_control_strategies
+  USING btree
+  (control_strategy_id);
+-- emf.datasets_control_strategies
+
+-- emf.strategy_result_types
+CREATE TABLE emf.strategy_result_types
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  optional boolean DEFAULT false,
+  classname varchar(255) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.strategy_result_types OWNER TO emf;
+CREATE INDEX strategy_result_types_id
+  ON emf.strategy_result_types
+  USING btree
+  (id);
+ALTER TABLE emf.strategy_result_types CLUSTER ON strategy_result_types_id;
+-- emf.strategy_result_types
+
+-- emf.strategy_results
+CREATE TABLE emf.strategy_results
+(
+  id SERIAL PRIMARY KEY,
+  control_strategy_id int4 NOT NULL REFERENCES emf.control_strategies(id),
+  dataset_id int4 REFERENCES emf.datasets(id),
+  strategy_result_type_id int4 NOT NULL REFERENCES emf.strategy_result_types(id),
+  detailed_result_dataset_id int4 REFERENCES emf.datasets(id),
+  controlled_inven_dataset_id int4 REFERENCES emf.datasets(id),
+  list_index int4,
+  total_cost real,
+  total_reduction real,
+  start_time timestamp,
+  completion_time timestamp,
+  run_status VARCHAR(255),
+  record_count integer,
+  dataset_version integer,
+  UNIQUE (control_strategy_id,dataset_id,detailed_result_dataset_id)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.strategy_results OWNER TO emf;
+CREATE INDEX strategy_results_strat_id
+  ON emf.strategy_results
+  USING btree
+  (control_strategy_id);
+-- emf.strategy_results
+
+-- emf.aggregrated_efficiencyrecords
+CREATE TABLE emf.aggregrated_efficiencyrecords
+(
+  control_measures_id integer NOT NULL,
+  pollutant_id integer NOT NULL,
+  max_efficiency real,
+  min_efficiency real,
+  avg_efficiency real,
+  max_cost_per_ton real,
+  min_cost_per_ton real,
+  avg_cost_per_ton real,
+  avg_rule_effectiveness real,
+  avg_rule_penetration real,
+  CONSTRAINT aggregrated_efficiencyrecords_pkey PRIMARY KEY (control_measures_id,pollutant_id),
+  CONSTRAINT aggregrated_efficiencyrecords_control_measures_id_fkey FOREIGN KEY (control_measures_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT aggregrated_efficiencyrecords_pollutant_id_fkey FOREIGN KEY (pollutant_id)
+      REFERENCES emf.pollutants (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.aggregrated_efficiencyrecords OWNER TO emf;
+CREATE INDEX aggeffrec_measureid
+  ON emf.aggregrated_efficiencyrecords
+  USING btree
+  (control_measures_id);
+CREATE INDEX aggeffrec_pollid
+  ON emf.aggregrated_efficiencyrecords
+  USING btree
+  (pollutant_id);
+
+-- add new table control_strategy_constraints...
+CREATE TABLE emf.control_strategy_constraints
+(
+  control_strategy_id integer NOT NULL,
+  max_emis_reduction real,
+  max_control_efficiency real,
+  min_cost_per_ton real,
+  min_ann_cost real,
+  domain_wide_emis_reduction double precision,
+  domain_wide_pct_reduction double precision,
+  domain_wide_pct_reduction_increment double precision,
+  domain_wide_pct_reduction_start double precision,
+  domain_wide_pct_reduction_end double precision,
+  replacement_control_min_eff_diff double precision,
+  control_program_measure_min_pct_red_diff double precision,
+  CONSTRAINT control_strategy_constraints_pkey PRIMARY KEY (control_strategy_id),
+  CONSTRAINT control_strategy_constraints_control_strategy_id_fkey FOREIGN KEY (control_strategy_id)
+      REFERENCES emf.control_strategies (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_strategy_constraints OWNER TO emf;
+
+CREATE INDEX constraint_strategy_id
+  ON emf.control_strategy_constraints
+  USING btree
+  (control_strategy_id);
+
+CREATE TABLE emf.equation_types
+(
+  id serial NOT NULL,
+  name character varying(255) NOT NULL,
+  description text NOT NULL DEFAULT ''::text,
+  inventory_fields varchar(512),
+  equation text,
+  CONSTRAINT equation_types_pkey PRIMARY KEY (id),
+  CONSTRAINT equation_types_name_key UNIQUE (name)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.equation_types OWNER TO emf;
+CREATE INDEX equation_types_id
+   ON emf.equation_types (id);
+ALTER TABLE emf.equation_types CLUSTER ON equation_types_id;
+
+CREATE TABLE emf.equation_type_variables
+(
+  id serial NOT NULL,
+  equation_type_id integer NOT NULL,
+  name character varying(255) NOT NULL,
+  file_col_position smallint,
+  description character varying(50) DEFAULT ''::character varying,
+  list_index integer,
+  CONSTRAINT equation_type_variables_pkey PRIMARY KEY (id),
+  CONSTRAINT equation_type_variables_equation_type_id_fkey FOREIGN KEY (equation_type_id)
+      REFERENCES emf.equation_types (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT equation_type_variables_id_key UNIQUE (id, equation_type_id)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.equation_type_variables OWNER TO emf;
+CREATE INDEX equation_type_variables_equation_type_id
+  ON emf.equation_type_variables
+  USING btree
+  (equation_type_id);
+CREATE INDEX equation_type_variables_id
+  ON emf.equation_type_variables
+  USING btree
+  (id);
+ALTER TABLE emf.equation_type_variables CLUSTER ON equation_type_variables_id;
+
+CREATE TABLE emf.control_measure_equations
+(
+  id SERIAL PRIMARY KEY,
+  control_measure_id integer NOT NULL,
+  equation_type_id integer NOT NULL,
+  pollutant_id integer NOT NULL,
+  cost_year integer NOT NULL,
+  value1 double precision,
+  value2 double precision,
+  value3 double precision,
+  value4 double precision,
+  value5 double precision,
+  value6 double precision,
+  value7 double precision,
+  value8 double precision,
+  value9 double precision,
+  value10 double precision,
+  list_index integer NOT NULL,
+  UNIQUE (control_measure_id, equation_type_id, pollutant_id),
+  CONSTRAINT control_measure_equations_control_measure_id_fkey FOREIGN KEY (control_measure_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_equations_pollutant_id_fkey FOREIGN KEY (pollutant_id)
+      REFERENCES emf.pollutants (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_equations_equation_type_id_fkey1 FOREIGN KEY (equation_type_id)
+      REFERENCES emf.equation_types (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_equations OWNER TO emf;
+
+
+-- Index: emf.fki_
+
+-- DROP INDEX emf.fki_;
+
+CREATE INDEX control_measure_equations_equation_type_id
+  ON emf.control_measure_equations
+  USING btree
+  (equation_type_id);
+
+-- Index: emf.fki_equation_measure
+
+-- DROP INDEX emf.fki_equation_measure;
+
+CREATE INDEX control_measure_equations_meaure_id
+  ON emf.control_measure_equations
+  USING btree
+  (control_measure_id);
+
+
+CREATE INDEX control_measure_equations_pollutant_id
+  ON emf.control_measure_equations
+  USING btree
+  (pollutant_id);
+
+CREATE INDEX control_measure_equations_cost_year
+  ON emf.control_measure_equations
+  USING btree
+  (cost_year);
+
+
+
+-- emf.control_program_types
+CREATE TABLE emf.control_program_types
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  description text,
+  processing_order smallint NOT NULL
+)
+WITHOUT OIDS;
+ALTER TABLE emf.control_program_types OWNER TO emf;
+CREATE INDEX control_program_types_id
+  ON emf.control_program_types
+  USING btree
+  (id);
+ALTER TABLE emf.control_program_types CLUSTER ON control_program_types_id;
+-- emf.control_program_types
+
+-- emf.control_programs
+CREATE TABLE emf.control_programs
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  description text,
+  start_date timestamp NOT NULL,
+  end_date timestamp,
+  control_program_type_id int4 NOT NULL REFERENCES emf.control_program_types (id),
+  dataset_id int4 NOT NULL REFERENCES emf.datasets (id),
+  dataset_version int4 NOT NULL,
+  creator_id int4 REFERENCES emf.users(id) NOT NULL,
+  last_modified_date timestamp,
+  lock_owner varchar(255),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_programs OWNER TO emf;
+CREATE INDEX control_programs_id
+  ON emf.control_programs
+  USING btree
+  (id);
+ALTER TABLE emf.control_programs CLUSTER ON control_programs_id;
+CREATE INDEX control_programs_dataset
+  ON emf.control_programs
+  USING btree
+  (dataset_id);
+-- emf.control_programs
+
+-- emf.control_program_control_technologies
+CREATE TABLE emf.control_program_technologies
+(
+  id SERIAL PRIMARY KEY,
+  list_index int4,
+  control_program_id int4 NOT NULL REFERENCES emf.control_programs(id) ,
+  control_technology_id int4 REFERENCES emf.control_technologies (id),
+  UNIQUE (control_program_id,control_technology_id) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_program_technologies OWNER TO emf;
+CREATE INDEX control_program_technologies_program_id
+  ON emf.control_program_technologies
+  USING btree
+  (control_program_id);
+
+CREATE INDEX ontrol_program_technologies_control_technology_id
+  ON emf.control_program_technologies
+  USING btree
+  (control_technology_id);
+-- emf.control_program_technologies
+
+-- emf.control_program_measures
+CREATE TABLE emf.control_program_measures
+(
+  id SERIAL PRIMARY KEY,
+  list_index int4 NOT NULL,
+  control_program_id int4 NOT NULL REFERENCES emf.control_programs(id) ,
+  control_measure_id int4 NOT NULL REFERENCES emf.control_measures (id),
+  UNIQUE (control_program_id,control_measure_id) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_program_measures OWNER TO emf;
+CREATE INDEX control_program_measures_program_id
+  ON emf.control_program_measures
+  USING btree
+  (control_program_id);
+CREATE INDEX control_program_measures_measure_id
+  ON emf.control_program_measures
+  USING btree
+  (control_measure_id);
+-- emf.control_program_measures
+
+
+-- emf.control_strategy_programs
+CREATE TABLE emf.control_strategy_programs
+(
+  id SERIAL PRIMARY KEY,
+  list_index int4,
+  control_strategy_id int4 REFERENCES emf.control_strategies (id),
+  control_program_id int4 NOT NULL REFERENCES emf.control_programs(id) ,
+  UNIQUE (control_strategy_id,control_program_id) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_program_technologies OWNER TO emf;
+CREATE INDEX control_strategy_programs_program_id
+  ON emf.control_strategy_programs
+  USING btree
+  (control_program_id);
+
+CREATE INDEX control_strategy_programs_control_strategy_id
+  ON emf.control_strategy_programs
+  USING btree
+  (control_strategy_id);
+-- emf.control_strategy_programs
+
+
+CREATE TABLE emf.control_measure_months
+(
+  id SERIAL PRIMARY KEY,
+  control_measure_id integer NOT NULL,
+  list_index integer,
+  "month" smallint,
+  CONSTRAINT control_measure_months_control_measure_id_fkey FOREIGN KEY (control_measure_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_months_control_measure_id_key UNIQUE (control_measure_id, "month")
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_months OWNER TO emf;
+
+CREATE INDEX control_measure_months_measure_id
+  ON emf.control_measure_months
+  USING btree
+  (control_measure_id);
+
+CREATE INDEX control_measure_months_month
+  ON emf.control_measure_months
+  USING btree
+  ("month");
+
+
+CREATE TABLE emf.control_measure_nei_devices
+(
+  id SERIAL PRIMARY KEY,
+  list_index integer NOT NULL,
+  control_measure_id integer NOT NULL,
+  nei_device_code integer NOT NULL,
+  CONSTRAINT control_measure_nei_devices_control_measure_id_fkey FOREIGN KEY (control_measure_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_nei_devices_control_measure_id_key UNIQUE (control_measure_id, nei_device_code)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_nei_devices OWNER TO emf;
+
+CREATE INDEX control_measure_nei_devices_measure_id
+  ON emf.control_measure_nei_devices
+  USING btree
+  (control_measure_id);
+
+CREATE INDEX control_measure_nei_devices_nei_device_code
+  ON emf.control_measure_nei_devices
+  USING btree
+  (nei_device_code);
+
+
+CREATE TABLE emf.control_strategy_target_pollutants
+(
+   id serial, 
+   control_strategy_id integer, 
+   pollutant_id integer, 
+   precedence double precision, 
+   list_index integer, 
+   CONSTRAINT control_strategy_target_pollutants_id_pk PRIMARY KEY (id), 
+   CONSTRAINT control_strategy_target_pollutants_strategy_fk FOREIGN KEY (control_strategy_id) REFERENCES emf.control_strategies (id)    ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT control_strategy_target_pollutants_pollutant_fk FOREIGN KEY (pollutant_id) REFERENCES emf.pollutants (id)    ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT control_strategy_target_pollutants_uq UNIQUE (control_strategy_id, pollutant_id)
+) WITHOUT OIDS;
+ALTER TABLE emf.control_strategy_target_pollutants OWNER TO emf;
+CREATE INDEX control_strategy_target_pollutants_pollutant_id
+  ON emf.control_strategy_target_pollutants
+  USING btree
+  (pollutant_id);
+
+CREATE INDEX control_strategy_target_pollutants_precedence
+  ON emf.control_strategy_target_pollutants
+  USING btree
+  (precedence);
+  
+CREATE INDEX control_strategy_target_pollutants_strategy_id
+  ON emf.control_strategy_target_pollutants
+  USING btree
+  (control_strategy_id);
+
+CREATE TABLE emf.sources
+(
+  id serial NOT NULL,
+  source character varying(76) NOT NULL,
+  scc character varying(10) NOT NULL,
+  fips character varying(6) NOT NULL,
+  plantid character varying(15),
+  pointid character varying(15),
+  stackid character varying(15),
+  segment character varying(15),
+  CONSTRAINT uq_sources_name UNIQUE (source)
+);
+
+CREATE INDEX sources_id
+  ON emf.sources
+  USING btree
+  (id);
+ALTER TABLE emf.sources CLUSTER ON sources_id;
+
+CREATE INDEX sources_source
+  ON emf.sources
+  USING btree
+  (source);
+
+-- emf.control_measure_property_categories
+CREATE TABLE emf.control_measure_property_categories
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) UNIQUE NOT NULL
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_property_categories OWNER TO emf;
+CREATE INDEX control_measure_property_categories_id
+  ON emf.control_measure_property_categories
+  USING btree
+  (id);
+ALTER TABLE emf.control_measure_property_categories CLUSTER ON control_measure_property_categories_id;
+-- emf.control_measure_property_categories
+
+-- emf.control_measure_property_categories
+CREATE TABLE emf.control_measure_properties
+(
+  id serial NOT NULL PRIMARY KEY,
+  list_index integer,
+  control_measure_id integer NOT NULL REFERENCES emf.control_measures(id),
+  name varchar(255) NOT NULL,
+  control_measure_property_category_id integer NOT NULL REFERENCES emf.control_measure_property_categories(id),
+  units character varying(75) NOT NULL,
+  data_type character varying(64) NOT NULL,
+  db_field_name character varying(64),
+  "value" text NOT NULL
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_properties OWNER TO emf;
+CREATE INDEX control_measure_properties_id
+  ON emf.control_measure_properties
+  USING btree
+  (id);
+CREATE INDEX control_measure_properties_measure_id
+  ON emf.control_measure_properties
+  USING btree
+  (control_measure_id);
+CREATE INDEX control_measure_properties_control_category_id
+  ON emf.control_measure_properties
+  USING btree
+  (control_measure_property_category_id);
+-- emf.control_measure_property_categories
+
+
+--added (10/16/09) for use with control measures
+CREATE TABLE emf.references
+(
+   id serial NOT NULL,
+   description text,
+   lock_owner character varying(255),
+   lock_date timestamp without time zone,
+   CONSTRAINT references_pkey PRIMARY KEY (id),
+   CONSTRAINT uq_reference_description UNIQUE (description)
+)
+WITH (OIDS=FALSE);
+ALTER TABLE emf.references OWNER TO emf;
+
+--added (10/16/09) for use with control measures
+-- emf control_measure_references
+CREATE TABLE emf.control_measure_references
+(
+   id SERIAL PRIMARY KEY,
+   control_measure_id int4 NOT NULL REFERENCES emf.control_measures(id) ,
+   list_index int4,
+   reference_id int4 REFERENCES emf.references (id),
+   UNIQUE (control_measure_id, reference_id)
+)
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_references OWNER TO emf;
+CREATE INDEX control_measure_references_id
+   ON emf.control_measure_references
+   USING btree
+   (id);
+CREATE INDEX control_measure_references_measure_id
+   ON emf.control_measure_references
+   USING btree
+   (control_measure_id);
+CREATE INDEX control_measure_references_reference_id
+   ON emf.control_measure_references
+   USING btree
+   (reference_id);
+-- emf control_measure_references

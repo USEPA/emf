@@ -1,0 +1,93 @@
+<!--
+
+Context configuration file for the EMF Web App
+
+README: Please add this context to Tomcat's server.xml (in 'conf' folder)
+
+-->
+<Context path="/emf" docBase="emf.war" debug="5" reloadable="true" crossContext="true">
+    
+    <Realm className="org.apache.catalina.realm.DataSourceRealm" debug="99" dataSourceName="java:/comp/env/jdbc/EMFDB"
+        userTable="users" userNameCol="user_name" userCredCol="user_pass" userRoleTable="user_roles"
+        roleNameCol="role_name"/>
+    
+    <Logger className="org.apache.catalina.logger.FileLogger" prefix="emf" suffix=".log" timestamp="true"/>
+    
+    <Resource name="jdbc/EMFDB" auth="Container" type="javax.sql.DataSource"/>
+    
+    <ResourceParams name="jdbc/EMFDB">
+        <parameter>
+            <name>factory
+            </name>
+            <value>org.apache.commons.dbcp.BasicDataSourceFactory
+            </value>
+        </parameter>
+        
+        <!-- Set to 0 for no limit. -->
+        <parameter>
+            <name>maxActive
+            </name>
+            <value>100
+            </value>
+        </parameter>
+        
+        <!-- Set to 0 for no limit. -->
+        <parameter>
+            <name>maxIdle
+            </name>
+            <value>30
+            </value>
+        </parameter>
+        
+        <!-- Maximum time to wait for a dB connection to become available
+        in ms, in this example 10 seconds. An Exception is thrown if
+        this timeout is exceeded.  Set to -1 to wait indefinitely.
+        -->
+        <parameter>
+            <name>maxWait
+            </name>
+            <value>10000
+            </value>
+        </parameter>
+        
+        <!-- username and password for dB connections  -->
+        <parameter>
+            <name>username
+            </name>
+            <value>emf
+            </value>
+        </parameter>
+        <parameter>
+            <name>password
+            </name>
+            <value>emf
+            </value>
+        </parameter>
+        
+        <!-- JDBC driver -->
+        <parameter>
+            <name>driverClassName
+            </name>
+            <value>org.postgresql.Driver
+            </value>
+        </parameter>
+        <parameter>
+            <name>url
+            </name>
+            <value>jdbc:postgresql://localhost:5432/EMF?autoReconnect=true
+            </value>
+        </parameter>
+        <parameter>
+              <name>removeAbandoned</name>
+              <value>true</value>
+        </parameter>
+	    <parameter>
+              <name>removeAbandonedTimeout</name>
+              <value>60</value>
+        </parameter>
+	   <parameter>
+              <name>logAbandoned</name>
+              <value>true</value>
+        </parameter>
+    </ResourceParams>
+</Context>

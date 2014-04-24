@@ -1,0 +1,569 @@
+<!doctype HTML PUBLIC -//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>The Emissions Modeling Framework (EMF) Server Installation and Configuration</title>
+		<link rel="stylesheet" type="text/css" href="emf.css" />	
+	</head>
+
+	<body>
+		<h1 id="contents">The Emissions Modeling Framework (EMF) Installation and Configuration</h1>
+
+		<ul id="links">
+			<li><a href="#brief">Very Brief Installation Instructions</a></li>
+			<li><a href="#permissions">Set Directory Permissions</a></li>
+			<li><a href="#database">Load EMF Database</a></li>
+			<li><a href="#server">Deploy EMF Web Server</a></li>
+			<li><a href="#client">Install EMF Client</a></li>
+			<li><a href="#inventories">Importing and Exporting Inventories</a></li>
+			<li><a href="#databasebackup">Backup EMF Database</a></li>
+		</ul>
+
+		<h2 id="brief">Very Brief Installation Instructions</h2>
+		<div class="section">
+			<ol>
+				<li>Setup directories with proper permissions</li>
+				<li>Load a new EMF database</li>
+				<li>Deploy the EMF web server</li>
+				<li>Test the server and install the EMF client</li>
+				<li>Download and load the 2005 modeling platform datasets</li>
+			</ol>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="permissions">Set Directory Permissions</h2>
+		<div class="section">
+			<p>For the EMF server to properly import and export datasets and interact with SMOKE, 
+			the "emf" user (the UNIX username that is the owner of the tomcat process), the "postgres" 
+			user, and the SMOKE user will at times need to read and/or write to the same directories. 
+			To facilitate these shared permissions, we previously setup an "emiss" group for all three 
+			user types. Now we will setup a series of directories with the proper permissions so that 
+			the EMF can import and export datasets successfully. The following directories are just 
+			examples, so feel free to use your own directory structure. What is important is that the 
+			directory structure has the correct permissions and that the discs that are mounted on both 
+			the EMFServer and the SMOKEServer use the same names. For example, if a disc is mounted on 
+			the EMFServer at <span class="pre">/data2</span>, it should also be mounted on the SMOKEServer 
+			at <span class="pre">/data2</span>. Although these have been broken into different root 
+			directories, many of these directories could be on the same disc or could be sub-directories 
+			of the same root directory. 
+			</p>
+			<p>The purpose of this step is to figure out the directories on your system that correspond to 
+			the example directories listed below and change the permissions as described in the list:
+				<ul>
+					<li><span class="pre">/data2/tmp</span> -- Temporary directory for postgres to write 
+					inventory data files. This should have at least a couple of gigabytes for moving 
+					more than one inventory in and out of the database. Due to a "feature" of 
+					postgres, the "emiss" group needs 'rwx' permissions all the way to the top of this 
+					directory structure. If you choose <span class="pre">/tmp</span>, you will not need 
+					to modify the permissions of this directory. In our example, both <span class="pre">/data2</span> 
+					and <span class="pre">/data2/tmp</span> would have their permissions set to 'rwx' for 
+					the "emiss" group.					
+					</li>
+					<li><span class="pre">/data3/imports/inventories</span> -- Location of the inventories 
+					that you will import into the EMF database. This directory should have 'rx' 
+					permissions for the "emiss" group. You do not need to have a single location for all 
+					imports, but you should make sure that your EMF users know a general location (that 
+					could have many sub-directories) with the proper group permissions.
+					</li>
+					<li><span class="pre">/data4/smoke/.../inputs</span> -- Location of the inputs for 
+					SMOKE and the location where the EMF will create sub-directories and export inventories 
+					and ancillary files. This should have 'rwx' permissions for the "emiss" group. This 
+					is primarily so the "emf" user can create directories for you as needed during export 
+					of inventories from the EMF.
+					</li>
+					<li><span class="pre">/data4/smoke/.../smoke_out</span> -- Location of the model-ready 
+					emissions output from SMOKE. This directory (and all of the sub-directories) could 
+					be 'rwx' permissions for the "emiss" group. The EMF server only needs to read from 
+					these directories, but the SMOKE user also needs to write to this directory structure.
+					</li>
+					<li><span class="pre">/data4/smoke/.../reports</span> &#8211; Same as for the "smoke_out" 
+					directory, above.
+					</li>
+				</ul>		
+		</p>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="database">Load EMF Database</h2>
+		<div class="section">
+			<h4>Complete the following steps:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>Download and untar <a href="ftp://ftp.unc.edu/pub/empd/azubrow/emf_installation_beta.tar.gz">the emf_installation_beta tar file</a>. This can be untarred 
+						anywhere. For my example, you can put it in your home directory:
+						
+							<div class="pre">$ cp emf_installation_beta.tar.gz ~/</div>
+							<div class="pre">$ tar xvzf emf_installation_beta.tar.gz</div>
+						</p>
+					</li>
+					<li>
+						<p>Under <span class="pre">~/emf_installation_beta/db</span>, edit the script <em>SetupEMFDatabase.sh</em>. Modify the two settings shown below to indicate 
+						(a) the path to the setup script and (b) the root directory for Postgres:
+				
+							<div class="pre">export PSQLSCRIPTSDIR=/home/azubrow/emf_installation_beta/db</div>
+							<div class="pre">export POSTGRESDIR=/usr/local/PostgreSQL/8.3</div>
+						</p>
+					</li>
+					<li>
+						<p>Double check that the Postgres server is running with the command shown here:
+							<div class="pre">$ ps aux| grep postgres</div>
+						</p>
+						<p>If it is not running, start the server (see <a href="./third_party_install.html#postgres">Postgres Details</a> from Part 1).</p>
+					</li>
+					<li>
+						<p>Run the setup script. Note: This will create a new PostgreSQL user "emf" and a new
+						database &#8220;EMF&#8221;. The script will ask you twice for a password for the new
+						role, the emf user (database user). <b>This password must be "emf"</b>. To reduce the
+						number of times that you type in the password, change the login permission requirements
+						for the postgres server (see <a href="./third_party_install.html#postgres">Postgres Post-Installation Configuration</a>). Redirect the output to a log file:
+							<div class="pre">$ ./SetupEMFDatabase.sh &gt;&amp; log.setup</div>
+						</p>
+						<p>Check for errors in the log (i.e., log.setup in the example here). Some acceptable
+						errors are: "emf user already exists" and "plpgsql already exists".
+						</p> 
+
+						<p>One unacceptable error that could happen during this step is: 
+							<div class="pre">createdb: The database creation failed: ERROR: encoding UTF8
+							does not match server's locale...
+							</div>
+						</p>
+
+						<p>If this should occur, then your postgres data directory was not created using the
+						proper character encoding.  To address this, you should first stop the Postgres server
+						(using your startup script - e.g., /etc/init.d/postgresql-8.3 stop), then remove everything
+						under the Postgres data directory ($PG_DATA). NOTE: if you have anything in that
+						directory custom to your installation, you should back this up first. Next, do these steps:
+							<div class="pre">su postgres /usr/local/PostgreSQL/8.3/bin/initdb --locale=POSIX -D /<i>data</i>/pgsql_data</div>
+						</p>
+						
+						<p>Next, install the EMF version of the postgresql.conf, restart your server, and test your 
+						configuration as described in <a href="./third_party_install.html#postgres">Postgres Post-Installation Configuration</a>.
+						</p>
+					</li>
+					<li>
+						<p>Edit the script SetupPostGIS.sh. Modify the two settings shown below to indicate (a)
+						the path to the setup script and (b) the root directory for Postgres:
+							<div class="pre">export PSQLSCRIPTSDIR=/home/azubrow/emf_installation_beta/db</div>
+							<div class="pre">export POSTGRESDIR=/usr/local/PostgreSQL/8.3</div>
+						</p>
+						<p>Double check that the following two PostGIS scripts exist in the $POSTGISSCRIPTSDIR:
+						<em>lwpostgis.sql</em> and <em>spatial_ref_sys.sql</em>. If not, modify that path to
+						the location of these scripts. If they are not under the default location, check under
+						the <em>contrib</em> directory.
+						</p>
+					</li>
+					<li>
+						<p>Run the PostGIS script. Redirect the output to a log file:
+							<div class="pre">$ ./SetupPostGIS.sh &gt;&amp; log.postgis</div>
+						</p>
+						<p>Check for errors in the log (i.e., log.postgis in the example here).</p>
+					</li>									
+				</ol>
+			</div>
+			
+			<h4>Testing the EMF database setup and configuring properties:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>Start pgadmin3:
+							<div class="pre">$ /usr/local/PostgreSQL/8.3/pgadmin3/bin/pgadmin3 &amp;</div>
+						</p>
+					</li>				
+					<li>
+						<p>Log into the local server by double-clicking on it (you should have already setup a
+						new server via pgadmin3 in the section <a href="./third_party_install.html#postgres">Connecting
+						to Database</a>).
+						</p>
+					</li>
+					<li>
+						<p>Open the EMF database by clicking on the "+" sign to expand the subcomponents of
+						the database. Expand the Schemas which should reveal five schemas: cases, emf,
+						emissions, public, and reference. You can continue to burrow down until you actually
+						see the data tables. For example: EMF &#8658; Schemas &#8658; emf &#8658; Tables &#8658;
+						properties. To see the actual data within a particular table, highlight the name and
+						click on the <b>View the data</b> button. This will create a new window for the data
+						table.
+						</p>
+					</li>
+					<li>
+						<p>Review the properties table values. You can expand a column by clicking and dragging
+						on the boundary between the columns. You can edit a cell by clicking on the cell and
+						typing in it. When you are done, click on another cell. You may need to click save or
+						refresh for the change to be registered with the database. Modify the table for your
+						system. Specifically, we will change the temporary directory for postgres' imports and
+						exports and we will want to check the postgres bin directory:
+							<div class="pre">ImportExportTempDir = /data2/tmp</div>
+							<div class="pre">postgres-bin-dir = /usr/local/PostgreSQL/8.3</div>
+						</p>
+						<p>Note, if you change these paths after starting the EMF web server (next section),
+						you will need to restart tomcat for the new values to be used by the EMF server.
+						</p>
+					</li>					
+				</ol>
+			</div>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="server">Deploy EMF Web Server</h2>
+		<p>The EMF web server consists of the tomcat setup (already completed) and deploying the EMF specific
+		Java code (in the parlance of Java, a &#8220;.war&#8221; file).</p>
+		<div class="section">
+			<h4>Complete the following steps:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>Double check that the Tomcat server is running:
+						
+							<div class="pre">$ ps aux| grep tomcat</div>
+						</p>
+						<p>If it is not running, start the server (see <a href="./third_party_install.html#tomcat">Tomcat Details</a>).</p>
+					</li>
+					<li>
+						<p>Open up a web browser on the EMFServer. Navigate to the EMFServer's url at port 8080:
+							</p><div class="pre">http://localhost:8080</div>
+						<p></p>
+					</li>
+					<li>
+						<p>Click on the "Tomcat Manager" link and, in the pop-up window, fill in the
+						username 'admin' and the appropriate password (that you set during the
+						Tomcat installation). This will redirect you to the "Tomcat Web
+						Application Manager" page. This lists all the web applications currently running.
+						</p>
+					</li>
+					<li>
+						<p>Add a new web application: Go to the bottom of the page to "Deploy". Under,
+						"WAR file to deploy", browse to your emf_installation_beta directory and select
+						the file emf.war. Click the <b>Deploy</b> button. When the deploy is completed,
+						the page will automatically refresh showing a new application, "EPA EMF".
+						</p>
+					</li>
+				</ol>
+			</div>
+		</div>
+		
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="client">Install EMF Client</h2>
+		<p>The EMF Client is the user interface to the EMF system. Typically users run
+		the EMF Client from their own desktop or laptop computers (neither the
+		EMFServer nor the SMOKEServer). The EMF Client should be run using Java
+		6. Before installing the EMF client, download and install the latest <a href="http://java.sun.com/javase/downloads/index.jsp">
+		Java Runtime Environment 6</a> (e.g. JRE 6u16) onto the computer(s) that will run the EMF Client.
+		</p>
+		
+		<p>If you want to use the Analysis Engine, for greater plotting and graphics capabilities, you
+		will also need to install <a href="http://www.r-project.org/">R</a> and modify your EMF batch
+		script (for Windows) or your shell script (for Linux or Mac) to point to the location of your R
+		installation.
+		</p>
+
+		<div class="section">
+			<h4>Windows Installation:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>Download the <a href="http://www.ie.unc.edu/cempd/projects/emf/install/emfinst.exe">EMF Installer Executable (emfinst.exe)</a>.</p>
+					</li>
+					<li>
+						<p>Double-click on the <em>emfinst.exe</em> to run the installer. The default location for the installer program is <span class="pre">C:\emfinst</span> (note, this is not the EMF client). Once the expansion of the installer program is complete, it will start.</p>
+					</li>
+					<li>
+						<p>In the <em>EMF Client Installer</em> window, fill in the fields. You may click the <b>Browse</b>
+						button to help you choose any local directories. (NOTE: the input and
+						output file directories are the default directories on the remote
+						EMFServer, not on your local client's machine. The installer will warn
+						you if they don't exist on your client machine, you can ignore these
+						warnings). You will likely not need to modify the "Client Home
+						Directory". The "Server Address" is your new EMFServer URL or IP
+						address. The "EMF Download URL" is the download location for the client
+						files (use the exact value below). Example settings:
+							<ul>
+								<li><b>EMF Download URL</b>: http://www.ie.unc.edu/cempd/projects/emf/beta_testing/install</li>
+								<li><b>Java Home Directory</b>: C:\Program Files\Java\jre1.6.0_16</li>
+								<li><b>Input File Directory</b>: /data3/imports</li>
+								<li><b>Output File Directory</b>: /data4/smoke</li>
+								<li><b>Client Home Directory</b>: C:\Program Files\EMFClient</li>
+								<li><b>Server Address</b>: http://EMFServer.unc.edu:8080/emf/services</li>
+							</ul>						
+						</p>
+					</li>
+					<li>
+						<p>Click the <b>Install</b> button.</p>
+					</li>
+					<li>
+						<p>If you already have the client installed, you will be prompted whether you wish to <em>Update</em> or <em>Reinstall</em>. <em>Update</em> will download only changed files, and <em>Reinstall</em> will download a clean client with all the files. In most cases, you can simply <em>Update</em>.</p>
+					</li>
+					<li>
+						<p>When the installation is finished, click the <b>Done</b> button.</p>
+					</li>				
+				</ol>
+				
+				<p><b>Note</b>: A file containing your EMF preferences called <em>EMFPrefs.txt</em> is stored in your user home directory (usually <em>C:\Documents and Settings\<your_username></your_username></em>), and a file containing the installer's preferences called <em>EMFUserInstallPrefs.ini</em> is in the same directory.</p>
+			</div>
+		</div>
+
+		<div class="section">
+			<h4>Mac or Linux Installation:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>Copy the EMFClient directory from your emf_installation_beta directory to wherever you want to install the client.</p>
+					</li>
+					<li>
+						<p>Edit the script EMFClient.sh. If the default java executable on your system
+						is not JRE6, you should modify the JAVA_EXE to the full path. Set the
+						TOMCAT_SERVER to the URL or IP of your EMFServer:
+							<div class="pre">EMF_HOME=/home/azubrow/EMFClient</div>
+							<div class="pre">TOMCAT_SERVER=http://EMFServer.unc.edu:8080</div>
+						</p>
+					</li>
+					<li>
+						<p>Edit your EMFPrefs.txt file.</p>
+					</li>
+				</ol>
+			</div>
+		</div>
+
+		<div class="section">
+			<h4>Starting EMF Client and Initial Login:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>For Windows, select the EMF Client icon from your Programs menu. For Linux
+						or Mac, start the EMF client script from the command line:
+							<div class="pre">$ ./EMFClient.sh &amp;</div>
+						</p>
+					</li>
+					<li>
+						<p>From the Login window, click the Register New User button. This will bring
+						up a Register New User window for you to setup an EMF account. If you
+						are going to run SMOKE, the EMF username must be the same as your
+						username on the SMOKEServer. The passwords do not need to match between
+						the two systems. When you are finished, click OK and you will
+						immediately log into the EMF client.
+						</p>
+					</li>
+				</ol>				
+			</div>
+		</div>
+
+		<div class="section">
+			<h4>Upgrading the EMF Client:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>If your client is out of date, you will get a warning window saying that
+						your client is not the latest version the next time you attempt to login.
+						</p>
+					</li>
+					<li>
+						<p>For EMF clients on Windows machines, click the <b>Yes</b> button from the <em>Warning</em>
+						window to stop your login. Rerun the installer and click Update. This
+						will update any client files that have later versions. Restart the client.
+						</p>
+					</li>
+					<li>
+						<p>For EMF clients on Linux or Macs, click the <b>No</b> button from the <em>Warning</em>
+						window to stop your login. The installer only works on Windows. To
+						update your client, typically you will need to get the latest version
+						of the following files: <a href="./emf-client.jar">emf-client.jar</a> and <a href="./lib/epa-commons.jar">epa-commons.jar</a>.
+						</p>
+					</li>
+				</ol>				
+			</div>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="inventories">Importing and Exporting Inventories</h2>
+		<div class="section">
+
+			<div class="section">
+				<ol>
+					<li>
+						<p>Download the 2005 emissions platform from the EPA's ftp site:
+						</p><ul>
+								<li><b>FTP address</b>: scienceftp.epa.gov</li>
+								<li><b>login</b>: emfbeta</li>
+								<li><b>password</b>: 4aXqKhhu</li>
+							</ul>													
+						<p></p>
+					</li>
+					<li>
+						<p>Copy the data to your import directory defined previously. Untar the
+						platform data. Within the 2005v4 directory, you will find a whole
+						series of zip files. Unzip one or more of the sector-specific
+						inventories. After you have unzipped your inventories. Check that the
+						files have &#8216;r&#8217; permission and directories have 'rx' permissions for the
+						emiss group. Remember, the emf user will need to access these files.
+					</p>
+					</li>
+					<li>
+						<p>Startup the EMF client and login.  Go to the <b>Manage</b> menu and select <b>Datasets</b>.  This will bring up the <em>Dataset Manager</em> window.</p>
+					</li> 
+					<li>
+						<p>To import a nonpoint inventory, from the <b>Show Datasets of Type</b>
+						pull-down, select the dataset type "ORL Nonpoint Inventory (ARINV)".
+						The window will continue to be empty because you have not loaded any
+						datasets of this type. Click the <b>Import</b> button.  A new <em>Import Datasets</em> window will appear.  Click the <b>Browse</b> button.  Select the nonpoint inventory that you want to import.  After clicking the <b>OK</b> button, you will return to the main <em>Import Datasets</em> window.  <b>For these examples, don't change the default name</b>
+						(this is because we need identical names as the EPA names used in our
+						example SMOKE case to be provided later). When you import your own
+						inventories, you can modify the name as you wish. The EMF dataset names
+						are used when writing out the SMOKE input files to disk, but a date and
+						version label are appended to the dataset names. To avoid confusion,
+						your dataset names should not include date or version information in
+						the name &#8211; such information is best inserted in the header of the
+						dataset, which can be set in the <b>Description</b> field of the <b>Summary</b> tab
+						of the dataset.
+						</p>
+						<p>Click the <b>Import</b> button. You can monitor the progress of the import in the
+						separate <em>Status</em> window. To get the latest information from the server,
+						click the <b>Refresh</b> button on the <em>Status</em> window.  After the import
+						has completed, you can click the <b>Done</b> button if you are finished with your
+						imports, or you could leave the window open for more imports.
+						</p>
+					</li>
+					<li>
+						<p>If you want to import multiple datasets at the same time (reduces
+						monotonous point-click for each dataset), follow the same steps as
+						above. The only differences are that you will select multiple datasets
+						from the selection window and that you should check the box to <b>Create
+						Multiple Datasets</b> in the <em>Import Datasets</em> window. With this
+						option, each file will be imported to a separate
+						dataset using the default name derived from the file name. You can only
+						use this feature to import datasets of the <b>same Dataset Types</b>.
+						</p>
+					</li>
+					<li>
+						<p>Return to the <em>Dataset Manager</em> window.  Click the <b>Refresh</b>
+						button to see your new dataset(s). You will notice that the default
+						name strips off the filename's "arinv_" prefix and "_orl.txt" suffix.
+						Those will be reinserted by the EMF when exporting the files to disk
+						for a SMOKE run.
+						</p>
+					</li>
+					<li>
+						<p>To open a dataset, select it and click the <b>View</b> button.  This will
+						bring up a new window, <em>Dataset Properties View</em>.
+						This has a series of tabs that describe various aspects of the dataset
+						including metadata, revisions, and the actual data. To see the actual
+						data in the dataset, select the <b>Data</b> tab. If there were
+						multiple versions of the dataset, you would then select the version you
+						were interested in. Then click the <b>View</b> button.  A new <em>Data Viewer</em>
+						window will appear. When you are finished exploring, click the <b>Close</b> button.
+						</p>
+					</li>
+					<li>
+						<p>Continue importing datasets of type ORL Nonpoint Inventory or switch to another dataset
+						type from the <em>Dataset Manager</em> and start to import the new type of data (see table,
+						to be provided separately).
+						</p>
+						
+						<p>The EMF will allow one import or two exports to occur simultaneously to
+						avoid memory logjams. For example, if you select a large number of
+						imports, they will be done sequentially. Similarly, if you export a
+						whole series of datasets, they will be exported two at a time. In other
+						words, during an import or export, the other imports and exports are
+						put on hold until each are completed.
+						</p>
+						<p>The onroad and nonroad 2005 datasets are very large, in part because of the HAP
+						datasets. Even if you do not intend to use the HAP data in your work,
+						you should keep them in the database until you can test the EPA SMOKE
+						Case in Phase 2.
+						</p>
+					</li>
+					<li>
+						<p>To export a dataset, select the dataset from the <em>Dataset Manager</em> window.
+						Click the <b>Export</b> button. From the <em>Export</em> window, click the <b>Browse</b>
+						button and navigate to your export directory. After you have selected your directory,
+						click the <b>Export</b> button.  You can monitor the export in the <em>Status</em>
+						window. It is not necessary to do this step manually when you actually
+						run SMOKE (the exports are automatic), so this step is here only for
+						you to experiment with the EMF.
+						</p>
+					</li>
+					<li>
+						<p>After the export is finished, log into your EMFServer or SMOKEServer (via ssh
+						or putty) and go to the export directory to view the exported dataset.
+						You will notice that the prefix "arinv_" (for ORL Nonpoint Inventory
+						dataset type) will have been added to the name. You will also see a new
+						suffix. This suffix consists of the date of last modification of the
+						dataset (specifically, the modification of that version), the version,
+						and the extension "_orl.txt". For example:
+							<div class="pre">arinv_pfc_2002_caphap_09mar2009_v0_orl.txt</div>
+						</p>
+					</li>
+				</ol>				
+			</div>
+		</div>
+
+		<div class="section">
+			<h4>Checks and Errors:</h4>
+			<div class="section">
+				<ol>
+					<li>
+						<p>Check to see that the system is cleaning up temporary files. When the EMF
+						imports/exports an ORL type dataset, two temporary files are created in
+						the temporary directory specified in your properties table (e.g., <span class="pre">/data2/tmp</span>).
+						After the import or export finishes, those files should be removed. If
+						they are not removed, the likely problem is that you don't have your
+						permissions set correctly on the temporary directory or the umask for
+						the postgres user is incorrect. One of the temporary files will be
+						owned by postgres and should be 'rw' by the emiss group.
+						</p>
+					</li>
+					<li>
+						<p>The most common errors with imports/exports are directory permission
+						issues. If you have permission errors, review the section Directory
+						permission.
+						</p>
+					</li>
+				</ol>				
+			</div>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+		
+		<h2 id="databasebackup">Backup EMF Database</h2>
+		<div class="section">
+			<p>It is recommended that the EMF database be backed up periodically. A sample <a href="Backup_EMFDatabase.sh">
+			Backup_EMFDatabase.sh</a> script, to be executed from the EMF database server, has been provided. The only thing
+			that will likely need to be changed are the following variables:
+			</p>
+			<ul>
+				<li><b>POSTGRESDIR</b>: root path to postgres installation</li>
+				<li><b>TMPDIR</b>: temp directory for storing the backup</li>
+				<li><b>FINALDIR</b>: final directory for storing the backup</li>
+			</ul>													
+			<p>For the script to run properly, be sure that the 'emf' (postgres) user can connect to the EMF database
+			without a password (see the <a href="third_party_install.html#postgres">PostgreSQL Details</a> for the
+			configuration of the pg_hba.conf).</p>
+			<p><i>Note</i>: 'Temp' and 'final' directories are used so that this script can be used with a mass
+			storage type device. Make sure the temp directory has enough room for a potentially very large database.
+			</p>
+
+			<p>Additionally, it is recommended that this script be set up to run periodically via a cron job or some other
+			scheduling device.
+			</p>
+			
+		</div>
+
+		<div style="float: right; padding-bottom: 1em;"><a href="#contents">contents</a></div>
+
+	</body>
+</html>

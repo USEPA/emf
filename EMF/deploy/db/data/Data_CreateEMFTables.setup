@@ -1,0 +1,528 @@
+-- emf.users
+CREATE TABLE emf.users
+(
+  id SERIAL PRIMARY KEY,
+  username varchar(255) NOT NULL UNIQUE,
+  password varchar(255) NOT NULL,
+  name varchar(255) NOT NULL,
+  affiliation varchar(255) NOT NULL,
+  phone varchar(36) NOT NULL,
+  email varchar(255) NOT NULL,
+  is_admin bool NOT NULL DEFAULT false,
+  is_login bool NOT NULL DEFAULT false,
+  is_account_disabled bool NOT NULL DEFAULT false,
+  want_emails bool NOT NULL DEFAULT true,
+  lock_owner varchar(255),  
+  lock_date timestamp,
+  last_login_date timestamp,
+  password_reset_date timestamp
+) 
+WITHOUT OIDS;
+-- emf.users
+--
+-- emf intended_uses
+CREATE TABLE emf.intended_uses
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- emf intended_uses
+--
+-- emissions.versions
+CREATE TABLE emissions.versions
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 NOT NULL,
+  version int4 NOT NULL,
+  name varchar(255) NOT NULL,
+  path text NULL DEFAULT ''::text,
+  final_version bool NOT NULL DEFAULT false,
+  date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  lock_owner varchar(255),  
+  lock_date timestamp,
+  creator int4 NOT NULL  DEFAULT 2::integer REFERENCES emf.users(id),
+  number_records int8 DEFAULT 0::int8, 
+  description text NOT NULL DEFAULT '',
+  intended_use int4 REFERENCES emf.intended_uses (id) DEFAULT 1,
+  UNIQUE (dataset_id, version),
+  UNIQUE (dataset_id, name)
+) 
+WITHOUT OIDS;
+--emissions.versions
+--
+
+-- emf.note_types
+CREATE TABLE emf.note_types
+(
+  id SERIAL PRIMARY KEY,
+  type varchar(30) NOT NULL,
+  UNIQUE (type)
+)
+WITHOUT OIDS;
+-- emf.note_types
+--
+-- emf projects
+CREATE TABLE emf.projects
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- emf projects
+--
+-- emf.countries
+CREATE TABLE emf.countries
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- emf.countries
+--
+-- emf.sector
+CREATE TABLE emf.sectors
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) UNIQUE NOT NULL,
+  description text,
+  lock_owner varchar(255),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+-- emf.sector
+--
+-- emf regions
+CREATE TABLE emf.regions
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+-- emf regions
+--
+-- emf.sectorcriteria
+CREATE TABLE emf.sector_criteria
+(
+  id SERIAL PRIMARY KEY,
+  sector_id int4 NOT NULL REFERENCES emf.sectors (id),
+  list_index int4,
+  "type" varchar(255) NOT NULL,
+  criteria text
+) 
+WITHOUT OIDS;
+-- emf.sector_criteria
+--
+--emf.status
+CREATE TABLE emf.status
+(
+  id SERIAL PRIMARY KEY,
+  username varchar(255) NOT NULL REFERENCES emf.users (username),
+  type varchar(255) NOT NULL,
+  message text NOT NULL,
+  is_read bool NOT NULL DEFAULT false,
+  date timestamp NOT NULL
+) 
+WITHOUT OIDS;
+--emf.status
+--
+--emf.properties
+CREATE TABLE emf.properties
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  value varchar(255) NOT NULL
+) 
+WITHOUT OIDS;
+--emf.properties
+--
+-- emf.dataset_types
+CREATE TABLE emf.dataset_types
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  description text NOT NULL,
+  min_files int4 NOT NULL DEFAULT 1,
+  max_files int4 NOT NULL DEFAULT 1,
+  "external" bool NOT NULL DEFAULT false,
+  default_sortorder text NULL DEFAULT '',
+  importer_classname varchar(255),
+  exporter_classname varchar(255),
+  lock_owner varchar(255),
+  lock_date timestamp,
+  creation_date timestamp,
+  last_mod_date timestamp,
+  creator int4 REFERENCES emf.users (id),
+  file_format int4 REFERENCES emf.file_formats(id),
+  table_per_dataset int4 NOT NULL DEFAULT 1
+) 
+WITHOUT OIDS;
+-- emf.dataset_types
+--
+-- emf.datasets
+CREATE TABLE emf.datasets
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  creator varchar(255) NOT NULL REFERENCES emf.users (username),
+  creator_full_name varchar(255) REFERENCES emf.users (name),
+  status varchar(255),
+  dataset_type int4 REFERENCES emf.dataset_types (id),
+  units varchar(255),
+  region int4 REFERENCES emf.regions (id),
+  intended_use int4 REFERENCES emf.intended_uses (id),
+  "year" int4 NOT NULL DEFAULT 0,
+  country int4 REFERENCES emf.countries (id),
+  temporal_resolution varchar(255),
+  start_date_time timestamp,
+  stop_date_time timestamp,
+  description text,
+  project int4 REFERENCES emf.projects (id),
+  created_date_time timestamp,
+  modified_date_time timestamp,
+  accessed_date_time timestamp,
+  default_version int4 DEFAULT 0,
+  lock_owner varchar(255),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+--
+--
+--emf.dataset_access_logs
+CREATE TABLE emf.dataset_access_logs
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 REFERENCES emf.datasets (id) NOT NULL,
+  lines_exported int8 DEFAULT 0,
+  username varchar(255) REFERENCES emf.users (username) NOT NULL,
+  dataset_name varchar(255),
+  date timestamp NOT NULL,
+  end_date timestamp,
+  time_reqrd real DEFAULT 0,
+  version varchar(255) NOT NULL,
+  description text NOT NULL,
+  "location" varchar(255) NOT NULL,
+  details text
+) 
+WITHOUT OIDS;
+--emf.dataset_access_logs
+--
+--emf.notes
+CREATE TABLE emf.notes
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  creator int4 NOT NULL REFERENCES emf.users(id),
+  date_time timestamp,
+  type int4 NOT NULL REFERENCES emf.note_types(id),
+  details text NOT NULL,
+  refers_notes text,
+  UNIQUE (name)
+) 
+WITHOUT OIDS;
+--emf.notes
+--
+-- emf.revisions
+CREATE TABLE emf.revisions
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 NOT NULL REFERENCES emf.datasets (id), 
+  version int4 NOT NULL,
+  creator int4 NOT NULL REFERENCES emf.users(id),
+  date_time timestamp,
+  what text NOT NULL,
+  why text NOT NULL,
+  refers_notes text,
+  lock_owner varchar(255),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+-- emf.revisions
+--
+-- emf ... KEYWORDS framework
+CREATE TABLE emf.keywords
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+--
+CREATE TABLE emf.dataset_types_keywords
+(
+  id SERIAL PRIMARY KEY,
+  dataset_type_id int4 NOT NULL REFERENCES emf.dataset_types(id),
+  list_index int4,
+  keyword_id int4 NOT NULL REFERENCES emf.keywords (id),
+  value varchar(255) NOT NULL,
+  kwname varchar(255) NOT NULL,
+  UNIQUE (dataset_type_id, keyword_id)
+) 
+WITHOUT OIDS;
+--
+CREATE TABLE emf.datasets_keywords
+(
+  id SERIAL PRIMARY KEY,
+  list_index int4,
+  dataset_id int4 NOT NULL REFERENCES emf.datasets (id), 
+  keyword_id int4 NOT NULL REFERENCES emf.keywords (id), 
+  value varchar(255) NOT NULL,
+  kwname varchar(255) NOT NULL,
+  UNIQUE (dataset_id, keyword_id)
+) 
+WITHOUT OIDS;
+-- emf datasets_keywords
+--
+-- emf internal and external sources
+CREATE TABLE emf.external_sources
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 NOT NULL REFERENCES emf.datasets(id),
+  list_index int4,
+  datasource varchar(255) NOT NULL,
+  UNIQUE (dataset_id, datasource)
+) 
+WITHOUT OIDS;
+--
+CREATE TABLE emf.internal_sources
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 NOT NULL REFERENCES emf.datasets(id),
+  list_index int4,
+  datasource varchar(255) NOT NULL,
+  table_name varchar(255) NOT NULL,
+  table_type varchar(255) NOT NULL,
+  table_columns text NOT NULL,
+  file_size int8 NOT NULL, 
+  UNIQUE (dataset_id, datasource,table_name)
+) 
+WITHOUT OIDS;
+-- emf internal and external sources
+--
+-- emf datasets_sectors
+CREATE TABLE emf.datasets_sectors
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 NOT NULL REFERENCES emf.datasets (id) ,
+  list_index int4,
+  sector_id int4 REFERENCES emf.sectors (id) 
+) 
+WITHOUT OIDS;
+-- emf datasets_sectors
+-------------------------------------------------------------------------------------------
+--emf.qa_programs
+CREATE TABLE emf.qa_programs
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  run_classname varchar(100)
+) 
+WITHOUT OIDS;
+-- emf.qa_programs
+--
+
+-- emf.dataset_types_qa_step_templates
+CREATE TABLE emf.dataset_types_qa_step_templates
+(
+  id SERIAL PRIMARY KEY,
+  dataset_type_id int4 NOT NULL REFERENCES emf.dataset_types(id),
+  list_index int4,
+  name varchar(255) NOT NULL,
+  qa_program_id int4 REFERENCES emf.qa_programs(id),
+  program_arguments text,
+  required bool,
+  order_no real,
+  description text,
+  UNIQUE (dataset_type_id, name)
+) 
+WITHOUT OIDS;
+-- emf.dataset_types_qa_step_templates
+--
+-- emf.qa_steps
+CREATE TABLE emf.qa_steps
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 NOT NULL REFERENCES emf.datasets(id),
+  version int4 NOT NULL,
+  name varchar(255) NOT NULL,
+  qa_program_id int4 REFERENCES emf.qa_programs(id),
+  program_arguments text,
+  required bool,
+  order_no real,
+  who varchar(255),
+  date timestamp,
+  comments text,
+  status varchar(15),
+  description text,
+  configuration varchar(255),
+  output_folder varchar(255),
+  UNIQUE (dataset_id, version, name)
+) 
+WITHOUT OIDS;
+-- emf.qa_steps
+
+-- emf.qa_step_results
+CREATE TABLE emf.qa_step_results
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 NOT NULL REFERENCES emf.datasets(id),
+  version int4 NOT NULL,
+  qa_step_id int4 NOT NULL REFERENCES emf.qa_steps(id),
+  output_table varchar(255),
+  table_creation_status varchar(50),
+  table_creation_date timestamp,
+  UNIQUE(dataset_id,version,qa_step_id)
+) 
+WITHOUT OIDS;
+-- emf.qa_step_results
+
+-- Table: emf.datasets_notes
+CREATE TABLE emf.datasets_notes
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id integer NOT NULL REFERENCES emf.datasets(id),
+  version int4 NOT NULL DEFAULT 0,
+  note_id integer NOT NULL REFERENCES emf.notes(id),
+  UNIQUE(dataset_id, note_id)
+) 
+WITHOUT OIDS;
+-- emf.datasets_notes
+
+-- Table: emf.table_consolidations
+CREATE TABLE emf.table_consolidations
+(
+  id SERIAL PRIMARY KEY,
+  dataset_type_id int4 NOT NULL REFERENCES emf.dataset_types(id),
+  output_table varchar(64),
+  num_col int4 NOT NULL DEFAULT 0,
+  col_names text,
+  col_types text,
+  size_limit real,
+  number_records int8 DEFAULT 0,
+  UNIQUE(dataset_type_id, output_table)
+) 
+WITHOUT OIDS;
+-- emf.table_consolidations
+
+-- emf.external_dataset_access
+CREATE TABLE emf.external_dataset_access
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id integer NOT NULL,
+  "version" integer NOT NULL,
+  external_app character varying(128) NOT NULL
+)
+WITH (OIDS=FALSE);
+ALTER TABLE emf.external_dataset_access OWNER TO emf;
+-- emf.external_dataset_access
+
+-- emf.region_type
+CREATE TABLE emf.region_type
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  description text
+) 
+WITHOUT OIDS;
+-- emf.region_type
+
+-- emf.georegions
+CREATE TABLE emf.georegions
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(128) NOT NULL UNIQUE,
+  description text,
+  abbr varchar(128) NOT NULL UNIQUE,
+  type_id int4 DEFAULT 1 REFERENCES emf.region_type(id),
+  resltn varchar(255),
+  ioapi_name varchar(255),
+  map_projtn text,
+  xorig real DEFAULT 0,
+  yorig real DEFAULT 0,
+  xcell real DEFAULT 0,
+  ycell real DEFAULT 0,
+  ncols int4 DEFAULT 0,
+  nrows int4 DEFAULT 0,
+  nthik int4 DEFAULT 0,
+  ds_id int4 DEFAULT 0,
+  version_id int4 REFERENCES emissions.versions(id),
+  lock_owner varchar(255),
+  lock_date timestamp
+) 
+WITHOUT OIDS;
+-- emf.georegions
+
+-- emf.references
+CREATE TABLE emf."references"
+(
+  id serial NOT NULL,
+  description text,
+  lock_owner character varying(255),
+  lock_date timestamp without time zone,
+  CONSTRAINT references_pkey PRIMARY KEY (id),
+  UNIQUE(description)
+)
+WITH (OIDS=FALSE);
+ALTER TABLE emf."references" OWNER TO emf;
+-- emf.references
+
+-- emf.file_formats
+CREATE TABLE emf.file_formats
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(128) NOT NULL UNIQUE,
+  description text,
+  delimiter varchar(32),
+  fixed_format bool DEFAULT false,
+  date_added timestamp without time zone,
+  last_modified_date timestamp without time zone,
+  creator int4 NOT NULL REFERENCES emf.users (id)
+) 
+WITHOUT OIDS;
+-- emf.file_formats
+
+-- emf.fileformat_columns
+CREATE TABLE emf.fileformat_columns
+(
+  id SERIAL PRIMARY KEY,
+  file_format_id int4 NOT NULL REFERENCES emf.file_formats (id),
+  list_index int4,
+  name varchar(128) NOT NULL,
+  type varchar(64) NOT NULL,
+  default_value varchar(255),
+  description text,
+  formatter varchar(64),
+  constraints varchar(255),
+  mandatory bool DEFAULT false,
+  width int DEFAULT 0,
+  spaces int DEFAULT 0,
+  fix_format_start int DEFAULT 0,
+  fix_format_end int DEFAULT 0
+) 
+WITHOUT OIDS;
+-- emf.fileformat_columns
+
+
+CREATE TABLE emf.user_excluded_dataset_types
+(
+  id serial NOT NULL PRIMARY KEY,
+  list_index integer,
+  user_id int4 NOT NULL REFERENCES emf.users(id),
+  dataset_type_id int4 NOT NULL REFERENCES emf.dataset_types(id)
+);
+ 
+ 
+-- emf.user_features
+CREATE TABLE emf.user_features
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+
+CREATE TABLE emf.user_excluded_features
+(
+  id serial NOT NULL PRIMARY KEY,
+  list_index integer,
+  user_id int4 NOT NULL REFERENCES emf.users(id),
+  user_feature_id int4 NOT NULL REFERENCES emf.user_features(id)
+);

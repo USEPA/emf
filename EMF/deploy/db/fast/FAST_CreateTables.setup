@@ -1,0 +1,189 @@
+-- Create Table Scripts
+CREATE TABLE fast.grids
+(
+  id serial NOT NULL PRIMARY KEY,
+  "name" character varying(128) NOT NULL,
+  description text,
+  abbreviation character varying(128) NOT NULL,
+  resltn character varying(255),
+--  ioapi_name character varying(255),
+  map_projtn text NOT NULL,
+  xorig real NOT NULL,
+  yorig real NOT NULL,
+  xcell real NOT NULL,
+  ycell real NOT NULL,
+  ncols integer NOT NULL,
+  nrows integer NOT NULL,
+  nthik integer NOT NULL,
+  xcent real NOT NULL,
+  ycent real NOT NULL,
+  CONSTRAINT uq_grids_abbreviation UNIQUE (abbreviation),
+  CONSTRAINT uq_grids_name UNIQUE (name)
+);
+
+create table fast.fast_datasets (
+dataset_id int NOT NULL primary key,
+--grid_id int4 REFERENCES fast.grids(id),
+added_date timestamp without time zone NOT NULL DEFAULT clock_timestamp()
+--,CONSTRAINT pk_fast_datasets primary key (dataset_id, grid_id)
+);
+
+create table fast.fast_nonpoint_datasets (
+quasi_point_dataset_id int4 primary key REFERENCES fast.fast_datasets(dataset_id),
+gridded_smk_dataset_id int4 NOT NULL REFERENCES emf.datasets(id),
+gridded_smk_dataset_version int4 NOT NULL,
+base_nonpoint_dataset_id int4 NOT NULL REFERENCES emf.datasets(id),
+base_nonpoint_dataset_version int4 NOT NULL,
+grid_id int4 REFERENCES fast.grids(id),
+invtable_dataset_id int4 NOT NULL REFERENCES emf.datasets(id),
+invtable_dataset_version int4 NOT NULL
+--,FOREIGN KEY (quasi_point_dataset_id, grid_id) REFERENCES fast.fast_datasets(dataset_id, grid_id)
+);
+
+CREATE TABLE fast.fast_runs (
+id serial NOT NULL PRIMARY KEY,
+name varchar(128) NOT NULL,
+abbreviation varchar(20) NOT NULL,
+description text,
+grid_id int4 REFERENCES fast.grids(id),
+run_status varchar(255),
+creator int4 NOT NULL,
+last_modified_date timestamp without time zone NOT NULL,
+start_date timestamp without time zone,
+completion_date timestamp without time zone,
+filter text,
+lock_owner varchar(255),
+lock_date timestamp,
+copied_from varchar(255),
+invtable_dataset_id int4 REFERENCES emf.datasets(id),
+invtable_dataset_version int4,
+species_mapping_dataset_id int4 REFERENCES emf.datasets(id),
+species_mapping_dataset_version int4,
+transfer_coefficients_dataset_id int4 REFERENCES emf.datasets(id),
+transfer_coefficients_dataset_version int4,
+cancer_risk_dataset_id int4 REFERENCES emf.datasets(id),
+cancer_risk_dataset_version int4,
+grid_population_dataset_id int4 REFERENCES emf.datasets(id),
+grid_population_dataset_version int4,
+domain_population_dataset_id int4 REFERENCES emf.datasets(id),
+domain_population_dataset_version integer,
+CONSTRAINT uq_fast_runs_name UNIQUE (name),
+CONSTRAINT uq_fast_runs_abbreviation UNIQUE (abbreviation),
+CONSTRAINT uq_fast_runs_grid UNIQUE (id, grid_id)
+);
+
+CREATE TABLE fast.fast_run_output_sectors (
+id serial NOT NULL PRIMARY KEY,
+fast_run_id int4 NOT NULL REFERENCES fast.fast_runs(id),
+list_index int4 NOT NULL,
+sector_id int4 NOT NULL REFERENCES emf.sectors(id),
+CONSTRAINT uq_fast_run_sectors UNIQUE (fast_run_id, sector_id)
+);
+
+create table fast.fast_run_inventories (
+  id serial primary key NOT NULL,
+  list_index int NOT NULL,
+  fast_run_id int NOT NULL REFERENCES fast.fast_runs(id),
+  inventory_dataset_id integer NOT NULL REFERENCES emf.datasets(id),
+  inventory_dataset_version integer NOT NULL
+--  ,grid_id int4 REFERENCES fast.grids(id),
+--  FOREIGN KEY (inventory_dataset_id, grid_id) REFERENCES fast.fast_datasets(dataset_id, grid_id)
+);
+
+CREATE TABLE fast.fast_run_output_types (
+id serial NOT NULL PRIMARY KEY,
+name varchar(128) NOT NULL,
+CONSTRAINT uq_fast_run_output_types_name UNIQUE (name)
+);
+
+create table fast.fast_run_outputs (
+  id serial primary key NOT NULL,
+  fast_run_id int NOT NULL REFERENCES fast.fast_runs(id),
+  fast_run_output_type_id int NOT NULL REFERENCES fast.fast_run_output_types(id),
+  output_dataset_id integer NOT NULL REFERENCES emf.datasets(id),
+  grid_id int4 REFERENCES fast.grids(id),
+--  inventory_dataset_id integer REFERENCES emf.datasets(id),
+--  inventory_dataset_version integer,
+  start_date timestamp without time zone,
+  completion_date timestamp without time zone,
+  run_status character varying(255),
+CONSTRAINT uq_fast_run_outputs_dataset_grid UNIQUE (output_dataset_id, grid_id)
+);
+
+CREATE TABLE fast.fast_analyses (
+id serial NOT NULL PRIMARY KEY,
+name varchar(128) NOT NULL,
+abbreviation varchar(20) NOT NULL,
+description text,
+grid_id int4 REFERENCES fast.grids(id),
+run_status varchar(255),
+creator int4 NOT NULL,
+last_modified_date timestamp without time zone NOT NULL,
+start_date timestamp without time zone,
+completion_date timestamp without time zone,
+lock_owner varchar(255),
+lock_date timestamp,
+copied_from varchar(255),
+cancer_risk_dataset_id int4 REFERENCES emf.datasets(id),
+cancer_risk_dataset_version int4,
+CONSTRAINT uq_fast_analyses_name UNIQUE (name),
+CONSTRAINT uq_fast_analyses_abbreviation UNIQUE (abbreviation),
+CONSTRAINT uq_fast_analyses_grid UNIQUE (id, grid_id)
+);
+
+create table fast.fast_analysis_input_sectors (
+  id serial primary key NOT NULL,
+  list_index int NOT NULL,
+  fast_analysis_id int NOT NULL REFERENCES fast.fast_analyses(id),
+  fast_run_id integer NOT NULL REFERENCES fast.fast_runs(id),
+  grid_id int4 REFERENCES fast.grids(id),
+  sector_id int4 NOT NULL REFERENCES emf.sectors(id),
+  FOREIGN KEY (fast_analysis_id, grid_id) REFERENCES fast.fast_analyses(id, grid_id),
+  FOREIGN KEY (fast_run_id, grid_id) REFERENCES fast.fast_runs(id, grid_id),
+  FOREIGN KEY (fast_run_id, sector_id) REFERENCES fast.fast_run_output_sectors(fast_run_id, sector_id)
+);
+
+CREATE TABLE fast.fast_analysis_output_types (
+id serial NOT NULL PRIMARY KEY,
+name varchar(128) NOT NULL,
+CONSTRAINT uq_fast_analysis_output_types_name UNIQUE (name)
+);
+
+create table fast.fast_analysis_outputs (
+  id serial primary key NOT NULL,
+  fast_analysis_id int NOT NULL REFERENCES fast.fast_analyses(id),
+  fast_analysis_output_type_id int NOT NULL REFERENCES fast.fast_analysis_output_types(id),
+  output_dataset_id integer NOT NULL REFERENCES emf.datasets(id),
+  start_date timestamp without time zone,
+  completion_date timestamp without time zone,
+  run_status character varying(255)
+);
+
+
+-- Table: fast.fast_analysis_runs
+CREATE TABLE fast.fast_analysis_runs
+(
+  id serial NOT NULL,
+  list_index integer NOT NULL,
+  fast_analysis_id integer NOT NULL,
+  fast_run_id integer NOT NULL,
+  adjustment_factor double precision NOT NULL DEFAULT 1.0,
+  grid_id integer NOT NULL,
+  baseline_sensitivity character(1) NOT NULL DEFAULT 'B'::bpchar,
+  CONSTRAINT fast_analysis_runs_pkey PRIMARY KEY (id),
+  CONSTRAINT fast_analysis_runs_fast_analysis_id_fkey FOREIGN KEY (fast_analysis_id)
+      REFERENCES fast.fast_analyses (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fast_analysis_runs_fast_analysis_id_fkey1 FOREIGN KEY (fast_analysis_id, grid_id)
+      REFERENCES fast.fast_analyses (id, grid_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fast_analysis_runs_fast_run_id_fkey FOREIGN KEY (fast_run_id)
+      REFERENCES fast.fast_runs (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fast_analysis_runs_fast_run_id_fkey1 FOREIGN KEY (fast_run_id, grid_id)
+      REFERENCES fast.fast_runs (id, grid_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fast_analysis_runs_grid_id_fkey FOREIGN KEY (grid_id)
+      REFERENCES fast.grids (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);

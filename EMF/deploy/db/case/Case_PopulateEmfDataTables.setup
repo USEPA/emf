@@ -1,0 +1,118 @@
+-- populate model to run table
+-- needs to proceed many of the case tables
+insert into cases.model_to_runs values (DEFAULT, 'SMOKE');
+insert into cases.model_to_runs values (DEFAULT, 'CMAQ');
+insert into cases.model_to_runs values (DEFAULT, 'Speciation Tool');
+insert into cases.model_to_runs values (DEFAULT, 'Surrogate Tool');
+-- end of populating cases.model_to_runs table
+
+
+-- cases.inputnames
+insert into cases.inputnames values(DEFAULT,'Grid Description List');
+insert into cases.inputnames values(DEFAULT,'Country, State, County Information');
+insert into cases.inputnames values(DEFAULT,'Inventory Table');
+-- set all models to 1 (SMOKE)
+update cases.inputnames set model_to_run_id=1 where model_to_run_id is null;
+-- cases.inputnames
+
+-- cases.subdirs
+insert into cases.subdirs values(DEFAULT,'emf_jobheader');
+insert into cases.subdirs values(DEFAULT,'../ge_dat');
+-- set all models to 1 (SMOKE)
+update cases.subdirs set model_to_run_id=1 where model_to_run_id is null;
+-- cases.subdirs
+
+-- cases.programs
+insert into cases.programs values(DEFAULT,'Run Script');
+insert into cases.programs values(DEFAULT,'Cntlmat');
+insert into cases.programs values(DEFAULT,'Elevpoint');
+insert into cases.programs values(DEFAULT,'Emisfac');
+insert into cases.programs values(DEFAULT,'Grdmat');
+insert into cases.programs values(DEFAULT,'Grwinven');
+insert into cases.programs values(DEFAULT,'Laypoint');
+insert into cases.programs values(DEFAULT,'Mrgelev');
+insert into cases.programs values(DEFAULT,'Mrggrid');
+insert into cases.programs values(DEFAULT,'Normbeis3');
+insert into cases.programs values(DEFAULT,'Premobl');
+insert into cases.programs values(DEFAULT,'Smkinven');
+insert into cases.programs values(DEFAULT,'Smkmerge');
+insert into cases.programs values(DEFAULT,'Spcmat');
+insert into cases.programs values(DEFAULT,'Temporal');
+insert into cases.programs values(DEFAULT,'Tmpbeis3');
+insert into cases.programs values(DEFAULT,'Tmpbio');
+-- set all models to 1 (SMOKE)
+update cases.programs set model_to_run_id=1 where model_to_run_id is null;
+-- cases.programs
+
+-- cases.input_envt_vars
+insert into cases.input_envt_vars values(DEFAULT,'GRIDDESC');
+insert into cases.input_envt_vars values(DEFAULT,'COSTCY');
+insert into cases.input_envt_vars values(DEFAULT,'INVTABLE');
+-- set all models to 1 (SMOKE)
+update cases.input_envt_vars set model_to_run_id=1 where model_to_run_id is null;
+-- cases.input_envt_vars
+
+-- cases.case_jobrunstatus
+insert into cases.case_jobrunstatus values(DEFAULT, 'Not Started', 'Not Started');
+insert into cases.case_jobrunstatus values(DEFAULT, 'Completed', 'Completed');
+insert into cases.case_jobrunstatus values(DEFAULT, 'Quality Assured', 'Quality Assured');
+insert into cases.case_jobrunstatus values(DEFAULT, 'Failed', 'Failed');
+insert into cases.case_jobrunstatus values(DEFAULT, 'Running', 'Running');
+insert into cases.case_jobrunstatus values(DEFAULT, 'Submitted', 'Submitted');
+insert into cases.case_jobrunstatus values(DEFAULT, 'Exporting', 'Exporting');
+insert into cases.case_jobrunstatus values(DEFAULT, 'Waiting', 'Waiting');
+
+-- cases.case_jobrunstatus
+
+-- cases.hosts
+insert into cases.hosts values(DEFAULT, 'localhost', '127.0.0.1');
+-- cases.hosts 
+
+-- populate table cases.parameter_env_vars
+insert into cases.parameter_env_vars values (DEFAULT, 'SMK_RUNTYPE');
+insert into cases.parameter_env_vars values (DEFAULT, 'SECTOR');
+insert into cases.parameter_env_vars values (DEFAULT, 'CASE');
+insert into cases.parameter_env_vars values (DEFAULT, 'GRID');
+insert into cases.parameter_env_vars values (DEFAULT, 'IOAPI_GRIDNAME_1');
+insert into cases.parameter_env_vars values (DEFAULT, 'SPC');
+insert into cases.parameter_env_vars values (DEFAULT, 'YEAR');
+insert into cases.parameter_env_vars values (DEFAULT, 'IOAPI_ISPH');
+insert into cases.parameter_env_vars values (DEFAULT, 'SPINUP_DURATION');
+insert into cases.parameter_env_vars values (DEFAULT, 'PROMPTFLAG');
+insert into cases.parameter_env_vars values (DEFAULT, 'AUTO_DELETE');
+insert into cases.parameter_env_vars values (DEFAULT, 'AUTO_DELETE_LOG');
+insert into cases.parameter_env_vars values (DEFAULT, 'DEBUGMODE');
+insert into cases.parameter_env_vars values (DEFAULT, 'DEBUG_EXE');
+insert into cases.parameter_env_vars values (DEFAULT, 'INSTALL');
+insert into cases.parameter_env_vars values (DEFAULT, 'WORK');
+insert into cases.parameter_env_vars values (DEFAULT, 'PLATFORM');
+insert into cases.parameter_env_vars values (DEFAULT, 'SMK_HOME');
+insert into cases.parameter_env_vars values (DEFAULT, 'SMK_SUBSYS');
+insert into cases.parameter_env_vars values (DEFAULT, 'DAT_ROOT');
+insert into cases.parameter_env_vars values (DEFAULT, 'MET_ROOT');
+insert into cases.parameter_env_vars values (DEFAULT, 'IMD_ROOT');
+insert into cases.parameter_env_vars values (DEFAULT, 'OUT_ROOT');
+-- set all models to 1 (SMOKE)
+update cases.parameter_env_vars set model_to_run_id=1 where model_to_run_id is null;
+-- end of populate table cases.parameter_env_vars
+
+-- populate cases.cases.value_types
+insert into cases.value_types values (DEFAULT, 'String');
+insert into cases.value_types values (DEFAULT, 'Char');
+insert into cases.value_types values (DEFAULT, 'Integer');
+insert into cases.value_types values (DEFAULT, 'Float');
+insert into cases.value_types values (DEFAULT, 'Boolean');
+insert into cases.value_types values (DEFAULT, 'Date');
+-- end of populating cases.value_types
+
+-- populate cases.parameter_names
+insert into cases.parameter_names values (DEFAULT, 'SMOKE run type');
+insert into cases.parameter_names values (DEFAULT, 'Sector name');
+insert into cases.parameter_names values (DEFAULT, 'Grid abbreviation');
+insert into cases.parameter_names values (DEFAULT, 'IOAPI grid name');
+insert into cases.parameter_names values (DEFAULT, 'Chemical mechanism abbreviation');
+insert into cases.parameter_names values (DEFAULT, 'Year being modeled');
+-- set all models to 1 (SMOKE)
+update cases.parameter_names set model_to_run_id=1 where model_to_run_id is null;
+-- end of populating cases.parameter_names
+

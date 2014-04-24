@@ -1,0 +1,1569 @@
+-- emf.control_measure_classes
+CREATE TABLE emf.control_measure_classes
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(64) NOT NULL UNIQUE,
+  description varchar(255)
+) 
+WITHOUT OIDS;
+-- emf.control_measure_classes
+
+--Populate emf.control_measure_classes
+insert into emf.control_measure_classes values (DEFAULT, 'Known', 'Known');
+insert into emf.control_measure_classes values (DEFAULT, 'Emerging', 'Emerging');
+insert into emf.control_measure_classes values (DEFAULT, 'Hypothetical', 'Hypothetical');
+insert into emf.control_measure_classes values (DEFAULT, 'Obselete', 'Obselete');
+--Populate emf.control_measure_classes
+
+-- Add new control measure class id to control_measures table..
+ALTER TABLE emf.control_measures ADD COLUMN cm_class_id int4 REFERENCES emf.control_measure_classes(id);
+-- Add new control measure class id to control_measures table..
+
+-- update new cm_class_id based on current cm_class string setting...
+update emf.control_measures
+set cm_class_id = emf.control_measure_classes.id
+from emf.control_measure_classes
+where emf.control_measure_classes.name = emf.control_measures.cm_class;
+-- update new cm_class_id based on current cm_class string setting...
+
+-- get rid of cm_class column on control_measures...
+ALTER TABLE emf.control_measures DROP COLUMN cm_class;
+-- get rid of cm_class column on control_measures...
+
+-- Create new emf.control_strategy_classes table...
+CREATE TABLE emf.control_strategy_classes
+(
+  id SERIAL PRIMARY KEY,
+  control_strategy_id int4 NOT NULL REFERENCES emf.control_strategies(id) ,
+  control_measure_class_id int4 REFERENCES emf.control_measure_classes (id),
+  list_index int4,
+  UNIQUE (control_strategy_id,control_measure_class_id) 
+) 
+WITHOUT OIDS;
+-- Create new emf.control_strategy_classes table...
+
+-- Create new emf.control_strategy_measures
+CREATE TABLE emf.control_strategy_measures
+(
+  id SERIAL PRIMARY KEY,
+  control_strategy_id int4 NOT NULL REFERENCES emf.control_strategies(id) ,
+  control_measure_id int4 NOT NULL REFERENCES emf.control_measures (id),
+  list_index int4 NOT NULL,
+  include bool NOT NULL DEFAULT true,
+  UNIQUE (control_strategy_id,control_measure_id) 
+) 
+WITHOUT OIDS;
+-- Create new emf.control_strategy_measures
+
+-- add new columns to the efficiencyrecords table...
+ALTER TABLE emf.control_measure_efficiencyrecords ADD COLUMN last_modified_by varchar(255) NOT NULL DEFAULT '',
+  ADD COLUMN last_modified_time timestamp NOT NULL DEFAULT now();
+  
+-- add new columns to the controlmeasures table...
+ALTER TABLE emf.control_measures ADD COLUMN last_modified_by varchar(255) NOT NULL DEFAULT '';
+
+-- add new columns to the efficiencyrecords table...
+ALTER TABLE emf.control_measure_efficiencyrecords ADD COLUMN ref_yr_cost_per_ton float4 DEFAULT 0;
+ALTER TABLE emf.control_measure_efficiencyrecords ALTER COLUMN ref_yr_cost_per_ton DROP DEFAULT;
+
+-- update the ref_yr_cost_per_ton based on the year 1999
+update emf.control_measure_efficiencyrecords 
+set ref_yr_cost_per_ton = cost_per_ton * 9470.3 / CAST(chained_gdp as float)
+from reference.gdplev
+where control_measure_efficiencyrecords.cost_year = gdplev.annual;
+
+-- add indexes to various emf tables...
+CREATE INDEX er_measureid
+  ON emf.control_measure_efficiencyrecords
+  USING btree
+  (control_measures_id);
+CREATE INDEX er_pollutantid
+  ON emf.control_measure_efficiencyrecords
+  USING btree
+  (pollutant_id);
+CREATE INDEX measure_id
+  ON emf.control_measures
+  USING btree
+  (id);
+CREATE INDEX pollutant_id
+  ON emf.pollutants
+  USING btree
+  (id);
+
+
+
+CREATE TABLE emf.aggregrated_efficiencyrecords
+(
+  control_measures_id integer NOT NULL,
+  pollutant_id integer NOT NULL,
+  max_efficiency real,
+  min_efficiency real,
+  avg_efficiency real,
+  max_cost_per_ton real,
+  min_cost_per_ton real,
+  avg_cost_per_ton real,
+  avg_rule_effectiveness real,
+  avg_rule_penetration real,
+  CONSTRAINT aggregrated_efficiencyrecords_pkey PRIMARY KEY (control_measures_id,pollutant_id),
+  CONSTRAINT aggregrated_efficiencyrecords_control_measures_id_fkey FOREIGN KEY (control_measures_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT aggregrated_efficiencyrecords_pollutant_id_fkey FOREIGN KEY (pollutant_id)
+      REFERENCES emf.pollutants (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ 
+CREATE INDEX aggeffrec_measureid
+  ON emf.aggregrated_efficiencyrecords
+  USING btree
+  (control_measures_id);
+CREATE INDEX aggeffrec_pollid
+  ON emf.aggregrated_efficiencyrecords
+  USING btree
+  (pollutant_id);
+
+insert into emf.aggregrated_efficiencyrecords (
+  control_measures_id,
+  pollutant_id,
+  max_efficiency,
+  min_efficiency,
+  avg_efficiency,
+  max_cost_per_ton,
+  min_cost_per_ton,
+  avg_cost_per_ton,
+  avg_rule_effectiveness,
+  avg_rule_penetration)
+select  control_measures_id, pollutant_id, max(efficiency) as maxefficiency, min(efficiency) as minefficiency, 
+	avg(efficiency) as avgefficiency, max(cost_per_ton) as maxcpt, 
+	min(cost_per_ton) as mincpt, avg(cost_per_ton) as avgcpt, 
+	avg(rule_effectiveness) as avgruleff, avg(rule_penetration) as avgrulpen 
+from emf.control_measure_efficiencyrecords 
+group by control_measures_id, pollutant_id;
+
+-- add new table control_strategy_constraints...
+CREATE TABLE emf.control_strategy_constraints
+(
+  control_strategy_id integer NOT NULL,
+  max_emis_reduction real,
+  max_control_efficiency real,
+  min_cost_per_ton real,
+  min_ann_cost real,
+  CONSTRAINT control_strategy_constraints_pkey PRIMARY KEY (control_strategy_id),
+  CONSTRAINT control_strategy_constraints_control_strategy_id_fkey FOREIGN KEY (control_strategy_id)
+      REFERENCES emf.control_strategies (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITHOUT OIDS;
+
+CREATE INDEX constraint_strategy_id
+  ON emf.control_strategy_constraints
+  USING btree
+  (control_strategy_id);
+  
+-- Added 6/1/12007 NEW MIN MAX Emis constraints for eff recs.
+-- add new columns, min and max emis to the efficiencyrecords table...
+ALTER TABLE emf.control_measure_efficiencyrecords 
+	ADD COLUMN min_emis double precision,
+	ADD COLUMN max_emis double precision;
+
+ -- modify constraint to include min and max emis columns...
+ALTER TABLE emf.control_measure_efficiencyrecords DROP CONSTRAINT control_measure_efficiencyrecords_control_measures_id_key;
+ALTER TABLE emf.control_measure_efficiencyrecords ADD CONSTRAINT control_measure_efficiencyrecords_control_measures_id_key 
+UNIQUE (control_measures_id, pollutant_id, locale, existing_measure_abbr, effective_date, min_emis, max_emis);
+
+ -- modify details data type to be a text field instead of varchar(128)...
+ALTER TABLE emf.control_measure_efficiencyrecords ALTER detail TYPE text;
+
+-- 7/9/2007 - Added new strategy type
+insert into emf.strategy_types (name, description, default_sortorder, strategy_classname)
+values ('Apply Measures In Series', 'Apply Measures In Series', '''''', 'gov.epa.emissions.framework.services.cost.analysis.applyMeasuresInSeries.StrategyTask');
+
+-- Added 7/18/12007 NEW RP, RE and ApplyOrder columns control strategy measure table.
+ALTER TABLE emf.control_strategy_measures 
+	ADD COLUMN rule_effectiveness double precision DEFAULT 100,
+	ADD COLUMN rule_penetration double precision DEFAULT 100,
+	ADD COLUMN apply_order double precision DEFAULT 1;
+
+-- Added 7/27/12007 NEW version column
+ALTER TABLE emf.input_datasets_control_strategies
+	ADD COLUMN dataset_version integer DEFAULT 0;
+
+ALTER TABLE emf.control_strategies
+	DROP COLUMN dataset_type_id,
+	DROP COLUMN dataset_version;
+	
+ALTER TABLE emf.strategy_results
+	ADD COLUMN record_count integer;
+
+-- Added 8/1/12007 NEW Cap_Ann_Ratio + Incremental_Cost_Per_Ton columns for eff rec table
+ALTER TABLE emf.control_measure_efficiencyrecords 
+	ADD COLUMN Cap_Ann_Ratio double precision,
+	ADD COLUMN Incremental_Cost_Per_Ton double precision;
+	
+ALTER TABLE emf.control_strategies  
+	ADD COLUMN Use_Cost_Equations boolean DEFAULT false;
+	
+CREATE TABLE emf.equation_types
+(
+  id serial NOT NULL,
+  name character varying(255) NOT NULL,
+  description text NOT NULL DEFAULT ''::text,
+  CONSTRAINT equation_types_pkey PRIMARY KEY (id),
+  CONSTRAINT equation_types_name_key UNIQUE (name)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.equation_types OWNER TO postgres;
+
+CREATE TABLE emf.equation_type_variables
+(
+  id serial NOT NULL,
+  equation_type_id integer NOT NULL,
+  name character varying(255) NOT NULL,
+  file_col_position smallint,
+  description character varying(50) DEFAULT ''::character varying,
+  list_index integer,
+  CONSTRAINT equation_type_variables_pkey PRIMARY KEY (id),
+  CONSTRAINT equation_type_variables_equation_type_id_fkey FOREIGN KEY (equation_type_id)
+      REFERENCES emf.equation_types (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT equation_type_variables_id_key UNIQUE (id, equation_type_id)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.equation_type_variables OWNER TO postgres;
+
+-- poulate new equation and variable tables...
+-- Add Eqautions
+insert into emf.equation_types (name, description)
+select 'Type 1', 'Type 1';
+insert into emf.equation_types (name, description)
+select 'Type 2', 'Type 2';
+insert into emf.equation_types (name, description)
+select 'Type 3', 'Type 3';
+insert into emf.equation_types (name, description)
+select 'Type 4', 'Type 4';
+insert into emf.equation_types (name, description)
+select 'Type 5', 'Type 5';
+insert into emf.equation_types (name, description)
+select 'Type 6', 'Type 6';
+insert into emf.equation_types (name, description)
+select 'Type 7', 'Type 7';
+insert into emf.equation_types (name, description)
+select 'Type 8', 'Type 8';
+
+
+-- Add Eqaution Variables
+
+-- Type 2
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Annual Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Annual Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Capital Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Annual Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Incremental Annual Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 2';
+
+-- Type 1
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Fixed O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Variable O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Scaling Factor - Model Size (MW)', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Scaling Factor - Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capacity Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 1';
+
+-- Type 8
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Capital Control Cost Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical O&M Control Cost Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Default CPT Factor - Capital', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Default CPT Factor - O&M', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Typical Default CPT Factor - Annualized', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 8';
+
+-- 8/27/07 - DCD new table for measure equations...
+CREATE TABLE emf.control_measure_equations
+(
+  id serial NOT NULL,
+  control_measure_id integer NOT NULL,
+  equation_type_id integer NOT NULL,
+  equation_type_variable_id integer,
+  value double precision,
+  list_index integer NOT NULL,
+  CONSTRAINT control_measure_equations_pkey PRIMARY KEY (id),
+  CONSTRAINT control_measure_equations_control_measure_id_fkey FOREIGN KEY (control_measure_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_equations_equation_type_id_fkey FOREIGN KEY (equation_type_id, equation_type_variable_id)
+      REFERENCES emf.equation_type_variables (equation_type_id, id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_equations_equation_type_id_fkey1 FOREIGN KEY (equation_type_id)
+      REFERENCES emf.equation_types (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_equations OWNER TO emf;
+
+CREATE INDEX fki_
+  ON emf.control_measure_equations
+  USING btree
+  (equation_type_id, equation_type_variable_id);
+
+CREATE INDEX fki_equation_measure
+  ON emf.control_measure_equations
+  USING btree
+  (control_measure_id);
+
+
+
+-- 9/7/2007 -- added new ORL CoST Point dataset type 
+insert into emf.dataset_types (name,
+  description,
+  min_files ,
+  max_files,
+  "external",
+  importer_classname,
+  exporter_classname,
+  table_per_dataset)
+select 'ORL CoST Point Inventory (PTINV)','ORL CoST Point Inventory (PTINV)',1,1,'FALSE','gov.epa.emissions.commons.io.orl.ORLCoSTPointImporter','gov.epa.emissions.commons.io.orl.ORLCoSTPointExporter',1;
+
+-- 9/7/2007 - DCD qa steps for orl CosT Point dataset type
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Pollutant', 1, 'select POLL, sum(ann_emis) as ann_emis from $TABLE[1] e group by POLL order by POLL', false, 1, ''
+from emf.dataset_types dt
+where name = 'ORL CoST Point Inventory (PTINV)';
+
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by SCC and Pollutant', 1, 'select SCC, POLL, sum(ann_emis) as ann_emis from $TABLE[1] e group by SCC, POLL order by SCC, POLL', false, 1, ''
+from emf.dataset_types dt
+where name = 'ORL CoST Point Inventory (PTINV)';
+
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by County and Pollutant', 1, 'select FIPS, POLL, sum(ann_emis) as ann_emis from $TABLE[1] e group by FIPS, POLL order by FIPS, POLL', false, 1, ''
+from emf.dataset_types dt
+where name = 'ORL CoST Point Inventory (PTINV)';
+
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by US State and Pollutant', 1, 'select fips.state_name, fips.state_abbr, fips.fipsst, e.POLL, sum(ann_emis) as ann_emis from $TABLE[1] e inner join reference.fips on fips.state_county_fips = e.FIPS where fips.country_num = ''0'' group by fips.state_name, fips.state_abbr, fips.fipsst, POLL order by fips.state_name, POLL', false, 1, ''
+from emf.dataset_types dt
+where name = 'ORL CoST Point Inventory (PTINV)';
+
+-- 9/12/2007 - DCD add user-defined functionm and aggreagte function to help build a comma-delimted list from a set
+create function public.join_with_ampersand(text,text)
+  returns text
+  immutable strict language 'sql'
+  as 'select $1||''&''||$2'
+;
+ALTER function public.join_with_ampersand(text,text) OWNER TO emf;
+
+create aggregate public.concatenate_with_ampersand (
+  sfunc = join_with_ampersand,
+  basetype = text,
+  stype = text
+);
+ALTER aggregate public.concatenate_with_ampersand(text) OWNER TO emf;
+
+
+
+
+-- 10/4/2007 - DCD fixes issue with aggreagte function NEEDED TO HANDLE Smoke Format
+CREATE OR REPLACE FUNCTION join_with_ampersand(text, text) RETURNS text AS
+$BODY$select $1||'&'||$2$BODY$
+LANGUAGE 'sql' IMMUTABLE STRICT;
+
+
+
+-- 11/27/07 - DCD added new columns to control strategy measure table for region dataset
+ALTER TABLE emf.control_strategy_measures ADD COLUMN region_dataset_id integer;
+ALTER TABLE emf.control_strategy_measures ADD COLUMN region_dataset_version integer;
+
+
+ALTER TABLE emf.control_strategies
+   ADD COLUMN county_dataset_id integer;
+
+ALTER TABLE emf.control_strategies
+   ADD COLUMN county_dataset_version integer;
+
+ALTER TABLE emf.control_strategies ADD CONSTRAINT fki_strategy_county_dataset FOREIGN KEY (county_dataset_id) REFERENCES emf.datasets (id)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_strategy_county_dataset ON emf.control_strategies(county_dataset_id);
+
+
+CREATE TABLE emf.control_measure_months
+(
+  id SERIAL PRIMARY KEY,
+  control_measure_id integer NOT NULL,
+  list_index integer,
+  "month" smallint,
+  CONSTRAINT control_measure_months_control_measure_id_fkey FOREIGN KEY (control_measure_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_months_control_measure_id_key UNIQUE (control_measure_id, "month")
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_months OWNER TO emf;
+
+CREATE INDEX control_measure_months_measure_id
+  ON emf.control_measure_months
+  USING btree
+  (control_measure_id);
+
+CREATE INDEX control_measure_months_month
+  ON emf.control_measure_months
+  USING btree
+  ("month");
+
+ALTER TABLE emf.strategy_results ADD COLUMN dataset_version integer NOT NULL DEFAULT 0;
+ALTER TABLE emf.strategy_results
+   ALTER COLUMN detailed_result_dataset_id DROP NOT NULL;
+ALTER TABLE emf.strategy_results ALTER COLUMN detailed_result_dataset_id SET STATISTICS -1;
+
+insert into emf.strategy_result_types (name) select 'Strategy Summary';
+
+
+CREATE INDEX source_groups_id
+  ON emf.source_groups
+  USING btree
+  (id);
+ALTER TABLE emf.source_groups CLUSTER ON source_groups_id;
+CREATE INDEX source_groups_name
+  ON emf.source_groups
+  USING btree
+  (name);
+
+CREATE INDEX control_measures_source_group
+  ON emf.control_measures
+  USING btree
+  (source_group);
+  
+  ALTER TABLE emf.control_strategies ADD COLUMN export_directory character varying;
+ALTER TABLE emf.control_strategies ADD COLUMN delete_results boolean DEFAULT true;
+
+
+ALTER TABLE emf.control_strategy_constraints ADD COLUMN domain_wide_emis_reduction double precision;
+ALTER TABLE emf.control_strategy_constraints ADD COLUMN domain_wide_pct_reduction double precision;
+
+-- implementing least cost strategy
+insert into emf.strategy_types values(DEFAULT,'Least Cost','Least Cost', '', 'gov.epa.emissions.framework.services.cost.analysis.leastcost.StrategyTask');
+insert into emf.strategy_types values(DEFAULT,'Least Cost Curve','Least Cost Curve', '', 'gov.epa.emissions.framework.services.cost.analysis.leastcostcurve.StrategyTask');
+insert into emf.strategy_result_types (name) select 'Least Cost Control Measure Worksheet';
+insert into emf.strategy_result_types (name) select 'Controlled Inventory';
+insert into emf.strategy_result_types (name) select 'Least Cost Curve Summary';
+
+ALTER TABLE emf.strategy_results
+   ALTER COLUMN dataset_id DROP NOT NULL;
+ALTER TABLE emf.strategy_results
+   ALTER COLUMN dataset_version DROP NOT NULL;
+ALTER TABLE emf.strategy_results
+   ALTER COLUMN dataset_version DROP DEFAULT;
+   
+
+update emf.strategy_results
+set detailed_result_dataset_id = dataset_id,
+dataset_id = null,
+dataset_version = null
+where strategy_result_type_id in
+(
+select id
+from emf.strategy_result_types
+where name in ('Strategy Summary','Least Cost Control Measure Worksheet')
+);
+
+
+-- 4/2/08 dcd added some new columns for least cost incremental strategy type
+ALTER TABLE emf.control_strategy_constraints ADD COLUMN domain_wide_pct_reduction_increment double precision;
+ALTER TABLE emf.control_strategy_constraints ADD COLUMN domain_wide_pct_reduction_start double precision;
+ALTER TABLE emf.control_strategy_constraints ADD COLUMN domain_wide_pct_reduction_end double precision;
+
+ALTER TABLE emf.control_strategies ADD COLUMN merge_inventories boolean DEFAULT false;
+   
+-- 5/1/08 add new strategy --  Annotated Inventory
+insert into emf.strategy_result_types (name) select 'Annotated Inventory';
+insert into emf.strategy_types values(DEFAULT,'Annotate Inventory','Annotate Inventory', '', 'gov.epa.emissions.framework.services.cost.analysis.annotateinventory.StrategyTask');
+
+ALTER TABLE emf.control_strategy_constraints
+   ADD COLUMN replacement_control_min_eff_diff double precision;
+
+-- 5/7/08 add new table to help map measure to nei device code
+CREATE TABLE emf.control_measure_nei_devices
+(
+  id SERIAL PRIMARY KEY,
+  list_index integer NOT NULL,
+  control_measure_id integer NOT NULL,
+  nei_device_code integer NOT NULL,
+  CONSTRAINT control_measure_nei_devices_control_measure_id_fkey FOREIGN KEY (control_measure_id)
+      REFERENCES emf.control_measures (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT control_measure_nei_devices_control_measure_id_key UNIQUE (control_measure_id, nei_device_code)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_nei_devices OWNER TO emf;
+
+CREATE INDEX control_measure_nei_devices_measure_id
+  ON emf.control_measure_nei_devices
+  USING btree
+  (control_measure_id);
+
+CREATE INDEX control_measure_nei_devices_nei_device_code
+  ON emf.control_measure_nei_devices
+  USING btree
+  (nei_device_code);
+  
+
+-- new database stuff for Project Future Year Inventory strategy type
+-- emf.control_strategy_programs
+CREATE TABLE emf.control_strategy_programs
+(
+  id SERIAL PRIMARY KEY,
+  list_index int4,
+  control_strategy_id int4 REFERENCES emf.control_strategies (id),
+  control_program_id int4 NOT NULL REFERENCES emf.control_programs(id) ,
+  UNIQUE (control_strategy_id,control_program_id) 
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_program_technologies OWNER TO emf;
+CREATE INDEX control_strategy_programs_program_id
+  ON emf.control_strategy_programs
+  USING btree
+  (control_program_id);
+
+CREATE INDEX control_strategy_programs_control_strategy_id
+  ON emf.control_strategy_programs
+  USING btree
+  (control_strategy_id);
+-- emf.control_strategy_programs
+
+insert into emf.strategy_types values(DEFAULT,'Project Future Year Inventory','Project Future Year Inventory', '', 'gov.epa.emissions.framework.services.cost.analysis.projectFutureYearInventory.StrategyTask');
+insert into emf.strategy_result_types (name) select 'Projected Future Year Inventory';
+
+
+insert into emf.control_program_types values (DEFAULT, 'Control', 'Control',3);
+
+
+-- Summarize by Plant and Pollutant - ORL Point Inventory (PTINV)
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips, 
+	plantid as plant_id, 
+	plant as plant_name, 
+	poll as pollutant, 
+	avg(xloc) as longitude, 
+	avg(yloc) as latitude, 
+	max(stkhgt) as max_stack_height, 
+	max(stkdiam) as max_stack_diameter, 
+	max(stktemp) as max_stack_temperature, 
+	max(stkflow) as max_stack_flow, 
+	max(stkvel) as max_stack_velocity, 
+	sum(ann_emis) as avg_annual_emissions, 
+	sum(avd_emis) as avg_daily_emissions
+from $TABLE[1] e
+group by fips,
+	plantid,
+	plant,
+	poll
+order by fips, 
+	plantid, 
+	poll'
+where name = 'Summarize by Plant and Pollutant'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Point Inventory (PTINV)'));
+
+-- Summarize by Plant and Pollutant - ORL Merged Inventory
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips, 
+	plantid as plant_id, 
+	plant as plant_name, 
+	poll as pollutant, 
+	sum(ann_emis) as avg_annual_emissions, 
+	sum(avd_emis) as avg_daily_emissions
+from $TABLE[1] e
+group by fips,
+	plantid,
+	plant,
+	poll
+order by fips, 
+	plantid, 
+	poll'
+where name = 'Summarize by Plant and Pollutant'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Merged Inventory'));
+
+-- added new column
+ALTER TABLE emf.strategy_result_types
+   ADD COLUMN optional boolean;
+ALTER TABLE emf.strategy_result_types
+   ALTER COLUMN optional SET DEFAULT false;
+   
+
+-- 12/8/08 DCD added new classname column so reflection could be used
+-- when auto generating additional strategy summary results
+ALTER TABLE emf.strategy_result_types
+   ADD COLUMN classname character varying(255);
+   
+update emf.strategy_result_types 
+set classname = 'gov.epa.emissions.framework.services.cost.analysis.StrategyCountySummaryTask'
+where name = 'Strategy County Summary';
+update emf.strategy_result_types 
+set classname = 'gov.epa.emissions.framework.services.cost.analysis.StrategyCountyImpactSummaryTask'
+where name = 'Strategy Impact Summary';
+update emf.strategy_result_types 
+set classname = 'gov.epa.emissions.framework.services.cost.analysis.StrategyRSMPctRedSummaryTask'
+where name = 'RSM Percent Reduction Summary';
+
+--add unique constraint to the source column
+alter table emf.sources 
+add CONSTRAINT uq_sources_name UNIQUE (source);
+
+--add new flag for tracking unspecified costs to the strategy table 
+ALTER TABLE emf.control_strategies
+   ADD COLUMN include_unspecified_costs boolean;
+ALTER TABLE emf.control_strategies
+   ALTER COLUMN include_unspecified_costs SET DEFAULT true;
+
+   
+drop FUNCTION public.get_type1_equation_costs(
+	control_measure_id integer, 
+	measure_abbreviation character varying(10),
+	discount_rate double precision, 
+	equipment_life double precision,
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	design_capacity double precision,
+ 	capital_cost_multiplier double precision,
+	fixed_om_cost_multiplier double precision,
+	variable_om_cost_multiplier double precision,
+	scaling_factor_model_size double precision,
+	scaling_factor_exponent double precision,
+	capacity_factor double precision,
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision,
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision,
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type2_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	design_capacity double precision, 
+	capital_cost_multiplier double precision,
+	capital_cost_exponent double precision, 
+	annual_cost_multiplier double precision,
+	annual_cost_exponent double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type3_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type4_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type5_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type6_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type7_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type8_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision, 
+	stack_flow_rate double precision, 
+	capital_control_cost_factor double precision,
+	om_control_cost_factor double precision,
+	default_capital_cpt_factor double precision,
+	default_om_cpt_factor double precision,
+	default_annualized_cpt_factor double precision,
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision,
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision,
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_strategy_costs(
+	use_cost_equations boolean, 
+	control_measure_id integer, 
+	measure_abbreviation character varying(10), 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_annualized_ratio double precision, 
+	capital_recovery_factor double precision, 
+	ref_yr_cost_per_ton double precision,  
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision,
+	equation_type character varying(255), 
+	variable_coefficient1 double precision, 
+	variable_coefficient2 double precision, 
+	variable_coefficient3 double precision, 
+	variable_coefficient4 double precision, 
+	variable_coefficient5 double precision, 
+	variable_coefficient6 double precision, 
+	variable_coefficient7 double precision, 
+	variable_coefficient8 double precision, 
+	variable_coefficient9 double precision, 
+	variable_coefficient10 double precision, 
+	stack_flow_rate double precision, 
+	design_capacity double precision, 
+	design_capacity_unit_numerator character varying, 
+	design_capacity_unit_denominator character varying, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision, 
+	OUT actual_equation_type character varying(255));
+
+ALTER TABLE emf.control_strategy_constraints
+   ADD COLUMN control_program_measure_min_pct_red_diff double precision;
+
+   
+-- 8/31/2009 - DCD -- Added new control measure property functionality 
+-- emf.control_measure_property_categories
+CREATE TABLE emf.control_measure_property_categories
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) UNIQUE NOT NULL
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_property_categories OWNER TO emf;
+CREATE INDEX control_measure_property_categories_id
+  ON emf.control_measure_property_categories
+  USING btree
+  (id);
+ALTER TABLE emf.control_measure_property_categories CLUSTER ON control_measure_property_categories_id;
+-- emf.control_measure_property_categories
+
+-- emf.control_measure_property_categories
+CREATE TABLE emf.control_measure_properties
+(
+  id serial NOT NULL PRIMARY KEY,
+  list_index integer,
+  control_measure_id integer NOT NULL REFERENCES emf.control_measures(id),
+  name varchar(255) NOT NULL,
+  control_measure_property_category_id integer NOT NULL REFERENCES emf.control_measure_property_categories(id),
+  units character varying(75) NOT NULL,
+  data_type character varying(64) NOT NULL,
+  db_field_name character varying(64),
+  "value" text NOT NULL
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_properties OWNER TO emf;
+CREATE INDEX control_measure_properties_id
+  ON emf.control_measure_properties
+  USING btree
+  (id);
+CREATE INDEX control_measure_properties_measure_id
+  ON emf.control_measure_properties
+  USING btree
+  (control_measure_id);
+CREATE INDEX control_measure_properties_control_category_id
+  ON emf.control_measure_properties
+  USING btree
+  (control_measure_property_category_id);
+-- emf.control_measure_property_categories
+
+--added (10/16/09) for use with control measures
+CREATE TABLE emf.references
+(
+   id serial NOT NULL,
+   description text,
+   lock_owner character varying(255),
+   lock_date timestamp without time zone,
+   CONSTRAINT references_pkey PRIMARY KEY (id)
+)
+WITH (OIDS=FALSE);
+ALTER TABLE emf.references OWNER TO emf;
+
+--added (10/16/09) for use with control measures
+-- emf control_measure_references
+CREATE TABLE emf.control_measure_references
+(
+   id SERIAL PRIMARY KEY,
+   control_measure_id int4 NOT NULL REFERENCES emf.control_measures(id) ,
+   list_index int4,
+   reference_id int4 REFERENCES emf.references (id),
+   UNIQUE (control_measure_id, reference_id)
+)
+WITHOUT OIDS;
+ALTER TABLE emf.control_measure_references OWNER TO emf;
+CREATE INDEX control_measure_references_id
+   ON emf.control_measure_references
+   USING btree
+   (id);
+CREATE INDEX control_measure_references_measure_id
+   ON emf.control_measure_references
+   USING btree
+   (control_measure_id);
+CREATE INDEX control_measure_references_reference_id
+   ON emf.control_measure_references
+   USING btree
+   (reference_id);
+-- emf control_measure_references
+
+-- 11/10/09 - changed the filter to be text instead of varchar(255)
+ALTER TABLE emf.control_strategies ALTER filter TYPE text;
+
+-- 11/12/09 - added unique constraint to the reference description
+ALTER TABLE emf."references" ADD CONSTRAINT uq_reference_description UNIQUE (description);
+
+-- 12/11/09 - added copied_from column to control_strategies table
+ALTER TABLE emf.control_strategies ADD copied_from varchar(255);
+
+-- 12/27/09 - added new equation types for add on control logic.
+insert into emf.equation_types (name, description)
+select 'Type 9', 'EGU PM Control Equations';
+insert into emf.equation_types (name, description)
+select 'Type 10', 'ESP Upgrade';
+insert into emf.equation_types (name, description)
+select 'Type 11', 'SO2 Non EGU Control Equations';
+
+
+-- 1/8/10 - update Control Strategy Detailed Result Dataset Type QA Step Template Summarize all Control Measures
+-- added effrec_count
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select cm.name as CMName, 
+	cm.abbreviation as CMabbrev, 
+	ct.name as control_technology, 
+	s.name as sector, 
+	sg.name as source_group, 
+	p.name as pollutant, 
+	aer.min_efficiency as min_ce, 
+	aer.avg_efficiency as mean_ce, 
+	aer.max_efficiency as max_ce, 
+	aer.min_cost_per_ton as min_cpt, 
+	aer.avg_cost_per_ton as mean_cpt, 
+	aer.max_cost_per_ton as max_cpt, 
+	aer.avg_rule_effectiveness as mean_re, 
+	aer.avg_rule_penetration as mean_rp,
+	(select count(1) from emf.control_measure_efficiencyrecords where control_measures_id = cm.id and pollutant_id = p.id) as effrec_count
+from emf.control_measures cm 
+	left outer join emf.control_measure_sectors cms 
+	on cms.control_measure_id = cm.id 
+	left outer join emf.sectors s 
+	on s.id = cms.sector_id 
+	left outer join emf.control_technologies ct 
+	on ct.id = cm.control_technology 
+	left outer join emf.source_groups sg 
+	on sg.id = cm.source_group 
+	left outer join emf.aggregrated_efficiencyrecords aer 
+	on aer.control_measures_id = cm.id 
+	left outer join emf.pollutants p 
+	on p.id = aer.pollutant_id 
+order by cm.name, p.name'
+where name = 'Summarize all Control Measures'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result'));
+
+-- 1/9/10 - incorrect unique constraint on eff rec table, existing dev code was missing
+ALTER TABLE emf.control_measure_efficiencyrecords
+  drop CONSTRAINT control_measure_efficiencyrecords_control_measures_id_key;
+
+ALTER TABLE emf.control_measure_efficiencyrecords
+  ADD CONSTRAINT control_measure_efficiencyrecords_control_measures_id_key UNIQUE(control_measures_id, pollutant_id, locale, existing_measure_abbr, existing_dev_code, effective_date, min_emis, max_emis);
+
+-- 1/27/2010, forgot to add variables to new equation types
+  
+-- Type 10
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Variable O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Fixed O&M Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Fixed O&M Cost Exponent', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 10';
+
+-- 12/29/2009 -- forgot to add equation type variable definition...
+-- Type 11
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Low Default Cost Per Ton', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Low Boiler Capacity Range', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Medium Default Cost Per Ton', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Medium Boiler Capacity Range', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'High Default Cost Per Ton', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 11';
+
+-- Type 9
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Total Equipment Cost Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Total Equipment Cost Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Equipment To Capital Cost Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Electricity Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Electricity Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Dust Disposal Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Dust Disposal Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Bag Replacement Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Bag Replacement Constant', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 9';
+
+--Added 02/16/2020
+ALTER TABLE emf.equation_types ADD COLUMN inventory_fields varchar(512);
+ALTER TABLE emf.equation_types ADD COLUMN equation text;
+
+-- Added 02/24/2010 -- poluates two new equation type table columns -- inventory fields and equation
+update emf.equation_types set equation = '', inventory_fields =  'stack_flow_rate' where name = 'Type 9';
+update emf.equation_types set equation = '', inventory_fields =  'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator' where name = 'Type 11';
+update emf.equation_types set equation = '', inventory_fields =  'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, annual_avg_hours_per_year' where name = 'Type 10';
+update emf.equation_types set equation = 'Capital Cost= Typical Capital Cost x Min. Stack Flow Rate
+O&M Cost= Typical O&M Cost x Min. Stack Flow Rate
+Total Cost = Capital Cost x CRF + 0.04 x capital cost + O&M Cost
+
+Notes:
+For Min. Stack flow rate less than 5 cfm , default cost per ton cost effectiveness is used.
+Min. Stack Flow Rate > 5', inventory_fields =  'stack_flow_rate' where name = 'Type 8';
+update emf.equation_types set equation = 'Capital cost = 2882540 + (244.74 x Min. Stack Flow Rate ) + 93.3 x 1.1 x Min. Stack Flow Rate x 0.9383
+Capital cost = 2882540 + (244.74 x Min. Stack Flow Rate ) + (((1028000 / Min. Stack Flow Rate) ^ 0.6)) x 93.3 x 1.1 x Min. Stack Flow Rate x 0.9383
+O&M Cost = 749170 + (148.40 x Min. Stack Flow Rate) + (3.35 + (0.000729 x 8736 ) x Min. Stack Flow Rate ^ 0.9383)	 
+', inventory_fields =  'stack_flow_rate' where name = 'Type 7';
+update emf.equation_types set equation = 'Capital cost = 3449803 + (135.86 x Min. Stack Flow rate)
+O&M Cost = 797667 + (58.84 x Min. Stack Flow Rate)
+Total Cost = Capital Cost x CRF + O&M Cost', inventory_fields =  'stack_flow_rate' where name = 'Type 6';
+update emf.equation_types set equation = 'Capital Cost = 2882540 + 244.74 x Min. Stack Flow Rate
+O&M Cost = 749170 + 148.40 x Min. Stack Flow Rate
+Total Cost = Capital Cost x CRF + O&M Cost', inventory_fields =  'stack_flow_rate' where name = 'Type 5';
+update emf.equation_types set equation = 'Capital Cost = 990000 + 9.836 x Min. Stack flow rate O&M Cost = 75800 + 12.82 x Min. Stack Flow Rate
+Total Cost = Capital Cost x CRF + O&M Cost
+
+Notes:
+Min Stack flow Rate >= 1028000 acfm
+Min Stack flow Rate < 1028000 acfm', inventory_fields =  'stack_flow_rate' where name = 'Type 4';
+update emf.equation_types set equation = 'Capital Cost  = Capital Cost factor x Gas Flow Rate factor x Retrofit fator x Min. Stack flow rate Capital Cost  = ((1028000/Min. stack flow rate)^0.6)x Capital Cost factor x Gas Flow Rate factor x Retrofit fator x Min. Stack Flow rate
+O&M Cost = (3.35 + (0.00729 x 8736)) x Min. stack flow rate x 0.9383
+Total Cost = (Capital cost x CRF) + O&M Cost
+
+Notes:
+Min Stack Flow Rate >= 1028000 acfm
+Min Stack Flow Rate < 1028000 acfm
+Capital Cost factor = $192 / kw
+Gas flow rate factor = 0.486 KW/acfm', inventory_fields =  'stack_flow_rate' where name = 'Type 3';
+update emf.equation_types set equation = 'Annual Cost = Annual Cost Multiplier x (Boiler Capacity) ^ Exponent
+Capital Coat = Capital Cost Multiplier x (Boiler Capacity) ^ Exponent', inventory_fields =  'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator' where name = 'Type 2';
+update emf.equation_types set equation = 'Scaling Factor (SF) = (Model Plant boiler capacity / MW) ^ (Scaling Factor Exponential)
+Capital Cost = TCC x NETDC x SF x 1000 Fixed O&M Cost = OMF x NETDC x 1000
+Variable O&M Cost = OMV x NETDC x 1000 x CAPFAC x 8760 /1000
+CRF = I x (1+ I ) ^ Eq. Life / [(1+ I ) ^ Eq. Life - 1]
+Annualized Capital Cost = Capital Cost x CRF
+Total Cost = Capital Cost x CRF + O&M Cost
+
+Notes:
+Cost equations are based on capacity in the range of > 0 to < 2000 mmBTU/hr. 
+If capacity is not within range, a cost per ton value is applied.  Capital cost equations are in the form of $ = capital multiplier (capacity) ^ capital exponent.  Annual costs are in the form of $ = annual multiplier (capacity) ^ annual exponent.  
+Multipliers and exponents are available for a no control baseline and a RACT baseline.  Control measure is not applied if boiler capacity is missing.', inventory_fields =  'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator' where name = 'Type 1';
+
+
+-- 02/25/2010 update control measure equipment life to null if its zero
+update emf.control_measures
+set equipment_life = null
+where equipment_life = 0;
+
+-- 04/06/10 Plant Clousre (CSV) dataset type missing keyowrd  
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'Plant Closure (CSV)') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'Plant Closure (CSV)')) as list_index,
+  (select id from emf.keywords where "name" = 'EXPORT_INLINE_COMMENTS') as keyword_id,
+  'false' as "value", 'EXPORT_INLINE_COMMENTS' as kwname;
+
+
+
+-- 06/01/2010 
+update emf.equation_types set inventory_fields =  'stkflow' where name = 'Type 3';
+
+
+-- 06/16/2010 -- updated "Summarize all Control Measures" to include creator, last mod time and last mod by columns
+-- Summarize all Control Measures - Control Strategy Detailed Result
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize all Control Measures', 1, 'select cm.name as CMName, 
+	cm.abbreviation as CMabbrev, 
+	ct.name as control_technology, 
+	s.name as sector, 
+	sg.name as source_group, 
+	p.name as pollutant, 
+	aer.min_efficiency as min_ce, 
+	aer.avg_efficiency as mean_ce, 
+	aer.max_efficiency as max_ce, 
+	aer.min_cost_per_ton as min_cpt, 
+	aer.avg_cost_per_ton as mean_cpt, 
+	aer.max_cost_per_ton as max_cpt, 
+	aer.avg_rule_effectiveness as mean_re, 
+	aer.avg_rule_penetration as mean_rp,
+	(select count(1) from emf.control_measure_efficiencyrecords where control_measures_id = cm.id and pollutant_id = p.id) as effrec_count,
+	to_char(cm.last_modified_time, ''YYYY MM DD HH12 MI'') as last_modified_time,
+	cm.last_modified_by,
+ 	u.name as creator
+from emf.control_measures cm 
+	left outer join emf.control_measure_sectors cms 
+	on cms.control_measure_id = cm.id 
+	left outer join emf.sectors s 
+	on s.id = cms.sector_id 
+	left outer join emf.control_technologies ct 
+	on ct.id = cm.control_technology 
+	left outer join emf.source_groups sg 
+	on sg.id = cm.source_group 
+	left outer join emf.aggregrated_efficiencyrecords aer 
+	on aer.control_measures_id = cm.id 
+	left outer join emf.pollutants p 
+	on p.id = aer.pollutant_id 
+	left outer join emf.users u 
+	on u.id = cm.creator 
+order by cm.name, p.name', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize all Control Measures');
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select cm.name as CMName, 
+	cm.abbreviation as CMabbrev, 
+	ct.name as control_technology, 
+	s.name as sector, 
+	sg.name as source_group, 
+	p.name as pollutant, 
+	aer.min_efficiency as min_ce, 
+	aer.avg_efficiency as mean_ce, 
+	aer.max_efficiency as max_ce, 
+	aer.min_cost_per_ton as min_cpt, 
+	aer.avg_cost_per_ton as mean_cpt, 
+	aer.max_cost_per_ton as max_cpt, 
+	aer.avg_rule_effectiveness as mean_re, 
+	aer.avg_rule_penetration as mean_rp,
+	(select count(1) from emf.control_measure_efficiencyrecords where control_measures_id = cm.id and pollutant_id = p.id) as effrec_count,
+	to_char(cm.last_modified_time, ''YYYY MM DD HH12 MI'') as last_modified_time,
+	cm.last_modified_by,
+ 	u.name as creator
+from emf.control_measures cm 
+	left outer join emf.control_measure_sectors cms 
+	on cms.control_measure_id = cm.id 
+	left outer join emf.sectors s 
+	on s.id = cms.sector_id 
+	left outer join emf.control_technologies ct 
+	on ct.id = cm.control_technology 
+	left outer join emf.source_groups sg 
+	on sg.id = cm.source_group 
+	left outer join emf.aggregrated_efficiencyrecords aer 
+	on aer.control_measures_id = cm.id 
+	left outer join emf.pollutants p 
+	on p.id = aer.pollutant_id 
+	left outer join emf.users u 
+	on u.id = cm.creator 
+order by cm.name, p.name'
+where name = 'Summarize all Control Measures'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result'));
+
+-- 07/19/10 adding some drop cost equation function calls, since new version exist
+-- this must be run for the cost_equations.sql file changes.
+
+drop FUNCTION public.get_type3_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop  FUNCTION public.get_type4_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type5_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+drop FUNCTION public.get_type6_equation_costs(
+	control_measure_id integer, 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_recovery_factor double precision, 
+	emis_reduction double precision, 
+	stack_flow_rate double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision);
+
+	
+-- 07/22/2010 -- drop some new functions that are getting created...
+
+
+
+drop FUNCTION public.get_strategy_costs(
+	use_cost_equations boolean, 
+	control_measure_id integer, 
+	measure_abbreviation character varying(10), 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_annualized_ratio double precision, 
+	capital_recovery_factor double precision, 
+	ref_yr_cost_per_ton double precision,  
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision,
+	equation_type character varying(255), 
+	variable_coefficient1 double precision, 
+	variable_coefficient2 double precision, 
+	variable_coefficient3 double precision, 
+	variable_coefficient4 double precision, 
+	variable_coefficient5 double precision, 
+	variable_coefficient6 double precision, 
+	variable_coefficient7 double precision, 
+	variable_coefficient8 double precision, 
+	variable_coefficient9 double precision, 
+	variable_coefficient10 double precision, 
+	stack_flow_rate double precision, 
+	design_capacity double precision, 
+	design_capacity_unit_numerator character varying, 
+	design_capacity_unit_denominator character varying, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision, 
+	OUT actual_equation_type character varying(255)
+--	,OUT valid_cost boolean
+	);
+	
+-- Cost Equation Factory Method
+drop FUNCTION public.get_strategy_costs(
+	use_cost_equations boolean, 
+	control_measure_id integer, 
+	measure_abbreviation character varying(10), 
+	discount_rate double precision, 
+	equipment_life double precision, 
+	capital_annualized_ratio double precision, 
+	capital_recovery_factor double precision, 
+	ref_yr_cost_per_ton double precision,  
+	emis_reduction double precision, 
+	ref_yr_chained_gdp_adjustment_factor double precision,
+	equation_type character varying(255), 
+	variable_coefficient1 double precision, 
+	variable_coefficient2 double precision, 
+	variable_coefficient3 double precision, 
+	variable_coefficient4 double precision, 
+	variable_coefficient5 double precision, 
+	variable_coefficient6 double precision, 
+	variable_coefficient7 double precision, 
+	variable_coefficient8 double precision, 
+	variable_coefficient9 double precision, 
+	variable_coefficient10 double precision, 
+	stack_flow_rate double precision, 
+	design_capacity double precision, 
+	design_capacity_unit_numerator character varying, 
+	design_capacity_unit_denominator character varying, 
+	annual_avg_hours_per_year double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision, 
+	OUT variable_operation_maintenance_cost double precision, 
+	OUT fixed_operation_maintenance_cost double precision, 
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision, 
+	OUT computed_cost_per_ton double precision, 
+	OUT actual_equation_type character varying(255)
+--	,OUT valid_cost boolean
+	);
+	
+drop FUNCTION public.get_default_costs(
+	discount_rate double precision, 
+	equipment_life double precision,
+	capital_annualized_ratio double precision, 
+	capital_recovery_factor double precision, 
+	ref_yr_cost_per_ton double precision, 
+	emis_reduction double precision, 
+	OUT annual_cost double precision, 
+	OUT capital_cost double precision,
+	OUT operation_maintenance_cost double precision, 
+	OUT annualized_capital_cost double precision,
+	OUT computed_cost_per_ton double precision);
+
+	
+-- found some missing run_sum functions... include just in case
+CREATE OR REPLACE FUNCTION public.run_sum(numeric, numeric, text, text)
+  RETURNS numeric AS
+$BODY$
+   if {![info exists GD(sum.$3.$4)]} {
+       set GD(sum.$3.$4) $1
+   }
+   if {[argisnull 1]} {
+       return $GD(sum.$3.$4)
+   } else {
+       return [set GD(sum.$3.$4) [expr $GD(sum.$3.$4) + $2]]
+   }
+$BODY$
+  LANGUAGE pltcl VOLATILE
+  COST 100;
+ALTER FUNCTION public.run_sum(numeric, numeric, text, text) OWNER TO emf;
+
+CREATE OR REPLACE FUNCTION public.run_sum(numeric, numeric, text)
+  RETURNS numeric AS
+'select run_sum($1,$2,$3,statement_timestamp()::text)'
+  LANGUAGE sql IMMUTABLE STRICT
+  COST 100;
+ALTER FUNCTION public.run_sum(numeric, numeric, text) OWNER TO emf;
+
+
+
+-- 09/20/2010 -- add new constraint columns to the control strategy target pollutant table 
+ALTER TABLE emf.control_strategy_target_pollutants 
+  ADD max_emis_reduction double precision,
+  ADD max_control_efficiency double precision,
+  ADD min_cost_per_ton double precision,
+  ADD min_ann_cost double precision,
+  ADD replacement_control_min_eff_diff double precision;
+  
+-- 09/25/2010 -- add new constraint columns to the control strategy target pollutant table 
+insert into emf.strategy_types values(DEFAULT,'Multi-Pollutant Max Emissions Reduction','Multi-Pollutant Max Emissions Reduction', '', 'gov.epa.emissions.framework.services.cost.analysis.multiPollutantMaxReduction.StrategyTask');
+
+
+-- 10/21/2010 -- add new columns to control_strategy_target_pollutants table
+alter table emf.control_strategy_target_pollutants
+add column inv_filter text,
+add column county_dataset_id integer,
+add column county_dataset_version integer;
+
+-- 11/10/2010 Add is_final to control strategy table
+ALTER TABLE emf.control_strategies
+   ADD COLUMN is_final boolean DEFAULT false;
+
+-- 12/1/2010 Add new class Temporary
+insert into emf.control_measure_classes values (DEFAULT, 'Temporary', 'Temporary');
+
+-- 12/02/2010 -- insert new property into emf.properties -- whenever do deployment, need to change the COST_SUs accordingly and uncomment it 
+-- insert into emf.properties values(DEFAULT, 'COST_SU', 'admin|jizhen|emf');
+
+-- 12/5/2010 Add new CoST 
+-- insert into emf.properties values(DEFAULT, 'COST_CMDB_BACKUP_FOLDER', 'FILL_IN_CORRECT_FOLDER');
+
+
+-- 1/5/2011 -- Update QA Program name --- "Estimate EC Impacts" from EC COntrol Scenario
+update emf.qa_programs
+set name = 'Estimate EC Impacts'
+where name = 'EC COntrol Scenario';
+
+
+-- 1/20/2011 -- Get rid of unique constraint on the name of a control measure
+ALTER TABLE emf.control_measures DROP CONSTRAINT control_measures_name_key; 
+
+CREATE INDEX control_measures_class
+   ON emf.control_measures (cm_class_id ASC NULLS LAST);
+CREATE INDEX control_measure_classes_name
+   ON emf.control_measure_classes ("name" ASC NULLS LAST);
+
+
+
+-- 3/6/2011 
+CREATE INDEX idx_control_measure_properties_name
+   ON emf.control_measure_properties ("name" ASC NULLS LAST);
+
+-- check months table...
+
+
+-- 3/15/2011 Add new CoST propety to track Project Future Year Strategy Compliance and Effective 
+-- Date Cutoff DayMonth 
+insert into emf.properties values(DEFAULT, 'COST_PROJECT_FUTURE_YEAR_COMPLIANCE_DATE_CUTOFF_MONTHDAY', '07/01');
+insert into emf.properties values(DEFAULT, 'COST_PROJECT_FUTURE_YEAR_EFFECTIVE_DATE_CUTOFF_MONTHDAY', '07/01');
+
+-- 3/16/2011 -- adding new equation type 12 to drive Petroleum Refineries Process Heaters
+insert into emf.equation_types (name, description, inventory_fields, equation)
+select 'Type 12', 'NOx Controls for Gas-Fired Process Heaters at Petroleum Refineries Equations', 'stack_flow_rate,stack_temperature', 'stack_flow_rate (scfm) = stack_flow_rate (acfm) x 460 / (stack_temperature + 460)
+Total Capital Investment (TCI) = (Fixed TCI + Variable TCI) x (stack_flow_rate (scfm)/150,000)^.6
+Annual Operating Cost (AOC) = (AOC fixed + AOC variable) x (stack_flow_rate (scfm)/150,000)
+Total Annual Cost (TAC) = AOC + Capital Recovery Factor (CRF) x TCI';
+
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Total Capital Investment (TCI) Fixed Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 12';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Total Capital Investment (TCI) Variable Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 12';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Annual Operating Cost (AOC) Fixed Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 12';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Annual Operating Cost (AOC) Variable Factor', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 12';
+
+-- 7/27/2011 Change control measure abbreviation length limit to 20
+ALTER TABLE emf.control_measures ALTER COLUMN abbreviation TYPE character varying(20);
+
+--9/29/2011 Add new column about applying cap mesures on hap pollutants
+-- Add new control measure class id to control_measures table..
+ALTER TABLE emf.control_strategies ADD COLUMN apply_cap_measures_on_hap_pollutants boolean default false;
+
+-- 01/18/2012 Made Test Case measure temporary so there not used during production strategy runs
+update emf.control_measures
+set cm_class_id = (select id from emf.control_measure_classes where name = 'Temporary')
+where id in (select id from emf.control_measures where abbreviation like 'TC%');
+
+-- 2/7/2012 -- added another value column (now up to 11) to the cost equations
+alter TABLE emf.control_measure_equations
+add column value11 double precision;
+
+
+insert into emf.equation_types (name, description, inventory_fields, equation)
+select 'Type 13', 'ICI Boiler Cost Equations', 'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, stack_flow_rate, stack_velocity, stack_diameter','Capital Cost = var1*input1^var2+var3*input1^var4 
+O&M Cost = var5+var6*input1^var7+var8*input1^var9+var10*input3+var11*input2
+
+where
+
+input1 = boiler size in MMBtu/hr
+input2 = boiler emissions in ton/yr
+input3 = boiler exhaust flowrate in ft3/sec
+var1 = Capital cost size multiplier No.1
+var2 = Capital cost exponent No. 1
+var3 = Capital cost size multiplier No.2
+var4 = Capital cost exponent No. 2
+var5 = O&M known costs
+var6 = O&M cost size multiplier No.1
+var7 = O&M cost size exponent No. 1
+var8 = O&M cost size multiplier No. 2
+var9 = O&M cost size exponent No. 2
+var10 = O&M cost flowrate multiplier
+var11 = O&M cost emissions multiplier';
+
+
+-- Add Equation Variables
+
+-- Type 13
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Size Multiplier No. 1', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Exponent No. 1', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Size Multiplier No. 2', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Capital Cost Exponent No. 2', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'O&M Known Costs', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'O&M Cost Size Multiplier No. 1', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'O&M Cost Exponent No. 1', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'O&M Cost Size Multiplier No. 2', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'O&M Cost Exponent No. 2', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'O&M Flowrate Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'O&M Emissions Multiplier', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e 
+where name = 'Type 13';
+
+
+--4/1/2014 - need to make list_index not nullable, for some reason nulls were introduced
+ALTER TABLE emf.control_measure_sectors ALTER COLUMN list_index SET NOT NULL;
+

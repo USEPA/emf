@@ -1,0 +1,26 @@
+------------------------------ Case Management tables ----------------------------
+
+DELETE FROM cases.cases;
+DELETE FROM cases.emissions_years;
+DELETE FROM cases.meteorlogical_years;
+DELETE FROM cases.speciations;
+DELETE FROM cases.air_quality_models;
+DELETE FROM cases.case_categories;
+DELETE FROM cases.case_abbreviations;
+DELETE FROM cases.case_sectors;
+DELETE FROM cases.programs;
+DELETE FROM cases.inputnames;
+DELETE FROM cases.input_envt_vars;
+DELETE FROM cases.cases_caseinputs;
+DELETE FROM cases.subdirs;
+DELETE FROM cases.hosts;
+DELETE FROM cases.case_jobrunstatus;
+DELETE FROM cases.cases_casejobs;
+DELETE FROM cases.executables;
+DELETE FROM cases.parameter_env_vars;
+DELETE FROM cases.value_types;
+DELETE FROM cases.parameter_names;
+DELETE FROM cases.cases_parameters;
+
+
+

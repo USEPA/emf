@@ -1,0 +1,144 @@
+<!doctype HTML PUBLIC -//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>The Emissions Modeling Framework (EMF) Upgrade</title>
+		<link rel="stylesheet" type="text/css" href="emf.css" />	
+	</head>
+
+	<body>
+		<h1 id="contents">The Emissions Modeling Framework (EMF) Upgrade</h1>
+
+		<ul id="links">
+			<li><a href="#brief">Very Brief Installation Instructions</a></li>
+			<li><a href="#database">Upgrade EMF Database</a></li>
+			<li><a href="#server">Redeploy EMF Web Server</a></li>
+			<li><a href="#client">Upgrade EMF Client</a></li>
+		</ul>
+
+		<h2 id="brief">Very Brief Installation Instructions</h2>
+		<div class="section">
+			<ol>
+				<li>Upgrade the EMF database</li>
+				<li>Redeploy the EMF web server</li>
+				<li>Upgrade the EMF client</li>
+			</ol>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="database">Upgrade EMF Database</h2>
+		<div class="section">
+			<h4>Complete the following steps:</h4>
+			<ol>
+				<li>
+					<p>Download and untar the latest dated version of the
+					emf_upgrade_beta tar file from the EPA's ftp site:
+					</p>
+						<ul>
+							<li><b>FTP address</b>: scienceftp.epa.gov</li>
+							<li><b>login</b>: emfbeta</li>
+							<li><b>password</b>: 4aXqKhhu</li>
+						</ul>													
+					<p></p>
+					<p>This can be untarred anywhere. For my example, I'll put it
+					in my home directory:
+					
+						<div class="pre">$ cp emf_upgrade_beta_&lt;date&gt;.tar.gz ~/</div>
+						<div class="pre">$ tar xvzf emf_upgrade_beta_&lt;date&gt;.tar.gz</div>	
+					</p>
+				</li>
+				<li>
+					<p>Under <span class="pre">~/emf_upgrade_beta/EMFDB</span>, edit the
+					script called "UpgradeEMFDatabase.sh". Modify the setting shown below
+					to indicate the bin directory for Postgres:
+						<div class="pre">export POSTGRESBINDIR=/usr/local/PostgreSQL/8.3/bin</div>	
+					</p>
+				</li>
+				<li>
+					<p>Double check that the postgres server is running with the following command:
+					
+						<div class="pre">$ ps aux| grep postgres</div>
+					</p>
+					<p>If it is not running, start the server (see 
+					<a href="third_party_install.html#postgres">Postgres instructions</a>).
+					</p>
+				</li>
+				<li>
+					<p>Run the upgrade script. Note: The script may ask you for a password, this
+					password will be the "emf" (postgres user) password. To reduce the number of
+					times that you type in the password, change the login permission requirements
+					for the postgres server (see <a href="third_party_install.html#postgres">Postgres
+					post-installation configuration</a>). Redirect the output to a log file:
+					
+						<div class="pre">$ ./UpgradeEMFDatabase.sh >& log.setup</div>
+					</p>
+					<p>Check for errors in the log (i.e., log.setup in the example here).</p>
+				</li>
+			</ol>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="server">Redeploy EMF Web Server</h2>
+		<p>The EMF web server consists of the tomcat setup (already completed) and deploying the
+		EMF specific Java code (in the parlance of Java, a ".war" file)
+		<div class="section">
+			<h4>Complete the following steps:</h4>
+			<ol>
+				<li>
+					<p>Double check that the tomcat server is running with the following command:
+					
+						<div class="pre">$ ps aux| grep tomcat</div>
+					</p>
+					<p>If it is not running, start the server (see 
+					<a href="third_party_install.html#tomcat">Tomcat instructions</a>).
+					</p>
+				</li>
+				<li>
+					<p>Open a web browser on the EMFServer (this can also be done remotely by using
+					the IP address of the EMFServer). Navigate to the EMFServer's url at port 8080:
+					
+						<a href="http://localhost:8080"><div class="pre">http://localhost:8080</div></a>
+					</p>
+				</li>
+				<li>
+					<p>Click on the <b>Tomcat Manager</b> link and, in the pop-up window, fill in the
+					username 'admin' and the appropriate password (that you set during the
+					Tomcat installation). This will redirect you to the "Tomcat Web
+					Application Manager" page. This lists all the web applications currently running.
+					</p>
+				</li>
+				<li>
+					<p>Find the EMF application, click the <b>Stop</b> link, and then click the <b>Undeploy</b>
+					link to undeploy the EMF web application (the EMF application will disappear from this page).
+					</p>
+				</li>
+				<li>
+					<p>Add the upgraded EMF web application: Go to the bottom of the page to "Deploy". Under,
+					"WAR file to deploy", browse to your <span class="pre">emf_upgrade_beta/EMFServer</span>
+					directory and select the file emf.war. Click the <b>Deploy</b> button. When the deploy
+					is completed, the page will automatically refresh showing a new application, "EPA EMF".
+					</p>
+				</li>
+			</ol>
+		</div>
+
+		<div style="float: right;"><a href="#contents">contents</a></div>
+
+		<hr align="left" width="50%">
+
+		<h2 id="client">Upgrade EMF Client</h2>
+		<div class="section">
+			<h4>Windows, Mac or Linux Installation:</h4>
+			<p>The next time a user logs into the EMF, they will get a warning that the client has a later version. 
+			See the <a href="emf_install.html#client">EMF client instructions</a> for upgrading the client.
+		</div>
+
+		<div style="float: right; padding-bottom: 1em;"><a href="#contents">contents</a></div>
+
+	</body>
+</html>

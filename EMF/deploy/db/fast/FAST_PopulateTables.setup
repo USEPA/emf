@@ -1,0 +1,174 @@
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Cancer Risk','FAST Cancer Risk',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Species Mapping','FAST Species Mapping',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Gridded Summary Emission and Air Quality','FAST Gridded Summary Emission and Air Quality',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Gridded Detailed Emission and Air Quality','FAST Gridded Detailed Emission and Air Quality',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Gridded Detailed Emission','FAST Gridded Detailed Emission',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Gridded Sector-SCC-Pollutant Emission','FAST Gridded Sector-SCC-Pollutant Emission',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+
+
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST SMOKE Gridded SCC Report','FAST SMOKE Gridded SCC Report',1,1,false,'','gov.epa.emissions.commons.io.other.SMKReportImporter','gov.epa.emissions.commons.io.other.SMKReportExporter',null::character varying(255),null::timestamp without time zone,1);
+
+
+
+INSERT INTO fast.fast_run_output_types (name) VALUES ('Gridded Emissions');
+INSERT INTO fast.fast_run_output_types (name) VALUES ('Gridded Summary Emissions and Air Quality');
+INSERT INTO fast.fast_run_output_types (name) VALUES ('Gridded Detailed Emissions and Air Quality');
+
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'FAST Gridded Sector-SCC-Pollutant Emission') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'FAST Gridded Sector-SCC-Pollutant Emission')) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(64)|varchar(10)|int4|int4|float8(17)' as "value", 'COLUMN_TYPES' as kwname;
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'FAST Gridded Detailed Emission') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'FAST Gridded Detailed Emission')) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(64)|varchar(64)|float8(17)|int4|int4|float8(17)' as "value", 'COLUMN_TYPES' as kwname;
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'FAST Gridded Detailed Emission and Air Quality') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'FAST Gridded Detailed Emission and Air Quality')) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(64)|varchar(64)|float8(17)|int4|int4|float8(17)|float8(17)' as "value", 'COLUMN_TYPES' as kwname;
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'FAST Gridded Summary Emission and Air Quality') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'FAST Gridded Summary Emission and Air Quality')) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(64)|int4|int4|float8(17)|float8(17)' as "value", 'COLUMN_TYPES' as kwname;
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'FAST Species Mapping') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'FAST Species Mapping')) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(64)|varchar(64)|varchar(64)|varchar(64)|varchar(15)|float8(17)' as "value", 'COLUMN_TYPES' as kwname;
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'FAST Cancer Risk') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'FAST Cancer Risk')) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|float8(17)' as "value", 'COLUMN_TYPES' as kwname;
+
+-- Fast Transfer Coefficients Dataset Type setup
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Transfer Coefficients','FAST Transfer Coefficients',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select dt.id as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = dt.id) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(64)|varchar(64)|float8(17)|float8(17)' as "value", 'COLUMN_TYPES' as kwname
+from emf.dataset_types dt
+where "name" = 'FAST Transfer Coefficients';
+
+
+-- FAST Domain Population Dataset Type setup
+insert into emf.dataset_types ("name",description,min_files,max_files,"external",default_sortorder,importer_classname,exporter_classname,lock_owner,lock_date,table_per_dataset) 
+values('FAST Domain Population','FAST Domain Population',1,1,false,'','gov.epa.emissions.commons.io.csv.CSVImporter','gov.epa.emissions.commons.io.csv.CSVExporter',null::character varying(255),null::timestamp without time zone,1);
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select dt.id as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = dt.id) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'int|int|float8(17)|float8(17)|float8(17)' as "value", 'COLUMN_TYPES' as kwname
+from emf.dataset_types dt
+where "name" = 'FAST Domain Population';
+
+
+
+-- Add new projections
+INSERT INTO public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (104307, 'WRF', 104307, 'PROJCS["Lambert_Conformal_Conic", 
+  GEOGCS["unnamed ellipse", 
+    DATUM["D_unknown", 
+      SPHEROID["Unknown", 6370000.0, 0.0]], 
+    PRIMEM["Greenwich", 0.0], 
+    UNIT["degree", 0.017453292519943295], 
+    AXIS["Lon", EAST], 
+    AXIS["Lat", NORTH]], 
+  PROJECTION["Lambert_Conformal_Conic"], 
+  PARAMETER["central_meridian", -97.0], 
+  PARAMETER["latitude_of_origin", 40.0], 
+  PARAMETER["standard_parallel_1", 33.0], 
+  PARAMETER["scale_factor", 1.0], 
+  PARAMETER["false_easting", 0.0], 
+  PARAMETER["false_northing", 0.0], 
+  PARAMETER["standard_parallel_2", 45.0], 
+  UNIT["m", 1.0], 
+  AXIS["x", EAST], 
+  AXIS["y", NORTH]]', '+proj=lcc +a=6370000.0 +b=6370000.0 +lat_1=33 +lat_2=45 +lat_0=40.0 +lon_0=-97.0');
+INSERT INTO public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (104308, 'WRF', 104308, NULL, '+proj=latlong +a=6370000.0 +b=6370000.0');
+
+-- 7/8/2010
+-- DS Type that was missed
+
+-- FAST Gridded Sector-CMAQ-Inventory-Pollutant Emission
+INSERT INTO emf.dataset_types (name, description, min_files, max_files, external, default_sortorder, importer_classname, exporter_classname, lock_owner, lock_date, table_per_dataset, creation_date, last_mod_date, creator, file_format) VALUES ('FAST Gridded Sector-CMAQ-Inventory-Pollutant Emission', 'FAST Gridded Sector-CMAQ-Inventory-Pollutant Emission', 1, 1, false, '', 'gov.epa.emissions.commons.io.other.SMKReportImporter', 'gov.epa.emissions.commons.io.csv.CSVExporter', NULL, NULL, 1, NULL, NULL, NULL, NULL);
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select dt.id as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = dt.id) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(64)|varchar(64)|int4|int4|float8(17)|float8(17)|varchar(64)' as "value", 'COLUMN_TYPES' as kwname
+from emf.dataset_types dt
+where "name" = 'FAST Gridded Sector-CMAQ-Inventory-Pollutant Emission';
+
+
+-- 07/09/2010 - FAST Analyses DS Types
+-- FAST Analysis Gridded Difference Result
+INSERT INTO emf.file_formats (name, description, delimiter, fixed_format, date_added, last_modified_date, creator) select 'FAST Analysis Gridded Difference Result', '', '          ,          ', false, '2010-07-09 00:41:24.708', '2010-07-09 00:41:24.708', (select id from emf.users where username = 'admin') as creator;
+
+INSERT INTO emf.dataset_types (name, description, min_files, max_files, external, default_sortorder, importer_classname, exporter_classname, lock_owner, lock_date, table_per_dataset, creation_date, last_mod_date, creator, file_format) 
+select 'FAST Analysis Gridded Difference Result', '', 1, 1, false, '', 'gov.epa.emissions.commons.io.orl.FlexibleDBImporter', 'gov.epa.emissions.commons.io.orl.FlexibleDBExporter', NULL, NULL, 1, '2010-07-09 15:26:18.468', '2010-07-09 15:27:20.208', (select id from emf.users where username = 'admin') as creator, (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id;
+
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 0, 'sector', 'VARCHAR(255)', '', 'StringFormatter', '', 'NULL', false, 255, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 1, 'pollutant', 'VARCHAR(16)', '', 'StringFormatter', '', 'NULL', false, 16, 0, 0, 0;
+
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 2, 'x', 'INTEGER', '', 'IntegerFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 3, 'y', 'INTEGER', '', 'IntegerFormatter', '', 'NULL', false, -1, 0, 0, 0;
+
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 4, 'sum_sens_total_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 5, 'sum_base_total_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 6, 'diff_sum_total_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 7, 'sum_sens_pop_weighted_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 8, 'sum_base_pop_weighted_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 9, 'diff_sum_pop_weighted_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 10, 'sum_sens_pop_weighted_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 11, 'sum_base_pop_weighted_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 12, 'diff_sum_pop_weighted_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 13, 'sum_sens_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 14, 'sum_base_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 15, 'diff_sum_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 16, 'sum_sens_emission', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 17, 'sum_base_emission', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Gridded Difference Result') as file_format_id, 18, 'diff_sum_emission', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+
+-- FAST Analysis Domain Difference Result
+INSERT INTO emf.file_formats (name, description, delimiter, fixed_format, date_added, last_modified_date, creator) select 'FAST Analysis Domain Difference Result', '', '          ,          ', false, '2010-07-09 00:41:24.708', '2010-07-09 00:41:24.708', (select id from emf.users where username = 'admin') as creator;
+
+INSERT INTO emf.dataset_types (name, description, min_files, max_files, external, default_sortorder, importer_classname, exporter_classname, lock_owner, lock_date, table_per_dataset, creation_date, last_mod_date, creator, file_format) 
+select 'FAST Analysis Domain Difference Result', '', 1, 1, false, '', 'gov.epa.emissions.commons.io.orl.FlexibleDBImporter', 'gov.epa.emissions.commons.io.orl.FlexibleDBExporter', NULL, NULL, 1, '2010-07-09 15:26:18.468', '2010-07-09 15:27:20.208', (select id from emf.users where username = 'admin') as creator, (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id;
+
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 0, 'sector', 'VARCHAR(255)', '', 'StringFormatter', '', 'NULL', false, 255, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 1, 'pollutant', 'VARCHAR(16)', '', 'StringFormatter', '', 'NULL', false, 16, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 2, 'sum_sens_total_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 3, 'sum_base_total_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 4, 'diff_sum_total_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 5, 'sum_sens_pop_weighted_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 6, 'sum_base_pop_weighted_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 7, 'diff_sum_pop_weighted_cancer_risk', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 8, 'sum_sens_pop_weighted_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 9, 'sum_base_pop_weighted_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 10, 'diff_sum_pop_weighted_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 11, 'sum_sens_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 12, 'sum_base_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 13, 'diff_sum_air_quality', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 14, 'sum_sens_emission', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 15, 'sum_base_emission', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type, default_value, description, formatter, constraints, mandatory, width, spaces, fix_format_start, fix_format_end) select (select id from emf.file_formats where name = 'FAST Analysis Domain Difference Result') as file_format_id, 16, 'diff_sum_emission', 'double precision', '', 'RealFormatter', '', 'NULL', false, -1, 0, 0, 0;
+
+
+
+INSERT INTO fast.fast_analysis_output_types (name) VALUES ('FAST Gridded Difference');
+INSERT INTO fast.fast_analysis_output_types (name) VALUES ('FAST Domain Difference');
+
+INSERT INTO fast.grids (name, description, abbreviation, resltn, map_projtn, xorig, yorig, xcell, ycell, ncols, nrows, nthik, xcent, ycent) VALUES ('Detroit_36_45_4km', 'Detroit_36_45_4km', 'Detroit_36_45_4km', '1', '+proj=lcc +a=6370000.0 +b=6370000.0 +lat_1=33 +lat_2=45 +lat_0=40.0 +lon_0=-97.0', -97, 40, 4000, 4000, 36, 45, 1, 1044000, 252000);

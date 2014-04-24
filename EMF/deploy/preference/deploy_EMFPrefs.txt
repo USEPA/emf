@@ -1,0 +1,9 @@
+#EMF Property File
+local.input.drive=T:\\
+remote.input.drive=/data/
+
+local.output.drive=T:\\
+remote.output.drive=/data/
+
+default.input.folder=emf_input
+default.output.folder=emf_output

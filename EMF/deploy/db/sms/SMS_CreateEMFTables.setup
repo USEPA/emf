@@ -1,0 +1,82 @@
+create table sms.eecs (
+  id serial primary key NOT NULL,
+  eecs character varying(10) NOT NULL,
+  eecs_name character varying(128) NOT NULL,
+  eecs_description text,
+  path ltree NOT NULL,
+  UNIQUE(eecs),
+  UNIQUE(eecs_name)
+);
+
+create table sms.sector_scenario (
+  id serial primary key NOT NULL,
+  name character varying(128) NOT NULL unique,
+  description character varying(128),
+  abbreviation character varying(20) NOT NULL unique,
+  run_status character varying(255) NOT NULL,
+  should_double_count boolean,
+  annotate_inventory_with_eecs boolean,
+  auto_run_qa_steps smallint,
+  annotating_eecs_option smallint,
+  creator int NOT NULL,
+  project_id int REFERENCES emf.projects(id),
+  last_modified_date timestamp without time zone NOT NULL,
+  start_date timestamp without time zone,
+  completion_date timestamp without time zone,
+  lock_owner character varying(255),
+  lock_date timestamp without time zone,
+  copied_from character varying(255),
+  export_directory character varying,
+--  eecs_version_id integer NOT NULL REFERENCES sms.eecs_version(id),
+  eecs_mappping_dataset_id integer REFERENCES emf.datasets(id),
+  eecs_mappping_dataset_version integer,
+  sector_mappping_dataset_id integer REFERENCES emf.datasets(id),
+  sector_mappping_dataset_version integer 
+  /*,
+  CONSTRAINT sector_scenario_eecs_mappping_dataset_version_fkey FOREIGN KEY (eecs_mappping_dataset_version, eecs_mappping_dataset_version)
+    REFERENCES emissions.versions (dataset_id, version) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT sector_scenario_sector_mappping_dataset_version_fkey FOREIGN KEY (sector_mappping_dataset_id, sector_mappping_dataset_version)
+    REFERENCES emissions.versions (dataset_id, version) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION
+*/);
+
+create table sms.sector_scenario_sector (
+  id serial primary key NOT NULL,
+  list_index int NOT NULL,
+  sector_scenario_id int NOT NULL REFERENCES sms.sector_scenario(id),
+  sector_name character varying(128) NOT NULL
+);
+
+create table sms.sector_scenario_inventory (
+  id serial primary key NOT NULL,
+  list_index int NOT NULL,
+  sector_scenario_id int NOT NULL REFERENCES sms.sector_scenario(id),
+  inventory_dataset_id integer NOT NULL REFERENCES emf.datasets(id),
+  inventory_dataset_version integer NOT NULL
+--  ,
+  --CONSTRAINT sector_scenario_inventory_inventory_dataset_version_fkey FOREIGN KEY (inventory_dataset_id, inventory_dataset_version)
+    --REFERENCES emissions.versions (dataset_id, version) MATCH SIMPLE
+    --ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+create table sms.sector_scenario_output_type (
+  id serial primary key NOT NULL,
+  name character varying(128) NOT NULL unique
+);
+
+create table sms.sector_scenario_output (
+  id serial primary key NOT NULL,
+  sector_scenario_id int NOT NULL REFERENCES sms.sector_scenario(id),
+  sector_scenario_output_type_id int NOT NULL REFERENCES sms.sector_scenario_output_type(id),
+  output_dataset_id integer NOT NULL REFERENCES emf.datasets(id),
+  inventory_dataset_id integer REFERENCES emf.datasets(id),
+  inventory_dataset_version integer,
+  start_date timestamp without time zone,
+  completion_date timestamp without time zone,
+  run_status character varying(255)
+  /*,
+  CONSTRAINT sector_scenario_output_inventory_dataset_version_fkey FOREIGN KEY (inventory_dataset_id, inventory_dataset_version)
+    REFERENCES emissions.versions (dataset_id, version) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION*/
+);

@@ -1,0 +1,2009 @@
+insert INTO emf.note_types VALUES (DEFAULT, 'Reference');
+-- 12/5/2006
+-- Use this to upgrade your schema for export logging
+-- 1. Back up your emf.dataset_access_logs table [with options INSERT commands, plain and data only]
+-- 2. DROP TABLE emf.dataset_access_logs
+-- 3. Create the table as shown below
+-- 4. Restore the data from the backup
+-- 5. Test to be sure that you can export and that you can view the old and new logs
+CREATE TABLE emf.dataset_access_logs
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id int4 REFERENCES emf.datasets (id) NOT NULL,
+  lines_exported int8 DEFAULT 0,
+  username varchar(255) REFERENCES emf.users (username) NOT NULL,
+  dataset_name varchar(255),
+  date timestamp NOT NULL,
+  start_date timestamp,
+  end_date timestamp,
+  time_reqrd real DEFAULT 0,
+  version varchar(255) NOT NULL,
+  description text NOT NULL,
+  "location" varchar(255) NOT NULL,
+  details text
+) 
+WITHOUT OIDS;
+
+-- 12/22/2006
+-- addition of table per dataset to dataset_types table
+ALTER TABLE dataset_types ADD COLUMN table_per_dataset int4 NOT NULL DEFAULT 1;
+
+-- Also, need to remove the table column data from tables
+-- Also, need to lock timeout property to 2 hours
+
+-- 3/26/2007
+-- added new default QA step to run during a control strategy run
+update emf.properties
+set value = value || '|Summarize by US State and Pollutant'
+where name = 'defaultQASummaries'
+
+
+-- 7/31/2007 
+-- update control strategy dataset types to use new qa engine format...
+-- Summarize by Pollutant - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select POLL, sum(ann_emis) as ann_emis from $TABLE[1] e group by POLL order by POLL'
+where name = 'Summarize by Pollutant'
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)')
+	);
+
+-- Summarize by Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select POLL, avg(Ann_Cost_per_Ton) as avg_cost_per_ton, sum(Annual_Cost) as Annual_Cost, sum(Final_emissions) as Final_emissions, sum(Emis_Reduction) as Emis_Reduction, sum(Inv_emissions) as Inv_emissions from $TABLE[1] e group by POLL order by POLL'
+where name = 'Summarize by Pollutant'
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+
+-- Summarize by SCC and Pollutant - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select SCC, POLL, sum(ann_emis) as ann_emis from $TABLE[1] e group by SCC, POLL order by SCC, POLL'
+where name = 'Summarize by SCC and Pollutant'
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)')
+	);
+
+-- Summarize by SCC and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select SCC, POLL, avg(Ann_Cost_per_Ton) as avg_cost_per_ton, sum(Annual_Cost) as Annual_Cost, sum(Final_emissions) as Final_emissions, sum(Emis_Reduction) as Emis_Reduction, sum(Inv_emissions) as Inv_emissions from $TABLE[1] e group by SCC, POLL order by SCC, POLL'
+where name = 'Summarize by SCC and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+
+-- Summarize by County and Pollutant - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select FIPS, POLL, sum(ann_emis) as ann_emis from $TABLE[1] e group by FIPS, POLL order by FIPS, POLL'
+where name = 'Summarize by County and Pollutant'
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)')
+	);
+
+-- Summarize by SCC and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select FIPS, POLL, avg(Ann_Cost_per_Ton) as avg_cost_per_ton, sum(Annual_Cost) as Annual_Cost, sum(Final_emissions) as Final_emissions, sum(Emis_Reduction) as Emis_Reduction, sum(Inv_emissions) as Inv_emissions from $TABLE[1] e group by FIPS, POLL order by FIPS, POLL'
+where name = 'Summarize by County and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+
+-- Summarize by US State and Pollutant - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips.state_name, fips.state_abbr, fips.fipsst, e.POLL, sum(ann_emis) as ann_emis from $TABLE[1] e inner join reference.fips on fips.state_county_fips = e.FIPS where fips.country_num = ''0'' group by fips.state_name, fips.state_abbr, fips.fipsst, POLL order by fips.state_name, POLL'
+where name = 'Summarize by US State and Pollutant'
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)')
+	);
+
+-- Summarize by US State and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips.state_name, fips.state_abbr, fips.fipsst, e.POLL, avg(e.Ann_Cost_per_Ton) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join reference.fips on fips.state_county_fips = e.FIPS where fips.country_num = ''0'' group by fips.state_name, fips.state_abbr, fips.fipsst, POLL order by fips.state_name, POLL'
+where name = 'Summarize by US State and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+
+-- Summarize by Control Measure and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select cm.name as Measure_Name, cm.abbreviation as Measure_Abbreviation, sg.name as Source_Group, ct.name as Control_Technology, e.POLL, avg(e.Ann_Cost_per_Ton) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id left outer join emf.source_groups sg on sg.id = cm.source_group left outer join emf.control_technologies ct on ct.id = cm.control_technology group by cm.name, cm.abbreviation, sg.name, ct.name, e.POLL order by cm.name, POLL'
+where name = 'Summarize by Control Measure and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+
+-- Summarize by Source Group and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select sg.name as Source_Group, e.POLL, avg(e.Ann_Cost_per_Ton) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id inner join emf.source_groups sg on sg.id = cm.source_group group by sg.name, e.POLL order by sg.name, POLL'
+where name = 'Summarize by Source Group and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+
+-- Summarize by Control Technology and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select ct.name as Control_Technology, e.POLL, avg(e.Ann_Cost_per_Ton) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id inner join emf.control_technologies ct on ct.id = cm.control_technology group by ct.name, e.POLL order by ct.name, POLL'
+where name = 'Summarize by Control Technology and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+	
+-- To add exporter class name for external dataset types
+update emf.dataset_types set exporter_classname='gov.epa.emissions.commons.io.external.ExternalFilesExporter' 
+where external='TRUE';
+
+-- To add two new qa programs
+insert into emf.qa_programs values(DEFAULT,'Average Day to Annual State Summary','gov.epa.emissions.framework.services.qa.SQLAnnualQueryRunner');
+insert into emf.qa_programs values(DEFAULT,'Average day to Annual Inventory','gov.epa.emissions.framework.services.qa.SQLQAAnnualNonsummaryQueryRunner');
+
+
+-- 11/1/2007 - DCD new qa step, Summarize by State, SCC, and Control Technology, for Control Strategy Detailed Result
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by State, SCC, and Control Technology', 1, 'select ct.name as Control_Technology, e.POLL, e.fipsst, e.scc, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id inner join emf.control_technologies ct on ct.id = cm.control_technology group by ct.name, e.POLL, e.fipsst, e.scc order by ct.name, e.POLL, e.fipsst, e.scc', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result'); 
+
+-- 11/5/2007 add one key word for csv file header line control
+insert INTO emf.keywords VALUES (DEFAULT, 'EXPORT_COLUMN_LABEL');
+
+
+
+-- 12/3/2007 - DCD Update Control Strategy Detailed Result QA steps to use right avg_cost_per_ton.
+-- Summarize by Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select POLL, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(Annual_Cost) as Annual_Cost, sum(Final_emissions) as Final_emissions, sum(Emis_Reduction) as Emis_Reduction, sum(Inv_emissions) as Inv_emissions from $TABLE[1] e group by POLL order by POLL'
+where name = 'Summarize by Pollutant'
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Summarize by SCC and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select SCC, POLL, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(Annual_Cost) as Annual_Cost, sum(Final_emissions) as Final_emissions, sum(Emis_Reduction) as Emis_Reduction, sum(Inv_emissions) as Inv_emissions from $TABLE[1] e group by SCC, POLL order by SCC, POLL'
+where name = 'Summarize by SCC and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Summarize by SCC and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select FIPS, POLL, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(Annual_Cost) as Annual_Cost, sum(Final_emissions) as Final_emissions, sum(Emis_Reduction) as Emis_Reduction, sum(Inv_emissions) as Inv_emissions from $TABLE[1] e group by FIPS, POLL order by FIPS, POLL'
+where name = 'Summarize by County and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Summarize by US State and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips.state_name, fips.state_abbr, fips.fipsst, e.POLL, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join reference.fips on fips.state_county_fips = e.FIPS where fips.country_num = ''0'' group by fips.state_name, fips.state_abbr, fips.fipsst, POLL order by fips.state_name, POLL'
+where name = 'Summarize by US State and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Summarize by Control Measure and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select cm.name as Measure_Name, cm.abbreviation as Measure_Abbreviation, sg.name as Source_Group, ct.name as Control_Technology, e.POLL, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id left outer join emf.source_groups sg on sg.id = cm.source_group left outer join emf.control_technologies ct on ct.id = cm.control_technology group by cm.name, cm.abbreviation, sg.name, ct.name, e.POLL order by cm.name, POLL'
+where name = 'Summarize by Control Measure and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Summarize by Source Group and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select sg.name as Source_Group, e.POLL, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id inner join emf.source_groups sg on sg.id = cm.source_group group by sg.name, e.POLL order by sg.name, POLL'
+where name = 'Summarize by Source Group and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Summarize by Control Technology and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select ct.name as Control_Technology, e.POLL, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id inner join emf.control_technologies ct on ct.id = cm.control_technology group by ct.name, e.POLL order by ct.name, POLL'
+where name = 'Summarize by Control Technology and Pollutant' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Summarize by State, SCC, and Control Technology - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select ct.name as Control_Technology, e.POLL, e.fipsst, e.scc, sum(e.Annual_Cost) / sum(e.Emis_Reduction) as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e inner join emf.control_measures cm on cm.id = e.cm_id inner join emf.control_technologies ct on ct.id = cm.control_technology group by ct.name, e.POLL, e.fipsst, e.scc order by ct.name, e.POLL, e.fipsst, e.scc'
+where name = 'Summarize by State, SCC, and Control Technology' 
+	and dataset_type_id in (
+		select id
+		from emf.dataset_types
+		where name in ('Control Strategy Detailed Result')
+	);
+
+-- Update emf version 
+update emf.properties set value='v1.9 - 1/31/2008' where name='EMF-version';
+
+-- emf.qa_programs  02/12/08 by Dongmei Yang
+insert into emf.qa_programs values(DEFAULT,'Fire Data Summary (Day-specific)','gov.epa.emissions.framework.services.qa.FireProgramRunner')
+
+-- new dataset type in emf.dataset_types 2/15/2008
+insert into emf.dataset_types values(DEFAULT,'Chemical Speciation Combo Profiles (GSPRO_COMBO)','Chemical Speciation Combo Profiles (GSPRO_COMBO)', '1', '1', false,'', 'gov.epa.emissions.commons.io.speciation.SpeciationComboProfileImporter', 'gov.epa.emissions.commons.io.speciation.SpeciationComboProfileExporter');
+
+
+-- Table: emf.datasets_notes
+CREATE TABLE emf.datasets_notes
+(
+  id SERIAL PRIMARY KEY,
+  dataset_id integer NOT NULL REFERENCES emf.datasets(id),
+  note_id integer NOT NULL REFERENCES emf.notes(id),
+  UNIQUE(dataset_id, note_id)
+) 
+WITHOUT OIDS;
+-- emf.datasets_notes
+
+-- 2/21/2008 to add a new property to emf.properties table
+insert into emf.properties values(DEFAULT, 'USE_IMPORT_TASK_MANAGER', 'false');
+
+-- emf.qa_programs  03/07/08 
+insert into emf.qa_programs values(DEFAULT,'Multi-inventory sum','gov.epa.emissions.framework.services.qa.MultiInvSumProgramRunner');
+insert into emf.qa_programs values(DEFAULT,'Multi-inventory column report','gov.epa.emissions.framework.services.qa.NInvDiffProgramRunner');
+insert into emf.qa_programs values(DEFAULT,'Multi-inventory difference report','gov.epa.emissions.framework.services.qa.MultiInvDiffProgramRunner');
+
+-- drop clumns from emf.notes table 03/12/2008
+ALTER TABLE emf.notes DROP COLUMN dataset_id, DROP COLUMN version;
+
+-- add column into emf.datasets_notes table 3/12/2008
+ALTER TABLE emf.datasets_notes ADD COLUMN version integer DEFAULT 0;
+
+--added for line0-based data appending 3/26/2008
+
+CREATE OR REPLACE FUNCTION public.run_sum(numeric, numeric, text, text)
+  RETURNS numeric AS
+$BODY$
+   if {![info exists GD(sum.$3.$4)]} {
+       set GD(sum.$3.$4) $1
+   }
+   if {[argisnull 1]} {
+       return $GD(sum.$3.$4)
+   } else {
+       return [set GD(sum.$3.$4) [expr $GD(sum.$3.$4) + $2]]
+   }
+$BODY$
+  LANGUAGE 'pltcl' VOLATILE;
+ALTER FUNCTION public.run_sum(numeric, numeric, text, text) OWNER TO emf;
+
+
+CREATE OR REPLACE FUNCTION public.run_sum(numeric, numeric, text)
+  RETURNS numeric AS
+'select run_sum($1,$2,$3,statement_timestamp()::text)'
+  LANGUAGE 'sql' IMMUTABLE STRICT;
+ALTER FUNCTION public.run_sum(numeric, numeric, text) OWNER TO emf;
+ALTER TABLE emf.datasets_notes ADD COLUMN version integer DEFAULT 0;
+
+-- 3/20/08 DCD - Changed dataset type name and renamed some supoorting classes...
+update emf.dataset_types
+set name = 'ORL Merged Inventory',
+description = 'ORL Merged Inventory',
+importer_classname = 'gov.epa.emissions.commons.io.orl.ORLMergedImporter',
+exporter_classname = 'gov.epa.emissions.commons.io.orl.ORLMergedExporter'
+where name = 'ORL CoST Point Inventory (PTINV)';
+
+insert into emf.dataset_types values(DEFAULT,'Control Strategy Least Cost Curve Summary','Control Strategy Least Cost Curve Summary', '1', '1', false,'', '', 'gov.epa.emissions.commons.io.csv.CSVExporter');
+
+-- 5/17/200 add one key word for csv file header line control
+insert INTO emf.keywords VALUES (DEFAULT, 'COLUMN_TYPES');
+
+
+-- 7/16/08 DCD -- updated qa steps to handle control programs.
+-- Summarize by Control Measure and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.sector, cm.name as Measure_Name, e.cm_abbrev as Measure_Abbreviation, sg.name as Source_Group, ct.name as Control_Technology, e.POLL, case when coalesce(sum(e.Emis_Reduction),0) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null end as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e left outer join emf.control_measures cm on cm.abbreviation = e.cm_abbrev left outer join emf.source_groups sg on sg.id = cm.source_group left outer join emf.control_technologies ct on ct.id = cm.control_technology group by e.sector, cm.name, e.cm_abbrev, sg.name, ct.name, e.POLL order by e.sector, cm.name, POLL'
+where dataset_type_id in (
+	select id 
+	from emf.dataset_types dt
+	where name in ('Control Strategy Detailed Result')
+	)
+	and "name" = 'Summarize by Control Measure and Pollutant';
+
+
+-- Summarize by Source Group and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select sector, sg.name as Source_Group, e.POLL, case when coalesce(sum(e.Emis_Reduction),0) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null end as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e left outer join emf.control_measures cm on cm.abbreviation = e.cm_abbrev left outer join emf.source_groups sg on sg.id = cm.source_group group by sector, sg.name, e.POLL order by sector, sg.name, POLL'
+where dataset_type_id in (
+	select id 
+	from emf.dataset_types dt
+	where name in ('Control Strategy Detailed Result')
+	)
+	and "name" = 'Summarize by Source Group and Pollutant';
+
+-- Summarize by Control Technology and Pollutant - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select sector, ct.name as Control_Technology, e.POLL, case when coalesce(sum(e.Emis_Reduction),0) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null end as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e left outer join emf.control_measures cm on cm.abbreviation = e.cm_abbrev left outer join emf.control_technologies ct on ct.id = cm.control_technology group by sector, ct.name, e.POLL order by sector, ct.name, e.POLL'
+where dataset_type_id in (
+	select id 
+	from emf.dataset_types dt
+	where name in ('Control Strategy Detailed Result')
+	)
+	and "name" = 'Summarize by Control Technology and Pollutant';
+
+-- Summarize by State, SCC, and Control Technology - Control Strategy Detailed Result
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.sector, ct.name as Control_Technology, e.POLL, e.fipsst, e.scc, case when coalesce(sum(e.Emis_Reduction),0) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null end as avg_cost_per_ton, sum(e.Annual_Cost) as Annual_Cost, sum(e.Final_emissions) as Final_emissions, sum(e.Emis_Reduction) as Emis_Reduction, sum(e.Inv_emissions) as Inv_emissions from $TABLE[1] e left outer join emf.control_measures cm on cm.abbreviation = e.cm_abbrev left outer join emf.control_technologies ct on ct.id = cm.control_technology group by e.sector, ct.name, e.POLL, e.fipsst, e.scc order by e.sector, ct.name, e.POLL, e.fipsst, e.scc'
+where dataset_type_id in (
+	select id 
+	from emf.dataset_types dt
+	where name in ('Control Strategy Detailed Result')
+	)
+	and "name" = 'Summarize by State, SCC, and Control Technology';
+
+-- 7/18/2008 Added new table to facilitate the table solidations 
+-- Table: emf.table_consolidations
+CREATE TABLE emf.table_consolidations
+(
+  id SERIAL PRIMARY KEY,
+  dataset_type_id int4 NOT NULL REFERENCES emf.dataset_types(id),
+  output_table varchar(64),
+  num_col int4 NOT NULL DEFAULT 0,
+  col_names text,
+  col_types text,
+  size_limit real,
+  UNIQUE(dataset_type_id, output_table)
+) 
+WITHOUT OIDS;
+-- emf.table_consolidations
+
+-- 7/24/2008
+insert into emf.dataset_types values(DEFAULT,'Projection Packet','Projection Packet', '1', '1', false,'', 'gov.epa.emissions.commons.io.other.ProjectionPacketImporter', 'gov.epa.emissions.commons.io.other.ProjectionPacketExporter');-- emf.table_consolidations
+
+-- DCD 7/23/2008 Fixed bug with lat and long, they were switched.
+-- Summarize by Plant and Pollutant - ORL Point Inventory (PTINV)
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips, 
+	plantid, 
+	plant, 
+	poll, 
+	sum(ann_emis) as ann_emis, 
+	sum(avd_emis) as avd_emis,  
+	avg(yloc) as avg_lat, 
+	avg(xloc) as avg_long, 
+	max(stkhgt) as max_stkhgt, 
+	max(stkdiam) as max_stkdiam, 
+	max(stktemp) as max_stktemp, 
+	max(stkflow) as max_stkflow, 
+	max(stkvel) as max_stkvel
+from $TABLE[1] e
+group by fips,
+	plantid,
+	plant,
+	poll
+order by fips, 
+	plantid, 
+	poll'
+where dataset_type_id in (
+	select id 
+	from emf.dataset_types dt
+	where name in ('ORL Point Inventory (PTINV)')
+	)
+	and "name" = 'Summarize by Plant and Pollutant';
+
+-- 8/1/2008 added two more keywords to dataset
+insert INTO emf.keywords VALUES (DEFAULT, 'PREVIOUS_LOCATION');
+insert INTO emf.keywords VALUES (DEFAULT, 'MASS_STORAGE_LOCATION');
+
+-- emf.qa_programs 8/21/08 
+insert into emf.qa_programs values(DEFAULT,'Compare Control Strategies','gov.epa.emissions.framework.services.qa.SQLQACompareControlStrategiesQueryRunner');
+
+
+-- 8/26/08 updated relevant QA steps to include a lat and long to be used in map generation
+
+-- Summarize by U.S. County and Pollutant with Descriptions - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.fips, coalesce(fips.county,''AN UNSPECIFIED COUNTY NAME'') as county, 
+coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, 
+e.POLL, coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, 
+coalesce(p.name,''AN UNSPECIFIED DESCRIPTION'') as smoke_name, p.factor, 
+p.voctog, p.species, 
+fips.centerlon as longitude, fips.centerlat as latitude,
+coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e 
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+and fips.country_num = ''0''
+group by fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), e.POLL, p.descrptn, p.name, p.factor, p.voctog, p.species, e.fips, fips.county, fips.centerlon, fips.centerlat
+order by e.fips, e.POLL'
+where name = 'Summarize by U.S. County and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)','ORL Merged Inventory'));
+
+
+-- Summarize by Sector, U.S. County and Pollutant with Descriptions - ORL Merged Inventory
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.sector, e.fips, 
+coalesce(fips.county,''AN UNSPECIFIED COUNTY NAME'') as county, coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, 
+coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, e.POLL, 
+coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, coalesce(p.name,''AN UNSPECIFIED DESCRIPTION'') as smoke_name, 
+p.factor,p.voctog, 
+p.species, 
+fips.centerlon as longitude, fips.centerlat as latitude,
+coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e 
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+where fips.country_num = ''0'' 
+group by e.sector, fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), e.POLL, p.descrptn, p.name, p.factor, p.voctog, p.species, e.fips, fips.county, fips.centerlon, fips.centerlat 
+order by e.sector, e.fips, e.POLL'
+where name = 'Summarize by Sector, U.S. County and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Merged Inventory'));
+
+
+-- Summarize by Mact Code, U.S. State and Pollutant with Descriptions - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select substr(e.fips, 1, 2) as fipsst, coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, 
+coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, coalesce(e.mact, ''AN UNSPECIFIED MACT CODE'') as mact_code, 
+coalesce(m.mact_source_category, ''AN UNSPECIFIED CATEGORY NAME'') as mact_source_category, e.POLL, 
+coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, coalesce(p.name,''AN UNSPECIFIED SMOKE NAME'') as smoke_name, 
+p.factor, p.voctog, 
+p.species, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(ann_emis), 0) as ann_emis, 
+coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e 
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+and fips.country_num = ''0'' 
+left outer join reference.mact_codes m 
+on m.mact_code = e.mact 
+group by fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), e.POLL, p.descrptn, p.name, p.factor, p.voctog, p.species, e.mact, m.mact_source_category, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat 
+order by e.mact, substr(e.fips, 1, 2), e.POLL'
+where name = 'Summarize by Mact Code, U.S. State and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Nonpoint Inventory (ARINV)','ORL Point Inventory (PTINV)'));
+
+
+-- List Data Source Codes and U.S. State with Descriptions - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select substr(e.fips, 1, 2) as fipsst, coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, 
+coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, e.data_source, 
+coalesce(d.description,''AN UNSPECIFIED DESCRIPTION'') as datasource_desc, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+count(1) as count 
+from $TABLE[1] e 
+	left outer join reference.datasource_codes d 
+	on e.data_source=d.code 
+	left outer join reference.fips 
+	on fips.state_county_fips = e.FIPS 
+	and fips.country_num = ''0''
+group by fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), e.data_source, d.description, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by substr(e.fips, 1, 2), e.data_source'
+where name = 'List Data Source Codes and U.S. State with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)'));
+
+-- Summarize by Data Source Code, U.S. State and Pollutant with Descriptions - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select substr(e.fips, 1, 2) as fipsst, coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, 
+coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, e.data_source, 
+coalesce(d.description,''AN UNSPECIFIED DESCRIPTION'') as datasource_desc, e.POLL, 
+coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, coalesce(p.name,''AN UNSPECIFIED SMOKE NAME'') as smoke_name, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e 
+left outer join reference.datasource_codes d 
+on e.data_source=d.code 
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+and fips.country_num = ''0'' 
+group by fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), e.poll, e.data_source, d.description, d.description, p.descrptn, p.name, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by substr(e.fips, 1, 2), e.data_source'
+where name = 'Summarize by Data Source Code, U.S. State and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)'));
+
+-- Summarize by U.S. State and Pollutant with Descriptions - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select substr(e.fips, 1, 2) as fipsst, coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, 
+coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, e.POLL, 
+coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, coalesce(p.name,''AN UNSPECIFIED SMOKE NAME'') as smoke_name, 
+p.factor, p.voctog, 
+p.species, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(ann_emis), 0) as ann_emis, 
+coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e 
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+and fips.country_num = ''0'' 
+group by fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), e.POLL, p.descrptn, p.name, p.factor, p.voctog, p.species, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by substr(e.fips, 1, 2)'
+where name = 'Summarize by U.S. State and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)','ORL Merged Inventory'));
+
+-- Summarize by Sector, U.S. State and Pollutant with Descriptions - ORL Merged Inventory
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.sector, substr(e.fips, 1, 2) as fipsst, 
+coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, 
+e.POLL, coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, 
+coalesce(p.name,''AN UNSPECIFIED SMOKE NAME'') as smoke_name, p.factor, 
+p.voctog, p.species, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e 
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+and fips.country_num = ''0'' 
+group by e.sector, fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), e.POLL, p.descrptn, p.name, p.factor, p.voctog, p.species, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by e.sector, substr(e.fips, 1, 2)'
+where name = 'Summarize by Sector, U.S. State and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Merged Inventory'));
+
+-- Summarize by U.S. State, SCC and Pollutant with Descriptions - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select substr(e.fips, 1, 2) as fipsst, coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, 
+coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, e.SCC, 
+coalesce(s.scc_description,''AN UNSPECIFIED DESCRIPTION'') as scc_description, e.POLL, 
+coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, coalesce(p.name,''AN UNSPECIFIED SMOKE NAME'') as smoke_name, 
+p.factor, p.voctog, 
+p.species, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.scc s 
+on e.SCC=s.scc 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+and fips.country_num = ''0'' 
+group by substr(e.fips, 1, 2), fips.state_abbr, fips.state_name, e.SCC,e.POLL,p.descrptn,s.scc_description, p.name, p.factor,p.voctog, p.species, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by substr(e.fips, 1, 2), e.SCC, e.POLL'
+where name = 'Summarize by U.S. State, SCC and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)','ORL Merged Inventory'));
+
+-- Summarize by Sector, U.S. State, SCC and Pollutant with Descriptions - ORL Merged Inventory
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.sector, substr(e.fips, 1, 2) as fipsst, 
+coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, 
+e.SCC, coalesce(s.scc_description,''AN UNSPECIFIED DESCRIPTION'') as scc_description, 
+e.POLL, coalesce(p.descrptn,''AN UNSPECIFIED DESCRIPTION'') as pollutant_code_desc, 
+coalesce(p.name,''AN UNSPECIFIED SMOKE NAME'') as smoke_name, p.factor,
+p.voctog, p.species, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e
+left outer join reference.invtable p 
+on e.POLL=p.cas 
+left outer join reference.scc s 
+on e.SCC=s.scc 
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+where fips.country_num = ''0''
+group by e.sector, substr(e.fips, 1, 2), fips.state_abbr, fips.state_name, e.SCC,e.POLL,p.descrptn,s.scc_description, p.name, p.factor,p.voctog, p.species, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by e.sector, substr(e.fips, 1, 2), e.SCC, e.POLL'
+where name = 'Summarize by Sector, U.S. State, SCC and Pollutant with Descriptions'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Merged Inventory'));
+
+-- Summarize by U.S. State and SMOKE Pollutant Name - ORL Types
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select substr(e.fips, 1, 2) as fipsst, coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, 
+coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, r.name, 
+r.species, r.voctog, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(cast(r.factor as double precision) * ann_emis), 0) as ann_emis, coalesce(sum(cast(r.factor as double precision) * avd_emis), 0) as avd_emis 
+from $TABLE[1] e
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+inner join reference.invtable r on e.poll = r.cas 
+and fips.country_num = ''0'' 
+group by fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), r.name, r.voctog, r.species, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by substr(e.fips, 1, 2),  r.species, r.voctog, r.name'
+where name = 'Summarize by U.S. State and SMOKE Pollutant Name'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Nonpoint Inventory (ARINV)','ORL Nonroad Inventory (ARINV)','ORL Onroad Inventory (MBINV)','ORL Point Inventory (PTINV)','ORL Merged Inventory'));
+
+-- Summarize by Sector, U.S. State and SMOKE Pollutant Name - ORL Merged Inventory
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.sector, substr(e.fips, 1, 2) as fipsst, 
+coalesce(fips.state_name, ''AN UNSPECIFIED STATE NAME'') as state_name, coalesce(fips.state_abbr,''AN UNSPECIFIED STATE ABBREVIATION'') as state_abbr, 
+r.name, r.species, 
+r.voctog, 
+(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+(fips.state_maxlat + fips.state_minlat) / 2 as latitude, 
+coalesce(sum(cast(r.factor as double precision) * ann_emis), 0) as ann_emis, 
+coalesce(sum(cast(r.factor as double precision) * avd_emis), 0) as avd_emis 
+from $TABLE[1] e
+left outer join reference.fips 
+on fips.state_county_fips = e.FIPS 
+and fips.country_num = ''0'' 
+inner join reference.invtable r 
+on e.poll = r.cas 
+group by e.sector, fips.state_name, fips.state_abbr, substr(e.fips, 1, 2), r.name, r.voctog, r.species, fips.state_maxlon, fips.state_minlon, fips.state_maxlat, fips.state_minlat
+order by e.sector, substr(e.fips, 1, 2),  r.species, r.voctog, r.name'
+where name = 'Summarize by Sector, U.S. State and SMOKE Pollutant Name'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Merged Inventory'));
+
+
+
+-- emf.qa_programs 8/21/08 
+insert into emf.qa_programs values(DEFAULT,'Compare Control Strategies','gov.epa.emissions.framework.services.qa.SQLQACompareControlStrategiesQueryRunner');
+
+
+
+-- 9/15/08 new qa step to summarize the all control measures
+-- Summarize all Control Measures - Control Strategy Detailed Result
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize all Control Measures', 1, 'select cm.name as CMName, 
+	cm.abbreviation as CMabbrev, 
+	ct.name as control_technology, 
+	s.name as sector, 
+	sg.name as source_group, 
+	p.name as pollutant, 
+	aer.min_efficiency as min_ce, 
+	aer.avg_efficiency as mean_ce, 
+	aer.max_efficiency as max_ce, 
+	aer.min_cost_per_ton as min_cpt, 
+	aer.avg_cost_per_ton as mean_cpt, 
+	aer.max_cost_per_ton as max_cpt, 
+	aer.avg_rule_effectiveness as mean_re, 
+	aer.avg_rule_penetration as mean_rp
+from emf.control_measures cm 
+	left outer join emf.control_measure_sectors cms 
+	on cms.control_measure_id = cm.id 
+	left outer join emf.sectors s 
+	on s.id = cms.sector_id 
+	left outer join emf.control_technologies ct 
+	on ct.id = cm.control_technology 
+	left outer join emf.source_groups sg 
+	on sg.id = cm.source_group 
+	left outer join emf.aggregrated_efficiencyrecords aer 
+	on aer.control_measures_id = cm.id 
+	left outer join emf.pollutants p 
+	on p.id = aer.pollutant_id 
+order by cm.name, p.name', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result');
+
+
+--9/15/08 rename some datset type names
+update emf.dataset_types
+set name = 'Strategy Measure Summary',
+description = 'Strategy Measure Summary'
+where name = 'Control Strategy Result Summary';
+update emf.dataset_types
+set name = 'Strategy County Summary',
+description = 'Strategy County Summary'
+where name = 'Control Strategy Result Region Summary';
+update emf.dataset_types
+set name = 'Strategy County Summary',
+description = 'Strategy County Summary'
+where name = 'Control Strategy Result Region Summary';
+
+-- Create a relationship between rsm sectors and inventory sectors 9/12/2008
+-- reference.rsm_inv_sectors
+CREATE TABLE reference.rsm_inv_sectors
+(
+  id SERIAL PRIMARY KEY,
+  rsm_sector varchar(255) NOT NULL,
+  pollutant varchar(255) NOT NULL,
+  inv_sector text NOT NULL
+) 
+WITHOUT OIDS;
+-- reference.rsm_inv_sectors
+
+-- reference.rsm_inv_sectors
+insert into reference.rsm_inv_sectors values(DEFAULT, 'egu', 'NOX', 'ptipm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'egu', 'SO2', 'ptipm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'egu_negu', 'PM2_5', 'ptipm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'egu_negu', 'PM2_5', 'ptnonipm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'negu_area', 'NOX', 'ptnonipm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'negu_area', 'NOX', 'nonpt');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'negu_pt', 'SO2', 'ptnonipm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'NOX', 'onroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'NOX', 'nonroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'NOX', 'alm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'NH3', 'onroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'NH3', 'nonroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'NH3', 'alm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'PM2_5', 'onroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'PM2_5', 'nonroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'mobile', 'PM2_5', 'alm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'SO2', 'nonpt');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'SO2', 'afdust');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'SO2', 'ag');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'NH3', 'nonpt');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'NH3', 'afdust');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'NH3', 'ag');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'PM2_5', 'nonpt');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'PM2_5', 'afdust');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'area', 'PM2_5', 'ag');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'nonpt');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'ptnonipm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'ptimp');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'onroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'nonroad');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'alm');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'afdust');
+insert into reference.rsm_inv_sectors values(DEFAULT, 'all', 'VOC', 'ag');
+
+-- 9/23/2008 add a new strategy impact summary dataset type
+insert into emf.dataset_types values(DEFAULT,'Strategy Impact Summary','Strategy Impact Summary', '1', '1', false,'', 'gov.epa.emissions.commons.io.csv.CSVImporter', 'gov.epa.emissions.commons.io.csv.CSVExporter');
+
+-- 2/17/2009 add new column to emf.users
+ALTER TABLE emf.users ADD COLUMN is_login boolean NOT NULL DEFAULT false;
+
+--2/25/2009 consolidate smoke report tables and csv data tables
+update emf.dataset_types set table_per_dataset=0 where importer_classname='gov.epa.emissions.commons.io.other.SMKReportImporter';
+update emf.dataset_types set table_per_dataset=0 where importer_classname='gov.epa.emissions.commons.io.csv.CSVImporter';
+update emf.dataset_types set table_per_dataset=0 where importer_classname='gov.epa.emissions.commons.io.generic.LineImporter';
+alter table emf.table_consolidations add column number_records int8 default 0;
+
+--3/2/2009 add a new property for mass storage root
+insert into emf.properties values(DEFAULT, 'MASS_STORAGE_ROOT', '/asm');
+
+--3/20/09 new qa step template for strat detailed result
+-- Summarize by U.S. County and Pollutant - Control Strategy Detailed Result
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by U.S. County and Pollutant', 1, 'select e.sector, fips.state_county_fips as fips, fips.county, fips.state_name, fips.state_abbr, e.POLL, TO_CHAR(case when coalesce(sum(Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Emis_Reduction) else null end, ''FM999999999999999990.09'')::double precision as avg_cost_per_ton, TO_CHAR(sum(e.Annual_Cost), ''FM999999999999999990.09'')::double precision as Annual_Cost, TO_CHAR(sum(e.Final_emissions), ''FM999999999999999990.09'')::double precision as Final_emissions, TO_CHAR(sum(e.Emis_Reduction), ''FM999999999999999990.09'')::double precision as Emis_Reduction, TO_CHAR(sum(e.Inv_emissions), ''FM999999999999999990.09'')::double precision as Inv_emissions, TO_CHAR(fips.centerlon, ''FM990.000009'')::double precision as longitude, TO_CHAR(fips.centerlat, ''FM990.000009'')::double precision as latitude from $TABLE[1] e inner join reference.fips on fips.state_county_fips = e.FIPS where fips.country_num = ''0'' group by sector, fips.state_county_fips, fips.county, fips.state_name, fips.state_abbr, fips.fipsst, POLL, fips.centerlat, fips.centerlon order by sector, fips.state_name, fips.county, POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by U.S. County and Pollutant');
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select e.sector, fips.state_county_fips as fips, fips.county, fips.state_name, fips.state_abbr, e.POLL, TO_CHAR(case when coalesce(sum(Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Emis_Reduction) else null end, ''FM999999999999999990.09'')::double precision as avg_cost_per_ton, TO_CHAR(sum(e.Annual_Cost), ''FM999999999999999990.09'')::double precision as Annual_Cost, TO_CHAR(sum(e.Final_emissions), ''FM999999999999999990.09'')::double precision as Final_emissions, TO_CHAR(sum(e.Emis_Reduction), ''FM999999999999999990.09'')::double precision as Emis_Reduction, TO_CHAR(sum(e.Inv_emissions), ''FM999999999999999990.09'')::double precision as Inv_emissions, TO_CHAR(fips.centerlon, ''FM990.000009'')::double precision as longitude, TO_CHAR(fips.centerlat, ''FM990.000009'')::double precision as latitude from $TABLE[1] e inner join reference.fips on fips.state_county_fips = e.FIPS where fips.country_num = ''0'' group by sector, fips.state_county_fips, fips.county, fips.state_name, fips.state_abbr, fips.fipsst, POLL, fips.centerlat, fips.centerlon order by sector, fips.state_name, fips.county, POLL
+'
+where name = 'Summarize by U.S. County and Pollutant'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result'));
+
+
+--3/26/2008 add column creator to emissions.version, may need to change the default value accordingly
+ALTER TABLE emissions.versions ADD COLUMN creator int4 NOT NULL REFERENCES emf.users(id) default 2;
+ALTER TABLE emissions.versions ADD COLUMN number_records int8 default 0;
+
+CREATE OR REPLACE FUNCTION public.populate_version_table_creator_and_record_count_columns() RETURNS void AS $$
+DECLARE
+	version_record RECORD;
+	counter int := 0;
+BEGIN
+
+  
+	FOR version_record IN EXECUTE 
+		'select versions.id,
+			versions.dataset_id,
+			versions."version",
+			internal_sources.table_name
+		from emissions.versions
+			inner join emf.internal_sources
+			on internal_sources.dataset_id = versions.dataset_id
+			-- make sure the table exists
+			inner join pg_class
+			on lower(relname) = lower(internal_sources.table_name)'
+	LOOP
+		counter := counter + 1;
+		--raise notice '%', 'update ' || counter || ' table ' || version_record.table_name;
+		raise notice '%', 
+		--execute 
+		'
+begin;update emissions.versions
+set number_records = coalesce((SELECT count(1) from emissions.' || version_record.table_name || ' where ' || public.build_version_where_filter(version_record.dataset_id, version_record."version") || '),0),
+	creator = coalesce((SELECT users.id from emf.datasets inner join emf.users on users.username = datasets.creator where datasets.id = ' || version_record.dataset_id || '),2)
+where id = ' || version_record.id || ';
+commit;
+		';
+
+	END LOOP;
+
+	return;
+END;
+$$ LANGUAGE plpgsql;
+
+-- run populate procedure
+select public.populate_version_table_creator_and_record_count_columns();
+
+
+--3/31/09 add new dataset type
+insert into emf.dataset_types values(DEFAULT,'Allowable Packet','Allowable Packet', '1', '1', false,'', 'gov.epa.emissions.commons.io.other.AllowablePacketImporter', 'gov.epa.emissions.commons.io.other.AllowablePacketExporter');
+
+--4/27/2009 increase the width of phone column in emf.users
+ALTER TABLE emf.users ALTER phone TYPE varchar(128);
+
+--4/27/2009 add another property of cancel job command
+INSERT into emf.properties values(DEFAULT, 'CANCEL_JOB_COMMAND_AMBER', 'qdel');
+INSERT into emf.properties values(DEFAULT, 'CANCEL_JOB_COMMAND_GARNET01', 'qdel');
+
+--5/20/09 added a new QA program
+insert into emf.qa_programs values(DEFAULT,'Create monthly emissions by county from annual emissions','gov.epa.emissions.framework.services.qa.SQLQACreateMoEmisByCtyFromAnnEmisQueryRunner');
+insert into emf.dataset_types values(DEFAULT,'Smkreport county-moncode annual','Smkreport county-moncode annual', '1', '1', false,'', 'gov.epa.emissions.commons.io.other.SMKReportImporter', 'gov.epa.emissions.commons.io.other.SMKReportExporter', '', null, 0);
+
+--6/24/2009 added a geoRegions table
+-- emf.region_type
+CREATE TABLE emf.region_type
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  description text
+) 
+WITHOUT OIDS;
+-- emf.region_type
+
+-- emf.georegions
+CREATE TABLE emf.georegions
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(128) NOT NULL UNIQUE,
+  description text,
+  abbr varchar(128),
+  type_id int4 DEFAULT 1 REFERENCES emf.region_type(id),
+  resltn varchar(255),
+  ioapi_name varchar(255),
+  map_projtn text,
+  xorig real DEFAULT 0,
+  yorig real DEFAULT 0,
+  xcell real DEFAULT 0,
+  ycell real DEFAULT 0,
+  ncols int4 DEFAULT 0,
+  nrows int4 DEFAULT 0,
+  nthik int4 DEFAULT 0,
+  ds_id int4 DEFAULT 0,
+  version_id int4 REFERENCES emissions.versions(id)
+) 
+WITHOUT OIDS;
+
+--6/4/09 added a new QA program
+insert into emf.dataset_types values(DEFAULT,'Smkmerge report state annual summary (CSV)','Smkmerge report state annual summary (CSV)','1', '1', false,'', 'gov.epa.emissions.commons.io.csv.CSVImporter', 'gov.epa.emissions.commons.io.csv.CSVExporter', '', null, 0);
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value")
+select id as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(64)|varchar(32)|varchar(32)|float8(17)' as "value"
+from emf.dataset_types dt
+where name in ('Smkmerge report state annual summary (CSV)');
+insert into emf.qa_programs values(DEFAULT,'Compare annual state summaries','gov.epa.emissions.framework.services.qa.SQLQACompareAnnualStateSummariesQueryRunner');
+
+
+insert into emf.dataset_types values(DEFAULT,'State Comparison Tolerance (CSV)','State Comparison Tolerance (CSV)', '1', '1', false,'', 'gov.epa.emissions.commons.io.csv.CSVImporter', 'gov.epa.emissions.commons.io.csv.CSVExporter');
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value")
+select id as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index,
+  (select id from emf.keywords where "name" = 'COLUMN_TYPES') as keyword_id,
+  'varchar(100)|varchar(255)|float8(17)' as "value"
+from emf.dataset_types dt
+where name in ('State Comparison Tolerance (CSV)');
+
+
+insert into emf.qa_programs values(DEFAULT,'SMOKE output annual state summaries crosstab','gov.epa.emissions.framework.services.qa.SQLQAAnnualStateSummariesCrosstabQueryRunner');
+
+-- 8/1/2009 DCD added new QA Program
+insert into emf.qa_programs values(DEFAULT,'EC Control Scenario','gov.epa.emissions.framework.services.qa.SQLECControlScenarioQueryRunner');
+
+--added (7/16) to allow locking of revisions for edit
+ALTER TABLE emf.revisions ADD COLUMN lock_owner varchar(255);
+ALTER TABLE emf.revisions ADD COLUMN lock_date timestamp;
+
+--added (8/21) to allow locking of georegions for edit
+ALTER TABLE emf.georegions ADD COLUMN lock_owner varchar(255);
+ALTER TABLE emf.georegions ADD COLUMN lock_date timestamp;
+
+--added (10/1/09) to allow search datasets on KeyVal
+ALTER TABLE emf.datasets_keywords ADD COLUMN kwname varchar(255) NOT NULL DEFAULT '';
+UPDATE emf.datasets_keywords AS kw SET kwname = (SELECT name FROM emf.keywords WHERE id = kw.keyword_id);
+
+--added (10/7/09) to add descriptions to dataset versions
+ALTER TABLE emissions.versions ADD COLUMN description text NOT NULL DEFAULT '';
+
+--added (10/13/09) to add intended use to dataset versions
+ALTER TABLE emissions.versions ADD COLUMN intended_use int4 REFERENCES emf.intended_uses (id) DEFAULT 1;
+
+--added (10/21/09) to allow search datasets on dataset types' KeyVal
+ALTER TABLE emf.dataset_types_keywords ADD COLUMN kwname varchar(255) NOT NULL DEFAULT '';
+UPDATE emf.dataset_types_keywords AS kw SET kwname = (SELECT name FROM emf.keywords WHERE id = kw.keyword_id);
+
+-- added (11/9/2009) upon request from Alison
+ALTER TABLE emf.dataset_types_keywords ALTER value TYPE text;
+ALTER TABLE emf.datasets_keywords ALTER value TYPE text;
+
+-- added (12/28/2009) to add creator full name to datasets
+ALTER TABLE emf.datasets ADD COLUMN creator_full_name varchar(255) DEFAULT '';
+UPDATE emf.datasets as ds SET creator_full_name = (SELECT name FROM	emf.users where username = ds.creator);
+
+-- added (01/25/2010) to add creator full name to datasets
+ALTER TABLE emf.users ADD COLUMN want_emails boolean NOT NULL DEFAULT true;
+ALTER TABLE emf.users ADD COLUMN last_login_date timestamp;
+
+-- added (02/10/2010) to add creator full name to datasets
+ALTER TABLE emf.users ADD COLUMN password_reset_date timestamp;
+
+--02/10/2010 add another property of password effective days
+INSERT into emf.properties values(DEFAULT, 'PASSWORD_EFFECTIVE_DAYS', '90');
+
+--02/15/2010 add uniqueness constraint on georegions
+ALTER TABLE emf.georegions ADD CONSTRAINT georegions_abbr_key UNIQUE (abbr);
+
+--02/25/2010 change the width of phone column in emf.users
+ALTER TABLE emf.users ALTER phone TYPE varchar(36);
+
+--03/18/2010 add uniqueness constraint on georegions
+ALTER TABLE emf.georegions ALTER COLUMN abbr SET NOT NULL;
+
+--03/19/2010  Create table emf.file_formats
+-- emf.file_formats
+CREATE TABLE emf.file_formats
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(128) NOT NULL UNIQUE,
+  description text,
+  delimiter varchar(32),
+  fixed_format bool DEFAULT false,
+  date_added timestamp without time zone,
+  last_modified_date timestamp without time zone,
+  creator int4 NOT NULL REFERENCES emf.users (id)
+) 
+WITHOUT OIDS;
+-- emf.file_formats
+
+-- emf.fileformat_columns
+CREATE TABLE emf.fileformat_columns
+(
+  id SERIAL PRIMARY KEY,
+  file_format_id int4 NOT NULL REFERENCES emf.file_formats (id),
+  list_index int4,
+  name varchar(128) NOT NULL,
+  type varchar(64) NOT NULL,
+  default_value varchar(255),
+  description text,
+  formatter varchar(64),
+  constraints varchar(255),
+  mandatory bool DEFAULT false,
+  width int DEFAULT 0,
+  spaces int DEFAULT 0,
+  fix_format_start int DEFAULT 0,
+  fix_format_end int DEFAULT 0
+) 
+WITHOUT OIDS;
+-- emf.fileformat_columns
+
+-- create new columns
+ALTER TABLE emf.dataset_types ADD COLUMN creation_date timestamp;
+ALTER TABLE emf.dataset_types ADD COLUMN last_mod_date timestamp;
+ALTER TABLE emf.dataset_types ADD COLUMN creator int4 REFERENCES emf.users (id);
+ALTER TABLE emf.dataset_types ADD COLUMN file_format int4 REFERENCES emf.file_formats(id);
+insert into emf.keywords ("name") values('REQUIRED_HEADER');
+
+--5/18/10 
+insert into emf.keywords ("name") values('INDICES');
+
+
+-- 09/24/2010 -- file_size should be a bigint not an int -- too small for large datasets
+ALTER TABLE internal_sources ALTER file_size TYPE bigint;
+
+-- 10/26/2010 -- for some QA step template, pollutant_code_desc truncated to 11 letters - change to 40 letters, smoke_name truncated to 11 letters, change to 16 letters. Bugz3524.
+
+-- 11/01/2010 -- -- Add template: Detect null xloc or yloc for point inventories
+
+
+-- 11/15/2010 -- Add new Compare Datasets QA Program
+insert into emf.qa_programs values(DEFAULT,'Compare Datasets','gov.epa.emissions.framework.services.qa.comparedatasets.SQLCompareDatasetsProgramQueryRunner');
+
+-- 1/14/2011 -- change column types for 'Commnets' to accomodate more information
+ALTER TABLE emissions.monthly ALTER COLUMN comments TYPE text;
+ALTER TABLE emissions.weekly ALTER COLUMN comments TYPE text;
+ALTER TABLE emissions.diurnal_weekday ALTER COLUMN comments TYPE text;
+ALTER TABLE emissions.diurnal_weekend ALTER COLUMN comments TYPE text;
+ALTER TABLE emissions.country ALTER COLUMN comments TYPE text;
+ALTER TABLE emissions.state ALTER COLUMN comments TYPE text;
+ALTER TABLE emissions.county ALTER COLUMN comments TYPE text;
+
+-- 06/08/2011 -- Add new 'Enhance Flat File 2010 Point' QA Program
+insert into emf.qa_programs values(DEFAULT,'Merge In Supporting Data','gov.epa.emissions.framework.services.qa.flatFile2010Pnt.SQLEnhanceFlatFile2010PointQueryRunner');
+
+-- 06/09/2011 -- create a QA Step Template for QA Program Merge In Supporting Data
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, 
+	list_index, 
+	name, 
+	qa_program_id, 
+	program_arguments, 
+	required, 
+	order_no, 
+	description)
+select dt.id, 
+	(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+	'Merge In Supporting Data', 
+	(select id from emf.qa_programs where name = 'Merge In Supporting Data'), 
+	'-ff10p
+$DATASET', 
+	false, 
+	1, 
+	''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point');
+
+-6/14/11 -- create new array_idx function -- helps determine array index position...
+-- run the data/functions/array_idx.sql
+
+--6/15/2011 
+-- Template for QA Program "Convert to ORL Point" - 'Flat File 2010 Point'
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Convert to ORL Point' as name, 
+(select id from emf.qa_programs where name = 'SQL') as qa_program_id, 
+'select 
+	REGION_CD::varchar(6) as FIPS, FACILITY_ID::varchar(15) as PLANTID, 
+	UNIT_ID::varchar(15) as POINTID, REL_POINT_ID::varchar(15) as STACKID, 
+	PROCESS_ID::varchar(15) as SEGMENT, FACILITY_NAME::varchar(40) as PLANT, 
+	SCC::varchar(10) as SCC, ERPTYPE::varchar(2) as ERPTYPE, 
+	FAC_SOURCE_TYPE::varchar(2) as SRCTYPE, STKHGT as STKHGT, 
+	STKDIAM as STKDIAM, STKTEMP as STKTEMP, 
+	STKFLOW as STKFLOW, STKVEL as STKVEL, 
+	null::varchar(4) as SIC, null::varchar(6) as MACT, 
+	NAICS::varchar(6) as NAICS, null::varchar(1) as CTYPE, 
+	LONGITUDE as XLOC, LATITUDE as YLOC, 
+	null::smallint as UTMZ, POLL::varchar(16) as POLL, 
+	ANN_VALUE as ANN_EMIS, null::double precision as AVD_EMIS, 
+	ANN_PCT_RED as CEFF, 100::double precision as REFF, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 1 then (string_to_array(CONTROL_IDS,''&''))[1] else null end as CPRI, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 2 then (string_to_array(CONTROL_IDS,''&''))[2] else null end as CSEC, 
+	null::varchar(20) as NEI_UNIQUE_ID, ORIS_FACILITY_CODE::varchar(6) as ORIS_FACILITY_CODE, 
+	ORIS_BOILER_ID::varchar(6) as ORIS_BOILER_ID, IPM_YN::varchar(1) as IPM_YN, 
+	DATA_SET_ID::varchar(10) as DATA_SOURCE, null::varchar(10) as STACK_DEFAULT_FLAG, 
+	null::varchar(10) as LOCATION_DEFAULT_FLAG, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, FUG_WIDTH_YDIM*FUG_LENGTH_XDIM as HORIZONTAL_AREA_FUGITIVE, 
+	FUG_HEIGHT as RELEASE_HEIGHT_FUGITIVE, ZIPCODE::varchar(14) as ZIPCODE, 
+	null::varchar(3) as NAICS_FLAG, null::varchar(3) as SIC_FLAG, 
+	null::varchar(15) as MACT_FLAG, null::varchar(6) as PROCESS_MACT_COMPLIANCE_STATUS, 
+	null::varchar(3) as IPM_FACILITY, null::varchar(3) as IPM_UNIT, 
+	null::varchar(10) as BART_SOURCE, null::varchar(10) as BART_UNIT, 
+	null::varchar(12) as CONTROL_STATUS, null::varchar(10) as START_DATE, 
+	null::varchar(10) as END_DATE, null::double precision as WINTER_THROUGHPUT_PCT, 
+	null::double precision as SPRING_THROUGHPUT_PCT, null::double precision as SUMMER_THROUGHPUT_PCT, 
+	null::double precision as FALL_THROUGHPUT_PCT, null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, 
+	null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, null::double precision as ANNUAL_AVG_HOURS_PER_DAY, 
+	ANNUAL_AVG_HOURS_PER_YEAR as ANNUAL_AVG_HOURS_PER_YEAR, null::double precision as PERIOD_DAYS_PER_WEEK, 
+	null::double precision as PERIOD_WEEKS_PER_PERIOD, null::double precision as PERIOD_HOURS_PER_DAY, 
+	null::double precision as PERIOD_HOURS_PER_PERIOD, DESIGN_CAPACITY as DESIGN_CAPACITY, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 1 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[1] else null end as DESIGN_CAPACITY_UNIT_NUMERATOR, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 2 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[2] else null end as DESIGN_CAPACITY_UNIT_DENOMINATOR, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e', false, 1, ''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Convert to ORL Point');
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select 
+	REGION_CD::varchar(6) as FIPS, FACILITY_ID::varchar(15) as PLANTID, 
+	UNIT_ID::varchar(15) as POINTID, REL_POINT_ID::varchar(15) as STACKID, 
+	PROCESS_ID::varchar(15) as SEGMENT, FACILITY_NAME::varchar(40) as PLANT, 
+	SCC::varchar(10) as SCC, ERPTYPE::varchar(2) as ERPTYPE, 
+	FAC_SOURCE_TYPE::varchar(2) as SRCTYPE, STKHGT as STKHGT, 
+	STKDIAM as STKDIAM, STKTEMP as STKTEMP, 
+	STKFLOW as STKFLOW, STKVEL as STKVEL, 
+	null::varchar(4) as SIC, null::varchar(6) as MACT, 
+	NAICS::varchar(6) as NAICS, null::varchar(1) as CTYPE, 
+	LONGITUDE as XLOC, LATITUDE as YLOC, 
+	null::smallint as UTMZ, POLL::varchar(16) as POLL, 
+	ANN_VALUE as ANN_EMIS, null::double precision as AVD_EMIS, 
+	ANN_PCT_RED as CEFF, 100::double precision as REFF, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 1 then (string_to_array(CONTROL_IDS,''&''))[1] else null end as CPRI, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 2 then (string_to_array(CONTROL_IDS,''&''))[2] else null end as CSEC, 
+	null::varchar(20) as NEI_UNIQUE_ID, ORIS_FACILITY_CODE::varchar(6) as ORIS_FACILITY_CODE, 
+	ORIS_BOILER_ID::varchar(6) as ORIS_BOILER_ID, IPM_YN::varchar(1) as IPM_YN, 
+	DATA_SET_ID::varchar(10) as DATA_SOURCE, null::varchar(10) as STACK_DEFAULT_FLAG, 
+	null::varchar(10) as LOCATION_DEFAULT_FLAG, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, FUG_WIDTH_YDIM*FUG_LENGTH_XDIM as HORIZONTAL_AREA_FUGITIVE, 
+	FUG_HEIGHT as RELEASE_HEIGHT_FUGITIVE, ZIPCODE::varchar(14) as ZIPCODE, 
+	null::varchar(3) as NAICS_FLAG, null::varchar(3) as SIC_FLAG, 
+	null::varchar(15) as MACT_FLAG, null::varchar(6) as PROCESS_MACT_COMPLIANCE_STATUS, 
+	null::varchar(3) as IPM_FACILITY, null::varchar(3) as IPM_UNIT, 
+	null::varchar(10) as BART_SOURCE, null::varchar(10) as BART_UNIT, 
+	null::varchar(12) as CONTROL_STATUS, null::varchar(10) as START_DATE, 
+	null::varchar(10) as END_DATE, null::double precision as WINTER_THROUGHPUT_PCT, 
+	null::double precision as SPRING_THROUGHPUT_PCT, null::double precision as SUMMER_THROUGHPUT_PCT, 
+	null::double precision as FALL_THROUGHPUT_PCT, null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, 
+	null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, null::double precision as ANNUAL_AVG_HOURS_PER_DAY, 
+	ANNUAL_AVG_HOURS_PER_YEAR as ANNUAL_AVG_HOURS_PER_YEAR, null::double precision as PERIOD_DAYS_PER_WEEK, 
+	null::double precision as PERIOD_WEEKS_PER_PERIOD, null::double precision as PERIOD_HOURS_PER_DAY, 
+	null::double precision as PERIOD_HOURS_PER_PERIOD, DESIGN_CAPACITY as DESIGN_CAPACITY, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 1 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[1] else null end as DESIGN_CAPACITY_UNIT_NUMERATOR, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 2 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[2] else null end as DESIGN_CAPACITY_UNIT_DENOMINATOR, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e'
+where name = 'Convert to ORL Point'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point'));
+
+--6/16/2011 
+-- Template for QA Program "Convert to ORL Nonpoint" - 'Flat File 2010 Nonpoint'
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Convert to ORL Nonpoint' as name, 
+(select id from emf.qa_programs where name = 'SQL') as qa_program_id, 
+'select 
+	REGION_CD::varchar(6) as FIPS, SCC::varchar(10) as SCC, 
+	null::varchar(4) as SIC, null::varchar(6) as MACT, 
+	EMIS_TYPE::varchar(2) as SRCTYPE, null::varchar(6) as NAICS, 
+	POLL::varchar(16) as POLL, ANN_VALUE as ANN_EMIS, 
+	null::double precision as AVD_EMIS, ANN_PCT_RED as CEFF, 
+	100::double precision as REFF, 100::double precision as RPEN, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 1 then (string_to_array(CONTROL_IDS,''&''))[1] else null end as PRIMARY_DEVICE_TYPE_CODE, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 2 then (string_to_array(CONTROL_IDS,''&''))[2] else null end as SECONDARY_DEVICE_TYPE_CODE, 
+	DATA_SET_ID::varchar(10) as DATA_SOURCE, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, null::varchar(15) as MACT_FLAG, 
+	null::varchar(6) as PROCESS_MACT_COMPLIANCE_STATUS, null::varchar(10) as START_DATE, 
+	null::varchar(10) as END_DATE, null::double precision as WINTER_THROUGHPUT_PCT, 
+	null::double precision as SPRING_THROUGHPUT_PCT, null::double precision as SUMMER_THROUGHPUT_PCT, 
+	null::double precision as FALL_THROUGHPUT_PCT, null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, 
+	null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, null::double precision as ANNUAL_AVG_HOURS_PER_DAY, 
+	null::double precision as ANNUAL_AVG_HOURS_PER_YEAR, null::double precision as PERIOD_DAYS_PER_WEEK, 
+	null::double precision as PERIOD_WEEKS_PER_PERIOD, null::double precision as PERIOD_HOURS_PER_DAY, 
+	null::double precision as PERIOD_HOURS_PER_PERIOD, CONTROL_MEASURES as CONTROL_MEASURES, 
+	null::double precision as PCT_REDUCTION, CURRENT_COST as CURRENT_COST, 
+	CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e', false, 1, ''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Convert to ORL Nonpoint');
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select 
+	REGION_CD::varchar(6) as FIPS, SCC::varchar(10) as SCC, 
+	null::varchar(4) as SIC, null::varchar(6) as MACT, 
+	EMIS_TYPE::varchar(2) as SRCTYPE, null::varchar(6) as NAICS, 
+	POLL::varchar(16) as POLL, ANN_VALUE as ANN_EMIS, 
+	null::double precision as AVD_EMIS, ANN_PCT_RED as CEFF, 
+	100::double precision as REFF, 100::double precision as RPEN, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 1 then (string_to_array(CONTROL_IDS,''&''))[1] else null end as PRIMARY_DEVICE_TYPE_CODE, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 2 then (string_to_array(CONTROL_IDS,''&''))[2] else null end as SECONDARY_DEVICE_TYPE_CODE, 
+	DATA_SET_ID::varchar(10) as DATA_SOURCE, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, null::varchar(15) as MACT_FLAG, 
+	null::varchar(6) as PROCESS_MACT_COMPLIANCE_STATUS, null::varchar(10) as START_DATE, 
+	null::varchar(10) as END_DATE, null::double precision as WINTER_THROUGHPUT_PCT, 
+	null::double precision as SPRING_THROUGHPUT_PCT, null::double precision as SUMMER_THROUGHPUT_PCT, 
+	null::double precision as FALL_THROUGHPUT_PCT, null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, 
+	null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, null::double precision as ANNUAL_AVG_HOURS_PER_DAY, 
+	null::double precision as ANNUAL_AVG_HOURS_PER_YEAR, null::double precision as PERIOD_DAYS_PER_WEEK, 
+	null::double precision as PERIOD_WEEKS_PER_PERIOD, null::double precision as PERIOD_HOURS_PER_DAY, 
+	null::double precision as PERIOD_HOURS_PER_PERIOD, CONTROL_MEASURES as CONTROL_MEASURES, 
+	null::double precision as PCT_REDUCTION, CURRENT_COST as CURRENT_COST, 
+	CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e'
+where name = 'Convert to ORL Nonpoint'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint'));
+
+--7/21/2011
+insert into emf.keywords ("name") values('TARGET_YEAR');
+insert into emf.keywords ("name") values('CONTROL_STRATEGY_DETAILED_RESULT_NAME');
+
+-- 8/3/2011
+-- added some qa template for previos deploy
+-- Template for QA Program "Convert to ORL Onroad" - 'Flat File 2010 Nonpoint'
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Convert to ORL Onroad' as name, 
+(select id from emf.qa_programs where name = 'SQL') as qa_program_id, 
+'select 
+	REGION_CD::varchar(6) as FIPS, SCC::varchar(10) as SCC, 
+	POLL::varchar(16) as POLL, ANN_VALUE as ANN_EMIS, 
+	null::double precision as AVD_EMIS, EMIS_TYPE::varchar(2) as SRCTYPE, 
+	DATA_SET_ID::varchar(6) as DATA_SOURCE, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, ANN_PCT_RED as CEFF, 
+	100::double precision as REFF, 100::double precision as RPEN, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e', false, 1, ''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Convert to ORL Onroad');
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select 
+	REGION_CD::varchar(6) as FIPS, SCC::varchar(10) as SCC, 
+	POLL::varchar(16) as POLL, ANN_VALUE as ANN_EMIS, 
+	null::double precision as AVD_EMIS, EMIS_TYPE::varchar(2) as SRCTYPE, 
+	DATA_SET_ID::varchar(6) as DATA_SOURCE, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, ANN_PCT_RED as CEFF, 
+	100::double precision as REFF, 100::double precision as RPEN, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e'
+where name = 'Convert to ORL Onroad'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint'));
+
+
+-- Template for QA Program "Convert to ORL Nonroad" - 'Flat File 2010 Nonpoint'
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Convert to ORL Nonroad' as name, 
+(select id from emf.qa_programs where name = 'SQL') as qa_program_id, 
+'select 
+	REGION_CD::varchar(6) as FIPS, SCC::varchar(10) as SCC, 
+	POLL::varchar(16) as POLL, ANN_VALUE as ANN_EMIS, 
+	null::double precision as AVD_EMIS, ANN_PCT_RED as CEFF, 
+	100::double precision as REFF, 100::double precision as RPEN, 
+	EMIS_TYPE::varchar(2) as SRCTYPE, DATA_SET_ID::varchar(10) as DATA_SOURCE, 
+	CALC_YEAR::varchar(4) as YEAR, TRIBAL_CODE::varchar(3) as TRIBAL_CODE, 
+	null::varchar(10) as START_DATE, null::varchar(10) as END_DATE, 
+	null::double precision as WINTER_THROUGHPUT_PCT, null::double precision as SPRING_THROUGHPUT_PCT, 
+	null::double precision as SUMMER_THROUGHPUT_PCT, null::double precision as FALL_THROUGHPUT_PCT, 
+	null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, 
+	null::double precision as ANNUAL_AVG_HOURS_PER_DAY, null::double precision as ANNUAL_AVG_HOURS_PER_YEAR, 
+	null::double precision as PERIOD_DAYS_PER_WEEK, null::double precision as PERIOD_WEEKS_PER_PERIOD, 
+	null::double precision as PERIOD_HOURS_PER_DAY, null::double precision as PERIOD_HOURS_PER_PERIOD, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e', false, 1, ''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Convert to ORL Nonroad');
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select 
+	REGION_CD::varchar(6) as FIPS, SCC::varchar(10) as SCC, 
+	POLL::varchar(16) as POLL, ANN_VALUE as ANN_EMIS, 
+	null::double precision as AVD_EMIS, ANN_PCT_RED as CEFF, 
+	100::double precision as REFF, 100::double precision as RPEN, 
+	EMIS_TYPE::varchar(2) as SRCTYPE, DATA_SET_ID::varchar(10) as DATA_SOURCE, 
+	CALC_YEAR::varchar(4) as YEAR, TRIBAL_CODE::varchar(3) as TRIBAL_CODE, 
+	null::varchar(10) as START_DATE, null::varchar(10) as END_DATE, 
+	null::double precision as WINTER_THROUGHPUT_PCT, null::double precision as SPRING_THROUGHPUT_PCT, 
+	null::double precision as SUMMER_THROUGHPUT_PCT, null::double precision as FALL_THROUGHPUT_PCT, 
+	null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, 
+	null::double precision as ANNUAL_AVG_HOURS_PER_DAY, null::double precision as ANNUAL_AVG_HOURS_PER_YEAR, 
+	null::double precision as PERIOD_DAYS_PER_WEEK, null::double precision as PERIOD_WEEKS_PER_PERIOD, 
+	null::double precision as PERIOD_HOURS_PER_DAY, null::double precision as PERIOD_HOURS_PER_PERIOD, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e'
+where name = 'Convert to ORL Nonroad'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint'));
+
+-- Template for QA Program "Convert to ORL Point using Agency Ids" - 'Flat File 2010 Point'
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Convert to ORL Point using Agency Ids' as name, 
+(select id from emf.qa_programs where name = 'SQL') as qa_program_id, 
+'select 
+	REGION_CD::varchar(6) as FIPS, AGY_FACILITY_ID::varchar(15) as PLANTID, 
+	AGY_UNIT_ID::varchar(15) as POINTID, AGY_REL_POINT_ID::varchar(15) as STACKID, 
+	AGY_PROCESS_ID::varchar(15) as SEGMENT, FACILITY_NAME::varchar(40) as PLANT, 
+	SCC::varchar(10) as SCC, ERPTYPE::varchar(2) as ERPTYPE, 
+	FAC_SOURCE_TYPE::varchar(2) as SRCTYPE, STKHGT as STKHGT, 
+	STKDIAM as STKDIAM, STKTEMP as STKTEMP, 
+	STKFLOW as STKFLOW, STKVEL as STKVEL, 
+	null::varchar(4) as SIC, null::varchar(6) as MACT, 
+	NAICS::varchar(6) as NAICS, null::varchar(1) as CTYPE, 
+	LONGITUDE as XLOC, LATITUDE as YLOC, 
+	null::smallint as UTMZ, POLL::varchar(16) as POLL, 
+	ANN_VALUE as ANN_EMIS, null::double precision as AVD_EMIS, 
+	ANN_PCT_RED as CEFF, 100::double precision as REFF, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 1 then (string_to_array(CONTROL_IDS,''&''))[1] else null end as CPRI, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 2 then (string_to_array(CONTROL_IDS,''&''))[2] else null end as CSEC, 
+	null::varchar(20) as NEI_UNIQUE_ID, ORIS_FACILITY_CODE::varchar(6) as ORIS_FACILITY_CODE, 
+	ORIS_BOILER_ID::varchar(6) as ORIS_BOILER_ID, IPM_YN::varchar(1) as IPM_YN, 
+	DATA_SET_ID::varchar(10) as DATA_SOURCE, null::varchar(10) as STACK_DEFAULT_FLAG, 
+	null::varchar(10) as LOCATION_DEFAULT_FLAG, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, FUG_WIDTH_YDIM*FUG_LENGTH_XDIM as HORIZONTAL_AREA_FUGITIVE, 
+	FUG_HEIGHT as RELEASE_HEIGHT_FUGITIVE, ZIPCODE::varchar(14) as ZIPCODE, 
+	null::varchar(3) as NAICS_FLAG, null::varchar(3) as SIC_FLAG, 
+	null::varchar(15) as MACT_FLAG, null::varchar(6) as PROCESS_MACT_COMPLIANCE_STATUS, 
+	null::varchar(3) as IPM_FACILITY, null::varchar(3) as IPM_UNIT, 
+	null::varchar(10) as BART_SOURCE, null::varchar(10) as BART_UNIT, 
+	null::varchar(12) as CONTROL_STATUS, null::varchar(10) as START_DATE, 
+	null::varchar(10) as END_DATE, null::double precision as WINTER_THROUGHPUT_PCT, 
+	null::double precision as SPRING_THROUGHPUT_PCT, null::double precision as SUMMER_THROUGHPUT_PCT, 
+	null::double precision as FALL_THROUGHPUT_PCT, null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, 
+	null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, null::double precision as ANNUAL_AVG_HOURS_PER_DAY, 
+	ANNUAL_AVG_HOURS_PER_YEAR as ANNUAL_AVG_HOURS_PER_YEAR, null::double precision as PERIOD_DAYS_PER_WEEK, 
+	null::double precision as PERIOD_WEEKS_PER_PERIOD, null::double precision as PERIOD_HOURS_PER_DAY, 
+	null::double precision as PERIOD_HOURS_PER_PERIOD, DESIGN_CAPACITY as DESIGN_CAPACITY, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 1 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[1] else null end as DESIGN_CAPACITY_UNIT_NUMERATOR, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 2 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[2] else null end as DESIGN_CAPACITY_UNIT_DENOMINATOR, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e', false, 1, ''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Convert to ORL Point using Agency Ids');
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select 
+	REGION_CD::varchar(6) as FIPS, AGY_FACILITY_ID::varchar(15) as PLANTID, 
+	AGY_UNIT_ID::varchar(15) as POINTID, AGY_REL_POINT_ID::varchar(15) as STACKID, 
+	AGY_PROCESS_ID::varchar(15) as SEGMENT, FACILITY_NAME::varchar(40) as PLANT, 
+	SCC::varchar(10) as SCC, ERPTYPE::varchar(2) as ERPTYPE, 
+	FAC_SOURCE_TYPE::varchar(2) as SRCTYPE, STKHGT as STKHGT, 
+	STKDIAM as STKDIAM, STKTEMP as STKTEMP, 
+	STKFLOW as STKFLOW, STKVEL as STKVEL, 
+	null::varchar(4) as SIC, null::varchar(6) as MACT, 
+	NAICS::varchar(6) as NAICS, null::varchar(1) as CTYPE, 
+	LONGITUDE as XLOC, LATITUDE as YLOC, 
+	null::smallint as UTMZ, POLL::varchar(16) as POLL, 
+	ANN_VALUE as ANN_EMIS, null::double precision as AVD_EMIS, 
+	ANN_PCT_RED as CEFF, 100::double precision as REFF, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 1 then (string_to_array(CONTROL_IDS,''&''))[1] else null end as CPRI, 
+	case when array_length(string_to_array(CONTROL_IDS,''&''), 1) >= 2 then (string_to_array(CONTROL_IDS,''&''))[2] else null end as CSEC, 
+	null::varchar(20) as NEI_UNIQUE_ID, ORIS_FACILITY_CODE::varchar(6) as ORIS_FACILITY_CODE, 
+	ORIS_BOILER_ID::varchar(6) as ORIS_BOILER_ID, IPM_YN::varchar(1) as IPM_YN, 
+	DATA_SET_ID::varchar(10) as DATA_SOURCE, null::varchar(10) as STACK_DEFAULT_FLAG, 
+	null::varchar(10) as LOCATION_DEFAULT_FLAG, CALC_YEAR::varchar(4) as YEAR, 
+	TRIBAL_CODE::varchar(3) as TRIBAL_CODE, FUG_WIDTH_YDIM*FUG_LENGTH_XDIM as HORIZONTAL_AREA_FUGITIVE, 
+	FUG_HEIGHT as RELEASE_HEIGHT_FUGITIVE, ZIPCODE::varchar(14) as ZIPCODE, 
+	null::varchar(3) as NAICS_FLAG, null::varchar(3) as SIC_FLAG, 
+	null::varchar(15) as MACT_FLAG, null::varchar(6) as PROCESS_MACT_COMPLIANCE_STATUS, 
+	null::varchar(3) as IPM_FACILITY, null::varchar(3) as IPM_UNIT, 
+	null::varchar(10) as BART_SOURCE, null::varchar(10) as BART_UNIT, 
+	null::varchar(12) as CONTROL_STATUS, null::varchar(10) as START_DATE, 
+	null::varchar(10) as END_DATE, null::double precision as WINTER_THROUGHPUT_PCT, 
+	null::double precision as SPRING_THROUGHPUT_PCT, null::double precision as SUMMER_THROUGHPUT_PCT, 
+	null::double precision as FALL_THROUGHPUT_PCT, null::double precision as ANNUAL_AVG_DAYS_PER_WEEK, 
+	null::double precision as ANNUAL_AVG_WEEKS_PER_YEAR, null::double precision as ANNUAL_AVG_HOURS_PER_DAY, 
+	ANNUAL_AVG_HOURS_PER_YEAR as ANNUAL_AVG_HOURS_PER_YEAR, null::double precision as PERIOD_DAYS_PER_WEEK, 
+	null::double precision as PERIOD_WEEKS_PER_PERIOD, null::double precision as PERIOD_HOURS_PER_DAY, 
+	null::double precision as PERIOD_HOURS_PER_PERIOD, DESIGN_CAPACITY as DESIGN_CAPACITY, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 1 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[1] else null end as DESIGN_CAPACITY_UNIT_NUMERATOR, 
+	case when array_length(string_to_array(DESIGN_CAPACITY_UNITS,''/''), 1) >= 2 then (string_to_array(DESIGN_CAPACITY_UNITS,''/''))[2] else null end as DESIGN_CAPACITY_UNIT_DENOMINATOR, 
+	CONTROL_MEASURES as CONTROL_MEASURES, null::double precision as PCT_REDUCTION, 
+	CURRENT_COST as CURRENT_COST, CUMULATIVE_COST as CUMULATIVE_COST
+FROM $TABLE[1] e'
+where name = 'Convert to ORL Point using Agency Ids'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point'));
+
+-- 8/15/2011
+
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Detect Bizarre Characters in column PLANT', 
+1, 
+'select fips,plantid, pointid, stackid, segment from $TABLE[1] i where plant ~* ''[\\\\u0000-\\\\u0008\\\\u000B\\\\u000C\\\\u000E-\\\\u001F\\\\uD800-\\\\uDFFF\\\\uFFFE\\\\uFFFF]''', 
+false, 
+1, 
+''
+from emf.dataset_types dt
+where name in ('ORL Point Inventory (PTINV)'); 
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips,plantid, pointid, stackid, segment from $TABLE[1] i where plant ~* ''[\\\\u0000-\\\\u0008\\\\u000B\\\\u000C\\\\u000E-\\\\u001F\\\\uD800-\\\\uDFFF\\\\uFFFE\\\\uFFFF]'''
+where name = 'Detect Bizarre Characters in column PLANT'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('ORL Point Inventory (PTINV)'));
+
+CREATE OR REPLACE FUNCTION public.RemoveBizarreChar(tableName text)
+  RETURNS SETOF text AS
+$BODY$
+DECLARE
+	sql text;
+	r record;
+BEGIN
+	-- 'update ' || $1 || 'set plant=regexp_replace(plant, '[\\\\u0000-\\\\u0008\\\\u000B\\\\u000C\\\\u000E-\\\\u001F\\\\uD800-\\\\uDFFF\\\\uFFFE\\\\uFFFF]', '') where plant ~* '[\\\\u0000-\\\\u0008\\\\u000B\\\\u000C\\\\u000E-\\\\u001F\\\\uD800-\\\\uDFFF\\\\uFFFE\\\\uFFFF]';
+	sql = 'SELECT * from ' || $1 || ' where plant ~* ''[\\\\u0000-\\\\u0008\\\\u000B\\\\u000C\\\\u000E-\\\\u001F\\\\uD800-\\\\uDFFF\\\\uFFFE\\\\uFFFF]'';';
+	FOR r IN EXECUTE sql LOOP
+	  RETURN NEXT r;
+	END LOOP;
+	return;
+END;
+$BODY$
+  LANGUAGE 'plpgsql';
+ALTER FUNCTION public.RemoveBizarreChar(text) OWNER TO emf;
+
+insert into emf.properties values(DEFAULT, 'DEBUG_0', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_1', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_2', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_3', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_4', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_5', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_6', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_7', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_8', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_9', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_10', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_11', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_12', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_13', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_14', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_15', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_16', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_17', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_18', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_19', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_20', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_21', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_22', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_23', 'false');
+insert into emf.properties values(DEFAULT, 'DEBUG_24', 'false');
+
+update emf.properties set value = 'false' where name = 'DEBUG_0';
+update emf.properties set value = 'false' where name = 'DEBUG_1';
+update emf.properties set value = 'false' where name = 'DEBUG_2';
+update emf.properties set value = 'false' where name = 'DEBUG_3';
+update emf.properties set value = 'false' where name = 'DEBUG_4';
+update emf.properties set value = 'false' where name = 'DEBUG_5';
+update emf.properties set value = 'false' where name = 'DEBUG_6';
+update emf.properties set value = 'false' where name = 'DEBUG_7';
+update emf.properties set value = 'false' where name = 'DEBUG_8';
+update emf.properties set value = 'false' where name = 'DEBUG_9';
+update emf.properties set value = 'false' where name = 'DEBUG_10';
+update emf.properties set value = 'false' where name = 'DEBUG_11';
+update emf.properties set value = 'false' where name = 'DEBUG_12';
+update emf.properties set value = 'false' where name = 'DEBUG_13';
+update emf.properties set value = 'false' where name = 'DEBUG_14';
+update emf.properties set value = 'false' where name = 'DEBUG_15';
+update emf.properties set value = 'false' where name = 'DEBUG_16';
+update emf.properties set value = 'false' where name = 'DEBUG_17';
+update emf.properties set value = 'false' where name = 'DEBUG_18';
+update emf.properties set value = 'false' where name = 'DEBUG_19';
+update emf.properties set value = 'false' where name = 'DEBUG_20';
+update emf.properties set value = 'false' where name = 'DEBUG_21';
+update emf.properties set value = 'false' where name = 'DEBUG_22';
+update emf.properties set value = 'false' where name = 'DEBUG_23';
+update emf.properties set value = 'false' where name = 'DEBUG_24';
+
+-- 09/13/2011
+
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Detect Bizarre Characters in column FACILITY_NAME', 
+1, 
+'select COUNTRY_CD,REGION_CD,FACILITY_ID, UNIT_ID, REL_POINT_ID, PROCESS_ID, AGY_FACILITY_ID, AGY_UNIT_ID, AGY_REL_POINT_ID, AGY_PROCESS_ID, SCC from $TABLE[1] i where FACILITY_NAME ~* ''[\\\\u0000-\\\\u0008\\\\u000B\\\\u000C\\\\u000E-\\\\u001F\\\\uD800-\\\\uDFFF\\\\uFFFE\\\\uFFFF]''', 
+false, 
+1, 
+''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point'); 
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select COUNTRY_CD,REGION_CD,FACILITY_ID, UNIT_ID, REL_POINT_ID, PROCESS_ID, AGY_FACILITY_ID, AGY_UNIT_ID, AGY_REL_POINT_ID, AGY_PROCESS_ID, SCC from $TABLE[1] i where FACILITY_NAME ~* ''[\\\\u0000-\\\\u0008\\\\u000B\\\\u000C\\\\u000E-\\\\u001F\\\\uD800-\\\\uDFFF\\\\uFFFE\\\\uFFFF]'''
+where name = 'Detect Bizarre Characters in column FACILITY_NAME'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point'));
+
+insert into emf.properties values(DEFAULT, 'DEBUG_LEVEL_REFRESH_RATE', '12'); -- minutes
+update emf.properties set value = '12' where name = 'DEBUG_LEVEL_REFRESH_RATE'; -- minutes
+
+-- 9/22/2011 -- added a new debug level for debugging control strategy operations
+insert into emf.properties values(DEFAULT, 'DEBUG_25', 'false');
+update emf.properties set value = 'false' where name = 'DEBUG_25';
+
+-- 12/07/2011 -- Add new Compare Dataset Fields QA Program
+insert into emf.qa_programs values(DEFAULT,'Compare Dataset Fields','gov.epa.emissions.framework.services.qa.compareDatasetFields.SQLCompareDSFieldsProgramQueryRunner');
+
+-- 12/10/2011 -- added a properties to help determine when to show more advanced EMF features, this will be useful when distributing CoST to the states
+insert into emf.properties values(DEFAULT, 'SHOW_MP_SDT_MENU', 'true');
+insert into emf.properties values(DEFAULT, 'SHOW_SECTOR_SCENARIO_MENU', 'true');
+insert into emf.properties values(DEFAULT, 'SHOW_CASES_MENU', 'true');
+
+
+-- 12/19/2011 -- new qa steps to help with add toxicity weighting factors to Flat File 2010 Point and Nonpoint DS Types
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Toxicity Weighted Inventory', 
+1, 
+'select distinct on (i.record_id) 
+country_cd,region_cd,tribal_code,
+facility_id,unit_id,rel_point_id,
+process_id,agy_facility_id,agy_unit_id,
+agy_rel_point_id,agy_process_id,scc,
+poll,ann_value,ann_pct_red,
+facility_name,erptype,stkhgt,
+stkdiam,stktemp,stkflow,
+stkvel,naics,longitude,
+latitude,ll_datum,horiz_coll_mthd,
+design_capacity,design_capacity_units,reg_codes,
+fac_source_type,unit_type_code,control_ids
+,control_measures,current_cost,cumulative_cost,
+projection_factor,submitter_id,calc_method,
+data_set_id,facil_category_code,oris_facility_code,
+oris_boiler_id,ipm_yn,calc_year,
+date_updated,fug_height,fug_width_ydim,
+fug_length_xdim,fug_angle,zipcode,
+annual_avg_hours_per_year,i.comment,i.comments,
+t.pollutant_code_desc, 
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) * t.ure
+else
+  null::double precision
+end
+as cancer_weight,
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  case when coalesce(t.rfc, 0.0) <> 0.0 then 
+    i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) / t.rfc
+  else 0.0 
+  end 
+else
+  null::double precision
+end
+as noncancer_weight, 
+t.rfc_target_system1,
+t.rfc_target_system2,
+t.rfc_target_system3 
+from $TABLE[1] i
+left outer join $DATASET_TABLE_VERSION["toxicity_weights",1,0] t
+on t.pollutant_code = i.poll', 
+false, 
+1, 
+''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point'); 
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select distinct on (i.record_id) 
+country_cd,region_cd,tribal_code,
+facility_id,unit_id,rel_point_id,
+process_id,agy_facility_id,agy_unit_id,
+agy_rel_point_id,agy_process_id,scc,
+poll,ann_value,ann_pct_red,
+facility_name,erptype,stkhgt,
+stkdiam,stktemp,stkflow,
+stkvel,naics,longitude,
+latitude,ll_datum,horiz_coll_mthd,
+design_capacity,design_capacity_units,reg_codes,
+fac_source_type,unit_type_code,control_ids
+,control_measures,current_cost,cumulative_cost,
+projection_factor,submitter_id,calc_method,
+data_set_id,facil_category_code,oris_facility_code,
+oris_boiler_id,ipm_yn,calc_year,
+date_updated,fug_height,fug_width_ydim,
+fug_length_xdim,fug_angle,zipcode,
+annual_avg_hours_per_year,i.comment,i.comments,
+t.pollutant_code_desc, 
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) * t.ure
+else
+  null::double precision
+end
+as cancer_weight,
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  case when coalesce(t.rfc, 0.0) <> 0.0 then 
+    i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) / t.rfc
+  else 0.0 
+  end 
+else
+  null::double precision
+end
+as noncancer_weight, 
+t.rfc_target_system1,
+t.rfc_target_system2,
+t.rfc_target_system3 
+from $TABLE[1] i
+left outer join $DATASET_TABLE_VERSION["toxicity_weights",1,0] t
+on t.pollutant_code = i.poll'
+where name = 'Toxicity Weighted Inventory'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point'));
+
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Toxicity Weighted Inventory', 
+1, 
+'select distinct on (i.record_id) 
+i.country_cd,i.region_cd,i.tribal_code,
+i.census_tract_cd,i.shape_id,i.scc,
+i.emis_type,i.poll,i.ann_value,
+i.ann_pct_red,i.control_ids,i.control_measures,
+i.current_cost,i.cumulative_cost,i.projection_factor,
+i.reg_codes,i.calc_method,i.calc_year,
+i.date_updated,i.data_set_id,
+i.comment,i.comments,
+t.pollutant_code_desc, 
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) * t.ure
+else
+  null::double precision
+end
+as cancer_weight,
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  case when coalesce(t.rfc, 0.0) <> 0.0 then 
+    i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) / t.rfc
+  else 0.0 
+  end 
+else
+  null::double precision
+end
+as noncancer_weight, 
+t.rfc_target_system1,
+t.rfc_target_system2,
+t.rfc_target_system3 
+from $TABLE[1] i
+left outer join $DATASET_TABLE_VERSION["toxicity_weights",1,0] t
+on t.pollutant_code = i.poll', 
+false, 
+1, 
+''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint'); 
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select distinct on (i.record_id) 
+i.country_cd,i.region_cd,i.tribal_code,
+i.census_tract_cd,i.shape_id,i.scc,
+i.emis_type,i.poll,i.ann_value,
+i.ann_pct_red,i.control_ids,i.control_measures,
+i.current_cost,i.cumulative_cost,i.projection_factor,
+i.reg_codes,i.calc_method,i.calc_year,
+i.date_updated,i.data_set_id,
+i.comment,i.comments,
+t.pollutant_code_desc, 
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) * t.ure
+else
+  null::double precision
+end
+as cancer_weight,
+case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+  case when coalesce(t.rfc, 0.0) <> 0.0 then 
+    i.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) / t.rfc
+  else 0.0 
+  end 
+else
+  null::double precision
+end
+as noncancer_weight, 
+t.rfc_target_system1,
+t.rfc_target_system2,
+t.rfc_target_system3 
+from $TABLE[1] i
+left outer join $DATASET_TABLE_VERSION["toxicity_weights",1,0] t
+on t.pollutant_code = i.poll'
+where name = 'Toxicity Weighted Inventory'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Nonpoint'));
+
+-- QA Step -- Summarize by U.S. State and Pollutant with Toxicity Weighting
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Summarize by U.S. State and Pollutant with Toxicity Weighting', 
+1, 
+'select fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, 
+	e.poll, 
+	t.pollutant_code_desc, 
+	sum(e.ann_value) as ann_value,
+	sum(case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+		e.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) * t.ure
+	else
+		null::double precision
+	end) as cancer_weight,
+	sum(case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+		case when coalesce(t.rfc, 0.0) <> 0.0 then 
+			e.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) / t.rfc
+		else 
+			0.0 
+		end 
+	else
+		null::double precision
+	end) as noncancer_weight
+from $TABLE[1] e 
+	left outer join reference.fips 
+	on fips.state_county_fips = e.region_cd
+	and fips.country_num = ''0'' 
+	left outer join (
+		select distinct on (t.pollutant_code)
+			*
+		from $DATASET_TABLE_VERSION["toxicity_weights",1,0] t
+	) t
+	on t.pollutant_code = e.poll
+group by fips.state_name, fips.state_abbr, fips.fipsst, e.poll, t.pollutant_code_desc
+order by fips.state_name, e.poll', 
+false, 
+1, 
+''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point','Flat File 2010 Nonpoint'); 
+
+update emf.dataset_types_qa_step_templates 
+set program_arguments = 'select fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, 
+	e.poll, 
+	t.pollutant_code_desc, 
+	sum(e.ann_value) as ann_value,
+	sum(case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+		e.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) * t.ure
+	else
+		null::double precision
+	end) as cancer_weight,
+	sum(case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+		case when coalesce(t.rfc, 0.0) <> 0.0 then 
+			e.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) / t.rfc
+		else 
+			0.0 
+		end 
+	else
+		null::double precision
+	end) as noncancer_weight
+from $TABLE[1] e 
+	left outer join reference.fips 
+	on fips.state_county_fips = e.region_cd
+	and fips.country_num = ''0'' 
+	left outer join (
+		select distinct on (t.pollutant_code)
+			*
+		from $DATASET_TABLE_VERSION["toxicity_weights",1,0] t
+	) t
+	on t.pollutant_code = e.poll
+group by fips.state_name, fips.state_abbr, fips.fipsst, e.poll, t.pollutant_code_desc
+order by fips.state_name, e.poll'
+where name = 'Summarize by U.S. State and Pollutant with Toxicity Weighting'
+and dataset_type_id in 
+(select id 
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point','Flat File 2010 Nonpoint'));
+
+
+-- add ds type keyword for indexing ff10 point and nonpoint datsets 
+
+-- nonpt - region_cd|country_cd|tribal_code|poll|scc|emis_type|census_tract_cd|shape_id
+-- pt -- region_cd|country_cd|tribal_code|poll|scc|facility_id|unit_id|rel_point_id|process_id
+
+-- 2/22/2012 -- added table to help exclude user viewable ds types
+CREATE TABLE emf.user_excluded_dataset_types
+(
+  id serial NOT NULL PRIMARY KEY,
+  list_index integer,
+  user_id int4 NOT NULL REFERENCES emf.users(id),
+  dataset_type_id int4 NOT NULL REFERENCES emf.dataset_types(id)
+);
+
+-- Added new 
+insert into emf.keywords ("name") values('COLUMN_LABELS');
+insert into emf.properties values(DEFAULT, 'SHOW_CASES_MENU', 'true');
+
+-- 3/22/2012 -- added table to help exclude user manage menu
+-- emf.user_features
+CREATE TABLE emf.user_features
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE
+) 
+WITHOUT OIDS;
+
+--2/23/2012 user features
+insert into emf.user_features values (DEFAULT, 'Cases');
+insert into emf.user_features values (DEFAULT, 'Control Measures');
+insert into emf.user_features values (DEFAULT, 'Control Strategies');
+insert into emf.user_features values (DEFAULT, 'Control Programs');
+insert into emf.user_features values (DEFAULT, 'Sector Scenario');
+insert into emf.user_features values (DEFAULT, 'MP-SDT');
+insert into emf.user_features values (DEFAULT, 'Users');
+
+CREATE TABLE emf.user_excluded_features
+(
+  id serial NOT NULL PRIMARY KEY,
+  list_index integer,
+  user_id int4 NOT NULL REFERENCES emf.users(id),
+  user_feature_id int4 NOT NULL REFERENCES emf.user_features(id)
+);
+
+
+--5/17/2012 -- added index to scc reference table
+CREATE INDEX 
+   ON reference.scc_codes (scc ASC NULLS LAST);
+
+   
+   
+--9/6/12 move versions schema
+ALTER TABLE emissions.versions SET SCHEMA emf;
+
+
+--9/6/12
+--added new data/functions/count_estimate.sql script please update your system.
+
+-- 10/19/12
+-- QA Step -- Summarize by Country and Pollutant with Toxicity Weighting
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, 
+(select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 
+'Summarize by Country and Pollutant with Toxicity Weighting', 
+1, 
+'select e.country_cd, 
+                e.poll, 
+                t.pollutant_code_desc, 
+                sum(e.ann_value) as ann_value,
+                sum(case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+                                e.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) * t.ure
+                else
+                                null::double precision
+                end) as cancer_weight,
+                sum(case when t.record_id is not null and t.pollutant_code <> ''136'' and t.pollutant_code <> ''7440473'' then
+                                case when coalesce(t.rfc, 0.0) <> 0.0 then 
+                                                e.ann_value * coalesce(t.metal_cn_speciation_factor, 1.0) / t.rfc
+                                else 
+                                                0.0 
+                                end 
+                else
+                                null::double precision
+                end) as noncancer_weight
+from $TABLE[1] e 
+                left outer join (
+                                select distinct on (t.pollutant_code)
+                                                *
+                                from $DATASET_TABLE_VERSION["toxicity_weights_datasetName",1,0] t
+                ) t
+                on t.pollutant_code = e.poll
+group by e.country_cd, e.poll, t.pollutant_code_desc
+order by e.country_cd, e.poll', 
+false, 
+1, 
+''
+from emf.dataset_types dt
+where name in ('Flat File 2010 Point','Flat File 2010 Nonpoint'); 
+
+-- 2/13/2013 -- added a new debug level to trace case job run parse Queue Id functionality
+insert into emf.properties values(DEFAULT, 'DEBUG_26', 'true');
+update emf.properties set value = 'true' where name = 'DEBUG_26';
+
+
+-- 4/15/2013 -- added new table to track file downloads
+CREATE TABLE emf.file_downloads
+(
+  id serial NOT NULL,
+  user_id integer NOT NULL,
+  "type" character varying(255) NOT NULL,
+  url text NOT NULL,
+  is_read boolean NOT NULL DEFAULT false,
+  date timestamp without time zone NOT NULL,
+  CONSTRAINT file_downloads_pkey PRIMARY KEY (id),
+  CONSTRAINT file_downloads_userid_fkey FOREIGN KEY (user_id)
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE emf.file_downloads OWNER TO postgres;
+
+-- 6/05/2013 -- added a new properties to help with download functionality
+insert into emf.properties values(DEFAULT, 'DOWNLOAD_EXPORT_FOLDER', '/usr/tomcat/apache-tomcat-6.0.36/webapps/exports/');
+insert into emf.properties values(DEFAULT, 'DOWNLOAD_EXPORT_ROOT_URL', 'http://sage.nesc.epa.gov:8080/exports/');
+
+--06/08/2013 -- added some additional columns...
+ALTER TABLE emf.file_downloads ADD COLUMN absolute_path character varying(1024) NOT NULL DEFAULT ''::character varying;
+ALTER TABLE emf.file_downloads ADD COLUMN size bigint NOT NULL DEFAULT 0;
+
+-- 7/11/2013 -- added a new properties to help keep track of fields that define state, county, and point information
+insert into emf.properties values(DEFAULT, 'POSTGIS_COUNTY_FIELDS', 'fips,region_cd');
+insert into emf.properties values(DEFAULT, 'POSTGIS_STATE_FIELDS', 'fipsst');
+insert into emf.properties values(DEFAULT, 'POSTGIS_LATITUDE_FIELDS', 'yloc,lat,latitude');
+insert into emf.properties values(DEFAULT, 'POSTGIS_LONGITUDE_FIELDS', 'xloc,lon,longitde');
+
+-- 7/17/13 -- added new column to help track when to overwrite a file during a download
+ALTER TABLE emf.file_downloads ADD COLUMN overwrite boolean NOT NULL DEFAULT false;
+
+-- 7/18/13 -- added new column to the projection shapefiles table, 
+-- also added update scripts to set description
+alter table public.projection_shapefiles add column description text NOT NULL DEFAULT ''::text;
+UPDATE public.projection_shapefiles SET description='U.S. State based shapefile based on NAD83 datum' WHERE name = 'fe_2007_us_state_NAD83';
+UPDATE public.projection_shapefiles SET description='U.S. County based shapefile (100+ demographic fields) based on the WGS84 datum' WHERE name = 'US_counties_WGS84';
+UPDATE public.projection_shapefiles SET description='U.S. County based shapefile (100+ demographic fields) based on the NAD83 datum' WHERE name = 'US_counties_NAD83';
+UPDATE public.projection_shapefiles SET description='U.S. State based shapefile based on WGS84 datum' WHERE name = 'fe_2007_us_state_WGS84';
+UPDATE public.projection_shapefiles SET description='Point geometry which is based on the WGS84 datum' WHERE name = 'WGS 84';
+UPDATE public.projection_shapefiles SET description='Point geometry which is based on the NAD83 datum' WHERE name = 'NAD 83';
+
+-- 7/18/13 -- added trimmed down US county base shapefile 
+create table public.us_county_shape_abbrv as 
+SELECT gid, objectid, county_nam, state_abbr, county_are, cent_lat, 
+       cent_long, fips, state, county, the_geom
+FROM public.us_county_shape;
+INSERT INTO projection_shapefiles (name, table_schema, table_name, prj_text, srid, type, description) VALUES ('US_counties_WGS84_trimmed', 'public', 'us_county_shape_abbrv', 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]', 4326, 'county', 'U.S. County based shapefile (trimmed down version) based on the WGS84 datum');
+
+-- 10/30/2013 -- added a new properties to help with download functionality - expiry time in hours
+insert into emf.properties values(DEFAULT, 'DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE', '1');

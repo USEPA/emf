@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+#   Startup/shutdown script for apache tomcat
+#
+#   Linux chkconfig stuff:
+#   chkconfig: 2345 98 02
+#   description: Startup/shutdown script for apache tomcat
+#
+#
+#  Created by Alexis Zubrow
+
+## Environmental Variables
+prog=tomcat
+CATALINA_HOME=/usr/local/apache-tomcat  ## tomcat top dir
+export JAVA_HOME=/usr/local/java/jre1.6.0_01/  ## Java top dir
+
+## -----------------------------------------------------------##
+
+start () {
+	echo -n $"Starting $prog: "
+	$CATALINA_HOME/bin/startup.sh
+}
+
+stop () {
+	echo -n $"Stopping $prog: "
+	$CATALINA_HOME/bin/shutdown.sh
+}
+
+restart() {
+	stop
+	start
+}
+
+case $1 in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	restart)
+		restart
+	;;
+	
+        *)
+	echo $"Usage: $prog {start|stop|restart}"
+	exit 1
+esac
+
+##exit $RETVAL

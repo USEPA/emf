@@ -1,0 +1,3 @@
+\i deploy/db/cost/Cost_DropAllEMFTables.setup
+\i deploy/db/cost/Cost_CreateEMFTables.setup
+\i deploy/db/cost/Cost_PopulateEmfDataTables.setup
