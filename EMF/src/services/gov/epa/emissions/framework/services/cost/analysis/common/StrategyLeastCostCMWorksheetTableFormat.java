@@ -69,14 +69,14 @@ public class StrategyLeastCostCMWorksheetTableFormat implements TableFormat {
         cols.add(new Column("Disable", types.booleanType(), new StringFormatter(5)));
         cols.add(new Column("CM_Abbrev", types.stringType(CoSTConstants.CM_ABBREV_LEN), new StringFormatter(CoSTConstants.CM_ABBREV_LEN), "DEFAULT ''"));
         cols.add(new Column("Poll", types.stringType(20), new StringFormatter(20)));
-        cols.add(new Column("SCC", types.stringType(10), new StringFormatter(10)));
+        cols.add(new Column("SCC", types.stringType(12), new StringFormatter(12)));
         cols.add(new Column("FIPS", types.stringType(6), new StringFormatter(6))); //after fips will add 4 more cols plantid, etc.
  
         //new columns for point sources...
-        cols.add(new Column("PLANTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("POINTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("STACKID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("SEGMENT", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("PLANTID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("POINTID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("STACKID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("SEGMENT", types.stringType(20), 20, new StringFormatter(20)));
 
         cols.add(new Column("Annual_Cost", types.realType(), new RealFormatter()));
         cols.add(new Column("Ann_Cost_per_Ton", types.realType(), new RealFormatter()));

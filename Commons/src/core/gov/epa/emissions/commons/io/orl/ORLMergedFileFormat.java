@@ -57,12 +57,12 @@ public class ORLMergedFileFormat implements FileFormatWithOptionalCols, Delimite
         cols.add(new Column("ORIGINAL_DATASET_ID", types.intType(), new IntegerFormatter()));
         cols.add(new Column("ORIGINAL_RECORD_ID", types.intType(), new IntegerFormatter()));
         cols.add(new Column("FIPS", types.stringType(6), 6, new StringFormatter(6)));
-        cols.add(new Column("PLANTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("POINTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("STACKID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("SEGMENT", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("PLANTID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("POINTID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("STACKID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("SEGMENT", types.stringType(20), 20, new StringFormatter(20)));
         cols.add(new Column("PLANT", types.stringType(256), 256, new StringFormatter(256)));
-        cols.add(new Column("SCC", types.stringType(10), 10, new StringFormatter(10)));
+        cols.add(new Column("SCC", types.stringType(12), 12, new StringFormatter(12)));
 //        cols.add(new Column("ERPTYPE", types.stringType(2), 2, new StringFormatter(2)));
 //        cols.add(new Column("SRCTYPE", types.stringType(2), 2, new StringFormatter(2)));
 //        cols.add(new Column("STKHGT", types.realType(), new RealFormatter()));
@@ -77,7 +77,7 @@ public class ORLMergedFileFormat implements FileFormatWithOptionalCols, Delimite
 //        cols.add(new Column("XLOC", types.realType(), new RealFormatter()));
 //        cols.add(new Column("YLOC", types.realType(), new RealFormatter()));
 //        cols.add(new Column("UTMZ", types.smallInt(), new SmallIntegerFormatter()));
-        cols.add(new Column("POLL", types.stringType(16), 16, new StringFormatter(16)));
+        cols.add(new Column("POLL", types.stringType(20), 16, new StringFormatter(16)));
         cols.add(new Column("ANN_EMIS", types.realType(), new RealFormatter()));
         
         return cols.toArray(new Column[0]);
