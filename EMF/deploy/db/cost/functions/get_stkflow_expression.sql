@@ -4,7 +4,7 @@ DECLARE
 BEGIN
 	return 
 	'(case '
-		|| 'when (coalesce(' || inv_table_alias || '.STKVEL,0.0) <= 0.1 or coalesce(' || inv_table_alias || '.STKDIAM,0.0) <= 0.1) and coalesce(' || inv_table_alias || '.STKFLOW,0.0) > 0.1 then ' || inv_table_alias || '.STKFLOW '
+		|| 'when coalesce(' || inv_table_alias || '.STKFLOW,0.0) > 0.1 then ' || inv_table_alias || '.STKFLOW '
 		|| 'when coalesce(' || inv_table_alias || '.STKVEL,0.0) <> 0.0 and coalesce(' || inv_table_alias || '.STKDIAM,0.0) <> 0.0 then pi() * (' || inv_table_alias || '.STKDIAM/2)^2 * ' || inv_table_alias || '.STKVEL '
 		|| 'else null::double precision '
 	|| 'end)';

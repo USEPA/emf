@@ -1,4 +1,4 @@
-﻿
+
 CREATE OR REPLACE FUNCTION public.get_cost_expressions(
 	int_control_strategy_id integer,
 	int_input_dataset_id integer,
@@ -148,12 +148,10 @@ DECLARE
 	--type 15 variables
 	t15_use_equation text;
 	t15_fa text;
-	t15_fd text;
 	t15_noducts text;
 	t15_ec1 text;
 	t15_ec2 text;
 	t15_pm_emis_rate text;
-	t15_cpm text;
 	t15_tci text;
 	t15_tac text;
 
@@ -466,7 +464,7 @@ Is PM emission rate based on measure inlet or outlet rate?
 
 t14_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 14'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
-t14_fa := '(' || stkflow_expression || ' * 60.0)';
+t14_fa := '(' || stkflow_expression || ')';
 t14_fd := '((' || t14_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
 t14_noducts := '(case when  ' || t14_fd || ' <= 154042.0 then 1 else round(' || t14_fd || ' / 154042.0) end)';
 t14_cpm := '(' || emis_sql || ') * 1.725 * 15.4323584 / (' || t14_fd || ')'; /*1 ton/year = 1.725 grams/minute (from David)  1 gram = 15.4323584 grains */
@@ -529,8 +527,7 @@ Is PM emission rate based on measure inlet or outlet rate?
 
 t15_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 15'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
-t15_fa := '(' || stkflow_expression || ' * 60.0)';
-t15_fd := '((' || t15_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
+t15_fa := '(' || stkflow_expression || ')';
 t15_ec1 := '(case when  ' || t15_fa || ' < 9495.0 then 614.55 else 57.87 end)';
 t15_ec2 := '(case when  ' || t15_fa || ' < 9495.0 then 0.6276 else 0.8431 end)';
 t15_noducts := '(case when  ' || t15_fa || ' < 308084.0 then 1 when  ' || t15_fa || ' >= 308084.0 and ' || t15_fa || ' < 462126.0 then 2 when  ' || t15_fa || ' >= 462126.0 and ' || t15_fa || ' < 616168.0 then 3 else 4 end)';
@@ -614,7 +611,7 @@ Is SO2 concentration based on measure inlet or outlet rate?
 */
 
 t16_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 16'' and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
-t16_fa := '(' || stkflow_expression || ' * 60.0)';
+t16_fa := '(' || stkflow_expression || ')';
 t16_noscrubbers := '(case when  ' || t16_fa || ' < 149602.0 then 1 when  ' || t16_fa || ' >= 149602.0 and ' || t16_fa || ' < 224403.0 then 2 when  ' || t16_fa || ' >= 224403.0 and ' || t16_fa || ' < 299204.0 then 3 when  ' || t16_fa || ' >= 299204.0 and ' || t16_fa || ' < 374005.0 then 4 else 5 end)';
 t16_so2_mole_conc := '((' || emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t16_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0)))';
 t16_tci := '((2.88) * (' || t16_noscrubbers || ') * (' || t16_fa || '))+((1076.54) * (' || t16_noscrubbers || ') * sqrt(' || t16_fa || '))+((9.759) * (' || t16_fa || '))+((360.463) * sqrt(' || t16_fa || '))';
@@ -668,9 +665,9 @@ Is SO2 and PM (also which PM) concentration based on measure inlet or outlet rat
 
 t17_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 17'' and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
-t17_fa := '(' || stkflow_expression || ' * 60.0)';
+t17_fa := '(' || stkflow_expression || ')';
 t17_fd := '((' || t17_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
-t17_noducts := '(case when  ' || t17_fd || ' < 154042.0 then 1 else round(' || t17_fd || ' / 154042.0) end)';
+t17_noducts := '(case when  ' || t17_fd || ' <= 154042.0 then 1 else round(' || t17_fd || ' / 154042.0) end)';
 t17_pm_conc := '(' || emis_sql || ') * 1.725 * 15.4323584 / (' || t17_fd || ')'; /*1 ton/year = 1.725 grams/minute (from David)  1 gram = 15.4323584 grains */
 t17_so2_conc := '((' || so2_emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t17_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0))) * 10^6';
 t17_tci := '((143.76) * (' || t17_fd || '))+((0.610) * (sqrt(' || t17_fa || ')/' || t17_noducts || ')^2 )+((1757.65) * exp((0.017) * (sqrt(' || t17_fa || ')/' || t17_noducts || ')))+((59.973) * exp((0.014) * (sqrt(' || t17_fa || ')/' || t17_noducts || ')))+(931911.04)';
@@ -712,7 +709,7 @@ Is SO2 concentration based on measure inlet or outlet rate?
 
 t18_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 18'' and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
-t18_fa := '(' || stkflow_expression || ' * 60.0)';
+t18_fa := '(' || stkflow_expression || ')';
 t18_fd := '((' || t17_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
 t18_so2_conc := '((' || emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t17_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0))) * 10^6';
 t18_tci := '0.0';
@@ -762,9 +759,9 @@ Is SO2 concentration based on measure inlet or outlet rate?
 
 t19_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 19'' and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
-t19_fa := '(' || stkflow_expression || ' * 60.0)';
+t19_fa := '(' || stkflow_expression || ')';
 t19_fd := '((' || t17_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
-t19_noducts := '(case when  ' || t17_fd || ' < 154042.0 then 1 else round(' || t17_fd || ' / 154042.0) end)';
+t19_noducts := '(case when  ' || t17_fd || ' <= 154042.0 then 1 else round(' || t17_fd || ' / 154042.0) end)';
 t19_so2_conc := '((' || emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t17_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0))) * 10^6';
 t19_tci := '((143.76) * (' || t19_fd || '))+((0.610) * (sqrt(' || t19_fa || ')/' || t19_noducts || ')^2 )+((17412.26) * exp((0.017) * (sqrt(' || t19_fa || ')/' || t19_noducts || ')))+((53.973) * exp((0.014) * (sqrt(' || t19_fa || ')/' || t19_noducts || ')))+(931911.04)';
 t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) * (' || t19_fd || '))+((0.000000684) * (' || t19_so2_conc || ') * (' || t19_fd || '))+((0.0000372) * (' || t19_fa || '))+(21.157))+((0.072+(' || capital_recovery_factor_expression || ')) * (' || t19_tci || '))';

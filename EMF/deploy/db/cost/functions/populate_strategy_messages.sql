@@ -230,7 +230,7 @@ BEGIN
 		''Warning''::character varying(11) as status,
 		null::character varying(255) as control_program,
 		poll || '' source record is missing CEFF, will use '' || 
-		(case when poll = ''PM10'' then ''PM2_5'' else ''PM10'' end) || '' CEFF,'' || 
+		(case when poll = ''PM10'' then ''PM25-PRI'' else ''PM10'' end) || '' CEFF,'' || 
 		coalesce(
 			case 
 				when coalesce(lagging_ceff,0.0) <> 0.0 then lagging_ceff 
@@ -258,7 +258,7 @@ BEGIN
 			from emissions.' || inv_table_name || ' a
 
 			where ' || inv_filter || '
-				and a.poll in (''PM10'',''PM2_5'')
+				and a.poll in (''PM10'',''PM25-PRI'')
 
 			WINDOW source_window AS (PARTITION BY ' || fips_expression || ' ,scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ' order by ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ')
 		) foo

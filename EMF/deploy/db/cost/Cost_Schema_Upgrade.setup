@@ -1567,3 +1567,33 @@ where name = 'Type 13';
 --4/1/2014 - need to make list_index not nullable, for some reason nulls were introduced
 ALTER TABLE emf.control_measure_sectors ALTER COLUMN list_index SET NOT NULL;
 
+
+-- 04/28/2014 Add new SO2 and PM2.5 equation types
+insert into emf.equation_types (name, description, inventory_fields, equation) values 
+('Type 14', 'Fabric Filter Cost Equations', 'design_capacity, design_capacity_units, stkflow, stktemp, annual_avg_hours_per_year', ''),
+('Type 15', 'Electrostatic Precipitator Cost Equations', 'design_capacity, design_capacity_units, stkflow, stktemp, annual_avg_hours_per_year', ''),
+('Type 16', 'Wet Scrubber Cost Equations', 'design_capacity, design_capacity_units, stkflow, stktemp, annual_avg_hours_per_year', ''),
+('Type 17', 'Dry Injection/Fabric Filter System (Diff) Cost Equations', 'design_capacity, design_capacity_units, stkflow, stktemp, annual_avg_hours_per_year', ''),
+('Type 18', 'Increased Caustic Injection Rate for Existing Dry Injection Control Cost Equations', 'design_capacity, design_capacity_units, stkflow, stktemp, annual_avg_hours_per_year', ''),
+('Type 19', 'Spray Dryer Absorber Cost Equations', 'design_capacity, design_capacity_units, stkflow, stktemp, annual_avg_hours_per_year', '');
+
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Stack Gas Moisture Content, %', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e
+where name = 'Type 14';
+
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Stack Gas Moisture Content, %', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e
+where name = 'Type 17';
+
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Stack Gas Moisture Content, %', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e
+where name = 'Type 18';
+
+insert into emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+select e.id, 'Stack Gas Moisture Content, %', (select COALESCE(max(file_col_position) + 1, 1) from emf.equation_type_variables where equation_type_id = e.id) as file_col_position, (select COALESCE(max(list_index) + 1, 0) from emf.equation_type_variables where equation_type_id = e.id) as list_index
+from emf.equation_types as e
+where name = 'Type 19';
+

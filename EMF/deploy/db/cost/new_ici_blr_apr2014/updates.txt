@@ -1,0 +1,16 @@
+Cost_Schema_Upgrade.setup
+- Add new SO2 and PM2.5 equation types for ICI boilers
+
+functions/cost_equations_v2.sql
+- Update definitions for equations 14 through 19
+
+functions/get_stkflow_expression.sql
+- Prefer inventory stack flow over calculated value
+
+functions/populate_least_cost_strategy_worksheet.sql
+functions/populate_max_emis_red_strategy_messages.sql
+functions/populate_strategy_messages.sql
+functions/run_max_emis_red_strategy.sql
+functions/run_multi_pollutant_max_emis_red_strategy.sql
+functions/run_multi_pollutant_max_emis_red_strategy_finalize.sql
+- Match pollutant named "PM25-PRI" instead of "PM2_5"
