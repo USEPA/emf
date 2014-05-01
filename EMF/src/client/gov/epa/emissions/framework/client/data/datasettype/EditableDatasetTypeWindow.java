@@ -274,7 +274,8 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
             keywordsPanel.commit();
             qaStepTemplatesPanel.commit();
             //DatasetType type;
-            presenter.doSave(name.getText(), description.getText(), keywordsTableData.sources(), sortOrder.getText());
+            presenter.doSave(name.getText(), description.getText(), keywordsTableData.sources(), sortOrder.getText()
+                    , qaStepTemplatesPanel.getQAStepTemps());
         } catch (EmfException e) {
             messagePanel.setError("Could not save: " + e.getMessage());
         }

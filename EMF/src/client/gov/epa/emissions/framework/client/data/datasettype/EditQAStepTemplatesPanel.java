@@ -106,6 +106,10 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
 
         return new JScrollPane(table);
     }
+    
+    public QAStepTemplate[] getQAStepTemps(){
+        return tableData.sources();
+    }
 
     private String getCellTip(MouseEvent e, EditableTable table) {
         Point p = e.getPoint();
