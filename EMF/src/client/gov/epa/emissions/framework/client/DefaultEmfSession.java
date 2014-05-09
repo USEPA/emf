@@ -61,12 +61,17 @@ public class DefaultEmfSession implements EmfSession {
     
     Cache<ObjectCacheType, Object> objectCache;
     
-    private enum ObjectCacheType {
+    public Cache<ObjectCacheType, Object> getObjectCache() {
+        return objectCache;
+    }
+
+    public enum ObjectCacheType {
         LIGHT_DATASET_TYPES_LIST, PROJECTS_LIST
     }
     
     public DefaultEmfSession(final User user, ServiceLocator locator) throws EmfException {
         serviceLocator = locator;
+        locator.setEmfSession(this);
         this.preferences = new DefaultUserPreferences();
         this.user = user;
         

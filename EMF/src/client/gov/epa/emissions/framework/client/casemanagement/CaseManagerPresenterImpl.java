@@ -45,6 +45,7 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
     public void display() {
         view.observe(this);
         view.display();
+        view.populate();
     }
 
     private CaseService service() {

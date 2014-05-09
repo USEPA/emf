@@ -9,4 +9,6 @@ public interface ImportView extends ManagedView {
 
     void setMessage(String message);
 
+    void populate();
+
 }

@@ -30,5 +30,7 @@ public interface DatasetsBrowserView extends ManagedView {
     void setDSTypeSelection(int index);
 
     void notifyAdvancedSearchOff();
+    
+    void populate();
 
 }

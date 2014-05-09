@@ -29,14 +29,19 @@ import gov.epa.emissions.framework.client.fast.MPSDTManagerView;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerWindow;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerView;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerWindow;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.MessagePanel;
 
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.SwingWorker;
 
 public class ManageMenu extends JMenu implements ManageMenuView {
 
@@ -49,17 +54,17 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private DesktopManager desktopManager;
 
     private ManageMenuPresenter presenter;
-    
-    private UserFeature[] exUserFeatures = {new UserFeature("total")};
-    
+
+    private UserFeature[] exUserFeatures = { new UserFeature("total") };
+
     private MessagePanel messagePanel;
 
     private static final String SHOW_MP_SDT_MENU = "SHOW_MP_SDT_MENU";
-    
+
     private static final String SHOW_SECTOR_SCENARIO_MENU = "SHOW_SECTOR_SCENARIO_MENU";
-    
+
     private static final String SHOW_CASES_MENU = "SHOW_CASES_MENU";
-    
+
     // FIXME: where's the associated Presenter ?
     public ManageMenu(EmfSession session, EmfConsole parent, MessagePanel messagePanel) {
         super("Manage");
@@ -263,12 +268,14 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     }
 
     private void doManageSectors(final EmfConsole parent, final MessagePanel messagePanel) {
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
             SectorsManagerView view = new SectorsManagerWindow(parent, desktopManager);
             presenter.doDisplaySectors(view);
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         }
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void doManageCases(final EmfConsole parent, final MessagePanel messagePanel) {
@@ -283,21 +290,25 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     }
 
     private void doManageControlStrategies(final EmfConsole parent, final MessagePanel messagePanel) {
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ControlStrategyManagerView view = new ControlStrategyManagerWindow(parent, session, desktopManager);
         try {
             presenter.doDisplayControlStrategies(view);
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         }
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void doManageControlPrograms(final EmfConsole parent, final MessagePanel messagePanel) {
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ControlProgramManagerView view = new ControlProgramManagerWindow(parent, session, desktopManager);
         try {
             presenter.doDisplayControlPrograms(view);
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         }
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void doManageSectorScenario(final EmfConsole parent, final MessagePanel messagePanel) {
@@ -306,10 +317,10 @@ public class ManageMenu extends JMenu implements ManageMenuView {
             presenter.doDisplaySectorScenarios(view);
         } catch (EmfException e) {
             e.printStackTrace();
-            messagePanel.setError("Problem in showing all sector scenario: " +e.getMessage());
+            messagePanel.setError("Problem in showing all sector scenario: " + e.getMessage());
         }
     }
-     
+
     private void doManageMPSDT(final EmfConsole parent, final MessagePanel messagePanel) {
         MPSDTManagerView view = new MPSDTManagerWindow(parent, session, desktopManager);
         try {
@@ -323,9 +334,9 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         String showMPSDTMenu = null;
         String showSectorScenarioMenu = null;
         String showCasesMenu = null;
-        
+
         exUserFeatures = session.user().getExcludedUserFeatures();
-        
+
         try {
             showMPSDTMenu = presenter.getPropertyValue(SHOW_MP_SDT_MENU);
             showSectorScenarioMenu = presenter.getPropertyValue(SHOW_SECTOR_SCENARIO_MENU);
@@ -334,10 +345,10 @@ public class ManageMenu extends JMenu implements ManageMenuView {
             // NOTE Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         super.add(createDatasets(parent, messagePanel));
-        
-        if ((showCasesMenu == null) || (!showCasesMenu.equalsIgnoreCase("false")) ) {
+
+        if ((showCasesMenu == null) || (!showCasesMenu.equalsIgnoreCase("false"))) {
             if (!excludeItem("Cases"))
                 super.add(createCases(parent, messagePanel));
         }
@@ -349,36 +360,80 @@ public class ManageMenu extends JMenu implements ManageMenuView {
             super.add(createControlMeasures(parent, messagePanel));
         if (!excludeItem("Control Strategies"))
             super.add(createControlStrategies(parent, messagePanel));
-        if (!excludeItem("Control Programs")){
+        if (!excludeItem("Control Programs")) {
             super.add(createControlPrograms(parent, messagePanel));
             super.addSeparator();
         }
         if ((showSectorScenarioMenu == null) || (!showSectorScenarioMenu.equalsIgnoreCase("false"))) {
-            if (!excludeItem("Sector Scenario")){
+            if (!excludeItem("Sector Scenario")) {
                 super.add(createSectorScenario(parent, messagePanel));
                 super.addSeparator();
             }
         }
         if ((showMPSDTMenu == null) || (!showMPSDTMenu.equalsIgnoreCase("false"))) {
-            if (!excludeItem("MP-SDT")){
+            if (!excludeItem("MP-SDT")) {
                 super.add(createMPSDT(parent, messagePanel));
                 super.addSeparator();
             }
         }
 
-        if (!excludeItem("Users")){
+        if (!excludeItem("Users")) {
             manageUsers(session.user(), messagePanel);
         }
         super.add(createMyProfile(session, messagePanel));
 
     }
-    
-    private Boolean excludeItem(String name){
-        Boolean exclude = false;         
+
+    private Boolean excludeItem(String name) {
+        Boolean exclude = false;
         for (int i = 0; i < exUserFeatures.length; i++) {
-            if (exUserFeatures[i].getName().contains(name)) exclude = true;
+            if (exUserFeatures[i].getName().contains(name))
+                exclude = true;
         }
         return exclude;
     }
 
+    // Instances of javax.swing.SwingWorker are not reusuable, so
+    // we create new instances as needed.
+    private class SwingWorkerTask extends SwingWorker<Void, Void> {
+
+        private Container parentContainer;
+
+        public SwingWorkerTask(Container parentContainer) {
+            this.parentContainer = parentContainer;
+            this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+
+        /*
+         * Main task. Executed in background thread. don't update gui here
+         */
+        @Override
+        public Void doInBackground() throws EmfException {
+            // add long running code here...
+            return null;
+        }
+
+        /*
+         * Executed in event dispatching thread
+         */
+        @Override
+        public void done() {
+            try {
+                // make sure something didn't happen
+                get();
+
+            } catch (InterruptedException e1) {
+                // messagePanel.setError(e1.getMessage());
+                // setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                // messagePanel.setError(e1.getCause().getMessage());
+                // setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                // this.parentContainer.setCursor(null); //turn off the wait cursor
+                // this.parentContainer.
+                // ComponentUtility.enableComponents(this.parentContainer, true);
+                this.parentContainer.setCursor(null); // turn off the wait cursor
+            }
+        }
+    };
 }

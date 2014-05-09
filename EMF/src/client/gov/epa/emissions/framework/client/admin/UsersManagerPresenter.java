@@ -28,7 +28,8 @@ public class UsersManagerPresenter implements RefreshObserver {
         this.view = view;
         view.observe(this);
 
-        view.display(service.getUsers());
+        view.display();
+        view.populate();
     }
 
     public void doDelete(User[] users) throws EmfException {
@@ -94,6 +95,10 @@ public class UsersManagerPresenter implements RefreshObserver {
             UserView viewable = view.getUserView();
             doUpdateUser(users[i], updatable, viewable);
         }
+    }
+    
+    public User[] getUsers() throws EmfException {
+        return service.getUsers();
     }
 
 }

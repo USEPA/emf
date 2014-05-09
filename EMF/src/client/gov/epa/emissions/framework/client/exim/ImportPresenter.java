@@ -54,8 +54,9 @@ public class ImportPresenter {
         view.setDefaultBaseFolder(getDefaultBaseFolder());
 
         view.display();
+        view.populate();
     }
-
+    
     private String getDefaultBaseFolder() {
         String folder = session.preferences().inputFolder();
         if (folder == null || folder.trim().isEmpty())

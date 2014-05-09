@@ -15,5 +15,9 @@ public interface UsersManagerView extends EmfView {
 
     void refresh(User[] users);
 
-    void display(User[] users);
+    void display();
+    
+    void populate();
+    
+    
 }

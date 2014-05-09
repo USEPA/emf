@@ -50,9 +50,11 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     private DoubleRenderer doubleRenderer; 
 
     private Page page;
+    
+    private DataEditor dataEditor;
 
     public EditorPanel(EmfDataset dataset, Version version, TableMetadata tableMetadata, 
-            MessagePanel messagePanel, ManageChangeables changeablesList) {
+            MessagePanel messagePanel, ManageChangeables changeablesList, DataEditor dataEditor) {
         super(new BorderLayout());
         super.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         
@@ -65,7 +67,7 @@ public class EditorPanel extends JPanel implements EditorPanelView {
         this.tableMetadata = tableMetadata;
         this.messagePanel = messagePanel;
         this.changeablesList = changeablesList;
-
+        this.dataEditor = dataEditor;
         doLayout(messagePanel);
     }
 
@@ -116,7 +118,7 @@ public class EditorPanel extends JPanel implements EditorPanelView {
             editablePage.setDatasetName(dataset.getName());
 
             editablePagePanel = new EditablePagePanel(editablePage, paginationPanel, messagePanel, changeablesList,
-                    this.doubleRenderer);
+                    this.doubleRenderer, this.dataEditor);
             editablePagePanel.setDesktopManager(desktopManager);
             editablePagePanel.setEmfSession(emfSession);
             editablePagePanel.setRowFilter(sortFilterPanel.getRowFilter());

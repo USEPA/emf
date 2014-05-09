@@ -6,18 +6,19 @@ import gov.epa.emissions.framework.client.transport.RemoteServiceLocator;
 import gov.epa.emissions.framework.client.transport.ServiceLocator;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class EMFClient {
     private static final String DEFAULT_URL = "http://localhost:8080/emf/services";// default
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length == 1 && args[0].equalsIgnoreCase("Help")) {
             displayHelp();
             return;
         }
 
-        run(args);
-    }
+               run(args);
+        }
 
     private static void displayHelp() {
         System.out.println("Usage\njava "
@@ -28,8 +29,12 @@ public class EMFClient {
                         + "\n\tspecify '-DUSER_PREFERENCES=<full path to EMFPrefs.txt>' to override location of User Preferences");
     }
 
-    private static void run(String[] args) throws Exception {
-      try
+    private static void run(final String[] args) throws Exception {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+       try
       {
         String url = DEFAULT_URL;
         System.setProperty("emf.remote.host", "localhost");
@@ -54,8 +59,10 @@ public class EMFClient {
       {
           System.out.println("Exception starting client: "+exc.getMessage());
           exc.printStackTrace();
-          throw exc;
+//          throw exc;
       }
+            }
+        });
     }
     
     private static void setHost(String url) {

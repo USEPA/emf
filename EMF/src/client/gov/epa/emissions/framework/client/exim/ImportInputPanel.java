@@ -7,6 +7,7 @@ import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.BrowseButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
@@ -16,10 +17,13 @@ import gov.epa.emissions.framework.ui.ImageResources;
 import gov.epa.emissions.framework.ui.MessagePanel;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -34,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingWorker;
 
 public class ImportInputPanel extends JPanel {
 
@@ -63,14 +68,16 @@ public class ImportInputPanel extends JPanel {
 
     private EmfSession session;
 
-    public ImportInputPanel(EmfSession session, DataCommonsService service, MessagePanel messagePanel, EmfConsole parent, DatasetType dsType)
+    private ImportWindow importWindow;
+    
+    public ImportInputPanel(EmfSession session, DataCommonsService service, MessagePanel messagePanel, EmfConsole parent, DatasetType dsType, ImportWindow importWindow)
             throws EmfException {
         this.messagePanel = messagePanel;
         this.service = service;
         this.parent = parent;
         this.defaultDSType = dsType;
         this.session = session;
-
+        this.importWindow = importWindow;
         initialize();
     }
 
@@ -131,20 +138,12 @@ public class ImportInputPanel extends JPanel {
         this.setLayout(new BorderLayout(10,10));
         this.add(mainPanel,BorderLayout.NORTH);
         this.add(isMultipleDatasets);
-
     }
 
-    private JComboBox typesComboBox() {
-        DatasetType[] allDatasetTypes = session.getLightDatasetTypes();
-        DatasetType[] allTypesWithMessage = new DatasetType[allDatasetTypes.length + 1];
-        copyDatasetTypes(allDatasetTypes, allTypesWithMessage);
-        datasetTypesModel = new DefaultComboBoxModel(allTypesWithMessage);
+    private JComboBox typesComboBox() throws EmfException {
+        datasetTypesModel = new DefaultComboBoxModel(new DatasetType[] {});//allTypesWithMessage);
         JComboBox datasetTypesComboBox = new JComboBox(datasetTypesModel);
         datasetTypesComboBox.setName("datasetTypes");
-
-        if (this.defaultDSType != null && !defaultDSType.getName().equalsIgnoreCase("Select one")
-                && !defaultDSType.getName().equalsIgnoreCase("All"))
-            datasetTypesComboBox.setSelectedItem(defaultDSType);
 
         datasetTypesComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -334,4 +333,64 @@ public class ImportInputPanel extends JPanel {
         messagePanel.clear();
     }
 
+    public void populate() {
+
+        //long running methods.....
+        this.importWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//        ComponentUtility.enableComponents(this, false);
+        ComponentUtility.enableComponents(this.importWindow, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class GetDatasetsTask extends SwingWorker<DatasetType[], Void> {
+            
+            private Container parentContainer;
+
+            public GetDatasetsTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public DatasetType[] doInBackground() throws EmfException  {
+                return service.getDatasetTypes();
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    DatasetType[] allDatasetTypes = get();
+                    DatasetType[] allTypesWithMessage = new DatasetType[allDatasetTypes.length + 1];
+                    copyDatasetTypes(allDatasetTypes, allTypesWithMessage);
+
+                    datasetTypesModel = new DefaultComboBoxModel(allTypesWithMessage);
+                    datasetTypesComboBox.setModel(datasetTypesModel);
+                    
+                    if (defaultDSType != null && !defaultDSType.getName().equalsIgnoreCase("Select one")
+                            && !defaultDSType.getName().equalsIgnoreCase("All"))
+                        datasetTypesComboBox.setSelectedItem(defaultDSType);
+
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(this.parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new GetDatasetsTask(this.importWindow).execute();
+    }
 }

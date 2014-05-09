@@ -13,6 +13,7 @@ import gov.epa.emissions.framework.client.ManagedView;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.notes.NewNoteDialog;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DatasetNote;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -24,14 +25,17 @@ import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class DataEditor extends DisposableInteralFrame implements DataEditorView {
 
@@ -122,11 +126,61 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
         lockInfo.setText("Lock expires at " + format(end) + "  ");
     }
 
-    private JPanel tablePanel(Version version, String table, TableMetadata tableMetadata) {
-        pageContainer = new EditorPanel(dataset, version, tableMetadata, messagePanel, this);
+    private JPanel tablePanel(Version version, final String table, TableMetadata tableMetadata) {
+        pageContainer = new EditorPanel(dataset, version, tableMetadata, messagePanel, this, this);
         pageContainer.setDesktopManager(desktopManager);
         pageContainer.setEmfSession(presenter.getEmfSession());
         displayTable(table);
+//        
+//        ComponentUtility.enableComponents(this, false);
+//
+//        //long running methods.....
+//        
+//        //Instances of javax.swing.SwingWorker are not reusuable, so
+//        //we create new instances as needed.
+//        class LoadTableTask extends SwingWorker<Void, Void> {
+//            
+//            private Container parentContainer;
+//
+//            public LoadTableTask(Container parentContainer) {
+//                this.parentContainer = parentContainer;
+//            }
+//
+//            /*
+//             * Main task. Executed in background thread.
+//             * don't update gui here
+//             */
+//            @Override
+//            public Void doInBackground() throws EmfException  {
+//                displayTable(table);
+//                return null;
+//            }
+//
+//            /*
+//             * Executed in event dispatching thread
+//             */
+//            @Override
+//            public void done() {
+//                try {
+//                    //make sure something didn't happen
+//                    get();
+//                    
+//                } catch (InterruptedException e1) {
+////                    messagePanel.setError(e1.getMessage());
+////                    setErrorMsg(e1.getMessage());
+//                } catch (ExecutionException e1) {
+////                    messagePanel.setError(e1.getCause().getMessage());
+////                    setErrorMsg(e1.getCause().getMessage());
+//                } finally {
+////                    this.parentContainer.setCursor(null); //turn off the wait cursor
+////                    this.parentContainer.
+//                    ComponentUtility.enableComponents(parentContainer, true);
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                }
+//            }
+//        };
+//        new LoadTableTask(this).execute();
+        
 
         return pageContainer;
     }

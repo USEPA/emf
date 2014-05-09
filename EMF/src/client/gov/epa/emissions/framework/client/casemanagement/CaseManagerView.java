@@ -24,4 +24,6 @@ public interface CaseManagerView extends ManagedView {
     void setMessage(String message);
 
     void displayCaseComparisonResult(String string, String absolutePath);
+
+    void populate();
 }

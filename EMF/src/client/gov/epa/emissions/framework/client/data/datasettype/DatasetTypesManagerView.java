@@ -11,5 +11,7 @@ public interface DatasetTypesManagerView extends ManagedView {
 
     EmfConsole getParentConsole();
 
-    void display(DatasetType[] datasetTypes);
+    void display();
+    
+    void populate();
 }

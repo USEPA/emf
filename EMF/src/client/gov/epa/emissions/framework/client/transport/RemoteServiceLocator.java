@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.transport;
 
+import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.LoggingService;
 import gov.epa.emissions.framework.services.basic.UserService;
@@ -55,6 +56,8 @@ public class RemoteServiceLocator implements ServiceLocator {
     
     private FastService fastService;
     
+    private EmfSession emfSession;
+    
     public RemoteServiceLocator(String baseUrl) throws Exception {
         this.baseUrl = baseUrl;
         editCall = this.createSessionEnabledCall("DataEditor Service", baseUrl
@@ -98,7 +101,8 @@ public class RemoteServiceLocator implements ServiceLocator {
 
     public DataCommonsService dataCommonsService() {
         if (dataCommonsService == null)
-            dataCommonsService = new DataCommonsServiceTransport(baseUrl + "/gov.epa.emf.services.data.DataCommonsService");
+            dataCommonsService = new DataCommonsServiceTransport(baseUrl + "/gov.epa.emf.services.data.DataCommonsService",
+                    emfSession);
         
         return dataCommonsService;
     }
@@ -181,4 +185,9 @@ public class RemoteServiceLocator implements ServiceLocator {
         return callFactory.createSessionEnabledCall(service);
     }
 
+
+    @Override
+    public void setEmfSession(EmfSession emfSession) {
+        this.emfSession = emfSession;
+    }
 }

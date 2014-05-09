@@ -14,6 +14,7 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.editor.DataEditor;
 import gov.epa.emissions.framework.client.data.viewer.DataViewer;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.Border;
@@ -23,11 +24,14 @@ import gov.epa.emissions.framework.ui.ScrollableTable;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,6 +40,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 import javax.swing.border.CompoundBorder;
 
 public class EditVersionsPanel extends JPanel implements EditVersionsView {
@@ -434,15 +439,62 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
     private void doView(final JComboBox tableCombo) {
         clear();
 
-        String table = (String) tableCombo.getSelectedItem();
-        Version[] versions = tableData.selected();
+        final String table = (String) tableCombo.getSelectedItem();
+        final Version[] versions = tableData.selected();
         if (versions.length < 1) {
             displayError("Please select at least one version to view");
             return;
         }
 
-        for (int i = 0; i < versions.length; i++)
-            showView(table, versions[i]);
+        //long running methods.....
+        this.getParent().getParent().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this.getParent().getParent(), false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class ViewDatasetTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public ViewDatasetTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (int i = 0; i < versions.length; i++)
+                    showView(table, versions[i]);
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new ViewDatasetTask(this.getParent().getParent()).execute();
     }
 
     private void showView(String table, Version version) {
@@ -502,14 +554,62 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
     private void doEdit(final JComboBox tableCombo) {
         clear();
 
-        String table = (String) tableCombo.getSelectedItem();
-        Version[] versions = tableData.selected();
+        final String table = (String) tableCombo.getSelectedItem();
+        final Version[] versions = tableData.selected();
         if (versions.length != 1) {
             displayError("Please select a single version to edit");
             return;
         }
 
-        showEditor(table, versions[0]);
+        //long running methods.....
+        this.getParent().getParent().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this.getParent().getParent(), false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class EditDatasetTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public EditDatasetTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                showEditor(table, versions[0]);
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new EditDatasetTask(this.getParent().getParent()).execute();
+        
     }
 
     private void showEditor(String table, Version version) {

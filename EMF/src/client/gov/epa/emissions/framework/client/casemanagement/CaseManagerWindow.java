@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.casemanagement;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
@@ -18,6 +19,7 @@ import gov.epa.emissions.framework.client.casemanagement.sensitivity.Sensitivity
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseCategory;
@@ -29,6 +31,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -38,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -46,6 +50,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class CaseManagerWindow extends ReusableInteralFrame implements CaseManagerView, RefreshObserver {
 
@@ -67,7 +72,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
     
     private TextField nameFilter;
 
-    private List<CaseCategory> categories;
+    private List<CaseCategory> categories = new ArrayList<CaseCategory>();
 
     private CaseCategory selectedCategory;
 
@@ -116,11 +121,11 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
     private void doLayout(Case[] cases) {
         messagePanel = new SingleLineMessagePanel();
 
-        try {
-            getAllCategories();
-        } catch (EmfException e) {
-            messagePanel.setError(e.getMessage());
-        }
+//        try {
+//            getAllCategories();
+//        } catch (EmfException e) {
+//            messagePanel.setError(e.getMessage());
+//        }
 
         createCategoriesComboBox();
         setupTableModel(cases);
@@ -152,7 +157,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         categories.addAll(Arrays.asList(presenter.getCategories()));
     }
 
-    private void createCategoriesComboBox() {
+    private void createCategoriesComboBox() { 
         categoriesBox = new ComboBox("Select one", categories.toArray(new CaseCategory[0]));
         categoriesBox.setPreferredSize(new Dimension(360, 20));
         
@@ -605,5 +610,56 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         AnalysisEngineTableApp app = new AnalysisEngineTableApp("View QA Step Results: " + qaStepName, new Dimension(500, 500), desktopManager, parentConsole);
         app.display(new String[] { exportedFileName });
     }   
+    
+    @Override
+    public void populate() {
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
 
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class GetDatasetTypesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public GetDatasetTypesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                getAllCategories();
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    categoriesBox.resetModel(categories.toArray(new CaseCategory[0]));
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new GetDatasetTypesTask(this).execute();
+    }
 }

@@ -35,8 +35,8 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
     }
 
     public void display() throws EmfException {
-        view.display(service().getControlStrategies());
         view.observe(this);
+        view.display(service().getControlStrategies());
     }
 
     private ControlStrategyService service() {

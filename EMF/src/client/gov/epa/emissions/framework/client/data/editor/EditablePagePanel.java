@@ -11,6 +11,7 @@ import gov.epa.emissions.framework.client.data.DateRenderer;
 import gov.epa.emissions.framework.client.data.DoubleRenderer;
 import gov.epa.emissions.framework.client.data.ObserverPanel;
 import gov.epa.emissions.framework.client.data.viewer.TablePresenter;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataService;
 import gov.epa.emissions.framework.ui.EditableEmfTableModel;
@@ -20,6 +21,7 @@ import gov.epa.emissions.framework.ui.ScrollableTable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -40,6 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
@@ -79,8 +83,10 @@ public class EditablePagePanel extends JPanel {
 
     private DoubleRenderer doubleRenderer;
     
+    private DataEditor dataEditor;
+    
     public EditablePagePanel(EditablePage page, ObserverPanel observer, MessagePanel messagePanel,
-            ManageChangeables listOfChangeables, DoubleRenderer doubleRenderer) {
+            ManageChangeables listOfChangeables, DoubleRenderer doubleRenderer, DataEditor dataEditor) {
 
         this.doubleRenderer = doubleRenderer;
         
@@ -91,6 +97,7 @@ public class EditablePagePanel extends JPanel {
         this.rowsCopiedHighlighted = null;
         this.rowsCopiedSelected = null;
         this.selectedRecords = null;
+        this.dataEditor = dataEditor;
         setupLayout();
     }
     
@@ -462,7 +469,7 @@ public class EditablePagePanel extends JPanel {
         }
     }
 
-    private int deleteRecords(final EditablePage tableData, int rowCount) throws EmfException {
+    private int deleteRecords(final EditablePage tableData, final int rowCount) throws EmfException {
         String ls = System.getProperty("line.separator");
         String msg = "You have chosen to delete all records on the current page. " + ls
                 + "Would you also like to delete records not shown on this page";
@@ -494,17 +501,77 @@ public class EditablePagePanel extends JPanel {
 
             if (goDelete == JOptionPane.YES_OPTION) {
                 try {
-                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    this.dataEditor.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     tableData.removeSelected();
-                    deleteAllRecords(tableData);
-                    this.observer.update(-rowCount);
-                    refresh();
-                    observer.refresh(rowFilter.getText(), sortOrder.getText());
+
+                    ComponentUtility.enableComponents(this.dataEditor, false);
+
+                    //long running methods.....
+                    
+                    //Instances of javax.swing.SwingWorker are not reusuable, so
+                    //we create new instances as needed.
+                    class DeleteAllRecordsTask extends SwingWorker<Void, Void> {
+                        
+                        private Container parentContainer;
+
+                        public DeleteAllRecordsTask(Container parentContainer) {
+                            this.parentContainer = parentContainer;
+                        }
+
+                        /*
+                         * Main task. Executed in background thread.
+                         * don't update gui here
+                         */
+                        @Override
+                        public Void doInBackground() throws EmfException  {
+                            deleteAllRecords(tableData);
+                            return null;
+                        }
+
+                        /*
+                         * Executed in event dispatching thread
+                         */
+                        @Override
+                        public void done() {
+                            try {
+                                //make sure something didn't happen
+                                get();
+                                
+                                observer.update(-rowCount);
+                                refresh();
+                                observer.refresh(rowFilter.getText(), sortOrder.getText());
+
+//                                presenter.applyConstraint(rowFilter, sortOrder.getText().trim());
+//                                resetDataeditorRevisionField();
+                                messagePanel.setMessage("Successfully deleted records.");
+                            } catch (InterruptedException e1) {
+                                messagePanel.setError(e1.getMessage());
+//                                setErrorMsg(e1.getMessage());
+                            } catch (ExecutionException e1) {
+                                messagePanel.setError(e1.getCause().getMessage());
+//                                setErrorMsg(e1.getCause().getMessage());
+                            } catch (EmfException e2) {
+                                messagePanel.setError(e2.getMessage());
+//                                setErrorMsg(e2.getMessage());
+                            } finally {
+//                                this.parentContainer.setCursor(null); //turn off the wait cursor
+//                                this.parentContainer.
+                                ComponentUtility.enableComponents(parentContainer, true);
+                                this.parentContainer.setCursor(null); //turn off the wait cursor
+                            }
+                        }
+                    };
+                    new DeleteAllRecordsTask(this.dataEditor).execute();
+                
+                
+                
+                
                 } catch (RuntimeException e) {
                     e.printStackTrace();
-                } finally {
-                    setCursor(Cursor.getDefaultCursor());
-                }
+                } 
+//                finally {
+//                    setCursor(Cursor.getDefaultCursor());
+//                }
             }
 
             return JOptionPane.YES_OPTION;

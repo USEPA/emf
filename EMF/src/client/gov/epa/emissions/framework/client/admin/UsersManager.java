@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.admin;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
@@ -9,6 +10,7 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
@@ -17,15 +19,20 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class UsersManager extends ReusableInteralFrame implements UsersManagerView, RefreshObserver {
 
@@ -54,11 +61,11 @@ public class UsersManager extends ReusableInteralFrame implements UsersManagerVi
         this.getContentPane().add(layout);
     }
 
-    public void display(User[] users) {
+    public void display() {
         layout.setLayout(new BorderLayout());
 
         layout.add(topPanel(), BorderLayout.NORTH);
-        layout.add(tablePanel(users), BorderLayout.CENTER);
+        layout.add(tablePanel(), BorderLayout.CENTER);
         layout.add(createControlPanel(), BorderLayout.SOUTH);
         
         super.display();
@@ -103,9 +110,9 @@ public class UsersManager extends ReusableInteralFrame implements UsersManagerVi
         return panel;
     }
 
-    private JPanel tablePanel(User[] users) {
+    private JPanel tablePanel() {
         tablePanel = new JPanel(new BorderLayout());
-        tableData = new UsersTableData(users);
+        tableData = new UsersTableData(new User[] {});//User[] users
         table = new SelectableSortFilterWrapper(parentConsole, tableData, null);
         tablePanel.add(table);
         return tablePanel;
@@ -252,6 +259,60 @@ public class UsersManager extends ReusableInteralFrame implements UsersManagerVi
 
     public void observe(UsersManagerPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void populate() {
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//        ComponentUtility.enableComponents(this, false);
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class GetUsersTask extends SwingWorker<User[], Void> {
+            
+            private Container parentContainer;
+
+            public GetUsersTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public User[] doInBackground() throws EmfException  {
+                return presenter.getUsers();
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    refresh(get());//User[] users
+
+                
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(this.parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new GetUsersTask(this).execute();
+        
     }
 
 }

@@ -22,7 +22,8 @@ public class DatasetTypesManagerPresenter implements RefreshObserver {
 
     public void doDisplay() throws EmfException {
         view.observe(this);
-        view.display(service().getDatasetTypes());
+        view.display();
+        view.populate();
     }
 
     private DataCommonsService service() {
@@ -101,6 +102,10 @@ public class DatasetTypesManagerPresenter implements RefreshObserver {
 
     public void doRefresh() throws EmfException {
         view.refresh(service().getDatasetTypes());
+    }
+
+    public DatasetType[] getDatasetTypes() throws EmfException {
+        return service().getDatasetTypes();
     }
 
 }

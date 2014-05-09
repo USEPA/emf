@@ -23,6 +23,7 @@ import gov.epa.emissions.framework.client.exim.ImportWindow;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesEditor;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.client.meta.versions.VersionedDataWindow;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.EmfDatasetTableData;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -51,6 +53,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class DatasetsBrowserWindow extends ReusableInteralFrame implements DatasetsBrowserView, RefreshObserver {
 
@@ -66,7 +69,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
     
     private TextField textFilter;
 
-    private DatasetType[] allDSTypes;
+    private DatasetType[] allDSTypes = new DatasetType[] {};
 
     private SelectableSortFilterWrapper table;
     
@@ -78,12 +81,13 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
     }
 
     public void display(EmfDataset[] datasets) throws EmfException {
-        getAllDSTypes();
+//        getAllDSTypes();
         createDSTypesComboBox();
         JPanel panel = createLayout(datasets);
         Container contentPane = getContentPane();
         contentPane.add(panel);
         super.display();
+        populate();
     }
 
     private void getAllDSTypes() throws EmfException {
@@ -448,55 +452,196 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         clearMessage();
         // for now, don't get updated copies of datasets - see updateSelectedDatasets
         // List datasets = updateSelectedDatasets(getSelectedDatasets());
-        List datasets = getSelectedDatasets();
+        final List<EmfDataset> datasets = getSelectedDatasets();
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more Datasets");
             return;
         }
-        for (Iterator iter = datasets.iterator(); iter.hasNext();) {
-            DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-            EmfDataset dataset = (EmfDataset) iter.next();
-            presenter.doDisplayPropertiesView(view, dataset);
-        }
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class ViewDatasetPropertiesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public ViewDatasetPropertiesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                    EmfDataset dataset = (EmfDataset) iter.next();
+                    presenter.doDisplayPropertiesView(view, dataset);
+                }
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new ViewDatasetPropertiesTask(this).execute();
     }
 
     protected void doDisplayPropertiesEditor() {
         clearMessage();
-        List datasets = getSelectedDatasets();
+        final List<EmfDataset> datasets = getSelectedDatasets();
 
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more Datasets");
             return;
         }
-        for (Iterator iter = datasets.iterator(); iter.hasNext();) {
-            EmfDataset dataset = (EmfDataset) iter.next();
-            DatasetPropertiesEditor view = new DatasetPropertiesEditor(session, parentConsole, desktopManager);
-            try {
-                presenter.doDisplayPropertiesEditor(view, dataset);
-            } catch (EmfException e) {
-                showError(e.getMessage());
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class EditDatasetPropertiesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public EditDatasetPropertiesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
             }
-        }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+                    EmfDataset dataset = (EmfDataset) iter.next();
+                    DatasetPropertiesEditor view = new DatasetPropertiesEditor(session, parentConsole, desktopManager);
+                    try {
+                        presenter.doDisplayPropertiesEditor(view, dataset);
+                    } catch (EmfException e) {
+                        showError(e.getMessage());
+                    }
+                }
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new EditDatasetPropertiesTask(this).execute();
     }
 
     protected void doDisplayVersionedData() throws EmfException {
         clearMessage();
-        List datasets = getSelectedDatasets();
+        final List datasets = getSelectedDatasets();
 
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more Datasets");
             return;
         }
 
-        for (Iterator iter = datasets.iterator(); iter.hasNext();) {
-            VersionedDataWindow view = new VersionedDataWindow(parentConsole, desktopManager);
-            presenter.doDisplayVersionedData(view, (EmfDataset) iter.next());
-        }
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class EditDatasetTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public EditDatasetTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+                    VersionedDataWindow view = new VersionedDataWindow(parentConsole, desktopManager);
+                    presenter.doDisplayVersionedData(view, (EmfDataset) iter.next());
+                }
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new EditDatasetTask(this).execute();
     }
 
     private void doRemove() {
         clearMessage();
-        List<?> datasets = getSelectedDatasets();
+        final List<EmfDataset> datasets = getSelectedDatasets();
 
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more Datasets");
@@ -508,11 +653,58 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
                 JOptionPane.QUESTION_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
-            try {
-                presenter.doDeleteDataset(datasets.toArray(new EmfDataset[0]));
-            } catch (EmfException e) {
-                messagePanel.setMessage(e.getMessage());
-            }
+            //long running methods.....
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            ComponentUtility.enableComponents(this, false);
+
+            //Instances of javax.swing.SwingWorker are not reusuable, so
+            //we create new instances as needed.
+            class RemoveDatasetsTask extends SwingWorker<Void, Void> {
+                
+                private Container parentContainer;
+
+                public RemoveDatasetsTask(Container parentContainer) {
+                    this.parentContainer = parentContainer;
+                }
+
+                /*
+                 * Main task. Executed in background thread.
+                 * don't update gui here
+                 */
+                @Override
+                public Void doInBackground() throws EmfException  {
+                    try {
+                        presenter.doDeleteDataset(datasets.toArray(new EmfDataset[0]));
+                    } catch (EmfException e) {
+                        messagePanel.setMessage(e.getMessage());
+                    }
+                    return null;
+                }
+
+                /*
+                 * Executed in event dispatching thread
+                 */
+                @Override
+                public void done() {
+                    try {
+                        //make sure something didn't happen
+                        get();
+                        
+                    } catch (InterruptedException e1) {
+//                        messagePanel.setError(e1.getMessage());
+//                        setErrorMsg(e1.getMessage());
+                    } catch (ExecutionException e1) {
+//                        messagePanel.setError(e1.getCause().getMessage());
+//                        setErrorMsg(e1.getCause().getMessage());
+                    } finally {
+//                        this.parentContainer.setCursor(null); //turn off the wait cursor
+//                        this.parentContainer.
+                        ComponentUtility.enableComponents(parentContainer, true);
+                        this.parentContainer.setCursor(null); //turn off the wait cursor
+                    }
+                }
+            };
+            new RemoveDatasetsTask(this).execute();
         }
     }
 
@@ -548,12 +740,58 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
             int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
 
-            if (selection == JOptionPane.YES_OPTION)   
-                refresh(presenter.getEmfDatasets(getSelectedDSType(), textFilter.getText()));
-            return; 
+            if (selection == JOptionPane.NO_OPTION ||
+                    selection == JOptionPane.CANCEL_OPTION) {
+                return; 
+            }
         }
         
-        refresh(presenter.getEmfDatasets(getSelectedDSType(), textFilter.getText()));
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class RefreshDatasetsTask extends SwingWorker<EmfDataset[], Void> {
+            
+            private Container parentContainer;
+
+            public RefreshDatasetsTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public EmfDataset[] doInBackground() throws EmfException  {
+                return presenter.getEmfDatasets(getSelectedDSType(), textFilter.getText());
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    refresh(get());
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new RefreshDatasetsTask(this).execute();
     }
     
     public void notifyLockFailure(EmfDataset dataset) {
@@ -575,4 +813,54 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         
     }
 
+    public void populate() {
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class GetDatasetTypesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public GetDatasetTypesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                getAllDSTypes();
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    dsTypesBox.resetModel(allDSTypes);
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new GetDatasetTypesTask(this).execute();
+    }
 }

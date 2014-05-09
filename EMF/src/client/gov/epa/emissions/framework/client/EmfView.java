@@ -13,6 +13,8 @@ public interface EmfView {
 
     void display();
     
+//    void populate();
+//    
     void hideMe();
 
     Position getPosition();

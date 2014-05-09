@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.transport;
 
+import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.basic.LoggingService;
 import gov.epa.emissions.framework.services.basic.UserService;
 import gov.epa.emissions.framework.services.casemanagement.CaseAssistService;
@@ -53,4 +54,6 @@ public interface ServiceLocator {
     SectorScenarioService sectorScenarioService();
 
     FastService fastService();
+
+    void setEmfSession(EmfSession emfSession);
 }

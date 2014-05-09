@@ -48,7 +48,7 @@ public class ImportWindow extends ReusableInteralFrame implements ImportView {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         messagePanel = new SingleLineMessagePanel();
-        importInputPanel = new ImportInputPanel(session, service, messagePanel, parent, dsType);
+        importInputPanel = new ImportInputPanel(session, service, messagePanel, parent, dsType, this);
         panel.add(messagePanel);
         panel.add(importInputPanel);
         panel.add(createButtonsPanel());
@@ -110,5 +110,10 @@ public class ImportWindow extends ReusableInteralFrame implements ImportView {
     public void setMessage(String message) {
         importInputPanel.setMessage(message);
 
+    }
+
+    @Override
+    public void populate() {
+        importInputPanel.populate();
     }
 }

@@ -5,24 +5,32 @@ import gov.epa.emissions.framework.client.exim.ImportPresenter;
 import gov.epa.emissions.framework.client.exim.ImportWindow;
 import gov.epa.emissions.framework.client.login.LoginPresenter;
 import gov.epa.emissions.framework.client.login.LoginWindow;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.UserService;
 import gov.epa.emissions.framework.ui.MessagePanel;
 
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.SwingWorker;
 
 public class FileMenu extends JMenu {
 
     private DesktopManager desktopManager;
 
+//    private EmfConsole parent;
+
     // FIXME: where's the associated Presenter ?
     public FileMenu(EmfSession session, EmfConsole parent, MessagePanel messagePanel, DesktopManager desktopManager) {
         super("File");
         super.setName("file");
+//        this.parent = parent;
 
         super.add(createImport(session, messagePanel, parent));
 //        super.add(createTransfer(session, parent));
@@ -99,6 +107,7 @@ public class FileMenu extends JMenu {
         importMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
+                    //long running methods.....
                     displayImport(session, parent);
                 } catch (Exception e) {
                     messagePanel.setError(e.getMessage());
@@ -108,7 +117,9 @@ public class FileMenu extends JMenu {
         return importMenu;
     }
 
-    protected void displayImport(EmfSession session, EmfConsole parent) throws EmfException, Exception {
+    protected void displayImport(final EmfSession session, final EmfConsole parent) throws EmfException, Exception {
+
+//        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         ImportWindow importView = new ImportWindow(session, session.dataCommonsService(), desktopManager, parent, null);
         
@@ -116,6 +127,57 @@ public class FileMenu extends JMenu {
                     .eximService());
         
         importPresenter.display(importView);
-    }
+//        parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
+//        //Instances of javax.swing.SwingWorker are not reusuable, so
+//        //we create new instances as needed.
+//        class SwingWorkerTask extends SwingWorker<Void, Void> {
+//            
+//            private Container parentContainer;
+//
+//            public SwingWorkerTask(Container parentContainer) {
+//                this.parentContainer = parentContainer;
+//            }
+//
+//            /*
+//             * Main task. Executed in background thread.
+//             * don't update gui here
+//             */
+//            @Override
+//            public Void doInBackground() throws EmfException  {
+//
+//                ImportWindow importView = new ImportWindow(session, session.dataCommonsService(), desktopManager, parent, null);
+//                
+//                ImportPresenter importPresenter = new ImportPresenter(session, session.user(), session
+//                            .eximService());
+//                
+//                importPresenter.display(importView);
+//                return null;
+//            }
+//
+//            /*
+//             * Executed in event dispatching thread
+//             */
+//            @Override
+//            public void done() {
+//                //make sure something didn't happen
+//                try {
+//                    get();
+//                } catch (InterruptedException e) {
+//                    // NOTE Auto-generated catch block
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    // NOTE Auto-generated catch block
+//                    e.printStackTrace();
+//                } finally {
+//                    System.out.println("normal cursor");
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                }
+//            }
+//        };
+//        SwingWorkerTask task = new SwingWorkerTask(parent);
+//        task.execute();
+//        task.get();
+//        parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
 }

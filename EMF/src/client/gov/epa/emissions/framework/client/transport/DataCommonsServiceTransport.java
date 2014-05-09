@@ -13,6 +13,8 @@ import gov.epa.emissions.commons.data.UserFeature;
 import gov.epa.emissions.commons.db.intendeduse.IntendedUse;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
+import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.FileDownload;
@@ -32,9 +34,12 @@ public class DataCommonsServiceTransport implements DataCommonsService {
     
     private EmfCall call;
     
-    public DataCommonsServiceTransport(String endPoint) {
+    private EmfSession emfSession;
+    
+    public DataCommonsServiceTransport(String endPoint, EmfSession emfSession) {
         callFactory = new CallFactory(endPoint);
         mappings = new DataMappings();
+        this.emfSession = emfSession;
     }
 
     private EmfCall call() throws EmfException {
@@ -174,13 +179,18 @@ public class DataCommonsServiceTransport implements DataCommonsService {
     }
 
     public synchronized DatasetType updateDatasetType(DatasetType type) throws EmfException {
-        EmfCall call = call();
+        try {
+            EmfCall call = call();
 
-        call.setOperation("updateDatasetType");
-        call.addParam("type", mappings.datasetType());
-        call.setReturnType(mappings.datasetType());
+            call.setOperation("updateDatasetType");
+            call.addParam("type", mappings.datasetType());
+            call.setReturnType(mappings.datasetType());
 
-        return (DatasetType) call.requestResponse(new Object[] { type });
+            return (DatasetType) call.requestResponse(new Object[] { type });
+        } finally {
+            //make sure we refresh the client-side cache
+            this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
+        }
     }
 
     public synchronized DatasetType releaseLockedDatasetType(User owner, DatasetType type) throws EmfException {
@@ -252,13 +262,18 @@ public class DataCommonsServiceTransport implements DataCommonsService {
     }
 
     public synchronized Project addProject(Project project) throws EmfException {
-        EmfCall call = call();
+        try {
+            EmfCall call = call();
 
-        call.addParam("project", mappings.project());
-        call.setOperation("addProject");
-        call.setReturnType(mappings.project());
+            call.addParam("project", mappings.project());
+            call.setOperation("addProject");
+            call.setReturnType(mappings.project());
 
-        return (Project)call.requestResponse(new Object[] { project });
+            return (Project)call.requestResponse(new Object[] { project });
+        } finally {
+            //make sure we refresh the client-side cache
+            this.emfSession.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
+        }
     }
 
     public synchronized void addIntendedUse(IntendedUse intendedUse) throws EmfException {
@@ -289,6 +304,9 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.setVoidReturnType();
 
         call.request(new Object[] { type });
+        
+        //make sure we refresh the client-side cache
+        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
     }
 
     public synchronized DatasetNote[] getDatasetNotes(int datasetId) throws EmfException {
@@ -617,6 +635,9 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.setVoidReturnType();
         
         call.request(new Object[]{type, format, formatFile});
+        
+        //make sure we refresh the client-side cache
+        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
     }
 
     public void deleteDatasetTypes(User owner, DatasetType[] types) throws EmfException {
@@ -628,6 +649,9 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.setVoidReturnType();
         
         call.request(new Object[]{owner, types}); 
+        
+        //make sure we refresh the client-side cache
+        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
     }
 
     public synchronized FileDownload[] getFileDownloads(Integer userId) throws EmfException {
