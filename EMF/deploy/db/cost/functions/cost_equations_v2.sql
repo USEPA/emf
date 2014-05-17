@@ -710,8 +710,8 @@ Is SO2 concentration based on measure inlet or outlet rate?
 t18_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 18'' and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
 t18_fa := '(' || stkflow_expression || ')';
-t18_fd := '((' || t17_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
-t18_so2_conc := '((' || emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t17_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0))) * 10^6';
+t18_fd := '((' || t18_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
+t18_so2_conc := '((' || emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t18_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0))) * 10^6';
 t18_tci := '0.0';
 t18_tac := '(0.00000387) * (' || t18_so2_conc || ') * (' || t18_fd || ') * (' || inv_table_alias || '.annual_avg_hours_per_year)';
 
@@ -760,9 +760,9 @@ Is SO2 concentration based on measure inlet or outlet rate?
 t19_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 19'' and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
 t19_fa := '(' || stkflow_expression || ')';
-t19_fd := '((' || t17_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
-t19_noducts := '(case when  ' || t17_fd || ' <= 154042.0 then 1 else round(' || t17_fd || ' / 154042.0) end)';
-t19_so2_conc := '((' || emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t17_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0))) * 10^6';
+t19_fd := '((' || t19_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
+t19_noducts := '(case when  ' || t19_fd || ' <= 154042.0 then 1 else round(' || t19_fd || ' / 154042.0) end)';
+t19_so2_conc := '((' || emis_sql || ') * 2000.0 / (64.06) / ' || inv_table_alias || '.annual_avg_hours_per_year / 60 * ((0.7302 * 520) / (1.0)) / (	(' || t19_fa || ') * 520 / ((' || inv_table_alias || '.stktemp) + 460.0))) * 10^6';
 t19_tci := '((143.76) * (' || t19_fd || '))+((0.610) * (sqrt(' || t19_fa || ')/' || t19_noducts || ')^2 )+((17412.26) * exp((0.017) * (sqrt(' || t19_fa || ')/' || t19_noducts || ')))+((53.973) * exp((0.014) * (sqrt(' || t19_fa || ')/' || t19_noducts || ')))+(931911.04)';
 t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) * (' || t19_fd || '))+((0.000000684) * (' || t19_so2_conc || ') * (' || t19_fd || '))+((0.0000372) * (' || t19_fa || '))+(21.157))+((0.072+(' || capital_recovery_factor_expression || ')) * (' || t19_tci || '))';
 
