@@ -37,54 +37,53 @@ import org.hibernate.Session;
 
 public class DatasetCreator {
 
-//    private String tablePrefix;
+    // private String tablePrefix;
 
     private User user;
 
-//    private String outputDatasetName;
+    // private String outputDatasetName;
 
     private HibernateSessionFactory sessionFactory;
 
     private DbServerFactory dbServerFactory;
 
-//    private String datasetNamePrefix;
-    
+    // private String datasetNamePrefix;
+
     private ControlStrategy controlStrategy;
 
     private Keywords keywordMasterList;
-    
+
     private Datasource datasource;
 
     public DatasetCreator() {
         //
     }
-    public DatasetCreator(ControlStrategy controlStrategy, User user, 
-            HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory,
-            Datasource datasource, Keywords keywordMasterList) {
-//        this.datasetNamePrefix = datasetNamePrefix;
-//        this.tablePrefix = tablePrefix;
+
+    public DatasetCreator(ControlStrategy controlStrategy, User user, HibernateSessionFactory sessionFactory,
+            DbServerFactory dbServerFactory, Datasource datasource, Keywords keywordMasterList) {
+        // this.datasetNamePrefix = datasetNamePrefix;
+        // this.tablePrefix = tablePrefix;
         this.user = user;
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
-//        this.outputDatasetName = getResultDatasetName(strategy.getName());
+        // this.outputDatasetName = getResultDatasetName(strategy.getName());
         this.controlStrategy = controlStrategy;
         this.datasource = datasource;
-        this.keywordMasterList = keywordMasterList;//new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
+        this.keywordMasterList = keywordMasterList;// new Keywords(new
+                                                   // DataCommonsServiceImpl(sessionFactory).getKeywords());
     }
 
-    public EmfDataset addDataset(String datasetNamePrefix, String tablePrefix, 
-            EmfDataset inputDataset, DatasetType type, 
-            TableFormat tableFormat, String description) throws EmfException {
+    public EmfDataset addDataset(String datasetNamePrefix, String tablePrefix, EmfDataset inputDataset,
+            DatasetType type, TableFormat tableFormat, String description) throws EmfException {
         String outputDatasetName = createResultDatasetName(datasetNamePrefix, inputDataset);
         String outputTableName = createTableName(tablePrefix, inputDataset);
-        
-        //create dataset
+
+        // create dataset
         EmfDataset dataset = createDataset(outputDatasetName, description, type, inputDataset);
 
-        setDatasetInternalSource(dataset, outputTableName, 
-                tableFormat, inputDataset.getName());
+        setDatasetInternalSource(dataset, outputTableName, tableFormat, inputDataset.getName());
 
-        //persist dataset to db
+        // persist dataset to db
         add(dataset);
         try {
             addVersionZeroEntryToVersionsTable(dataset);
@@ -97,18 +96,16 @@ public class DatasetCreator {
         return dataset;
     }
 
-    public EmfDataset addDataset(String tablePrefix, 
-            String datasetName, DatasetType type, 
-            TableFormat tableFormat, String description) throws EmfException {
+    public EmfDataset addDataset(String tablePrefix, String datasetName, DatasetType type, TableFormat tableFormat,
+            String description) throws EmfException {
         String outputTableName = createTableName(tablePrefix, datasetName);
-        
-        //create dataset
+
+        // create dataset
         EmfDataset dataset = createDataset(datasetName, description, type);
 
-        setDatasetInternalSource(dataset, outputTableName, 
-                tableFormat, datasetName);
+        setDatasetInternalSource(dataset, outputTableName, tableFormat, datasetName);
 
-        //persist dataset to db
+        // persist dataset to db
         add(dataset);
         try {
             addVersionZeroEntryToVersionsTable(dataset);
@@ -122,41 +119,39 @@ public class DatasetCreator {
     }
 
     public EmfDataset addDataset(String datasetName, // TODO: JIZHEN_0713
-            EmfDataset inputDataset, DatasetType type, 
-            TableFormat tableFormat, String description
-//            ,Map<String,String> keywordValues
-            ) throws EmfException {
-//        return addDataset(datasetName, "DS", 
-//                inputDataset, type, 
-//                tableFormat, description);
-        
+            EmfDataset inputDataset, DatasetType type, TableFormat tableFormat, String description
+    // ,Map<String,String> keywordValues
+    ) throws EmfException {
+        // return addDataset(datasetName, "DS",
+        // inputDataset, type,
+        // tableFormat, description);
+
         String outputDatasetName = datasetName;
-        //check and see if this name is already being used, if so add a timestamp.
-        if (isDatasetNameUsed(datasetName)) 
+        // check and see if this name is already being used, if so add a timestamp.
+        if (isDatasetNameUsed(datasetName))
             outputDatasetName = createDatasetName(datasetName);
 
         String outputTableName = createTableName(datasetName);
-        
-        //create dataset
+
+        // create dataset
         EmfDataset dataset = createDataset(outputDatasetName, description, type, inputDataset);
-        
-//        Iterator iterator = keywordValues.entrySet().iterator();
-//
-//        Map.Entry entry =  (Map.Entry)iterator.next();
-//        String keyword = (String) entry.getKey();
-//        String value = (String) entry.getValue();
-//
-//        while (iterator.hasNext()) {
-//            entry =  (Map.Entry)iterator.next();
-//            keyword = (String) entry.getKey();
-//            value = (String) entry.getValue();
-//            addKeyVal(dataset, keyword, value);
-//        }
 
-        setDatasetInternalSource(dataset, outputTableName, 
-                tableFormat, inputDataset.getName());
+        // Iterator iterator = keywordValues.entrySet().iterator();
+        //
+        // Map.Entry entry = (Map.Entry)iterator.next();
+        // String keyword = (String) entry.getKey();
+        // String value = (String) entry.getValue();
+        //
+        // while (iterator.hasNext()) {
+        // entry = (Map.Entry)iterator.next();
+        // keyword = (String) entry.getKey();
+        // value = (String) entry.getValue();
+        // addKeyVal(dataset, keyword, value);
+        // }
 
-        //persist dataset to db
+        setDatasetInternalSource(dataset, outputTableName, tableFormat, inputDataset.getName());
+
+        // persist dataset to db
         add(dataset);
         try {
             addVersionZeroEntryToVersionsTable(dataset);
@@ -169,27 +164,26 @@ public class DatasetCreator {
         return dataset;
     }
 
-    public EmfDataset addControlledInventoryDataset(String datasetName, 
-            EmfDataset inputDataset, DatasetType type, 
+    public EmfDataset addControlledInventoryDataset(String datasetName, EmfDataset inputDataset, DatasetType type,
             TableFormat tableFormat, String description
-//            ,Map<String,String> keywordValues
-            ) throws EmfException {
-//        return addDataset(datasetName, "DS", 
-//                inputDataset, type, 
-//                tableFormat, description);
-        
+    // ,Map<String,String> keywordValues
+    ) throws EmfException {
+        // return addDataset(datasetName, "DS",
+        // inputDataset, type,
+        // tableFormat, description);
+
         String outputDatasetName = datasetName;
-        //check and see if this name is already being used, if so add a timestamp.
-        if (isDatasetNameUsed(datasetName)) 
+        // check and see if this name is already being used, if so add a timestamp.
+        if (isDatasetNameUsed(datasetName))
             outputDatasetName = createDatasetName(datasetName);
 
         String outputTableName = createTableName(datasetName);
-        
-        //create dataset
+
+        // create dataset
         EmfDataset dataset = createDataset(outputDatasetName, description, type, inputDataset);
         // TODO: JIZHEN_0713 ADD 2 more keywords
-        
-        //update dataset start and stop date time to correct year
+
+        // update dataset start and stop date time to correct year
         Calendar cal = Calendar.getInstance();
         Date dateTime = inputDataset.getStartDateTime();
         if (dateTime != null) {
@@ -203,24 +197,23 @@ public class DatasetCreator {
             cal.set(Calendar.YEAR, controlStrategy.getInventoryYear());
             dataset.setStopDateTime(cal.getTime());
         }
-        
-//        Iterator iterator = keywordValues.entrySet().iterator();
-//
-//        Map.Entry entry =  (Map.Entry)iterator.next();
-//        String keyword = (String) entry.getKey();
-//        String value = (String) entry.getValue();
-//
-//        while (iterator.hasNext()) {
-//            entry =  (Map.Entry)iterator.next();
-//            keyword = (String) entry.getKey();
-//            value = (String) entry.getValue();
-//            addKeyVal(dataset, keyword, value);
-//        }
 
-        setDatasetInternalSource(dataset, outputTableName, 
-                tableFormat, inputDataset.getName());
+        // Iterator iterator = keywordValues.entrySet().iterator();
+        //
+        // Map.Entry entry = (Map.Entry)iterator.next();
+        // String keyword = (String) entry.getKey();
+        // String value = (String) entry.getValue();
+        //
+        // while (iterator.hasNext()) {
+        // entry = (Map.Entry)iterator.next();
+        // keyword = (String) entry.getKey();
+        // value = (String) entry.getValue();
+        // addKeyVal(dataset, keyword, value);
+        // }
 
-        //persist dataset to db
+        setDatasetInternalSource(dataset, outputTableName, tableFormat, inputDataset.getName());
+
+        // persist dataset to db
         add(dataset);
         try {
             addVersionZeroEntryToVersionsTable(dataset);
@@ -232,28 +225,27 @@ public class DatasetCreator {
 
         return dataset;
     }
-    
-    public EmfDataset addControlledInventoryDataset(String datasetName, 
-            EmfDataset inputDataset, DatasetType type, 
+
+    public EmfDataset addControlledInventoryDataset(String datasetName, EmfDataset inputDataset, DatasetType type,
             TableFormat tableFormat, String description, String detailedDatasetName
-//            ,Map<String,String> keywordValues
-            ) throws EmfException {
-//        return addDataset(datasetName, "DS", 
-//                inputDataset, type, 
-//                tableFormat, description);
-        
+    // ,Map<String,String> keywordValues
+    ) throws EmfException {
+        // return addDataset(datasetName, "DS",
+        // inputDataset, type,
+        // tableFormat, description);
+
         String outputDatasetName = datasetName;
-        //check and see if this name is already being used, if so add a timestamp.
-        if (isDatasetNameUsed(datasetName)) 
+        // check and see if this name is already being used, if so add a timestamp.
+        if (isDatasetNameUsed(datasetName))
             outputDatasetName = createDatasetName(datasetName);
 
         String outputTableName = createTableName(datasetName);
-        
-        //create dataset
+
+        // create dataset
         EmfDataset dataset = createDataset(outputDatasetName, description, type, inputDataset);
         addKeyVal(dataset, "CONTROL_STRATEGY_DETAILED_RESULT_NAME", detailedDatasetName);
-        
-        //update dataset start and stop date time to correct year
+
+        // update dataset start and stop date time to correct year
         Calendar cal = Calendar.getInstance();
         Date dateTime = inputDataset.getStartDateTime();
         if (dateTime != null) {
@@ -267,24 +259,23 @@ public class DatasetCreator {
             cal.set(Calendar.YEAR, controlStrategy.getInventoryYear());
             dataset.setStopDateTime(cal.getTime());
         }
-        
-//        Iterator iterator = keywordValues.entrySet().iterator();
-//
-//        Map.Entry entry =  (Map.Entry)iterator.next();
-//        String keyword = (String) entry.getKey();
-//        String value = (String) entry.getValue();
-//
-//        while (iterator.hasNext()) {
-//            entry =  (Map.Entry)iterator.next();
-//            keyword = (String) entry.getKey();
-//            value = (String) entry.getValue();
-//            addKeyVal(dataset, keyword, value);
-//        }
 
-        setDatasetInternalSource(dataset, outputTableName, 
-                tableFormat, inputDataset.getName());
+        // Iterator iterator = keywordValues.entrySet().iterator();
+        //
+        // Map.Entry entry = (Map.Entry)iterator.next();
+        // String keyword = (String) entry.getKey();
+        // String value = (String) entry.getValue();
+        //
+        // while (iterator.hasNext()) {
+        // entry = (Map.Entry)iterator.next();
+        // keyword = (String) entry.getKey();
+        // value = (String) entry.getValue();
+        // addKeyVal(dataset, keyword, value);
+        // }
 
-        //persist dataset to db
+        setDatasetInternalSource(dataset, outputTableName, tableFormat, inputDataset.getName());
+
+        // persist dataset to db
         add(dataset);
         try {
             addVersionZeroEntryToVersionsTable(dataset);
@@ -297,50 +288,42 @@ public class DatasetCreator {
         return dataset;
     }
 
-    public EmfDataset addDataset(String datasetNamePrefix, String tablePrefix, 
-            EmfDataset inputDataset, DatasetType type, 
-            TableFormat tableFormat) throws EmfException {
-        return addDataset(datasetNamePrefix, tablePrefix, 
-                inputDataset, type, 
-                tableFormat, detailedResultDescription(inputDataset));
+    public EmfDataset addDataset(String datasetNamePrefix, String tablePrefix, EmfDataset inputDataset,
+            DatasetType type, TableFormat tableFormat) throws EmfException {
+        return addDataset(datasetNamePrefix, tablePrefix, inputDataset, type, tableFormat,
+                detailedResultDescription(inputDataset));
     }
 
-    private EmfDataset createDataset(String name, 
-            String description,
-            DatasetType type,
-            EmfDataset inputDataset) throws EmfException {
-        EmfDataset dataset = createDataset(name, 
-                description,
-                type);
+    private EmfDataset createDataset(String name, String description, DatasetType type, EmfDataset inputDataset)
+            throws EmfException {
+        EmfDataset dataset = createDataset(name, description, type);
 
-        //Add properties from input dataset...
+        // Add properties from input dataset...
         dataset.setStartDateTime(inputDataset.getStartDateTime());
         dataset.setStopDateTime(inputDataset.getStopDateTime());
         dataset.setTemporalResolution(inputDataset.getTemporalResolution());
         dataset.setSectors(inputDataset.getSectors());
         dataset.setRegion(inputDataset.getRegion());
         dataset.setCountry(inputDataset.getCountry());
-        
-        //Add keywords to the dataset specific to the input dataset
+
+        // Add keywords to the dataset specific to the input dataset
         addKeyVals(dataset, inputDataset);
-        
+
         return dataset;
     }
-    
-    private EmfDataset createDataset(String name, 
-            String description,
-            DatasetType type) throws EmfException {
+
+    private EmfDataset createDataset(String name, String description, DatasetType type) throws EmfException {
         EmfDataset dataset = new EmfDataset();
         Date start = new Date();
 
         String newName = name;
-        if ( newName != null) {
+        if (newName != null) {
             newName = newName.trim();
         } else {
             throw new EmfException("Dataset name is null");
         }
         dataset.setName(newName);
-        
+
         dataset.setCreator(user.getUsername());
         dataset.setCreatorFullName(user.getName());
         dataset.setDatasetType(type);
@@ -349,112 +332,129 @@ public class DatasetCreator {
         dataset.setModifiedDateTime(start);
         dataset.setAccessedDateTime(start);
         dataset.setStatus("Created by control strategy");
-        
+
         dataset.setRegion(controlStrategy.getRegion());
 
-        //Add keywords to the dataset
+        // Add keywords to the dataset
         addKeyVals(dataset);
-        
+
         return dataset;
     }
-    
+
     protected void addKeyVals(EmfDataset dataset, EmfDataset inputDataset) {
         addKeyVal(dataset, "STRATEGY_INVENTORY_NAME", inputDataset.getName());
-        addKeyVal(dataset, "STRATEGY_INVENTORY_VERSION", inputDataset.getDefaultVersion()+"");
+        addKeyVal(dataset, "STRATEGY_INVENTORY_VERSION", inputDataset.getDefaultVersion() + "");
     }
-        
+
     protected void addKeyVals(EmfDataset dataset) {
-        if (controlStrategy == null) return;
-        //Add keywords to the dataset
+        if (controlStrategy == null)
+            return;
+        // Add keywords to the dataset
         addKeyVal(dataset, "STRATEGY_NAME", controlStrategy.getName());
-        addKeyVal(dataset, "STRATEGY_ID", controlStrategy.getId()+"");
+        addKeyVal(dataset, "STRATEGY_ID", controlStrategy.getId() + "");
         addKeyVal(dataset, "STRATEGY_TYPE", controlStrategy.getStrategyType().getName());
-        addKeyVal(dataset, "TARGET_POLLUTANT", controlStrategy.getTargetPollutant() != null ? controlStrategy.getTargetPollutant().getName() : "Unspecified");
+        addKeyVal(dataset, "TARGET_POLLUTANT", controlStrategy.getTargetPollutant() != null ? controlStrategy
+                .getTargetPollutant().getName() : "Unspecified");
         addKeyVal(dataset, "COST_YEAR", controlStrategy.getCostYear() + "");
-        addKeyVal(dataset, "REGION", controlStrategy.getRegion() != null && controlStrategy.getRegion().getName().length() > 0 ? controlStrategy.getRegion().getName() : "Unspecified");
-//        addKeyVal(dataset, "STRATEGY_INVENTORY_NAME", inputDataset.getName());
-//        addKeyVal(dataset, "STRATEGY_INVENTORY_VERSION", inputDataset.getDefaultVersion()+"");
-        int measureCount = (controlStrategy.getControlMeasures() != null ? controlStrategy.getControlMeasures().length : 0);
+        addKeyVal(dataset, "REGION", controlStrategy.getRegion() != null
+                && controlStrategy.getRegion().getName().length() > 0 ? controlStrategy.getRegion().getName()
+                : "Unspecified");
+        // addKeyVal(dataset, "STRATEGY_INVENTORY_NAME", inputDataset.getName());
+        // addKeyVal(dataset, "STRATEGY_INVENTORY_VERSION", inputDataset.getDefaultVersion()+"");
+        int measureCount = (controlStrategy.getControlMeasures() != null ? controlStrategy.getControlMeasures().length
+                : 0);
         ControlMeasureClass[] controlMeasureClasses = controlStrategy.getControlMeasureClasses();
         String classList = "All";
         if (controlMeasureClasses != null) {
-            if (controlMeasureClasses.length > 0) classList = "";
+            if (controlMeasureClasses.length > 0)
+                classList = "";
             for (int i = 0; i < controlMeasureClasses.length; i++) {
-                if (classList.length() > 0) classList += ", ";  
+                if (classList.length() > 0)
+                    classList += ", ";
                 classList += controlMeasureClasses[i].getName();
             }
         }
-        if (measureCount > 0) 
+        if (measureCount > 0)
             addKeyVal(dataset, "MEASURES_INCLUDED", measureCount + "");
         else
             addKeyVal(dataset, "MEASURE_CLASSES", classList);
-        addKeyVal(dataset, "DISCOUNT_RATE", controlStrategy.getDiscountRate()+"%");
-        addKeyVal(dataset, "USE_COST_EQUATION", (controlStrategy.getUseCostEquations()==true? "true" : "false"));
-        addKeyVal(dataset, "INCLUDE_UNSPECIFIED_COSTS", (controlStrategy.getIncludeUnspecifiedCosts()==true? "true" : "false"));
-        
+        addKeyVal(dataset, "DISCOUNT_RATE", controlStrategy.getDiscountRate() + "%");
+        addKeyVal(dataset, "USE_COST_EQUATION", (controlStrategy.getUseCostEquations() == true ? "true" : "false"));
+        addKeyVal(dataset, "INCLUDE_UNSPECIFIED_COSTS", (controlStrategy.getIncludeUnspecifiedCosts() == true ? "true"
+                : "false"));
+
         // BUG3602
         addKeyVal(dataset, "TARGET_YEAR", "" + controlStrategy.getInventoryYear());
     }
-    
+
     protected String getKeyValsAsHeaderString() {
         String header = "";
         header = "#STRATEGY_NAME=" + controlStrategy.getName();
         header += "\n#STRATEGY_TYPE=" + controlStrategy.getStrategyType().getName();
-        header += "\n#TARGET_POLLUTANT=" + (controlStrategy.getTargetPollutant() != null ? controlStrategy.getTargetPollutant().getName() : "Unspecified");
+        header += "\n#TARGET_POLLUTANT="
+                + (controlStrategy.getTargetPollutant() != null ? controlStrategy.getTargetPollutant().getName()
+                        : "Unspecified");
         header += "\n#COST_YEAR=" + controlStrategy.getCostYear() + "";
-        header += "\n#REGION=" + (controlStrategy.getRegion() != null && controlStrategy.getRegion().getName().length() > 0 ? controlStrategy.getRegion().getName() : "Unspecified");
-        int measureCount = (controlStrategy.getControlMeasures() != null ? controlStrategy.getControlMeasures().length : 0);
+        header += "\n#REGION="
+                + (controlStrategy.getRegion() != null && controlStrategy.getRegion().getName().length() > 0 ? controlStrategy
+                        .getRegion().getName() : "Unspecified");
+        int measureCount = (controlStrategy.getControlMeasures() != null ? controlStrategy.getControlMeasures().length
+                : 0);
         ControlMeasureClass[] controlMeasureClasses = controlStrategy.getControlMeasureClasses();
         String classList = "All";
         if (controlMeasureClasses != null) {
-            if (controlMeasureClasses.length > 0) classList = "";
+            if (controlMeasureClasses.length > 0)
+                classList = "";
             for (int i = 0; i < controlMeasureClasses.length; i++) {
-                if (classList.length() > 0) classList += ", ";  
+                if (classList.length() > 0)
+                    classList += ", ";
                 classList += controlMeasureClasses[i].getName();
             }
         }
-        if (measureCount > 0) 
+        if (measureCount > 0)
             header += "\n#MEASURES_INCLUDED=" + measureCount;
         else
             header += "\n#MEASURE_CLASSES=" + classList;
-        header += "\n#DISCOUNT_RATE=" + controlStrategy.getDiscountRate()+"%";
-        header += "\n#USE_COST_EQUATION=" + (controlStrategy.getUseCostEquations()==true? "true" : "false");
-        header += "\n#INCLUDE_UNSPECIFIED_COSTS=" + (controlStrategy.getIncludeUnspecifiedCosts()==true? "true" : "false");
+        header += "\n#DISCOUNT_RATE=" + controlStrategy.getDiscountRate() + "%";
+        header += "\n#USE_COST_EQUATION=" + (controlStrategy.getUseCostEquations() == true ? "true" : "false");
+        header += "\n#INCLUDE_UNSPECIFIED_COSTS="
+                + (controlStrategy.getIncludeUnspecifiedCosts() == true ? "true" : "false");
         return header;
     }
-    
+
     public void addKeyVal(EmfDataset dataset, String keywordName, String value) {
         Keyword keyword = keywordMasterList.get(keywordName);
-        KeyVal keyval = new KeyVal(keyword, value); 
+        KeyVal keyval = new KeyVal(keyword, value);
         dataset.addKeyVal(keyval);
     }
-    
-    private void addVersionZeroEntryToVersionsTable(Dataset dataset) throws Exception {
-//        TableModifier modifier = new TableModifier(datasource, "versions");
-//        String[] data = { null, dataset.getId() + "", "0", "Initial Version", "", "true", null, null, null, this.user.getId() + "" };
-//        modifier.insertOneRow(data);
-               
-        
-        gov.epa.emissions.framework.utils.Utils.addVersionEntryToVersionsTable(this.sessionFactory, this.user,dataset.getId(), 0, "Initial Version", "", true, "");
 
-//        Version defaultZeroVersion = new Version(0);
-//        defaultZeroVersion.setName("Initial Version");
-//        defaultZeroVersion.setPath("");
-//        defaultZeroVersion.setCreator(user);
-//        defaultZeroVersion.setDatasetId(dataset.getId());
-//        defaultZeroVersion.setLastModifiedDate(new Date());
-////        defaultZeroVersion.setNumberRecords(version.getNumberRecords());
-//        defaultZeroVersion.setFinalVersion(true);
-//        defaultZeroVersion.setDescription("");
-//        Session session = sessionFactory.getSession();
-//
-//        try {
-//            new DatasetDAO().add(defaultZeroVersion, session);
-//        } catch (Exception e) {
-//            throw new EmfException("Could not add default zero version: " + e.getMessage());
-//        } finally {
-//            session.close();
-//        }
+    private void addVersionZeroEntryToVersionsTable(Dataset dataset) throws Exception {
+        // TableModifier modifier = new TableModifier(datasource, "versions");
+        // String[] data = { null, dataset.getId() + "", "0", "Initial Version", "", "true", null, null, null,
+        // this.user.getId() + "" };
+        // modifier.insertOneRow(data);
+
+        gov.epa.emissions.framework.utils.Utils.addVersionEntryToVersionsTable(this.sessionFactory, this.user,
+                dataset.getId(), 0, "Initial Version", "", true, "");
+
+        // Version defaultZeroVersion = new Version(0);
+        // defaultZeroVersion.setName("Initial Version");
+        // defaultZeroVersion.setPath("");
+        // defaultZeroVersion.setCreator(user);
+        // defaultZeroVersion.setDatasetId(dataset.getId());
+        // defaultZeroVersion.setLastModifiedDate(new Date());
+        // // defaultZeroVersion.setNumberRecords(version.getNumberRecords());
+        // defaultZeroVersion.setFinalVersion(true);
+        // defaultZeroVersion.setDescription("");
+        // Session session = sessionFactory.getSession();
+        //
+        // try {
+        // new DatasetDAO().add(defaultZeroVersion, session);
+        // } catch (Exception e) {
+        // throw new EmfException("Could not add default zero version: " + e.getMessage());
+        // } finally {
+        // session.close();
+        // }
     }
 
     public void updateVersionZeroRecordCount(EmfDataset dataset) throws EmfException {
@@ -465,26 +465,27 @@ public class DatasetCreator {
             DatasetDAO dao = new DatasetDAO(dbServerFactory);
             Version version = dao.getVersion(session, dataset.getId(), 0);
             Version lockedVersion = dao.obtainLockOnVersion(user, version.getId(), session);
-            
+
             lockedVersion.setLastModifiedDate(new Date());
-            int num = getNumOfRecords(datasource.getName() + "." + dataset.getInternalSources()[0].getTable(), lockedVersion);
+            int num = getNumOfRecords(datasource.getName() + "." + dataset.getInternalSources()[0].getTable(),
+                    lockedVersion);
             lockedVersion.setNumberRecords(num);
             dao.updateVersionNReleaseLock(lockedVersion, session);
         } catch (Exception e) {
             throw new EmfException("Could not query table: " + e.getMessage());
         } finally {
-                try {
-                    if (dbServer != null && dbServer.isConnected())
-                        dbServer.disconnect();
-                } catch (Exception e) {
-                    // NOTE Auto-generated catch block
-                    e.printStackTrace();
-                }
+            try {
+                if (dbServer != null && dbServer.isConnected())
+                    dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+            }
             session.close();
         }
     }
-    
-    private int getNumOfRecords (String table, Version version) throws EmfException {
+
+    private int getNumOfRecords(String table, Version version) throws EmfException {
         DbServer dbServer = dbServerFactory.getDbServer();
 
         try {
@@ -495,8 +496,8 @@ public class DatasetCreator {
             String whereClause = " WHERE " + versionedQuery.query();
 
             String countQuery = "SELECT COUNT(*) FROM " + table + whereClause;
-            
-            return Integer.parseInt(dataModifier.getRowCount(countQuery)+ "");
+
+            return Integer.parseInt(dataModifier.getRowCount(countQuery) + "");
         } catch (SQLException e) {
             throw new EmfException("Please check data table name and/or the syntax of row filter.");
         } catch (Exception e) {
@@ -511,6 +512,7 @@ public class DatasetCreator {
             }
         }
     }
+
     private void setDatasetInternalSource(EmfDataset dataset, String tableName, TableFormat tableFormat, String source) {
         InternalSource internalSource = new InternalSource();
         internalSource.setTable(tableName);
@@ -529,11 +531,11 @@ public class DatasetCreator {
     }
 
     private String createResultDatasetName(String datasetNamePrefix, EmfDataset inputDataset) {
-        return createDatasetName(datasetNamePrefix+ "_" + inputDataset.getId() 
-                + "_V" + inputDataset.getDefaultVersion());
+        return createDatasetName(datasetNamePrefix + "_" + inputDataset.getId() + "_V"
+                + inputDataset.getDefaultVersion());
     }
-        
-    //for testing...
+
+    // for testing...
     public static void main(String[] args) {
         //
         DatasetCreator dc = new DatasetCreator();
@@ -543,104 +545,95 @@ public class DatasetCreator {
         dataset.setStartDateTime(cal.getTime());
         dataset.setStopDateTime(cal.getTime());
     }
-    
+
     public String createControlledInventoryDatasetName(String datasetNamePrefix, EmfDataset inputDataset) {
         String datasetName = "";
-        //if no prefix was passed then use the existing name as a starting point.
+        // if no prefix was passed then use the existing name as a starting point.
         if (datasetNamePrefix == null || datasetNamePrefix.length() == 0)
             datasetName = "Cntld_" + inputDataset.getName();
         else {
-            datasetName = datasetNamePrefix;
-            //see if we need to tag with a monthly indicator
+            datasetName = datasetNamePrefix + "_" + inputDataset.getName();
+            ;
+            if (datasetNamePrefix.substring(0, 1).matches("[0-9]"))
+                datasetName = "t_" + datasetName;
+            // see if we need to tag with a monthly indicator
             int applicableMonth = inputDataset.applicableMonth();
             if (applicableMonth >= 0) {
                 if (applicableMonth == Calendar.JANUARY) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_jan_") == -1) 
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_jan_") == -1)
                         datasetName += "_jan";
-                }
-                else if (applicableMonth == Calendar.FEBRUARY) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_feb_") == -1) 
+                } else if (applicableMonth == Calendar.FEBRUARY) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_feb_") == -1)
                         datasetName += "_feb";
-                }
-                else if (applicableMonth == Calendar.MARCH) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_mar_") == -1) 
+                } else if (applicableMonth == Calendar.MARCH) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_mar_") == -1)
                         datasetName += "_mar";
-                }
-                else if (applicableMonth == Calendar.APRIL) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_apr_") == -1) 
+                } else if (applicableMonth == Calendar.APRIL) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_apr_") == -1)
                         datasetName += "_apr";
-                }
-                else if (applicableMonth == Calendar.MAY) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_may_") == -1) 
+                } else if (applicableMonth == Calendar.MAY) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_may_") == -1)
                         datasetName += "_may";
-                }
-                else if (applicableMonth == Calendar.JUNE) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_jun_") == -1) 
+                } else if (applicableMonth == Calendar.JUNE) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_jun_") == -1)
                         datasetName += "_jun";
-                }
-                else if (applicableMonth == Calendar.JULY) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_jul_") == -1) 
+                } else if (applicableMonth == Calendar.JULY) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_jul_") == -1)
                         datasetName += "_jul";
-                }
-                else if (applicableMonth == Calendar.AUGUST) {  
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_aug_") == -1) 
+                } else if (applicableMonth == Calendar.AUGUST) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_aug_") == -1)
                         datasetName += "_aug";
-                }
-                else if (applicableMonth == Calendar.SEPTEMBER) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_sep_") == -1) 
+                } else if (applicableMonth == Calendar.SEPTEMBER) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_sep_") == -1)
                         datasetName += "_sep";
-                }
-                else if (applicableMonth == Calendar.OCTOBER) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_oct_") == -1) 
+                } else if (applicableMonth == Calendar.OCTOBER) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_oct_") == -1)
                         datasetName += "_oct";
-                }
-                else if (applicableMonth == Calendar.NOVEMBER) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_nov_") == -1) 
+                } else if (applicableMonth == Calendar.NOVEMBER) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_nov_") == -1)
                         datasetName += "_nov";
-                }
-                else if (applicableMonth == Calendar.DECEMBER) {
-                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_dec_") == -1) 
+                } else if (applicableMonth == Calendar.DECEMBER) {
+                    if (("_" + datasetName.toLowerCase() + "_").indexOf("_dec_") == -1)
                         datasetName += "_dec";
                 }
             }
         }
         return datasetName;
     }
-        
+
     public static String createDatasetName(String name) {
-        //name += "_" + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
-//        if (name.length() > 46) {     //postgresql table name max length is 64
-//            name = name.substring(0, 45);
-//        }//16+1
-        if (name.length() > 54) {     //postgresql table name max length is 64
+        // name += "_" + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
+        // if (name.length() > 46) { //postgresql table name max length is 64
+        // name = name.substring(0, 45);
+        // }//16+1
+        if (name.length() > 54) { // postgresql table name max length is 64
             name = name.substring(0, 53);
-        }//8+1
+        }// 8+1
 
         for (int i = 0; i < name.length(); i++) {
             if (!Character.isLetterOrDigit(name.charAt(i))) {
                 name = name.replace(name.charAt(i), '_');
             }
         }
-//        format_HHMMSSSS
-//        format_YYYYMMDDHHMMSSSS
+        // format_HHMMSSSS
+        // format_YYYYMMDDHHMMSSSS
         return name.trim().replaceAll(" ", "_") + "_" + CustomDateFormat.format_HHMMSSSS(new Date());
     }
 
     private String createTableName(String tablePrefix, EmfDataset inputDataset) {
-        String prefix = tablePrefix + "_" + inputDataset.getId() 
-            + "_V" + inputDataset.getDefaultVersion();
+        String prefix = tablePrefix + "_" + inputDataset.getId() + "_V" + inputDataset.getDefaultVersion();
         String name = inputDataset.getName();
         return createTableName(prefix, name);
     }
-    
+
     private String createTableName(String tablePrefix, String name) {
         return createTableName(tablePrefix + "_" + name);
     }
 
     private String createTableName(String name) {
         String table = name;
-        //truncate if necessary so a unique timestamp can be added to ensure uniqueness
-        if (table.length() > 46) {     //postgresql table name max length is 64
+        // truncate if necessary so a unique timestamp can be added to ensure uniqueness
+        if (table.length() > 46) { // postgresql table name max length is 64
             table = table.substring(0, 45);
         }
 
@@ -650,7 +643,7 @@ public class DatasetCreator {
             }
         }
 
-        //add unique timestamp to ensure uniqueness
+        // add unique timestamp to ensure uniqueness
         return table.trim().replaceAll(" ", "_") + "_" + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
     }
 
@@ -667,7 +660,7 @@ public class DatasetCreator {
         }
         return nameUsed;
     }
-    
+
     private void add(EmfDataset dataset) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
@@ -682,7 +675,7 @@ public class DatasetCreator {
             session.close();
         }
     }
-    
+
     public void update(EmfDataset dataset) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
@@ -695,19 +688,19 @@ public class DatasetCreator {
             session.close();
         }
     }
-    
-//    public void update(EmfDataset dataset) throws EmfException {
-//        Session session = sessionFactory.getSession();
-//        try {
-//            DatasetDAO dao = new DatasetDAO(dbServerFactory);
-//            dao.updateWithoutLocking(dataset, session);
-//        } catch (Exception e) {
-//            throw new EmfException("Could not update dataset: " + dataset.getName());
-//        } finally {
-//            session.close();
-//        }
-//    }
-//    
+
+    // public void update(EmfDataset dataset) throws EmfException {
+    // Session session = sessionFactory.getSession();
+    // try {
+    // DatasetDAO dao = new DatasetDAO(dbServerFactory);
+    // dao.updateWithoutLocking(dataset, session);
+    // } catch (Exception e) {
+    // throw new EmfException("Could not update dataset: " + dataset.getName());
+    // } finally {
+    // session.close();
+    // }
+    // }
+    //
     private void createTable(String tableName, TableFormat tableFormat) throws EmfException {
         TableCreator creator = new TableCreator(datasource);
         try {
@@ -719,11 +712,10 @@ public class DatasetCreator {
             throw new EmfException("Could not create table '" + tableName + "'+\n" + e.getMessage());
         }
     }
-    
+
     public String detailedResultDescription(EmfDataset inputDataset) {
-        return "#Control strategy detailed result\n" + 
-           "#Implements control strategy: " + controlStrategy.getName() + "\n"
-                + "#Input dataset used: " + inputDataset.getName()+"\n#";
+        return "#Control strategy detailed result\n" + "#Implements control strategy: " + controlStrategy.getName()
+                + "\n" + "#Input dataset used: " + inputDataset.getName() + "\n#";
     }
 
 }
