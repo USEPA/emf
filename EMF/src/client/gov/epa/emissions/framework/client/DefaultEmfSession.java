@@ -25,6 +25,7 @@ import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
 import gov.epa.emissions.framework.services.qa.QAService;
 import gov.epa.emissions.framework.services.sms.SectorScenarioService;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
 
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -175,6 +176,10 @@ public class DefaultEmfSession implements EmfSession {
 
     public FastService fastService() {
         return serviceLocator.fastService();
+    }
+    
+    public TemporalAllocationService temporalAllocationService() {
+        return serviceLocator.temporalAllocationService();
     }
     
     public void setPublicKey(PublicKey pk) {

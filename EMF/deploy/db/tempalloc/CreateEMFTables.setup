@@ -1,0 +1,36 @@
+CREATE TABLE emf.temporal_allocation (
+id SERIAL PRIMARY KEY,
+name varchar(255) not null unique,
+description text,
+run_status varchar(255),
+project_id int4 references emf.projects (id),
+creator_id int4 references emf.users(id),
+last_modified_date timestamp,
+start_date timestamp,
+completion_date timestamp,
+lock_owner varchar(255),
+lock_date timestamp
+)
+WITHOUT OIDS;
+ALTER TABLE emf.temporal_allocation OWNER TO emf;
+CREATE INDEX temporal_allocation_id ON emf.temporal_allocation USING btree (id);
+ALTER TABLE emf.temporal_allocation CLUSTER ON temporal_allocation_id;
+
+
+CREATE TABLE emf.temporal_allocation_input_dataset
+(
+  id SERIAL PRIMARY KEY,
+  temporal_allocation_id int4 NOT NULL REFERENCES emf.temporal_allocation(id),
+  list_index int4,
+  dataset_id int4 REFERENCES emf.datasets (id),
+  dataset_version integer DEFAULT 0
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.temporal_allocation_input_dataset OWNER TO emf;
+CREATE INDEX temporal_allocation_input_dataset_dataset_id
+  ON emf.temporal_allocation_input_dataset
+  USING btree (dataset_id);
+CREATE INDEX temporal_allocation_input_dataset_tempalloc_id
+  ON emf.temporal_allocation_input_dataset
+  USING btree
+  (temporal_allocation_id);

@@ -25,6 +25,9 @@ import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManag
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerPresenterImpl;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerView;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerView;
+import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerPresenter;
+import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerPresenter;
 
 public class ManageMenuPresenter {
 
@@ -89,6 +92,11 @@ public class ManageMenuPresenter {
 
         MPSDTManagerPresenter presenter = new MPSDTManagerPresenterImpl(this.session, view);
         presenter.doDisplay();
+    }
+
+    public void doDisplayTemporalAllocation(TemporalAllocationManagerView view) throws EmfException {
+        TemporalAllocationManagerPresenter presenter = new TemporalAllocationManagerPresenter(session, view);
+        presenter.display();
     }
 
     public String getPropertyValue(String name) throws EmfException {

@@ -10,6 +10,7 @@ import gov.epa.emissions.framework.services.cost.ControlProgramService;
 import gov.epa.emissions.framework.services.cost.ControlStrategyService;
 import gov.epa.emissions.framework.services.cost.ControlMeasureService;
 import gov.epa.emissions.framework.services.sms.SectorScenarioService;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureExportService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureImportService;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -55,6 +56,8 @@ public class RemoteServiceLocator implements ServiceLocator {
     private SectorScenarioService sectorScenarioService;
     
     private FastService fastService;
+    
+    private TemporalAllocationService temporalAllocationService;
     
     private EmfSession emfSession;
     
@@ -173,6 +176,13 @@ public class RemoteServiceLocator implements ServiceLocator {
             fastService = new FastServiceTransport(baseUrl + "/gov.epa.emf.services.fast.FastService");
         
         return fastService;
+    }
+    
+    public TemporalAllocationService temporalAllocationService() {
+        if (temporalAllocationService == null)
+            temporalAllocationService = new TemporalAllocationServiceTransport(baseUrl + "/gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService");
+        
+        return temporalAllocationService;
     }
     
     /*

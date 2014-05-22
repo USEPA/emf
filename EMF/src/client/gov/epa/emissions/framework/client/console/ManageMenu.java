@@ -32,6 +32,8 @@ import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManag
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.MessagePanel;
+import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerView;
+import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerWindow;
 
 import java.awt.Container;
 import java.awt.Cursor;
@@ -215,6 +217,18 @@ public class ManageMenu extends JMenu implements ManageMenuView {
 
         return menuItem;
     }
+    
+    private JMenuItem createTemporalAllocation(final EmfConsole parent, final MessagePanel messagePanel) {
+        JMenuItem menuItem = new JMenuItem("Temporal Allocation");
+        menuItem.setName("temporalAllocation");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                doManageTemporalAllocation(parent, messagePanel);
+            }
+        });
+
+        return menuItem;
+    }
 
     private void displayMyProfile(EmfSession session, MessagePanel messagePanel) {
         UpdateUserWindow updatable = new UpdateUserWindow(new AddAdminOption(false), desktopManager, parent);
@@ -330,6 +344,17 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         }
     }
 
+    private void doManageTemporalAllocation(final EmfConsole parent, final MessagePanel messagePanel) {
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        TemporalAllocationManagerView view = new TemporalAllocationManagerWindow(parent, session, desktopManager);
+        try {
+            presenter.doDisplayTemporalAllocation(view);
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+
     public void display() {
         String showMPSDTMenu = null;
         String showSectorScenarioMenu = null;
@@ -375,6 +400,10 @@ public class ManageMenu extends JMenu implements ManageMenuView {
                 super.add(createMPSDT(parent, messagePanel));
                 super.addSeparator();
             }
+        }
+        if (!excludeItem("Temporal Allocation")) {
+            super.add(createTemporalAllocation(parent, messagePanel));
+            super.addSeparator();
         }
 
         if (!excludeItem("Users")) {
