@@ -156,7 +156,7 @@ public class ControlMeasureDAO {
             
             removeEfficiencyRecords(sectorIds, session);
             
-            List<ControlMeasure> lstCM = getControlMeasureBySectors(sectorIds, session);
+            List<ControlMeasure> lstCM = getControlMeasureBySectors(sectorIds, true, session);
             int [] cmIDs = new int[lstCM.size()];
             for ( int i=0; i<lstCM.size(); i++) {
                 cmIDs[i] = lstCM.get(i).getId();
@@ -847,18 +847,20 @@ public class ControlMeasureDAO {
         return query.list();
     }
 
-    public List<ControlMeasure> getControlMeasureBySectors(int[] sectorIds, Session session) {
+    public List<ControlMeasure> getControlMeasureBySectors(int[] sectorIds, boolean allClasses, Session session) {
         String idList = "";
         for (int i = 0; i < sectorIds.length; ++i) {
             idList += (i > 0 ? ","  : "") + sectorIds[i];
         }
         
+        String join = (sectorIds.length > 0 ? "inner join cm.sectors AS s " : "") +
+                      (!allClasses ? "inner join cm.cmClass AS cl " : "");
         Query query = session.createQuery("select new ControlMeasure(cm.id, cm.name, cm.abbreviation) "
                 + "FROM ControlMeasure AS cm "
-                + (sectorIds != null && sectorIds.length > 0 
-                        ? "inner join cm.sectors AS s "
-                          + "WHERE s.id in (" + idList + ") " 
-                        : "")
+                + join
+                + "WHERE 1 = 1 "
+                + (sectorIds.length > 0 ? "AND s.id IN (" + idList + ") " : "")
+                + (!allClasses ? "AND cl.name NOT IN ('Obsolete', 'Temporary') " : "")
                 + "order by cm.name");
         query.setCacheable(true);
         return query.list();

@@ -71,7 +71,10 @@ public class CMExportPresenter {
         return folder;
     }
     
-    public ControlMeasure[] getControlMeasureBySector(int[] sectorIds) throws EmfException {
+    public ControlMeasure[] getControlMeasureBySector(int[] sectorIds, boolean allClasses) throws EmfException {
+        if (!allClasses) {
+            return session.controlMeasureService().getControlMeasureBySectorExcludeClasses(sectorIds);
+        }
         return session.controlMeasureService().getControlMeasureBySector(sectorIds);
     }
     

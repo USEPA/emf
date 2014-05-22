@@ -73,6 +73,8 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
     
     private ButtonGroup radioButtonGroup;
     
+    private JCheckBox includeAllClasses;
+    
     private ControlMeasureTableData tableData;
     
     private SelectableSortFilterWrapper table;
@@ -178,6 +180,7 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
         
         panel.add( createControlMeasurePanel());
         panel.add( createSectorPanel());
+
         panel.setBorder( BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         
         return panel;
@@ -220,7 +223,6 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
     private JPanel createSectorPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder("Export By Sector:"));
         
         panel.add(this.sectorRadioButton);
         
@@ -265,8 +267,20 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
             messagePanel.setMessage(e.getMessage());
             
         }
+
+        JPanel includePanel = new JPanel(new BorderLayout());
+        includeAllClasses = new JCheckBox("Include obsolete and temporary control measures", false);
+        includeAllClasses.setEnabled(true);
+        includeAllClasses.setName("includeAllClasses");
+        includePanel.add(includeAllClasses, BorderLayout.LINE_START);
+
+        JPanel container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        container.setBorder(BorderFactory.createTitledBorder("Export By Sector:"));
+        container.add(panel);
+        container.add(includePanel);
         
-        return panel;
+        return container;
     }    
 
     private JPanel createExportPanel() {
@@ -394,7 +408,7 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
                 else {
                     int [] sectorIDs = this.getSectorIDs();
                     if ( sectorIDs != null){
-                        ControlMeasure[] controlMeasures = presenter.getControlMeasureBySector(sectorIDs);
+                        ControlMeasure[] controlMeasures = presenter.getControlMeasureBySector(sectorIDs, includeAllClasses.isSelected());
                         presenter.doExportWithoutOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText());
                     } else {
                         return;
@@ -406,7 +420,7 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
                 } else {
                     int [] sectorIDs = this.getSectorIDs();
                     if ( sectorIDs != null){
-                        ControlMeasure[] controlMeasures = presenter.getControlMeasureBySector(sectorIDs);
+                        ControlMeasure[] controlMeasures = presenter.getControlMeasureBySector(sectorIDs, includeAllClasses.isSelected());
                         presenter.doExportWithOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText());
                     } else {
                         return;

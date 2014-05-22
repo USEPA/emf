@@ -580,7 +580,20 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     public ControlMeasure[] getControlMeasureBySector(int[] sectorIds) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
-            List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, session);
+            List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, true, session);
+            return all.toArray(new ControlMeasure[0]);
+        } catch (RuntimeException e) {
+            LOG.error("Could not retrieve control measures.", e);
+            throw new EmfException("Could not retrieve control measuress.");
+        } finally {
+            session.close();
+        }
+    }
+
+    public ControlMeasure[] getControlMeasureBySectorExcludeClasses(int[] sectorIds) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, false, session);
             return all.toArray(new ControlMeasure[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measures.", e);

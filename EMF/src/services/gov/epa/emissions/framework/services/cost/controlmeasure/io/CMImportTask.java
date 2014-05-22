@@ -67,7 +67,7 @@ public class CMImportTask implements Runnable {
 
             try {
                 
-                List<ControlMeasure> controlMeasures = new ControlMeasureDAO().getControlMeasureBySectors(sectorIds, session);
+                List<ControlMeasure> controlMeasures = new ControlMeasureDAO().getControlMeasureBySectors(sectorIds, true, session);
                 int[] ids = new int[controlMeasures.size()];
                 
                 String cmMsg = "Control Measures to be deleted: " + controlMeasures.size() + "\n";

@@ -1,5 +1,7 @@
 package gov.epa.emissions.framework.client.transport;
 
+import org.apache.axis.Constants;
+
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.commons.data.Reference;
 import gov.epa.emissions.commons.data.Sector;
@@ -390,6 +392,15 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         EmfCall call = call();
 
         call.setOperation("getControlMeasureBySector");
+        call.addParam("sectorIds", mappings.integers());
+        call.setReturnType(mappings.controlMeasures());
+        return (ControlMeasure[]) call.requestResponse(new Object[] { sectorIds });
+    }
+
+    public ControlMeasure[] getControlMeasureBySectorExcludeClasses(int[] sectorIds) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getControlMeasureBySectorExcludeClasses");
         call.addParam("sectorIds", mappings.integers());
         call.setReturnType(mappings.controlMeasures());
         return (ControlMeasure[]) call.requestResponse(new Object[] { sectorIds });
