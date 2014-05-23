@@ -106,6 +106,8 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
     private ViewControlStrategyPresenter presenter;
 
     private JCheckBox applyCAPMeasureOnHAPPollCheck;
+    
+    private JCheckBox applyReplacementControlsCheck;
 
     public ViewControlStrategySummaryTab(ControlStrategy controlStrategy,
             ControlStrategyResult[] controlStrategyResults, CostYearTable costYearTable, MessagePanel messagePanel,
@@ -257,7 +259,9 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
         SpringLayoutGenerator middleRightLayoutGenerator = new SpringLayoutGenerator();
         middleRightLayoutGenerator.addLabelWidgetPair("<html>Include Measures<br/>with No Cost Data:</html>",
                 includeUnspecifiedCostsCheckBox(), middleRightPanel);
-        middleRightLayoutGenerator.makeCompactGrid(middleRightPanel, 1, 2, // rows, cols
+        middleRightLayoutGenerator.addLabelWidgetPair("<html>Apply replacement<br/>control measures:</html>",
+                applyReplacementControlsCheckBox(), middleRightPanel);
+        middleRightLayoutGenerator.makeCompactGrid(middleRightPanel, 2, 2, // rows, cols
                 5, 5, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -321,6 +325,15 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
         this.includeUnspecifiedCostsCheck.setEnabled(false);
 
         return this.includeUnspecifiedCostsCheck;
+    }
+    
+    private JComponent applyReplacementControlsCheckBox() {
+        this.applyReplacementControlsCheck = new JCheckBox(" ", null,
+                controlStrategy.getApplyReplacementControls() != null ? controlStrategy.getApplyReplacementControls()
+                        : true);
+        this.applyReplacementControlsCheck.setEnabled(false);
+        
+        return this.applyReplacementControlsCheck;
     }
 
     private JComponent costYearTextField() {
