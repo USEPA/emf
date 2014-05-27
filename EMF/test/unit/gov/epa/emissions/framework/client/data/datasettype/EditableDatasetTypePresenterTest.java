@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.data.QAProgram;
+import gov.epa.emissions.commons.data.QAStepTemplate;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.data.datasettype.EditableDatasetTypePresenter;
@@ -116,6 +117,10 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
         val2.setValue("val2");
         
         KeyVal[] keyVals = {val1, val2};
+        
+        QAStepTemplate step1 = new QAStepTemplate();
+        QAStepTemplate step2 = new QAStepTemplate();
+        QAStepTemplate[] getQAStepTemps = {step1, step2};
 
         Mock type = mock(DatasetType.class);
         type.expects(once()).method("setName").with(same(name));
@@ -137,7 +142,7 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
         EditableDatasetTypePresenter presenter = new EditableDatasetTypePresenterImpl((EmfSession) session.proxy(),
                 (EditableDatasetTypeView) view.proxy(), null, typeProxy);
 
-        presenter.doSave(name, desc, keyVals, sortOrder, null);
+        presenter.doSave(name, desc, keyVals, sortOrder, getQAStepTemps);
     }
 
     public void testShouldFailWithErrorIfDuplicateKeywordsInKeyValsOnSave() {
@@ -152,6 +157,10 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
 
         KeyVal[] keyVals = {val1, val1};
         
+        QAStepTemplate step1 = new QAStepTemplate();
+        QAStepTemplate step2 = new QAStepTemplate();
+        QAStepTemplate[] getQAStepTemps = {step1, step2};
+        
         Mock type = mock(DatasetType.class);
         type.expects(once()).method("setName").with(same(name));
         type.expects(once()).method("setDescription").with(same(desc));
@@ -161,7 +170,7 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
                 ((DatasetType) type.proxy()));
 
         try {
-            presenter.doSave(name, desc, keyVals, sortOrder,null);
+            presenter.doSave(name, desc, keyVals, sortOrder,getQAStepTemps);
         } catch (EmfException e) {
             assertEquals("duplicate keyword: 'key1'", e.getMessage());
             return;
