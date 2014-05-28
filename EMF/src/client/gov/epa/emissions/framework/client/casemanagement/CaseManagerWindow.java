@@ -493,7 +493,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
                 }
 
                 messagePanel.setMessage("Please wait while removing cases...");
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                 
                 presenter.doRemove(element);
                 doRefresh();
                 clearMsgPanel();
@@ -571,21 +571,48 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
     
 
     public void doRefresh(){
-        try {
-            messagePanel.clear();
-            if (nameFilter.getText().trim().equals(""))
-                refresh(presenter.getCases(getSelectedCategory()));
-            else{
-                Case[] cases=presenter.getCases(getSelectedCategory(), nameFilter.getText());
-                refresh(cases);
-                //refresh(presenter.getCases(getSelectedCategory(), nameFilter.getName()));
-                //messagePanel.setMessage(" Refresh case with name filter "+  getSelectedCategory().getName(), nameFilter.getName()presenter.getCases(getSelectedCategory(), nameFilter.getText()).length );
-            }
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class RefreshCasesTask extends SwingWorker<Case[], Void> {
             
-        } catch (Exception e) {
-            showError("Could not retrieve all cases with -- " + getSelectedCategory().getName());
-        } 
+            private Container parentContainer;
+
+            public RefreshCasesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            @Override
+            public Case[] doInBackground() throws EmfException  {
+                if (nameFilter.getText().trim().equals(""))
+                    return presenter.getCases(getSelectedCategory());
+                else
+                    return presenter.getCases(getSelectedCategory(), nameFilter.getText());
+            }
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    refresh(get());
+                } catch (Exception e) {
+                    showError("Could not retrieve all cases with -- " + getSelectedCategory().getName());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new RefreshCasesTask(this).execute();
     }
+        
 
     public void addNewCaseToTableData(Case newCase) {
         List<Case> cases = new ArrayList<Case>();
@@ -619,11 +646,11 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
 
         //Instances of javax.swing.SwingWorker are not reusuable, so
         //we create new instances as needed.
-        class GetDatasetTypesTask extends SwingWorker<Void, Void> {
+        class GetCasesTask extends SwingWorker<Void, Void> {
             
             private Container parentContainer;
 
-            public GetDatasetTypesTask(Container parentContainer) {
+            public GetCasesTask(Container parentContainer) {
                 this.parentContainer = parentContainer;
             }
 
@@ -660,6 +687,6 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
                 }
             }
         };
-        new GetDatasetTypesTask(this).execute();
+        new GetCasesTask(this).execute();
     }
 }

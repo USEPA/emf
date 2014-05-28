@@ -13,6 +13,7 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -260,7 +261,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
     }
 
     public void doRefresh() throws EmfException {
-        presenter.doRefresh();
+        populate();
     }
 
     @Override
