@@ -5,6 +5,7 @@ description text,
 run_status varchar(255),
 project_id int4 references emf.projects (id),
 creator_id int4 references emf.users(id),
+resolution_id int4 REFERENCES emf.temporal_allocation_resolution(id),
 last_modified_date timestamp,
 start_date timestamp,
 completion_date timestamp,
@@ -34,3 +35,29 @@ CREATE INDEX temporal_allocation_input_dataset_tempalloc_id
   ON emf.temporal_allocation_input_dataset
   USING btree
   (temporal_allocation_id);
+
+CREATE TABLE emf.temporal_allocation_resolution
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(64) NOT NULL UNIQUE,
+  description varchar(255)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.temporal_allocation_resolution OWNER TO emf;
+CREATE INDEX temporal_allocation_resolution_id
+  ON emf.temporal_allocation_resolution
+  USING btree (id);
+ALTER TABLE emf.temporal_allocation_resolution CLUSTER ON temporal_allocation_resolution_id;
+
+INSERT INTO emf.temporal_allocation_resolution (name)
+VALUES ('Annual total (tons/year)'),
+('Monthly total (tons/month)'),
+('Monthly average (tons/day)'),
+('Ozone season average (tons/day)'),
+('Summer Weekday (tons/day)'),
+('Summer Weekend (tons/day)'),
+('Winter Weekday average (tons/day)'),
+('Winter Weekend average (tons/day)'),
+('Daily total (tons/day)'),
+('Episodic total (tons/day)'),
+('Episodic average (tons/day)');

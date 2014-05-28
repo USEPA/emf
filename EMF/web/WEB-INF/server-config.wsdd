@@ -1189,4 +1189,13 @@
 		innerType="ns1:TemporalAllocationInputDataset"
 		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution"
+		qname="ns1:TemporalAllocationResolution" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocationResolutions" xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution[]"
+		innerType="ns1:TemporalAllocationResolution"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
 </deployment>

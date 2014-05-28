@@ -122,4 +122,17 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
             session.close();
         }
     }
+
+    public synchronized TemporalAllocationResolution[] getResolutions() throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List all = dao.allResolutions(session);
+            return (TemporalAllocationResolution[]) all.toArray(new TemporalAllocationResolution[0]);
+        } catch (RuntimeException e) {
+            LOG.error("Could not retrieve temporal allocation resolutions.", e);
+            throw new EmfException("Could not retrieve temporal allocation resolutions.");
+        } finally {
+            session.close();
+        }
+    }
 }

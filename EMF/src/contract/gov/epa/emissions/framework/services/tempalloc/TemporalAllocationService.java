@@ -15,4 +15,6 @@ public interface TemporalAllocationService extends EMFService {
     void releaseLocked(User user, int id) throws EmfException;
     
     TemporalAllocation updateTemporalAllocationWithLock(TemporalAllocation element) throws EmfException;
+    
+    TemporalAllocationResolution[] getResolutions() throws EmfException;
 }

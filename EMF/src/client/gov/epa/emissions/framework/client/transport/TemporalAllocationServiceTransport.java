@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.transport;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
 
 public class TemporalAllocationServiceTransport implements TemporalAllocationService {
@@ -74,5 +75,14 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         call.setReturnType(mappings.temporalAllocation());
 
         return (TemporalAllocation) call.requestResponse(new Object[] { element });
+    }
+    
+    public synchronized TemporalAllocationResolution[] getResolutions() throws EmfException {
+        EmfCall call = call();
+        
+        call.setOperation("getResolutions");
+        call.setReturnType(mappings.temporalAllocationResolutions());
+
+        return (TemporalAllocationResolution[]) call.requestResponse(new Object[] {});
     }
 }

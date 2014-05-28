@@ -92,4 +92,8 @@ public class TemporalAllocationDAO {
     public TemporalAllocation getTemporalAllocation(int id, Session session) {
         return (TemporalAllocation) hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", new Integer(id)), session);
     }
+    
+    public List allResolutions(Session session) {
+        return hibernateFacade.getAll(TemporalAllocationResolution.class, Order.asc("name"), session);
+    }
 }

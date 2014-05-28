@@ -134,6 +134,7 @@
 	   	
 	   	<!-- Mappings : Temporal Allocation -->
 	   	<mapping resource="gov/epa/emissions/framework/services/tempalloc/TemporalAllocation.hbm.xml"/>
+	    <mapping resource="gov/epa/emissions/framework/services/tempalloc/TemporalAllocationResolution.hbm.xml"/>
     </session-factory>
 
 </hibernate-configuration>

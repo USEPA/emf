@@ -85,6 +85,7 @@ import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutputType;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationInputDataset;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution;
 
 import javax.xml.namespace.QName;
 
@@ -176,6 +177,7 @@ public class DataMappings extends Mappings {
         
         bean(call, TemporalAllocation.class, temporalAllocation());
         bean(call, TemporalAllocationInputDataset.class, temporalAllocationInputDataset());
+        bean(call, TemporalAllocationResolution.class, temporalAllocationResolution());
     }
 
     private void controlBeans(Call call) {
@@ -308,6 +310,7 @@ public class DataMappings extends Mappings {
         
         array(call, TemporalAllocation[].class, temporalAllocations());
         array(call, TemporalAllocationInputDataset[].class, temporalAllocationInputDatasets());
+        array(call, TemporalAllocationResolution[].class, temporalAllocationResolutions());
     }
 
     public QName logs() {
@@ -942,6 +945,14 @@ public class DataMappings extends Mappings {
 
     public QName temporalAllocationInputDatasets() {
         return qname("TemporalAllocationInputDatasets");
+    }
+
+    public QName temporalAllocationResolution() {
+        return qname("TemporalAllocationResolution");
+    }
+
+    public QName temporalAllocationResolutions() {
+        return qname("TemporalAllocationResolutions");
     }
 
 }

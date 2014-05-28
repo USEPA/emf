@@ -27,6 +27,11 @@
             class="gov.epa.emissions.commons.security.User"
             column="creator_id"/>
 
+	<many-to-one 
+            name="resolution" 
+            class="gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution"
+            column="resolution_id"/>
+
 	<array name="temporalAllocationInputDatasets" table="temporal_allocation_input_dataset">
     	<key column="temporal_allocation_id" not-null="true"/>
     	<list-index column="list_index"/>

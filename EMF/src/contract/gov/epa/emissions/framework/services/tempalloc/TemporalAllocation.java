@@ -22,6 +22,8 @@ public class TemporalAllocation implements Lockable, Serializable {
     private Project project;
 
     private User creator;
+    
+    private TemporalAllocationResolution resolution;
 
     private Date lastModifiedDate;
 
@@ -104,6 +106,14 @@ public class TemporalAllocation implements Lockable, Serializable {
 
     public void setCreator(User creator) {
         this.creator = creator;
+    }
+    
+    public TemporalAllocationResolution getResolution() {
+        return resolution;
+    }
+    
+    public void setResolution(TemporalAllocationResolution resolution) {
+        this.resolution = resolution;
     }
 
     public Date getLastModifiedDate() {
