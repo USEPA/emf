@@ -16,6 +16,10 @@
   	<property name="completionDate" column="completion_date" type="java.util.Date" not-null="false" length="4"/>
 	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
   	<property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="xrefDatasetVersion" column="xref_dataset_version" type="integer"/>
+  	<property name="monthlyProfileDatasetVersion" column="monthly_profile_dataset_version" type="integer"/>
+  	<property name="weeklyProfileDatasetVersion" column="weekly_profile_dataset_version" type="integer"/>
+  	<property name="dailyProfileDatasetVersion" column="daily_profile_dataset_version" type="integer"/>
 
 	<many-to-one cascade="save-update"
             name="project" 
@@ -31,6 +35,26 @@
             name="resolution" 
             class="gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution"
             column="resolution_id"/>
+
+	<many-to-one 
+            name="xrefDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="xref_dataset_id"/>
+
+	<many-to-one 
+            name="monthlyProfileDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="monthly_profile_dataset_id"/>
+
+	<many-to-one 
+            name="weeklyProfileDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="weekly_profile_dataset_id"/>
+
+	<many-to-one 
+            name="dailyProfileDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="daily_profile_dataset_id"/>
 
 	<array name="temporalAllocationInputDatasets" table="temporal_allocation_input_dataset">
     	<key column="temporal_allocation_id" not-null="true"/>

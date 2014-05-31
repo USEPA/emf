@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.data.Lockable;
 import gov.epa.emissions.commons.data.Mutex;
 import gov.epa.emissions.commons.data.Project;
 import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +33,10 @@ public class TemporalAllocation implements Lockable, Serializable {
     private Date completionDate;
 
     private TemporalAllocationInputDataset[] temporalAllocationInputDatasets = new TemporalAllocationInputDataset[] {};
+    
+    private EmfDataset xrefDataset, monthlyProfileDataset, weeklyProfileDataset, dailyProfileDataset;
+    
+    private Integer xrefDatasetVersion, monthlyProfileDatasetVersion, weeklyProfileDatasetVersion, dailyProfileDatasetVersion;
     
     private String runStatus;
 
@@ -161,6 +166,70 @@ public class TemporalAllocation implements Lockable, Serializable {
         inputDatasetList.addAll(Arrays.asList(temporalAllocationInputDatasets));
         inputDatasetList.add(inputDataset);
         this.temporalAllocationInputDatasets = inputDatasetList.toArray(new TemporalAllocationInputDataset[0]);
+    }
+    
+    public EmfDataset getXrefDataset() {
+        return xrefDataset;
+    }
+    
+    public void setXrefDataset(EmfDataset xrefDataset) {
+        this.xrefDataset = xrefDataset;
+    }
+
+    public void setXrefDatasetVersion(Integer xrefDatasetVersion) {
+        this.xrefDatasetVersion = xrefDatasetVersion;
+    }
+
+    public Integer getXrefDatasetVersion() {
+        return xrefDatasetVersion;
+    }
+    
+    public EmfDataset getMonthlyProfileDataset() {
+        return monthlyProfileDataset;
+    }
+    
+    public void setMonthlyProfileDataset(EmfDataset monthlyProfileDataset) {
+        this.monthlyProfileDataset = monthlyProfileDataset;
+    }
+
+    public void setMonthlyProfileDatasetVersion(Integer monthlyProfileDatasetVersion) {
+        this.monthlyProfileDatasetVersion = monthlyProfileDatasetVersion;
+    }
+
+    public Integer getMonthlyProfileDatasetVersion() {
+        return monthlyProfileDatasetVersion;
+    }
+    
+    public EmfDataset getWeeklyProfileDataset() {
+        return weeklyProfileDataset;
+    }
+    
+    public void setWeeklyProfileDataset(EmfDataset weeklyProfileDataset) {
+        this.weeklyProfileDataset = weeklyProfileDataset;
+    }
+
+    public void setWeeklyProfileDatasetVersion(Integer weeklyProfileDatasetVersion) {
+        this.weeklyProfileDatasetVersion = weeklyProfileDatasetVersion;
+    }
+
+    public Integer getWeeklyProfileDatasetVersion() {
+        return weeklyProfileDatasetVersion;
+    }
+    
+    public EmfDataset getDailyProfileDataset() {
+        return dailyProfileDataset;
+    }
+    
+    public void setDailyProfileDataset(EmfDataset dailyProfileDataset) {
+        this.dailyProfileDataset = dailyProfileDataset;
+    }
+
+    public void setDailyProfileDatasetVersion(Integer dailyProfileDatasetVersion) {
+        this.dailyProfileDatasetVersion = dailyProfileDatasetVersion;
+    }
+
+    public Integer getDailyProfileDatasetVersion() {
+        return dailyProfileDatasetVersion;
     }
 
     public Date getLockDate() {
