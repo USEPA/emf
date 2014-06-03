@@ -38,6 +38,8 @@ public class TemporalAllocation implements Lockable, Serializable {
     
     private Integer xrefDatasetVersion, monthlyProfileDatasetVersion, weeklyProfileDatasetVersion, dailyProfileDatasetVersion;
     
+    private EmfDataset detailedResultDataset;
+    
     private String runStatus;
 
     private Mutex lock;
@@ -230,6 +232,14 @@ public class TemporalAllocation implements Lockable, Serializable {
 
     public Integer getDailyProfileDatasetVersion() {
         return dailyProfileDatasetVersion;
+    }
+    
+    public EmfDataset getDetailedResultDataset() {
+        return detailedResultDataset;
+    }
+    
+    public void setDetailedResultDataset(EmfDataset detailedResultDataset) {
+        this.detailedResultDataset = detailedResultDataset;
     }
 
     public Date getLockDate() {

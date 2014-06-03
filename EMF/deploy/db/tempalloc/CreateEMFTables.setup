@@ -14,6 +14,7 @@ CREATE TABLE emf.temporal_allocation (
   weekly_profile_dataset_version int4,
   daily_profile_dataset_id int4 REFERENCES emf.datasets (id),
   daily_profile_dataset_version int4,
+  detailed_result_dataset_id int4 REFERENCES emf.datasets (id),
   last_modified_date timestamp,
   start_date timestamp,
   completion_date timestamp,
