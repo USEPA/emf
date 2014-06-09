@@ -18,6 +18,7 @@ import javax.swing.JTabbedPane;
 
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
+import gov.epa.emissions.commons.gui.buttons.RunButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
@@ -134,6 +135,9 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
 
         Button saveButton = new SaveButton(saveAction());
         container.add(saveButton);
+        
+        Button runButton = new RunButton(runAction());
+        container.add(runButton);
 
         Button closeButton = new CloseButton(closeAction());
         container.add(closeButton);
@@ -183,6 +187,22 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
             }
         };
 
+        return action;
+    }
+    
+    private Action runAction() {
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    save();
+                    presenter.runTemporalAllocation();
+                    messagePanel.setMessage("Running temporal allocation.");
+                } catch (EmfException e) {
+                    messagePanel.setError(e.getMessage());
+                }
+            }
+        };
+        
         return action;
     }
 

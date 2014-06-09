@@ -1,3 +1,5 @@
+-- SELECT public.run_temporal_allocation(2, 11, 0);
+
 CREATE OR REPLACE FUNCTION public.run_temporal_allocation(
   temporal_allocation_id integer,
   input_dataset_id integer,
@@ -39,7 +41,8 @@ BEGIN
   --   input is ORL annual inventory
   --   output is monthly totals
   --   use default profile (emissions * 1/12)
-  INSERT INTO emissions.detailed_result_table_name (
+  EXECUTE '
+  INSERT INTO emissions.' || detailed_result_table_name || ' (
          dataset_id,
          poll,
          scc,
@@ -52,9 +55,9 @@ BEGIN
          profile_id,
          fraction,
          month,
-         total_emissions
+         total_emis
   )
-  SELECT detailed_result_dataset_id,
+  SELECT ' || detailed_result_dataset_id || ',
          inv.poll,
          inv.scc,
          inv.fips,
@@ -62,13 +65,13 @@ BEGIN
          inv.pointid,
          inv.stackid,
          inv.segment,
-         'month',
+         ''month'',
          0,
-         0.0833 AS fraction,
+         0.0833,
          1,
-         inv.ann_emis * fraction
-    FROM emissions.inv_table_name inv
-   WHERE public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv');
+         inv.ann_emis * 0.0833
+    FROM emissions.' || inventory_table_name || ' inv
+   WHERE ' || public.build_version_where_filter(input_dataset_id,  input_dataset_version, 'inv');
     
 END;
 $$ LANGUAGE plpgsql;

@@ -101,4 +101,8 @@ public class TemporalAllocationPresenter {
             tabPresenters.add(presenter);
         }
     }
+    
+    public void runTemporalAllocation() throws EmfException {
+        service().runTemporalAllocation(session.user(), temporalAllocation);
+    }
 }

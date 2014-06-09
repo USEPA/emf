@@ -96,4 +96,8 @@ public class TemporalAllocationDAO {
     public List allResolutions(Session session) {
         return hibernateFacade.getAll(TemporalAllocationResolution.class, Order.asc("name"), session);
     }
+
+    public Long getTemporalAllocationRunningCount(Session session) {
+        return (Long)session.createQuery("SELECT COUNT(*) FROM TemporalAllocation WHERE runStatus = 'Running'").uniqueResult();
+    }
 }

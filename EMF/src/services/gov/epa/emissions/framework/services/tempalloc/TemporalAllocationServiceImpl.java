@@ -21,6 +21,8 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
     private PooledExecutor threadPool;
 
     private HibernateSessionFactory sessionFactory;
+
+    protected DbServerFactory dbServerFactory;
     
     private TemporalAllocationDAO dao;
     
@@ -34,6 +36,7 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
     
     private synchronized void init(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
         this.sessionFactory = sessionFactory;
+        this.dbServerFactory = dbServerFactory;
         dao = new TemporalAllocationDAO(dbServerFactory, sessionFactory);
         threadPool = createThreadPool();
     }
@@ -131,6 +134,29 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve temporal allocation resolutions.", e);
             throw new EmfException("Could not retrieve temporal allocation resolutions.");
+        } finally {
+            session.close();
+        }
+    }
+    
+    public void runTemporalAllocation(User user, TemporalAllocation element) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            RunTemporalAllocation runTemporalAllocation = new RunTemporalAllocation(sessionFactory, dbServerFactory, threadPool);
+            runTemporalAllocation.run(user, element, this);
+        } catch (EmfException e) {
+            throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
+    public Long getTemporalAllocationRunningCount() throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            return dao.getTemporalAllocationRunningCount(session);
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not get Temporal Allocation running count");
         } finally {
             session.close();
         }
