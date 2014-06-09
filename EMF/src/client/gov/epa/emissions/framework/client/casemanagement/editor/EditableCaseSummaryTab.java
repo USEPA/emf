@@ -17,6 +17,7 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.AddRemoveRegionsWidget;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Abbreviation;
 import gov.epa.emissions.framework.services.casemanagement.Case;
@@ -105,7 +106,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
 
     private Dimension defaultDimension = new Dimension(255, 22);
 
-    private EditCaseSummaryTabPresenter presenter;
+    private EditableCaseSummaryTabPresenter presenter;
     
     private EmfConsole parentConsole;
     
@@ -114,6 +115,8 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
     private MessagePanel messagePanel;
 
     private int fieldWidth = 23;
+    
+    private JPanel layout;
 
     public EditableCaseSummaryTab(Case caseObj, EmfSession session, ManageChangeables changeablesList,
             MessagePanel messagePanel, EmfConsole parentConsole) {
@@ -132,12 +135,12 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
     private void setLayout() throws EmfException {
         super.setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(createOverviewSection());
-        panel.add(createLowerSection());
+        layout = new JPanel();
+        layout.setLayout(new BoxLayout(layout, BoxLayout.Y_AXIS));
+        layout.add(createOverviewSection());
+        layout.add(createLowerSection());
 
-        super.add(panel, BorderLayout.CENTER);
+        super.add(layout, BorderLayout.CENTER);
     }
 
     private JPanel createOverviewSection() throws EmfException {
@@ -619,33 +622,26 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         }
     }
 
-    public void observe(EditCaseSummaryTabPresenter presenter) {
+    public void observe(EditableCaseSummaryTabPresenter presenter) {
         this.presenter = presenter;
     }
 
+    
     public void doRefresh() throws EmfException {
-        presenter.refreshObjectManager();
-        checkIfLockedByCurrentUser();
+        new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+    }
+    
+    public void refresh(Case caseObj) {
+        this.caseObj = caseObj;
         super.removeAll();
-        setLayout();
+        try {
+            setLayout();
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
         super.validate();
         changeablesList.resetChanges();
-    }
-
-    public void checkIfLockedByCurrentUser() throws EmfException {
-        Case reloaded = session.caseService().reloadCase(caseObj.getId());
-        
-        if (reloaded.isLocked() && !reloaded.isLocked(session.user()))
-            throw new EmfException("Lock on current case object expired. User " + reloaded.getLockOwner()
-                    + " has it now.");
-        
-        if (!reloaded.isLocked())
-            reloaded = session.caseService().obtainLocked(session.user(), caseObj);
-        
-        if (reloaded == null)
-            throw new EmfException("Acquire lock on case failed. Please exit editing the case.");
-        
-        this.caseObj = reloaded;
     }
 
     public void addSector(Sector sector) {

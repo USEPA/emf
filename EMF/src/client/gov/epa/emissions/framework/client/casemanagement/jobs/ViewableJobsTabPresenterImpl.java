@@ -175,9 +175,8 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
         
     }
 
-    public void checkIfLockedByCurrentUser() {
-        // NOTE Auto-generated method stub
-        
+    public Case checkIfLockedByCurrentUser() {
+        return null;
     }
 
     public Object[] getAllCaseNameIDs() throws EmfException {

@@ -627,7 +627,7 @@ public class CaseServiceImpl implements CaseService {
 
         try {
             if (!dao.canUpdate(caseObj, session))
-                throw new EmfException("the case name is already in use");
+                throw new EmfException("the case name or abbrev is already in use. ");
 
             Case caseWithSameAbbr = dao.getCaseFromAbbr(caseObj.getAbbreviation(), session);
 

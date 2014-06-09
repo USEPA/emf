@@ -344,4 +344,16 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
         }
         
     }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveData(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
 }

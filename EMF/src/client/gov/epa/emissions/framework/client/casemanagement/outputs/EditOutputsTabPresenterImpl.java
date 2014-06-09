@@ -104,12 +104,13 @@ public class EditOutputsTabPresenterImpl implements EditOutputsTabPresenter {
         outputFieldsPresenter.display(newOutput, container);
     }
     
-    public void checkIfLockedByCurrentUser() throws EmfException {
+    public Case checkIfLockedByCurrentUser() throws EmfException {
         Case reloaded = session.caseService().reloadCase(caseObj.getId());
 
         if (reloaded.isLocked() && !reloaded.isLocked(session.user()))
             throw new EmfException("Lock on current case object expired. User " + reloaded.getLockOwner()
                     + " has it now.");
+        return reloaded;
     }
     
     public Case[] getCasesByInputDataset(int datasetId) throws EmfException{

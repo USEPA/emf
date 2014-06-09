@@ -8,6 +8,7 @@ import gov.epa.emissions.framework.client.casemanagement.CaseObjectManager;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Abbreviation;
 import gov.epa.emissions.framework.services.casemanagement.AirQualityModel;
+import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseCategory;
 import gov.epa.emissions.framework.services.casemanagement.EmissionsYear;
 import gov.epa.emissions.framework.services.casemanagement.MeteorlogicalYear;
@@ -15,17 +16,20 @@ import gov.epa.emissions.framework.services.casemanagement.ModelToRun;
 import gov.epa.emissions.framework.services.casemanagement.Speciation;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 
-public class EditCaseSummaryTabPresenter {
-    
-    private CaseObjectManager caseObjectManager = null;
-    
-    private int caseId; 
-    
-    public EditCaseSummaryTabPresenter(int caseId, EmfSession session) {
+public abstract class CaseSummaryTabPresenterImpl implements ViewableCaseSummaryTabPresenter {
+
+    protected Case caseObj;
+    protected CaseObjectManager caseObjectManager = null;
+
+    public CaseSummaryTabPresenterImpl(EmfSession session, Case caseObj) {
+        this.caseObj = caseObj;
         this.caseObjectManager = CaseObjectManager.getCaseObjectManager(session);
-        this.caseId = caseId;
     }
 
+    public Case getCaseObj() {
+        return this.caseObj;
+    }
+    
     public Sector[] getAllSectors() throws EmfException {
         return caseObjectManager.getSectors();
     }
@@ -112,13 +116,6 @@ public class EditCaseSummaryTabPresenter {
 
     public GeoRegion[] getAllGeoRegions() throws EmfException {
         return caseObjectManager.getGeoRegions();
-    }
-    
-    public String[] isGeoRegionUsed(GeoRegion[] grids)throws EmfException {
-        if ( (caseId ==0) || (grids == null) ){
-            throw new EmfException("Incorrect case Id or georegion values. ");
-        }       
-         return caseObjectManager.isGeoRegionUsed(caseId, grids);
     }
 
 }

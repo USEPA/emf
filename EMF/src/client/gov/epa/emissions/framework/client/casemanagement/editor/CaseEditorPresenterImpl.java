@@ -95,20 +95,25 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     }
 
     public void doSave() throws EmfException {
-        updateCase();
+        //updateCase();
     }
 
-    void updateCase() throws EmfException {
+    public Object[] saveProcessData() throws EmfException {
+        updateCase();
+        return new Case[]{caseObj};
+    }
+    
+    private void updateCase() throws EmfException {
         checkIfLockedByCurrentUser();
         saveTabs();
-
-        if (isDuplicate(caseObj))
-            throw new EmfException("Duplicate name - '" + caseObj.getName() + "'.");
+//        if (isDuplicate(caseObj))
+//            throw new EmfException("Duplicate name - '" + caseObj.getName() + "'.");
 
         caseObj.setLastModifiedBy(session.user());
         caseObj.setLastModifiedDate(new Date());
-        service().updateCaseWithLock(caseObj);
+        caseObj = service().updateCaseWithLock(caseObj);
     }
+
 
     private void saveTabs() throws EmfException {
         for (Iterator<CaseEditorTabPresenter> iter = presenters.iterator(); iter.hasNext();) {
@@ -117,15 +122,15 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
         }
     }
 
-    private boolean isDuplicate(Case newCase) throws EmfException {
-        Case[] cases = service().getCases();
-        for (int i = 0; i < cases.length; i++) {
-            if (cases[i].getName().equals(newCase.getName()) && cases[i].getId() != newCase.getId())
-                return true;
-        }
-
-        return false;
-    }
+//    private boolean isDuplicate(Case newCase) throws EmfException {
+//        Case[] cases = service().getCases();
+//        for (int i = 0; i < cases.length; i++) {
+//            if (cases[i].getName().equals(newCase.getName()) && cases[i].getId() != newCase.getId())
+//                return true;
+//        }
+//
+//        return false;
+//    }
 
     public void checkIfLockedByCurrentUser() throws EmfException {
         Case reloaded = service().reloadCase(caseObj.getId());
@@ -139,7 +144,7 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     }
 
     public void set(EditableCaseSummaryTabView summaryView) {
-        summaryPresenter = new EditableCaseSummaryTabPresenterImpl(caseObj, summaryView);
+        summaryPresenter = new EditableCaseSummaryTabPresenterImpl(session, caseObj, summaryView);
         presenters.add(summaryPresenter);
     }
 
@@ -225,6 +230,38 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     public void doViewRelated(RelatedCaseView view, Case[] inputCases, Case[] outputCases) {
         RelatedCasePresenter presenter = new RelatedCasePresenter(view, session);
         presenter.doDisplay(inputCases, outputCases);
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public void saveData(Object[] objs) throws EmfException {
+        if (objs[0] == null)
+            throw new EmfException("the case name or abbrev is already in use.");
+        view.resetChanges();      
     }
     
 }

@@ -1489,13 +1489,14 @@ public class CaseDAO {
     }
 
     public boolean canUpdate(Case caseObj, Session session) {
-        if (!exists(caseObj.getId(), Case.class, session)) {
+        if (!exists(caseObj.getId(), Case.class, session)) 
             return false;
-        }
-
+        
         Case current = current(caseObj.getId(), Case.class, session);
-
         session.clear();// clear to flush current
+        
+        if (nameUsed(caseObj.getAbbreviation().getName(), Abbreviation.class, session))
+            return false;
 
         if (current.getName().equals(caseObj.getName()))
             return true;
