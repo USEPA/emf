@@ -1,5 +1,8 @@
 package gov.epa.emissions.framework.client.meta.qa;
 
+import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.data.QAStep;
+
 public class EditQAArgumentsPresenter {
     
     private EditQAArgumentsView view;
@@ -10,9 +13,9 @@ public class EditQAArgumentsPresenter {
         this.view2 = view2;
     }
 
-    public void display() {
+    public void display(EmfDataset dataset, QAStep qaStep) {
         view.observe(this);
-        view.display();
+        view.display(dataset, qaStep);
     }
     
     public void refreshArgs(String argText) {

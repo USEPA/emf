@@ -5,14 +5,13 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditorView;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseViewerView;
 import gov.epa.emissions.framework.client.casemanagement.sensitivity.SensitivityView;
+import gov.epa.emissions.framework.client.swingworker.HeavySwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseCategory;
 
-public interface CaseManagerPresenter {
-
-    void display() throws EmfException;
-    
+public interface CaseManagerPresenter extends HeavySwingWorkerPresenter{
+  
     String checkParentCase(Case caseObj) throws EmfException;
 
     void doRemove(Case caseObj) throws EmfException;

@@ -2003,7 +2003,7 @@ avd_emis=emis_avd
         String argumentsText = programArguments.getText();
         EditQAArgumentsWindow view = new EditQAArgumentsWindow(desktopManager, argumentsText);
         EditQAArgumentsPresenter presenter = new EditQAArgumentsPresenter(view, this);
-        presenter.display();
+        presenter.display(origDataset, step);
     }
 
     public void updateArgumentsTextArea(String text) {
