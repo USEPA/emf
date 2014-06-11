@@ -36,14 +36,14 @@ public class EditQAArgumentsWindow extends DisposableInteralFrame implements Edi
     private EditQAArgumentsPresenter presenter;
     
     public EditQAArgumentsWindow(DesktopManager desktopManager, String textAreaArguments) {
-        
         super("Argument Editor", new Dimension(750, 350), desktopManager);
         this.textAreaArguments = textAreaArguments;
         this.getContentPane().add(createLayout());
     }
 
   public void display(EmfDataset dataset, QAStep qaStep) {
-      super.setTitle("Edit QA Step Arguments: " + qaStep.getName() + "_" + qaStep.getId()+" ("+dataset.getName()+")");
+      //super.setTitle("Edit QA Step Arguments: " + qaStep.getName() + "_" + qaStep.getId()+" ("+dataset.getName()+")");
+      super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
       super.display();
   }
   

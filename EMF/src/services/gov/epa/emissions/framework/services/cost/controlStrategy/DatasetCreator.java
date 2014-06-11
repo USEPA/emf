@@ -553,9 +553,7 @@ public class DatasetCreator {
             datasetName = "Cntld_" + inputDataset.getName();
         else {
             datasetName = datasetNamePrefix + "_" + inputDataset.getName();
-            ;
-            if (datasetNamePrefix.substring(0, 1).matches("[0-9]"))
-                datasetName = "t_" + datasetName;
+            
             // see if we need to tag with a monthly indicator
             int applicableMonth = inputDataset.applicableMonth();
             if (applicableMonth >= 0) {
@@ -632,6 +630,11 @@ public class DatasetCreator {
 
     private String createTableName(String name) {
         String table = name;
+        // make sure table name doesn't start with a digit
+        if (Character.isDigit(table.charAt(0))) {
+            table = "t_" + table;
+        }
+        
         // truncate if necessary so a unique timestamp can be added to ensure uniqueness
         if (table.length() > 46) { // postgresql table name max length is 64
             table = table.substring(0, 45);
