@@ -393,47 +393,47 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         return exclude;
     }
 
-    // Instances of javax.swing.SwingWorker are not reusuable, so
-    // we create new instances as needed.
-    private class SwingWorkerTask extends SwingWorker<Void, Void> {
-
-        private Container parentContainer;
-
-        public SwingWorkerTask(Container parentContainer) {
-            this.parentContainer = parentContainer;
-            this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-
-        /*
-         * Main task. Executed in background thread. don't update gui here
-         */
-        @Override
-        public Void doInBackground() throws EmfException {
-            // add long running code here...
-            return null;
-        }
-
-        /*
-         * Executed in event dispatching thread
-         */
-        @Override
-        public void done() {
-            try {
-                // make sure something didn't happen
-                get();
-
-            } catch (InterruptedException e1) {
-                // messagePanel.setError(e1.getMessage());
-                // setErrorMsg(e1.getMessage());
-            } catch (ExecutionException e1) {
-                // messagePanel.setError(e1.getCause().getMessage());
-                // setErrorMsg(e1.getCause().getMessage());
-            } finally {
-                // this.parentContainer.setCursor(null); //turn off the wait cursor
-                // this.parentContainer.
-                // ComponentUtility.enableComponents(this.parentContainer, true);
-                this.parentContainer.setCursor(null); // turn off the wait cursor
-            }
-        }
-    };
+//    // Instances of javax.swing.SwingWorker are not reusuable, so
+//    // we create new instances as needed.
+//    private class SwingWorkerTask extends SwingWorker<Void, Void> {
+//
+//        private Container parentContainer;
+//
+//        public SwingWorkerTask(Container parentContainer) {
+//            this.parentContainer = parentContainer;
+//            this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//        }
+//
+//        /*
+//         * Main task. Executed in background thread. don't update gui here
+//         */
+//        @Override
+//        public Void doInBackground() throws EmfException {
+//            // add long running code here...
+//            return null;
+//        }
+//
+//        /*
+//         * Executed in event dispatching thread
+//         */
+//        @Override
+//        public void done() {
+//            try {
+//                // make sure something didn't happen
+//                get();
+//
+//            } catch (InterruptedException e1) {
+//                // messagePanel.setError(e1.getMessage());
+//                // setErrorMsg(e1.getMessage());
+//            } catch (ExecutionException e1) {
+//                // messagePanel.setError(e1.getCause().getMessage());
+//                // setErrorMsg(e1.getCause().getMessage());
+//            } finally {
+//                // this.parentContainer.setCursor(null); //turn off the wait cursor
+//                // this.parentContainer.
+//                // ComponentUtility.enableComponents(this.parentContainer, true);
+//                this.parentContainer.setCursor(null); // turn off the wait cursor
+//            }
+//        }
+//    };
 }
