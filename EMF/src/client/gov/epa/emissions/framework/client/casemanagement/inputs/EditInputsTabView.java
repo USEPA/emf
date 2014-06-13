@@ -1,18 +1,19 @@
 package gov.epa.emissions.framework.client.casemanagement.inputs;
 
+import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseInput;
 
 public interface EditInputsTabView {
 
-    void display(EmfSession session, Case caseObj, EditInputsTabPresenter presenter);
+    void display(EmfSession session, Case caseObj);
 
     CaseInput[] caseInputs();
 
     void addInput(CaseInput input);
     
-    void refresh();
+    void refresh(CaseInput[] caseInputs);
     
     String getCaseInputFileDir();
 
@@ -22,6 +23,12 @@ public interface EditInputsTabView {
 
     void setMessage(String message);
     
-//    void notifychanges();
+    void doDisplay(EditInputsTabPresenter presenter);
+    
+    Sector getSelectedSector();
+    
+    String nameContains();
+    
+    Boolean isShowAll();
 
 }

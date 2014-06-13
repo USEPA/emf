@@ -29,6 +29,7 @@ public class ViewSwingWorkerTasks extends SwingWorker<Object[], Void> {
     public Object[] doInBackground() throws EmfException  {   
         this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ComponentUtility.enableComponents(parentContainer, false);
+        messagePanel.clear();
         return presenter.viewProcessData();
     }
 

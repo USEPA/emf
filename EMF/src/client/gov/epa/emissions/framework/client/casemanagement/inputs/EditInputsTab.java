@@ -21,6 +21,8 @@ import gov.epa.emissions.framework.client.casemanagement.editor.RelatedCaseView;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
+import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
@@ -58,7 +60,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
 
     private EmfConsole parentConsole;
 
-    private EditInputsTabPresenterImpl presenter;
+    private EditInputsTabPresenter presenter;
 
     private Case caseObj;
 
@@ -87,6 +89,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
     private EmfSession session;
 
     private ManageChangeables changeables;
+    private JPanel layout;
 
     public EditInputsTab(EmfConsole parentConsole, ManageChangeables changeables, MessagePanel messagePanel,
             DesktopManager desktopManager) {
@@ -97,53 +100,43 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         this.changeables = changeables;
         super.setLayout(new BorderLayout());
     }
+    
+    public void doDisplay(EditInputsTabPresenter presenter){
+        this.presenter = presenter;
+        new SwingWorkerTasks(this, presenter).execute();
+    }
+    
 
-    public void display(EmfSession session, Case caseObj, EditInputsTabPresenter presenter) {
+    public void display(EmfSession session, Case caseObj) {
         super.removeAll();
-
         this.caseObj = caseObj;
         this.caseId = caseObj.getId();
-        this.presenter = (EditInputsTabPresenterImpl) presenter;
         this.session = session;
         this.inputDir = new TextField("inputdir", 50);
         inputDir.setText(caseObj.getInputFileDir());
         this.changeables.addChangeable(inputDir);
-
-        try {
-            super.add(createLayout(new CaseInput[0], presenter, parentConsole), BorderLayout.CENTER);
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all case inputs.");
-        }
-
-        kickPopulateThread();
+        super.add(createLayout(new CaseInput[0], presenter, parentConsole), BorderLayout.CENTER);
+        messagePanel.setMessage("Please select a sector to retrieve case inputs.");
     }
-
-    private void kickPopulateThread() {
-        Thread populateThread = new Thread(new Runnable() {
-            public void run() {
-                retrieveInputs();
-            }
-        });
-        populateThread.start();
-    }
-
-    private synchronized void retrieveInputs() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all case inputs...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            doRefresh(listFreshInputs());
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all case inputs.");
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-
-            try {
-                presenter.checkIfLockedByCurrentUser();
-            } catch (Exception e) {
-                messagePanel.setMessage(e.getMessage());
-            }
-        }
-    }
+ 
+//
+//    private synchronized void retrieveInputs() {
+//        try {
+//            messagePanel.setMessage("Please wait while retrieving all case inputs...");
+//            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//            doRefresh(listFreshInputs());
+//        } catch (Exception e) {
+//            messagePanel.setError("Cannot retrieve all case inputs.");
+//        } finally {
+//            setCursor(Cursor.getDefaultCursor());
+//
+//            try {
+//                presenter.checkIfLockedByCurrentUser();
+//            } catch (Exception e) {
+//                messagePanel.setMessage(e.getMessage());
+//            }
+//        }
+//    }
 
     private void doRefresh(CaseInput[] inputs) throws Exception {
         String inputFileDir = caseObj.getInputFileDir();
@@ -151,8 +144,8 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         if (!inputDir.getText().equalsIgnoreCase(inputFileDir))
             inputDir.setText(inputFileDir);
 
-        sectorsComboBox.resetModel(presenter.getAllSetcors());
-        sectorsComboBox.setSelectedItem(this.selectedSector);
+//        sectorsComboBox.resetModel(presenter.getAllSetcors());
+//        sectorsComboBox.setSelectedItem(this.selectedSector);
         setupTableModel(inputs);
         table.refresh(tableData);
         panelRefresh();
@@ -168,9 +161,8 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         tableData = new InputsTableData(inputs, session);
     }
 
-    private JPanel createLayout(CaseInput[] inputs, EditInputsTabPresenter presenter, EmfConsole parentConsole)
-            throws Exception {
-        final JPanel layout = new JPanel(new BorderLayout());
+    private JPanel createLayout(CaseInput[] inputs, EditInputsTabPresenter presenter, EmfConsole parentConsole){
+        layout = new JPanel(new BorderLayout());
 
         layout.add(createFolderNSectorPanel(), BorderLayout.NORTH);
         layout.add(tablePanel(inputs, parentConsole), BorderLayout.CENTER);
@@ -227,7 +219,8 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    doRefresh(listFreshInputs());
+                    new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                    messagePanel.clear();
                 } catch (Exception exc) {
                     setErrorMessage(exc.getMessage());
                 }
@@ -245,7 +238,8 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
                     if (sectorsComboBox != null)
                         sectorsComboBox.setSelectedItem(new Sector("All", "All"));
                     
-                    doRefresh(listFreshInputs());
+                    new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                    messagePanel.clear();
                 } catch (Exception exc) {
                     setErrorMessage(exc.getMessage());
                 }
@@ -352,7 +346,8 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
             public void actionPerformed(ActionEvent e) {
                 clearMessage();
                 try {
-                    doRefresh(listFreshInputs());
+                    new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                    clearMessage();
                 } catch (Exception ex) {
                     setErrorMessage(ex.getMessage());
                 }
@@ -424,7 +419,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.remove(inputs);
-            refresh();
+            refresh(tableData.sources());
             try {
                 presenter.removeInputs(inputs);
                 setMessage(" Click Refresh to see case updates.");
@@ -630,8 +625,11 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return (List<CaseInput>) table.selected();
     }
 
-    private Sector getSelectedSector() {
+    public Sector getSelectedSector() {
         this.selectedSector = (Sector) sectorsComboBox.getSelectedItem();
+        if (selectedSector == null ){
+            messagePanel.setMessage("Please select a sector to see full list of inputs.");
+        }
         return this.selectedSector;
     }
 
@@ -653,26 +651,31 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
     }
 
 
-    private CaseInput[] listFreshInputs() throws EmfException {
-        CaseInput[] freshList = presenter.getCaseInput(caseId, getSelectedSector(), nameContains(), showAll.isSelected());
-
-        if (getSelectedSector() == null && freshList.length == presenter.getPageSize())
-            setMessage("Please select a sector to see full list of inputs.");
-        else
-            messagePanel.clear();
-
-        return freshList;
+    
+//    private CaseInput[] listFreshInputs() throws EmfException {
+//        CaseInput[] freshList = presenter.getCaseInput(caseId, getSelectedSector(), nameContains(), showAll.isSelected());
+//
+//        if (getSelectedSector() == null && freshList.length == presenter.getPageSize())
+//            setMessage("Please select a sector to see full list of inputs.");
+//        else
+//            messagePanel.clear();
+//
+//        return freshList;
+//    }
+    
+    public Boolean isShowAll(){
+        return showAll.isSelected();
     }
 
-    private String nameContains() {
+    public String nameContains() {
         return envVarContains == null ? "" : envVarContains.getText().trim();
     }
 
-    public void refresh() {
+    public void refresh(CaseInput[] caseInputs) {
         // note that this will get called when the case is save
         try {
-            if (tableData != null) // it's still null if you've never displayed this tab
-                doRefresh(tableData.sources());
+            if (caseInputs != null) // it's still null if you've never displayed this tab
+                doRefresh(caseInputs);
         } catch (Exception e) {
             setErrorMessage("Cannot refresh current tab. " + e.getMessage());
         }
@@ -696,7 +699,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
 
     public void doRefresh() throws EmfException {
         try {
-            kickPopulateThread();
+            new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         }

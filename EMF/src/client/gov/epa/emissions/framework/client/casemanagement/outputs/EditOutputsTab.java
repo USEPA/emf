@@ -13,10 +13,13 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.casemanagement.editor.FindCaseWindow;
 import gov.epa.emissions.framework.client.casemanagement.editor.RelatedCaseView;
+import gov.epa.emissions.framework.client.casemanagement.inputs.EditInputsTabPresenter;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
+import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
@@ -46,57 +49,68 @@ import javax.swing.SpringLayout;
 
 public class EditOutputsTab extends JPanel implements EditOutputsTabView, RefreshObserver {
 
-    private EmfConsole parentConsole;
+    protected EmfConsole parentConsole;
 
-    private EditOutputsTabPresenterImpl presenter;
+    private EditOutputsTabPresenter presenter;
     
-    private MessagePanel messagePanel;
+    protected MessagePanel messagePanel;
 
-    private OutputsTableData tableData;
+    protected OutputsTableData tableData;
 
-    private ManageChangeables changeables;
+    protected ManageChangeables changeables;
 
-    private SelectableSortFilterWrapper table;
+    protected SelectableSortFilterWrapper table;
 
-    private JPanel tablePanel;
+    protected JPanel tablePanel;
     
-    private Case caseObj;
+    protected JPanel layout;
     
-    private EmfSession session; 
+    protected Case caseObj;
     
-    private ComboBox jobCombo;
+    protected EmfSession session; 
     
-    private List<CaseJob> caseJobs; 
+    protected ComboBox jobCombo;
     
-    private CaseJob selectedJob=null;
+    protected List<CaseJob> caseJobs; 
     
-    private CaseOutput selectedOutput;
+    protected CaseJob selectedJob=null;
     
-    private DesktopManager desktopManager;
+    protected CaseOutput selectedOutput;
+    
+    protected DesktopManager desktopManager;
+
 
 
     public EditOutputsTab(EmfConsole parentConsole, ManageChangeables changeables, MessagePanel messagePanel,
             DesktopManager desktopManager, EmfSession session) {
-        super.setName("editOutputsTab");
+        this(parentConsole, messagePanel, desktopManager, session);
+        super.setName("editOutputsTab");       
+        this.changeables = changeables;       
+    }   
+    
+    public EditOutputsTab(EmfConsole parentConsole, MessagePanel messagePanel,
+            DesktopManager desktopManager, EmfSession session) {
         this.parentConsole = parentConsole;
-        this.changeables = changeables;
         this.session=session; 
         this.desktopManager=desktopManager;
         this.messagePanel=messagePanel;
- 
+    }
+    
+    public void doDisplay(EditOutputsTabPresenter presenter){
+        this.presenter = presenter;
+        new SwingWorkerTasks(this, presenter).execute();
+    }
+    
+    public void display(CaseJob[] jobs) {
         super.setLayout(new BorderLayout());
-    }
-
-    public void display() {
         super.removeAll();
-        CaseOutput[] outputs = new CaseOutput[0];
-        try {
-            getAllJobs();
-        } catch (EmfException e) {
-            messagePanel.setError(e.getMessage());
-        }
+        CaseOutput[] outputs = new CaseOutput[0];        
+        setAllJobs(jobs);    
         super.add(createLayout(outputs), BorderLayout.CENTER);
+        super.validate();
     }
+    
+    
 
     private void doRefresh(CaseOutput[] outputs){
         messagePanel.clear();
@@ -107,17 +121,18 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
     }
 
     private JPanel createLayout(CaseOutput[] outputs){
-        JPanel layout = new JPanel(new BorderLayout());
+        layout = new JPanel(new BorderLayout());
         layout.add(createTopPanel(), BorderLayout.NORTH);
         layout.add(tablePanel(outputs, parentConsole), BorderLayout.CENTER);
         layout.add(controlPanel(), BorderLayout.PAGE_END);
         return layout;
     }
     
-    private void getAllJobs() throws EmfException {
+    public void setAllJobs(CaseJob[] jobs)  {
+         
         this.caseJobs = new ArrayList<CaseJob>();
         caseJobs.add(new CaseJob("All"));
-        caseJobs.addAll(Arrays.asList(presenter.getCaseJobs()));
+        caseJobs.addAll(Arrays.asList(jobs));
     }
     
     private JPanel createTopPanel() {
@@ -128,22 +143,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         if (selectedJob!=null)
             jobCombo.setSelectedItem(selectedJob);
             
-        jobCombo.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                CaseJob job=(CaseJob) jobCombo.getSelectedItem();
-                
-                try {
-                    if (job == null){
-                        doRefresh(new CaseOutput[0]);
-                        return; 
-                    }
-                    CaseOutput[] outputs=presenter.getCaseOutputs(caseObj.getId(),job.getId());
-                    doRefresh(outputs);
-                } catch (EmfException exc) {
-                    messagePanel.setError("Could not retrieve all outputs for job " + (job != null ? job.getName() : job) + ".");
-                }
-            }
-        });
+        jobCombo.addActionListener(filterAction());
         layoutGenerator.addLabelWidgetPair("Job: ", jobCombo, panel);
         layoutGenerator.makeCompactGrid(panel, 1, 2, // rows, cols
                 100, 15, // initialX, initialY
@@ -314,7 +314,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
             YesNoDialog dialog = new YesNoDialog(parentConsole, titleDS, messageDS);
             boolean deleteDS=dialog.confirm();
             tableData.remove(selected);
-            refresh();
+            refresh(tableData.sources());
             
             try {
                 presenter.doRemove(selected,deleteDS);
@@ -325,40 +325,36 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
             }
         }
     }
-    public void refresh(){
+    public void refresh(CaseOutput[] outputs){
         // note that this will get called when the case is save
-            if (tableData != null) {// it's still null if you've never displayed this tab
-                doRefresh(tableData.sources());
+            if (outputs != null) {// it's still null if you've never displayed this tab
+                doRefresh(outputs);
             }
     }
 
     public void doRefresh() throws EmfException {
         try {
-            kickPopulateThread();
+            refreshJobList(presenter.getCaseJobs());
+            new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         }
     }
 
 
-    public void observe(EditOutputsTabPresenterImpl presenter) {
+    public void observe(EditOutputsTabPresenter presenter) {
         this.presenter = presenter;
         this.caseObj=presenter.getCaseObj();
     }
     
-    private void kickPopulateThread() {
-        Thread populateThread = new Thread(new Runnable() {
-            public void run() {
-                retrieveOutputs();
-            }
-        });
-        populateThread.start();
-    }
-    
-    private synchronized void refreshJobList() throws EmfException {
-        getAllJobs();
+
+    public void refreshJobList(CaseJob[] jobs) {
+        setAllJobs(jobs);
+//        jobCombo.removeActionListener(filterAction());
         jobCombo.resetModel(caseJobs.toArray(new CaseJob[0]));
         jobCombo.setSelectedItem(getCaseJob(caseJobs, this.selectedJob));
+//       
+//        jobCombo.addActionListener(filterAction());
     }
     
     private CaseJob getCaseJob(List<CaseJob> allJobs, CaseJob selectedJob) {
@@ -374,30 +370,40 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
 
         return null;
     }
-
-    private synchronized void retrieveOutputs() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all outputs...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            
-            refreshJobList();
-            
-            if ( selectedJob != null)
-                doRefresh(presenter.getCaseOutputs(caseObj.getId(), selectedJob.getId()));
-            
-            clearMessage();
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all outputs.");
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-            
-            try {
-                presenter.checkIfLockedByCurrentUser();
-            } catch (Exception e) {
-                messagePanel.setMessage(e.getMessage());
+    
+    private AbstractAction filterAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent arg0) {
+                new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                messagePanel.clear();
             }
-        }
-    }
+        };
+    } 
+    
+
+//    private synchronized void retrieveOutputs() {
+//        try {
+//            messagePanel.setMessage("Please wait while retrieving all outputs...");
+//            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//            
+//            refreshJobList();
+//            
+//            if ( selectedJob != null)
+//                doRefresh(presenter.getCaseOutputs(caseObj.getId(), selectedJob.getId()));
+//            
+//            clearMessage();
+//        } catch (Exception e) {
+//            messagePanel.setError("Cannot retrieve all outputs.");
+//        } finally {
+//            setCursor(Cursor.getDefaultCursor());
+//            
+//            try {
+//                presenter.checkIfLockedByCurrentUser();
+//            } catch (Exception e) {
+//                messagePanel.setMessage(e.getMessage());
+//            }
+//        }
+//    }
 
     public void clearMessage() {
         messagePanel.clear();
@@ -444,6 +450,15 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
             messagePanel.setError(e.getMessage());
         }
 
+    }
+
+    @Override
+    public Integer getSelectedJobId() {         
+        selectedJob = (CaseJob) jobCombo.getSelectedItem();
+     
+        if ( selectedJob != null) 
+            return selectedJob.getId();
+        return null;
     } 
 
     

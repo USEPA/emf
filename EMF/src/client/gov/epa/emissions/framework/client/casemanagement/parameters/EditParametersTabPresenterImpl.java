@@ -20,18 +20,22 @@ import javax.swing.JComponent;
 
 public class EditParametersTabPresenterImpl implements EditParametersTabPresenter {
 
-    private Case caseObj;
+    protected Case caseObj;
 
     private EditCaseParametersTabView view;
 
-    private EmfSession session;
+    protected EmfSession session;
 
-    private int defaultPageSize = 20;
+    protected int defaultPageSize = 20;
+    
+    public EditParametersTabPresenterImpl(EmfSession session, Case caseObj){
+        this.caseObj = caseObj;
+        this.session = session;
+    }
     
     public EditParametersTabPresenterImpl(EmfSession session, EditCaseParametersTabView view, Case caseObj, CaseEditorPresenter caseEditorPresenterImpl) {
-        this.caseObj = caseObj;
+        this(session, caseObj);
         this.view = view;
-        this.session = session;
         try {
             UserPreference pref = new DefaultUserPreferences();
             defaultPageSize = Integer.parseInt(pref.sortFilterPageSize());
@@ -45,7 +49,7 @@ public class EditParametersTabPresenterImpl implements EditParametersTabPresente
     }
 
     public void doSave() {
-        view.refresh();
+        //view.refresh();
     }
 
     public void addNewParameterDialog(NewCaseParameterView dialog, CaseParameter newParam) {
@@ -61,12 +65,8 @@ public class EditParametersTabPresenterImpl implements EditParametersTabPresente
         }
     }
 
-    private CaseService service() {
+    protected CaseService service() {
         return session.caseService();
-    }
-
-    public void refreshView() {
-        view.refresh();
     }
 
     public void editParameter(CaseParameter param, EditCaseParameterView parameterEditor) throws EmfException {
@@ -158,6 +158,45 @@ public class EditParametersTabPresenterImpl implements EditParametersTabPresente
                 regions.add(region);
         }
         return regions.toArray(new GeoRegion[0]);
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveData(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        if ( view.getSelectedSector() == null )
+            return null;
+        CaseParameter[] freshList = getCaseParameters(caseObj.getId(), view.getSelectedSector(), 
+                view.nameContains(), view.isShowAll());
+
+        return freshList;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.refresh((CaseParameter[]) objs);        
     } 
 
 }

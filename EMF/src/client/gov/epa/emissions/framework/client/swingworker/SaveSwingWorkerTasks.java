@@ -30,6 +30,7 @@ public class SaveSwingWorkerTasks extends SwingWorker<Object[], Void> {
         this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ComponentUtility.enableComponents(parentContainer, false);
         try {
+            messagePanel.clear();
             return presenter.saveProcessData();
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());

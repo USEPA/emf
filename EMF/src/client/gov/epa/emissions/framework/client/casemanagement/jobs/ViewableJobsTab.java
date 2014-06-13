@@ -12,6 +12,7 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.casemanagement.CaseSelectionDialog;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
@@ -55,6 +56,8 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
     private EmfSession session;
    
     private DesktopManager desktopManager;
+    
+    private JPanel layout;
 
     public ViewableJobsTab(EmfConsole parentConsole, MessagePanel messagePanel,
             DesktopManager desktopManager, EmfSession session) {
@@ -81,29 +84,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             messagePanel.setError("Cannot retrieve all case jobs.");
         }
 
-        kickPopulateThread();
-    }
-
-    private void kickPopulateThread() {
-        Thread populateThread = new Thread(new Runnable() {
-            public void run() {
-                retrieveJobs();
-            }
-        });
-        populateThread.start();
-    }
-
-    public synchronized void retrieveJobs() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all case jobs...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            doRefresh(presenter.getCaseJobs());
-            messagePanel.clear();
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all case jobs.");
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-        }
+        new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
     }
 
     private void doRefresh(CaseJob[] jobs) throws Exception {
@@ -124,7 +105,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
     }
 
     private JPanel createLayout(CaseJob[] jobs, EmfConsole parentConsole) throws Exception {
-        final JPanel layout = new JPanel(new BorderLayout());
+        layout = new JPanel(new BorderLayout());
 
         layout.add(createFolderPanel(), BorderLayout.NORTH);
         layout.add(tablePanel(jobs, parentConsole), BorderLayout.CENTER);
@@ -449,7 +430,8 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             String msg = cancelJobs();
 
             if (msg != null && !msg.trim().isEmpty()){
-                refresh();
+                
+                //refresh(presenter.getCaseJobs());
                 messagePanel.setMessage(msg);
             }
                 
@@ -489,11 +471,11 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
         return descScrollableTextArea;
     }
 
-    public void refresh() {
+    public void refresh(CaseJob[] jobs) {
         // note that this will get called when the case is save
         try {
-            if (tableData != null) // it's still null if you've never displayed this tab
-                doRefresh(presenter.getCaseJobs());
+            if (jobs != null) // it's still null if you've never displayed this tab
+                doRefresh(jobs);
         } catch (Exception e) {
             messagePanel.setError("Cannot refresh current tab. " + e.getMessage());
         }
@@ -523,7 +505,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
 
     public void doRefresh() throws EmfException {
         try {
-            kickPopulateThread();
+            new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
         } catch (RuntimeException e) {
             throw new EmfException(e.getMessage());
         }

@@ -14,23 +14,17 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 
 import javax.swing.JComponent;
 
-public class ViewableOutputsTabPresenterImpl{
-
-    private Case caseObj;
+public class ViewableOutputsTabPresenterImpl extends EditOutputsTabPresenterImpl {
 
     private ViewableOutputsTab view;
-    
-    private EmfSession session;
-    
+      
     public ViewableOutputsTabPresenterImpl(EmfSession session, ViewableOutputsTab view, Case caseObj) {
-        this.caseObj = caseObj;
+        super(session, caseObj);
         this.view = view;
-        this.session = session;
     }
 
     public void display() {
-        view.observe(this);
-        view.display();
+        view.doDisplay(this);
     }
 
     public CaseOutput[] getCaseOutputs(int caseId, int jobId) throws EmfException {
@@ -41,51 +35,49 @@ public class ViewableOutputsTabPresenterImpl{
         return session.caseService();
     }
 
-    public CaseJob[] getCaseJobs() throws EmfException {
-        return service().getCaseJobs(caseObj.getId());
-    }
+//    public void doDisplayPropertiesView(PropertiesView propertiesView, EmfDataset dataset) throws EmfException {
+//        view.clearMessage();
+//
+//        PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
+//        presenter.doDisplay(propertiesView);
+//    }
     
-    public Case getCaseObj() {
-        return this.caseObj;
-    }
-
-
-    public void doDisplayPropertiesView(PropertiesView propertiesView, EmfDataset dataset) throws EmfException {
-        view.clearMessage();
-
-        PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
-        presenter.doDisplay(propertiesView);
-    }
-    
-    public EmfDataset getDataset(int id) throws EmfException{
-        return session.dataService().getDataset(id);
-        
-    }
-
     public void viewOutput(CaseOutput output, EditCaseOutputView outputEditor) throws EmfException {
         EditOutputPresenter editOutputPresenter = new EditCaseOutputPresenterImpl(caseObj.getId(), outputEditor,
                 session);
         editOutputPresenter.display(output);
     }
     
-    public void doAddOutputFields(JComponent container, OutputFieldsPanelView outputFields, CaseOutput newOutput) throws EmfException {
- //       newOutput.setId(view.numberOfRecord());
-        
-        OutputFieldsPanelPresenter outputFieldsPresenter = new OutputFieldsPanelPresenter(caseObj.getId(), outputFields,
-                session);
-        outputFieldsPresenter.display(newOutput, container);
+ 
+//    public void doViewRelated(RelatedCaseView view, Case[] casesByInputDataset, Case[] casesByOutputDataset) {
+//        RelatedCasePresenter presenter = new RelatedCasePresenter(view, session);
+//        presenter.doDisplay(casesByInputDataset, casesByOutputDataset);
+//    }
+    
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        //view.refreshJobList(getCaseJobs());
+        Integer jobId = view.getSelectedJobId();
+         
+        if (jobId != null ){        
+            return getCaseOutputs(caseObj.getId(), jobId);
+        }
+        return null;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.refresh((CaseOutput[]) objs);      
     }
     
-    public Case[] getCasesByInputDataset(int datasetId) throws EmfException{
-        return service().getCasesByInputDataset(datasetId);
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        return getCaseJobs();
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        view.display( (CaseJob[]) objs);     
     }
     
-    public Case[] getCasesByOutputDatasets(int[] datasetIds) throws EmfException{
-        return service().getCasesByOutputDatasets(datasetIds);
-    }
-    
-    public void doViewRelated(RelatedCaseView view, Case[] casesByInputDataset, Case[] casesByOutputDataset) {
-        RelatedCasePresenter presenter = new RelatedCasePresenter(view, session);
-        presenter.doDisplay(casesByInputDataset, casesByOutputDataset);
-    }
 }

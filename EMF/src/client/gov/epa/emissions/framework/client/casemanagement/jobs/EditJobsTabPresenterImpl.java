@@ -63,14 +63,14 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
         if (caseOutputDir != null)
             caseObj.setOutputFileDir(caseOutputDir);
         this.caseObjectManager.refreshJobList();
-        view.refresh();
+        view.refresh(getCaseJobs());
     }
 
     public void doSave(CaseJob[] jobs) throws EmfException {
         for (CaseJob job : jobs)
             service().updateCaseJobStatus(job);
 
-        view.refresh();
+        view.refresh(getCaseJobs());
     }
 
     public void addNewJobDialog(NewJobView dialog) {
@@ -87,7 +87,7 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
         this.caseObjectManager.refreshJobList();
 
         if (newJob.getCaseId() == caseObj.getId()) {
-            view.refresh();
+            view.refresh(this.caseObjectManager.getCaseJobs(caseObj.getId()));
         }
 
         return newJob;
@@ -95,10 +95,6 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
 
     private CaseService service() {
         return session.caseService();
-    }
-
-    public void refreshView() {
-        view.refresh();
     }
 
     public boolean jobsUsed(CaseJob[] jobs) throws EmfException {
@@ -171,7 +167,7 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
     }
 
     public CaseJob[] getCaseJobs() throws EmfException {
-        return service().getCaseJobs(caseObj.getId());
+        return caseObjectManager.getCaseJobs(caseObj.getId());
     }
 
     public Object[] getAllCaseNameIDs() throws EmfException {
@@ -198,7 +194,7 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
 
         System.out.println("Start running jobs");
         service().runJobs(jobIds, caseObj.getId(), session.user()); // BUG3589
-        view.refresh();
+        view.refresh(getCaseJobs());
         System.out.println("Finished running jobs");
     }
 
@@ -341,7 +337,7 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
     }
 
     public synchronized JobRunStatus[] getRunStatuses() throws EmfException {
-        return CaseObjectManager.getCaseObjectManager(session).getJobRunStatuses();
+        return caseObjectManager.getJobRunStatuses();
     }
 
     public String cancelJobs(List<CaseJob> jobs) {
@@ -444,6 +440,40 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
 
     public CaseJob[] getCaseJobsFromManager() throws EmfException {
         return caseObjectManager.getCaseJobs(caseObj.getId());
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveData(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        return getCaseJobs();
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.refresh((CaseJob[]) objs);
     }   
 
 }

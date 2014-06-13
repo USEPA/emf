@@ -93,7 +93,7 @@ public class SetjobsStatusDialog extends JDialog{
                 setField();
                 try {
                     presenter.doSave(jobs);
-                    view.refresh();
+                    view.refresh(presenter.getCaseJobs());
                 } catch (EmfException e1) {
                     // NOTE Auto-generated catch block
                     e1.printStackTrace();

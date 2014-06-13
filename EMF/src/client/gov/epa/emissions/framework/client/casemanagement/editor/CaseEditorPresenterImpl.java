@@ -259,8 +259,6 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
 
     @Override
     public void saveData(Object[] objs) throws EmfException {
-        if (objs[0] == null)
-            throw new EmfException("the case name or abbrev is already in use.");
         view.resetChanges();      
     }
     

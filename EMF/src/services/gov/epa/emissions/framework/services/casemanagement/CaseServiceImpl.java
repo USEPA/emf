@@ -625,20 +625,18 @@ public class CaseServiceImpl implements CaseService {
     public synchronized Case updateCaseWithLock(Case caseObj) throws EmfException {
         Session session = sessionFactory.getSession();
 
-        try {
-            if (!dao.canUpdate(caseObj, session))
-                throw new EmfException("the case name or abbrev is already in use. ");
+        try {           
+            dao.canUpdate(caseObj, session);
 
-            Case caseWithSameAbbr = dao.getCaseFromAbbr(caseObj.getAbbreviation(), session);
-
-            if (caseWithSameAbbr != null && caseWithSameAbbr.getId() != caseObj.getId())
-                throw new EmfException("the same case abbreviation has been used by another case: "
-                        + caseWithSameAbbr.getName());
-
+            //            Case caseWithSameAbbr = dao.getCaseFromAbbr(caseObj.getAbbreviation(), session);
+            //
+            //            if (caseWithSameAbbr != null && caseWithSameAbbr.getId() != caseObj.getId())
+            //                throw new EmfException("the same case abbreviation has been used by another case: "
+//                        + caseWithSameAbbr.getName());
             Case caseWithLock = dao.updateWithLock(caseObj, session);
 
             return caseWithLock;
-            // return dao.getById(csWithLock.getId(), session);
+             
         } catch (Exception e) {
             if (e instanceof ConstraintViolationException) {
                 throw new EmfException("Please check duplication: " + e.getLocalizedMessage() + ".");

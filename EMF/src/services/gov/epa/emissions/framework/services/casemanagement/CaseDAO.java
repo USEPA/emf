@@ -1488,20 +1488,22 @@ public class CaseDAO {
         return (Case) lockingScheme.renewLockOnUpdate(caseObj, current(caseObj, session), session);
     }
 
-    public boolean canUpdate(Case caseObj, Session session) {
-        if (!exists(caseObj.getId(), Case.class, session)) 
-            return false;
+    public void canUpdate(Case caseObj, Session session) throws EmfException {
+//        if (!exists(caseObj.getId(), Case.class, session)) 
+//            throw new EmfException("This case id is not valid. ");
         
         Case current = current(caseObj.getId(), Case.class, session);
         session.clear();// clear to flush current
-        
-        if (nameUsed(caseObj.getAbbreviation().getName(), Abbreviation.class, session))
-            return false;
-
-        if (current.getName().equals(caseObj.getName()))
-            return true;
-
-        return !nameUsed(caseObj.getName(), Case.class, session);
+       
+        if (! current.getName().equals(caseObj.getName()) ) {
+            if (nameUsed(caseObj.getName(), Case.class, session))
+                throw new EmfException("The case name is already in use. ");
+        }
+        if(!current.getAbbreviation().getName().equals(caseObj.getAbbreviation().getName()) ){
+            if (nameUsed(caseObj.getAbbreviation().getName(), Abbreviation.class, session))
+                throw new EmfException("The case abbreviation is already in use. ");
+        }      
+     
     }
 
     public boolean nameUsed(String name, Class<?> clazz, Session session) {

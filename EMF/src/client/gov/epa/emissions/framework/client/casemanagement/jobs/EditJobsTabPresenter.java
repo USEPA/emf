@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.casemanagement.jobs;
 
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditorPresenter;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditorTabPresenter;
+import gov.epa.emissions.framework.client.swingworker.LightSwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
@@ -32,7 +33,7 @@ public interface EditJobsTabPresenter extends CaseEditorTabPresenter {
     
     CaseJob[] getCaseJobs() throws EmfException;
     
-    CaseJob[] getCaseJobsFromManager() throws EmfException;
+    //CaseJob[] getCaseJobsFromManager() throws EmfException;
     
     void runJobs(CaseJob[] jobs) throws EmfException;
     

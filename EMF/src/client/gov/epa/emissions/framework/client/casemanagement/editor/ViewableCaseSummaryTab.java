@@ -511,6 +511,7 @@ public class ViewableCaseSummaryTab extends JPanel implements RefreshObserver {
         super.removeAll();
         try {
             setLayout();
+            super.validate();
         } catch (EmfException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();

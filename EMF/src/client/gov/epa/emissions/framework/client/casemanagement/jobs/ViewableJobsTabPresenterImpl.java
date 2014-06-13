@@ -92,7 +92,7 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
 
         System.out.println("Start running jobs");
         service().runJobs(jobIds, caseObj.getId(), session.user()); // BUG3589
-        view.refresh();
+        view.refresh(getCaseJobs());
         System.out.println("Finished running jobs");
     }
 
@@ -324,8 +324,39 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
         smkPassRegistered = true;
     }
 
-    public CaseJob[] getCaseJobsFromManager() throws EmfException {
+ 
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void saveData(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        return getCaseJobs();
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.refresh((CaseJob[]) objs);
     }
     
 }

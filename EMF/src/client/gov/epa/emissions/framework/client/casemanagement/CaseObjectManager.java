@@ -599,27 +599,30 @@ public class CaseObjectManager {
         JobRunStatus[] statuses = caseService.getJobRunStatuses();
         sortedStatuses = new JobRunStatus[statuses.length];
 
-        for (int i = 0; i < statuses.length; i++) {
-            String status = statuses[i].getName().toUpperCase();
+        if (statuses.length < 8 )
+            sortedStatuses = statuses;
+        else {
+            for (int i = 0; i < statuses.length; i++) {
+                String status = statuses[i].getName().toUpperCase();
 
-            if (status.startsWith("NOT START"))
-                sortedStatuses[0] = statuses[i];
-            else if (status.startsWith("EXPORT"))
-                sortedStatuses[1] = statuses[i];
-            else if (status.startsWith("SUBMIT"))
-                sortedStatuses[2] = statuses[i];
-            else if (status.startsWith("RUN"))
-                sortedStatuses[3] = statuses[i];
-            else if (status.startsWith("COMPLET"))
-                sortedStatuses[4] = statuses[i];
-            else if (status.startsWith("QUALITY"))
-                sortedStatuses[5] = statuses[i];
-            else if (status.startsWith("FAIL"))
-                sortedStatuses[6] = statuses[i];
-            else if (status.startsWith("WAIT"))
-                sortedStatuses[7] = statuses[i];
+                if (status.startsWith("NOT START"))
+                    sortedStatuses[0] = statuses[i];
+                else if (status.startsWith("EXPORT"))
+                    sortedStatuses[1] = statuses[i];
+                else if (status.startsWith("SUBMIT"))
+                    sortedStatuses[2] = statuses[i];
+                else if (status.startsWith("RUN"))
+                    sortedStatuses[3] = statuses[i];
+                else if (status.startsWith("COMPLET"))
+                    sortedStatuses[4] = statuses[i];
+                else if (status.startsWith("QUALITY"))
+                    sortedStatuses[5] = statuses[i];
+                else if (status.startsWith("FAIL"))
+                    sortedStatuses[6] = statuses[i];
+                else if (status.startsWith("WAIT"))
+                    sortedStatuses[7] = statuses[i];
+            }
         }
-
         return sortedStatuses;
     }
 

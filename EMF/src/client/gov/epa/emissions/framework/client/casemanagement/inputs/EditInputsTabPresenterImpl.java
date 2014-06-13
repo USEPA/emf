@@ -9,6 +9,7 @@ import gov.epa.emissions.framework.client.meta.PropertiesView;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.preference.UserPreference;
+import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseInput;
@@ -45,14 +46,25 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
     }
 
     public void display() {
-        view.display(session, caseObj, this);
+        view.doDisplay(this);
     }
+    
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        return new CaseInput[0];
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        view.display(session, caseObj);     
+    }
+    
 
     public void doSave() {
         String caseInputDir = view.getCaseInputFileDir();
         if (caseInputDir != null)
             caseObj.setInputFileDir(caseInputDir);
-        view.refresh();
+        //view.refresh();
     }
 
     public void addNewInputDialog(NewInputView dialog, CaseInput newInput) {
@@ -75,10 +87,6 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
 
     private CaseService service() {
         return session.caseService();
-    }
-
-    public void refreshView() {
-        view.refresh();
     }
 
     public void removeInputs(CaseInput[] inputs) throws EmfException {
@@ -222,6 +230,32 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
                 regions.add(region);
         }
         return regions.toArray(new GeoRegion[0]);
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveData(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        if (view.getSelectedSector() == null )
+            return null;
+        CaseInput[] freshList = getCaseInput(caseObj.getId(), view.getSelectedSector(), 
+                view.nameContains(), view.isShowAll() );
+        return freshList;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.refresh((CaseInput[]) objs);
     }
 
 }
