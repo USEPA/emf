@@ -60,6 +60,7 @@ DECLARE
 	creator_user_id integer := 0;
 	is_cost_su boolean := false; 
 	get_strategty_ceff_equation_sql character varying;
+	apply_replacement_controls := true;
 
 	annual_cost_expression text;
 	capital_cost_expression text;
@@ -193,7 +194,8 @@ BEGIN
 		cs.discount_rate / 100,
 		coalesce(cs.include_unspecified_costs,true),
 		p.name,
-		cs.creator_id
+		cs.creator_id,
+		cs.apply_replacement_controls
 	FROM emf.control_strategies cs
 		inner join emf.pollutants p
 		on p.id = cs.pollutant_id
@@ -209,7 +211,8 @@ BEGIN
 		discount_rate,
 		include_unspecified_costs,
 		target_pollutant,
-		creator_user_id;
+		creator_user_id,
+		apply_replacement_controls;
 
 	-- see if strategyt creator is a CoST SU
 	SELECT 
@@ -1055,6 +1058,11 @@ select
 				)
 			)					
 			' else '' end || '
+			
+			-- ignore sources with device code but no efficiency info
+			and (apply_replacement_controls != false or
+			     coalesce(control_ids, '''') = '''' or
+			     coalesce(inv.' || inv_ceff_expression || ', 0.0) <> 0.0)
 
 		order by inv.record_id,
 			er.control_measures_id, 
