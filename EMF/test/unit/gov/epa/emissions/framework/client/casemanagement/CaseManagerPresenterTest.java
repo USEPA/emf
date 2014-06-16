@@ -27,7 +27,7 @@ public class CaseManagerPresenterTest extends EmfMockObjectTestCase {
                 (CaseManagerView) browser.proxy());
         expects(browser, 1, "observe", same(presenter));
 
-        presenter.swDisplay(cases);
+        presenter.display();
     }
 
     public void testShouldRefreshBrowserOnRefresh() throws EmfException {

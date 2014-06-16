@@ -149,11 +149,12 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         return new ErrorPanel(message);
     }
 
-    public void display(String caseJobSummaryMsg) {
+    public void display(Case caseObj, String caseJobSummaryMsg) {
         super.setLabel("Case Viewer: " + caseObj);
         Container contentPane = super.getContentPane();
         contentPane.removeAll();
-        
+        this.caseObj = caseObj;
+
         JPanel panel = new JPanel(new BorderLayout());
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel, BorderLayout.PAGE_START);
@@ -264,9 +265,8 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         printPresenter.display(printCase);
     }
     
-    public void observe(CaseViewerPresenter presenter, Case caseObj) {
+    public void observe(CaseViewerPresenter presenter) {
         this.presenter = presenter;
-        this.caseObj = caseObj;
     }
 
     public void showError(String message) {

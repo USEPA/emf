@@ -7,11 +7,11 @@ import gov.epa.emissions.framework.services.casemanagement.Case;
 
 public interface CaseViewerView extends ManagedView {
 
-    void observe(CaseViewerPresenter presenter, Case caseObj);
+    void observe(CaseViewerPresenter presenter);
 
-    void display(String caseJobSummaryMsg);
+    void display(Case caseObj, String caseJobSummaryMsg);
 
-    //void setCursor(Cursor cursor);
+    void setCursor(Cursor cursor);
     
     //void showMsg(String msg);
 

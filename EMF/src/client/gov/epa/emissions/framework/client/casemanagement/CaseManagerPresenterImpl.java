@@ -4,10 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
@@ -15,11 +11,9 @@ import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditor;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditorPresenter;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditorPresenterImpl;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditorView;
-import gov.epa.emissions.framework.client.casemanagement.editor.CaseViewer;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseViewerPresenter;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseViewerPresenterImpl;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseViewerView;
@@ -48,11 +42,12 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
         this.caseObjectManager = CaseObjectManager.getCaseObjectManager(session);
     }
 
-    public void display(){
+    public void display() {
         view.observe(this);
         view.display();
+        view.populate();
     }
-    
+
     private CaseService service() {
         return session.caseService();
     }
@@ -143,7 +138,6 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
         this.caseObjectManager.refresh();
         this.caseObjectManager.refreshJobList();
         
-        // if category is not selected, set category as ALL 
         if (category == null){
             view.setSelectedCategory();
             return service().getCases(nameContains);
@@ -262,86 +256,28 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
         CompareCasePresenter presenter = new CompareCasePresenter(session, ids, view, this);
         presenter.doDisplay();       
     }
-       
-    
-    public void swDisplay(Object[] objs) throws EmfException{
-        if ( objs == null )
-            throw new EmfException ("Could not retrieve all categories. ");
-        view.display((CaseCategory[]) objs);
-    }
-    
-    private CaseCategory[] getAllCategories() throws EmfException {
-        
-        List<CaseCategory> categories = new ArrayList<CaseCategory>();
-        categories.add(new CaseCategory("All"));
-        categories.addAll(Arrays.asList(getCategories()));
-        return categories.toArray(new CaseCategory[0]);
-    }
-    
-    public CaseCategory[] swProcessData() throws EmfException {
-        return getAllCategories();
-    }
-    
-    @Override
-    public void refreshDisplay(Object[] objs) throws EmfException {
-        if ( objs == null )
-            throw new EmfException ("Could not retrieve all cases. ");
-        view.refresh((Case[]) objs);        
-    }
-    
-    @Override
-    public  Case[] refreshProcessData() throws EmfException {       
-        CaseCategory category= view.getSelectedCategory();
-        String nameFilter = view.getNameFilter();
-        if (nameFilter.trim().equals(""))
-            return getCases(category);
-        return getCases(getSelectedCategory(), nameFilter);
 
-    }
-
-    @Override
-    public Object[] removeProcessData() throws EmfException {
-        // NOTE Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void removeDisplay(Object[] objs) throws EmfException {
-        // NOTE Auto-generated method stub
-        
-    }
-
-    @Override
-    public Object[] viewProcessData() throws EmfException {       
-        return view.getSCases();
-    }
-
-    @Override
-    public void viewDisplay(Object[] objs) throws EmfException {
-        if (objs==null)
-            throw new EmfException ("Could not retrieve all cases. ");
-        for (int i = 0; i < objs.length; ++i) {
-            Case caseObj = (Case) objs[i];
-            CaseViewer vView = view.getCViewer();
-            doView(vView, caseObj);
-        }
-
-    }
-
-    @Override
-    public Object[] editProcessData() throws EmfException {
-        return view.getSCases();
-    }
-
-    @Override
-    public void editDisplay(Object[] objs) throws EmfException {
-        if (objs==null)
-            throw new EmfException ("Could not retrieve all cases. ");
-        for (int i = 0; i < objs.length; ++i) {
-            Case caseObj = (Case) objs[i];
-            CaseEditor caseView = view.getCEditor();
-            doEdit(caseView, caseObj);
-        }
-        
-    }
+//    private String writerHeader(QAStep qaStep, QAStepResult stepResult, String dsName){
+//        String lineFeeder = System.getProperty("line.separator");
+//        String header="#DATASET_NAME=" + dsName + lineFeeder;
+//        header +="#DATASET_VERSION_NUM= " + qaStep.getVersion() + lineFeeder;
+//        header +="#CREATION_DATE=" + CustomDateFormat.format_YYYY_MM_DD_HH_MM(stepResult.getTableCreationDate())+ lineFeeder;
+//        header +="#QA_STEP_NAME=" + qaStep.getName() + lineFeeder; 
+//        header +="#QA_PROGRAM=" + qaStep.getProgram()+ lineFeeder;
+//        String arguments= qaStep.getProgramArguments();
+//        StringTokenizer argumentTokenizer = new StringTokenizer(arguments);
+//        header += "#ARGUMENTS=" +argumentTokenizer.nextToken(); // get first token
+//
+//        while (argumentTokenizer.hasMoreTokens()){
+//            String next = argumentTokenizer.nextToken().trim(); 
+//            if (next.contains("-"))
+//                header += lineFeeder+ "#" +next;
+//            else 
+//                header += "  " +next;
+//        }
+//        header +=lineFeeder;
+//        //arguments.replaceAll(lineFeeder, "#");
+//        //System.out.println("after replace  \n" + header);
+//        return header;
+//    }
 }

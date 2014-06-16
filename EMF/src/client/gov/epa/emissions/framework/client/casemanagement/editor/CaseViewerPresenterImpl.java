@@ -57,14 +57,12 @@ public class CaseViewerPresenterImpl implements CaseViewerPresenter {
     }
 
     public void doDisplay() throws EmfException {
-        view.observe(this, caseObj);
+        view.observe(this);
         CaseService service = session.caseService();
         
         String jobSummaryMsg = service.getJobStatusMessage(caseObj.getId());
-        view.display(jobSummaryMsg);
+        view.display(caseObj, jobSummaryMsg);
     }
-    
-    
 
     public void doClose(){
         closeView();

@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.casemanagement;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
@@ -18,13 +19,10 @@ import gov.epa.emissions.framework.client.casemanagement.sensitivity.Sensitivity
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
-import gov.epa.emissions.framework.client.swingworker.EditSwingWorkerTasks;
-import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
-import gov.epa.emissions.framework.client.swingworker.ViewSwingWorkerTasks;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseCategory;
-import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -33,6 +31,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -42,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -50,6 +50,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class CaseManagerWindow extends ReusableInteralFrame implements CaseManagerView, RefreshObserver {
 
@@ -67,7 +68,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
 
     private EmfConsole parentConsole;
 
-    private List<Case> cases;
+    private List cases;
     
     private TextField nameFilter;
 
@@ -94,13 +95,8 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
     public void observe(CaseManagerPresenter presenter) {
         this.presenter = presenter;
     }
-    
-    public void display(){
-        new SwingWorkerTasks(layout, presenter).execute();
-    }
 
-    public void display(CaseCategory[] catetories){
-        this.categories = Arrays.asList(catetories);
+    public void display() {
         doLayout(new Case[0]);
         super.display();
     }
@@ -124,10 +120,16 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
 
     private void doLayout(Case[] cases) {
         messagePanel = new SingleLineMessagePanel();
+
+//        try {
+//            getAllCategories();
+//        } catch (EmfException e) {
+//            messagePanel.setError(e.getMessage());
+//        }
+
         createCategoriesComboBox();
         setupTableModel(cases);
         createLayout(layout, mainPanel(parentConsole));
-        super.refreshLayout();
     }
 
     private void setupTableModel(Case[] cases) {
@@ -149,6 +151,12 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         return new SortCriteria(columnNames, new boolean[] { false }, new boolean[] { false });
     }
 
+    private void getAllCategories() throws EmfException {
+        this.categories = new ArrayList<CaseCategory>();
+        categories.add(new CaseCategory("All"));
+        categories.addAll(Arrays.asList(presenter.getCategories()));
+    }
+
     private void createCategoriesComboBox() { 
         categoriesBox = new ComboBox("Select one", categories.toArray(new CaseCategory[0]));
         categoriesBox.setPreferredSize(new Dimension(360, 20));
@@ -159,7 +167,16 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         categoriesBox.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 messagePanel.clear();
-                new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                CaseCategory category = getSelectedCategory();
+                try {
+                    if (nameFilter.getText().trim().equals(""))
+                        refresh(presenter.getCases(category));
+                    else
+                        refresh(presenter.getCases(category, nameFilter.getText()));
+                } catch (EmfException e1) {
+                    messagePanel.setError("Could not retrieve all cases with -- " + category.getName());
+                    e1.printStackTrace();
+                }
             }
         });
     }
@@ -169,10 +186,6 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         return selectedCategory;
     }
     
-    public String getNameFilter(){
-        return nameFilter.getText();
-    }
-
     public void setSelectedCategory() {
         categoriesBox.setSelectedIndex(1);
     }
@@ -199,7 +212,15 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         nameFilter.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 messagePanel.clear();
-                new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                CaseCategory category = getSelectedCategory();
+                try {
+                    if (nameFilter.getText().trim().equals(""))
+                        refresh(presenter.getCases(category));
+                    else
+                        refresh(presenter.getCases(category, nameFilter.getText()));
+                } catch (EmfException e1) {
+                    messagePanel.setError("Could not retrieve all cases with -- " + category.getName());
+                }
             }
         });
         
@@ -345,7 +366,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         int[] ids = new int[cases.size()];
         
         for (int i = 0; i < cases.size(); ++i) {
-            ids[i] = cases.get(i).getId();
+            ids[i] = ((Case)cases.get(i)).getId();
         }
         presenter.viewCaseComparisonResult(ids, "");
     }
@@ -362,8 +383,8 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         Case[] selectedCases = new Case[cases.size()];
         
         for (int i = 0; i < cases.size(); ++i) {
-            ids[i] = cases.get(i).getId();
-            selectedCases[i] = cases.get(i);
+            ids[i] = ((Case)cases.get(i)).getId();
+            selectedCases[i] = (Case)cases.get(i);
         }
         CompareCaseWindow view = new CompareCaseWindow(desktopManager, selectedCases, parentConsole, session );
         presenter.doQA(ids, view);
@@ -373,12 +394,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clearMsgPanel();
-                cases = selected();
-                if (cases.isEmpty()) {
-                    messagePanel.setMessage("Please select one or more Cases to edit");
-                    return;
-                }
-                new EditSwingWorkerTasks(layout,messagePanel, presenter).execute();
+                editCases();
             }
 
         };
@@ -390,12 +406,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         Action viewAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clearMsgPanel();
-                cases = selected();
-                if (cases.isEmpty()){ 
-                    messagePanel.setMessage("Please select one or more Cases to view");
-                    return;
-                }
-                new ViewSwingWorkerTasks(layout,messagePanel, presenter).execute();
+                viewCases();
             }
         };
 
@@ -403,16 +414,41 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         return viewButton;
     }
 
-    public Case[] getSCases(){
-        return cases.toArray(new Case[0]);
+    private void viewCases() {
+        cases = selected();
+        if (cases.isEmpty()) {
+            messagePanel.setMessage("Please select one or more Cases to view");
+            return;
+        }
+
+        for (Iterator iter = cases.iterator(); iter.hasNext();) {
+            Case caseObj = (Case) iter.next();
+            CaseViewer view = new CaseViewer(parentConsole, session, desktopManager);
+            try {
+                presenter.doView(view, caseObj);
+            } catch (EmfException e) {
+                showError(e.getMessage());
+            }
+        }
     }
-    
-    public CaseViewer getCViewer(){
-        return new CaseViewer(parentConsole, session, desktopManager);
-    }
-    
-    public CaseEditor getCEditor(){
-        return new CaseEditor(parentConsole, session, desktopManager);
+
+    private void editCases() {
+        cases = selected();
+        if (cases.isEmpty()) {
+            messagePanel.setMessage("Please select one or more Cases to edit");
+            return;
+        }
+
+        for (Iterator iter = cases.iterator(); iter.hasNext();) {
+            Case caseObj = (Case) iter.next();
+            CaseEditor view = new CaseEditor(parentConsole, session, desktopManager);
+            try {
+                presenter.doEdit(view, caseObj);
+            } catch (EmfException e) {
+                e.printStackTrace();
+                showError(e.getMessage());
+            }
+        }
     }
 
     private void createNewCase() {
@@ -503,7 +539,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         int[] caseIds = new int[cases.size()];
 
         for (int i = 0; i < caseIds.length; i++)
-            caseIds[i] = cases.get(i).getId();
+            caseIds[i] = ((Case) cases.get(i)).getId();
 
         try {
             presenter.doCopyCases(caseIds);
@@ -520,8 +556,8 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         messagePanel.setError(message);
     }
 
-    private List<Case> selected() {
-        return (List<Case>) table.selected();
+    private List selected() {
+        return table.selected();
     }
 
     public EmfConsole getParentConsole() {
@@ -535,7 +571,46 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
     
 
     public void doRefresh(){
-        new RefreshSwingWorkerTasks(layout,messagePanel, presenter).execute();
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class RefreshCasesTask extends SwingWorker<Case[], Void> {
+            
+            private Container parentContainer;
+
+            public RefreshCasesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            @Override
+            public Case[] doInBackground() throws EmfException  {
+                if (nameFilter.getText().trim().equals(""))
+                    return presenter.getCases(getSelectedCategory());
+                else
+                    return presenter.getCases(getSelectedCategory(), nameFilter.getText());
+            }
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    refresh(get());
+                } catch (Exception e) {
+                    showError("Could not retrieve all cases with -- " + getSelectedCategory().getName());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new RefreshCasesTask(this).execute();
     }
         
 
@@ -563,4 +638,55 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         app.display(new String[] { exportedFileName });
     }   
     
+    @Override
+    public void populate() {
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class GetCasesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public GetCasesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                getAllCategories();
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    categoriesBox.resetModel(categories.toArray(new CaseCategory[0]));
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new GetCasesTask(this).execute();
+    }
 }

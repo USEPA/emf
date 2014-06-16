@@ -5,11 +5,10 @@ import gov.epa.emissions.framework.client.casemanagement.inputs.ViewableInputsTa
 import gov.epa.emissions.framework.client.casemanagement.jobs.ViewableJobsTab;
 import gov.epa.emissions.framework.client.casemanagement.outputs.ViewableOutputsTab;
 import gov.epa.emissions.framework.client.casemanagement.parameters.ViewableParametersTab;
-import gov.epa.emissions.framework.client.swingworker.HeavySwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 
-public interface CaseViewerPresenter{
+public interface CaseViewerPresenter {
 
     void doDisplay() throws EmfException;
 
