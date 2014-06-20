@@ -64,6 +64,8 @@
 <!--	<property name="win7.tomcat.stop.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; &quot;${tomcat.home}&quot;/bin/bootstrap.jar" />-->
 	<property name="win7.tomcat.stop" value="${win7.tomcat.stop.prefix} stop" />
 	
+	<property name="osx.tomcat.start" value="/usr/local/tomcat/bin/startup.sh" />
+	<property name="osx.tomcat.stop" value="/usr/local/tomcat/bin/shutdown.sh" />
 
 	<property name="" value="" />
 	<!-- end Tomcat properties -->
@@ -601,6 +603,21 @@
 		</exec>
 		<echo message="Tomcat stopped." />
 	</target>	
+	
+	<target name="osx-redeploy-all" depends="osx-tomcat-stop, analysisengine-dist, commons-dist, simple-deploy, osx-tomcat-start" description="Stops Tomcat, deploys EMF, and starts Tomcat" />
+	<target name="osx-redeploy-emf" depends="osx-tomcat-stop, simple-deploy, osx-tomcat-start" description="Stops Tomcat, deploys EMF, and starts Tomcat" />
+		
+	<target name="osx-tomcat-restart" depends="osx-tomcat-stop, osx-tomcat-start" description="Stops Tomcat, starts Tomcat" />
+	
+	<target name="osx-tomcat-start">
+		<echo message="Starting Tomcat" />
+		<exec executable="${osx.tomcat.start}" failonerror="true" />
+	</target>
+		
+	<target name="osx-tomcat-stop">
+		<echo message="Stopping Tomcat" />
+		<exec executable="${osx.tomcat.stop}" />
+	</target>
 
 	<!--  ===============END  Tomcat Deployment Targets ====================================== -->
 
