@@ -9,7 +9,7 @@ public interface CaseEditorTabPresenter extends CaseViewerTabPresenter, LightSwi
 
     void doSave() throws EmfException;
     
-    Case checkIfLockedByCurrentUser() throws EmfException;
+    void checkIfLockedByCurrentUser() throws EmfException;
     
     String isGeoRegionInSummary(int selectedCaseId, GeoRegion[] georegions) throws EmfException;
     

@@ -477,7 +477,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             if (jobs != null) // it's still null if you've never displayed this tab
                 doRefresh(jobs);
         } catch (Exception e) {
-            messagePanel.setError("Cannot refresh current tab. " + e.getMessage());
+            messagePanel.setError("Cannot refresh jobs tab. " + e.getMessage());
         }
     }
 

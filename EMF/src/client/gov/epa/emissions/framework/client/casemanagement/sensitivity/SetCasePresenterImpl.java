@@ -69,12 +69,12 @@ public class SetCasePresenterImpl implements SetCasePresenter {
         return service().validateNLParameters(caseId);
     }
     
-    public Case checkIfLockedByCurrentUser() throws EmfException {
+    public void checkIfLockedByCurrentUser() throws EmfException {
         Case reloaded = service().reloadCase(caseObj.getId());
 
         if (reloaded.isLocked() && !reloaded.isLocked(session.user()))
             throw new EmfException("Lock on current case object expired. User " + reloaded.getLockOwner() + " has it now.");
-        return reloaded;
+         
     }
 
     public void doSaveParam(CaseParameter param) throws EmfException {

@@ -437,7 +437,7 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
             if (caseParas != null) // it's still null if you've never displayed this tab
                 doRefresh(caseParas);
         } catch (Exception e) {
-            messagePanel.setError("Cannot refresh current tab. " + e.getMessage());
+            messagePanel.setError("Cannot refresh parameters tab. " + e.getMessage());
         }
     }
 

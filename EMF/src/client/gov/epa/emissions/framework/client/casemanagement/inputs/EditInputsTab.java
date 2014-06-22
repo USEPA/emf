@@ -677,7 +677,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
             if (caseInputs != null) // it's still null if you've never displayed this tab
                 doRefresh(caseInputs);
         } catch (Exception e) {
-            setErrorMessage("Cannot refresh current tab. " + e.getMessage());
+            setErrorMessage("Cannot refresh inputs tab. " + e.getMessage());
         }
     }
 

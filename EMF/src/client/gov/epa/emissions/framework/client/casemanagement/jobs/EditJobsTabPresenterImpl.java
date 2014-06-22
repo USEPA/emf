@@ -54,8 +54,8 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
         this.caseObjectManager = CaseObjectManager.getCaseObjectManager(session);
     }
 
-    public void display(CaseEditorPresenter parentPresenter) {
-        view.display(session, caseObj, this, parentPresenter);
+    public void display() {
+        view.doDisplay(this);
     }
 
     public void doSave() throws EmfException {
@@ -63,7 +63,7 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
         if (caseOutputDir != null)
             caseObj.setOutputFileDir(caseOutputDir);
         this.caseObjectManager.refreshJobList();
-        view.refresh(getCaseJobs());
+        //view.refresh(getCaseJobs());
     }
 
     public void doSave(CaseJob[] jobs) throws EmfException {
@@ -323,13 +323,12 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
         return service().validateJobs(ids.toArray(new Integer[0]));
     }
 
-    public Case checkIfLockedByCurrentUser() throws EmfException {
+    public void checkIfLockedByCurrentUser() throws EmfException {
         Case reloaded = service().reloadCase(caseObj.getId());
 
         if (reloaded.isLocked() && !reloaded.isLocked(session.user()))
             throw new EmfException("Lock on current case object expired. User " + reloaded.getLockOwner()
                     + " has it now.");
-        return reloaded;
     }
 
     public void refreshJobList() throws EmfException {
@@ -456,14 +455,12 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
 
     @Override
     public Object[] swProcessData() throws EmfException {
-        // NOTE Auto-generated method stub
-        return null;
+        return getCaseJobs();
     }
 
     @Override
     public void swDisplay(Object[] objs) throws EmfException {
-        // NOTE Auto-generated method stub
-        
+        view.display(caseObj);      
     }
 
     @Override

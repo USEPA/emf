@@ -175,8 +175,8 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
         
     }
 
-    public Case checkIfLockedByCurrentUser() {
-        return null;
+    public void checkIfLockedByCurrentUser() {
+        //return null;
     }
 
     public Object[] getAllCaseNameIDs() throws EmfException {

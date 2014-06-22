@@ -95,7 +95,7 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     }
 
     public void doSave() throws EmfException {
-        //updateCase();
+        updateCase();
     }
 
     public Object[] saveProcessData() throws EmfException {
@@ -190,7 +190,7 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
         }
 
         if (!jobsLoaded && tabTitle.equalsIgnoreCase("Jobs")) {
-            jobsPresenter.display(this);
+            jobsPresenter.display();
             jobsLoaded = true;
         }
 

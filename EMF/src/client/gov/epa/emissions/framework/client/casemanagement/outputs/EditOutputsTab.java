@@ -379,31 +379,6 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
             }
         };
     } 
-    
-
-//    private synchronized void retrieveOutputs() {
-//        try {
-//            messagePanel.setMessage("Please wait while retrieving all outputs...");
-//            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-//            
-//            refreshJobList();
-//            
-//            if ( selectedJob != null)
-//                doRefresh(presenter.getCaseOutputs(caseObj.getId(), selectedJob.getId()));
-//            
-//            clearMessage();
-//        } catch (Exception e) {
-//            messagePanel.setError("Cannot retrieve all outputs.");
-//        } finally {
-//            setCursor(Cursor.getDefaultCursor());
-//            
-//            try {
-//                presenter.checkIfLockedByCurrentUser();
-//            } catch (Exception e) {
-//                messagePanel.setMessage(e.getMessage());
-//            }
-//        }
-//    }
 
     public void clearMessage() {
         messagePanel.clear();

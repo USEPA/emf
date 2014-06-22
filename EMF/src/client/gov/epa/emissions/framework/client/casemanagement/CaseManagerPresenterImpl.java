@@ -277,8 +277,8 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
         categories.addAll(Arrays.asList(getCategories()));
         return categories.toArray(new CaseCategory[0]);
     }
-    
-    public CaseCategory[] swProcessData() throws EmfException {
+
+    public Object[] swProcessData() throws EmfException {        
         return getAllCategories();
     }
     

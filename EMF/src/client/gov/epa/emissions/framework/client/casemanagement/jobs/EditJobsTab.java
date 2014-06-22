@@ -15,9 +15,11 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.casemanagement.CaseSelectionDialog;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditorPresenter;
+import gov.epa.emissions.framework.client.casemanagement.inputs.EditInputsTabPresenter;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
+import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
@@ -78,27 +80,28 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         this.desktopManager = desktopManager;
         this.session = session;
         this.changeables = changeables;
-
         super.setLayout(new BorderLayout());
     }
+    
+    public void doDisplay(EditJobsTabPresenter presenter){
+        this.presenter = presenter;
+        new SwingWorkerTasks(this, presenter).execute();
+    }   
 
-    public void display(EmfSession session, Case caseObj, EditJobsTabPresenter presenter,
-            CaseEditorPresenter parentPresenter) {
+    public void display(Case caseObj) {
         super.removeAll();
+        this.caseObj = caseObj;
         this.outputDir = new TextField("outputdir", 50);
         outputDir.setText(caseObj.getOutputFileDir());
         this.changeables.addChangeable(outputDir);
-        this.caseObj = caseObj;
-        this.presenter = presenter;
+        
         try {
             super.add(createLayout(new CaseJob[0], parentConsole), BorderLayout.CENTER);
         } catch (Exception e) {
             messagePanel.setError("Cannot retrieve all case jobs.");
         }
-
-        new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
-         
-    }
+        super.validate();
+     }
 
     private void kickOfCancelJobs() {
         Thread populateThread = new Thread(new Runnable() {
@@ -129,13 +132,14 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
     private void doRefresh(CaseJob[] jobs) throws Exception {
         // super.removeAll();
         String outputFileDir = caseObj.getOutputFileDir();
+        if ( caseObj.getOutputFileDir() != null ) {
+            if (!outputDir.getText().equalsIgnoreCase(outputFileDir))
+                outputDir.setText(outputFileDir);
 
-        if (!outputDir.getText().equalsIgnoreCase(outputFileDir))
-            outputDir.setText(outputFileDir);
-
-        setupTableModel(jobs);
-        table.refresh(tableData);
-        panelRefresh();
+            setupTableModel(jobs);
+            table.refresh(tableData);
+            panelRefresh();
+        }
     }
 
     private JPanel createLayout(CaseJob[] jobs, EmfConsole parentConsole) throws Exception {
@@ -637,7 +641,8 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
             if (caseJobs != null) // it's still null if you've never displayed this tab
                 doRefresh(caseJobs);
         } catch (Exception e) {
-            messagePanel.setError("Cannot refresh current tab. " + e.getMessage());
+            e.printStackTrace();
+            messagePanel.setError("Cannot refresh jobs tab. " + e.getMessage());
         }
     }
 
@@ -676,6 +681,5 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
             throw new EmfException(e.getMessage());
         }
     }
-
 
 }

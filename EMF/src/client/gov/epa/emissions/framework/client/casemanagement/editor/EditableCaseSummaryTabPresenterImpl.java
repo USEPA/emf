@@ -41,7 +41,7 @@ public class EditableCaseSummaryTabPresenterImpl extends CaseSummaryTabPresenter
     @Override
     public Object[] refreshProcessData() throws EmfException {
         refreshObjectManager(); 
-        this.caseObj = checkIfLockedByCurrentUser();
+        checkIfLockedByCurrentUser();
         return new Case[]{this.caseObj};
     }
 
@@ -63,7 +63,7 @@ public class EditableCaseSummaryTabPresenterImpl extends CaseSummaryTabPresenter
     }
 
     @Override
-    public Case checkIfLockedByCurrentUser() throws EmfException{
+    public void checkIfLockedByCurrentUser() throws EmfException{
         Case reloaded = session.caseService().reloadCase(caseObj.getId());
 
         if (reloaded.isLocked() && !reloaded.isLocked(session.user()))
@@ -75,7 +75,6 @@ public class EditableCaseSummaryTabPresenterImpl extends CaseSummaryTabPresenter
 
         if (reloaded == null)
             throw new EmfException("Acquire lock on case failed. Please exit editing the case.");
-        return reloaded;
     }
 
     @Override

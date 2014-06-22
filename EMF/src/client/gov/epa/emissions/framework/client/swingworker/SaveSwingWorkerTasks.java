@@ -19,6 +19,9 @@ public class SaveSwingWorkerTasks extends SwingWorker<Object[], Void> {
         this.parentContainer = parentContainer;
         this.presenter = presenter;    
         this.messagePanel = messagePanel;
+        this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(parentContainer, false);
+        messagePanel.clear();
     }
 
     /*
@@ -27,10 +30,8 @@ public class SaveSwingWorkerTasks extends SwingWorker<Object[], Void> {
      */
     @Override
     public Object[] doInBackground()  {   
-        this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(parentContainer, false);
-        try {
-            messagePanel.clear();
+        
+        try {    
             return presenter.saveProcessData();
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
