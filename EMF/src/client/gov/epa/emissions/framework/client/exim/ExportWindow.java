@@ -369,7 +369,10 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
             messagePanel.setMessage("Started export. Please monitor the Status window "
                     + "to track your Export request.");
 
-            exportButton.setEnabled(false);
+            //leave it enabled when rowfilter is specified, this will make it easier
+            //to spawn off multiple exports without having to reopen window
+            if (rowFilters.isEmpty()) 
+                exportButton.setEnabled(false);
         } catch (EmfException e) {
             //e.printStackTrace();
             messagePanel.setError(e.getMessage());
