@@ -4,8 +4,6 @@ import gov.epa.emissions.framework.services.EmfException;
 
 public interface HeavySwingWorkerPresenter extends SwingWorkerPresenter{
 
-    Object[] refreshProcessData() throws EmfException;
-    void refreshDisplay(Object[] objs) throws EmfException;
     Object[] removeProcessData() throws EmfException;
     void removeDisplay(Object[] objs) throws EmfException;
 //    Object[] newProcessData() throws EmfException;

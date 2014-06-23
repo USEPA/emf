@@ -11,17 +11,15 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.casemanagement.CaseSelectionDialog;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.parameters.CaseParameter;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshObserver;
-import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
-import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -38,43 +36,17 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 
-public class ViewableParametersTab extends JPanel implements RefreshObserver {
-
-    private EmfConsole parentConsole;
+public class ViewableParametersTab extends EditParametersTab implements RefreshObserver {
 
     private ViewableParametersTabPresenterImpl presenter;
 
-    private Case caseObj;
-
-    private int caseId;
-
-    private ParametersTableData tableData;
-
-    private SelectableSortFilterWrapper table;
-
-    private JPanel tablePanel;
-    
-    private ComboBox sectorsComboBox;
-
-    private JCheckBox showAll;
-
-    private MessagePanel messagePanel;
-
-    private DesktopManager desktopManager;
-
-    private EmfSession session;
-
-    private TextField envVarContains;
-
     public ViewableParametersTab(EmfConsole parentConsole, MessagePanel messagePanel, DesktopManager desktopManager) {
+        super(parentConsole, messagePanel, desktopManager);
         super.setName("viewParametersTab");
-        this.parentConsole = parentConsole;
-        this.messagePanel = messagePanel;
-        this.desktopManager = desktopManager;
-        super.setLayout(new BorderLayout());
     }
 
     public void display(EmfSession session, Case caseObj, ViewableParametersTabPresenterImpl presenter) {
+        super.setLayout(new BorderLayout());
         super.removeAll();
 
         this.caseObj = caseObj;
@@ -82,53 +54,13 @@ public class ViewableParametersTab extends JPanel implements RefreshObserver {
         this.presenter = presenter;
         this.session = session;
 
-        try {
-            super.add(createLayout(new CaseParameter[0], parentConsole), BorderLayout.CENTER);
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all case parameters.");
-        }
+        super.add(createLayout(new CaseParameter[0], parentConsole), BorderLayout.CENTER);
 
-        kickPopulateThread();
     }
 
-    private void kickPopulateThread() {
-        Thread populateThread = new Thread(new Runnable() {
-            public void run() {
-                retrieveParams();
-            }
-        });
-
-        populateThread.start();
-    }
-
-    public synchronized void retrieveParams() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all case parameters...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            doRefresh(listFreshParameters());
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all case parameters: " + e.getMessage());
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-        }
-    }
-
-    private void doRefresh(CaseParameter[] params) throws Exception {
-        //super.removeAll();
-        setupTableModel(params);
-        table.refresh(tableData);
-        panelRefresh();
-    }
-    
-    private void panelRefresh() {
-        tablePanel.removeAll();
-        tablePanel.add(table);
-        super.validate();
-    }
-
-    private JPanel createLayout(CaseParameter[] params, EmfConsole parentConsole)
-            throws Exception {
-        final JPanel layout = new JPanel(new BorderLayout());
+  
+    private JPanel createLayout(CaseParameter[] params, EmfConsole parentConsole) {
+        layout = new JPanel(new BorderLayout());
 
         layout.add(createSectorPanel(), BorderLayout.NORTH);
         layout.add(tablePanel(params, parentConsole), BorderLayout.CENTER);
@@ -161,18 +93,6 @@ public class ViewableParametersTab extends JPanel implements RefreshObserver {
         return panel;
     }
     
-    private AbstractAction filterAction() {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent arg0) {
-                try {
-                    doRefresh(listFreshParameters());
-                } catch (Exception exc) {
-                    setErrorMessage(exc.getMessage());
-                }
-            }
-        };
-    }
-    
     private AbstractAction filterActionByName() {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
@@ -183,7 +103,8 @@ public class ViewableParametersTab extends JPanel implements RefreshObserver {
                     if (sectorsComboBox != null)
                         sectorsComboBox.setSelectedItem(new Sector("All", "All"));
                     
-                    doRefresh(listFreshParameters());
+                    new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                    clearMessage();
                 } catch (Exception exc) {
                     setErrorMessage(exc.getMessage());
                 }
@@ -191,26 +112,6 @@ public class ViewableParametersTab extends JPanel implements RefreshObserver {
         };
     }
     
-    private JPanel tablePanel(CaseParameter[] params, EmfConsole parentConsole) {
-        setupTableModel(params);
-        tablePanel = new JPanel(new BorderLayout());
-        table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
-        tablePanel.add(table, BorderLayout.CENTER);
-
-        return tablePanel;
-    }
-    
-    private void setupTableModel(CaseParameter[] params){
-        tableData = new ParametersTableData(params, session);
-    }
-
-
-    private SortCriteria sortCriteria() {
-        String[] columnNames = { "Order", "Envt. Var.", "Sector", "Parameter", "Job" };
-        return new SortCriteria(columnNames, new boolean[] { true, true, true, true, true }, new boolean[] { false, false,
-                false, false, false });
-    }
-
     private JPanel controlPanel() {
         Insets insets = new Insets(1, 2, 1, 2);
         JPanel container = new JPanel();
@@ -231,7 +132,7 @@ public class ViewableParametersTab extends JPanel implements RefreshObserver {
             public void actionPerformed(ActionEvent e) {
                 clearMessage();
                 try {
-                    doRefresh(listFreshParameters());
+                    new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
                 } catch (Exception e1) {
                     setErrorMessage(e1.getMessage());
                 }
@@ -244,6 +145,20 @@ public class ViewableParametersTab extends JPanel implements RefreshObserver {
 
         return panel;
     }
+    
+    private AbstractAction filterAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                    clearMessage();
+                } catch (Exception exc) {
+                    setErrorMessage(exc.getMessage());
+                }
+            }
+        };
+    }
+      
 
     private Action viewAction() {
         Action action = new AbstractAction() {
@@ -334,64 +249,10 @@ public class ViewableParametersTab extends JPanel implements RefreshObserver {
             }
         }
     }
-    
-    private int getCaseId(String selectedCase) {
-        int index1 = selectedCase.indexOf("(") + 1;
-        int index2 = selectedCase.indexOf(")");
-
-        return Integer.parseInt(selectedCase.substring(index1, index2));
-    }
-    
-    private List getSelectedParameters() {
-        return table.selected();
-    }
-
+ 
     public CaseParameter[] caseParameters() {
         return tableData.sources();
     }
-
-
-    public int numberOfRecord() {
-        return tableData.sources().length;
-    }
-
-    public void clearMessage() {
-        messagePanel.clear();
-    }
-
-    private void setErrorMessage(String msg) {
-        messagePanel.setError(msg);
-    }
-    
-    private void setMessage(String msg) {
-        messagePanel.setMessage(msg);
-    }
-    
-    private CaseParameter[] listFreshParameters() throws EmfException {
-        CaseParameter[] freshList = presenter.getCaseParameters(caseId, getSelectedSector(), nameContains(), showAll.isSelected());
-        
-        if (getSelectedSector() == null && freshList.length == presenter.getPageSize())
-            setMessage("Please select a sector to see full list of parameters.");
-        else
-            messagePanel.clear();
-        
-        return freshList;
-    }
-    
-    private String nameContains() {
-        return envVarContains == null ? "" : envVarContains.getText().trim();
-    }
-
-    private Sector getSelectedSector() {
-        return (Sector) sectorsComboBox.getSelectedItem();
-    }
-
-    public void doRefresh() throws EmfException {
-        try {
-            kickPopulateThread();
-        } catch (Exception e) {
-            throw new EmfException(e.getMessage());
-        }
-    }
+  
 
 }

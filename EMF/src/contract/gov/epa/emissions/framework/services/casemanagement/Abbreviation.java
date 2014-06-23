@@ -2,7 +2,7 @@ package gov.epa.emissions.framework.services.casemanagement;
 
 import java.io.Serializable;
 
-public class Abbreviation implements Comparable, Serializable {
+public class Abbreviation implements Comparable<Abbreviation>, Serializable {
 
     private int id;
 
@@ -49,7 +49,8 @@ public class Abbreviation implements Comparable, Serializable {
         return getName();
     }
 
-    public int compareTo(Object other) {
-        return name.compareToIgnoreCase(((Abbreviation) other).getName());
+    public int compareTo(Abbreviation other) {
+        return name.compareToIgnoreCase(other.getName());
     }
+    
 }

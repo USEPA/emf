@@ -10,12 +10,12 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
-public class RemoveSwingWorkerTasks extends SwingWorker<Object[], Void> {
+public class SaveSwingWorkerTasks extends SwingWorker<Object[], Void> {
     private Container parentContainer;
-    private HeavySwingWorkerPresenter presenter;
+    private LightSwingWorkerPresenter presenter;
     private MessagePanel messagePanel;
 
-    public RemoveSwingWorkerTasks(Container parentContainer, MessagePanel messagePanel, HeavySwingWorkerPresenter presenter) {
+    public SaveSwingWorkerTasks(Container parentContainer, MessagePanel messagePanel, LightSwingWorkerPresenter presenter) {
         this.parentContainer = parentContainer;
         this.presenter = presenter;    
         this.messagePanel = messagePanel;
@@ -29,8 +29,14 @@ public class RemoveSwingWorkerTasks extends SwingWorker<Object[], Void> {
      * don't update gui here
      */
     @Override
-    public Object[] doInBackground() throws EmfException  {        
-        return presenter.removeProcessData();
+    public Object[] doInBackground()  {   
+        
+        try {    
+            return presenter.saveProcessData();
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+        return null;
     }
 
     /*
@@ -40,17 +46,15 @@ public class RemoveSwingWorkerTasks extends SwingWorker<Object[], Void> {
     public void done() {
         try {
             //make sure something didn't happen
-            presenter.removeDisplay(get());
-            
+            presenter.saveData(get());         
         } catch (InterruptedException e1) {
-//            messagePanel.setError(e1.getMessage());
-//            setErrorMsg(e1.getMessage());
+            messagePanel.setError(e1.getMessage());
         } catch (ExecutionException e1) {
 //            messagePanel.setError(e1.getCause().getMessage());
 //            setErrorMsg(e1.getCause().getMessage());
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally {
 //            this.parentContainer.setCursor(null); //turn off the wait cursor
 //            this.parentContainer.

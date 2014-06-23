@@ -5,7 +5,7 @@ import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.commons.gui.buttons.AddButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.casemanagement.editor.EditCaseSummaryTabPresenter;
+import gov.epa.emissions.framework.client.casemanagement.editor.EditableCaseSummaryTabPresenterImpl;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.region.RegionChooser;
@@ -112,7 +112,7 @@ public class AddRemoveRegionsWidget extends JPanel {
     }
 
     private void addRegions() throws EmfException {
-        allRegions = ((EditCaseSummaryTabPresenter)parentPresenter).getAllGeoRegions();
+        allRegions = ((EditableCaseSummaryTabPresenterImpl)parentPresenter).getAllGeoRegions();
         RegionChooser regionSelector = new RegionChooser(allRegions, regionsList, parentConsole);
         regionSelector.setDesktopManager(desktopManager);
         regionSelector.setEmfSession(session);
@@ -125,7 +125,7 @@ public class AddRemoveRegionsWidget extends JPanel {
         if (removeValues.length>0){
             try{
                 String warnMessage = ""; 
-                String[] message =((EditCaseSummaryTabPresenter)parentPresenter).isGeoRegionUsed(Arrays.asList(removeValues).toArray(new GeoRegion[0]));
+                String[] message = ((EditableCaseSummaryTabPresenterImpl) parentPresenter).isGeoRegionUsed(Arrays.asList(removeValues).toArray(new GeoRegion[0]));
                 if(message[0]!=null && message[0].trim().length() > 0)
                     warnMessage = " Cannot remove region " + message[0] + ", used by one or more jobs";
                 if(message[1]!=null && message[1].trim().length() > 0)
