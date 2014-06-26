@@ -57,9 +57,14 @@
             column="daily_profile_dataset_id"/>
 
 	<many-to-one 
-            name="detailedResultDataset" 
+            name="monthlyResultDataset" 
             class="gov.epa.emissions.framework.services.data.EmfDataset"
-            column="detailed_result_dataset_id"/>
+            column="monthly_result_dataset_id"/>
+
+	<many-to-one 
+            name="dailyResultDataset" 
+            class="gov.epa.emissions.framework.services.data.EmfDataset"
+            column="daily_result_dataset_id"/>
 
 	<array name="temporalAllocationInputDatasets" table="temporal_allocation_input_dataset">
     	<key column="temporal_allocation_id" not-null="true"/>

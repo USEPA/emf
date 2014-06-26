@@ -133,7 +133,9 @@ public class DatasetType implements Serializable, Lockable, Comparable<DatasetTy
     
     public static final String LIST_OF_COUNTIES = "List of Counties (CSV)";
     
-    public static final String TEMPORAL_ALLOCATION_DETAILED_RESULT = "Temporal Allocation Detailed Result";
+    public static final String TEMPORAL_ALLOCATION_MONTHLY_RESULT = "Temporal Allocation Monthly Result";
+    
+    public static final String TEMPORAL_ALLOCATION_DAILY_RESULT = "Temporal Allocation Daily Result";
     
     //For new dataset type   
     public static final String EXTERNAL = "External File";

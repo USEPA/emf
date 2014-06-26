@@ -1,10 +1,11 @@
--- SELECT public.build_temporal_allocation_xref_sql(11, 0, 450, 0);
+-- SELECT public.build_temporal_allocation_xref_sql(11, 0, 450, 0, 'MONTHLY');
 
 CREATE OR REPLACE FUNCTION public.build_temporal_allocation_xref_sql(
   inv_dataset_id integer,
   inv_dataset_version integer,
   xref_dataset_id integer,
-  xref_dataset_version integer
+  xref_dataset_version integer,
+  profile_type varchar
   ) RETURNS text AS $$
 DECLARE
   inv_is_point_table boolean := false;
@@ -84,14 +85,14 @@ BEGIN
 
   -- add dummy SELECT to avoid issues with UNIONs in subsequent statements
   sql := sql || '
-  SELECT null AS record_id, null AS profile_id, null AS profile_type, null AS ranking
+  SELECT null AS record_id, null AS profile_id, null AS ranking
    WHERE 1 = 0';
 
   IF inv_is_point_table THEN
     -- 1. Country/state/county code, SCC, plant ID, point ID, stack ID, segment, and pollutant
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 1 AS ranking
+    SELECT inv.record_id, xref.profile_id, 1 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -108,12 +109,13 @@ BEGIN
        AND xref.stackid IS NOT NULL
        AND xref.processid IS NOT NULL
        AND xref.poll IS NOT NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
     -- 2. Country/state/county code, SCC, plant ID, point ID, stack ID, and pollutant
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 2 AS ranking
+    SELECT inv.record_id, xref.profile_id, 2 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -129,12 +131,13 @@ BEGIN
        AND xref.stackid IS NOT NULL
        AND xref.processid IS NULL
        AND xref.poll IS NOT NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
     -- 3. Country/state/county code, SCC, plant ID, point ID, and pollutant
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 3 AS ranking
+    SELECT inv.record_id, xref.profile_id, 3 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -149,12 +152,13 @@ BEGIN
        AND xref.stackid IS NULL
        AND xref.processid IS NULL
        AND xref.poll IS NOT NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
     -- 4. Country/state/county code, SCC, plant ID, and pollutant
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 4 AS ranking
+    SELECT inv.record_id, xref.profile_id, 4 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -168,12 +172,13 @@ BEGIN
        AND xref.stackid IS NULL
        AND xref.processid IS NULL
        AND xref.poll IS NOT NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
     -- 5. Country/state/county code, SCC, plant ID, point ID, stack ID, and segment
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 5 AS ranking
+    SELECT inv.record_id, xref.profile_id, 5 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -189,12 +194,13 @@ BEGIN
        AND xref.stackid IS NOT NULL
        AND xref.processid IS NOT NULL
        AND xref.poll IS NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
     -- 6. Country/state/county code, SCC, plant ID, point ID, and stack ID
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 6 AS ranking
+    SELECT inv.record_id, xref.profile_id, 6 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -209,12 +215,13 @@ BEGIN
        AND xref.stackid IS NOT NULL
        AND xref.processid IS NULL
        AND xref.poll IS NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
     -- 7. Country/state/county code, SCC, plant ID, and point ID
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 7 AS ranking
+    SELECT inv.record_id, xref.profile_id, 7 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -228,12 +235,13 @@ BEGIN
        AND xref.stackid IS NULL
        AND xref.processid IS NULL
        AND xref.poll IS NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
     -- 8. Country/state/county code, SCC, and plant ID
     sql := sql || '
      UNION ALL
-    SELECT inv.record_id, xref.profile_id, xref.profile_type, 8 AS ranking
+    SELECT inv.record_id, xref.profile_id, 8 AS ranking
       FROM emissions.' || xref_table_name || ' xref
       JOIN inv
         ON (xref.fips = ' || inv_fips_exp || '
@@ -246,14 +254,15 @@ BEGIN
        AND xref.stackid IS NULL
        AND xref.processid IS NULL
        AND xref.poll IS NULL
-       AND ' || xref_dataset_filter_sql;
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
 
   END IF;
 
   -- 9. Country/state/county code, SCC, and pollutant
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 9 AS ranking
+  SELECT inv.record_id, xref.profile_id, 9 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.fips = ' || inv_fips_exp || '
@@ -266,12 +275,13 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NOT NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
   
   -- 10. Country/state code, SCC, and pollutant
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 10 AS ranking
+  SELECT inv.record_id, xref.profile_id, 10 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (SUBSTR(xref.fips, 1, 3) = SUBSTR(' || inv_fips_exp || ', 1, 3)
@@ -285,12 +295,13 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NOT NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
   
   -- 11. SCC and pollutant
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 11 AS ranking
+  SELECT inv.record_id, xref.profile_id, 11 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.scc = inv.scc
@@ -302,12 +313,13 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NOT NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
   
   -- 12. Country/state/county code and SCC
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 12 AS ranking
+  SELECT inv.record_id, xref.profile_id, 12 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.fips = ' || inv_fips_exp || '
@@ -319,12 +331,13 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
   
   -- 13. Country/state code and SCC
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 13 AS ranking
+  SELECT inv.record_id, xref.profile_id, 13 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (SUBSTR(xref.fips, 1, 3) = SUBSTR(' || inv_fips_exp || ', 1, 3)
@@ -337,12 +350,13 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
   
   -- 14. SCC
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 14 AS ranking
+  SELECT inv.record_id, xref.profile_id, 14 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.scc = inv.scc)
@@ -353,12 +367,13 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
   
   -- 15. Country/state/county code
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 15 AS ranking
+  SELECT inv.record_id, xref.profile_id, 15 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.fips = ' || inv_fips_exp || ')
@@ -369,12 +384,13 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
   
   -- 16. Country/state code
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, xref.profile_type, 16 AS ranking
+  SELECT inv.record_id, xref.profile_id, 16 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (SUBSTR(xref.fips, 1, 3) = SUBSTR(' || inv_fips_exp || ', 1, 3))
@@ -386,7 +402,15 @@ BEGIN
      AND xref.stackid IS NULL
      AND xref.processid IS NULL
      AND xref.poll IS NULL
-     AND ' || xref_dataset_filter_sql;
+     AND ' || xref_dataset_filter_sql || '
+     AND xref.profile_type = ''' || profile_type || '''';
+
+  -- return matches with best ranking
+  sql := '
+  SELECT DISTINCT ON (tbl.record_id)
+         tbl.record_id, tbl.profile_id
+    FROM (' || sql || ') tbl
+   ORDER BY tbl.record_id, tbl.ranking';
 
   RETURN sql; 
 END;

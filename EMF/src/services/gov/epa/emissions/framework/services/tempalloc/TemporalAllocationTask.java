@@ -79,9 +79,9 @@ public class TemporalAllocationTask {
             throw new EmfException(e.getMessage());
         }
         
-        setStatus("Started creating " + DatasetType.TEMPORAL_ALLOCATION_DETAILED_RESULT + ".");
-        EmfDataset result = createDetailedResultDataset();
-        temporalAllocation.setDetailedResultDataset(result);
+        setStatus("Started creating Temporal Allocation Result datasets.");
+        temporalAllocation.setMonthlyResultDataset(createMonthlyResultDataset());
+        temporalAllocation.setDailyResultDataset(createDailyResultDataset());
         temporalAllocation = temporalAllocationDAO.updateWithLock(temporalAllocation, sessionFactory.getSession());
         
         TemporalAllocationInputDataset[] temporalAllocationInputDatasets = temporalAllocation.getTemporalAllocationInputDatasets();
@@ -96,10 +96,11 @@ public class TemporalAllocationTask {
     
     private void deleteResults() throws EmfException {
         Session session = sessionFactory.getSession();
-        temporalAllocation.setDetailedResultDataset(null);
+        temporalAllocation.setMonthlyResultDataset(null);
+        temporalAllocation.setDailyResultDataset(null);
         temporalAllocation = temporalAllocationDAO.updateWithLock(temporalAllocation, session);
         
-        // TODO: delete results dataset
+        // TODO: delete results datasets
     }
     
     private void beforeRun() throws EmfException {
@@ -126,10 +127,19 @@ public class TemporalAllocationTask {
         }
     }
     
-    private EmfDataset createDetailedResultDataset() throws EmfException {
-        DatasetType datasetType = getDatasetType(DatasetType.TEMPORAL_ALLOCATION_DETAILED_RESULT);
+    private EmfDataset createMonthlyResultDataset() throws EmfException {
+        DatasetType datasetType = getDatasetType(DatasetType.TEMPORAL_ALLOCATION_MONTHLY_RESULT);
         return creator.addDataset("ds",
-                DatasetCreator.createDatasetName("Temp_Alloc_Detail"),
+                DatasetCreator.createDatasetName("Temp_Alloc_Monthly"),
+                datasetType, 
+                new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
+                "");
+    }
+    
+    private EmfDataset createDailyResultDataset() throws EmfException {
+        DatasetType datasetType = getDatasetType(DatasetType.TEMPORAL_ALLOCATION_DAILY_RESULT);
+        return creator.addDataset("ds",
+                DatasetCreator.createDatasetName("Temp_Alloc_Daily"),
                 datasetType, 
                 new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
                 "");
