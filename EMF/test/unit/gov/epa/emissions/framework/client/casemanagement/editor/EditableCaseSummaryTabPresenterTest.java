@@ -21,7 +21,7 @@ public class EditableCaseSummaryTabPresenterTest extends MockObjectTestCase {
         Object caseProxy = caseObj.proxy();
         view.expects(once()).method("save").with(eq(caseProxy));
 
-        EditableCaseSummaryTabPresenter presenter = new EditableCaseSummaryTabPresenterImpl((Case) caseProxy,
+        EditableCaseSummaryTabPresenter presenter = new EditableCaseSummaryTabPresenterImpl(null, (Case) caseProxy,
                 (EditableCaseSummaryTabView) view.proxy());
 
         presenter.doSave();

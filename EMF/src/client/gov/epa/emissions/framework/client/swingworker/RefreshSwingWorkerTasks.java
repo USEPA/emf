@@ -12,13 +12,16 @@ import javax.swing.SwingWorker;
 
 public class RefreshSwingWorkerTasks extends SwingWorker<Object[], Void> {
     private Container parentContainer;
-    private HeavySwingWorkerPresenter presenter;
+    private LightSwingWorkerPresenter presenter;
     private MessagePanel messagePanel;
 
-    public RefreshSwingWorkerTasks(Container parentContainer, MessagePanel messagePanel, HeavySwingWorkerPresenter presenter) {
+    public RefreshSwingWorkerTasks(Container parentContainer, MessagePanel messagePanel, LightSwingWorkerPresenter presenter) {
         this.parentContainer = parentContainer;
         this.presenter = presenter;    
         this.messagePanel = messagePanel;
+        this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(parentContainer, false);
+        messagePanel.clear();
     }
 
     /*
@@ -26,9 +29,7 @@ public class RefreshSwingWorkerTasks extends SwingWorker<Object[], Void> {
      * don't update gui here
      */
     @Override
-    public Object[] doInBackground() throws EmfException  {   
-        this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(parentContainer, false);
+    public Object[] doInBackground() throws EmfException  {          
         return presenter.refreshProcessData();
     }
 

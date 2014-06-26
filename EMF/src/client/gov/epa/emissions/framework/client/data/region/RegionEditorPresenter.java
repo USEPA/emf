@@ -1,7 +1,7 @@
 package gov.epa.emissions.framework.client.data.region;
 
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.casemanagement.editor.EditCaseSummaryTabPresenter;
+import gov.epa.emissions.framework.client.casemanagement.editor.EditableCaseSummaryTabPresenterImpl;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
 import gov.epa.emissions.framework.services.data.GeoRegion;
@@ -41,12 +41,12 @@ public class RegionEditorPresenter {
     }
 
     public void refreshParentRegionCash() {
-        ((EditCaseSummaryTabPresenter) parentPresenter).refreshObjectManager();
+        ((EditableCaseSummaryTabPresenterImpl) parentPresenter).refreshObjectManager();
     }
 
     public GeoRegion[] getAllRegions() throws EmfException {
         refreshParentRegionCash();
-        return ((EditCaseSummaryTabPresenter) parentPresenter).getAllGeoRegions();
+        return ((EditableCaseSummaryTabPresenterImpl) parentPresenter).getAllGeoRegions();
     }
 
 }

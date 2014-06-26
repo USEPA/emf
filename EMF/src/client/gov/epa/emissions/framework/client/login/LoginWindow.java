@@ -45,7 +45,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
     private JPasswordField password;
 
     private LoginPresenter presenter;
-
+    //
     private MessagePanel messagePanel;
 
     private ServiceLocator serviceLocator;

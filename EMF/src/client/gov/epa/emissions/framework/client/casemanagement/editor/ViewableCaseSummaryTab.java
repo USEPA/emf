@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.client.casemanagement.editor;
 
-import gov.epa.emissions.commons.data.Region;
 import gov.epa.emissions.commons.gui.CheckBox;
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
@@ -12,11 +11,12 @@ import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.AddRemoveRegionsWidget;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.ModelToRun;
 import gov.epa.emissions.framework.services.casemanagement.RunStatuses;
-import gov.epa.emissions.framework.services.cost.controlmeasure.YearValidation;
+import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 
 import java.awt.BorderLayout;
@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.text.ParseException;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -52,13 +51,9 @@ public class ViewableCaseSummaryTab extends JPanel implements RefreshObserver {
 
     private ComboBox projectsCombo;
 
-    private EmfSession session;
-
     private ComboBox modelToRunCombo;
 
     private ComboBox modRegionsCombo;
-
-    private ComboBox controlRegionsCombo;
 
     private ComboBox abbreviationsCombo;
 
@@ -88,23 +83,27 @@ public class ViewableCaseSummaryTab extends JPanel implements RefreshObserver {
 
     private int fieldWidth=23;
     
-    private EditCaseSummaryTabPresenter presenter;
+    private ViewableCaseSummaryTabPresenter presenter;
 
     private TextField modelVersionField;
     
     private TextField numMetLayers, numEmissionLayers;
 
     private AddRemoveRegionsWidget gridsWidget;
+    
+    private JPanel layout;
+    private MessagePanel messagePanel;
 
-    public ViewableCaseSummaryTab(Case caseObj, EmfSession session,
+    public ViewableCaseSummaryTab(Case caseObj, MessagePanel messagePanel,
             EmfConsole parentConsole) {
         super.setName("viewSummary");
         this.caseObj = caseObj;
-        this.session = session;
+        this.messagePanel = messagePanel;
     }
 
     public void display() throws EmfException {
         setLayout();
+        super.validate();
         viewOnly();
     }
 
@@ -125,13 +124,12 @@ public class ViewableCaseSummaryTab extends JPanel implements RefreshObserver {
 
     private void setLayout() throws EmfException {
         super.setLayout(new BorderLayout());
+        layout = new JPanel();
+        layout.setLayout(new BoxLayout(layout, BoxLayout.Y_AXIS));
+        layout.add(createOverviewSection());
+        layout.add(createLowerSection());
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(createOverviewSection());
-        panel.add(createLowerSection());
-
-        super.add(panel, BorderLayout.CENTER);
+        super.add(layout, BorderLayout.CENTER);
     }
     
 
@@ -500,74 +498,24 @@ public class ViewableCaseSummaryTab extends JPanel implements RefreshObserver {
         return label;
     }
 
-    public void save(Case caseObj) throws EmfException {
-        caseObj.setName(name.getText().trim());
-        saveFutureYear();
-        caseObj.setDescription(description.getText());
-        caseObj.setCaseTemplate(isTemplate.isSelected());
-        caseObj.setIsFinal(isFinal.isSelected());
-        caseObj.setProject(presenter.getProject(projectsCombo.getSelectedItem()));
-        caseObj.setModelingRegion((Region) modRegionsCombo.getSelectedItem());
-        caseObj.setControlRegion((Region) controlRegionsCombo.getSelectedItem());
-        caseObj.setAbbreviation(presenter.getAbbreviation(abbreviationsCombo.getSelectedItem()));
-        caseObj.setAirQualityModel(presenter.getAirQualityModel(airQualityModelsCombo.getSelectedItem()));
-        caseObj.setCaseCategory(presenter.getCaseCategory(categoriesCombo.getSelectedItem()));
-        caseObj.setEmissionsYear(presenter.getEmissionsYear(emissionsYearCombo.getSelectedItem()));
-//        caseObj.setGrid(presenter.getGrid(gridCombo.getSelectedItem()));
-        caseObj.setMeteorlogicalYear(presenter.getMeteorlogicalYear(meteorlogicalYearCombo.getSelectedItem()));
-        caseObj.setSpeciation(presenter.getSpeciation(speciationCombo.getSelectedItem()));
-        caseObj.setRunStatus(runStatusCombo.getSelectedItem() + "");
-        saveStartDate();
-        saveEndDate();
-        caseObj.setSectors(sectorsWidget.getSectors());
-        caseObj.setModel(presenter.getModelToRun(modelToRunCombo.getSelectedItem()));
-    }
-
-    private void saveFutureYear() throws EmfException {
-        String year = futureYear.getText().trim();
-        if (year.length() == 0 || year.equals("0")) {
-            caseObj.setFutureYear(0);
-            return;
-        }
-        YearValidation validation = new YearValidation("Future Year");
-        caseObj.setFutureYear(validation.value(futureYear.getText()));
-    }
-
-    private void saveEndDate() throws EmfException {
-        try {
-            String date = startDate.getText().trim();
-            if (date.length() == 0) {
-                caseObj.setStartDate(null);
-                return;
-            }
-            caseObj.setStartDate(CustomDateFormat.parse_MM_DD_YYYY_HH_mm(startDate.getText()));
-        } catch (ParseException e) {
-            throw new EmfException("Please enter the Start Date in the correct format (MM/dd/yyyy HH:mm)");
-        }
-    }
-
-    private void saveStartDate() throws EmfException {
-        try {
-            String date = endDate.getText().trim();
-            if (date.length() == 0) {
-                caseObj.setEndDate(null);
-                return;
-            }
-            caseObj.setEndDate(CustomDateFormat.parse_MM_DD_YYYY_HH_mm(endDate.getText()));
-        } catch (ParseException e) {
-            throw new EmfException("Please enter the End Date in the correct format (MM/dd/yyyy HH:mm)");
-        }
-    }
-
-    public void observe(EditCaseSummaryTabPresenter presenter) {
+    public void observe(ViewableCaseSummaryTabPresenter presenter) {
         this.presenter = presenter;
     }
 
     public void doRefresh() throws EmfException {
+        new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+    }
+    
+    public void refresh(Case caseObj){
+        this.caseObj = caseObj;
         super.removeAll();
-        this.caseObj = session.caseService().reloadCase(caseObj.getId());
-        presenter.refreshObjectManager();
-        setLayout();
+        try {
+            setLayout();
+            super.validate();
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
         viewOnly();
     }
     

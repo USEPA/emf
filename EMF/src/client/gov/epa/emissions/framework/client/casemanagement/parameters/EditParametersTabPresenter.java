@@ -31,4 +31,9 @@ public interface EditParametersTabPresenter extends CaseEditorTabPresenter {
     public Object[] getAllCaseNameIDs() throws EmfException;
     
     GeoRegion[] getGeoregion(List<CaseParameter> parms);
+    
+    Sector[] getAllSetcors();
+    
+    int getPageSize();
+    
 }
