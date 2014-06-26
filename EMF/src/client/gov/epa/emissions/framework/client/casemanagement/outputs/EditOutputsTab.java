@@ -96,8 +96,9 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         this.messagePanel=messagePanel;
     }
     
-    public void doDisplay(EditOutputsTabPresenter presenter){
+    public void doDisplay(EditOutputsTabPresenter presenter, Case caseObj){
         this.presenter = presenter;
+        this.caseObj = caseObj;
         new SwingWorkerTasks(this, presenter).execute();
     }
     

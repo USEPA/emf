@@ -88,7 +88,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         new SwingWorkerTasks(this, presenter).execute();
     }   
 
-    public void display(Case caseObj) {
+    public void display(Case caseObj, CaseJob[] caseJobs) {
         super.removeAll();
         this.caseObj = caseObj;
         this.outputDir = new TextField("outputdir", 50);
@@ -96,11 +96,12 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         this.changeables.addChangeable(outputDir);
         
         try {
-            super.add(createLayout(new CaseJob[0], parentConsole), BorderLayout.CENTER);
+            super.add(createLayout(caseJobs, parentConsole), BorderLayout.CENTER);
         } catch (Exception e) {
             messagePanel.setError("Cannot retrieve all case jobs.");
         }
         super.validate();
+        //new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
      }
 
     private void kickOfCancelJobs() {

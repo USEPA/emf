@@ -72,8 +72,9 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
 //        this.presenter = presenter;
 //    }
     
-    public void doDisplay(ViewableOutputsTabPresenterImpl presenter){
+    public void doDisplay(ViewableOutputsTabPresenterImpl presenter, Case caseObj){
         this.presenter = presenter;
+        this.caseObj = caseObj;
         new SwingWorkerTasks(this, presenter).execute();
     }
     

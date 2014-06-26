@@ -24,7 +24,7 @@ public class ViewableOutputsTabPresenterImpl extends EditOutputsTabPresenterImpl
     }
 
     public void display() {
-        view.doDisplay(this);
+        view.doDisplay(this, caseObj);
     }
 
     public CaseOutput[] getCaseOutputs(int caseId, int jobId) throws EmfException {
