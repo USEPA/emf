@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.casemanagement.editor;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.casemanagement.CaseManagerPresenter;
 import gov.epa.emissions.framework.client.casemanagement.history.ShowHistoryTabPresenter;
+import gov.epa.emissions.framework.client.casemanagement.history.ShowHistoryTabPresenterImpl;
 import gov.epa.emissions.framework.client.casemanagement.history.ShowHistoryTabView;
 import gov.epa.emissions.framework.client.casemanagement.inputs.EditInputsTabPresenter;
 import gov.epa.emissions.framework.client.casemanagement.inputs.EditInputsTabPresenterImpl;
@@ -95,12 +96,7 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     }
 
     public void doSave() throws EmfException {
-        updateCase();
-    }
-
-    public Object[] saveProcessData() throws EmfException {
-        updateCase();
-        return new Case[]{caseObj};
+        //updateCase();
     }
     
     private void updateCase() throws EmfException {
@@ -180,7 +176,7 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     }
 
     public void set(ShowHistoryTabView caseHistoryView) {
-        historyPresenter = new ShowHistoryTabPresenter(session, caseHistoryView, caseObj);
+        historyPresenter = new ShowHistoryTabPresenterImpl(session, caseHistoryView, caseObj);
     }
 
     public void doLoad(String tabTitle) throws EmfException {
@@ -258,8 +254,16 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
-        view.resetChanges();      
+    public void saveDisplay(Object[] objs) throws EmfException {
+        view.resetChanges();
+        String jobSummaryMsg = service().getJobStatusMessage(caseObj.getId());
+        view.display(caseObj, jobSummaryMsg);
+    }
+    
+
+    public Object[] saveProcessData() throws EmfException {
+        updateCase();
+        return null;
     }
     
 }

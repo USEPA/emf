@@ -62,7 +62,7 @@ public class ViewableOutputsTabPresenterImpl extends EditOutputsTabPresenterImpl
         if (jobId != null ){        
             return getCaseOutputs(caseObj.getId(), jobId);
         }
-        return null;
+        return new CaseOutput[0];
     }
 
     @Override

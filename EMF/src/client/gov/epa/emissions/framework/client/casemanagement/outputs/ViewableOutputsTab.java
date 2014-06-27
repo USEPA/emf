@@ -152,6 +152,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
     private AbstractAction filterAction() {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
+                selectedJob = (CaseJob) jobCombo.getSelectedItem();
                 new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
                 messagePanel.clear();
             }

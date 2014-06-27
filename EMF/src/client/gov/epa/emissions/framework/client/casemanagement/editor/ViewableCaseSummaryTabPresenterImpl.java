@@ -4,10 +4,9 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 
-public class ViewableCaseSummaryTabPresenterImpl extends  CaseSummaryTabPresenterImpl {
+public class ViewableCaseSummaryTabPresenterImpl extends  EditableCaseSummaryTabPresenterImpl  {
     
     private ViewableCaseSummaryTab view;
-    private EmfSession session;
    
     public ViewableCaseSummaryTabPresenterImpl(EmfSession session, Case caseObj, ViewableCaseSummaryTab view) {
         super(session, caseObj);
@@ -19,7 +18,6 @@ public class ViewableCaseSummaryTabPresenterImpl extends  CaseSummaryTabPresente
     public Object[] refreshProcessData() throws EmfException {
         refreshObjectManager();
         this.caseObj = session.caseService().reloadCase(caseObj.getId());
-        refreshObjectManager();
         return new Case[]{caseObj};
     }
 
@@ -36,8 +34,7 @@ public class ViewableCaseSummaryTabPresenterImpl extends  CaseSummaryTabPresente
 
     @Override
     public void swDisplay(Object[] objs) throws EmfException {
-        // NOTE Auto-generated method stub
-        
+        // NOTE Auto-generated method stub    
     }
 
     @Override
@@ -47,7 +44,7 @@ public class ViewableCaseSummaryTabPresenterImpl extends  CaseSummaryTabPresente
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }

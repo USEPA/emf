@@ -5,10 +5,15 @@ import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.casemanagement.outputs.ViewableOutputsTabPresenterImpl;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
+import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
 import gov.epa.emissions.framework.services.casemanagement.jobs.JobMessage;
+import gov.epa.emissions.framework.services.casemanagement.outputs.CaseOutput;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -30,71 +35,59 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, RefreshObserver {
-    private EmfConsole parentConsole;
+    protected EmfConsole parentConsole;
 
-    private ShowHistoryTabPresenter presenter;
+    protected ShowHistoryTabPresenter presenter;
+ 
+    protected JobMessagesTableData tableData;
 
-    private int caseId;
+    protected SelectableSortFilterWrapper table;
 
-    private JobMessagesTableData tableData;
+    protected JPanel tablePanel;
 
-    private SelectableSortFilterWrapper table;
+    protected MessagePanel messagePanel;
 
-    private JPanel tablePanel;
+    protected EmfSession session;
 
-    private MessagePanel messagePanel;
+    protected ComboBox jobCombo;
 
-    private EmfSession session;
+    protected List<CaseJob> caseJobs; 
 
-    private ComboBox jobCombo;
+    protected CaseJob selectedJob=null;
+    
+    protected JPanel layout;
 
-    private List<CaseJob> caseJobs; 
-
-    private CaseJob selectedJob=null;
-
-    public ShowHistoryTab(EmfConsole parentConsole, MessagePanel messagePanel, EmfSession session) {
-        super.setName("showCaseHistoryTab");
+    public ShowHistoryTab(EmfConsole parentConsole, MessagePanel messagePanel, EmfSession session) {         
         this.parentConsole = parentConsole;
         this.messagePanel = messagePanel;
         this.session = session;
+         
+    }
+    
+    public void doDisplay(ShowHistoryTabPresenter presenter, int caseId){
         super.setLayout(new BorderLayout());
-    }
-
-    public void display(EmfSession session, int caseId, ShowHistoryTabPresenter presenter) {
-        super.removeAll();
-
-        this.caseId = caseId;
+        super.setName("showCaseHistoryTab");
         this.presenter = presenter;
-        try {
-            getAllJobs();
-        } catch (EmfException e) {
-            messagePanel.setError(e.getMessage());
-        }
-        try {
-            super.add(createLayout(new JobMessage[0], parentConsole), BorderLayout.CENTER);
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all case histories. " + e.getMessage());
-        }
-
-  //      kickPopulateThread(new JobMessage[0]);
+        //this.caseId = caseId;
+        new SwingWorkerTasks(this, presenter).execute();
     }
 
-    private void kickPopulateThread() {
-        Thread populateThread = new Thread(new Runnable() {
-            public void run() {
-                retrieveJobMsgs();
-            }
-        });
-        populateThread.start();
+    public void display(CaseJob[] jobs) {
+        super.setLayout(new BorderLayout());
+        super.removeAll();
+        getAllJobs(jobs);
+
+        super.add(createLayout(new JobMessage[0], parentConsole), BorderLayout.CENTER);
+        super.validate();
     }
 
-    private synchronized void refreshJobList() throws EmfException {
-        getAllJobs();
+    protected void refreshJobList(CaseJob[] jobs) {
+        getAllJobs(jobs);
         jobCombo.resetModel(caseJobs.toArray(new CaseJob[0]));
         jobCombo.setSelectedItem(getCaseJob(caseJobs, this.selectedJob));
     }
     
-    private CaseJob getCaseJob(List<CaseJob> allJobs, CaseJob selectedJob) {
+    protected CaseJob getCaseJob(List<CaseJob> allJobs, CaseJob selectedJob) {
         if (selectedJob == null)
             return null;
         
@@ -108,42 +101,42 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
         return null;
     }
 
-    public synchronized void retrieveJobMsgs() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all case histories...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            
-            refreshJobList();
-            
-            if (selectedJob == null || selectedJob.getName().equalsIgnoreCase("Select one")){
-                doRefresh(new JobMessage[0]);
-                return; 
-            }
-            JobMessage[] msgs=presenter.getJobMessages(caseId, selectedJob.getId());
-            doRefresh(msgs);
-        } catch (Exception e) {
-            e.printStackTrace();
-            messagePanel.setError("Cannot retrieve all case histories. " + e.getMessage());
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-        }
-    }
+//    public synchronized void retrieveJobMsgs() {
+//        try {
+//            messagePanel.setMessage("Please wait while retrieving all case histories...");
+//            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//            
+//            refreshJobList();
+//            
+//            if (selectedJob == null || selectedJob.getName().equalsIgnoreCase("Select one")){
+//                doRefresh(new JobMessage[0]);
+//                return; 
+//            }
+//            JobMessage[] msgs=presenter.getJobMessages(caseId, selectedJob.getId());
+//            doRefresh(msgs);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            messagePanel.setError("Cannot retrieve all case histories. " + e.getMessage());
+//        } finally {
+//            setCursor(Cursor.getDefaultCursor());
+//        }
+//    }
 
-    private JPanel createLayout(JobMessage[] msgs, EmfConsole parentConsole) throws Exception {
-        final JPanel layout = new JPanel(new BorderLayout());
+    private JPanel createLayout(JobMessage[] msgs, EmfConsole parentConsole){
+        layout = new JPanel(new BorderLayout());
         layout.add(createTopPanel(), BorderLayout.NORTH);
         layout.add(tablePanel(msgs, parentConsole), BorderLayout.CENTER);
         layout.add(controlPanel(), BorderLayout.PAGE_END);
         return layout;
     }
     
-    private void getAllJobs() throws EmfException {
+    protected void getAllJobs(CaseJob[] jobs){
         this.caseJobs = new ArrayList<CaseJob>();
         caseJobs.add(new CaseJob("All"));
-        caseJobs.addAll(Arrays.asList(presenter.getCaseJobs()));
+        caseJobs.addAll(Arrays.asList(jobs));
     }
     
-    private JPanel createTopPanel() {
+    protected JPanel createTopPanel() {
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
         jobCombo=new ComboBox("Select One", caseJobs.toArray(new CaseJob[0]));
@@ -154,8 +147,9 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
         }
         jobCombo.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                selectedJob=getSelectedJob();
-                retrieveJobMsgs();
+                //selectedJob=getSelectedJob();
+                new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                //retrieveJobMsgs();
             }
         });
         
@@ -166,16 +160,15 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
         return panel;
     }
     
-    private CaseJob getSelectedJob() {
-        Object selected = jobCombo.getSelectedItem();
+//    private CaseJob getSelectedJob() {
+//        Object selected = jobCombo.getSelectedItem();
+//        if (selected == null)
+//            return new CaseJob("Select one");
+//
+//        return (CaseJob) selected;
+//    }
 
-        if (selected == null)
-            return new CaseJob("Select one");
-
-        return (CaseJob) selected;
-    }
-
-    private JPanel tablePanel(JobMessage[] msgs, EmfConsole parentConsole) {
+    protected JPanel tablePanel(JobMessage[] msgs, EmfConsole parentConsole) {
         setupTableModel(msgs);
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
@@ -184,11 +177,11 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
         return tablePanel;
     }
     
-    private void setupTableModel(JobMessage[] msgs){
+    protected void setupTableModel(JobMessage[] msgs){
         tableData = new JobMessagesTableData(msgs, session);
     }
 
-    private SortCriteria sortCriteria() {
+    protected SortCriteria sortCriteria() {
         String[] columnNames = { "Received Date"};
         return new SortCriteria(columnNames, new boolean[] {false}, new boolean[] {false});
     }
@@ -213,7 +206,7 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
         return panel;
     }
     
-    protected void removeSelectedHistory() throws Exception {
+    private void removeSelectedHistory() throws Exception {
         clearMessage();
         JobMessage[] selected =table.selected().toArray(new JobMessage[0]);
 
@@ -241,26 +234,42 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
         messagePanel.clear();
     }
 
-    public void doRefresh(JobMessage[] msgs) throws Exception {
+    protected void doRefresh(JobMessage[] msgs){
         clearMessage();
         setupTableModel(msgs);
         table.refresh(tableData);
         panelRefresh();
     }
     
-    private void panelRefresh() {
+    protected void panelRefresh() {
         tablePanel.removeAll();
         tablePanel.add(table);
         super.validate();
+    }
+    
+    public void refresh(JobMessage[] msgs){
+        // note that this will get called when the case is save
+            if (msgs != null) {// it's still null if you've never displayed this tab
+                doRefresh(msgs);
+            }
     }
 
     public void doRefresh() throws EmfException {
         // note that this will get called when the case is save
         try {
-            kickPopulateThread();
+            refreshJobList(presenter.getCaseJobs());
+            new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         }
     }
+    
+    public Integer getSelectedJobId() {         
+        selectedJob = (CaseJob) jobCombo.getSelectedItem();    
+        if ( selectedJob != null) 
+            return selectedJob.getId();
+        return null;
+    }
+
 
 }

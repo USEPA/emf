@@ -32,7 +32,6 @@ public class SetCasePresenterImpl implements SetCasePresenter {
         this.view = view;
         this.session = session;
         this.caseObj = caseObj;
-
         this.managerPresenter = managerPresenter;    }
 
     public void display() throws EmfException {
@@ -149,7 +148,7 @@ public class SetCasePresenterImpl implements SetCasePresenter {
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }

@@ -89,7 +89,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
 
     private JPanel createSummaryTab(Case caseObj, MessagePanel messagePanel) {
         ViewableCaseSummaryTab view = new ViewableCaseSummaryTab(caseObj, messagePanel, parentConsole);
-        ViewableCaseSummaryTabPresenter summaryPresenter = new ViewableCaseSummaryTabPresenterImpl(session, caseObj, view);
+        EditableCaseSummaryTabPresenter summaryPresenter = new ViewableCaseSummaryTabPresenterImpl(session, caseObj, view);
         view.observe(summaryPresenter);
         try {
             view.display();

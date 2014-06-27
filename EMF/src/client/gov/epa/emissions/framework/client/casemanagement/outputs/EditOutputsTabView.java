@@ -25,6 +25,6 @@ public interface EditOutputsTabView {
     
     void setAllJobs(CaseJob[] jobs);
     
-    void refreshJobList(CaseJob[] jobs);
+    //void refreshJobList(CaseJob[] jobs);
     
 }

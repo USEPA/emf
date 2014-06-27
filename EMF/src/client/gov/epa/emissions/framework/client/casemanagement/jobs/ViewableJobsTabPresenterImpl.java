@@ -332,7 +332,7 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }

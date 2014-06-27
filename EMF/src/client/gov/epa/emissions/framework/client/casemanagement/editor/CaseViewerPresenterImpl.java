@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.casemanagement.editor;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.casemanagement.CaseManagerPresenter;
 import gov.epa.emissions.framework.client.casemanagement.history.ViewableHistoryTab;
-import gov.epa.emissions.framework.client.casemanagement.history.ViewableHistoryTabPresenter;
+import gov.epa.emissions.framework.client.casemanagement.history.ViewableHistoryTabPresenterImpl;
 import gov.epa.emissions.framework.client.casemanagement.inputs.ViewableInputsTab;
 import gov.epa.emissions.framework.client.casemanagement.inputs.ViewableInputsTabPresenterImpl;
 import gov.epa.emissions.framework.client.casemanagement.jobs.ViewableJobsTab;
@@ -31,7 +31,7 @@ public class CaseViewerPresenterImpl implements CaseViewerPresenter {
 
     private ViewableOutputsTabPresenterImpl outputPresenter;
 
-    private ViewableHistoryTabPresenter historyPresenter;
+    private ViewableHistoryTabPresenterImpl historyPresenter;
 
     private boolean inputsLoaded = false;
 
@@ -91,7 +91,7 @@ public class CaseViewerPresenterImpl implements CaseViewerPresenter {
     }
 
     public void set(ViewableHistoryTab caseHistoryView) {
-        historyPresenter = new ViewableHistoryTabPresenter(session, caseHistoryView, caseObj);
+        historyPresenter = new ViewableHistoryTabPresenterImpl(session, caseHistoryView, caseObj);
     }
 
     public void doLoad(String tabTitle) {

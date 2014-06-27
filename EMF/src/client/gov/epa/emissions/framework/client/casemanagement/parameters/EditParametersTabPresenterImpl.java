@@ -166,7 +166,7 @@ public class EditParametersTabPresenterImpl implements EditParametersTabPresente
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }
@@ -186,7 +186,7 @@ public class EditParametersTabPresenterImpl implements EditParametersTabPresente
     @Override
     public Object[] refreshProcessData() throws EmfException {
         if ( view.getSelectedSector() == null )
-            return null;
+            return new CaseParameter[0];
         CaseParameter[] freshList = getCaseParameters(caseObj.getId(), view.getSelectedSector(), 
                 view.nameContains(), view.isShowAll());
 

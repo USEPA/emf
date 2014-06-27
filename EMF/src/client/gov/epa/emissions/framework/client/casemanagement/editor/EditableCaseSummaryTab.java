@@ -54,82 +54,87 @@ import javax.swing.event.PopupMenuListener;
 
 public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummaryTabView, RefreshObserver {
 
-    private Case caseObj;
+    protected Case caseObj;
 
     private ManageChangeables changeablesList;
 
-    private TextField name;
+    protected TextField name;
 
-    private TextField futureYear;
+    protected TextField futureYear;
 
-    private TextField template;
+    protected TextField template;
 
-    private TextField numMetLayers, numEmissionLayers;
+    protected TextField numMetLayers, numEmissionLayers;
 
-    private TextArea description;
+    protected TextArea description;
 
-    private EditableComboBox projectsCombo;
+    protected EditableComboBox projectsCombo;
 
-    private EmfSession session;
+    protected EmfSession session;
 
-    private ComboBox modelToRunCombo;
+    protected ComboBox modelToRunCombo;
 
-    private TextField modelVersionField;
+    protected TextField modelVersionField;
 
-    private ComboBox modRegionsCombo;
+    protected ComboBox modRegionsCombo;
 
-    private EditableComboBox abbreviationsCombo;
+    protected EditableComboBox abbreviationsCombo;
 
-    private EditableComboBox airQualityModelsCombo;
+    protected EditableComboBox airQualityModelsCombo;
 
-    private ComboBox categoriesCombo;
+    protected ComboBox categoriesCombo;
 
-    private EditableComboBox emissionsYearCombo;
+    protected EditableComboBox emissionsYearCombo;
 
-    private EditableComboBox meteorlogicalYearCombo;
+    protected EditableComboBox meteorlogicalYearCombo;
 
-    private EditableComboBox speciationCombo;
+    protected EditableComboBox speciationCombo;
 
-    private CheckBox isFinal;
+    protected CheckBox isFinal;
 
-    private CheckBox isTemplate;
+    protected CheckBox isTemplate;
 
-    private AddRemoveSectorWidget sectorsWidget;
+    protected AddRemoveSectorWidget sectorsWidget;
     
-    private AddRemoveRegionsWidget regionsWidget;
+    protected AddRemoveRegionsWidget regionsWidget;
 
-    private ComboBox runStatusCombo;
+    protected ComboBox runStatusCombo;
 
-    private TextField startDate;
+    protected TextField startDate;
 
-    private TextField endDate;
+    protected TextField endDate;
 
-    private Dimension defaultDimension = new Dimension(255, 22);
+    protected Dimension defaultDimension = new Dimension(255, 22);
 
-    private EditableCaseSummaryTabPresenter presenter;
+    protected EditableCaseSummaryTabPresenter presenter;
     
-    private EmfConsole parentConsole;
+    protected EmfConsole parentConsole;
     
-    private DesktopManager desktopManager;
+    protected DesktopManager desktopManager;
 
-    private MessagePanel messagePanel;
+    protected MessagePanel messagePanel;
 
-    private int fieldWidth = 23;
+    protected int fieldWidth = 23;
     
-    private JPanel layout;
+    protected JPanel layout;
 
     public EditableCaseSummaryTab(Case caseObj, EmfSession session, ManageChangeables changeablesList,
             MessagePanel messagePanel, EmfConsole parentConsole) {
-        super.setName("summary");
+        this(messagePanel, parentConsole);
+        super.setName("summary");   
+        this.changeablesList = changeablesList; 
+        this.session = session;  
         this.caseObj = caseObj;
-        this.session = session;
-        this.changeablesList = changeablesList;
+    }
+    
+    public EditableCaseSummaryTab(MessagePanel messagePanel, EmfConsole parentConsole) { 
         this.parentConsole = parentConsole;
         this.messagePanel = messagePanel;
     }
 
     public void display() throws EmfException {
         setLayout();
+        addChangables();
     }
 
     private void setLayout() throws EmfException {
@@ -157,7 +162,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return panel;
     }
 
-    private JPanel createLeftOverviewSection() throws EmfException {
+    protected JPanel createLeftOverviewSection() throws EmfException {
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
@@ -176,7 +181,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return panel;
     }
 
-    private JPanel createRightOverviewSection() throws EmfException {
+    protected JPanel createRightOverviewSection() throws EmfException {
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
@@ -223,7 +228,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return panel;
     }
 
-    private JPanel createLowerRightSection() throws EmfException {
+    protected JPanel createLowerRightSection() throws EmfException {
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
@@ -239,15 +244,14 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return panel;
     }
 
-    private JLabel creator() {
+    protected JLabel creator() {
         return createLeftAlignedLabel(caseObj.getLastModifiedBy().getName() + " on "
                 + format(caseObj.getLastModifiedDate()));
     }
 
     private ScrollableComponent description() {
         description = new TextArea("description", caseObj.getDescription(), fieldWidth, 3);
-        changeablesList.addChangeable(description);
-
+       
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
         descScrollableTextArea.setPreferredSize(new Dimension(255, 80));
         return descScrollableTextArea;
@@ -258,7 +262,6 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         name.setText(caseObj.getName());
         name.setPreferredSize(defaultDimension);
         name.setToolTipText(caseObj.getName());
-        changeablesList.addChangeable(name);
 
         return name;
     }
@@ -267,13 +270,12 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         futureYear = new TextField("Future Year", fieldWidth);
         futureYear.setToolTipText("This value is set for the environment variable 'FUTURE_YEAR'.");
         futureYear.setText(caseObj.getFutureYear() + "");
-        changeablesList.addChangeable(futureYear);
         futureYear.setPreferredSize(defaultDimension);
 
         return futureYear;
     }
 
-    private JPanel metEmisLayers() {
+    protected JPanel metEmisLayers() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         // panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
@@ -283,20 +285,18 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         numMetLayers.setText(caseObj.getNumMetLayers() != null ? caseObj.getNumMetLayers() + "" : "");
         numMetLayers.setToolTipText("Enter # of met layers");
         numMetLayers.setPreferredSize(defaultDimension); // new Dimension(255, 22));
-        changeablesList.addChangeable(numMetLayers);
 
         numEmissionLayers.setText(caseObj.getNumEmissionsLayers() != null ? caseObj.getNumEmissionsLayers() + "" : "");
         numEmissionLayers.setToolTipText("Enter # of emission layers");
         numEmissionLayers.setPreferredSize(defaultDimension);
-        changeablesList.addChangeable(numEmissionLayers);
-
+        
         panel.add(numMetLayers);
         panel.add(new Label("empty", "  "));
         panel.add(numEmissionLayers);
         return panel;
     }
 
-    private TextField template() {
+    protected TextField template() {
         template = new TextField("Template", fieldWidth);
         template.setText(caseObj.getTemplateUsed());
         template.setToolTipText(caseObj.getTemplateUsed());
@@ -307,7 +307,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return template;
     }
 
-    private JComponent isTemplate() {
+    protected JComponent isTemplate() {
         isTemplate = new CheckBox(" Is Template");
         isTemplate.setToolTipText("If checked, case is a template and will not run.");
         isTemplate.setSelected(caseObj.isCaseTemplate());
@@ -315,7 +315,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return isTemplate;
     }
 
-    private JComponent isFinal() {
+    protected JComponent isFinal() {
         isFinal = new CheckBox("");
         isFinal.setToolTipText("If checked, no changes should be made to the case.");
         isFinal.setSelected(caseObj.getIsFinal());
@@ -328,13 +328,13 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         projectsCombo.setSelectedItem(caseObj.getProject());
         projectsCombo.setPreferredSize(defaultDimension);
         addPopupMenuListener(projectsCombo, "projects");
-        changeablesList.addChangeable(projectsCombo);
-        if (!session.user().isAdmin())
+         
+        if ( session!=null && !session.user().isAdmin())
             projectsCombo.setEditable(false);
         return projectsCombo;
     }
 
-    private JPanel modelToRun() throws EmfException {
+    protected JPanel modelToRun() throws EmfException {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         Version version1 = new Version();
@@ -348,15 +348,13 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         modelToRunCombo.setSelectedItem(runModel);
         modelToRunCombo.setPreferredSize(new Dimension(122, 22));
         addPopupMenuListener(modelToRunCombo, "modeltoruns");
-        changeablesList.addChangeable(modelToRunCombo);
-
+         
         modelVersionField = new TextField("modelVersion", fieldWidth / 2);
         modelVersionField.setToolTipText("This value is set for the environment variable 'MODEL_LABEL'.");
         modelVersionField.setText(caseObj.getModelVersion());
         modelVersionField.setPreferredSize(new Dimension(122, 22));
         addPopupMenuListener(modelToRunCombo, "modeltoruns");
-        changeablesList.addChangeable(modelToRunCombo);
-
+        
         panel.add(modelToRunCombo);
         panel.add(new Label("empty", "   "));
         panel.add(modelVersionField);
@@ -364,21 +362,19 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return panel;
     }
 
-    private ComboBox modRegions() throws EmfException {
+    protected ComboBox modRegions() throws EmfException {
         modRegionsCombo = new ComboBox(presenter.getRegions());
         modRegionsCombo.setSelectedItem(caseObj.getModelingRegion());
         modRegionsCombo.setPreferredSize(defaultDimension);
-        changeablesList.addChangeable(modRegionsCombo);
-
+        
         return modRegionsCombo;
     }
 
-    private EditableComboBox abbreviations() throws EmfException {
+    protected EditableComboBox abbreviations() throws EmfException {
         abbreviationsCombo = new EditableComboBox(presenter.getAbbreviations());
         abbreviationsCombo.setSelectedItem(caseObj.getAbbreviation());
         abbreviationsCombo.setPreferredSize(defaultDimension);
         addPopupMenuListener(abbreviationsCombo, "abbreviations");
-        changeablesList.addChangeable(abbreviationsCombo);
 
         return abbreviationsCombo;
     }
@@ -389,8 +385,6 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         airQualityModelsCombo.setSelectedItem(caseObj.getAirQualityModel());
         airQualityModelsCombo.setPreferredSize(defaultDimension);
 
-        changeablesList.addChangeable(airQualityModelsCombo);
-
         return airQualityModelsCombo;
     }
 
@@ -399,8 +393,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         categoriesCombo.setSelectedItem(caseObj.getCaseCategory());
         categoriesCombo.setPreferredSize(defaultDimension);
         addPopupMenuListener(categoriesCombo, "categories");
-        changeablesList.addChangeable(categoriesCombo);
-
+        
         return categoriesCombo;
     }
 
@@ -429,8 +422,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         emissionsYearCombo.setToolTipText("This value is set for the environment variable 'BASE_YEAR'.");
         emissionsYearCombo.setSelectedItem(caseObj.getEmissionsYear());
         emissionsYearCombo.setPreferredSize(defaultDimension);
-        changeablesList.addChangeable(emissionsYearCombo);
-
+        
         return emissionsYearCombo;
     }
 
@@ -438,8 +430,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         meteorlogicalYearCombo = new EditableComboBox(presenter.getMeteorlogicalYears());
         meteorlogicalYearCombo.setSelectedItem(caseObj.getMeteorlogicalYear());
         meteorlogicalYearCombo.setPreferredSize(defaultDimension);
-        changeablesList.addChangeable(meteorlogicalYearCombo);
-
+        
         return meteorlogicalYearCombo;
     }
 
@@ -448,8 +439,6 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         speciationCombo.setToolTipText("This value is set for the environment variable 'EMF_SPC'.");
         speciationCombo.setSelectedItem(caseObj.getSpeciation());
         speciationCombo.setPreferredSize(defaultDimension);
-
-        changeablesList.addChangeable(speciationCombo);
 
         return speciationCombo;
     }
@@ -462,16 +451,14 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         } else {
             runStatusCombo.setSelectedItem(caseObj.getRunStatus());
         }
-        changeablesList.addChangeable(runStatusCombo);
-
+      
         return runStatusCombo;
     }
 
-    private TextField startDate() {
+    protected TextField startDate() {
         startDate = new TextField("Start Date", fieldWidth);
         startDate.setToolTipText("Value (MM/dd/yyyy HH:mm) set to parameter environment variable 'EPI_STDATE_TIME'.");
         startDate.setText(format(caseObj.getStartDate()) + "");
-        changeablesList.addChangeable(startDate);
         startDate.setPreferredSize(defaultDimension);
 
         return startDate;
@@ -481,13 +468,12 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         endDate = new TextField("End Date", fieldWidth);
         endDate.setToolTipText("Value (MM/dd/yyyy HH:mm) set to parameter environment variable 'EPI_ENDATE_TIME'.");
         endDate.setText(format(caseObj.getEndDate()) + "");
-        changeablesList.addChangeable(endDate);
         endDate.setPreferredSize(defaultDimension);
 
         return endDate;
     }
 
-    private void addPopupMenuListener(final JComboBox box, final String toget) {
+    protected void addPopupMenuListener(final JComboBox box, final String toget) {
         box.addPopupMenuListener(new PopupMenuListener() {
             public void popupMenuCanceled(PopupMenuEvent event) {
                 // NOTE Auto-generated method stub
@@ -538,7 +524,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
         return label;
     }
 
-    public void save(Case caseObj) throws EmfException {
+    public void save() throws EmfException {
         if (categoriesCombo.getSelectedItem() == null)
             throw new EmfException("Please select a valid case category from the Summary tab.");
         
@@ -709,5 +695,27 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
 
     public void setDescription(String description) {
         this.description.setText( description);
+    }
+    
+    private void addChangables(){
+        changeablesList.addChangeable(description);
+        changeablesList.addChangeable(name);
+        changeablesList.addChangeable(name);
+        changeablesList.addChangeable(numMetLayers);
+        changeablesList.addChangeable(numEmissionLayers);
+        changeablesList.addChangeable(numEmissionLayers);
+        changeablesList.addChangeable(modelToRunCombo);
+        changeablesList.addChangeable(modelVersionField);
+        changeablesList.addChangeable(modRegionsCombo);
+        changeablesList.addChangeable(abbreviationsCombo);
+
+        changeablesList.addChangeable(airQualityModelsCombo);
+        changeablesList.addChangeable(categoriesCombo);
+        changeablesList.addChangeable(emissionsYearCombo);
+        changeablesList.addChangeable(meteorlogicalYearCombo);
+        changeablesList.addChangeable(speciationCombo);
+        changeablesList.addChangeable(runStatusCombo);
+        changeablesList.addChangeable(startDate);
+        changeablesList.addChangeable(endDate);
     }
 }

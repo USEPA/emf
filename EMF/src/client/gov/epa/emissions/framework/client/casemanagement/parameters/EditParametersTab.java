@@ -90,33 +90,11 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
         this.session = session;
         
         super.add(createLayout(new CaseParameter[0], presenter, parentConsole), BorderLayout.CENTER);
-
-        //kickPopulateThread();
+        setMessage("Please select a sector to see list of parameters.");  
     }
 
  
-    public synchronized void retrieveParams() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all case parameters...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            doRefresh(listFreshParameters());
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all case parameters.");
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-
-            try {
-                presenter.checkIfLockedByCurrentUser();
-            } catch (Exception e) {
-                messagePanel.setMessage(e.getMessage());
-            }
-        }
-    }
-
     protected void doRefresh(CaseParameter[] params) throws Exception {
-        // super.removeAll();
-//        sectorsComboBox.resetModel(presenter.getAllSetcors());
-//        sectorsComboBox.setSelectedItem(this.selectedSector);
         setupTableModel(params);
         table.refresh(tableData);
         panelRefresh();
@@ -125,7 +103,6 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
     private JPanel createLayout(CaseParameter[] params, EditParametersTabPresenter presenter, 
             EmfConsole parentConsole)  {
         layout = new JPanel(new BorderLayout());
-
         layout.add(createSectorPanel(), BorderLayout.NORTH);
         layout.add(tablePanel(params, parentConsole), BorderLayout.CENTER);
         layout.add(controlPanel(presenter), BorderLayout.PAGE_END);
@@ -282,7 +259,7 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
 
 
 
-    private Action copyAction(final EditParametersTabPresenter localPresenter) {
+    protected Action copyAction(final EditParametersTabPresenter  localPresenter) {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
@@ -455,17 +432,6 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
     
     public void setMessage(String msg) {
         messagePanel.setMessage(msg);
-    }
-    
-    protected CaseParameter[] listFreshParameters() throws EmfException {
-                 CaseParameter[] freshList = presenter.getCaseParameters(caseId, selectedSector, nameContains(), showAll.isSelected());
-        
-        if (selectedSector == null && freshList.length == presenter.getPageSize())
-            setMessage("Please select a sector to see full list of parameters.");
-        else
-            messagePanel.clear();
-        
-        return freshList;
     }
     
     
