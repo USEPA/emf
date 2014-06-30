@@ -2007,3 +2007,13 @@ INSERT INTO projection_shapefiles (name, table_schema, table_name, prj_text, sri
 
 -- 10/30/2013 -- added a new properties to help with download functionality - expiry time in hours
 insert into emf.properties values(DEFAULT, 'DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE', '1');
+
+
+
+-- 6/23/2014 - update ff10 formats to handle larger DATA_SET_ID column
+update emf.fileformat_columns
+set type = 'VARCHAR(20)'
+where id in (
+select id from emf.fileformat_columns where name = 'DATA_SET_ID' and file_format_id in (select id from emf.file_formats where id in (select file_format from emf.dataset_Types where name in ('Flat File 2010 Nonpoint','Flat File 2010 Point')))
+);
+

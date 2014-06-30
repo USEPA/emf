@@ -277,8 +277,8 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
         categories.addAll(Arrays.asList(getCategories()));
         return categories.toArray(new CaseCategory[0]);
     }
-    
-    public CaseCategory[] swProcessData() throws EmfException {
+
+    public Object[] swProcessData() throws EmfException {        
         return getAllCategories();
     }
     
@@ -342,6 +342,18 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
             CaseEditor caseView = view.getCEditor();
             doEdit(caseView, caseObj);
         }
+        
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveData(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
         
     }
 }

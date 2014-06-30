@@ -14,6 +14,8 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
+import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
@@ -39,59 +41,66 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-public class ViewableOutputsTab extends JPanel implements RefreshObserver {
+public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserver {
 
-    private EmfConsole parentConsole;
+    //private EmfConsole parentConsole;
 
     private ViewableOutputsTabPresenterImpl presenter;
     
-    private MessagePanel messagePanel;
+    //private MessagePanel messagePanel;
 
-    private OutputsTableData tableData;
+    //private OutputsTableData tableData;
 
-    private SelectableSortFilterWrapper table;
+    //private SelectableSortFilterWrapper table;
 
-    private JPanel tablePanel;
+    //private List<CaseJob> caseJobs; 
     
-    private Case caseObj;
+    //private CaseJob selectedJob=null;
     
-    private EmfSession session; 
+    //private CaseOutput selectedOutput;
     
-    private ComboBox jobCombo;
+    //private DesktopManager desktopManager;
     
-    private List<CaseJob> caseJobs; 
-    
-    private CaseJob selectedJob=null;
-    
-    private CaseOutput selectedOutput;
-    
-    private DesktopManager desktopManager;
-
 
     public ViewableOutputsTab(EmfConsole parentConsole, MessagePanel messagePanel,
             DesktopManager desktopManager, EmfSession session) {
+        super(parentConsole, messagePanel, desktopManager, session);
         super.setName("viewOutputsTab");
-        this.parentConsole = parentConsole;
-        this.session=session; 
-        this.desktopManager=desktopManager;
-        this.messagePanel=messagePanel;
- 
-        super.setLayout(new BorderLayout());
     }
 
 //    public void observe(EditOutputsTabPresenter presenter) {
 //        this.presenter = presenter;
 //    }
     
-    public void display() {
+    public void doDisplay(ViewableOutputsTabPresenterImpl presenter){
+        this.presenter = presenter;
+        new SwingWorkerTasks(this, presenter).execute();
+    }
+    
+    public void display(CaseJob[] jobs) {
+        super.setLayout(new BorderLayout());
         super.removeAll();
-        CaseOutput[] outputs = new CaseOutput[0];
-        try {
-            getAllJobs();
-        } catch (EmfException e) {
-            messagePanel.setError(e.getMessage());
-        }
+        CaseOutput[] outputs = new CaseOutput[0];        
+        setAllJobs(jobs);    
         super.add(createLayout(outputs), BorderLayout.CENTER);
+        super.validate();
+    }
+    
+    
+    public void refresh(CaseOutput[] outputs){
+        // note that this will get called when the case is save
+            if (outputs != null) {// it's still null if you've never displayed this tab
+                doRefresh(outputs);
+            }
+    }
+
+    public void doRefresh() throws EmfException {
+        try {
+            refreshJobList(presenter.getCaseJobs());
+            new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+        } catch (Exception e) {
+            throw new EmfException(e.getMessage());
+        }
     }
 
     private void doRefresh(CaseOutput[] outputs){
@@ -109,7 +118,7 @@ public class ViewableOutputsTab extends JPanel implements RefreshObserver {
     }
 
     private JPanel createLayout(CaseOutput[] outputs){
-        JPanel layout = new JPanel(new BorderLayout());
+        layout = new JPanel(new BorderLayout());
         layout.add(createTopPanel(), BorderLayout.NORTH);
         layout.add(tablePanel(outputs, parentConsole), BorderLayout.CENTER);
         layout.add(controlPanel(), BorderLayout.PAGE_END);
@@ -131,36 +140,22 @@ public class ViewableOutputsTab extends JPanel implements RefreshObserver {
         if (selectedJob!=null)
             jobCombo.setSelectedItem(selectedJob);
         
-        jobCombo.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                selectedJob=(CaseJob) jobCombo.getSelectedItem();
-                retrieveCaseOutputs();
-            }
-        });  
+        jobCombo.addActionListener(filterAction());  
         layoutGenerator.addLabelWidgetPair("Job: ", jobCombo, panel);
         layoutGenerator.makeCompactGrid(panel, 1, 2, // rows, cols
                 100, 15, // initialX, initialY
                 5, 15);// xPad, yPad
         return panel;
     }
-
-    public synchronized void retrieveCaseOutputs() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all case outputs...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            if (selectedJob == null || selectedJob.getName().equalsIgnoreCase("Select one")){
-                doRefresh(new CaseOutput[0]);
-                return; 
+    
+    private AbstractAction filterAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent arg0) {
+                new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
+                messagePanel.clear();
             }
-            CaseOutput[] outputs=presenter.getCaseOutputs(caseObj.getId(),selectedJob.getId());
-            doRefresh(outputs);
-        } catch (Exception e) {
-            e.printStackTrace();
-            messagePanel.setError("Could not retrieve all outputs for job " + (selectedJob != null ? selectedJob.getName() : selectedJob) + ".");
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-        }
-    }
+        };
+    } 
 
     private JPanel tablePanel(CaseOutput[] outputs, EmfConsole parentConsole){
         setupTableModel(outputs);
@@ -277,76 +272,18 @@ public class ViewableOutputsTab extends JPanel implements RefreshObserver {
         }
     }
 
-//    public void refresh(){
-//        // note that this will get called when the case is save
-//            if (tableData != null) {// it's still null if you've never displayed this tab
-//                doRefresh(tableData.sources());
-//            }
-//    }
-
-    public void doRefresh() throws EmfException {
-        try {
-            kickPopulateThread();
-        } catch (Exception e) {
-            throw new EmfException(e.getMessage());
-        }
-    }
-
     public void observe(ViewableOutputsTabPresenterImpl presenter) {
         this.presenter = presenter;
         this.caseObj=presenter.getCaseObj();
     }
     
-    private void kickPopulateThread() {
-        Thread populateThread = new Thread(new Runnable() {
-            public void run() {
-                retrieveOutputs();
-            }
-        });
-        populateThread.start();
-    }
+//    
+//    private synchronized void refreshJobList() throws EmfException {
+//        getAllJobs();
+//        jobCombo.resetModel(caseJobs.toArray(new CaseJob[0]));
+//        jobCombo.setSelectedItem(getCaseJob(caseJobs, this.selectedJob));
+//    }
     
-    private synchronized void refreshJobList() throws EmfException {
-        getAllJobs();
-        jobCombo.resetModel(caseJobs.toArray(new CaseJob[0]));
-        jobCombo.setSelectedItem(getCaseJob(caseJobs, this.selectedJob));
-    }
-    
-    private CaseJob getCaseJob(List<CaseJob> allJobs, CaseJob selectedJob) {
-        if (selectedJob == null)
-            return null;
-        
-        for (Iterator<CaseJob> iter = allJobs.iterator(); iter.hasNext();) {
-            CaseJob job = iter.next();
-            
-            if (selectedJob.getId() == job.getId())
-                return job;
-        }
-
-        return null;
-    }
-    
-    private synchronized void retrieveOutputs() {
-        try {
-            messagePanel.setMessage("Please wait while retrieving all outputs...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            
-            refreshJobList();
-            
-            if ( selectedJob == null){
-                clearMessage();
-                setCursor(Cursor.getDefaultCursor());
-            }
-            else {
-                doRefresh(presenter.getCaseOutputs(caseObj.getId(), selectedJob.getId()));
-                messagePanel.clear();
-                setCursor(Cursor.getDefaultCursor());
-            }
-        } catch (Exception e) {
-            messagePanel.setError("Cannot retrieve all outputs.");
-            setCursor(Cursor.getDefaultCursor());
-        }
-    }
 
     public void clearMessage() {
         messagePanel.clear();

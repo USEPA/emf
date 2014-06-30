@@ -33,7 +33,8 @@ public class VersionedDatasetQuery implements ExportStatement {
     
     public String generate(String table, String rowFilters) {
         if (rowFilters.trim().length()>0)
-            return "SELECT * FROM " + table + " WHERE " + versionedQuery.query() + " AND " + rowFilters+ orderByClause();
+            return "SELECT * FROM " + table + " WHERE " + versionedQuery.query() + " AND (" + rowFilters + ") " + orderByClause();
+      //added parenthesis to handle complex where clauses with OR and nested conditional statements..
 
         return "SELECT * FROM " + table + " WHERE " + versionedQuery.query() + orderByClause();
     }
@@ -46,7 +47,7 @@ public class VersionedDatasetQuery implements ExportStatement {
         if (filter == null || filter.trim().isEmpty())
             filter = "";
         else
-            filter = " AND " + filter;
+            filter = " AND (" + filter + ") ";   //added parenthesis to handle complex where clauses with OR and nested conditional statements..
         
         return "SELECT " + colString + " FROM " + table + " WHERE " + versionedQuery.query() + filter + orderByClause();
     }
@@ -55,7 +56,7 @@ public class VersionedDatasetQuery implements ExportStatement {
         if (filter == null || filter.trim().isEmpty())
             filter = "";
         else
-            filter = " AND " + filter;
+            filter = " AND (" + filter + ") ";  //added parenthesis to handle complex where clauses with OR and nested conditional statements..
         
         return "SELECT " + colString + " FROM " + table + " WHERE " + versionedQuery.query() + filter;
     }
@@ -113,7 +114,7 @@ public class VersionedDatasetQuery implements ExportStatement {
         VersionedQuery filterDatasetVersionedQuery = (filterDataset != null && filterDatasetVersion != null ? new VersionedQuery(filterDatasetVersion, "f") : null);
         VersionedQuery datasetVersionedQuery = new VersionedQuery(this.version, "t");
         if (rowFilters.trim().length()>0)
-            return "SELECT t.* FROM " + table + " t WHERE " + datasetVersionedQuery.query() + " AND " + rowFilters + (filterTable.length() > 0 ? " AND EXISTS (SELECT 1 FROM " + filterTable + " f WHERE " + filterDatasetVersionedQuery.query() + sqlFilterDatasetJoinCondition + ")" : "") + " " + orderByClause();
+            return "SELECT t.* FROM " + table + " t WHERE " + datasetVersionedQuery.query() + " AND (" + rowFilters + ") " + (filterTable.length() > 0 ? " AND EXISTS (SELECT 1 FROM " + filterTable + " f WHERE " + filterDatasetVersionedQuery.query() + sqlFilterDatasetJoinCondition + ")" : "") + " " + orderByClause();
         return "SELECT * FROM " + table + " t WHERE " + datasetVersionedQuery.query() + (filterTable.length() > 0 ? " AND EXISTS (SELECT 1 FROM " + filterTable + " f WHERE " + filterDatasetVersionedQuery.query() + sqlFilterDatasetJoinCondition + ")" : "") + " " + orderByClause();
     }
 

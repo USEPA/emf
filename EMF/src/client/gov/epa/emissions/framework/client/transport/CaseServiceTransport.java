@@ -900,7 +900,6 @@ public class CaseServiceTransport implements CaseService {
         call.setOperation("updateCaseWithLock");
         call.addParam("caseObj", caseMappings.caseObject());
         call.setReturnType(caseMappings.caseObject());
-
         return (Case) call.requestResponse(new Object[] { caseObj });
     }
 

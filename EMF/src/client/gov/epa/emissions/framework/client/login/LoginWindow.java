@@ -45,12 +45,12 @@ public class LoginWindow extends EmfFrame implements LoginView {
     private JPasswordField password;
 
     private LoginPresenter presenter;
-
+    //
     private MessagePanel messagePanel;
 
     private ServiceLocator serviceLocator;
 
-    public final static String EMF_VERSION = "v2.5 - 05/08/2014";
+    public final static String EMF_VERSION = "v2.5 - 06/17/2014";
 
     public LoginWindow(ServiceLocator serviceLocator) {
         super("Login", "Login to the Emissions Modeling Framework [" + EMF_VERSION + "]");

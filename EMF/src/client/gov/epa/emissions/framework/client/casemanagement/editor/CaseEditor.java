@@ -15,8 +15,7 @@ import gov.epa.emissions.framework.client.casemanagement.outputs.EditOutputsTab;
 import gov.epa.emissions.framework.client.casemanagement.parameters.EditParametersTab;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
-import gov.epa.emissions.framework.client.meta.qa.EditQAArgumentsPresenter;
-import gov.epa.emissions.framework.client.meta.qa.EditQAArgumentsWindow;
+import gov.epa.emissions.framework.client.swingworker.SaveSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.ui.ErrorPanel;
@@ -96,7 +95,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
     private JPanel createSummaryTab() {
         EditableCaseSummaryTab view = new EditableCaseSummaryTab(caseObj, session, this, messagePanel, parentConsole);
         view.setDesktopManager(desktopManager);
-        EditCaseSummaryTabPresenter summaryPresenter = new EditCaseSummaryTabPresenter(caseObj.getId(), session);
+        EditableCaseSummaryTabPresenter summaryPresenter = new EditableCaseSummaryTabPresenterImpl(session, caseObj, view);
         view.observe(summaryPresenter);
         try {
             view.display();
@@ -229,7 +228,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
 
         Button save = new SaveButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                doSave();
+                new SaveSwingWorkerTasks(tabbedPane, messagePanel, presenter).execute();
             }
         });
         buttonsPanel.add(save);
@@ -317,15 +316,15 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
         }
     }
 
-    private void doSave() {
-        try {
-            presenter.doSave();
-            messagePanel.setMessage("Case was saved successfully.");
-            resetChanges();
-        } catch (EmfException e) {
-            showError(e.getMessage());
-        }
-    }
+//    private void doSave() {
+//        try {
+//            presenter.doSave();
+//            messagePanel.setMessage("Case was saved successfully.");
+//            resetChanges();
+//        } catch (EmfException e) {
+//            showError(e.getMessage());
+//        }
+//    }
 
     private void printCase() {
         PrintCaseDialog printCase = new PrintCaseDialog("Export Case " + caseObj.getName(), this, parentConsole, session);

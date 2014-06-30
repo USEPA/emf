@@ -16,6 +16,8 @@ public class SwingWorkerTasks extends SwingWorker<Object[], Void> {
     public SwingWorkerTasks(Container parentContainer, SwingWorkerPresenter presenter) {
         this.parentContainer = parentContainer;
         this.presenter = presenter;    
+        this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(parentContainer, false);
     }
 
     /*
@@ -23,9 +25,7 @@ public class SwingWorkerTasks extends SwingWorker<Object[], Void> {
      * don't update gui here
      */
     @Override
-    public Object[] doInBackground() throws EmfException {   
-        this.parentContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(parentContainer, false);
+    public Object[] doInBackground() throws EmfException {    
         return presenter.swProcessData();
     }
 
