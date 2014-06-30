@@ -26,8 +26,10 @@ import java.awt.Dimension;
 import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.SpringLayout;
 import javax.swing.border.EtchedBorder;
 
@@ -54,6 +56,10 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
     private TextField replacementControlMinEfficiencyDiff;
 
     private TextField controlProgramMeasureMinPctRedDiff;
+
+    private JRadioButton alwaysApplyReplacement;
+    private JRadioButton matchDevicePollutant;
+    private JRadioButton doNotApplyReplacement;
 
     private ViewControlStrategyConstraintsTabPresenter presenter;
     
@@ -92,8 +98,18 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
+        JPanel optionsPanel = null;
+        if (controlStrategy.getStrategyType() == null ||
+            controlStrategy.getStrategyType().getName().equals(StrategyType.maxEmissionsReduction) ||
+            controlStrategy.getStrategyType().getName().equals(StrategyType.leastCost) ||
+            controlStrategy.getStrategyType().getName().equals(StrategyType.leastCostCurve) ||
+            controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)) {
+            optionsPanel = getBorderedPanel(createReplaceOptionsPanel(), "Replacement Control Measure Options");
+        }
+        
         if (controlStrategy.getStrategyType() != null && controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)) {
             try {
+                add(optionsPanel, BorderLayout.NORTH);
                 add(getBorderedPanel(createMultiPollutantsPanel(controlStrategy.getTargetPollutants(), 
                         presenter.getAllPollutants()), "Multi-Pollutant Max Emis Reducation"), BorderLayout.CENTER);
             } catch (EmfException e) {
@@ -103,7 +119,12 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
             return;
         }
         
-        this.add(getBorderedPanel(createAllStrategiesPanel(), "All Strategy Types"), BorderLayout.NORTH);
+        JPanel container = new JPanel(new BorderLayout());
+        if (optionsPanel != null) {
+            container.add(optionsPanel, BorderLayout.NORTH);
+        }
+        container.add(getBorderedPanel(createAllStrategiesPanel(), "All Strategy Types"), BorderLayout.CENTER);
+        add(container, BorderLayout.NORTH);
 
         leastCostPanelContainer = new JPanel(new BorderLayout());
 
@@ -149,6 +170,32 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
         return table;
     }
 
+    private JPanel createReplaceOptionsPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(5,10,10,10));
+
+        doNotApplyReplacement = new JRadioButton("Never apply replacement controls");
+        doNotApplyReplacement.setEnabled(false);
+        matchDevicePollutant = new JRadioButton("Apply replacement controls when device pollutant doesn't match");
+        matchDevicePollutant.setEnabled(false);
+        alwaysApplyReplacement = new JRadioButton("Always apply replacement controls");
+        alwaysApplyReplacement.setEnabled(false);
+        
+        if (controlStrategy.getApplyReplacementControls() == null ||
+            controlStrategy.getApplyReplacementControls()) {
+            alwaysApplyReplacement.setSelected(true);
+        } else {
+            doNotApplyReplacement.setSelected(true);
+        }
+        
+        panel.add(new JLabel("Handling for sources that have an existing device code but no reduction percentage"));
+        panel.add(doNotApplyReplacement);
+        panel.add(matchDevicePollutant);
+        panel.add(alwaysApplyReplacement);
+
+        return panel;
+    }
 
     private JPanel createAllStrategiesPanel() {
         ControlStrategyConstraint constraint = presenter.getConstraint();
