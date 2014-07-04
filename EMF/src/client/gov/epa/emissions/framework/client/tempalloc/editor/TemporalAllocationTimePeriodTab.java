@@ -39,12 +39,16 @@ public class TemporalAllocationTimePeriodTab extends JPanel implements TemporalA
         this.messagePanel = messagePanel;
     }
     
+    public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
+        this.temporalAllocation = temporalAllocation;
+    }
+    
     public void display() {
         super.setLayout(new BorderLayout());
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(getBorderedPanel(createMainSection(), ""), BorderLayout.CENTER);
-        super.add(panel, BorderLayout.CENTER);
+        super.add(panel, BorderLayout.NORTH);
     }
 
     private JPanel createMainSection() {

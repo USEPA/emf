@@ -28,6 +28,10 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
         this.messagePanel = messagePanel;
     }
     
+    public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
+        this.temporalAllocation = temporalAllocation;
+    }
+    
     public void display() {
         super.setLayout(new BorderLayout());
 

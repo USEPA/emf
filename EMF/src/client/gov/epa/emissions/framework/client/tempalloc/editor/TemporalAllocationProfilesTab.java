@@ -37,6 +37,10 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
         this.messagePanel = messagePanel;
     }
     
+    public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
+        this.temporalAllocation = temporalAllocation;
+    }
+    
     public void display() {
         super.setLayout(new BorderLayout());
 
@@ -97,7 +101,7 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
                 5, 5, // initialX, initialY
                 10, 5);// xPad, yPad
         
-        super.add(panel, BorderLayout.CENTER);
+        super.add(panel, BorderLayout.NORTH);
     }
     
     public void save() {

@@ -65,6 +65,10 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         this.desktopManager = desktopManager;
     }
     
+    public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
+        this.temporalAllocation = temporalAllocation;
+    }
+    
     public void display() {
         super.setLayout(new BorderLayout());
         super.add(buildSortFilterPanel(), BorderLayout.CENTER);

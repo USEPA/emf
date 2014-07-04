@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.tempalloc.editor;
 
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
 
 public class TemporalAllocationSummaryTabPresenter implements TemporalAllocationTabPresenter {
     private TemporalAllocationSummaryTab view;
@@ -15,5 +16,9 @@ public class TemporalAllocationSummaryTabPresenter implements TemporalAllocation
 
     public void doSave() throws EmfException {
         view.save();
+    }
+    
+    public void updateView(TemporalAllocation temporalAllocation) {
+        view.setTemporalAllocation(temporalAllocation);
     }
 }

@@ -70,12 +70,18 @@ public class TemporalAllocationPresenter {
         } else {
             temporalAllocation = service().updateTemporalAllocationWithLock(temporalAllocation);
         }
+        updateTabs(temporalAllocation);
     }
 
     protected void saveTabs() throws EmfException {
-        for (Iterator<TemporalAllocationTabPresenter> iter = tabPresenters.iterator(); iter.hasNext();) {
-            TemporalAllocationTabPresenter element = iter.next();
+        for (TemporalAllocationTabPresenter element : tabPresenters) {
             element.doSave();
+        }
+    }
+    
+    private void updateTabs(TemporalAllocation temporalAllocation) {
+        for (TemporalAllocationTabPresenter element : tabPresenters) {
+            element.updateView(temporalAllocation);
         }
     }
     
