@@ -17,12 +17,18 @@ DECLARE
   weekly_profile_dataset_id integer;
   weekly_profile_dataset_version integer;
   weekly_profile_table_name varchar(64);
+  
+  resolution varchar(64);
+  inventory_year smallint;
+  start_day date;
+  end_day date;
 
   monthly_result_dataset_id integer := null;
   monthly_result_table_name varchar(64) := '';
   daily_result_dataset_id integer := null;
   daily_result_table_name varchar(64) := '';
   
+  is_flat_file_inventory boolean := false;
   inv_fips varchar(64) := 'inv.fips';
   inv_plantid varchar(64) := 'inv.plantid';
   inv_pointid varchar(64) := 'inv.pointid';
@@ -31,6 +37,14 @@ DECLARE
   inv_emissions varchar(64) := 'inv.ann_emis';
   
   xref_matching_sql text;
+  
+  month_num_sql text := '';
+  month_name_sql text := '';
+  loop_date date;
+  is_weekend boolean;
+  add_day boolean;
+  dates_sql text := '';
+  day_name_sql text := '';
 BEGIN
 
 	-- get the inventory table name
@@ -50,6 +64,7 @@ BEGIN
   -- set data field names
   IF inventory_dataset_type_name = 'Flat File 2010 Point' OR
      inventory_dataset_type_name = 'Flat File 2010 Nonpoint' THEN
+    is_flat_file_inventory := true;
 		inv_fips := 'inv.region_cd';
 		inv_plantid := 'inv.facility_id';
 		inv_pointid := 'inv.unit_id';
@@ -72,6 +87,20 @@ BEGIN
          weekly_profile_dataset_id,
          weekly_profile_dataset_version
     FROM emf.temporal_allocation ta
+   WHERE ta.id = temporal_allocation_id;
+  
+  -- get output time period information
+  SELECT LOWER(res.name),
+         EXTRACT(YEAR FROM ta.start_day),
+         ta.start_day,
+         ta.end_day
+    INTO resolution,
+         inventory_year,
+         start_day,
+         end_day
+    FROM emf.temporal_allocation ta
+    JOIN emf.temporal_allocation_resolution res
+      ON ta.resolution_id = res.id
    WHERE ta.id = temporal_allocation_id;
   
   -- get monthly profile table name
@@ -108,9 +137,42 @@ BEGIN
 
   xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, xref_dataset_id, xref_dataset_version, 'MONTHLY');
 
-  -- initial case
-  --   input is annual inventory
-  --   output is monthly totals
+  -- build list of months to process
+  FOR month_num IN EXTRACT(MONTH FROM start_day)..EXTRACT(MONTH FROM end_day) LOOP
+    IF LENGTH(month_num_sql) > 0 THEN
+      month_num_sql := month_num_sql || ',';
+      month_name_sql := month_name_sql || ',';
+    END IF;
+    month_num_sql := month_num_sql || month_num;
+    CASE month_num
+      WHEN 1 THEN
+        month_name_sql := month_name_sql || 'january';
+      WHEN 2 THEN
+        month_name_sql := month_name_sql || 'february';
+      WHEN 3 THEN
+        month_name_sql := month_name_sql || 'march';
+      WHEN 4 THEN
+        month_name_sql := month_name_sql || 'april';
+      WHEN 5 THEN
+        month_name_sql := month_name_sql || 'may';
+      WHEN 6 THEN
+        month_name_sql := month_name_sql || 'june';
+      WHEN 7 THEN
+        month_name_sql := month_name_sql || 'july';
+      WHEN 8 THEN
+        month_name_sql := month_name_sql || 'august';
+      WHEN 9 THEN
+        month_name_sql := month_name_sql || 'september';
+      WHEN 10 THEN
+        month_name_sql := month_name_sql || 'october';
+      WHEN 11 THEN
+        month_name_sql := month_name_sql || 'november';
+      WHEN 12 THEN
+        month_name_sql := month_name_sql || 'december';
+    END CASE;
+  END LOOP;
+
+  -- calculate monthly totals from annual emissions
   EXECUTE '
   INSERT INTO emissions.' || monthly_result_table_name || ' (
          dataset_id,
@@ -137,10 +199,10 @@ BEGIN
          ' || inv_stackid || ',
          ' || inv_processid || ',
          prof.profile_id,
-         unnest(array[january, february, march, april, may, june, july, august, september, october, november, december]),
-         unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
-         ' || inv_emissions || ' * unnest(array[january, february, march, april, may, june, july, august, september, october, november, december]),
-         public.get_days_in_month(unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])::smallint, 2014::smallint),
+         unnest(array[' || month_name_sql || ']),
+         unnest(array[' || month_num_sql || ']),
+         ' || inv_emissions || ' * unnest(array[' || month_name_sql || ']),
+         public.get_days_in_month(unnest(array[' || month_num_sql || '])::smallint, ' || inventory_year || '::smallint),
          inv.record_id
     FROM emissions.' || inventory_table_name || ' inv
     JOIN (' || xref_matching_sql || ') xref
@@ -155,50 +217,92 @@ BEGIN
   UPDATE emissions.' || monthly_result_table_name || '
      SET avg_day_emis = total_emis / days_in_month';
 
+  IF resolution LIKE '%month%' THEN
+    RETURN;
+  END IF;
+
   -- now do monthly to daily using monthly results just created
 
   xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, xref_dataset_id, xref_dataset_version, 'WEEKLY');
 
-  EXECUTE '
-  INSERT INTO emissions.' || daily_result_table_name || '(
-         dataset_id,
-         poll,
-         scc,
-         fips,
-         plantid,
-         pointid,
-         stackid,
-         processid,
-         profile_type,
-         profile_id,
-         fraction,
-         day,
-         total_emis,
-         inv_record_id
-  )
-  SELECT ' || daily_result_dataset_id || ',
-         inv.poll,
-         inv.scc,
-         ' || inv_fips || ',
-         ' || inv_plantid || ',
-         ' || inv_pointid || ',
-         ' || inv_stackid || ',
-         ' || inv_processid || ',
-         ''WEEKLY'',
-         prof.profile_id,
-         unnest(array[monday, tuesday, wednesday, thursday, friday, saturday, sunday]),
-         unnest(array[''2014'' || monthly.month || ''01'', ''2014'' || monthly.month || ''02'', ''2014'' || monthly.month || ''03'', ''2014'' || monthly.month || ''04'', ''2014'' || monthly.month || ''05'', ''2014'' || monthly.month || ''06'', ''2014'' || monthly.month || ''07'']),
-         monthly.avg_day_emis * 7 * unnest(array[monday, tuesday, wednesday, thursday, friday, saturday, sunday]),
-         inv.record_id
-    FROM emissions.' || inventory_table_name || ' inv
-    JOIN (' || xref_matching_sql || ') xref
-      ON xref.record_id = inv.record_id
-    JOIN emissions.' || weekly_profile_table_name || ' prof
-      ON prof.profile_id = xref.profile_id
-    JOIN emissions.' || monthly_result_table_name || ' monthly
-      ON monthly.inv_record_id = inv.record_id
-   WHERE ' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || '
-     AND ' || public.build_version_where_filter(weekly_profile_dataset_id, weekly_profile_dataset_version, 'prof');
-    
+  loop_date := start_day;
+  FOR month_num IN EXTRACT(MONTH FROM start_day)..EXTRACT(MONTH FROM end_day) LOOP
+
+    -- build list of days to process for current month
+    dates_sql := '';
+    day_name_sql := '';
+    LOOP
+      is_weekend := EXTRACT(DOW FROM loop_date) = 0 OR EXTRACT(DOW FROM loop_date) = 6;
+
+      IF resolution LIKE '%weekday%' THEN
+        add_day := NOT is_weekend;
+      ELSIF resolution LIKE '%weekend%' THEN
+        add_day := is_weekend;
+      ELSE
+        add_day := true;
+      END IF;
+
+      IF add_day THEN
+        IF LENGTH(dates_sql) > 0 THEN
+          dates_sql := dates_sql || ',';
+          day_name_sql := day_name_sql || ',';
+        END IF;
+        
+        dates_sql := dates_sql || to_char(loop_date, 'YYYYMMDD');
+        day_name_sql := day_name_sql || to_char(loop_date, 'day');
+      END IF;
+      
+      loop_date := loop_date + 1;
+      EXIT WHEN loop_date > end_day OR EXTRACT(MONTH FROM loop_date) != month_num;
+    END LOOP;
+
+    -- skip month if no days to process
+    IF LENGTH(dates_sql) = 0 THEN
+      CONTINUE;
+    END IF;
+
+    EXECUTE '
+    INSERT INTO emissions.' || daily_result_table_name || '(
+           dataset_id,
+           poll,
+           scc,
+           fips,
+           plantid,
+           pointid,
+           stackid,
+           processid,
+           profile_type,
+           profile_id,
+           fraction,
+           day,
+           total_emis,
+           inv_record_id
+    )
+    SELECT ' || daily_result_dataset_id || ',
+           inv.poll,
+           inv.scc,
+           ' || inv_fips || ',
+           ' || inv_plantid || ',
+           ' || inv_pointid || ',
+           ' || inv_stackid || ',
+           ' || inv_processid || ',
+           ''WEEKLY'',
+           prof.profile_id,
+           unnest(array[' || day_name_sql || ']),
+           unnest(array[' || dates_sql || ']),
+           monthly.avg_day_emis * 7 * unnest(array[' || day_name_sql || ']),
+           inv.record_id
+      FROM emissions.' || inventory_table_name || ' inv
+      JOIN (' || xref_matching_sql || ') xref
+        ON xref.record_id = inv.record_id
+      JOIN emissions.' || weekly_profile_table_name || ' prof
+        ON prof.profile_id = xref.profile_id
+      JOIN emissions.' || monthly_result_table_name || ' monthly
+        ON monthly.inv_record_id = inv.record_id
+     WHERE ' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || '
+       AND ' || public.build_version_where_filter(weekly_profile_dataset_id, weekly_profile_dataset_version, 'prof') || '
+       AND monthly.month = ' || month_num;
+  END LOOP;
+  
 END;
 $$ LANGUAGE plpgsql;
