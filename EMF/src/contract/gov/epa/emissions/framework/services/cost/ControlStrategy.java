@@ -90,6 +90,8 @@ public class ControlStrategy implements Lockable, Serializable {
 
     private Boolean applyCAPMeasuresOnHAPPollutants;
     
+    private Boolean applyReplacementControls;
+    
     public ControlStrategy() {
         this.lock = new Mutex();
 //        this.controlStrategyInputDatasets = new ArrayList();
@@ -469,5 +471,13 @@ public class ControlStrategy implements Lockable, Serializable {
 
     public Boolean getApplyCAPMeasuresOnHAPPollutants() {
         return this.applyCAPMeasuresOnHAPPollutants;
+    }
+
+    public void setApplyReplacementControls(Boolean applyReplacementControls) {
+        this.applyReplacementControls = applyReplacementControls;
+    }
+
+    public Boolean getApplyReplacementControls() {
+        return this.applyReplacementControls;
     }
 }
