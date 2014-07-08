@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.tempalloc.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ManageChangeables;
@@ -106,8 +107,11 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
     
     public void save() {
         temporalAllocation.setXrefDataset((EmfDataset)xrefDataset.getSelectedItem());
+        temporalAllocation.setXrefDatasetVersion(temporalAllocation.getXrefDataset().getDefaultVersion());
         temporalAllocation.setMonthlyProfileDataset((EmfDataset)monthlyProfileDataset.getSelectedItem());
+        temporalAllocation.setMonthlyProfileDatasetVersion(temporalAllocation.getMonthlyProfileDataset().getDefaultVersion());
         temporalAllocation.setWeeklyProfileDataset((EmfDataset)weeklyProfileDataset.getSelectedItem());
+        temporalAllocation.setWeeklyProfileDatasetVersion(temporalAllocation.getWeeklyProfileDataset().getDefaultVersion());
         temporalAllocation.setDailyProfileDataset((EmfDataset)dailyProfileDataset.getSelectedItem());
     }
 }

@@ -16,8 +16,6 @@ CREATE TABLE emf.temporal_allocation (
   weekly_profile_dataset_version int4,
   daily_profile_dataset_id int4 REFERENCES emf.datasets (id),
   daily_profile_dataset_version int4,
-  monthly_result_dataset_id int4 REFERENCES emf.datasets (id),
-  daily_result_dataset_id int4 REFERENCES emf.datasets (id),
   last_modified_date timestamp,
   start_date timestamp,
   completion_date timestamp,
@@ -74,3 +72,20 @@ VALUES ('Annual total (tons/year)'),
 ('Daily total (tons/day)'),
 ('Episodic total (tons/day)'),
 ('Episodic average (tons/day)');
+
+CREATE TABLE emf.temporal_allocation_output_type (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name varchar(255) NOT NULL UNIQUE
+);
+
+INSERT INTO emf.temporal_allocation_output_type (name)
+VALUES ('Temporal Allocation Monthly Result'),
+('Temporal Allocation Daily Result'),
+('Temporal Allocation Episodic Result');
+
+CREATE TABLE emf.temporal_allocation_output (
+  id SERIAL PRIMARY KEY NOT NULL,
+  temporal_allocation_id int NOT NULL REFERENCES emf.temporal_allocation(id),
+  temporal_allocation_output_type_id int NOT NULL REFERENCES emf.temporal_allocation_output_type(id),
+  output_dataset_id integer NOT NULL REFERENCES emf.datasets(id)
+);

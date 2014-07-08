@@ -85,6 +85,8 @@ import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutputType;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationInputDataset;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutput;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution;
 
 import javax.xml.namespace.QName;
@@ -178,6 +180,8 @@ public class DataMappings extends Mappings {
         bean(call, TemporalAllocation.class, temporalAllocation());
         bean(call, TemporalAllocationInputDataset.class, temporalAllocationInputDataset());
         bean(call, TemporalAllocationResolution.class, temporalAllocationResolution());
+        bean(call, TemporalAllocationOutputType.class, temporalAllocationOutputType());
+        bean(call, TemporalAllocationOutput.class, temporalAllocationOutput());
     }
 
     private void controlBeans(Call call) {
@@ -311,6 +315,8 @@ public class DataMappings extends Mappings {
         array(call, TemporalAllocation[].class, temporalAllocations());
         array(call, TemporalAllocationInputDataset[].class, temporalAllocationInputDatasets());
         array(call, TemporalAllocationResolution[].class, temporalAllocationResolutions());
+        array(call, TemporalAllocationOutputType[].class, temporalAllocationOutputTypes());
+        array(call, TemporalAllocationOutput[].class, temporalAllocationOutputs());
     }
 
     public QName logs() {
@@ -953,6 +959,22 @@ public class DataMappings extends Mappings {
 
     public QName temporalAllocationResolutions() {
         return qname("TemporalAllocationResolutions");
+    }
+
+    public QName temporalAllocationOutputType() {
+        return qname("TemporalAllocationOutputType");
+    }
+
+    public QName temporalAllocationOutputTypes() {
+        return qname("TemporalAllocationOutputTypes");
+    }
+
+    public QName temporalAllocationOutput() {
+        return qname("TemporalAllocationOutput");
+    }
+
+    public QName temporalAllocationOutputs() {
+        return qname("TemporalAllocationOutputs");
     }
 
 }

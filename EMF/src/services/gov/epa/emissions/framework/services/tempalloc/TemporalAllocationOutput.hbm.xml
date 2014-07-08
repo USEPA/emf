@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false"> 
+  <class name="gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutput" table="temporal_allocation_output" schema="emf"> 
+ 	<id name="id" type="integer" column="id">
+	  <generator class="identity"/>
+ 	</id>
+	<property name="temporalAllocationId" column="temporal_allocation_id" type="integer" not-null="true" />
+	<many-to-one name="type"
+		 class ="gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType"
+		 column="temporal_allocation_output_type_id" unique="true" not-null="true"/>
+	<many-to-one name="outputDataset"
+		 class ="gov.epa.emissions.framework.services.data.EmfDataset"
+		 column="output_dataset_id" unique="true" not-null="false"/>
+	
+  </class> 
+</hibernate-mapping>  

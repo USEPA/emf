@@ -69,6 +69,19 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         }
     }
     
+    public synchronized TemporalAllocationOutput[] getTemporalAllocationOutputs(TemporalAllocation element) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List all = dao.getTemporalAllocationOutputs(element.getId(), session);
+            return (TemporalAllocationOutput[]) all.toArray(new TemporalAllocationOutput[0]);
+        } catch (RuntimeException e) {
+            LOG.error("Could not retrieve Temporal Allocation results.", e);
+            throw new EmfException("Could not retrieve Temporal Allocation results.");
+        } finally {
+            session.close();
+        }
+    }
+    
     public synchronized int addTemporalAllocation(TemporalAllocation element) throws EmfException {
         Session session = sessionFactory.getSession();
         int elementId;

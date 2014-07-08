@@ -1,9 +1,11 @@
--- SELECT public.run_temporal_allocation(2, 125, 0);
 
 CREATE OR REPLACE FUNCTION public.run_temporal_allocation(
   temporal_allocation_id integer,
   input_dataset_id integer,
-  input_dataset_version integer
+  input_dataset_version integer,
+  monthly_result_dataset_id integer,
+  daily_result_dataset_id integer,
+  episodic_result_dataset_id integer
   ) RETURNS void AS $$
 DECLARE
   inventory_table_name varchar(64) := '';
@@ -23,10 +25,9 @@ DECLARE
   start_day date;
   end_day date;
 
-  monthly_result_dataset_id integer := null;
   monthly_result_table_name varchar(64) := '';
-  daily_result_dataset_id integer := null;
   daily_result_table_name varchar(64) := '';
+  episodic_result_table_name varchar(64) := '';
   
   is_flat_file_inventory boolean := false;
   inv_fips varchar(64) := 'inv.fips';
@@ -116,24 +117,22 @@ BEGIN
    WHERE i.dataset_id = weekly_profile_dataset_id;
   
   -- get the monthly result dataset info
-  SELECT ta.monthly_result_dataset_id,
-         LOWER(i.table_name)
-    INTO monthly_result_dataset_id,
-         monthly_result_table_name
-    FROM emf.temporal_allocation ta
-    JOIN emf.internal_sources i
-      ON i.dataset_id = ta.monthly_result_dataset_id
-   WHERE ta.id = temporal_allocation_id;
+  SELECT LOWER(i.table_name)
+    INTO monthly_result_table_name
+    FROM emf.internal_sources i
+   WHERE i.dataset_id = monthly_result_dataset_id;
   
   -- get the daily result dataset info
-  SELECT ta.daily_result_dataset_id,
-         LOWER(i.table_name)
-    INTO daily_result_dataset_id,
-         daily_result_table_name
-    FROM emf.temporal_allocation ta
-    JOIN emf.internal_sources i
-      ON i.dataset_id = ta.daily_result_dataset_id
-   WHERE ta.id = temporal_allocation_id;
+  SELECT LOWER(i.table_name)
+    INTO daily_result_table_name
+    FROM emf.internal_sources i
+   WHERE i.dataset_id = daily_result_dataset_id;
+  
+  -- get the episodic result dataset info
+  SELECT LOWER(i.table_name)
+    INTO episodic_result_table_name
+    FROM emf.internal_sources i
+   WHERE i.dataset_id = episodic_result_dataset_id;
 
   xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, xref_dataset_id, xref_dataset_version, 'MONTHLY');
 
@@ -188,6 +187,7 @@ BEGIN
          month,
          total_emis,
          days_in_month,
+         inv_dataset_id,
          inv_record_id
   )
   SELECT ' || monthly_result_dataset_id || ',
@@ -203,6 +203,7 @@ BEGIN
          unnest(array[' || month_num_sql || ']),
          ' || inv_emissions || ' * unnest(array[' || month_name_sql || ']),
          public.get_days_in_month(unnest(array[' || month_num_sql || '])::smallint, ' || inventory_year || '::smallint),
+         inv.dataset_id,
          inv.record_id
     FROM emissions.' || inventory_table_name || ' inv
     JOIN (' || xref_matching_sql || ') xref
@@ -276,6 +277,7 @@ BEGIN
            fraction,
            day,
            total_emis,
+           inv_dataset_id,
            inv_record_id
     )
     SELECT ' || daily_result_dataset_id || ',
@@ -291,6 +293,7 @@ BEGIN
            unnest(array[' || day_name_sql || ']),
            unnest(array[' || dates_sql || ']),
            monthly.avg_day_emis * 7 * unnest(array[' || day_name_sql || ']),
+           inv.dataset_id,
            inv.record_id
       FROM emissions.' || inventory_table_name || ' inv
       JOIN (' || xref_matching_sql || ') xref
@@ -298,11 +301,55 @@ BEGIN
       JOIN emissions.' || weekly_profile_table_name || ' prof
         ON prof.profile_id = xref.profile_id
       JOIN emissions.' || monthly_result_table_name || ' monthly
-        ON monthly.inv_record_id = inv.record_id
+        ON monthly.inv_dataset_id = inv.dataset_id
+       AND monthly.inv_record_id = inv.record_id
      WHERE ' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || '
        AND ' || public.build_version_where_filter(weekly_profile_dataset_id, weekly_profile_dataset_version, 'prof') || '
        AND monthly.month = ' || month_num;
   END LOOP;
+  
+  IF resolution LIKE '%daily total%' THEN
+    RETURN;
+  END IF;
+  
+  -- sum daily totals and calculate average-day values
+  EXECUTE '
+  INSERT INTO emissions.' || episodic_result_table_name || '(
+         dataset_id,
+         poll,
+         scc,
+         fips,
+         plantid,
+         pointid,
+         stackid,
+         processid,
+         total_emis,
+         days_in_episode,
+         avg_day_emis,
+         inv_dataset_id,
+         inv_record_id
+  )
+  SELECT ' || episodic_result_dataset_id || ',
+         result.poll,
+         result.scc,
+         result.fips,
+         result.plantid,
+         result.pointid,
+         result.stackid,
+         result.processid,
+         SUM(result.total_emis),
+         COUNT(result.record_id),
+         SUM(result.total_emis) / COUNT(result.record_id),
+         result.inv_dataset_id,
+         result.inv_record_id
+    FROM emissions.' || daily_result_table_name || ' result
+GROUP BY result.inv_dataset_id, result.inv_record_id, result.poll,
+         result.scc,
+         result.fips,
+         result.plantid,
+         result.pointid,
+         result.stackid,
+         result.processid';
   
 END;
 $$ LANGUAGE plpgsql;

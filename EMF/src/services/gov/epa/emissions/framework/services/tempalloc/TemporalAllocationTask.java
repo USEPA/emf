@@ -1,7 +1,9 @@
 package gov.epa.emissions.framework.services.tempalloc;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Session;
 
@@ -69,7 +71,7 @@ public class TemporalAllocationTask {
     }
     
     public void run() throws EmfException {
-        deleteResults();
+        deleteOutputsAndDatasets();
         
         // run any pre-processing
         try {
@@ -79,28 +81,70 @@ public class TemporalAllocationTask {
             throw new EmfException(e.getMessage());
         }
         
-        setStatus("Started creating Temporal Allocation Result datasets.");
-        temporalAllocation.setMonthlyResultDataset(createMonthlyResultDataset());
-        temporalAllocation.setDailyResultDataset(createDailyResultDataset());
-        temporalAllocation = temporalAllocationDAO.updateWithLock(temporalAllocation, sessionFactory.getSession());
+        setStatus("Creating Temporal Allocation Result datasets.");
+        TemporalAllocationOutput monthlyOutput = createMonthlyOutput();
+        TemporalAllocationOutput dailyOutput = createDailyOutput();
+        TemporalAllocationOutput episodicOutput = createEpisodicOutput();
         
-        TemporalAllocationInputDataset[] temporalAllocationInputDatasets = temporalAllocation.getTemporalAllocationInputDatasets();
-        TemporalAllocationInputDataset inputDataset = temporalAllocationInputDatasets[0];
-        String query = "SELECT public.run_temporal_allocation(" + temporalAllocation.getId() + ", " + inputDataset.getInputDataset().getId() + ", " + inputDataset.getVersion() + ")";
+        for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
+            setStatus("Processing inventory.");
+            String query = "SELECT public.run_temporal_allocation(" + 
+                    temporalAllocation.getId() + ", " + 
+                    inputDataset.getInputDataset().getId() + ", " + 
+                    inputDataset.getVersion() + ", " +
+                    monthlyOutput.getOutputDataset().getId() + ", " +
+                    dailyOutput.getOutputDataset().getId() + ", " +
+                    episodicOutput.getOutputDataset().getId() + ")";
+            try {
+                datasource.query().execute(query);
+            } catch (SQLException e) {
+                throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+            }
+        }
+        setStatus("Finished Temporal Allocation run.");
+    }
+    
+    private void deleteOutputsAndDatasets() throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            datasource.query().execute(query);
-        } catch (SQLException e) {
-            throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+            List<EmfDataset> dsList = new ArrayList<EmfDataset>();
+            
+            // first get the datasets to delete
+            EmfDataset[] datasets = temporalAllocationDAO.getTemporalAllocationOutputDatasets(temporalAllocation.getId(), session);
+            if (datasets != null) {
+                for (EmfDataset dataset : datasets) {
+                    if (!user.isAdmin() && !dataset.getCreator().equalsIgnoreCase(user.getUsername())) {
+                        setStatus("The Temporal Allocation output dataset, " + dataset.getName()
+                                + ", will not be deleted since you are not the creator.");
+                    } else {
+                        dsList.add(dataset);
+                    }
+                }
+            }
+            
+            removeOutputs();
+
+            // delete and purge datasets
+            if (dsList != null && dsList.size() > 0) {
+                temporalAllocationDAO.removeOutputDatasets(dsList.toArray(new EmfDataset[0]), user, session, dbServer);
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw new EmfException("Could not remove temporal allocation outputs.");
+        } finally {
+            session.close();
         }
     }
     
-    private void deleteResults() throws EmfException {
+    private void removeOutputs() throws EmfException {
         Session session = sessionFactory.getSession();
-        temporalAllocation.setMonthlyResultDataset(null);
-        temporalAllocation.setDailyResultDataset(null);
-        temporalAllocation = temporalAllocationDAO.updateWithLock(temporalAllocation, session);
-        
-        // TODO: delete results datasets
+        try {
+            temporalAllocationDAO.removeOutputs(temporalAllocation.getId(), session);
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not remove previous temporal allocation result(s)");
+        } finally {
+            session.close();
+        }
     }
     
     private void beforeRun() throws EmfException {
@@ -126,6 +170,44 @@ public class TemporalAllocationTask {
             throw new EmfException(e.getMessage());
         }
     }
+
+    private TemporalAllocationOutput createMonthlyOutput() throws EmfException {
+        TemporalAllocationOutput output = new TemporalAllocationOutput();
+        output.setTemporalAllocationId(temporalAllocation.getId());
+        output.setOutputDataset(createMonthlyResultDataset());
+        output.setType(getOutputType(TemporalAllocationOutputType.monthlyType));
+        saveOutput(output);
+        return output;
+    }
+
+    private TemporalAllocationOutput createDailyOutput() throws EmfException {
+        TemporalAllocationOutput output = new TemporalAllocationOutput();
+        output.setTemporalAllocationId(temporalAllocation.getId());
+        output.setOutputDataset(createDailyResultDataset());
+        output.setType(getOutputType(TemporalAllocationOutputType.dailyType));
+        saveOutput(output);
+        return output;
+    }
+    
+    private TemporalAllocationOutput createEpisodicOutput() throws EmfException {
+        TemporalAllocationOutput output = new TemporalAllocationOutput();
+        output.setTemporalAllocationId(temporalAllocation.getId());
+        output.setOutputDataset(createEpisodicResultDataset());
+        output.setType(getOutputType(TemporalAllocationOutputType.episodicType));
+        saveOutput(output);
+        return output;
+    }
+    
+    private void saveOutput(TemporalAllocationOutput output) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            temporalAllocationDAO.updateTemporalAllocationOutput(output, session);
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not save temporal allocation output: " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
     
     private EmfDataset createMonthlyResultDataset() throws EmfException {
         DatasetType datasetType = getDatasetType(DatasetType.TEMPORAL_ALLOCATION_MONTHLY_RESULT);
@@ -144,6 +226,15 @@ public class TemporalAllocationTask {
                 new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
                 "");
     }
+    
+    private EmfDataset createEpisodicResultDataset() throws EmfException {
+        DatasetType datasetType = getDatasetType(DatasetType.TEMPORAL_ALLOCATION_EPISODIC_RESULT);
+        return creator.addDataset("ds",
+                DatasetCreator.createDatasetName("Temp_Alloc_Episodic"),
+                datasetType,
+                new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
+                "");
+    }
 
     protected DatasetType getDatasetType(String name) {
         DatasetType datasetType = null;
@@ -154,5 +245,18 @@ public class TemporalAllocationTask {
             session.close();
         }
         return datasetType;
+    }
+    
+    private TemporalAllocationOutputType getOutputType(String name) throws EmfException {
+        TemporalAllocationOutputType outputType = null;
+        Session session = sessionFactory.getSession();
+        try {
+            outputType = temporalAllocationDAO.getTemporalAllocationOutputType(name, session);
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not get temporal allocation output type");
+        } finally {
+            session.close();
+        }
+        return outputType;
     }
 }

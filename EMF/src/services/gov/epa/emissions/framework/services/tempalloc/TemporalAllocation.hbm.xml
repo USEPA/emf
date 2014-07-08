@@ -10,6 +10,8 @@
  	</id>
 	<property name="name" column="name"	type="java.lang.String"	not-null="true"/>
 	<property name="description" column="description" type="java.lang.String"/>
+	<property name="startDay" column="start_day" type="java.util.Date" not-null="false" length="4"/>
+	<property name="endDay" column="end_day" type="java.util.Date" not-null="false" length="4"/>
 	<property name="runStatus" column="run_status"	type="java.lang.String"/>
 	<property name="lastModifiedDate" column="last_modified_date" type="java.util.Date" not-null="false" length="4"/>
   	<property name="startDate" column="start_date" type="java.util.Date" not-null="false" length="4"/>
@@ -55,16 +57,6 @@
             name="dailyProfileDataset" 
             class="gov.epa.emissions.framework.services.data.EmfDataset"
             column="daily_profile_dataset_id"/>
-
-	<many-to-one 
-            name="monthlyResultDataset" 
-            class="gov.epa.emissions.framework.services.data.EmfDataset"
-            column="monthly_result_dataset_id"/>
-
-	<many-to-one 
-            name="dailyResultDataset" 
-            class="gov.epa.emissions.framework.services.data.EmfDataset"
-            column="daily_result_dataset_id"/>
 
 	<array name="temporalAllocationInputDatasets" table="temporal_allocation_input_dataset">
     	<key column="temporal_allocation_id" not-null="true"/>

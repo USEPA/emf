@@ -25,6 +25,8 @@ public class TemporalAllocation implements Lockable, Serializable {
     private User creator;
     
     private TemporalAllocationResolution resolution;
+    
+    private Date startDay, endDay;
 
     private Date lastModifiedDate;
 
@@ -37,9 +39,7 @@ public class TemporalAllocation implements Lockable, Serializable {
     private EmfDataset xrefDataset, monthlyProfileDataset, weeklyProfileDataset, dailyProfileDataset;
     
     private Integer xrefDatasetVersion, monthlyProfileDatasetVersion, weeklyProfileDatasetVersion, dailyProfileDatasetVersion;
-    
-    private EmfDataset monthlyResultDataset, dailyResultDataset;
-    
+        
     private String runStatus;
 
     private Mutex lock;
@@ -121,6 +121,22 @@ public class TemporalAllocation implements Lockable, Serializable {
     
     public void setResolution(TemporalAllocationResolution resolution) {
         this.resolution = resolution;
+    }
+    
+    public Date getStartDay() {
+        return startDay;
+    }
+    
+    public void setStartDay(Date startDay) {
+        this.startDay = startDay;
+    }
+    
+    public Date getEndDay() {
+        return endDay;
+    }
+    
+    public void setEndDay(Date endDay) {
+        this.endDay = endDay;
     }
 
     public Date getLastModifiedDate() {
@@ -232,22 +248,6 @@ public class TemporalAllocation implements Lockable, Serializable {
 
     public Integer getDailyProfileDatasetVersion() {
         return dailyProfileDatasetVersion;
-    }
-    
-    public EmfDataset getMonthlyResultDataset() {
-        return monthlyResultDataset;
-    }
-    
-    public void setMonthlyResultDataset(EmfDataset monthlyResultDataset) {
-        this.monthlyResultDataset = monthlyResultDataset;
-    }
-    
-    public EmfDataset getDailyResultDataset() {
-        return dailyResultDataset;
-    }
-    
-    public void setDailyResultDataset(EmfDataset dailyResultDataset) {
-        this.dailyResultDataset = dailyResultDataset;
     }
 
     public Date getLockDate() {

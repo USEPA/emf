@@ -1198,4 +1198,22 @@
 		innerType="ns1:TemporalAllocationResolution"
 		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType"
+		qname="ns1:TemporalAllocationOutputType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocationOutputTypes" xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType[]"
+		innerType="ns1:TemporalAllocationOutputType"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutput"
+		qname="ns1:TemporalAllocationOutput" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocationOutputs" xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutput[]"
+		innerType="ns1:TemporalAllocationOutput"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
 </deployment>

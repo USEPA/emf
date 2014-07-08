@@ -8,6 +8,8 @@ public interface TemporalAllocationService extends EMFService {
 
     TemporalAllocation[] getTemporalAllocations() throws EmfException;
     
+    TemporalAllocationOutput[] getTemporalAllocationOutputs(TemporalAllocation element) throws EmfException;
+    
     int addTemporalAllocation(TemporalAllocation element) throws EmfException;
 
     TemporalAllocation obtainLocked(User owner, int id) throws EmfException;
