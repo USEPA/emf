@@ -107,9 +107,9 @@ public class QAECControlScenarioWindow extends DisposableInteralFrame  {
             // NOTE Auto-generated catch block
             e.printStackTrace();
         }
-        super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
-        super.display();
+        super.setLabel("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );        
         this.getContentPane().add(createLayout(dataset));
+        super.display();
     }
 
     public void observe(EditQAECControlScenarioPresenter presenter1) {

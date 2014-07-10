@@ -560,8 +560,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
             existed.setName(selected.toString());
             caseObj.setAbbreviation(existed);
             return;
-        }
-        
+        }       
         caseObj.setAbbreviation(presenter.getAbbreviation(selected));
     }
 

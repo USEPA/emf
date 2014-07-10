@@ -135,9 +135,9 @@ public class QACompareVOCSpeciationWithHAPInventoryWindow extends DisposableInte
             // NOTE Auto-generated catch block
             e.printStackTrace();
         }
-        super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
-        super.display();
+        super.setLabel(qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
         this.getContentPane().add(createLayout(dataset));
+        super.display();
     }
 
     public void observe(EditQAEmissionsPresenter presenter1) {
