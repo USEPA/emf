@@ -78,8 +78,10 @@ DECLARE
 	remaining_emis_sql character varying;
 	creator_user_id integer := 0;
 	is_cost_su boolean := false; 
+	apply_replacement_controls boolean := true;
 
 	get_strategty_ceff_equation_sql character varying;
+	
 	annual_cost_expression text;
 	capital_cost_expression text;
 	operation_maintenance_cost_expression text;
@@ -211,7 +213,8 @@ BEGIN
 		cs.discount_rate / 100,
 		st."name",
 		coalesce(cs.include_unspecified_costs,true),
-		cs.creator_id
+		cs.creator_id,
+		cs.apply_replacement_controls
 	FROM emf.control_strategies cs
 		inner join emf.strategy_types st
 		on st.id = cs.strategy_type_id
@@ -227,7 +230,8 @@ BEGIN
 		discount_rate,
 		strategy_type,
 		include_unspecified_costs,
-		creator_user_id;
+		creator_user_id,
+		apply_replacement_controls;
 
 	-- see if strategyt creator is a CoST SU
 	SELECT 
@@ -1024,6 +1028,12 @@ from (
 					)
 				)
 			)					
+			' else '' end || '
+
+			-- ignore sources with device code but no efficiency info
+			' || case when apply_replacement_controls = false then '
+			and (coalesce(control_ids, '''') = '''' or
+			     coalesce(inv.' || inv_ceff_expression || ', 0.0) <> 0.0)
 			' else '' end || '
 
 		order by inv.record_id,
