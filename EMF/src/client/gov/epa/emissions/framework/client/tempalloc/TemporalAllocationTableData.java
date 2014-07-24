@@ -1,8 +1,10 @@
 package gov.epa.emissions.framework.client.tempalloc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution;
 import gov.epa.emissions.framework.ui.AbstractTableData;
@@ -18,7 +20,7 @@ public class TemporalAllocationTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Name", "Resolution", "Last Modified" };
+        return new String[] { "Name", "Resolution", "Start Day", "End Day", "Last Modified", "Creator" };
     }
     
     public Class getColumnClass(int col) {
@@ -39,12 +41,19 @@ public class TemporalAllocationTableData extends AbstractTableData {
             TemporalAllocation element = temporalAllocations[i];
             TemporalAllocationResolution resolution = element.getResolution();
             Object[] values = { element.getName(), 
-                    (resolution == null ? "" : element.getResolution().getName()), 
-                    format(element.getLastModifiedDate()) };
+                    (resolution == null ? "" : element.getResolution().getName()),
+                    formatDay(element.getStartDay()),
+                    formatDay(element.getEndDay()),
+                    format(element.getLastModifiedDate()),
+                    element.getCreator().getName() };
             Row row = new ViewableRow(element, values);
             rows.add(row);
         }
         
         return rows;
+    }
+    
+    private String formatDay(Date date) {
+        return (date == null) ? "N/A" : CustomDateFormat.format_MM_DD_YYYY(date);
     }
 }
