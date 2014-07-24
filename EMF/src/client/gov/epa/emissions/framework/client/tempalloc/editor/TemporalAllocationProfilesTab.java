@@ -107,11 +107,28 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
     
     public void save() {
         temporalAllocation.setXrefDataset((EmfDataset)xrefDataset.getSelectedItem());
-        temporalAllocation.setXrefDatasetVersion(temporalAllocation.getXrefDataset().getDefaultVersion());
+        if (temporalAllocation.getXrefDataset() != null) {
+            temporalAllocation.setXrefDatasetVersion(temporalAllocation.getXrefDataset().getDefaultVersion());
+        } else {
+            temporalAllocation.setXrefDatasetVersion(null);
+        }
         temporalAllocation.setMonthlyProfileDataset((EmfDataset)monthlyProfileDataset.getSelectedItem());
-        temporalAllocation.setMonthlyProfileDatasetVersion(temporalAllocation.getMonthlyProfileDataset().getDefaultVersion());
+        if (temporalAllocation.getMonthlyProfileDataset() != null) {
+            temporalAllocation.setMonthlyProfileDatasetVersion(temporalAllocation.getMonthlyProfileDataset().getDefaultVersion());
+        } else {
+            temporalAllocation.setMonthlyProfileDatasetVersion(null);
+        }
         temporalAllocation.setWeeklyProfileDataset((EmfDataset)weeklyProfileDataset.getSelectedItem());
-        temporalAllocation.setWeeklyProfileDatasetVersion(temporalAllocation.getWeeklyProfileDataset().getDefaultVersion());
+        if (temporalAllocation.getWeeklyProfileDataset() != null) {
+            temporalAllocation.setWeeklyProfileDatasetVersion(temporalAllocation.getWeeklyProfileDataset().getDefaultVersion());
+        } else {
+            temporalAllocation.setWeeklyProfileDatasetVersion(null);
+        }
         temporalAllocation.setDailyProfileDataset((EmfDataset)dailyProfileDataset.getSelectedItem());
+        if (temporalAllocation.getDailyProfileDataset() != null) {
+            temporalAllocation.setDailyProfileDatasetVersion(temporalAllocation.getDailyProfileDataset().getDefaultVersion());
+        } else {
+            temporalAllocation.setDailyProfileDatasetVersion(null);
+        }
     }
 }
