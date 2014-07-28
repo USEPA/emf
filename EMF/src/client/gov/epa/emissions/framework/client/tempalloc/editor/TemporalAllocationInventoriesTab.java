@@ -9,7 +9,9 @@ import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.BorderlessButton;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ManageChangeables;
+import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.dataset.InputDatasetSelectionDialog;
@@ -31,6 +33,8 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SpringLayout;
 
 public class TemporalAllocationInventoriesTab extends JPanel implements TemporalAllocationTabView {
     
@@ -52,6 +56,8 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
 
     private JPanel tablePanel;
     
+    private TextArea filter;
+    
     public TemporalAllocationInventoriesTab(TemporalAllocation temporalAllocation, EmfSession session, 
             ManageChangeables changeablesList, SingleLineMessagePanel messagePanel, 
             EmfConsole parentConsole, DesktopManager desktopManager) {
@@ -72,6 +78,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
     public void display() {
         super.setLayout(new BorderLayout());
         super.add(buildSortFilterPanel(), BorderLayout.CENTER);
+        super.add(buildInvFilterPanel(), BorderLayout.SOUTH);
     }
 
     private JPanel buildSortFilterPanel() {
@@ -139,6 +146,28 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         panel.add(viewDataButton);
 
         return panel;
+    }
+    
+    private JPanel buildInvFilterPanel() {
+        JPanel panel = new JPanel(new SpringLayout());
+        panel.setBorder(new Border("Filters"));
+
+        String value = temporalAllocation.getFilter();
+        if (value == null) value = "";
+        
+        filter = new TextArea("filter", value, 40, 2);
+        filter.setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_EMIS>5000 and SCC like '30300%')");
+        JScrollPane scrollPane = new JScrollPane(filter);
+        changeablesList.addChangeable(filter);
+        
+        SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
+        layoutGenerator.addLabelWidgetPair("Inventory Filter:", scrollPane, panel);
+        
+        layoutGenerator.makeCompactGrid(panel, 1, 2, // rows, cols
+                5, 5, // initialX, initialY
+                10, 5);// xPad, yPad
+
+        return panel; 
     }
 
     private void addAction() throws EmfException {
@@ -257,6 +286,9 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
             }
             temporalAllocation.setTemporalAllocationInputDatasets(inputDatasets);
         }
+        
+        String value = filter.getText().trim();
+        temporalAllocation.setFilter(value);
     }
     
     private void refresh(){

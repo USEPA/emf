@@ -24,6 +24,8 @@ public class TemporalAllocation implements Lockable, Serializable {
 
     private User creator;
     
+    private String filter;
+    
     private TemporalAllocationResolution resolution;
     
     private Date startDay, endDay;
@@ -113,6 +115,14 @@ public class TemporalAllocation implements Lockable, Serializable {
 
     public void setCreator(User creator) {
         this.creator = creator;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
     
     public TemporalAllocationResolution getResolution() {

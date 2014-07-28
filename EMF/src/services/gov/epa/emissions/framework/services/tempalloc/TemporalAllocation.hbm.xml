@@ -18,6 +18,7 @@
   	<property name="completionDate" column="completion_date" type="java.util.Date" not-null="false" length="4"/>
 	<property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
   	<property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+  	<property name="filter" column="filter" type="string" not-null="false"/>
   	<property name="xrefDatasetVersion" column="xref_dataset_version" type="integer"/>
   	<property name="monthlyProfileDatasetVersion" column="monthly_profile_dataset_version" type="integer"/>
   	<property name="weeklyProfileDatasetVersion" column="weekly_profile_dataset_version" type="integer"/>

@@ -20,6 +20,7 @@ DECLARE
   weekly_profile_dataset_version integer;
   weekly_profile_table_name varchar(64);
   
+  inv_filter text := '';
   resolution varchar(64);
   inventory_year smallint;
   start_day date;
@@ -99,6 +100,21 @@ BEGIN
       RETURN;
     END IF;
   END IF;
+  
+  -- get inventory filter if specified
+  SELECT CASE
+           WHEN LENGTH(TRIM(ta.filter)) > 0 THEN 
+             '(' || public.alias_inventory_filter(ta.filter, 'inv') || ')' 
+           ELSE NULL 
+         END
+    INTO inv_filter
+    FROM emf.temporal_allocation ta
+   WHERE ta.id = temporal_allocation_id;
+  
+  -- build version info into inventory filter
+  inv_filter := 
+    '(' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || ')' || 
+    COALESCE(' AND ' || inv_filter, '');
   
   -- get the cross-reference and profile dataset ids and versions
   SELECT ta.xref_dataset_id,
@@ -250,7 +266,7 @@ BEGIN
         ON xref.record_id = inv.record_id
       JOIN emissions.' || monthly_profile_table_name || ' prof
         ON prof.profile_id = xref.profile_id
-     WHERE ' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || '
+     WHERE ' || inv_filter || '
        AND ' || public.build_version_where_filter(monthly_profile_dataset_id, monthly_profile_dataset_version, 'prof');
   
     -- calculate monthly average day emissions
@@ -294,7 +310,7 @@ BEGIN
            inv.dataset_id,
            inv.record_id
       FROM emissions.' || inventory_table_name || ' inv
-     WHERE ' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv');
+     WHERE ' || inv_filter;
   
     -- calculate monthly average day emissions
     EXECUTE '
@@ -339,7 +355,7 @@ BEGIN
            inv.dataset_id,
            inv.record_id
       FROM emissions.' || inventory_table_name || ' inv
-     WHERE ' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv');
+     WHERE ' || inv_filter;
   END IF;
 
   IF resolution LIKE '%month%' THEN
@@ -427,7 +443,7 @@ BEGIN
       JOIN emissions.' || monthly_result_table_name || ' monthly
         ON monthly.inv_dataset_id = inv.dataset_id
        AND monthly.inv_record_id = inv.record_id
-     WHERE ' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || '
+     WHERE ' || inv_filter || '
        AND ' || public.build_version_where_filter(weekly_profile_dataset_id, weekly_profile_dataset_version, 'prof') || '
        AND monthly.month = ' || month_num;
   END LOOP;

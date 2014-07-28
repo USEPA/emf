@@ -5,6 +5,7 @@ CREATE TABLE emf.temporal_allocation (
   run_status varchar(255),
   project_id int4 references emf.projects (id),
   creator_id int4 references emf.users(id),
+  filter text,
   resolution_id int4 REFERENCES emf.temporal_allocation_resolution(id),
   start_day date,
   end_day date,
