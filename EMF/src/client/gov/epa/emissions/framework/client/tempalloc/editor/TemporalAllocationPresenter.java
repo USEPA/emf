@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
 
@@ -110,5 +112,13 @@ public class TemporalAllocationPresenter {
     
     public void runTemporalAllocation() throws EmfException {
         service().runTemporalAllocation(session.user(), temporalAllocation);
+    }
+    
+    public Version[] getVersions(EmfDataset dataset) throws EmfException 
+    {
+        if (dataset == null) {
+            return new Version[0];
+        }
+        return session.dataEditorService().getVersions(dataset.getId());
     }
 }

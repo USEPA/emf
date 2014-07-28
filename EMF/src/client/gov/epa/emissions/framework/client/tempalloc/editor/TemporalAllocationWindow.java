@@ -90,7 +90,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
             tabView = new TemporalAllocationSummaryTab(temporalAllocation, session, this, messagePanel);
         } else if (presenter.INVENTORIES_TAB.equals(tabName)) {
             tabView = new TemporalAllocationInventoriesTab(temporalAllocation, session, this, messagePanel, 
-                    parentConsole, desktopManager);
+                    parentConsole, desktopManager, presenter);
         } else if (presenter.TIMEPERIOD_TAB.equals(tabName)) {
             tabView = new TemporalAllocationTimePeriodTab(temporalAllocation, session, this, messagePanel);
         } else if (presenter.PROFILES_TAB.equals(tabName)) {

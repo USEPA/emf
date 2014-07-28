@@ -50,6 +50,8 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
     
     private DesktopManager desktopManager;
     
+    private TemporalAllocationPresenter presenter;
+    
     private TemporalAllocationInventoriesTableData tableData;
 
     private SelectableSortFilterWrapper table;
@@ -60,7 +62,8 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
     
     public TemporalAllocationInventoriesTab(TemporalAllocation temporalAllocation, EmfSession session, 
             ManageChangeables changeablesList, SingleLineMessagePanel messagePanel, 
-            EmfConsole parentConsole, DesktopManager desktopManager) {
+            EmfConsole parentConsole, DesktopManager desktopManager,
+            TemporalAllocationPresenter presenter) {
         super.setName("inventories");
         this.temporalAllocation = temporalAllocation;
         tableData = new TemporalAllocationInventoriesTableData(temporalAllocation.getTemporalAllocationInputDatasets());
@@ -69,6 +72,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         this.messagePanel = messagePanel;
         this.parentConsole = parentConsole;
         this.desktopManager = desktopManager;
+        this.presenter = presenter;
     }
     
     public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
@@ -112,10 +116,9 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         panel.add(addButton);
         Button editButton = new BorderlessButton("Set Version", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                    //setVersionAction();
+                setVersionAction();
             }
         });
-        editButton.setEnabled(false);
         panel.add(editButton);
         Button removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
@@ -197,6 +200,23 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         } catch (Exception exp) {
             messagePanel.setError(exp.getMessage());
         }
+    }
+
+    private void setVersionAction(){
+        messagePanel.clear();
+        //get a single selected item
+        List selected = table.selected();
+        if (selected.size() != 1) {
+            messagePanel.setMessage("Please select only a single inventory to set its version.");
+            return;
+        }
+
+        TemporalAllocationInputDataset inputDataset = (TemporalAllocationInputDataset)selected.get(0);
+        EmfDataset dataset = inputDataset.getInputDataset();
+
+        //Show select version dialog
+        TAInventoryEditDialog dialog = new TAInventoryEditDialog(parentConsole, dataset, presenter, this);
+        dialog.run();
     }
 
     private void viewAction() throws EmfException {
@@ -300,5 +320,26 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         tablePanel.removeAll();
         tablePanel.add(table);
         super.validate();
+    }
+    
+    public void editVersion(Version version, EmfDataset dataset) {
+        messagePanel.clear();
+        //get all measures
+        TemporalAllocationInputDataset[] datasets = tableData.sources();
+        //get versions of selected item
+        if (version != null) {
+            //validate value
+            
+            //only update items that have been selected          
+            for (int j = 0; j < datasets.length; j++) {
+                if (dataset.equals(datasets[j].getInputDataset())) {
+                    datasets[j].setVersion(version.getVersion());
+                }
+            }
+            //repopulate the table data
+            tableData = new TemporalAllocationInventoriesTableData(datasets);
+            
+            refresh();
+        }
     }
 }
