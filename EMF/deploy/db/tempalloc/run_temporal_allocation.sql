@@ -176,7 +176,7 @@ BEGIN
     FROM emf.internal_sources i
    WHERE i.dataset_id = episodic_result_dataset_id;
 
-  xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, xref_dataset_id, xref_dataset_version, 'MONTHLY');
+  xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, inv_filter, xref_dataset_id, xref_dataset_version, 'MONTHLY');
 
   -- build list of months to process
   FOR month_num IN EXTRACT(MONTH FROM start_day)..EXTRACT(MONTH FROM end_day) LOOP
@@ -364,7 +364,7 @@ BEGIN
 
   -- now do monthly to daily using monthly results just created
 
-  xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, xref_dataset_id, xref_dataset_version, 'WEEKLY');
+  xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, inv_filter, xref_dataset_id, xref_dataset_version, 'WEEKLY');
 
   loop_date := start_day;
   FOR month_num IN EXTRACT(MONTH FROM start_day)..EXTRACT(MONTH FROM end_day) LOOP

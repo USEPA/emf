@@ -3,6 +3,7 @@
 CREATE OR REPLACE FUNCTION public.build_temporal_allocation_xref_sql(
   inv_dataset_id integer,
   inv_dataset_version integer,
+  inv_dataset_filter_sql text,
   xref_dataset_id integer,
   xref_dataset_version integer,
   profile_type varchar
@@ -12,7 +13,6 @@ DECLARE
 
   inv_table_name varchar(64) := '';
   inv_dataset_type_name varchar(255) := '';
-	inv_dataset_filter_sql text := '';
   xref_table_name varchar(64) := '';
   xref_dataset_filter_sql text := '';
   
@@ -61,10 +61,6 @@ BEGIN
       WHEN LENGTH(' || inv_fips || ') = 5 THEN ''0'' || ' || inv_fips || '
       ELSE ' || inv_fips || '
     END';
-  
-  -- build the inventory version filtering clause
-  SELECT public.build_version_where_filter(inv_dataset_id, inv_dataset_version, 'inv') 
-    INTO inv_dataset_filter_sql;
 
   -- get the cross-reference table name
   SELECT LOWER(i.table_name)
