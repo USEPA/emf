@@ -92,6 +92,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                 viewData();
             }
         });
+        viewDataButton.setEnabled(false);
         buttonPanel.add(viewDataButton);
         Button summarizeButton = new Button("Summarize", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {

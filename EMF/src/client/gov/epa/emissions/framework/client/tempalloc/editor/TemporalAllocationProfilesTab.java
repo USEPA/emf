@@ -92,6 +92,7 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
             messagePanel.setMessage(e.getMessage());
         }
         dailyProfileDataset = new ComboBox("Not selected", datasets);
+        dailyProfileDataset.setEnabled(false);
         if (temporalAllocation.getDailyProfileDataset() != null) {
             dailyProfileDataset.setSelectedItem(temporalAllocation.getDailyProfileDataset());
         }

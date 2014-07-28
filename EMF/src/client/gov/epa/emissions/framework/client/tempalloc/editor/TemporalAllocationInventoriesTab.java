@@ -108,6 +108,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                     //setVersionAction();
             }
         });
+        editButton.setEnabled(false);
         panel.add(editButton);
         Button removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
@@ -134,6 +135,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 }
             }
         });
+        viewDataButton.setEnabled(false);
         panel.add(viewDataButton);
 
         return panel;
@@ -143,7 +145,6 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         InputDatasetSelectionView view = new InputDatasetSelectionDialog(parentConsole);
         InputDatasetSelectionPresenter presenter = new InputDatasetSelectionPresenter(view, session,
                 new DatasetType[] { 
-                    session.getLightDatasetType(DatasetType.orlPointInventory),
                     session.getLightDatasetType(DatasetType.orlPointInventory),
                     session.getLightDatasetType(DatasetType.orlNonpointInventory),
                     session.getLightDatasetType(DatasetType.orlNonroadInventory),
