@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.BorderlessButton;
 import gov.epa.emissions.commons.gui.Button;
@@ -145,7 +147,6 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 }
             }
         });
-        viewDataButton.setEnabled(false);
         panel.add(viewDataButton);
 
         return panel;
@@ -252,23 +253,31 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
     }
     
     private void showDatasetDataViewer(EmfDataset dataset) {
-//        try {
-//            Version[] versions = editPresenter.getVersions(dataset);
-//            //if just one version, then go directly to the dataviewer
-//            if (versions.length == 1) {
-//                DataViewer dataViewerView = new DataViewer(dataset, parentConsole, desktopManager);
-//                DataViewPresenter dataViewPresenter = new DataViewPresenter(dataset, versions[0], getTableName(dataset), dataViewerView, session);
-//                dataViewPresenter.display();
-//            //else goto to dataset editior and display different version to display
-//            } else {
-//                DatasetPropertiesViewer datasetPropertiesViewerView = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-//                editControlStrategyPresenter.doDisplayPropertiesView(datasetPropertiesViewerView, dataset);
-//                datasetPropertiesViewerView.setDefaultTab(1);
-//            }
-////            presenter.doView(version, table, view);
-//        } catch (EmfException e) {
-////            displayError(e.getMessage());
-//        }
+        try {
+            Version[] versions = presenter.getVersions(dataset);
+            //if just one version, then go directly to the dataviewer
+            if (versions.length == 1) {
+                DataViewer dataViewerView = new DataViewer(dataset, parentConsole, desktopManager);
+                DataViewPresenter dataViewPresenter = new DataViewPresenter(dataset, versions[0], getTableName(dataset), dataViewerView, session);
+                dataViewPresenter.display();
+            //else goto to dataset editior and display different version to display
+            } else {
+                DatasetPropertiesViewer datasetPropertiesViewerView = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                presenter.doDisplayPropertiesView(datasetPropertiesViewerView, dataset);
+                datasetPropertiesViewerView.setDefaultTab(1);
+            }
+//            presenter.doView(version, table, view);
+        } catch (EmfException e) {
+//            displayError(e.getMessage());
+        }
+    }
+    
+    private String getTableName(Dataset dataset) {
+        InternalSource[] internalSources = dataset.getInternalSources();
+        String tableName = "";
+        if (internalSources.length > 0)
+            tableName = internalSources[0].getTable();
+        return tableName;
     }
  
     protected void removeAction() {
