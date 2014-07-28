@@ -3,11 +3,16 @@ package gov.epa.emissions.framework.client.tempalloc.editor;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
+import gov.epa.emissions.commons.data.Dataset;
+import gov.epa.emissions.commons.data.InternalSource;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.data.viewer.DataViewPresenter;
+import gov.epa.emissions.framework.client.data.viewer.DataViewer;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesEditor;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.client.meta.PropertiesEditorPresenter;
@@ -38,11 +43,14 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
     
     private DesktopManager desktopManager;
     
+    private TemporalAllocationPresenter presenter;
+    
     private SelectableSortFilterWrapper table;
     
     public TemporalAllocationOutputTab(TemporalAllocation temporalAllocation, EmfSession session, 
             ManageChangeables changeablesList, SingleLineMessagePanel messagePanel, 
-            EmfConsole parentConsole, DesktopManager desktopManager) {
+            EmfConsole parentConsole, DesktopManager desktopManager,
+            TemporalAllocationPresenter presenter) {
         super.setName("output");
         this.temporalAllocation = temporalAllocation;
         this.session = session;
@@ -50,6 +58,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
         this.messagePanel = messagePanel;
         this.parentConsole = parentConsole;
         this.desktopManager = desktopManager;
+        this.presenter = presenter;
     }
     
     public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
@@ -95,7 +104,6 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                 viewData();
             }
         });
-        viewDataButton.setEnabled(false);
         buttonPanel.add(viewDataButton);
         Button summarizeButton = new Button("Summarize", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -142,9 +150,33 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
         for (TemporalAllocationOutput output : selectedOutputs) {
             EmfDataset dataset = output.getOutputDataset();
             if (dataset != null) {
-                //
+                try {
+                    Version[] versions = presenter.getVersions(dataset);
+                    //if just one version, then go directly to the dataviewer
+                    if (versions.length == 1) {
+                        DataViewer dataViewerView = new DataViewer(dataset, parentConsole, desktopManager);
+                        DataViewPresenter dataViewPresenter = new DataViewPresenter(dataset, versions[0], getTableName(dataset), dataViewerView, session);
+                        dataViewPresenter.display();
+                    //else goto to dataset editior and display different version to display
+                    } else {
+                        DatasetPropertiesViewer datasetPropertiesViewerView = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                        presenter.doDisplayPropertiesView(datasetPropertiesViewerView, dataset);
+                        datasetPropertiesViewerView.setDefaultTab(1);
+                    }
+//                    presenter.doView(version, table, view);
+                } catch (EmfException e) {
+//                    displayError(e.getMessage());
+                }
             }
         }
+    }
+    
+    private String getTableName(Dataset dataset) {
+        InternalSource[] internalSources = dataset.getInternalSources();
+        String tableName = "";
+        if (internalSources.length > 0)
+            tableName = internalSources[0].getTable();
+        return tableName;
     }
     
     private void summarize() throws EmfException {
