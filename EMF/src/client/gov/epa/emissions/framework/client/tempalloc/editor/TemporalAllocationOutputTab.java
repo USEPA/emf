@@ -8,7 +8,10 @@ import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.meta.DatasetPropertiesEditor;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
+import gov.epa.emissions.framework.client.meta.PropertiesEditorPresenter;
+import gov.epa.emissions.framework.client.meta.PropertiesEditorPresenterImpl;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -154,9 +157,9 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
         for (TemporalAllocationOutput output : selectedOutputs) {
             EmfDataset dataset = output.getOutputDataset();
             if (dataset != null) {
-                PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
-                DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-                presenter.doDisplay(view);
+                DatasetPropertiesEditor view = new DatasetPropertiesEditor(session, parentConsole, desktopManager);
+                PropertiesEditorPresenter presenter = new PropertiesEditorPresenterImpl(dataset, view, session);
+                presenter.doDisplay();
                 view.setDefaultTab(7);
             }
         }
