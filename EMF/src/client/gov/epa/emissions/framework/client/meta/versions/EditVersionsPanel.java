@@ -222,28 +222,6 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
         return panel;
     }
 
-    /*
-     * private SelectableSortFilterWrapper getTable() { EmfDatasetTableData tableData = new EmfDatasetTableData(new
-     * EmfDataset[] { dataset }); return new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria()); }
-     */
-
-    /*
-     * private SortCriteria sortCriteria() { String[] columnNames = { "Last Modified Date" }; return new
-     * SortCriteria(columnNames, new boolean[] { false }, new boolean[] { true }); }
-     */
-
-    /*
-     * private Action editPropAction() { // DatasetPropertiesViewer view = new DatasetPropertiesViewer(parentConsole,
-     * desktopManager); return new AbstractAction() { public void actionPerformed(ActionEvent arg0) {
-     * 
-     * DatasetPropertiesEditor view = new DatasetPropertiesEditor(presenter.getSession(), parentConsole,
-     * desktopManager); PropertiesEditorPresenter editPresenter = new PropertiesEditorPresenterImpl(dataset, view,
-     * presenter .getSession());
-     * 
-     * clear(); try { editPresenter.doDisplay(); } catch (EmfException e) { // NOTE Auto-generated catch block
-     * messagePanel.setError(e.getMessage()); } } }; }
-     */
-
     protected void doNew(Version[] versions) {
         clear();
 

@@ -23,6 +23,7 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
@@ -37,6 +38,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -44,6 +46,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -55,6 +58,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
+import javax.swing.SwingWorker;
 
 public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshObserver {
 
@@ -494,21 +498,65 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
     }
 
     protected void doDisplayInputDatasetsPropertiesViewer() {
-        List<EmfDataset> datasets = getSelectedDatasets(getSelectedInputs());
+        final List<EmfDataset> datasets = getSelectedDatasets(getSelectedInputs());
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more inputs with datasets specified to view.");
             return;
         }
-        for (Iterator<EmfDataset> iter = datasets.iterator(); iter.hasNext();) {
-            DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-            EmfDataset dataset = iter.next();
+
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+        class ViewDatasetPropertiesTask extends SwingWorker<Void, Void> {
+
+            private Container parentContainer;
+
+            public ViewDatasetPropertiesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (Iterator<EmfDataset> iter = datasets.iterator(); iter.hasNext();) {
+                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                    EmfDataset dataset = iter.next();
+                    try {
+                        presenter.doDisplayPropertiesView(view, dataset);
+                    } catch (EmfException e) {
+                        messagePanel.setError(e.getMessage());
+                        //e.printStackTrace();
+                    } 
+                }
+                return null;
+            }
+
+        /*
+         * Executed in event dispatching thread
+         */
+        @Override
+        public void done() {
             try {
-                presenter.doDisplayPropertiesView(view, dataset);
-            } catch (EmfException e) {
-                messagePanel.setError(e.getMessage());
-                //e.printStackTrace();
+                //make sure something didn't happen
+                get();
+
+            } catch (InterruptedException e1) {
+                //                messagePanel.setError(e1.getMessage());
+                //                setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                //                messagePanel.setError(e1.getCause().getMessage());
+                //                setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                //                this.parentContainer.setCursor(null); //turn off the wait cursor
+                //                this.parentContainer.
+                ComponentUtility.enableComponents(parentContainer, true);
+                this.parentContainer.setCursor(null); //turn off the wait cursor
             }
         }
+    };
+            new ViewDatasetPropertiesTask(this).execute();
     }
 
     protected void doExportInputDatasets(List inputlist) {

@@ -193,7 +193,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
                 try {
                     displayOutputDatasetsPropertiesViewer();
                 } catch (Exception e1) {
-                    messagePanel.setError("Could not get dataset for output " + selectedOutput.getName() + "." 
+                    messagePanel.setError("Could not get dataset for output ." 
                             + (e1.getMessage() == null ? "" : e1.getMessage()));
                 }
             }
@@ -252,27 +252,27 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
         }
     }
 
-    protected void displayOutputDatasetsPropertiesViewer() throws EmfException {
-        messagePanel.clear();
-        List selected = table.selected();
-        
-        if (selected.size() == 0) {
-            messagePanel.setMessage("Please select one or more outputs to view.");
-            return;
-        }
-        
-        for (int i=0; i<selected.size(); i++) {
-            selectedOutput = (CaseOutput) selected.get(i);
-            if (selectedOutput == null){ 
-                throw new EmfException("Output is null "); 
-            }
-            int id = selectedOutput.getDatasetId();
-            EmfDataset dataset = presenter.getDataset(id);
-            PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
-            DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-            presenter.doDisplay(view);
-        }
-    }
+//    protected void displayOutputDatasetsPropertiesViewer() throws EmfException {
+//        messagePanel.clear();
+//        List selected = table.selected();
+//        
+//        if (selected.size() == 0) {
+//            messagePanel.setMessage("Please select one or more outputs to view.");
+//            return;
+//        }
+//        
+//        for (int i=0; i<selected.size(); i++) {
+//            selectedOutput = (CaseOutput) selected.get(i);
+//            if (selectedOutput == null){ 
+//                throw new EmfException("Output is null "); 
+//            }
+//            int id = selectedOutput.getDatasetId();
+//            EmfDataset dataset = presenter.getDataset(id);
+//            PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
+//            DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+//            presenter.doDisplay(view);
+//        }
+//    }
 
     public void observe(ViewableOutputsTabPresenterImpl presenter) {
         this.presenter = presenter;
