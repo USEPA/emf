@@ -1,11 +1,16 @@
 package gov.epa.emissions.framework.tasks;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import gov.epa.emissions.framework.services.exim.ExportTask;
 
 /**
  * This class holds the status of each export task in the export submitter or export task manager
  * 
  */
+@Component
+@Scope("prototype")
 public class ExportTaskStatus implements TaskStatus{
 
     private String taskId=null;

@@ -187,7 +187,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private void displayTable(String table) {
         try {
-            presenter.displayTable(pageContainer);
+            presenter.displayTable(pageContainer, this, messagePanel);
         } catch (EmfException e) {
             displayError("Could not display table: " + table + "." + e.getMessage());
         }

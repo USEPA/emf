@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
@@ -1695,6 +1696,9 @@ public class DatasetDAO {
         if ("versions".equalsIgnoreCase(table.toLowerCase())) {
             throw new EmfException("Table versions moved to schema emf."); // VERSIONS TABLE
         }
+        // if first character start with a number let's delineate with quotes "table_name"
+        if (NumberUtils.isNumber(table.charAt(0) + ""))
+            table = "\"" + table + "\"";
         return "emissions." + table;
     }
 
@@ -1811,18 +1815,32 @@ public class DatasetDAO {
         Connection connection = datasource.getConnection();
         
         List<EmfDataset> filteredDatasets = new ArrayList<EmfDataset>();
+        int count = 0;
         for ( EmfDataset dataset : datasets) {
             EmfDataset ds = this.getDataset(session, dataset.getId());
             String sqlStr = "SELECT * FROM " + this.qualifiedEmissionTableName(ds) + " WHERE " + dataValueFilter + " LIMIT 1;";
             try {
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sqlStr);
+                ResultSet resultSet = null;
+                try {
+                    resultSet = statement.executeQuery(sqlStr);
+                } catch (SQLException e) {
+                    //they're is possibility for old and missing tables, so if the first dataset/table doesn't have any issues, 
+                    //then let's ignore the other issue tables...
+                    if (count == 0)
+                        throw new EmfException("Error with Data Value Filter, incorrect filter SQL syntax: " + dataValueFilter);
+                    
+                }
+                ++count;
+                
                 if ( resultSet != null && resultSet.next()) {
                     filteredDatasets.add(dataset);
                 }
                 resultSet.close();
             } catch (SQLException e) {
                 throw new SQLException("Error with Data Value Filter, incorrect filter SQL syntax: " + dataValueFilter);
+            } catch (EmfException e) {
+                throw e;
             }
         }
        

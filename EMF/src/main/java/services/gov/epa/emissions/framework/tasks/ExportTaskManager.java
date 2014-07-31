@@ -1,12 +1,26 @@
 package gov.epa.emissions.framework.tasks;
 
+import gov.epa.emissions.commons.data.KeyVal;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.commons.util.CustomDateFormat;
+import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.Services;
+import gov.epa.emissions.framework.services.basic.AccessLog;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
+import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
+import gov.epa.emissions.framework.services.basic.LoggingServiceImpl;
+import gov.epa.emissions.framework.services.basic.StatusDAO;
+import gov.epa.emissions.framework.services.data.DataServiceImpl;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.exim.ExportTask;
-import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.exim.IExportTask;
+import gov.epa.emissions.framework.services.persistence.EmfPropertyDao;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.spring.AppConfig;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -20,10 +34,20 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Provider;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 
+@Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ExportTaskManager implements TaskManager {
     private static Log log = LogFactory.getLog(ExportTaskManager.class);
 
@@ -31,7 +55,7 @@ public class ExportTaskManager implements TaskManager {
 
     private static int refCount = 0;
 
-    private static HibernateSessionFactory sessionFactory;
+//    private static HibernateSessionFactory sessionFactory;
 
     private final int poolSize;
 
@@ -42,15 +66,28 @@ public class ExportTaskManager implements TaskManager {
     private static ArrayList<TaskSubmitter> submitters = new ArrayList<TaskSubmitter>();
 
     private static ThreadPoolExecutor threadPool = null;
-
+    
     // PBQ is the queue for submitting jobs
     private static BlockingQueue<Runnable> taskQueue = new PriorityBlockingQueue<Runnable>();
 
     private ArrayBlockingQueue<Runnable> threadPoolQueue = new ArrayBlockingQueue<Runnable>(5);
 
+    private EmfPropertyDao emfPropertyDao;
+
     private static Hashtable<String, Task> runTable = new Hashtable<String, Task>();
 
     private static Hashtable<String, Task> waitTable = new Hashtable<String, Task>();
+
+    private HibernateSessionFactory hibernateSessionFactory;
+
+    private DbServerFactory dbServerFactory;
+    
+    // Singleton factory method
+    public static synchronized ExportTaskManager getExportTaskManager() {
+        if (ref == null)
+            ref = new ExportTaskManager();
+        return ref;
+    }
 
     public static synchronized int getSizeofTaskQueue() {
         return taskQueue.size();
@@ -70,7 +107,6 @@ public class ExportTaskManager implements TaskManager {
         taskQueue.clear();
         threadPoolQueue.clear();
         threadPool.shutdownNow();
-        sessionFactory = null;
     }
 
     public synchronized void removeTask(Runnable task) {
@@ -106,22 +142,17 @@ public class ExportTaskManager implements TaskManager {
         throw new CloneNotSupportedException();
     }
 
-    // Singleton factory method
-    public static synchronized ExportTaskManager getExportTaskManager() {
-        if (ref == null)
-            ref = new ExportTaskManager();
-        return ref;
-    }
+//    // Singleton factory method
+//    @Autowired
+//    public static synchronized ExportTaskManager getExportTaskManager() {
+//        if (ref == null)
+//            ref = new ExportTaskManager();
+//        return ref;
+//    }
 
     // The constructor
     private ExportTaskManager() {
         super();
-
-        sessionFactory = HibernateSessionFactory.get();
-
-        if (DebugLevels.DEBUG_14())
-            System.out
-                    .println("*****HibernateSessionFactory in ExportTaskManager is null? " + (sessionFactory == null));
 
         this.poolSize = runningThreadSize();
         this.maxPoolSize = poolSize;
@@ -149,6 +180,7 @@ public class ExportTaskManager implements TaskManager {
     }
 
     public synchronized void addTasks(ArrayList<Runnable> tasks) {
+        log.info("addTasks");
         taskQueue.addAll(tasks);
 
         synchronized (runTable) {
@@ -159,6 +191,10 @@ public class ExportTaskManager implements TaskManager {
     }
 
     public static synchronized void processTaskQueue() {
+        log.info("processTaskQueue()");
+        log.info("processTaskQueue() taskQueue.size() " + taskQueue.size());
+        log.info("processTaskQueue() waitTable.size() " + waitTable.size());
+        log.info("processTaskQueue() runTable.size() " + runTable.size());
         int threadsAvail = -99;
         try {
             if (DebugLevels.DEBUG_9()) {
@@ -294,9 +330,10 @@ public class ExportTaskManager implements TaskManager {
                                     // synchronized (runTable) {
                                     runTable.put(nextTask.getTaskId(), nextTask);
                                     // }// synchronized
-
+                                    System.out.println("nextTask.isReady() " + nextTask.isReady());
                                     // runTask and decrement threadsAvail
                                     threadPool.execute(nextTask);
+                                    System.out.println("nextTask.isReady() " + nextTask.isReady());
                                     // synchronized (threadPool) {
                                     // threadsAvail--;
                                     // }// synchronized
@@ -351,7 +388,7 @@ public class ExportTaskManager implements TaskManager {
         Iterator<Task> iter = runTasks.iterator();
         // synchronized (runTable) {
         while (iter.hasNext()) {
-            ExportTask runTask = (ExportTask) iter.next();
+            IExportTask runTask = (IExportTask) iter.next();
             if (DebugLevels.DEBUG_9())
                 System.out.println("In ExportTaskManager::notEqualsToAnyRunTask " + " exportTask is of type= "
                         + tsk.getClass().getName() + " and runTask if of type= " + runTask.getClass().getName());
@@ -361,7 +398,7 @@ public class ExportTaskManager implements TaskManager {
             }
         }
         // }// synchronized
-
+log.info("notEqualsToAnyRunTask = " + notFound);
         return notFound;
     }
 
@@ -673,19 +710,132 @@ public class ExportTaskManager implements TaskManager {
     }
 
     private int runningThreadSize() {
-        Session session = sessionFactory.getSession();
         int value = 4;
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("NUMBER_OF_SIMULT_EXPORTS", session);
+            log.info(" EmfProperty property = emfPropertyDao.getProperty(\"NUMBER_OF_SIMULT_EXPORTS\")");
+            EmfProperty property = emfPropertyDao.getProperty("NUMBER_OF_SIMULT_EXPORTS");
             value = Integer.parseInt(property.getValue());
         } catch (Exception e) {
             return value;// Default value for maxpool and poolsize
         } finally {
-            session.close();
+            //
         }
 
         return value;
     }
 
+    @Autowired
+    public void setEmfPropertyDao(EmfPropertyDao emfPropertyDao) {
+        this.emfPropertyDao = emfPropertyDao;
+    }
+    
+    private FileDownloadDAO fileDownloadDAO;
+
+    @Autowired
+    public void setFileDownloadDAO(final FileDownloadDAO fileDownloadDAO) {
+        this.fileDownloadDAO = fileDownloadDAO;
+    }
+    
+    @Autowired
+    private Provider<IExportTask> exportTaskPrototype;
+   
+    public IExportTask createExportTask(User user, String purpose, boolean overwrite, 
+            String rowFilters, String colOrders, File path,
+            String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download) throws Exception {
+
+        // Match version in dataset
+        if (dataset.getId() != version.getDatasetId())
+            throw new EmfException("Dataset doesn't match version (dataset id=" + dataset.getId()
+                    + " but version shows dataset id=" + version.getDatasetId() + ")");
+
+        Services services = new Services();
+        services.setLoggingService(new LoggingServiceImpl(hibernateSessionFactory));
+        services.setStatusService(new StatusDAO(hibernateSessionFactory));
+        services.setDataService(new DataServiceImpl(hibernateSessionFactory));
+
+        
+        
+        
+        File file = validateExportFile(path, "" + (prefix==null ? "" : prefix.trim())  + 
+                ( (prefix==null || prefix.trim().isEmpty() || prefix.trim().endsWith("_")) ? "" : "_") + 
+                getCleanDatasetName(dataset, version), overwrite);
+
+        AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
+                "Version " + version.getVersion(), purpose, file.getAbsolutePath());
+        accesslog.setDatasetname(dataset.getName());
+
+        if (DebugLevels.DEBUG_9())
+            System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
+                    + (dbServerFactory == null) + " dataset: " + dataset.getName());
+        
+        log.info("IExportTask createExportTask exportTaskPrototype.get()" );
+        
+//        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+//        IExportTask eximTask = (IExportTask) context.getBean("exportTask");
+
+        IExportTask eximTask = exportTaskPrototype.get();
+        eximTask.init(user, file, dataset, services, accesslog, 
+                rowFilters, colOrders, dbServerFactory, hibernateSessionFactory, version, filterDataset, filterDatasetVersion,
+                filterDatasetJoinCondition, download);
+//        eximTask.setEmfPropertyDao(emfPropertyDao);
+        // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
+
+//        log.info("IExportTask createExportTask eximTask.getDownloadExportRootURL() " + eximTask.getDownloadExportRootURL() );
+//        log.info("IExportTask createExportTask return" );
+        return eximTask;
+    }
+
+    @Autowired
+    public void setHibernateSessionFactory(HibernateSessionFactory hibernateSessionFactory) {
+        this.hibernateSessionFactory = hibernateSessionFactory;
+    }
+
+    @Autowired
+    public void setDbServerFactory(DbServerFactory dbServerFactory) {
+        this.dbServerFactory = dbServerFactory;
+    }
+
+    private String getCleanDatasetName(EmfDataset dataset, Version version) {
+        String name = dataset.getName();
+        String prefix = "", suffix = "";
+        // KeyVal[] keyvals = dataset.getKeyVals(); // only gets KeyVals from dataset itself
+        KeyVal[] keyvals = dataset.mergeKeyVals(); // this function is not equal to getKeyVals() anymore
+        String date = CustomDateFormat.format_ddMMMyyyy(version.getLastModifiedDate());
+
+        for (int i = 0; i < keyvals.length; i++) {
+            prefix = keyvals[i].getKeyword().getName().equalsIgnoreCase("EXPORT_PREFIX") ? keyvals[i].getValue() : "";
+            if (!prefix.equals(""))
+                break;
+        }
+
+        for (int i = 0; i < keyvals.length; i++) {
+            suffix = keyvals[i].getKeyword().getName().equalsIgnoreCase("EXPORT_SUFFIX") ? keyvals[i].getValue() : "";
+            if (!suffix.equals(""))
+                break;
+        }
+
+        for (int i = 0; i < name.length(); i++) {
+            if (!Character.isLetterOrDigit(name.charAt(i))) {
+                name = name.replace(name.charAt(i), '_');
+            }
+        }
+
+        String versionString = (version.isFinalVersion() ? "" : "_nf") + "_v" + +version.getVersion();
+
+        return prefix + name + "_" + date.toLowerCase() + versionString + suffix;
+    }
+    
+    private File validateExportFile(File path, String fileName, boolean overwrite) throws EmfException {
+        File file = new File(path, fileName);
+
+        if (!overwrite) {
+            if (file.exists() && file.isFile()) {
+                // log.error("File exists and cannot be overwritten");
+                throw new EmfException("Cannot export to existing file.  Select overwrite option");
+            }
+        }
+        return file;
+    }
 }

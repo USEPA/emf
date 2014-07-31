@@ -59,6 +59,13 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
         layout.add(createControlPanel(), BorderLayout.PAGE_END);
 
         super.display();
+        //populate fields in async thread (via SwingWorker)
+//        populate();
+    }
+
+    private void populate() {
+        // NOTE Auto-generated method stub
+        
     }
 
     private JPanel createVersionsPanelLayout(EditVersionsPresenter versionsPresenter, EmfDataset dataset,
@@ -74,7 +81,7 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
 
     private EditVersionsPanel createVersionsPanel(EditVersionsPresenter versionsPresenter, EmfDataset dataset,
             MessagePanel messagePanel) {
-        versionsPanel = new EditVersionsPanel(dataset, messagePanel, parentConsole, desktopManager);
+        versionsPanel = new EditVersionsPanel(dataset, messagePanel, parentConsole, desktopManager, layout);
         try {
             versionsPresenter.display(versionsPanel);
         } catch (EmfException e) {

@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.services.basic;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.EmfPropertyDao;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.spring.AppConfig;
 
@@ -14,16 +15,25 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-@Repository
+@Repository("fileDownloadDAO")
 //@Scope("prototype")
 public class FileDownloadDAO {
 
     private HibernateSessionFactory sessionFactory;
+
+    private EmfPropertyDao emfPropertyDao;
+    
+    @Autowired
+    public void setEmfPropertyDao(EmfPropertyDao emfPropertyDao) {
+        this.emfPropertyDao = emfPropertyDao;
+    }
 
     public FileDownloadDAO() {
         this(HibernateSessionFactory.get());
@@ -31,24 +41,19 @@ public class FileDownloadDAO {
 
     public FileDownloadDAO(HibernateSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+//        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+//        this.emfPropertyDao = (EmfPropertyDao) context.getBean("emfPropertyDao");
+
     }
 
 //    public void setSessionFactory(SessionFactory sessionFactory) {
 //        this.sessionFactory = sessionFactory;
 //      }
 
+    
     private String getPropertyValue(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
-
-        try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty(name, session);
-            return property != null ? property.getValue() : null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new EmfException("Could not get EMF property.");
-        } finally {
-            session.close();
-        }
+        EmfProperty property = emfPropertyDao.getProperty(name);
+        return property != null ? property.getValue() : null;
     }
 
     public String getDownloadExportFolder() throws EmfException {
@@ -115,6 +120,22 @@ public class FileDownloadDAO {
         add(fileDownload);
     }
     
+    public void add(User user, Date dateAdded, String absolutePath, String url, String type, Boolean overwrite) throws EmfException {
+        
+        String username = user.getUsername();
+        
+        FileDownload fileDownload = new FileDownload();
+        fileDownload.setUserId(user.getId());
+        fileDownload.setType(type);
+        fileDownload.setTimestamp(dateAdded);
+        fileDownload.setAbsolutePath(absolutePath); //getDownloadExportFolder() + "/" + username + "/" + fileName
+        fileDownload.setUrl(url);   //getDownloadExportRootURL() + "/" + username + "/" + fileName
+        fileDownload.setOverwrite(overwrite);
+
+        //persist record
+        add(fileDownload);
+    }
+
     public List getFileDownloads(Integer userId, Session session) {
 //        return this.getHibernateTemplate().find(
 //                "from FileDownload as FD where "

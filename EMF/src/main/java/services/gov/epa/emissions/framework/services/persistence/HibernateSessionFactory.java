@@ -7,7 +7,14 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
+@Repository
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class HibernateSessionFactory {
 
     private static Log log = LogFactory.getLog(HibernateSessionFactory.class);
@@ -16,7 +23,7 @@ public class HibernateSessionFactory {
 
     private static HibernateSessionFactory instance;
 
-    private HibernateSessionFactory() {
+    public HibernateSessionFactory() {
         try {
             Configuration configure = new Configuration().configure("hibernate.cfg.xml");
             sessionFactory = configure.buildSessionFactory();
@@ -27,6 +34,11 @@ public class HibernateSessionFactory {
     }
 
     public HibernateSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

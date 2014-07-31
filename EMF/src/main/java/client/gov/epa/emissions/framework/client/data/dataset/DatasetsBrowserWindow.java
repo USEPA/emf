@@ -586,57 +586,10 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
             return;
         }
 
-        //long running methods.....
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this, false);
-
-        //Instances of javax.swing.SwingWorker are not reusuable, so
-        //we create new instances as needed.
-        class EditDatasetTask extends SwingWorker<Void, Void> {
-            
-            private Container parentContainer;
-
-            public EditDatasetTask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public Void doInBackground() throws EmfException  {
-                for (Iterator iter = datasets.iterator(); iter.hasNext();) {
-                    VersionedDataWindow view = new VersionedDataWindow(parentConsole, desktopManager);
-                    presenter.doDisplayVersionedData(view, (EmfDataset) iter.next());
-                }
-                return null;
-            }
-
-            /*
-             * Executed in event dispatching thread
-             */
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen
-                    get();
-                    
-                } catch (InterruptedException e1) {
-//                    messagePanel.setError(e1.getMessage());
-//                    setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-//                    messagePanel.setError(e1.getCause().getMessage());
-//                    setErrorMsg(e1.getCause().getMessage());
-                } finally {
-//                    this.parentContainer.setCursor(null); //turn off the wait cursor
-//                    this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
-                }
-            }
-        };
-        new EditDatasetTask(this).execute();
+        for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+            VersionedDataWindow view = new VersionedDataWindow(parentConsole, desktopManager);
+            presenter.doDisplayVersionedData(view, (EmfDataset) iter.next());
+        }
     }
 
     private void doRemove() {

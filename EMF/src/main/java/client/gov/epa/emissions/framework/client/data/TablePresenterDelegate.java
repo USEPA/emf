@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.data;
 
+import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.editor.DataAccessToken;
 
@@ -23,7 +24,7 @@ public interface TablePresenterDelegate {
 
     int totalRecords() throws EmfException;
 
-    void updateFilteredCount() throws EmfException;
+    void updateFilteredCount(int totalRecords) throws EmfException;
 
     DataAccessToken token();
 

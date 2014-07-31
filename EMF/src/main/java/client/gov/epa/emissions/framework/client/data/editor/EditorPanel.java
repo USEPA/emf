@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.data.editor;
 import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.commons.db.version.ChangeSet;
 import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.commons.db.version.VersionedRecord;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.framework.client.EmfSession;
@@ -10,6 +11,7 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.data.DoubleRenderer;
 import gov.epa.emissions.framework.client.data.PaginationPanel;
 import gov.epa.emissions.framework.client.data.viewer.TablePresenter;
+import gov.epa.emissions.framework.client.data.viewer.ViewablePage;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.MessagePanel;
 
@@ -95,8 +97,10 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     }
 
     public void observe(TablePresenter presenter) {
-        paginationPanel.init(presenter);
-        sortFilterPanel.init(presenter);
+        paginationPanel.observe(presenter);
+        sortFilterPanel.observe(presenter);
+        paginationPanel.init();
+        sortFilterPanel.init();
         tablePresenter = presenter;
     }
 
@@ -105,6 +109,8 @@ public class EditorPanel extends JPanel implements EditorPanelView {
         if (page != null) {
             this.page = page;
         }
+//        paginationPanel.init(page);
+//        sortFilterPanel.init();
 
         pageContainer.removeAll();
         paginationPanel.updateStatus(this.page);
@@ -173,6 +179,16 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     
     public EmfSession getEmfSession() {
         return emfSession;
+    }
+
+    @Override
+    public void clear() {
+//        page.setRecords(new VersionedRecord[] {});
+//        tableData = new ViewablePage(tableMetadata, page);
+//        tableModel.refresh(tableData);
+//        viewTable.setModel(tableModel);
+//        tableColumnHeaders.displayClumns();
+//        table.repaint();
     }
 
 }

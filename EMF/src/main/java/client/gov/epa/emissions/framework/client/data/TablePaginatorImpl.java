@@ -1,11 +1,16 @@
 package gov.epa.emissions.framework.client.data;
 
+import java.awt.Container;
+import java.util.concurrent.ExecutionException;
+
 import gov.epa.emissions.commons.CommonDebugLevel;
 import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.editor.DataAccessService;
 import gov.epa.emissions.framework.services.editor.DataAccessToken;
+import gov.epa.emissions.framework.ui.MessagePanel;
 
 public class TablePaginatorImpl implements TablePaginator {
 
@@ -17,32 +22,95 @@ public class TablePaginatorImpl implements TablePaginator {
 
     private DataAccessToken token;
 
-    TablePaginatorImpl(Version version, String table, TableView view, DataAccessService service) {
-        this(new DataAccessToken(version, table), view, service);
+    private Container parentContainer;
+
+    private MessagePanel messagePanel;
+
+    private Integer pageCount;
+
+    TablePaginatorImpl(Version version, String table, TableView view, DataAccessService service,
+            Container parentContainer, MessagePanel messagePanel) {
+        this(new DataAccessToken(version, table), view, service, parentContainer, messagePanel);
     }
 
-    public TablePaginatorImpl(DataAccessToken token, TableView view, DataAccessService service) {
+    public TablePaginatorImpl(DataAccessToken token, TableView view, DataAccessService service,
+            Container parentContainer, MessagePanel messagePanel) {
         page = new Page();// page 0, uninitialized
 
         this.token = token;
         this.view = view;
         this.service = service;
+        this.parentContainer = parentContainer;
+        this.messagePanel = messagePanel;
+    }
+
+    private class TablePaginatorSwingWorker extends GenericSwingWorker<Void> {
+        public TablePaginatorSwingWorker(Container parentContainer, MessagePanel messagePanel, int pageNumber) {
+            super(parentContainer, messagePanel);
+            this.pageNumber = pageNumber;
+            view.clear();
+        }
+
+        private int pageNumber;
+
+         private Page page;
+
+        @Override
+        public Void doInBackground() throws EmfException {
+            //just need to populate once
+            if (pageCount == null)
+                pageCount = pageCount();
+            
+            // fix bad page numbers
+            if (pageNumber > pageCount)
+                pageNumber = pageCount;
+            if (pageNumber <= 0)
+                pageNumber = 1;
+
+            page = service.getPage(token(), pageNumber);
+            TablePaginatorImpl.this.page = page;
+
+            if (CommonDebugLevel.DEBUG_PAGE) {
+                System.out.println("loadPage");
+                page.print();
+            }
+
+            return null;
+        }
+
+        @Override
+        public void done() {
+            try {
+                // perform background processing...
+                get();
+
+                // display page in table
+                view.display(page);
+
+                // if paging to last page, then scroll to page end
+                if (pageNumber == pageCount) {
+                    view.scrollToPageEnd();
+                }
+
+            } catch (InterruptedException e1) {
+                messagePanel.setError(e1.getMessage());
+                // setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                messagePanel.setError(e1.getMessage());
+                // setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                finalize();
+            }
+        }
     }
 
     public void doDisplayNext() throws EmfException {
-        int pageNumber = pageNumber();
-        if (pageNumber < pageCount())
-            pageNumber++;
-
-        doDisplay(pageNumber);
+        new TablePaginatorSwingWorker(parentContainer, messagePanel, pageNumber() + 1).execute();
+        // doDisplay(pageNumber);
     }
 
     public void doDisplayPrevious() throws EmfException {
-        int pageNumber = pageNumber();
-        if (pageNumber > 1)
-            pageNumber--;
-
-        doDisplay(pageNumber);
+        new TablePaginatorSwingWorker(parentContainer, messagePanel, pageNumber() - 1).execute();
     }
 
     public int pageNumber() {
@@ -53,57 +121,88 @@ public class TablePaginatorImpl implements TablePaginator {
         if (pageNumber() == pageNumber)
             return;
 
-        loadPage(pageNumber);
+        // loadPage(pageNumber);
+        new TablePaginatorSwingWorker(parentContainer, messagePanel, pageNumber).execute();
     }
 
     public void reloadCurrent() throws EmfException {
-        loadPage(pageNumber());
+        // loadPage(pageNumber());
+        new TablePaginatorSwingWorker(parentContainer, messagePanel, pageNumber()).execute();
     }
 
-    private void loadPage(int pageNumber) throws EmfException {
-        page = service.getPage(token(), pageNumber);
-        
-        if ( CommonDebugLevel.DEBUG_PAGE) {
-            System.out.println("loadPage");
-            page.print();
-        }
-        
-        view.display(page);
-    }
-
+    // private void loadPage(int pageNumber) throws EmfException {
+    // page = service.getPage(token(), pageNumber);
+    //
+    // if ( CommonDebugLevel.DEBUG_PAGE) {
+    // System.out.println("loadPage");
+    // page.print();
+    // }
+    //
+    // view.display(page);
+    // }
+    //
     public void doDisplayFirst() throws EmfException {
-        if (pageNumber() != 1)
-            doDisplay(1);
+        int pageNumber = pageNumber();
+        if (pageNumber != 1)
+            new TablePaginatorSwingWorker(parentContainer, messagePanel, pageNumber).execute();
     }
 
     public void doDisplayLast() throws EmfException {
-        int pageCount = pageCount();
-        if (pageNumber() != pageCount) {
-            doDisplay(pageCount);
-            view.scrollToPageEnd();
-        }
+        new TablePaginatorSwingWorker(parentContainer, messagePanel, pageCount).execute();
     }
 
     private int pageCount() throws EmfException {
         return service.getPageCount(token());
     }
 
-    public void doDisplayPageWithRecord(int record) throws EmfException {
+    public void doDisplayPageWithRecord(final int record) throws EmfException {
         if (isCurrent(record))
             return;
 
-        page = service.getPageWithRecord(token(), record);
-        
-        if ( CommonDebugLevel.DEBUG_PAGE) {
-            System.out.println("doDisplayPageWithRecord");
-            page.print();
-        }
-        
-        view.display(page);
+        new GenericSwingWorker<Void>(parentContainer, messagePanel) {
+
+            @Override
+            public Void doInBackground() throws EmfException {
+
+                page = service.getPageWithRecord(token(), record);
+
+                if (CommonDebugLevel.DEBUG_PAGE) {
+                    System.out.println("doDisplayPageWithRecord");
+                    page.print();
+                }
+
+                return null;
+            }
+
+            @Override
+            public void done() {
+                try {
+                    // perform background processing...
+                    get();
+
+                    // display page in table
+                    view.display(page);
+
+                } catch (InterruptedException e1) {
+                    messagePanel.setError(e1.getMessage());
+                    // setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    messagePanel.setError(e1.getMessage());
+                    // setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    finalize();
+                }
+            }
+        }.execute();
     }
 
-    public int totalRecords() throws EmfException {
-        return service.getTotalRecords(token());
+    private Integer totalRecords;
+    
+    public int getTotalRecords() throws EmfException {
+//        System.out.println("TablPginatorImpl.totalRecords token() = " + token());
+        if (totalRecords == null)
+            totalRecords = service.getTotalRecords(token());
+        return totalRecords;
     }
 
     public DataAccessToken token() {

@@ -11,13 +11,16 @@ import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.AccessLog;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
-import gov.epa.emissions.framework.services.basic.FileDownload;
 import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.LoggingServiceImpl;
+import gov.epa.emissions.framework.services.basic.Status;
+import gov.epa.emissions.framework.services.basic.UserDao;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.EmfPropertyDao;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.spring.AppConfig;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.ExportTaskManager;
 import gov.epa.emissions.framework.tasks.Task;
@@ -26,21 +29,55 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author Conrad F. D'Cruz
  * 
  */
-public class ExportTask extends Task {
+@Service("exportTask")
+@Scope("prototype")
+public class ExportTask extends Task implements IExportTask {
 
+//    private ServletRequestAttributes attributes;
+    
+    private ExportTaskService exportTaskService;
+
+    private Services services;
+
+    @Autowired
+    public void setExportTaskService(ExportTaskService exportTaskService) {
+        this.exportTaskService = exportTaskService;
+    }
+
+    @PostConstruct
+    public void init() {
+        // Grab current thread local request attributes.
+        // These are available because we are not in the new 
+        // thread yet.
+//        attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+//        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+//        this.emfPropertyDao = (EmfPropertyDao) context.getBean("emfPropertyDao");
+//        this.fileDownloadDAO = (FileDownloadDAO) context.getBean("fileDownloadDAO");
+        log.info("init");
+    }
+
+    @Override
     public boolean isEquivalent(Task task) {
         ExportTask etsk = (ExportTask) task;
         boolean eq = false;
-
         if (this.file.getAbsolutePath().equals(etsk.getFile().getAbsolutePath())) {
             eq = true;
         }
@@ -87,6 +124,29 @@ public class ExportTask extends Task {
 
     private FileDownloadDAO fileDownloadDAO;
 
+    @Autowired
+    public void setFileDownloadDAO(final FileDownloadDAO fileDownloadDAO) {
+        this.fileDownloadDAO = fileDownloadDAO;
+    }
+    
+    private EmfPropertyDao emfPropertyDao;
+    
+    @Autowired
+    public void setEmfPropertyDao(EmfPropertyDao emfPropertyDao) {
+        this.emfPropertyDao = emfPropertyDao;
+    }
+
+    private UserDao userDao;
+    
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public ExportTask() {
+        //
+    }
+    
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog, // BUG3589 need to know where the task constructed in case job
             DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version) {
         super();
@@ -96,15 +156,17 @@ public class ExportTask extends Task {
         this.user = user;
         this.file = file;
         this.dataset = dataset;
+        this.services = services;
         this.type = dataset.getDatasetType();
         this.statusServices = services.getStatus();
         this.loggingService = services.getLoggingService();
         this.dbFactory = dbFactory;
         this.accesslog = accesslog;
         this.sessionFactory = sessionFactory;
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+//        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
         this.version = version;
         this.datasetDao = new DatasetDAO();
+//        this.exportTaskService = new ExportTaskServiceImpl(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, sessionFactory, version, dataset, version, filterDatasetJoinCondition, download, filterDatasetJoinCondition, colOrders);
     }
     
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog,
@@ -116,16 +178,54 @@ public class ExportTask extends Task {
         this.filterDataset = filterDataset;
         this.filterDatasetVersion = filterDatasetVersion;
         this.filterDatasetJoinCondition = filterDatasetJoinCondition;
-    } 
+    }
 
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog,
             String rowFilters, String colOrders,
             DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download) {
         this(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
         this.download = download;
+    }
+
+    @Override
+    public void init(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog,
+            String rowFilters, String colOrders,
+            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download) {
+        createId();
+        if (DebugLevels.DEBUG_1())
+            System.out.println(">>>> " + createId());
+        this.user = user;
+        this.file = file;
+        this.dataset = dataset;
+        this.type = dataset.getDatasetType();
+        this.services = services;
+        this.statusServices = services.getStatus();
+        this.loggingService = services.getLoggingService();
+        this.dbFactory = dbFactory;
+        this.accesslog = accesslog;
+        this.sessionFactory = sessionFactory;
+//        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.version = version;
+        this.datasetDao = new DatasetDAO();
+
+        this.rowFilters = rowFilters;
+        this.colOrders = colOrders;
+        this.filterDataset = filterDataset;
+        this.filterDatasetVersion = filterDatasetVersion;
+        this.filterDatasetJoinCondition = filterDatasetJoinCondition;
+
+        this.download = download;
     } 
 
     public void run() {
+        log.info("start run");
+        exportTaskService.init(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, download, this.taskId, this.submitterId);
+        exportTaskService.run();
+        if ( 1 == 1 ) return;
+//        RequestContextHolder.setRequestAttributes(attributes);
+        //try something
+//        log.info("this.userDao.all().size() = " + this.userDao.all().size()) ;
+        
         DbServer dbServer = null;
         Session session = sessionFactory.getSession();
         this.sleepAfterExport = sleepAfterExport(session);
@@ -208,8 +308,13 @@ public class ExportTask extends Task {
             //if they request a download then queue it up so the client's
             //download manager will pick up the new download request...
             if (download) {
+                String username = user.getUsername();
+                log.info("fileDownloadDAO.add");
                 //lets add a filedownload item for the user, so they can download the file
-                fileDownloadDAO.add(user, new Date(), file.getName(), "Dataset Export", false);
+                fileDownloadDAO.add(user, new Date(), 
+                        /*getDownloadExportFolder() + */file.getAbsolutePath(),
+                        getDownloadExportRootURL() + "/" + username + "/" + file.getName(), //http://localhost:8080/exports
+                        "Dataset Export", false);
             }
 
             if ( DebugLevels.DEBUG_24()) {
@@ -256,8 +361,10 @@ public class ExportTask extends Task {
                 log.error("Error closing db connections.", e);
             }
         }
-    }
+//        RequestContextHolder.resetRequestAttributes();
+   }
 
+    @Override
     public String[] quickRunExternalExport() {
         DbServer dbServer = null;
         Session session = sessionFactory.getSession();
@@ -340,10 +447,12 @@ public class ExportTask extends Task {
         }
     }
 
+    @Override
     public boolean fileExists() {
         return file != null && file.exists() && !type.isExternal();
     }
 
+    @Override
     public boolean isExternal() {
         return type.isExternal();
     }
@@ -408,8 +517,15 @@ public class ExportTask extends Task {
             setStatus("started", "Started exporting " + dataset.getName() + " to " + file.getAbsolutePath());
     }
 
-    private void setStatus(String status, String message) {
-        ExportTaskManager.callBackFromThread(taskId, this.submitterId, status, Thread.currentThread().getId(), message);
+    private void setStatus(String statusMessage, String message) {
+//        Status status = new Status();
+//        status.setUsername(user.getUsername());
+//        status.setType("Export");
+//        status.setMessage(message);
+//        status.setTimestamp(new Date());
+//
+//        this.statusServices.add(status);
+//        this.exportTaskManager.callBackFromThread(taskId, this.submitterId, statusMessage, Thread.currentThread().getId(), message);
     }
 
     @Override
@@ -420,14 +536,17 @@ public class ExportTask extends Task {
         super.finalize();
     }
 
+    @Override
     public File getFile() {
         return file;
     }
 
+    @Override
     public EmfDataset getDataset() {
         return dataset;
     }
 
+    @Override
     public Version getVersion() {
         return version;
     }
@@ -461,4 +580,19 @@ public class ExportTask extends Task {
         return value;
     }
 
+    @Override
+    public String getPropertyValue(String name) {
+        EmfProperty property = emfPropertyDao.getProperty(name);
+        return property != null ? property.getValue() : null;
+    }
+
+    @Override
+    public String getDownloadExportFolder() {
+        return getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_FOLDER);
+    }
+
+    @Override
+    public String getDownloadExportRootURL() {
+        return getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_ROOT_URL);
+    }
 }

@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.data.viewer;
 
 import gov.epa.emissions.commons.db.Page;
+import gov.epa.emissions.commons.db.version.VersionedRecord;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.commons.util.ClipBoardCopy;
 import gov.epa.emissions.framework.client.data.DataHeaderPref;
@@ -109,8 +110,10 @@ public class ViewerPanel extends JPanel implements ViewerPanelView {
     }
 
     public void observe(TablePresenter presenter) {
-        paginationPanel.init(presenter);
-        sortFilterPanel.init(presenter);
+        paginationPanel.observe(presenter);
+        sortFilterPanel.observe(presenter);
+        paginationPanel.init();
+        sortFilterPanel.init();
     }
 
     public void display(Page page) {
@@ -187,6 +190,19 @@ public class ViewerPanel extends JPanel implements ViewerPanelView {
 
     public void saveColPref() {
         tableColumnHeaders.saveColPref();     
+    }
+
+    @Override
+    public void clear() {
+        //onlu do if page already exists, if the page doesn't exist then table isn't built yet
+        if (page != null) {
+            page.setRecords(new VersionedRecord[] {});
+            tableData = new ViewablePage(tableMetadata, page);
+            tableModel.refresh(tableData);
+            viewTable.setModel(tableModel);
+            tableColumnHeaders.displayClumns();
+            table.repaint();
+        }
     }
 
 }

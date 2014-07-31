@@ -71,36 +71,51 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         accessor = new DataAccessorImpl(cache, sessionFactory);
     }
 
-    public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
+    public synchronized Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
+        LOG.info("s applyConstraints");
         accessor.applyConstraints(token, null, rowFilter, sortOrder);
-        return getPage(token, 1);
+        LOG.info("e applyConstraints");
+        LOG.info("s applyConstraints.getPage");
+        Page page = getPage(token, 1);
+        LOG.info("e applyConstraints.getPage");
+        return page;
     }
 
-    public Page getPage(DataAccessToken token, int pageNumber) throws EmfException {
+    public synchronized Page getPage(DataAccessToken token, int pageNumber) throws EmfException {
+        LOG.info("s getPage");
         Page page = accessor.getPage(token, pageNumber);
+        LOG.info("e getPage");
         if ( CommonDebugLevel.DEBUG_PAGE_2){
             page.print();
         }
         return page;
     }
 
-    public int getPageCount(DataAccessToken token) throws EmfException {
-        return accessor.getPageCount(token);
+    public synchronized int getPageCount(DataAccessToken token) throws EmfException {
+        LOG.info("s getPageCount");
+        int pageCount = accessor.getPageCount(token);
+        LOG.info("e getPageCount");
+        return pageCount;
     }
 
-    public Page getPageWithRecord(DataAccessToken token, int record) throws EmfException {
+    public synchronized Page getPageWithRecord(DataAccessToken token, int record) throws EmfException {
+        LOG.info("s getPageWithRecord");
         Page page = accessor.getPageWithRecord(token, record);
+        LOG.info("e getPageWithRecord");
         if ( CommonDebugLevel.DEBUG_PAGE_2){
             page.print();
         }
         return page;
     }
 
-    public int getTotalRecords(DataAccessToken token) throws EmfException {
-        return accessor.getTotalRecords(token);
+    public synchronized int getTotalRecords(DataAccessToken token) throws EmfException {
+        LOG.info("s getTotalRecords");
+        int totalRecords = accessor.getTotalRecords(token);
+        LOG.info("e getTotalRecords");
+        return totalRecords;
     }
 
-    public Version derive(Version base, User user, String name) throws EmfException {
+    public synchronized Version derive(Version base, User user, String name) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
             Version derived = versions.derive(base, name, user, session);
@@ -186,7 +201,7 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         return changeset;
     }
 
-    public void submit(DataAccessToken token, ChangeSet changeset, int pageNumber) throws EmfException {
+    public synchronized void submit(DataAccessToken token, ChangeSet changeset, int pageNumber) throws EmfException {
         try {
             
             if ( CommonDebugLevel.DEBUG_PAGE_2) {
@@ -222,7 +237,7 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         }
     }
 
-    public void discard(DataAccessToken token) throws EmfException {
+    public synchronized  void discard(DataAccessToken token) throws EmfException {
         try {
             Session session = sessionFactory.getSession();
             cache.discardChangeSets(token, session);
@@ -235,7 +250,7 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         }
     }
 
-    public DataAccessToken save(DataAccessToken token, EmfDataset dataset, Version version) throws EmfException {
+    public synchronized DataAccessToken save(DataAccessToken token, EmfDataset dataset, Version version) throws EmfException {
         try {
             if (!accessor.isLockOwned(token))
                 return token;// abort
@@ -310,7 +325,7 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         }
     }
 
-    public Version markFinal(DataAccessToken token) throws EmfException {
+    public synchronized Version markFinal(DataAccessToken token) throws EmfException {
         Version derived = token.getVersion();
         Version current = accessor.currentVersion(derived);
         if (current.isLocked() && !derived.isLocked(current.getLockOwner()))
@@ -320,19 +335,23 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         return doMarkFinal(derived);
     }
 
-    public Version[] getVersions(int datasetId) throws EmfException {
+    public synchronized Version[] getVersions(int datasetId) throws EmfException {
+        LOG.info("getVersions");
         return accessor.getVersions(datasetId);
     }
 
-    public Version getVersion(int datasetId, int version) throws EmfException {
+    public synchronized Version getVersion(int datasetId, int version) throws EmfException {
+        LOG.info("getVersion");
         return accessor.getVersion(datasetId, version);
     }
 
-    public DataAccessToken openSession(User user, DataAccessToken token) throws EmfException {
+    public synchronized DataAccessToken openSession(User user, DataAccessToken token) throws EmfException {
+        LOG.info("openSession");
         return openSession(user, token, accessor.defaultPageSize());
     }
 
-    public DataAccessToken openSession(User user, DataAccessToken token, int pageSize) throws EmfException {
+    public synchronized DataAccessToken openSession(User user, DataAccessToken token, int pageSize) throws EmfException {
+        LOG.info("openSession");
         Version current = accessor.currentVersion(token.getVersion());
         if (current.isFinalVersion())
             throw new EmfException("Can only edit non-final Version.");
@@ -347,7 +366,7 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         }
     }
 
-    public void closeSession(User user, DataAccessToken token) throws EmfException {
+    public synchronized void closeSession(User user, DataAccessToken token) throws EmfException {
         try {
             accessor.closeEditSession(user, token);
         } finally {
@@ -363,7 +382,7 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         super.finalize();
     }
 
-    public boolean hasChanges(DataAccessToken token) throws EmfException {
+    public synchronized boolean hasChanges(DataAccessToken token) throws EmfException {
         try {
             Session session = sessionFactory.getSession();
             boolean result = cache.hasChanges(token, session);
@@ -377,7 +396,8 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         }
     }
 
-    public TableMetadata getTableMetadata(String table) throws EmfException {
+    public synchronized TableMetadata getTableMetadata(String table) throws EmfException {
+        LOG.info("getTableMetadata");
         try {
             TableDefinition definition = dbServer.getEmissionsDatasource().tableDefinition();
             return definition.getTableMetaData(table);

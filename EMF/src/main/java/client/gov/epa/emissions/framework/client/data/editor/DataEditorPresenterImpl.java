@@ -13,7 +13,10 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.NoteType;
 import gov.epa.emissions.framework.services.editor.DataAccessToken;
 import gov.epa.emissions.framework.services.editor.DataEditorService;
+import gov.epa.emissions.framework.services.editor.DataViewService;
+import gov.epa.emissions.framework.ui.MessagePanel;
 
+import java.awt.Container;
 import java.util.Date;
 
 public class DataEditorPresenterImpl implements DataEditorPresenter {
@@ -65,6 +68,10 @@ public class DataEditorPresenterImpl implements DataEditorPresenter {
         return session.dataEditorService();
     }
 
+    DataViewService dataViewService() {
+        return session.dataViewService();
+    }
+
     private void display(DataAccessToken token, DataEditorView view) throws EmfException {
         this.view = view;
         view.observe(this);
@@ -80,9 +87,9 @@ public class DataEditorPresenterImpl implements DataEditorPresenter {
         view.display(version, table, session.user(), tableMetadata, notes);
     }
 
-    public void displayTable(EditorPanelView tableView) throws EmfException {
+    public void displayTable(EditorPanelView tableView, Container parentContainer, MessagePanel messagePanel) throws EmfException {
         tablePresenter = new EditableTablePresenterImpl(dataset.getDatasetType(), token, tableView.tableMetadata(),
-                tableView, dataEditorService(), this);
+                tableView, dataEditorService(), dataViewService(), this, parentContainer, messagePanel);
         displayTable(tablePresenter);
     }
 

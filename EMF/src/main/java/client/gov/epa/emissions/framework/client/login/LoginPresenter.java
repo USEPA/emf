@@ -24,7 +24,7 @@ public class LoginPresenter {
         this.userAdmin = model;
     }
 
-    public User doLogin(String username, String password) throws EmfException {
+    public User doLogin(final String username, final String password) throws EmfException {
         try {
             userAdmin.authenticate(username, new PasswordGenerator().encrypt(password));
         } catch (CommonsException e) {
@@ -33,7 +33,7 @@ public class LoginPresenter {
 
         User user = userAdmin.getUser(username);
 
-        user = userAdmin.obtainLocked(userAdmin.getUser(username), userAdmin.getUser(username));
+        user = userAdmin.obtainLocked(user, user.getId());
 
         if (user == null)
             throw new EmfException("Unable to fetch lock on user: " + username + ".");

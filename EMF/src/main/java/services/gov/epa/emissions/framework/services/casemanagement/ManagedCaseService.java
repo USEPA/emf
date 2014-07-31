@@ -19,7 +19,7 @@ import gov.epa.emissions.framework.services.basic.LoggingServiceImpl;
 import gov.epa.emissions.framework.services.basic.RemoteCommand;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.basic.UserDAO;
+import gov.epa.emissions.framework.services.basic.UserDAOOld;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJobKey;
 import gov.epa.emissions.framework.services.casemanagement.jobs.DependentJob;
@@ -4016,7 +4016,7 @@ public class ManagedCaseService {
         Session session = this.sessionFactory.getSession();
         User user = null;
         try {
-            UserDAO userDAO = new UserDAO();
+            UserDAOOld userDAO = new UserDAOOld();
             user = userDAO.get(uid, session);
 
         } catch (Exception ex) {

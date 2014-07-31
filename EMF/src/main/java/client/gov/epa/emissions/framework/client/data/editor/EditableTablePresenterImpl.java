@@ -1,5 +1,7 @@
 package gov.epa.emissions.framework.client.data.editor;
 
+import java.awt.Container;
+
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.db.version.ChangeSet;
 import gov.epa.emissions.commons.io.TableMetadata;
@@ -10,6 +12,8 @@ import gov.epa.emissions.framework.client.data.TablePresenterDelegateImpl;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.editor.DataAccessToken;
 import gov.epa.emissions.framework.services.editor.DataEditorService;
+import gov.epa.emissions.framework.services.editor.DataViewService;
+import gov.epa.emissions.framework.ui.MessagePanel;
 
 public class EditableTablePresenterImpl implements EditableTablePresenter {
 
@@ -24,13 +28,13 @@ public class EditableTablePresenterImpl implements EditableTablePresenter {
     private int totalRecs; 
 
     public EditableTablePresenterImpl(DatasetType datasetType, DataAccessToken token, TableMetadata tableMetadata,
-            EditorPanelView view, DataEditorService service, DataEditorPresenter parentPresenter) {
-        this(datasetType, new TablePaginatorImpl(token, view, service), tableMetadata, view, service, parentPresenter);
+            EditorPanelView view, DataEditorService service, DataViewService dataViewService, DataEditorPresenter parentPresenter, Container parentContainer, MessagePanel messagePanel) {
+        this(datasetType, new TablePaginatorImpl(token, view, service, parentContainer, messagePanel), tableMetadata, view, service, dataViewService, parentPresenter, parentContainer, messagePanel);
     }
 
     public EditableTablePresenterImpl(DatasetType datasetType, TablePaginator paginator, TableMetadata tableMetadata,
-            EditorPanelView view, DataEditorService service, DataEditorPresenter parentPresenter) {
-        this(new TablePresenterDelegateImpl(datasetType, paginator, tableMetadata, view, service), view, service,
+            EditorPanelView view, DataEditorService service, DataViewService dataViewService, DataEditorPresenter parentPresenter, Container parentContainer, MessagePanel messagePanel) {
+        this(new TablePresenterDelegateImpl(datasetType, paginator, tableMetadata, view, service, dataViewService, parentContainer, messagePanel), view, service,
                 parentPresenter);
     }
 
@@ -101,7 +105,7 @@ public class EditableTablePresenterImpl implements EditableTablePresenter {
             changeset.clear();
             dataWasChanged = true;
         }
-        delegate.updateFilteredCount();
+        delegate.updateFilteredCount(getTotalRecords());
         return dataWasChanged;
     }
 
@@ -116,7 +120,7 @@ public class EditableTablePresenterImpl implements EditableTablePresenter {
     public void doApplyConstraints(String rowFilter, String sortOrder) throws EmfException {
         delegate.setRowAndSortFilter(rowFilter, sortOrder);
         parentPresenter.doSave();
-        delegate.updateFilteredCount();
+        delegate.updateFilteredCount(getTotalRecords());
     }
 
     public void doApplyFormat() throws EmfException {

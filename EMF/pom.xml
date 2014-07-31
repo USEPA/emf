@@ -1,0 +1,546 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>gov.epa.emf</groupId>
+	<artifactId>EMF</artifactId>
+	<packaging>war</packaging>
+	<version>1.0</version>
+	<name>EMF Web Application</name>
+
+	<repositories>
+		<repository>
+			<id>JBoss</id>
+			<url>http://repository.jboss.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>java.net</id>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
+    <repository>
+        <id>apache.snapshots</id>
+        <name>Apache Snapshot Repository</name>
+        <url>http://repository.apache.org/snapshots</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+    </repository>
+	</repositories>
+
+
+	<dependencies>
+
+		<!-- -->
+		<dependency>
+			<groupId>analysis-engine</groupId>
+			<artifactId>analysis-engine</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>gov.epa.emf</groupId>
+			<artifactId>common</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- -->
+		<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>2.7.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>colt</groupId>
+			<artifactId>colt</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-discovery</groupId>
+			<artifactId>commons-discovery</artifactId>
+			<version>0.2</version>
+		</dependency>
+		<!-- dependency> <groupId>commons-logging</groupId> <artifactId>commons-logging</artifactId> 
+			<version>1.1.1</version> </dependency -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>concurrent</groupId>
+			<artifactId>concurrent</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<!-- -->
+		<dependency>
+			<groupId>connector</groupId>
+			<artifactId>connector</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cosu</groupId>
+			<artifactId>cosu</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+			<version>3.4.4</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+			<version>4.2.5</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>10.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpasyncclient</artifactId>
+			<version>4.0-beta3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore-nio</artifactId>
+			<version>4.2.2</version>
+		</dependency><!-- -->
+		<dependency>
+			<groupId>iText</groupId>
+			<artifactId>iText</artifactId>
+			<version>5.0.1</version>
+		</dependency>
+		<dependency>
+			<!-- <groupId>java_cup</groupId> <artifactId>java_cup</artifactId> <version>1.0</version> -->
+			<groupId>net.sf.squirrel-sql.thirdparty.non-maven</groupId>
+			<artifactId>java-cup</artifactId>
+			<version>0.11a</version>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901.jdbc4</version>
+		</dependency>
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.12.1.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>jh</groupId>
+			<artifactId>jh</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jlfgr</groupId>
+			<artifactId>jlfgr</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jnlp</groupId>
+			<artifactId>jnlp</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>kmlGenerator</groupId>
+			<artifactId>kmlGenerator</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>mchange-commons</groupId>
+			<artifactId>mchange-commons</artifactId>
+			<version>0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>opensymphony</groupId>
+			<artifactId>oscache</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>proxool</groupId>
+			<artifactId>proxool</artifactId>
+			<version>0.8.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<!--<dependency> <groupId>org.springframework</groupId> <artifactId>spring-asm</artifactId> 
+			<version>3.1.4.RELEASE</version> </dependency> -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>3.2.7.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>3.2.7.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>3.2.7.RELEASE</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-dao</artifactId> 
+			<version>2.0.8</version> </dependency> -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+			<version>3.2.7.RELEASE</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-hibernate3</artifactId> 
+			<version>2.0.8</version> </dependency> -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>3.2.7.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>3.2.7.RELEASE</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-instrument-tomcat</artifactId> 
+			<version>3.2.7.RELEASE</version> <scope>compile</scope> </dependency> -->
+
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> 
+			<version>3.6.10.Final</version> </dependency> -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.2.8.Final</version>
+			<!-- will come with Hibernate core4.3.1.Final -->
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>4.2.8.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>7.0.41</version>
+		</dependency>
+
+
+		<!-- -->
+		<dependency>
+			<groupId>swarmcache</groupId>
+			<artifactId>swarmcache</artifactId>
+			<version>1.0RC2</version>
+		</dependency><!-- -->
+		<dependency>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis</artifactId>
+			<version>1.4.1-SNAPSHOT</version>
+		</dependency>
+		<!--<dependency> <groupId>j2ee</groupId> <artifactId>j2ee</artifactId> 
+			<version>1.0</version> </dependency> -->
+		<dependency>
+			<groupId>xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.5.1</version>
+		</dependency>
+		<!-- dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis-jaxrpc</artifactId>
+			<version>1.4</version>
+		</dependency -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+<!-- 		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-jaxws</artifactId>
+			<version>1.5.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency> -->
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.4.01</version>
+		</dependency><!-- -->
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<finalName>emf</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>res</directory>
+			</resource>
+			<!-- <resource> <directory>src/main/java</directory> <excludes> <exclude>**/*.java</exclude> 
+				</excludes> </resource> -->
+		</resources>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
+				<!-- Maven War file generator plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<webResources>
+							<resource>
+								<directory>src/main/java/contract</directory>
+								<!-- override the destination directory for this resource -->
+								<targetPath>WEB-INF/classes</targetPath>
+								<!-- enable filtering <filtering>true</filtering> -->
+								<includes>
+									<include>**/*.java</include>
+									<include>**/*.xml</include>
+								</includes>
+							</resource>
+							<resource>
+								<directory>src/main/java/services</directory>
+								<!-- override the destination directory for this resource -->
+								<targetPath>WEB-INF/classes</targetPath>
+								<!-- enable filtering <filtering>true</filtering> -->
+								<includes>
+									<include>**/*.java</include>
+									<include>**/*.xml</include>
+								</includes>
+							</resource>
+						</webResources>
+						<!-- >warSourceIncludes>src/main/java/contract</warSourceIncludes -->
+						<packagingExcludes></packagingExcludes><!-- WEB-INF/lib/commons-logging-*.jar,WEB-INF/lib/commons-logging-*.jar -->
+					</configuration>
+				</plugin>
+
+				<!-- Maven compiler plugin -->
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+				<!-- <plugin> <groupId>org.mortbay.jetty</groupId> <artifactId>maven-jetty-plugin</artifactId> 
+					</plugin> -->
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.2</version>
+					<!-- <configuration> <url>http://localhost:8080/manager/text</url> <username>admin</username> 
+						<password>admin</password> <path>/emf</path> <update>true</update> </configuration> -->
+					<configuration>
+						<systemProperties>
+<!-- 							<JAVA_OPTS>-Xmx1024m -Xms256m -XX:MaxPermSize=256m -Xnoagent
+								-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</JAVA_OPTS> -->
+						</systemProperties>
+						<!-- http port -->
+						<port>8080</port>
+						<path>/emf</path>
+						<!-- contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile> 
+							<addWarDependenciesInClassloader>true</addWarDependenciesInClassloader -->
+						<!--<systemProperties> <java.security.auth.login.config>${basedir}/conf/jaas.config</java.security.auth.login.config> 
+							</systemProperties> -->
+						<url>http://127.0.0.1:8080/manager/text</url>
+						<username>admin</username>
+						<password>admin</password>
+						<!-- addContextWarDependencies>true</addContextWarDependencies> <addWarDependenciesInClassloader>true</addWarDependenciesInClassloader> 
+							<configurationDir>${basedir}/target/tomcat</configurationDir> <systemPropertyVariables> 
+							<log4j.configuration>${log4j.configuration.web}</log4j.configuration> </systemPropertyVariables -->
+						<!-- <tomcatLoggingFile>log.txt</tomcatLoggingFile> -->
+						<!-- extraDependencies> <dependency> <groupId>org.slf4j</groupId> <artifactId>jcl-over-slf4j</artifactId> 
+							<version>1.7.2</version> </dependency> <dependency> <groupId>ch.qos.logback</groupId> 
+							<artifactId>logback-classic</artifactId> <version>1.0.13</version> </dependency> 
+							<dependency> <groupId>postgresql</groupId> <artifactId>postgresql</artifactId> 
+							<version>9.1-901.jdbc4</version> </dependency> </extraDependencies -->
+						<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
+							<version>1.2.17</version> </dependency> -->
+						<!--<tomcatWebXml>${basedir}/src/main/webapp/WEB-INF/web.xml</tomcatWebXml> -->
+						<!-- contextFile><contextFile>${basedir}/config/tomcat/context.xml</contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile-->
+						<contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile> 
+						<!-- Have Tomcat look in the file filtering folder -->
+						<warSourceDirectory>
+							${project.build.directory}/${project.build.finalName}
+						</warSourceDirectory>
+					</configuration>
+					<dependencies>
+						<!-- dependency> <groupId>org.slf4j</groupId> <artifactId>jcl-over-slf4j</artifactId> 
+							<version>1.7.2</version> </dependency> <dependency> <groupId>ch.qos.logback</groupId> 
+							<artifactId>logback-classic</artifactId> <version>1.0.13</version> </dependency -->
+						<dependency>
+							<groupId>postgresql</groupId>
+							<artifactId>postgresql</artifactId>
+							<version>9.1-901.jdbc4</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.3.1</version>
+				<!-- <executions> <execution> <goals> <goal>java</goal> </goals> </execution> 
+					</executions> -->
+				<configuration>
+					<!-- optional -->
+					<includeProjectDependencies>true</includeProjectDependencies>
+					<includePluginDependencies>false</includePluginDependencies>
+					<mainClass>gov.epa.emissions.framework.client.EMFClient</mainClass>
+					<commandlineArgs></commandlineArgs>
+					<arguments>http://localhost:8080/emf/services -Xmx512M
+						-DUSER_PREFERENCES="deploy/preference/EMFPrefs.txt"</arguments>
+
+
+				</configuration>
+			</plugin>
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>exec-maven-plugin</artifactId> 
+				<version>1.2.1</version> <configuration> <mainClass>gov.epa.emissions.framework.client.EMFClient</mainClass> 
+				</configuration> </plugin> -->
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>client</classifier>
+							<includes>
+								<include>src/main/java/contract/*</include><!-- **/service/* -->
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+		</plugins>
+	</build>
+
+</project>

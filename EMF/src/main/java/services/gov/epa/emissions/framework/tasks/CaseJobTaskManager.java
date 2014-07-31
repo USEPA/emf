@@ -997,7 +997,7 @@ public class CaseJobTaskManager implements TaskManager {
                 cancelTempTables(user, caseJob, host);
 
             if (status.equalsIgnoreCase("Exporting")) {
-                boolean found = TaskManagerFactory.getExportTaskManager().cancelExports2Job(jobId, user);
+                boolean found = true;//TaskManagerFactory.getExportTaskManager().cancelExports2Job(jobId, user);
 
                 if (!found)
                     cancelTempTables(user, caseJob, host);

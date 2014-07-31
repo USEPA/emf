@@ -25,11 +25,13 @@ import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.EmfPropertyDao;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.spring.AppConfig;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.ExportClientSubmitter;
 import gov.epa.emissions.framework.tasks.ExportJobSubmitter;
-import gov.epa.emissions.framework.tasks.TaskManagerFactory;
+import gov.epa.emissions.framework.tasks.ExportTaskManager;
 import gov.epa.emissions.framework.tasks.TaskSubmitter;
 
 import java.io.File;
@@ -38,14 +40,22 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ManagedExportService {
     private static Log log = LogFactory.getLog(ManagedExportService.class);
-
     private static int svcCount = 0;
+    
 
     private String svcLabel = null;
 
@@ -55,6 +65,24 @@ public class ManagedExportService {
 
     private final int ALL_JOB_ID = 0;
 
+    private ExportTaskManager exportTaskManager;
+    
+    private ExportClientSubmitter exportClientSubmitter;
+    
+    public ManagedExportService() {
+        //
+    }
+    
+    @PostConstruct
+    public void init() {
+//        this.exportTaskManager.registerTaskSubmitter(exportClientSubmitter);
+    }
+    
+    @Autowired
+    public void setExportTaskManager(ExportTaskManager exportTaskManager){
+        this.exportTaskManager = exportTaskManager;
+    }
+    
     public synchronized String myTag() {
         if (svcLabel == null) {
             svcCount++;
@@ -74,6 +102,7 @@ public class ManagedExportService {
     private DbServerFactory dbFactory;
 
     public ManagedExportService(DbServerFactory dbFactory, HibernateSessionFactory sessionFactory) {
+        log.debug("ManagedExportService");
         myTag();
         if (DebugLevels.DEBUG_9())
             System.out.println(">>>> " + myTag());
@@ -205,7 +234,7 @@ public class ManagedExportService {
             exportJobTaskSubmitter.setJobName(job.getName());
             exportJobTaskSubmitter.setJobId(job.getId());
             exportJobTaskSubmitter.setRunUser(job.getRunJobUser());
-            TaskManagerFactory.getExportTaskManager().registerTaskSubmitter(exportJobTaskSubmitter);
+            this.exportTaskManager.registerTaskSubmitter(exportJobTaskSubmitter);
         }
 
         // FIXME: Any checks for CaseInputs or Jobs needs to happen here
@@ -302,10 +331,11 @@ public class ManagedExportService {
 
             if (isExportable(dataset, version, services, user)) {
                 try {
-                    ExportTask tsk = createExportTask(user, purpose, true, toSubDir, dataset, version);
+                    IExportTask tsk = exportTaskManager.createExportTask(user, purpose, true, null, null, toSubDir, null, dataset, version, null, null, null, false);
+//                    ExportTask tsk = createExportTask(user, purpose, true, toSubDir, dataset, version);
 
                     // Add the newly created Export Task to the list of eximTasks
-                    eximTasks.add(tsk);
+                    eximTasks.add((ExportTask)tsk);
 
                 } catch (Exception e) {
                     // don't need to log messages about exporting to existing file
@@ -380,9 +410,17 @@ public class ManagedExportService {
         // The service instance (one per session) will have only one submitter for the type of service
         // Here the TaskManagerExportService has one reference to the ExportClientSubmitter
         if (exportTaskSubmitter == null) {
-            exportTaskSubmitter = new ExportClientSubmitter();
+            if (exportClientSubmitter != null) {
+                exportTaskSubmitter = exportClientSubmitter;
+                // exportTaskSubmitter.registerTaskManager();
+                this.exportTaskManager.registerTaskSubmitter(exportClientSubmitter);
+            } else {
+                exportTaskSubmitter = new ExportClientSubmitter();
+                // exportTaskSubmitter.registerTaskManager();
+                this.exportTaskManager.registerTaskSubmitter(exportTaskSubmitter);
+            }
             // exportTaskSubmitter.registerTaskManager();
-            TaskManagerFactory.getExportTaskManager().registerTaskSubmitter(exportTaskSubmitter);
+//            this.exportTaskManager.registerTaskSubmitter(exportTaskSubmitter);
         }
 
         // FIXME: Verify at team meeting Test if subpath exists. If not create subpath
@@ -416,9 +454,10 @@ public class ManagedExportService {
 
                 // FIXME: Investigate if services reference needs to be unique for each dataset in this call
                 if (isExportable(dataset, version, services, user)) {
-                    ExportTask tsk = createExportTask(user, purpose, overwrite,rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+                    IExportTask tsk = exportTaskManager.createExportTask(user, purpose, overwrite, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, false);
+//                    ExportTask tsk = createExportTask(user, purpose, overwrite,rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
 
-                    eximTasks.add(tsk);
+                    eximTasks.add((ExportTask)tsk);
 
                 }
             }
@@ -458,6 +497,13 @@ public class ManagedExportService {
         return exportTaskSubmitter.getSubmitterId();
     }
     
+    private ThreadPoolTaskExecutor poolTaskExecutor;
+
+    @Autowired
+    public void setPoolTaskExecutor(ThreadPoolTaskExecutor poolTaskExecutor) {
+        this.poolTaskExecutor = poolTaskExecutor;
+    }
+    
     public synchronized String downloadForClient(User user, EmfDataset[] datasets, Version[] versions, String dirName,
             String prefix, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
@@ -471,9 +517,17 @@ public class ManagedExportService {
         // The service instance (one per session) will have only one submitter for the type of service
         // Here the TaskManagerExportService has one reference to the ExportClientSubmitter
         if (exportTaskSubmitter == null) {
-            exportTaskSubmitter = new ExportClientSubmitter();
+            if (exportClientSubmitter != null) {
+                exportTaskSubmitter = exportClientSubmitter;
+                // exportTaskSubmitter.registerTaskManager();
+                this.exportTaskManager.registerTaskSubmitter(exportClientSubmitter);
+            } else {
+                exportTaskSubmitter = new ExportClientSubmitter();
+                // exportTaskSubmitter.registerTaskManager();
+                this.exportTaskManager.registerTaskSubmitter(exportTaskSubmitter);
+            }
             // exportTaskSubmitter.registerTaskManager();
-            TaskManagerFactory.getExportTaskManager().registerTaskSubmitter(exportTaskSubmitter);
+//            this.exportTaskManager.registerTaskSubmitter(exportTaskSubmitter);
         }
 
         // FIXME: Verify at team meeting Test if subpath exists. If not create subpath
@@ -507,10 +561,13 @@ public class ManagedExportService {
 
                 // FIXME: Investigate if services reference needs to be unique for each dataset in this call
                 if (isExportable(dataset, version, services, user)) {
-                    ExportTask tsk = createDownloadTask(user, purpose, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+                    IExportTask tsk = exportTaskManager.createExportTask(user, purpose, true, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, true);  //createDownloadTask(user, purpose, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+                    ExportTask exportTask = (ExportTask)tsk;
+//                    exportTask.run();
 
-                    eximTasks.add(tsk);
-
+                    
+                    eximTasks.add(exportTask);
+//                    poolTaskExecutor.execute(tsk);
                 }
             }
 
@@ -533,7 +590,6 @@ public class ManagedExportService {
                         + exportTaskSubmitter.getTaskCount());
 
             log.info("THE NUMBER OF TASKS LEFT IN SUBMITTER FOR RUN: " + exportTaskSubmitter.getTaskCount());
-            log.info("ManagedExportService:export() submitted all exportTasks dropping out of loop");
 
             if (DebugLevels.DEBUG_9())
                 System.out.println("ManagedExportService:export() exiting at: " + new Date());
@@ -546,6 +602,7 @@ public class ManagedExportService {
             throw new EmfException("Export failed: " + e.getMessage());
         }
 
+        log.info("return exportTaskSubmitter.getSubmitterId() = " + exportTaskSubmitter.getSubmitterId());
         return exportTaskSubmitter.getSubmitterId();
     }
     
@@ -564,9 +621,17 @@ public class ManagedExportService {
         // The service instance (one per session) will have only one submitter for the type of service
         // Here the TaskManagerExportService has one reference to the ExportClientSubmitter
         if (exportTaskSubmitter == null) {
-            exportTaskSubmitter = new ExportClientSubmitter();
+            if (exportClientSubmitter != null) {
+                exportTaskSubmitter = exportClientSubmitter;
+                // exportTaskSubmitter.registerTaskManager();
+                this.exportTaskManager.registerTaskSubmitter(exportClientSubmitter);
+            } else {
+                exportTaskSubmitter = new ExportClientSubmitter();
+                // exportTaskSubmitter.registerTaskManager();
+                this.exportTaskManager.registerTaskSubmitter(exportTaskSubmitter);
+            }
             // exportTaskSubmitter.registerTaskManager();
-            TaskManagerFactory.getExportTaskManager().registerTaskSubmitter(exportTaskSubmitter);
+//            this.exportTaskManager.registerTaskSubmitter(exportTaskSubmitter);
         }
 
         // FIXME: Verify at team meeting Test if subpath exists. If not create subpath
@@ -600,9 +665,10 @@ public class ManagedExportService {
 
                 // FIXME: Investigate if services reference needs to be unique for each dataset in this call
                 if (isExportable(dataset, version, services, user)) {
-                    ExportTask tsk = createExportTask(user, purpose, overwrite, path, dataset, version);
+                    IExportTask tsk = exportTaskManager.createExportTask(user, purpose, overwrite, null, null, path, null, dataset, version, null, null, null, false);
+                            //createExportTask(user, purpose, overwrite, path, dataset, version);
 
-                    eximTasks.add(tsk);
+                    eximTasks.add((ExportTask)tsk);
 
                 }
             }
@@ -642,96 +708,98 @@ public class ManagedExportService {
         return exportTaskSubmitter.getSubmitterId();
     }
 
-    private synchronized ExportTask createExportTask(User user, String purpose, boolean overwrite, File path,
-            EmfDataset dataset, Version version) throws Exception {
-        if (DebugLevels.DEBUG_9())
-            System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
-
-        // Match version in dataset
-        if (dataset.getId() != version.getDatasetId())
-            throw new EmfException("Dataset doesn't match version (dataset id=" + dataset.getId()
-                    + " but version shows dataset id=" + version.getDatasetId() + ")");
-
-        Services services = services();
-        File file = validateExportFile(path, getCleanDatasetName(dataset, version), overwrite);
-
-        AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
-                "Version " + version.getVersion(), purpose, file.getAbsolutePath()); // BUG3589
-        accesslog.setDatasetname(dataset.getName());
-
-        if (DebugLevels.DEBUG_9())
-            System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
-                    + (dbFactory == null) + " dataset: " + dataset.getName());
-        ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, dbFactory, sessionFactory,
-                version);
-        // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
-
-        return eximTask;
-    }
-    
-    private synchronized ExportTask createExportTask(User user, String purpose, boolean overwrite, 
-            String rowFilters, String colOrders, File path,
-            String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
-            Version filterDatasetVersion, String filterDatasetJoinCondition) throws Exception {
-        if (DebugLevels.DEBUG_9())
-            System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
-
-        // Match version in dataset
-        if (dataset.getId() != version.getDatasetId())
-            throw new EmfException("Dataset doesn't match version (dataset id=" + dataset.getId()
-                    + " but version shows dataset id=" + version.getDatasetId() + ")");
-
-        Services services = services();
-        File file = validateExportFile(path, "" + (prefix==null ? "" : prefix.trim())  + 
-                ( (prefix==null || prefix.trim().isEmpty() || prefix.trim().endsWith("_")) ? "" : "_") + 
-                getCleanDatasetName(dataset, version), overwrite);
-
-        AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
-                "Version " + version.getVersion(), purpose, file.getAbsolutePath());
-        accesslog.setDatasetname(dataset.getName());
-
-        if (DebugLevels.DEBUG_9())
-            System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
-                    + (dbFactory == null) + " dataset: " + dataset.getName());
-        ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
-                rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
-                filterDatasetJoinCondition);
-        // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
-
-        return eximTask;
-    }
-
-    private synchronized ExportTask createDownloadTask(User user, String purpose, String rowFilters, 
-            String colOrders, File path,
-            String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
-            Version filterDatasetVersion, String filterDatasetJoinCondition) throws Exception {
-        if (DebugLevels.DEBUG_9())
-            System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
-
-        // Match version in dataset
-        if (dataset.getId() != version.getDatasetId())
-            throw new EmfException("Dataset doesn't match version (dataset id=" + dataset.getId()
-                    + " but version shows dataset id=" + version.getDatasetId() + ")");
-
-        Services services = services();
-        File file = validateExportFile(path, "" + (prefix==null ? "" : prefix.trim())  + 
-                ( (prefix==null || prefix.trim().isEmpty() || prefix.trim().endsWith("_")) ? "" : "_") + 
-                getCleanDatasetName(dataset, version), true);
-
-        AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
-                "Version " + version.getVersion(), purpose, file.getAbsolutePath());
-        accesslog.setDatasetname(dataset.getName());
-
-        if (DebugLevels.DEBUG_9())
-            System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
-                    + (dbFactory == null) + " dataset: " + dataset.getName());
-        ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
-                rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
-                filterDatasetJoinCondition, true);
-        // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
-
-        return eximTask;
-    }
+//    private synchronized ExportTask createExportTask(User user, String purpose, boolean overwrite, File path,
+//            EmfDataset dataset, Version version) throws Exception {
+//        if (DebugLevels.DEBUG_9())
+//            System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
+//
+//        // Match version in dataset
+//        if (dataset.getId() != version.getDatasetId())
+//            throw new EmfException("Dataset doesn't match version (dataset id=" + dataset.getId()
+//                    + " but version shows dataset id=" + version.getDatasetId() + ")");
+//
+//        Services services = services();
+//        File file = validateExportFile(path, getCleanDatasetName(dataset, version), overwrite);
+//
+//        AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
+//                "Version " + version.getVersion(), purpose, file.getAbsolutePath()); // BUG3589
+//        accesslog.setDatasetname(dataset.getName());
+//
+//        if (DebugLevels.DEBUG_9())
+//            System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
+//                    + (dbFactory == null) + " dataset: " + dataset.getName());
+//        ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, dbFactory, sessionFactory,
+//                version);
+//        // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
+//
+//        return eximTask;
+//    }
+//    
+//    private synchronized ExportTask createExportTask(User user, String purpose, boolean overwrite, 
+//            String rowFilters, String colOrders, File path,
+//            String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
+//            Version filterDatasetVersion, String filterDatasetJoinCondition) throws Exception {
+//        if (DebugLevels.DEBUG_9())
+//            System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
+//
+//        // Match version in dataset
+//        if (dataset.getId() != version.getDatasetId())
+//            throw new EmfException("Dataset doesn't match version (dataset id=" + dataset.getId()
+//                    + " but version shows dataset id=" + version.getDatasetId() + ")");
+//
+//        Services services = services();
+//        File file = validateExportFile(path, "" + (prefix==null ? "" : prefix.trim())  + 
+//                ( (prefix==null || prefix.trim().isEmpty() || prefix.trim().endsWith("_")) ? "" : "_") + 
+//                getCleanDatasetName(dataset, version), overwrite);
+//
+//        AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
+//                "Version " + version.getVersion(), purpose, file.getAbsolutePath());
+//        accesslog.setDatasetname(dataset.getName());
+//
+//        if (DebugLevels.DEBUG_9())
+//            System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
+//                    + (dbFactory == null) + " dataset: " + dataset.getName());
+//        ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
+//                rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
+//                filterDatasetJoinCondition);
+//        // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
+//
+//        return eximTask;
+//    }
+//
+//    private synchronized IExportTask createDownloadTask(User user, String purpose, String rowFilters, 
+//            String colOrders, File path,
+//            String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
+//            Version filterDatasetVersion, String filterDatasetJoinCondition) throws Exception {
+//        log.debug("createDownloadTask");
+//        
+//        if (DebugLevels.DEBUG_9())
+//            System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
+//
+//        // Match version in dataset
+//        if (dataset.getId() != version.getDatasetId())
+//            throw new EmfException("Dataset doesn't match version (dataset id=" + dataset.getId()
+//                    + " but version shows dataset id=" + version.getDatasetId() + ")");
+//
+//        Services services = services();
+//        File file = validateExportFile(path, "" + (prefix==null ? "" : prefix.trim())  + 
+//                ( (prefix==null || prefix.trim().isEmpty() || prefix.trim().endsWith("_")) ? "" : "_") + 
+//                getCleanDatasetName(dataset, version), true);
+//
+//        AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
+//                "Version " + version.getVersion(), purpose, file.getAbsolutePath());
+//        accesslog.setDatasetname(dataset.getName());
+//
+//        if (DebugLevels.DEBUG_9())
+//            System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
+//                    + (dbFactory == null) + " dataset: " + dataset.getName());
+//        IExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
+//                rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
+//                filterDatasetJoinCondition, true);
+//        // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
+//
+//        return eximTask;
+//    }
 
     public synchronized void logExportedTask(LoggingServiceImpl logSvr, User user, String purpose, String path, CaseInput input) throws EmfException {
         EmfDataset dataset = input.getDataset();
@@ -787,7 +855,7 @@ public class ManagedExportService {
     }
 
     public String printStatusExportTaskManager() throws EmfException {
-        return TaskManagerFactory.getExportTaskManager().getStatusOfWaitAndRunTable();
+        return this.exportTaskManager.getStatusOfWaitAndRunTable();
     }
 
     private void setProperties() {
@@ -813,5 +881,10 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println(">>>> Destroying object: " + myTag());
         super.finalize();
+    }
+
+    @Autowired
+    public void setExportClientSubmitter(ExportClientSubmitter exportClientSubmitter) {
+        this.exportClientSubmitter = exportClientSubmitter;
     }
 }

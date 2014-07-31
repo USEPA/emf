@@ -115,6 +115,11 @@ public class RemoteServiceLocator implements ServiceLocator {
         return new DataViewServiceTransport(viewCall);
     }
 
+    public static EmfCall dataViewServiceCall() throws EmfException {
+        CallFactory callFactory = new CallFactory("http://localhost:8080/emf/services/gov.epa.emf.services.editor.DataViewService");
+        return callFactory.createSessionEnabledCall("DataView Service");
+    }
+    
     public CaseService caseService() {
         if (caseService == null)
             caseService = new CaseServiceTransport(baseUrl + "/gov.epa.emissions.framework.services.casemanagement.CaseService");

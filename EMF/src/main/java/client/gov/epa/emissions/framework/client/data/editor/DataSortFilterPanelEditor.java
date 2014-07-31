@@ -50,6 +50,8 @@ public class DataSortFilterPanelEditor extends JPanel {
 
     private DoubleRenderer doubleRenderer;
 
+    private TablePresenter presenter;
+
     public DataSortFilterPanelEditor(MessagePanel messagePanel, EmfDataset dataset, String rowFilters,
             DoubleRenderer doubleRenderer) {
 
@@ -140,7 +142,11 @@ public class DataSortFilterPanelEditor extends JPanel {
         return panel;
     }
 
-    public void init(final TablePresenter presenter) {
+    public void observe(final TablePresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public void init() {
 
         this.formatButton.setAction(new AbstractAction("Format") {
             public void actionPerformed(ActionEvent e) {

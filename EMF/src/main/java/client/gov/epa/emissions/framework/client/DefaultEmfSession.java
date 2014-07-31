@@ -75,7 +75,7 @@ public class DefaultEmfSession implements EmfSession {
         this.preferences = new DefaultUserPreferences();
         this.user = user;
         
-        objectCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build(
+        objectCache = CacheBuilder.newBuilder().expireAfterAccess(120, TimeUnit.MINUTES).build(
                 new CacheLoader<ObjectCacheType, Object>() {
                     public Object load(ObjectCacheType key) throws EmfException {
                         if (key.equals(ObjectCacheType.LIGHT_DATASET_TYPES_LIST)) {

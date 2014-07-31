@@ -187,4 +187,17 @@ public class UserServiceTransport implements UserService {
         return (String) call.requestResponse(new Object[] { name });
     }
 
+    @Override
+    public User obtainLocked(User owner, Integer userId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("obtainLocked");
+        call.addParam("owner", mappings.user());
+        call.addParam("userId", mappings.integer());
+        call.setReturnType(mappings.user());
+        Object[] params = new Object[] { owner, userId };
+
+        return (User) call.requestResponse(params);
+    }
+
 }

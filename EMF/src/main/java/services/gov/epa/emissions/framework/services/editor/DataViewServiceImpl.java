@@ -52,12 +52,13 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
         accessor = new DataAccessorImpl(cache, sessionFactory);
     }
 
-    public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
+    public synchronized Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
         accessor.applyConstraints(token, null, rowFilter, sortOrder);
         return getPage(token, 1);
     }
 
-    public Page getPage(DataAccessToken token, int pageNumber) throws EmfException {
+    public synchronized Page getPage(DataAccessToken token, int pageNumber) throws EmfException {
+        LOG.info("getPage");
         Page page = accessor.getPage(token, pageNumber);
         if ( CommonDebugLevel.DEBUG_PAGE_2) {
             page.print();
@@ -65,11 +66,13 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
         return page;
     }
 
-    public int getPageCount(DataAccessToken token) throws EmfException {
+    public synchronized int getPageCount(DataAccessToken token) throws EmfException {
+        LOG.info("getPageCount");
         return accessor.getPageCount(token);
     }
 
-    public Page getPageWithRecord(DataAccessToken token, int record) throws EmfException {
+    public synchronized Page getPageWithRecord(DataAccessToken token, int record) throws EmfException {
+        LOG.info("getPageWithRecord");
         Page page = accessor.getPageWithRecord(token, record);
         if ( CommonDebugLevel.DEBUG_PAGE_2) {
             page.print();
@@ -77,24 +80,26 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
         return page;
     }
 
-    public int getTotalRecords(DataAccessToken token) throws EmfException {
+    public synchronized int getTotalRecords(DataAccessToken token) throws EmfException {
+        LOG.info("getTotalRecords");
         return accessor.getTotalRecords(token);
     }
 
-    public Version[] getVersions(int datasetId) throws EmfException {
+    public synchronized Version[] getVersions(int datasetId) throws EmfException {
         return accessor.getVersions(datasetId);
     }
 
-    public Version getVersion(int datasetId, int version) throws EmfException {
+    public synchronized Version getVersion(int datasetId, int version) throws EmfException {
         return accessor.getVersion(datasetId, version);
     }
 
-    public DataAccessToken openSession(DataAccessToken token) throws EmfException {
+    public synchronized DataAccessToken openSession(DataAccessToken token) throws EmfException {
 //        Version current = accessor.currentVersion(token.getVersion());
 //        if (!current.isFinalVersion())
 //            throw new EmfException("Can only view a final Version.");
 
         try {
+            LOG.info("openSession");
             return accessor.openSession(token);
         } catch (Exception e) {
             LOG.error("Could not open Session for Dataset: " + token.datasetId() + ", Version: "
@@ -104,7 +109,7 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
         }
     }
 
-    public void closeSession(DataAccessToken token) throws EmfException {
+    public synchronized void closeSession(DataAccessToken token) throws EmfException {
         try {
             accessor.closeSession(token);
         } finally {
@@ -120,7 +125,7 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
         super.finalize();
     }
 
-    public TableMetadata getTableMetadata(String table) throws EmfException {
+    public synchronized TableMetadata getTableMetadata(String table) throws EmfException {
         try {
             TableDefinition definition = dbServer.getEmissionsDatasource().tableDefinition();
             return definition.getTableMetaData(table);

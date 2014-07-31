@@ -21,7 +21,7 @@ public interface TablePaginator {
 
     void doDisplayPageWithRecord(int record) throws EmfException;
 
-    int totalRecords() throws EmfException;
+    int getTotalRecords() throws EmfException;
 
     DataAccessToken token();
 

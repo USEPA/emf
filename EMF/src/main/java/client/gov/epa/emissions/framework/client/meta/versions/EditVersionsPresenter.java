@@ -85,10 +85,13 @@ public class EditVersionsPresenter {
     }
 
     public void reload() throws EmfException {
-        Version[] updatedVersions = editorService().getVersions(dataset.getId());
-        view.reload(updatedVersions);
+        view.reload();
     }
 
+    public Version[] getVersions(final int datasetId) throws EmfException {
+        return editorService().getVersions(dataset.getId());
+    }
+    
     public EmfSession getSession() {
         return session;
     }

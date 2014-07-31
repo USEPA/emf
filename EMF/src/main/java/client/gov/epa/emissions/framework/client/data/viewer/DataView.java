@@ -7,5 +7,9 @@ import gov.epa.emissions.framework.client.ManagedView;
 public interface DataView extends ManagedView {
     void display(Version version, String table, TableMetadata tableMetadata);
 
+//    void populate();
+    
     void observe(DataViewPresenter presenter);
+
+    void populate(TableMetadata tableMetadata);
 }

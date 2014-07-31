@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.data.viewer;
 
+import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.framework.services.EmfException;
 
 public interface TablePresenter {

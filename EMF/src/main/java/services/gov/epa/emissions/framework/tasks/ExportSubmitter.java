@@ -4,17 +4,35 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.exim.ExportTask;
+import gov.epa.emissions.framework.services.exim.ManagedExportService;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public abstract class ExportSubmitter implements TaskSubmitter {
+    private static Log log = LogFactory.getLog(ExportSubmitter.class);
+    
     private static int svcCount = 0;
 
     private String svcLabel = null;
 
+    private ExportTaskManager exportTaskManager;
+    
+    @Autowired
+    public void setExportTaskManager(ExportTaskManager exportTaskManager){
+        this.exportTaskManager = exportTaskManager;
+    }
+    
     public String myTag() {
         if (svcLabel == null) {
             svcCount++;
@@ -35,14 +53,21 @@ public abstract class ExportSubmitter implements TaskSubmitter {
     // protected ExportTaskManager taskManager = null;
 
     public ExportSubmitter() {
+        this.exportTaskManager = ExportTaskManager.getExportTaskManager();
+        init();
+    }
+
+    @PostConstruct
+    public void init() {
+        log.info("init");
         myTag();
         submitterId = svcLabel;
+        log.info("init submitterId = " + submitterId);
         exportTasks = new ArrayList<Runnable>();
 //        submittedTasks = new ArrayList<Runnable>();
         submittedTable = new Hashtable<String, ExportTaskStatus>();
-
     }
-
+    
     public String getSubmitterId() {
         return submitterId;
     }
@@ -77,6 +102,7 @@ public abstract class ExportSubmitter implements TaskSubmitter {
         
         // Add this task to exportTasks queue to prepare for the submit to the TaskManager
         exportTasks.add(task);
+        System.out.println("exportTasks.add(task)  ( task == null) " + ( task == null));
     }
 
     public synchronized void addTasksToSubmitter(ArrayList<Runnable> tasks) {
@@ -119,7 +145,7 @@ public abstract class ExportSubmitter implements TaskSubmitter {
 //            if (DebugLevels.DEBUG_9) System.out.println("&&&&& In ExportSubmitter::submitTasksToTaskManager the types of TASK objects coming in are: " + tsk.getClass().getName());
 //        }
 
-        TaskManagerFactory.getExportTaskManager().addTasks(tasks);
+        this.exportTaskManager.addTasks(tasks);
 
         // FIXME: May not need to do this next step since submitted Table is uptodate
 //        submittedTasks.addAll(tasks);

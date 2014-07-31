@@ -1,13 +1,13 @@
 package gov.epa.emissions.framework.client.download;
 
 import gov.epa.emissions.commons.gui.Button;
+import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
-import gov.epa.emissions.framework.client.status.MultiLineCellRenderer;
-import gov.epa.emissions.framework.client.status.MultiLineTable;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.FileDownload;
 import gov.epa.emissions.framework.ui.ImageResources;
@@ -24,7 +24,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -32,15 +31,13 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Date;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -58,7 +55,6 @@ import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -90,10 +86,13 @@ public class FileDownloadWindow
 
     private CountDownLatch latch = new CountDownLatch(2);
     private ExecutorService executor = Executors.newFixedThreadPool(2);
-    
-    
 
+    private User user;
     
+    private String downloadFolder;
+
+
+   
     
     class Task extends SwingWorker<Void, Void> {
         private CountDownLatch latch;
@@ -108,7 +107,7 @@ public class FileDownloadWindow
          * Main task. Executed in background thread.
          */
         @Override
-        public Void doInBackground() {
+        public Void doInBackground() throws FileNotFoundException {
             System.out.println("check to see if file download is already there");
             System.out.println("if overwrite flag is true then overwrite the file...");
             
@@ -117,12 +116,13 @@ public class FileDownloadWindow
 //            fileDownload.setProgress(0);
 
             String downloadURL = fileDownload.getUrl();
-            String destinationFolder = "";
             HttpAsyncClient httpclient = null;
             File downloadedFile = null;
+            boolean downloadIssue = false;
             try {
-                destinationFolder = presenter.getDownloadFolder();
-                downloadedFile = new File(destinationFolder + "//" + fileDownload.getFileName());
+                if (downloadFolder == null) 
+                    downloadFolder = presenter.getDownloadFolder();
+                downloadedFile = new File(downloadFolder + "//" + fileDownload.getFileName());
                 
                 //check to see if file download is already there
                 if (downloadedFile.exists() && !fileDownload.getOverwrite()) {
@@ -141,6 +141,7 @@ public class FileDownloadWindow
                 e.printStackTrace();
             }
 
+            final FileChannel wChannel = new FileOutputStream(downloadedFile, false).getChannel();
             System.out.println("start file download...");
             
             httpclient.getParams()
@@ -153,7 +154,7 @@ public class FileDownloadWindow
             try {
                   
                 // Create a writable file channel
-                final FileChannel wChannel = new FileOutputStream(downloadedFile, false).getChannel();
+//                wChannel = new FileOutputStream(downloadedFile, false).getChannel();
 
                 ZeroCopyConsumer<File> consumer = new ZeroCopyConsumer<File>(downloadedFile) {
 
@@ -226,6 +227,8 @@ public class FileDownloadWindow
 
                 };
                   
+                //asynchronously download the file
+                System.out.println("downloadURL = " + downloadURL);
                 Future<File> future = httpclient.execute(HttpAsyncMethods.createGet(downloadURL), 
                         consumer, 
                         new FutureCallback<File>() {
@@ -251,23 +254,31 @@ public class FileDownloadWindow
                 
 //                    System.out.println("consumer.isDone() = " + consumer.isDone());
                 System.out.println("Shutting down");
-                wChannel.close();
-            } catch (MalformedURLException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
             } catch (InterruptedException e) {
                 // NOTE Auto-generated catch block
                 e.printStackTrace();
+                downloadIssue = true;
             } catch (ExecutionException e) {
                 // NOTE Auto-generated catch block
                 e.printStackTrace();
-            } catch (IOException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
+                downloadIssue = true;
             } finally {
+                try {
+                    wChannel.close();
+                } catch (IOException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
                 try {
                     httpclient.shutdown();
                 } catch (InterruptedException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+                try {
+                    //get rid of file, its not needed since there was a download issue
+                    downloadedFile.delete();
+                } catch (Exception e) {
                     // NOTE Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -289,11 +300,11 @@ public class FileDownloadWindow
         }
     }
 
-    public FileDownloadWindow(EmfConsole parent, DesktopManager desktopManager) {
+    public FileDownloadWindow(EmfConsole parent, DesktopManager desktopManager, User user) {
         super("Downloads", desktopManager);
         super.setName("Downloads");
         this.parent = parent;
-
+        this.user = user;
         position(parent);
         super.setContentPane(createLayout());
 
@@ -527,12 +538,7 @@ public class FileDownloadWindow
                         FileDownload fileDownload = (FileDownload) ((FileDownloadTableModel)(table.getModel())).getSource(selectedRow);
                         if (fileDownload.getProgress() == 100) {
                             AnalysisEngineTableApp app = new AnalysisEngineTableApp("View Exported File: " + fileDownload.getFileName(), new Dimension(500, 500), desktopManager, parent);
-                            try {
-                                app.display(new String[] { presenter.getDownloadFolder() + "/" + fileDownload.getFileName() });
-                            } catch (EmfException ex) {
-                                // NOTE Auto-generated catch block
-                                messagePanel.setError(ex.getMessage());
-                            }
+                            app.display(new String[] { downloadFolder + "/" + fileDownload.getFileName() });
                         } else {
                             // NOTE Auto-generated catch block
                             messagePanel.setError("File has not been fully downloaded.");
@@ -556,7 +562,7 @@ public class FileDownloadWindow
                         }
 
                         try {
-                            desktop.open(new File(presenter.getDownloadFolder()));
+                            desktop.open(new File(downloadFolder));
                         } catch (IOException ex) {
                             messagePanel.setError(ex.getMessage());
                         }
@@ -605,8 +611,55 @@ public class FileDownloadWindow
 
     public void display() {
         setVisible(true);
-        // don't register through desktopmanager, since we don't want to close this window
-    }
+
+        new GenericSwingWorker<FileDownload[]>(getContentPane(), messagePanel) {
+
+            @Override
+            public FileDownload[] doInBackground() throws EmfException {
+                FileDownload[] fileDownloads = presenter.getFileDownloads(user.getId());
+                presenter.markFileDownloadRead(buildFileDownloadIdList(fileDownloads));
+                downloadFolder = presenter.getDownloadFolder();
+//                System.out.println("downloadFolder = " + downloadFolder);
+                //see if the file has already been downloaded
+                for (FileDownload fileDownload : fileDownloads) {
+                    File file = new File(downloadFolder + "//" + fileDownload.getFileName());
+                    if (file.exists() && file.length() == fileDownload.getSize()) 
+                        fileDownload.setProgress(100);
+//                    if (Files.exists(FileSystems.getDefault().getPath(downloadFolder, fileDownload.getFileName()), new LinkOption[]{LinkOption.NOFOLLOW_LINKS})) {
+//                        File file = new File(downloadFolder + "/" + fileDownload.getFileName());
+//                        if (file.length() == fileDownload.getSize()) 
+//                            fileDownload.setProgress(100);
+//                    }
+                }
+                return fileDownloads;
+            }
+            
+            private Integer[] buildFileDownloadIdList(FileDownload[] fileDownloads) {
+                Integer[] fileDownloadIds = new Integer[fileDownloads.length];
+                for (int i = 0; i < fileDownloads.length; i++) {
+                    fileDownloadIds[i] = fileDownloads[i].getId();
+                }
+                return fileDownloadIds;
+            }
+            
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    update(get());
+
+                } catch (InterruptedException e1) {
+                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    super.finalize();
+                }
+            }
+        }.execute();
+}
 
     public void update(FileDownload[] fileDownloads) {
         messagePanel.setMessage("Last Update : " + CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(new Date()), Color.GRAY);
@@ -636,11 +689,20 @@ public class FileDownloadWindow
                 });
                 executor.execute(task);
                 fileDownload.setProgress(0);
-                try {
-                    presenter.markFileDownloadRead(fileDownload);
-                } catch (EmfException e) {
-                    messagePanel.setError(e.getMessage());
-                }
+                //run not on EventDispatch
+                new SwingWorker<Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground() {
+                        try {
+                            presenter.markFileDownloadRead(fileDownload);
+                        } catch (EmfException e) {
+                            messagePanel.setError(e.getMessage());
+                        }
+                        return null;
+                    }
+                    
+                }.execute();
             }        
         }
         
@@ -665,5 +727,35 @@ public class FileDownloadWindow
 
     public void doRefresh() {
         presenter.doRefresh();
+    }
+
+    @Override
+    public void refresh() {
+//        fileDownloads = presenter.getUnreadFileDownloads(this.user.getId());
+        new GenericSwingWorker<FileDownload[]>(getContentPane(), messagePanel) {
+
+            @Override
+            public FileDownload[] doInBackground() throws EmfException {
+                return presenter.getUnreadFileDownloads(user.getId());
+            }
+            
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    update(get());
+
+                } catch (InterruptedException e1) {
+                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    super.finalize();
+                }
+            }
+        }.execute();
+//      service.markFileDownloadsRead(buildFileDownloadIdList(fileDownloads));
     }
 }

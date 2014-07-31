@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.data;
 
 import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.framework.client.data.viewer.TablePresenter;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.IconButton;
 import gov.epa.emissions.framework.ui.ImageResources;
@@ -13,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -24,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -69,7 +72,7 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
         super.add(container, BorderLayout.LINE_END);
     }
 
-    private JPanel recordsPanel(int totalRecordsCount) {
+    private JPanel recordsPanel(Integer totalRecordsCount) {
         JPanel panel = new JPanel();
 
         JLabel currentName = new JLabel("Current:");
@@ -80,33 +83,59 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
 
         JLabel filtered = new JLabel("Filtered:");
         panel.add(filtered);
-        filteredRecords = new JLabel("" + totalRecordsCount);
+        filteredRecords = new JLabel("" + (totalRecordsCount != null ? totalRecordsCount + "" : "?"));
         filteredRecords.setToolTipText("Number of records in dataset matching the filter");
         panel.add(filteredRecords);
 
         panel.add(new JLabel("of"));
-        totalRecordsLabel = new JLabel("" + totalRecordsCount);
+        totalRecordsLabel = new JLabel("" + (totalRecordsCount != null ? totalRecordsCount + "" : "?"));
         totalRecordsLabel.setToolTipText("Total number of records in dataset");
         panel.add(totalRecordsLabel);
 
         return panel;
     }
 
-    public void init(TablePresenter presenter) {
+    public void observe(final TablePresenter presenter) {
         this.presenter = presenter;
-        try {
-            totalRecords = presenter.totalRecords();
-            presenter.setTotalRecords(totalRecords);
-            doLayout(totalRecords);
-
-            if (totalRecords == 0)
-                disableControlPanel();
-        } catch (EmfException e) {
-            messagePanel.setError("Could not obtain Total Records." + e.getMessage());
-        }
     }
 
-    private JPanel layoutControls(int totalRecords) {
+    public void init() {
+        
+        doLayout(1);
+
+        new SwingWorker<Void, Void>() {
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                totalRecords = presenter.totalRecords();
+                return null;
+            }
+            
+            @Override
+            protected void done() {
+                try {
+                    get();
+
+                    presenter.setTotalRecords(totalRecords);
+                    doLayout(totalRecords);
+
+                    if (totalRecords == 0)
+                        disableControlPanel();
+                    recordInput.setRange(1, totalRecords);
+                    slider.setMaximum(totalRecords);
+                    
+                } catch (InterruptedException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }.execute();
+    }
+
+    private JPanel layoutControls(Integer totalRecords) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 

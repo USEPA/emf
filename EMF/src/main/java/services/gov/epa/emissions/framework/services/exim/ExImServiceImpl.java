@@ -18,11 +18,19 @@ import gov.epa.emissions.framework.tasks.DebugLevels;
 import java.util.Date;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service("exImService")
+//@Transactional
 public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     private static int svcCount = 0;
 
+    private final static Logger logger = LoggerFactory  
+            .getLogger(ExImServiceImpl.class);  
+        
     private String svcLabel = null;
 
     public String myTag() {
@@ -36,9 +44,20 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 
     private ManagedImportService managedImportService;
 
-    private ManagedExportService exportService;
+    private ManagedExportService managedExportService;
     
+    @Autowired
+    public void setManagedExportService(final ManagedExportService managedExportService) {
+        this.managedExportService = managedExportService;
+    }
+
     private FileDownloadDAO fileDownloadDAO;
+    
+    @Autowired
+    public void setFileDownloadDAO(final FileDownloadDAO fileDownloadDAO) {
+        this.fileDownloadDAO = fileDownloadDAO;
+    }
+
     
     public ExImServiceImpl() throws Exception {
         this(DbServerFactory.get(), HibernateSessionFactory.get());
@@ -52,6 +71,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     }
 
     public ExImServiceImpl(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) throws Exception {
+        logger.info("ExImServiceImpl");
         if (DebugLevels.DEBUG_4())
             System.out.println(myTag());
         init(dbServerFactory, sessionFactory);
@@ -60,8 +80,8 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 
     private void init(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
         setProperties(sessionFactory);
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
-        exportService = new ManagedExportService(dbServerFactory, sessionFactory);
+//        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        managedExportService = new ManagedExportService(dbServerFactory, sessionFactory);
         managedImportService = new ManagedImportService(dbServerFactory, sessionFactory);
     }
 
@@ -81,6 +101,9 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
         }
     }
 
+    /**
+     *
+     */
     public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
@@ -91,7 +114,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 //        if (rowFilters.isEmpty() && colOrders.isEmpty())
 //            submitterId = exportService.exportForClient(user, datasets, versions, dirName, purpose, overwrite);
 //        else
-        submitterId = exportService.exportForClient(user, datasets, versions, dirName, 
+        submitterId = managedExportService.exportForClient(user, datasets, versions, dirName, 
                     prefix, rowFilters, filterDataset,
                     filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, overwrite);
         if (DebugLevels.DEBUG_4())
@@ -100,6 +123,9 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
             System.out.println("rowFilters: "+rowFilters+" colOrders: "+colOrders);
     }
 
+    /**
+     *
+     */
     public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
@@ -110,7 +136,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 //        if (rowFilters.isEmpty() && colOrders.isEmpty())
 //            submitterId = exportService.exportForClient(user, datasets, versions, dirName, purpose, overwrite);
 //        else
-        submitterId = exportService.downloadForClient(user, datasets, versions, dirName, 
+        submitterId = managedExportService.downloadForClient(user, datasets, versions, dirName, 
                     prefix, rowFilters, filterDataset,
                     filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
         if (DebugLevels.DEBUG_4())
@@ -145,9 +171,12 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     }
 
     public Version getVersion(Dataset dataset, int version) throws EmfException {
-        return exportService.getVersion(dataset, version);
+        return managedExportService.getVersion(dataset, version);
     }
 
+    /**
+     *
+     */
     public void exportDatasetids(User user, Integer[] datasetIds, Version[] versions, String folder, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition,
             String colOrders, String purpose) throws EmfException {
@@ -189,6 +218,9 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
         }
     }
 
+    /**
+     *
+     */
     public void exportDatasetids(User user, Integer[] datasetIds, String folder, 
             boolean overwrite, String rowFilters, String colOrders, String purpose) throws EmfException {
         // if Vservion[] is not specified, get the default versions from datasets themselves
@@ -207,17 +239,24 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 //    }
 
     public String printStatusExportTaskManager() throws EmfException {
-        return exportService.printStatusExportTaskManager() ;
+        return managedExportService.printStatusExportTaskManager() ;
     }
 
     public String printStatusImportTaskManager() throws EmfException {
         return managedImportService.printStatusImportTaskManager() ;
     }
 
+    /**
+     *
+     */
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void downloadDatasets(User user, Integer[] datasetIds, Version[] versions, String prefix, String rowFilters,
             EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition,
             String colOrders, String purpose) throws EmfException {
         
+        logger.info("downloadDatasets");
+        logger.info("downloadDatasets " + (this.fileDownloadDAO == null));
+
 //        exportDatasetids(user, datasetIds, versions, , prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
         int numOfDS = datasetIds.length;
         EmfDataset[] datasets = new EmfDataset[numOfDS];

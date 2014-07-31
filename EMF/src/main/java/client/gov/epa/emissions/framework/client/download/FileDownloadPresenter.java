@@ -46,35 +46,27 @@ public class FileDownloadPresenter implements RefreshObserver {
     public void display(FileDownloadView view) {
         this.view = view;
         view.observe(this);
-        try {
-            fileDownloads = service.getFileDownloads(user.getId());
-            service.markFileDownloadsRead(buildFileDownloadIdList(fileDownloads));
-            String downloadFolder = getDownloadFolder();
-            //see if the file has already been downloaded
-            for (FileDownload fileDownload : fileDownloads) {
-                File file = new File(downloadFolder + "/" + fileDownload.getFileName());
-                if (file.exists() && file.length() == fileDownload.getSize()) 
-                    fileDownload.setProgress(100);
-            }
-            
-        } catch (EmfException e) {
-            // NOTE Auto-generated catch block
-            view.notifyError(e.getMessage());
-        }
-        view.update(fileDownloads);
+//        try {
+//            fileDownloads = service.getFileDownloads(user.getId());
+//            service.markFileDownloadsRead(buildFileDownloadIdList(fileDownloads));
+//            String downloadFolder = getDownloadFolder();
+//            //see if the file has already been downloaded
+//            for (FileDownload fileDownload : fileDownloads) {
+//                File file = new File(downloadFolder + "/" + fileDownload.getFileName());
+//                if (file.exists() && file.length() == fileDownload.getSize()) 
+//                    fileDownload.setProgress(100);
+//            }
+//            
+//        } catch (EmfException e) {
+//            // NOTE Auto-generated catch block
+//            view.notifyError(e.getMessage());
+//        }
+//        view.update(fileDownloads);
         view.display();
 
         runner.start(monitor);
     }
 
-    private Integer[] buildFileDownloadIdList(FileDownload[] fileDownloads) {
-        Integer[] fileDownloadIds = new Integer[fileDownloads.length];
-        for (int i = 0; i < fileDownloads.length; i++) {
-            fileDownloadIds[i] = fileDownloads[i].getId();
-        }
-        return fileDownloadIds;
-    }
-    
     public String getDownloadFolder() throws EmfException {
         String separator = File.separator; 
         UserPreference preferences = new DefaultUserPreferences();
@@ -94,17 +86,21 @@ public class FileDownloadPresenter implements RefreshObserver {
     }
     
     public void doRefresh() {
-        try {
-            fileDownloads = service.getUnreadFileDownloads(user.getId());
+//        try {
+            //fileDownloads = service.getUnreadFileDownloads(user.getId());
 //            service.markFileDownloadsRead(buildFileDownloadIdList(fileDownloads));
-            view.update(fileDownloads);
-        } catch (EmfException e) {
-            view.notifyError(e.getMessage());
-        }
+            view.refresh();//update(fileDownloads);
+//        } catch (EmfException e) {
+//            view.notifyError(e.getMessage());
+//        }
     }
 
     public void markFileDownloadRead(FileDownload fileDownload) throws EmfException {
         service.markFileDownloadsRead(new Integer[] {fileDownload.getId() });
+    }
+
+    public void markFileDownloadRead(Integer[] fileDownloadIds) throws EmfException {
+        service.markFileDownloadsRead(fileDownloadIds);
     }
 
     public void doClear() {
@@ -120,4 +116,11 @@ public class FileDownloadPresenter implements RefreshObserver {
         runner.stop();
     }
 
+    public FileDownload[] getUnreadFileDownloads(int userId) throws EmfException {
+        return service.getUnreadFileDownloads(userId);
+    }
+    
+    public FileDownload[] getFileDownloads(int userId) throws EmfException {
+        return service.getFileDownloads(userId);
+    }
 }

@@ -1,8 +1,11 @@
 package gov.epa.emissions.framework.tasks;
 
+import org.springframework.stereotype.Component;
+
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 
+@Component
 public class ExportClientSubmitter extends ExportSubmitter {
 
     public ExportClientSubmitter() {

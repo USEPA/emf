@@ -14,6 +14,7 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.editor.DataEditor;
 import gov.epa.emissions.framework.client.data.viewer.DataViewer;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -40,7 +41,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 import javax.swing.border.CompoundBorder;
 
 public class EditVersionsPanel extends JPanel implements EditVersionsView {
@@ -68,8 +68,10 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
     private Integer sIndex=0; // index of source table
     private Version[] versions;
 
+    private Container parentContainer;
+
     public EditVersionsPanel(EmfDataset dataset, MessagePanel messagePanel, EmfConsole parentConsole,
-            DesktopManager desktopManger) {
+            DesktopManager desktopManger, Container parentContainer) {
         super.setLayout(new BorderLayout());
         setBorder();
 
@@ -77,6 +79,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
         this.messagePanel = messagePanel;
         this.parentConsole = parentConsole;
         this.desktopManager = desktopManger;
+        this.parentContainer = parentContainer;
     }
 
     private void setBorder() {
@@ -98,25 +101,56 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             displayError("No version information is available - the dataset may be incomplete or external.");
         }
         if (hasMultiISources)
-            try {
+//            try {
                 doRefresh();
-            } catch (EmfException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
-                messagePanel.setError("Could not retrieve number of lines of table " + tableCombo.getSelectedItem() );
-            }
+//            } catch (EmfException e) {
+//                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+//                messagePanel.setError("Could not retrieve number of lines of table " + tableCombo.getSelectedItem() );
+//            }
     }
 
-    public void reload(Version[] versions) {
+    public void reload() {
         tablePanel.removeAll();
 
-        // reload table
-        ScrollableTable table = createTable(versions);
-        tablePanel.add(table, BorderLayout.CENTER);
-        this.versions = versions;
-        refreshLayout();
+        new ReloadVersionSwingWorker(parentContainer, messagePanel).execute();
     }
 
+    private class ReloadVersionSwingWorker extends GenericSwingWorker<Version[]> {
+
+        public ReloadVersionSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+            super(parentContainer, messagePanel);
+        }
+        
+        @Override
+        public Version[] doInBackground() throws EmfException {
+            return presenter.getVersions(dataset.getId());
+        }
+
+        @Override
+        public void done() {
+            try {
+                //make sure something does happen (versions gets populated)
+                versions = get();
+                
+                // reload table
+                ScrollableTable table = createTable(versions);
+                tablePanel.add(table, BorderLayout.CENTER);
+                refreshLayout();
+
+            } catch (InterruptedException e1) {
+                messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                super.finalize();            }
+        }
+    }
+
+
+    
     // public void doRefresh(){
     // tableModel.refresh();
     // }
@@ -379,30 +413,53 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             public void actionPerformed(ActionEvent e) {
                 if (hasMultiISources){
                     if  (tableCombo.getSelectedIndex() != sIndex) {
-                        try {
-                            doRefresh(); 
-                        } catch (EmfException e1) {
-                            messagePanel.setError("Could not retrieve number of lines of table " + tableCombo.getSelectedItem() );
-                        }
+                        doRefresh(); 
                     }
                 }   
             }
         };
     } 
     
-    private void doRefresh() throws EmfException{
-        String selectedSource = (String) tableCombo.getSelectedItem();
-        Integer[] nRecords = presenter.getDatasetRecords(dataset.getId(), versions, selectedSource);
-        for (int i = 0; i < versions.length; i++){
-            Version version = versions[i];
-            version.setNumberRecords(nRecords[i]);
-            sIndex = tableCombo.getSelectedIndex();
-        }  
-        tableData = new VersionsTableData(versions);
-        tableModel.refresh(tableData);
-        tablePanel.repaint();
-//        super.validate();
-    
+    private void doRefresh() {
+        new RefreshVersionSwingWorker(parentContainer, messagePanel).execute();
+    }
+
+    private class RefreshVersionSwingWorker extends GenericSwingWorker<Void> {
+
+        public RefreshVersionSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+            super(parentContainer, messagePanel);
+        }
+        
+        @Override
+        public Void doInBackground() throws EmfException {
+            Integer[] nRecords = presenter.getDatasetRecords(dataset.getId(), versions, (String)tableCombo.getSelectedItem());
+            for (int i = 0; i < versions.length; i++){
+                Version version = versions[i];
+                version.setNumberRecords(nRecords[i]);
+                sIndex = tableCombo.getSelectedIndex();
+            }
+            return null;
+        }
+
+        @Override
+        public void done() {
+            try {
+                //make sure something does happen (versions gets populated)
+                get();
+                
+                tableData = new VersionsTableData(versions);
+                tableModel.refresh(tableData);
+                tablePanel.repaint();
+
+            } catch (InterruptedException e1) {
+                messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                super.finalize();            }
+        }
     }
 
     private Button viewButton(final JComboBox tableCombo) {
@@ -446,66 +503,24 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             return;
         }
 
-        //long running methods.....
-        this.getParent().getParent().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this.getParent().getParent(), false);
-
-        //Instances of javax.swing.SwingWorker are not reusuable, so
-        //we create new instances as needed.
-        class ViewDatasetTask extends SwingWorker<Void, Void> {
-            
-            private Container parentContainer;
-
-            public ViewDatasetTask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public Void doInBackground() throws EmfException  {
-                for (int i = 0; i < versions.length; i++)
-                    showView(table, versions[i]);
-                return null;
-            }
-
-            /*
-             * Executed in event dispatching thread
-             */
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen
-                    get();
-                    
-                } catch (InterruptedException e1) {
-//                    messagePanel.setError(e1.getMessage());
-//                    setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-//                    messagePanel.setError(e1.getCause().getMessage());
-//                    setErrorMsg(e1.getCause().getMessage());
-                } finally {
-//                    this.parentContainer.setCursor(null); //turn off the wait cursor
-//                    this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
-                }
-            }
-        };
-        new ViewDatasetTask(this.getParent().getParent()).execute();
+        for (int i = 0; i < versions.length; i++)
+            showView(table, versions[i]);
     }
 
     private void showView(String table, Version version) {
         DataViewer view = new DataViewer(dataset, parentConsole, desktopManager);
         try {
-            if (dataset.getInternalSources().length > 0)
+            if (dataset.getInternalSources().length > 0) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                ComponentUtility.enableComponents(parentContainer, false);
                 presenter.doView(version, table, view);
-            else
+            } else
                 displayError("Could not open viewer.This is an external file.");
         } catch (EmfException e) {
             displayError(e.getMessage());
+        } finally {
+            setCursor(null);
+            ComponentUtility.enableComponents(parentContainer, true);
         }
     }
 
@@ -561,54 +576,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             return;
         }
 
-        //long running methods.....
-        this.getParent().getParent().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this.getParent().getParent(), false);
-
-        //Instances of javax.swing.SwingWorker are not reusuable, so
-        //we create new instances as needed.
-        class EditDatasetTask extends SwingWorker<Void, Void> {
-            
-            private Container parentContainer;
-
-            public EditDatasetTask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public Void doInBackground() throws EmfException  {
-                showEditor(table, versions[0]);
-                return null;
-            }
-
-            /*
-             * Executed in event dispatching thread
-             */
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen
-                    get();
-                    
-                } catch (InterruptedException e1) {
-//                    messagePanel.setError(e1.getMessage());
-//                    setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-//                    messagePanel.setError(e1.getCause().getMessage());
-//                    setErrorMsg(e1.getCause().getMessage());
-                } finally {
-//                    this.parentContainer.setCursor(null); //turn off the wait cursor
-//                    this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
-                }
-            }
-        };
-        new EditDatasetTask(this.getParent().getParent()).execute();
+        showEditor(table, versions[0]);
         
     }
 
