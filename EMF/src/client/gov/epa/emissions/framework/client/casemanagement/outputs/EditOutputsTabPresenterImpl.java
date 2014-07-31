@@ -72,7 +72,7 @@ public class EditOutputsTabPresenterImpl implements EditOutputsTabPresenter {
     }
     
     public void doDisplayPropertiesView(PropertiesView propertiesView, EmfDataset dataset) throws EmfException {
-        view.clearMessage();
+        //view.clearMessage();
 
         PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
         presenter.doDisplay(propertiesView);

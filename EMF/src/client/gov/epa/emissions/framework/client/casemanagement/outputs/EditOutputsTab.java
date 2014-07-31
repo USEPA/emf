@@ -80,8 +80,6 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
     
     protected CaseJob selectedJob=null;
     
- 
-    
     protected DesktopManager desktopManager;
 
 
@@ -278,7 +276,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         }
     }
 
-    protected void displayOutputDatasetsPropertiesViewer() throws EmfException {
+    private void displayOutputDatasetsPropertiesViewer()  {
         messagePanel.clear();
         final List<EmfDataset> datasets = getSelectedDatasets(table.selected());
         if (datasets.isEmpty()) {
@@ -342,7 +340,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
     }
 
     
-    protected List<EmfDataset> getSelectedDatasets(List outputlist) {
+    private List<EmfDataset> getSelectedDatasets(List outputlist) {
         List<EmfDataset> datasetList = new ArrayList<EmfDataset>();
 
         for (int i=0; i<outputlist.size(); i++) {
