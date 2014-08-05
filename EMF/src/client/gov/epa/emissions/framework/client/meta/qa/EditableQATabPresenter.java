@@ -2,11 +2,12 @@ package gov.epa.emissions.framework.client.meta.qa;
 
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.meta.PropertiesEditorTabPresenter;
+import gov.epa.emissions.framework.client.swingworker.LightSwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
 
-public interface EditableQATabPresenter extends PropertiesEditorTabPresenter {
+public interface EditableQATabPresenter extends PropertiesEditorTabPresenter, LightSwingWorkerPresenter {
     void display() throws EmfException;
 
     void doAddUsingTemplate(NewQAStepView stepview);

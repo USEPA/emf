@@ -6,6 +6,7 @@ import gov.epa.emissions.commons.gui.buttons.AddButton;
 import gov.epa.emissions.commons.gui.buttons.ViewButton;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DatasetNote;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -170,18 +171,20 @@ public class EditNotesTab extends JPanel implements EditNotesTabView, RefreshObs
     
     public void doRefresh() throws EmfException {        
         try {
-            messagePanel.setMessage("Please wait while retrieving all dataset notes...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            //presenter.display();
-            super.removeAll();
-            super.add(createLayout(presenter.getDatasetNotes()));
-            super.validate();
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
             messagePanel.setMessage("Finished loading dataset notes.");
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
             setCursor(Cursor.getDefaultCursor());
         }
+    }
+    
+    public void doRefresh(DatasetNote[] datasetNotes){
+        super.removeAll();
+        super.add(createLayout(datasetNotes));
+        super.validate();
+        messagePanel.setMessage("Finished loading dataset notes.");
     }
     
     public void observe(EditNotesTabPresenter presenter){

@@ -5,6 +5,8 @@ import gov.epa.emissions.framework.services.data.DatasetNote;
 public interface EditNotesTabView {
 
     void display(DatasetNote[] notes);
+    
+    void doRefresh(DatasetNote[] notes);
 
     DatasetNote[] additions();
 

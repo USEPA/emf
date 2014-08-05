@@ -1,12 +1,13 @@
 package gov.epa.emissions.framework.client.meta.revisions;
 
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.swingworker.LightSwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.editor.Revision;
 
-public class RevisionsTabPresenter {
+public class RevisionsTabPresenter implements LightSwingWorkerPresenter {
 
     private EmfDataset dataset;
 
@@ -48,5 +49,41 @@ public class RevisionsTabPresenter {
         if (!reloaded.isLocked(session.user()))
             throw new EmfException("Lock on current dataset object expired. User " + reloaded.getLockOwner()
                     + " has it now.");    
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
     }
 }

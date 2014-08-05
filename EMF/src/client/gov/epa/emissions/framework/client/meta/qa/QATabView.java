@@ -8,4 +8,6 @@ public interface QATabView {
     void display(QAStep[] steps, QAStepResult[] results, EmfSession session);
 
     void observe(ViewQATabPresenter presenter);
+    
+    void doRefresh(QAStep[] steps, QAStepResult[] results);
 }

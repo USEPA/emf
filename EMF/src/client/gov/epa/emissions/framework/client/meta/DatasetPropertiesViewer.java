@@ -129,7 +129,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
     }
 
     private JPanel createSummaryTab() {
-        SummaryTab view = new SummaryTab(dataset, version);
+        SummaryTab view = new SummaryTab(dataset, version,messagePanel);
         presenter.set(view);
         return view;
     }
@@ -147,14 +147,14 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
     }
 
     private JPanel createKeywordsTab() {
-        KeywordsTab view = new KeywordsTab();
+        KeywordsTab view = new KeywordsTab(messagePanel);
         presenter.set(view);
         return view;
     }
 
     private JPanel createNotesTab(EmfConsole parentConsole) {
         try {
-            NotesTab view = new NotesTab(parentConsole, desktopManager);
+            NotesTab view = new NotesTab(parentConsole, desktopManager, messagePanel);
             presenter.set(view);
             return view;
         } catch (EmfException e) {
@@ -176,7 +176,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
 
     private JPanel createLogsTab(EmfConsole parentConsole) {
         try {
-            LogsTab view = new LogsTab(parentConsole);
+            LogsTab view = new LogsTab(parentConsole, messagePanel);
             presenter.set(view);
             return view;
         } catch (EmfException e) {

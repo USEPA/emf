@@ -16,6 +16,10 @@ public class ViewQATabPresenterImpl implements ViewQATabPresenter {
     private EmfSession session;
 
     private EmfDataset dataset;
+    
+    private QAStep[] steps;
+
+    private QAStepResult[] qaStepResults;
 
     public ViewQATabPresenterImpl(QATabView view, EmfDataset dataset, EmfSession session) {
         this.view = view;
@@ -26,8 +30,9 @@ public class ViewQATabPresenterImpl implements ViewQATabPresenter {
 
     public void display() throws EmfException {
         //view.observe(this);
-        QAStepResult[] results = session.qaService().getQAStepResults(dataset);
-        view.display(session.qaService().getQASteps(dataset), results, session);
+        this.qaStepResults = session.qaService().getQAStepResults(dataset);
+        this.steps = session.qaService().getQASteps(dataset);
+        view.display(steps, qaStepResults, session);
     }
 
     public void doView(QAStep step, QAStepView view) throws EmfException {
@@ -44,6 +49,42 @@ public class ViewQATabPresenterImpl implements ViewQATabPresenter {
     public Version[] getVersions() throws EmfException {
         DataEditorService service = session.dataEditorService();
         return service.getVersions(dataset.getId());
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        this.qaStepResults = session.qaService().getQAStepResults(dataset);
+        this.steps = session.qaService().getQASteps(dataset);
+        return null;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.doRefresh(steps, qaStepResults);
     }
 
 }

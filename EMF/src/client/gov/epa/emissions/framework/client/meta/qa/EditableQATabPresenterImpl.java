@@ -6,6 +6,7 @@ import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.preference.UserPreference;
+import gov.epa.emissions.framework.client.swingworker.LightSwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
@@ -20,13 +21,17 @@ import java.io.Writer;
 import java.util.Date;
 import java.util.StringTokenizer;
 
-public class EditableQATabPresenterImpl implements EditableQATabPresenter {
+public class EditableQATabPresenterImpl implements EditableQATabPresenter{
 
     private EditableQATabView view;
 
     private EmfDataset dataset;
 
     private EmfSession session;
+      
+    private QAStep[] steps;
+    
+    private QAStepResult[] qaStepResults;
 
     public EditableQATabPresenterImpl(EmfDataset dataset, EmfSession session, EditableQATabView view) {
         this.dataset = dataset;
@@ -36,8 +41,8 @@ public class EditableQATabPresenterImpl implements EditableQATabPresenter {
     }
 
     public void display() throws EmfException {
-        QAStep[] steps = qaService().getQASteps(dataset);
-        QAStepResult[] qaStepResults =qaService().getQAStepResults(dataset);
+        this.steps = qaService().getQASteps(dataset);
+        this.qaStepResults =qaService().getQAStepResults(dataset);
         view.display(dataset, steps, qaStepResults,  versions());
     }
 
@@ -222,6 +227,42 @@ public class EditableQATabPresenterImpl implements EditableQATabPresenter {
     
     public boolean checkBizzareCharInColumn(QAStep step, String colName) throws EmfException {
         return session.dataService().checkBizzareCharInColumn(step.getDatasetId(), step.getVersion(), colName);
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        this.steps = qaService().getQASteps(dataset);
+        this.qaStepResults =qaService().getQAStepResults(dataset);
+        return versions();
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.doRefresh(dataset, steps, qaStepResults, (Version[])objs);
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
     }
 
 }

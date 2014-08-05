@@ -21,6 +21,7 @@ import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.data.Projects;
 import gov.epa.emissions.framework.client.data.region.Regions;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -151,6 +152,22 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         intendedUseCombo.setSelectedItem(intendedUse);
         changeablesList.addChangeable(intendedUseCombo);
     }
+    
+    public void doRefresh(EmfDataset dataset, Version[] versions){
+        this.dataset = dataset;
+        this.versions = versions;
+        super.removeAll();
+        try {
+            setLayout();
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
+        super.validate();
+        messagePanel.setMessage("Finished loading dataset summary.");
+    }
+
+
 
     private IntendedUse getPublic(IntendedUse[] allIntendedUses) {
         for (IntendedUse use : allIntendedUses)
@@ -379,25 +396,10 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
     }
 
     public void doRefresh() throws EmfException {  
-
         try {
-            messagePanel.setMessage("Please wait while retrieving dataset summary...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            this.dataset = presenter.reloadDataset();
-            this.versions=presenter.getVersions();
-            super.removeAll();
-            setLayout();
-            super.validate();
-            messagePanel.setMessage("Finished loading dataset summary.");
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-//            try {
-//                presenter.checkIfLockedByCurrentUser();
-//            } catch (Exception e) {
-//                messagePanel.setMessage(e.getMessage());
-//            }
         }
     }
     

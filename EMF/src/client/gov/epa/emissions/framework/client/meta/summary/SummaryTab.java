@@ -11,8 +11,10 @@ import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 
 import java.awt.BorderLayout;
@@ -31,11 +33,13 @@ public class SummaryTab extends JPanel implements SummaryTabView, RefreshObserve
     private EmfDataset dataset;
     private Version version; 
     private SummaryTabPresenter presenter; 
+    private MessagePanel messagePanel;
 
-    public SummaryTab(EmfDataset dataset, Version version) {
+    public SummaryTab(EmfDataset dataset, Version version, MessagePanel messagePanel) {
         super.setName("summary");
         this.dataset = dataset;
         this.version = version; 
+        this.messagePanel = messagePanel;
 
         setLayout();
     }
@@ -171,11 +175,19 @@ public class SummaryTab extends JPanel implements SummaryTabView, RefreshObserve
     
     public void doRefresh() throws EmfException {
         
+        try {
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
+        } catch (Exception e) {
+            throw new EmfException(e.getMessage());
+        }  
+    }
+    
+    public void doRefresh(EmfDataset dataset, Version version){
+        this.dataset = dataset;
+        this.version = version;
         super.removeAll();
-        this.dataset = presenter.reloadDataset(); 
-        this.version=presenter.getVersion();
         setLayout();
-        super.validate();       
+        super.validate();    
     }
 
     public void observe(SummaryTabPresenter presenter) {

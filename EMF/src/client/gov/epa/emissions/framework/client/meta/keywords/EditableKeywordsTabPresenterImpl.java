@@ -30,10 +30,7 @@ public class EditableKeywordsTabPresenterImpl implements EditableKeywordsTabPres
         view.observe(this);
         view.display(dataset, masterKeywords);
     }
-    
-    public void refreshView() {     
-        view.display(dataset, masterKeywords);
-    }
+
 
     public void doSave() throws EmfException {
         KeyVal[] updates = view.updates();
@@ -59,10 +56,38 @@ public class EditableKeywordsTabPresenterImpl implements EditableKeywordsTabPres
             throw new EmfException("Lock on current dataset object expired. User " + reloaded.getLockOwner()
                     + " has it now.");        
     }
-    
-    public void refresh() throws EmfException { 
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        return null;
+    }
+
+    @Override
+    public void saveDisplay(Object[] objs) throws EmfException {
+        //
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
         this.dataset = session.dataService().getDataset(dataset.getId());
-        refreshView();
+        return null;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.doRefresh(dataset, masterKeywords);
     }
 
 }

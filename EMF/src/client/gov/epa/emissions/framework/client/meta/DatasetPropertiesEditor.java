@@ -172,7 +172,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
     }
     
     private JPanel createKeywordsTab() {
-        keywordsTab = new EditableKeywordsTab(this, parentConsole);
+        keywordsTab = new EditableKeywordsTab(this, parentConsole, messagePanel);
 
         try {
             presenter.set(keywordsTab);
@@ -209,7 +209,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
 
     private JPanel createLogsTab(EmfDataset dataset, EmfConsole parentConsole) {
         try {
-            LogsTab view = new LogsTab(parentConsole);
+            LogsTab view = new LogsTab(parentConsole, messagePanel);
             LogsTabPresenter presenter = new LogsTabPresenter(view, dataset, session);
             presenter.display();
 

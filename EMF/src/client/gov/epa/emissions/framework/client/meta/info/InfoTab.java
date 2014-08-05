@@ -6,6 +6,7 @@ import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.Border;
@@ -34,7 +35,7 @@ public class InfoTab extends JPanel implements InfoTabView, RefreshObserver {
 
     private JPanel sourcesPanel;
     
-    private JPanel filter;
+    //private JPanel filter;
 
     private JTextField nameFilter;
 
@@ -46,17 +47,17 @@ public class InfoTab extends JPanel implements InfoTabView, RefreshObserver {
     
     private SelectableSortFilterWrapper table;
 
-    private MessagePanel msgPanel;
+    private MessagePanel messagePanel;
 
     private int sourceLimit = -1;
-
+ 
     public InfoTab(MessagePanel messagePanel, ManageChangeables changeablesList, EmfConsole parentConsole,
             boolean forViewer) {
         setName("infoTab");
         this.parentConsole = parentConsole;
         this.forViewer = forViewer;
         this.changeablesList = changeablesList;
-        this.msgPanel = messagePanel;
+        this.messagePanel = messagePanel;
 
         super.setLayout(new BorderLayout());
 
@@ -66,38 +67,43 @@ public class InfoTab extends JPanel implements InfoTabView, RefreshObserver {
     private JPanel createLayout() {
         JPanel container = new JPanel(new BorderLayout());
 
-        filter = new JPanel();
-        filter.add(new JLabel("External Source Name Contains: "));
-        nameFilter = new JTextField();
-        nameFilter.setPreferredSize(new Dimension(120, 20));
-        nameFilter.setToolTipText("An external name filter. Press enter to refresh.");
+//        filter = new JPanel();
+//        filter.add(new JLabel("External Source Name Contains: "));
+//        nameFilter = new JTextField();
+//        nameFilter.setPreferredSize(new Dimension(120, 20));
+//        nameFilter.setToolTipText("An external name filter. Press enter to refresh.");
 
-        ActionListener actionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                try {
-                    doRefresh();
-                } catch (EmfException e) {
-                    msgPanel.setError("Cannot retrieve sources.");
-                }
-            }
-        };
-
-        KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
-        nameFilter.registerKeyboardAction(actionListener, keystroke, JComponent.WHEN_FOCUSED);
-        filter.add(nameFilter);
-
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(filter, BorderLayout.LINE_END);
-        container.add(panel, BorderLayout.NORTH);
+//        ActionListener actionListener = new ActionListener() {
+//            public void actionPerformed(ActionEvent arg0) {
+//                try {
+//                    doRefresh();
+//                } catch (EmfException e) {
+//                    msgPanel.setError("Cannot retrieve sources.");
+//                }
+//            }
+//        };
+//
+//        KeyStroke keystroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
+//        nameFilter.registerKeyboardAction(actionListener, keystroke, JComponent.WHEN_FOCUSED);
+//        filter.add(nameFilter);
+//
+//        JPanel panel = new JPanel(new BorderLayout());
+//        panel.add(filter, BorderLayout.LINE_END);
+       // container.add(panel, BorderLayout.NORTH);
 
         sourcesPanel = new JPanel(new BorderLayout());
         container.add(sourcesPanel, BorderLayout.CENTER);
+        try {
+            doRefresh();
+        } catch (EmfException e) {
+            messagePanel.setError("Cannot retrieve sources.");
+        }
 
         return container;
     }
 
     public void displayInternalSources(InternalSource[] sources) throws EmfException {
-        this.filter.setVisible(false);
+        //this.filter.setVisible(false);
         displaySources("Data Tables", new InternalSourcesTableData(sources), false);
     }
 
@@ -174,30 +180,33 @@ public class InfoTab extends JPanel implements InfoTabView, RefreshObserver {
 
     public void doRefresh() throws EmfException {
         try {
-            kickPopulateThread();
+            new RefreshSwingWorkerTasks(this, messagePanel, sourceTabPresenter).execute();
+            //kickPopulateThread();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         }
     }
-
-    private void kickPopulateThread() {
-        Thread populateThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    msgPanel.setMessage("Please wait while loading dataset sources...");
-                    sourceTabPresenter.doDisplay(nameFilter.getText());
-                    msgPanel.setMessage("Finished loading dataset sources.");
-                } catch (Exception e) {
-                    msgPanel.setError(e.getMessage());
-                } finally {
-                    setCursor(Cursor.getDefaultCursor());
-                }
-            }
-        });
-
-        populateThread.start();
-    }
+    
+    
+//
+//    private void kickPopulateThread() {
+//        Thread populateThread = new Thread(new Runnable() {
+//            public void run() {
+//                try {
+//                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//                    msgPanel.setMessage("Please wait while loading dataset sources...");
+//                    sourceTabPresenter.doDisplay(nameFilter.getText());
+//                    msgPanel.setMessage("Finished loading dataset sources.");
+//                } catch (Exception e) {
+//                    msgPanel.setError(e.getMessage());
+//                } finally {
+//                    setCursor(Cursor.getDefaultCursor());
+//                }
+//            }
+//        });
+//
+//        populateThread.start();
+//    }
 
     public String getNameFilter() {
         return nameFilter == null ? null : nameFilter.getText();

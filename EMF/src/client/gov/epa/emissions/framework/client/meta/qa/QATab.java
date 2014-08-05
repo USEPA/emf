@@ -1,9 +1,12 @@
 package gov.epa.emissions.framework.client.meta.qa;
 
+import gov.epa.emissions.commons.data.Dataset;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.BorderlessButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
@@ -125,17 +128,21 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
     
     public void doRefresh() {
         try {
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            messagePanel.setMessage("Please wait while loading dataset QA...");
-            super.removeAll();
-            presenter.display();
-            super.validate();
+            messagePanel.clear();
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
             messagePanel.setMessage("Finished loading dataset QA steps.");
         } catch (Exception e) {
             messagePanel.setError(e.getMessage());
         } finally {
             setCursor(Cursor.getDefaultCursor());
         }       
+    }
+    
+    public void doRefresh( QAStep[] steps,QAStepResult[] qaStepResults){
+        super.removeAll();
+        display(steps, qaStepResults);
+        super.validate();
+        messagePanel.setMessage("Finished loading dataset QA steps.");
     }
 
 }

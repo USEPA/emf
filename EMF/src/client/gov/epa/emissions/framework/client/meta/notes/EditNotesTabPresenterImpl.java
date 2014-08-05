@@ -130,4 +130,37 @@ public class EditNotesTabPresenterImpl implements EditNotesTabPresenter {
                     + " has it now.");    
     }
 
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub    
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        return getDatasetNotes();
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+       view.doRefresh( (DatasetNote[]) objs );
+    }
+
 }

@@ -6,6 +6,8 @@ public interface RevisionsTabView {
 
     void display(Revision[] revisions, RevisionsTabPresenter presenter);
     
+    void doRefresh(Revision[] revisions);
+    
     void refreshMSG();
 
 }
