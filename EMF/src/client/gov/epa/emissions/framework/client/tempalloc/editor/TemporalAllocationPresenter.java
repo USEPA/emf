@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import gov.epa.emissions.commons.data.Dataset;
+import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.meta.PropertiesView;
@@ -127,5 +129,13 @@ public class TemporalAllocationPresenter {
     public void doDisplayPropertiesView(PropertiesView propertiesView, EmfDataset dataset) throws EmfException {
         PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
         presenter.doDisplay(propertiesView);
+    }
+    
+    public String getTableName(Dataset dataset) {
+        InternalSource[] internalSources = dataset.getInternalSources();
+        String tableName = "";
+        if (internalSources.length > 0)
+            tableName = internalSources[0].getTable();
+        return tableName;
     }
 }

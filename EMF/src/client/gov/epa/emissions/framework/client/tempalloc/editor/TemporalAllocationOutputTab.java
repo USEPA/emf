@@ -155,7 +155,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                     //if just one version, then go directly to the dataviewer
                     if (versions.length == 1) {
                         DataViewer dataViewerView = new DataViewer(dataset, parentConsole, desktopManager);
-                        DataViewPresenter dataViewPresenter = new DataViewPresenter(dataset, versions[0], getTableName(dataset), dataViewerView, session);
+                        DataViewPresenter dataViewPresenter = new DataViewPresenter(dataset, versions[0], presenter.getTableName(dataset), dataViewerView, session);
                         dataViewPresenter.display();
                     //else goto to dataset editior and display different version to display
                     } else {
@@ -169,14 +169,6 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                 }
             }
         }
-    }
-    
-    private String getTableName(Dataset dataset) {
-        InternalSource[] internalSources = dataset.getInternalSources();
-        String tableName = "";
-        if (internalSources.length > 0)
-            tableName = internalSources[0].getTable();
-        return tableName;
     }
     
     private void summarize() throws EmfException {
