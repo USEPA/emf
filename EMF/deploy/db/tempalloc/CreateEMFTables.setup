@@ -66,12 +66,12 @@ VALUES ('Annual total (tons/year)'),
 ('Monthly total (tons/month)'),
 ('Monthly average (tons/day)'),
 ('Ozone season average (tons/day)'),
-('Summer Weekday (tons/day)'),
-('Summer Weekend (tons/day)'),
+('Summer Weekday average (tons/day)'),
+('Summer Weekend average (tons/day)'),
 ('Winter Weekday average (tons/day)'),
 ('Winter Weekend average (tons/day)'),
 ('Daily total (tons/day)'),
-('Episodic total (tons/day)'),
+('Episodic total (tons/episode)'),
 ('Episodic average (tons/day)');
 
 CREATE TABLE emf.temporal_allocation_output_type (
