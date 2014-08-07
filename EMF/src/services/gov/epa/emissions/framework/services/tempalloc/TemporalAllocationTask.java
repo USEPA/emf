@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
+import gov.epa.emissions.commons.io.importer.DataTable;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.basic.Status;
@@ -19,7 +20,7 @@ import gov.epa.emissions.framework.services.data.DatasetTypesDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import gov.epa.emissions.framework.services.sms.DatasetCreator;
+import gov.epa.emissions.framework.services.tempalloc.DatasetCreator;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 
@@ -57,7 +58,11 @@ public class TemporalAllocationTask {
         this.statusDAO = new StatusDAO(sessionFactory);
         this.temporalAllocationDAO = new TemporalAllocationDAO(dbServerFactory, sessionFactory);
         this.keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
-        this.creator = new DatasetCreator(null, user, sessionFactory, dbServerFactory, datasource, keywords);
+        this.creator = new DatasetCreator(temporalAllocation, user, sessionFactory, dbServerFactory, datasource, keywords);
+    }
+    
+    public TemporalAllocation getTemporalAllocation() {
+        return temporalAllocation;
     }
 
     protected void setStatus(String message) {
@@ -81,27 +86,31 @@ public class TemporalAllocationTask {
             throw new EmfException(e.getMessage());
         }
         
-        setStatus("Creating Temporal Allocation Result datasets.");
-        TemporalAllocationOutput monthlyOutput = createMonthlyOutput();
-        TemporalAllocationOutput dailyOutput = createDailyOutput();
-        TemporalAllocationOutput episodicOutput = createEpisodicOutput();
-        
-        for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
-            setStatus("Processing inventory.");
-            String query = "SELECT public.run_temporal_allocation(" + 
-                    temporalAllocation.getId() + ", " + 
-                    inputDataset.getInputDataset().getId() + ", " + 
-                    inputDataset.getVersion() + ", " +
-                    monthlyOutput.getOutputDataset().getId() + ", " +
-                    dailyOutput.getOutputDataset().getId() + ", " +
-                    episodicOutput.getOutputDataset().getId() + ")";
-            try {
-                datasource.query().execute(query);
-            } catch (SQLException e) {
-                throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+        try {
+            setStatus("Creating Temporal Allocation Result datasets.");
+            TemporalAllocationOutput monthlyOutput = createMonthlyOutput();
+            TemporalAllocationOutput dailyOutput = createDailyOutput();
+            TemporalAllocationOutput episodicOutput = createEpisodicOutput();
+            
+            for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
+                setStatus("Processing inventory: " + inputDataset.getInputDataset().getName());
+                String query = "SELECT public.run_temporal_allocation(" + 
+                        temporalAllocation.getId() + ", " + 
+                        inputDataset.getInputDataset().getId() + ", " + 
+                        inputDataset.getVersion() + ", " +
+                        monthlyOutput.getOutputDataset().getId() + ", " +
+                        dailyOutput.getOutputDataset().getId() + ", " +
+                        episodicOutput.getOutputDataset().getId() + ")";
+                try {
+                    datasource.query().execute(query);
+                } catch (SQLException e) {
+                    throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                }
             }
+            setStatus("Finished Temporal Allocation run.");
+        } finally {
+            disconnectDbServer();
         }
-        setStatus("Finished Temporal Allocation run.");
     }
     
     private void deleteOutputsAndDatasets() throws EmfException {
@@ -150,7 +159,7 @@ public class TemporalAllocationTask {
     private void beforeRun() throws EmfException {
         // make sure inventories have indexes
         for (TemporalAllocationInputDataset dataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
-            // TODO: add indexing code
+            makeSureInventoryDatasetHaveIndexes(dataset);
         }
         
         try {
@@ -258,5 +267,60 @@ public class TemporalAllocationTask {
             session.close();
         }
         return outputType;
+    }
+    
+    public void makeSureInventoryDatasetHaveIndexes(TemporalAllocationInputDataset inputDataset) {
+        try {
+            createInventoryIndexes(inputDataset.getInputDataset());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void createInventoryIndexes(EmfDataset inventory) {
+        DataTable dataTable = new DataTable(inventory, this.datasource);
+        String tableName = inventory.getInternalSources()[0].getTable().toLowerCase();
+        setStatus("Started creating indexes on inventory, " 
+                + inventory.getName() 
+                + ".  Depending on the size of the dataset, this could take several minutes.");
+
+        dataTable.addIndex(tableName, "record_id", true);
+        dataTable.addIndex(tableName, "dataset_id", false);
+        dataTable.addIndex(tableName, "version", false);
+        dataTable.addIndex(tableName, "delete_versions", false);
+
+        //for orl inventories
+        dataTable.addIndex(tableName, "fips", false);
+        dataTable.addIndex(tableName, "plantid", false);
+        dataTable.addIndex(tableName, "pointid", false);
+        dataTable.addIndex(tableName, "stackid", false);
+        dataTable.addIndex(tableName, "segment", false);
+
+        dataTable.addIndex(tableName, "poll", false);
+        dataTable.addIndex(tableName, "scc", false);
+        
+        //for flat file inventories
+        dataTable.addIndex(tableName, "country_cd", false);
+        dataTable.addIndex(tableName, "region_cd", false);
+        dataTable.addIndex(tableName, "facility_id", false);
+        dataTable.addIndex(tableName, "unit_id", false);
+        dataTable.addIndex(tableName, "rel_point_id", false);
+        dataTable.addIndex(tableName, "process_id", false);
+        
+        //finally analyze the table, so the indexes take affect immediately, 
+        //NOT when the SQL engine gets around to analyzing eventually
+        dataTable.analyzeTable(tableName);
+    
+        setStatus("Completed creating indexes on inventory, " 
+                + inventory.getName() 
+                + ".");
+    }
+
+    private void disconnectDbServer() throws EmfException {
+        try {
+            dbServer.disconnect();
+        } catch (Exception e) {
+            throw new EmfException("Could not disconnect DbServer - " + e.getMessage());
+        }
     }
 }
