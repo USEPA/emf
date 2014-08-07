@@ -40,6 +40,8 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
 
     protected EmfConsole parentConsole;
     
+    protected Button runButton;
+    
     public TemporalAllocationWindow(DesktopManager desktopManager, EmfSession session, EmfConsole parentConsole) {
         super("Edit Temporal Allocation", new Dimension(760, 580), desktopManager);
 
@@ -67,7 +69,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         layout.setLayout(new BorderLayout());
         layout.add(messagePanel, BorderLayout.PAGE_START);
         layout.add(createTabbedPane(temporalAllocation));
-        layout.add(createButtonsPanel(), BorderLayout.PAGE_END);
+        layout.add(createButtonsPanel(temporalAllocation), BorderLayout.PAGE_END);
 
         contentPane.add(layout);
     }
@@ -127,7 +129,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         messagePanel.setError(message);
     }
     
-    private JPanel createButtonsPanel() {
+    private JPanel createButtonsPanel(TemporalAllocation temporalAllocation) {
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel container = new JPanel();
@@ -139,7 +141,18 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         Button saveButton = new SaveButton(saveAction());
         container.add(saveButton);
         
-        Button runButton = new RunButton(runAction());
+        runButton = new RunButton(runAction());
+        String status = temporalAllocation.getRunStatus();
+        if (status != null && 
+            (status.equals("Not started") || 
+             status.equals("Finished") || 
+             status.equals("Failed") || 
+             status.equals("Cancelled"))) {
+            runButton.setEnabled(true);
+        }
+        else {
+            runButton.setEnabled(false);
+        }
         container.add(runButton);
 
         Button closeButton = new CloseButton(closeAction());
@@ -198,8 +211,9 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
             public void actionPerformed(ActionEvent event) {
                 try {
                     save();
+                    runButton.setEnabled(false);
                     presenter.runTemporalAllocation();
-                    messagePanel.setMessage("Running temporal allocation.");
+                    messagePanel.setMessage("Running temporal allocation. Monitor the status window for progress.");
                 } catch (EmfException e) {
                     messagePanel.setError(e.getMessage());
                 }
