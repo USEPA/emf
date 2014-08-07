@@ -1,5 +1,8 @@
 package gov.epa.emissions.framework.client.transport;
 
+import java.util.Date;
+import java.util.List;
+
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
@@ -110,5 +113,13 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
 
     public Long getTemporalAllocationRunningCount() {
         return null;
+    }
+    
+    public List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus) {
+        return null;
+    }
+    
+    public void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate) {
+        return;
     }
 }

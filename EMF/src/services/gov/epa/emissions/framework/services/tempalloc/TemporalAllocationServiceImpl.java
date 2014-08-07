@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.services.tempalloc;
 
+import java.util.Date;
 import java.util.List;
 
 import gov.epa.emissions.commons.security.User;
@@ -96,6 +97,18 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         return elementId;
     }
     
+    public synchronized void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            dao.setRunStatusAndCompletionDate(element, runStatus, completionDate, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not set Temporal Allocation run status: " + element, e);
+            throw new EmfException("Could not add Temporal Allocation run status: " + element);
+        } finally {
+            session.close();
+        }
+    }
+    
     public synchronized TemporalAllocation obtainLocked(User owner, int id) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
@@ -155,10 +168,31 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
     public void runTemporalAllocation(User user, TemporalAllocation element) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
+            // check if temporal allocation is already running
+            String runStatus = element.getRunStatus();
+            if (runStatus.equals("Running")) {
+                return;
+            }
+            
+            dao.setRunStatusAndCompletionDate(element, "Waiting", null, session);
+
             RunTemporalAllocation runTemporalAllocation = new RunTemporalAllocation(sessionFactory, dbServerFactory, threadPool);
             runTemporalAllocation.run(user, element, this);
         } catch (EmfException e) {
+            dao.setRunStatusAndCompletionDate(element, "Failed", null, session);
+            
             throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    public List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            return dao.getTemporalAllocationsByRunStatus(runStatus, session);
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not get Sector Scenarioes by run status: " + runStatus);
         } finally {
             session.close();
         }

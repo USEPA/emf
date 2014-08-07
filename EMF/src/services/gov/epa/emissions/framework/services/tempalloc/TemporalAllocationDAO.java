@@ -15,9 +15,12 @@ import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -113,6 +116,10 @@ public class TemporalAllocationDAO {
         return (Long)session.createQuery("SELECT COUNT(*) FROM TemporalAllocation WHERE runStatus = 'Running'").uniqueResult();
     }
     
+    public List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus, Session session) {
+      return session.createQuery("SELECT new TemporalAllocation(ta.id, ta.name) FROM TemporalAllocation ta WHERE ta.runStatus = :runStatus order by ta.lastModifiedDate").setString("runStatus", runStatus).list();
+  }
+    
     public void updateTemporalAllocationOutput(TemporalAllocationOutput output, Session session) {
         hibernateFacade.saveOrUpdate(output, session);
     }
@@ -204,5 +211,26 @@ public class TemporalAllocationDAO {
         
         for(int i = 0; i < lockedDatasets.length; i++)
             datasetDao.releaseLocked(user, lockedDatasets[i], session);
+    }
+    
+    public void remove(TemporalAllocation element, Session session) {
+        hibernateFacade.remove(element, session);
+    }
+    
+    public void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate, Session session) {
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.createQuery("update TemporalAllocation set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
+            .setString("status", runStatus)
+            .setTimestamp("date", new Date())
+            .setTimestamp("completionDate", completionDate)
+            .setInteger("id", element.getId())
+            .executeUpdate();
+            tx.commit();
+        } catch (HibernateException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 }

@@ -1,5 +1,8 @@
 package gov.epa.emissions.framework.services.tempalloc;
 
+import java.util.Date;
+import java.util.List;
+
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EMFService;
 import gov.epa.emissions.framework.services.EmfException;
@@ -22,5 +25,9 @@ public interface TemporalAllocationService extends EMFService {
     
     void runTemporalAllocation(User user, TemporalAllocation element) throws EmfException;
     
+    List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus) throws EmfException;
+    
     Long getTemporalAllocationRunningCount() throws EmfException;
+    
+    void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate) throws EmfException;
 }
