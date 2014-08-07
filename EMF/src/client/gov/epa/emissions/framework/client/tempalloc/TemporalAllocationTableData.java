@@ -20,7 +20,7 @@ public class TemporalAllocationTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Name", "Resolution", "Start Day", "End Day", "Last Modified", "Creator" };
+        return new String[] { "Name", "Resolution", "Start Day", "End Day", "Last Modified", "Run Status", "Creator" };
     }
     
     public Class getColumnClass(int col) {
@@ -45,6 +45,7 @@ public class TemporalAllocationTableData extends AbstractTableData {
                     formatDay(element.getStartDay()),
                     formatDay(element.getEndDay()),
                     format(element.getLastModifiedDate()),
+                    element.getRunStatus(),
                     element.getCreator().getName() };
             Row row = new ViewableRow(element, values);
             rows.add(row);
