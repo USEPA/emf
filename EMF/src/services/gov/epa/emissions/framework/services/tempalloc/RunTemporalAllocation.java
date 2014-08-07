@@ -37,7 +37,8 @@ public class RunTemporalAllocation {
     public void run(User user, TemporalAllocation temporalAllocation, TemporalAllocationService service) throws EmfException {
         try {
             TemporalAllocationTask temporalAllocationTask = new TemporalAllocationTask(temporalAllocation, user, dbServerFactory, sessionFactory);
-            TemporalAllocationRunTask task = new TemporalAllocationRunTask(temporalAllocationTask, services(), service, sessionFactory);
+            TemporalAllocationRunTask task = new TemporalAllocationRunTask(temporalAllocationTask, user,
+                    services(), service, sessionFactory);
             threadPool.execute(new GCEnforcerTask("Run TemporalAllocation: " + temporalAllocation.getName(), task));
         } catch (Exception e) {
             log.error("Error running temporal allocation: " + temporalAllocation.getName(), e);
