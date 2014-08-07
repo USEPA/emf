@@ -43,6 +43,7 @@ public class TemporalAllocationManagerPresenter implements RefreshObserver {
         temporalAllocation.setName("");
         temporalAllocation.setLastModifiedDate(new Date());
         temporalAllocation.setCreator(session.user());
+        temporalAllocation.setRunStatus("Not started");
         TemporalAllocationPresenter presenter = new TemporalAllocationPresenter(temporalAllocation, session, view);
         presenter.doDisplayNew();
     }
