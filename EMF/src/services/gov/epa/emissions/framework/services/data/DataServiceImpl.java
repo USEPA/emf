@@ -50,7 +50,7 @@ public class DataServiceImpl implements DataService {
     private DatasetDAO dao;
     
     public enum DeleteType {
-        GENERAL, FAST, SECTOR_SCENARIO, CONTROL_STRATEGY, CONTROL_PROGRAM
+        GENERAL, FAST, SECTOR_SCENARIO, CONTROL_STRATEGY, CONTROL_PROGRAM, TEMPORAL_ALLOCATION
     }
     
     public DataServiceImpl() {
@@ -366,6 +366,9 @@ public class DataServiceImpl implements DataService {
         
         if (delType != DeleteType.FAST)
             ids = dao.notUsedByFast(EmfArrays.convert(ids), owner, dbServer, session);
+        
+        if (delType != DeleteType.TEMPORAL_ALLOCATION)
+            ids = dao.notUsedByTemporalAllocations(EmfArrays.convert(ids), owner, session);
         
         return ids;
     }

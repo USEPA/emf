@@ -1245,6 +1245,38 @@ public class DatasetDAO {
         
         return all;
     }
+    
+    @SuppressWarnings("unchecked")
+    public List<Integer> notUsedByTemporalAllocations(int[] datasetIDs, User user, Session session) throws Exception {
+        if (datasetIDs == null || datasetIDs.length == 0)
+            return new ArrayList<Integer>();
+        
+        // check if dataset is an input inventory (via the TemporalAllocationInputDataset table)
+        List<Object[]> list = session.createQuery(
+                "select DISTINCT iDs.inputDataset, tA.name from TemporalAllocation as tA inner join tA.temporalAllocationInputDatasets "
+                        + "as iDs inner join iDs.inputDataset as iD with (iD.id = "
+                        + getAndOrClause(datasetIDs, "iD.id") + ")").list();
+
+        List<Integer> all = EmfArrays.convert(datasetIDs);
+        String usedby = "used by temporal allocation";
+        
+        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        all.removeAll(ids);
+        
+        if (all.size() == 0)
+            return all;
+        
+        // check if dataset is an output (via the TemporalAllocationOutputDataset table)
+        list = session.createQuery(
+                "select DISTINCT oDs.outputDataset, tA.name from TemporalAllocationOutput oDs, TemporalAllocation tA where "
+                        + "oDs.temporalAllocationId = tA.id and (oDs.outputDataset.id = "
+                        + getAndOrClause(EmfArrays.convert(all), "oDs.outputDataset.id") + ")").list();
+
+        ids = getUsedDatasetIds(user, session, list, usedby);
+        all.removeAll(ids);
+        
+        return all;
+    }
 
     private List<Integer> getRefdDatasetIds(User user, int[] idArray, DataQuery dataQuery, String query, String dsId, Session session)
             throws SQLException {
