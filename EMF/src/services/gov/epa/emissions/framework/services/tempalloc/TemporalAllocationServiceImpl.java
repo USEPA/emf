@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.services.tempalloc;
 import java.util.Date;
 import java.util.List;
 
+import gov.epa.emissions.commons.io.DeepCopy;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
@@ -97,6 +98,44 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         return elementId;
     }
     
+    public synchronized int copyTemporalAllocation(TemporalAllocation element, User creator) throws EmfException {
+        Session session = sessionFactory.getSession();
+        int elementId;
+        try {
+            session.clear();// clear to flush current
+
+            String name = "Copy of " + element.getName();
+            // make sure this won't cause duplicate issues...
+            if (isDuplicateName(name)) {
+                throw new EmfException("A Temporal Allocation named '" + name + "' already exists.");
+            }
+            
+            TemporalAllocation copy = (TemporalAllocation) DeepCopy.copy(element);
+            copy.setName(name);
+            copy.setCreator(creator);
+            copy.setLastModifiedDate(new Date());
+            copy.setRunStatus("Not started");
+            copy.setStartDate(null);
+            copy.setCompletionDate(null);
+
+            if (copy.isLocked()) {
+                copy.setLockDate(null);
+                copy.setLockOwner(null);
+            }
+
+            elementId = dao.add(copy, session);
+        } catch (EmfException e) {
+            LOG.error(e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            LOG.error("Could not copy temporal allocation", e);
+            throw new EmfException("Could not copy temporal allocation");
+        } finally {
+            session.close();
+        }
+        return elementId;
+    }
+    
     public synchronized void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
@@ -164,6 +203,57 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
             session.close();
         }
     }
+
+    public synchronized void removeTemporalAllocations(int[] ids, User user) throws EmfException {
+        Session session = sessionFactory.getSession();
+        String exception = "";
+        try {
+            for (int i = 0; i < ids.length; i++) {
+                TemporalAllocation item = dao.getById(ids[i], session);
+                session.clear();
+
+                // check if admin user, then allow it to be removed.
+                if (user.equals(item.getCreator()) || user.isAdmin()) {
+                    if (item.isLocked())
+                        exception += "The Temporal Allocation, " + item.getName()
+                                + ", is in edit mode and can not be removed. ";
+                    else
+                        remove(item);
+                } else {
+                    exception += "You do not have permission to remove the Temporal Allocation: " + item.getName() + ". ";
+                }
+            }
+
+            if (exception.length() > 0)
+                throw new EmfException(exception);
+        } catch (RuntimeException e) {
+            LOG.error("Could not remove Temporal Allocation", e);
+            throw new EmfException("Could not remove Temporal Allocation");
+        } finally {
+            session.close();
+        }
+    }
+
+    private synchronized void remove(TemporalAllocation element) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+
+            if (!dao.canUpdate(element, session))
+                throw new EmfException("Temporal Allocation doesn't exist.");
+
+            TemporalAllocationOutput[] outputs = getTemporalAllocationOutputs(element);
+            for (int i = 0; i < outputs.length; i++) {
+                dao.remove(outputs[i], session);
+            }
+
+            dao.remove(element, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not remove temporal allocation: " + element, e);
+            throw new EmfException("Could not remove temporal allocation: " + element.getName());
+        } finally {
+            session.close();
+        }
+    }
     
     public void runTemporalAllocation(User user, TemporalAllocation element) throws EmfException {
         Session session = sessionFactory.getSession();
@@ -204,6 +294,19 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
             return dao.getTemporalAllocationRunningCount(session);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get Temporal Allocation running count");
+        } finally {
+            session.close();
+        }
+    }
+    
+    private synchronized boolean isDuplicateName(String name) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            TemporalAllocation ta = dao.getByName(name, session);
+            return ta == null;
+        } catch (RuntimeException e) {
+            LOG.error("Could not determine if Temporal Allocation name is already used", e);
+            throw new EmfException("Could not determine if Temporal Allocation name is already used");
         } finally {
             session.close();
         }

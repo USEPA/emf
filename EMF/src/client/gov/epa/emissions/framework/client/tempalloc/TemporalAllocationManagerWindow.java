@@ -11,12 +11,15 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
+import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
@@ -172,6 +175,7 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
         String message = "You have asked to open a lot of windows. Do you want proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
 
+        crudPanel.add(viewButton(confirmDialog));
         crudPanel.add(editButton(confirmDialog));
 
         Button newButton = new NewButton(new AbstractAction() {
@@ -181,7 +185,40 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
         });
         crudPanel.add(newButton);
 
+        Button removeButton = new RemoveButton(new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    doRemove();
+                } catch (EmfException exception) {
+                    messagePanel.setError(exception.getMessage());
+                }
+            }
+        });
+        crudPanel.add(removeButton);
+        
+        Button copyButton = new CopyButton(new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    copySelectedItem();
+                } catch (EmfException excp) {
+                    messagePanel.setError("Error copying temporal allocations: " + excp.getMessage());
+                }
+            }
+        });
+        crudPanel.add(copyButton);
+
         return crudPanel;
+    }
+    
+    private SelectAwareButton viewButton(ConfirmDialog confirmDialog) {
+        Action viewAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                //viewTemporalAllocations();
+            }
+        };
+        SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
+        viewButton.setEnabled(false);
+        return viewButton;
     }
 
     private SelectAwareButton editButton(ConfirmDialog confirmDialog) {
@@ -218,5 +255,61 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
     private void createNewTemporalAllocation() {
         TemporalAllocationView view = new TemporalAllocationWindow(desktopManager, session, parentConsole);
         presenter.doNew(view);
+    }
+    
+    private void copySelectedItem() throws EmfException {
+        boolean error = false;
+        messagePanel.clear();
+        List temporalAllocations = selected();
+        if (temporalAllocations.isEmpty()) {
+            messagePanel.setMessage("Please select one or more temporal allocations.");
+            return;
+        }
+        
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        for (int i = 0; i < temporalAllocations.size(); i++) {
+            TemporalAllocation temporalAllocation = (TemporalAllocation) temporalAllocations.get(i);
+            try {
+                presenter.doCopy(temporalAllocation, session.user());
+            } catch (EmfException e) {
+                messagePanel.setError(e.getMessage());
+                error = true;
+            }
+        }
+        if (!error) doRefresh();
+        setCursor(Cursor.getDefaultCursor());
+    }
+
+    protected void doRemove() throws EmfException {
+        messagePanel.clear();
+        List temporalAllocations = selected();
+        int numSelected = temporalAllocations.size();
+        if (numSelected == 0) {
+            messagePanel.setMessage("Please select an item to remove.");
+            return;
+        }
+
+        String title = "Warning";
+        String message = (numSelected == 1) ? 
+                "Are you sure you want to remove the selected temporal allocation?" :
+                "Are you sure you want to remove the "+numSelected+" selected temporal allocations?";
+       int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if (selection == JOptionPane.YES_OPTION) {
+            int[] ids = new int[numSelected];
+            for (int i = 0; i < numSelected; i++) {
+                ids[i] = ((TemporalAllocation)temporalAllocations.get(i)).getId(); 
+            }
+            try {
+                presenter.doRemove(ids);
+            } catch (EmfException ex) {
+                throw ex;
+            } finally {
+                doRefresh();
+                setCursor(Cursor.getDefaultCursor());
+            }
+        }
     }
 }

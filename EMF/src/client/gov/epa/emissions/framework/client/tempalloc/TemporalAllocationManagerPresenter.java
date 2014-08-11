@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.tempalloc;
 
 import java.util.Date;
 
+import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.tempalloc.editor.TemporalAllocationPresenter;
 import gov.epa.emissions.framework.client.tempalloc.editor.TemporalAllocationView;
@@ -51,5 +52,13 @@ public class TemporalAllocationManagerPresenter implements RefreshObserver {
     public void doEdit(TemporalAllocationView view, TemporalAllocation temporalAllocation) throws EmfException {
         TemporalAllocationPresenter presenter = new TemporalAllocationPresenter(temporalAllocation, session, view);
         presenter.doDisplay();
+    }
+    
+    public void doCopy(TemporalAllocation temporalAllocation, User creator) throws EmfException {
+        service().copyTemporalAllocation(temporalAllocation, creator);
+    }
+    
+    void doRemove(int[] ids) throws EmfException {
+        service().removeTemporalAllocations(ids, session.user());
     }
 }

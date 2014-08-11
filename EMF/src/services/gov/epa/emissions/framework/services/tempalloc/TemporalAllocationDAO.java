@@ -8,11 +8,9 @@ import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
-import gov.epa.emissions.framework.services.fast.FastAnalysisOutput;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
-import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -104,6 +102,16 @@ public class TemporalAllocationDAO {
         return hibernateFacade.exists(id, clazz, session);
     }
 
+    public TemporalAllocation getById(int id, Session session) {
+        TemporalAllocation element = (TemporalAllocation)hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", new Integer(id)), session);
+        return element;
+    }
+
+    public TemporalAllocation getByName(String name, Session session) {
+        TemporalAllocation element = (TemporalAllocation)hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("name", new String(name)), session);
+        return element;
+    }
+
     public TemporalAllocation getTemporalAllocation(int id, Session session) {
         return (TemporalAllocation) hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", new Integer(id)), session);
     }
@@ -160,9 +168,6 @@ public class TemporalAllocationDAO {
                 deleteDatasets(datasets, user, session);
                 datasetDao.deleteDatasets(datasets, dbServer, session);
             } catch (EmfException e) {
-                if (DebugLevels.DEBUG_12())
-                    System.out.println(e.getMessage());
-                
                 throw new EmfException(e.getMessage());
             }
         }
@@ -175,7 +180,7 @@ public class TemporalAllocationDAO {
             return;
         
         try {
-            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, lockedDatasets, DeleteType.SECTOR_SCENARIO);
+            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, lockedDatasets, DeleteType.TEMPORAL_ALLOCATION);
         } catch (EmfException e) {
             if (!e.getType().equals(EmfException.MSG_TYPE))
                 throw new EmfException(e.getMessage());
@@ -217,6 +222,10 @@ public class TemporalAllocationDAO {
         hibernateFacade.remove(element, session);
     }
     
+    public void remove(TemporalAllocationOutput output, Session session) {
+        hibernateFacade.remove(output, session);
+    }
+
     public void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate, Session session) {
         Transaction tx = null;
         try {

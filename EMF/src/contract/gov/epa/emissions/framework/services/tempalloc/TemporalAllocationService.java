@@ -14,6 +14,10 @@ public interface TemporalAllocationService extends EMFService {
     TemporalAllocationOutput[] getTemporalAllocationOutputs(TemporalAllocation element) throws EmfException;
     
     int addTemporalAllocation(TemporalAllocation element) throws EmfException;
+    
+    int copyTemporalAllocation(TemporalAllocation element, User creator) throws EmfException;
+    
+    void removeTemporalAllocations(int[] ids, User user) throws EmfException;
 
     TemporalAllocation obtainLocked(User owner, int id) throws EmfException;
     

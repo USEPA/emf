@@ -58,6 +58,17 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
 
         return (Integer) call.requestResponse(new Object[] { element });
     }
+    
+    public synchronized int copyTemporalAllocation(TemporalAllocation element, User creator) throws EmfException {
+        EmfCall call = call();
+        
+        call.setOperation("copyTemporalAllocation");
+        call.addParam("element", mappings.temporalAllocation());
+        call.addParam("creator", mappings.user());
+        call.setIntegerReturnType();
+        
+        return (Integer) call.requestResponse(new Object[] { element, creator });
+    }
 
     public synchronized TemporalAllocation obtainLocked(User owner, int id) throws EmfException {
         EmfCall call = call();
@@ -98,6 +109,17 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         call.setReturnType(mappings.temporalAllocationResolutions());
 
         return (TemporalAllocationResolution[]) call.requestResponse(new Object[] {});
+    }
+
+    public synchronized void removeTemporalAllocations(int[] ids, User user) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("removeTemporalAllocations");
+        call.addIntArrayParam();
+        call.addParam("user", mappings.user());
+        call.setVoidReturnType();
+
+        call.request(new Object[] { ids, user });
     }
 
     public synchronized void runTemporalAllocation(User user, TemporalAllocation element) throws EmfException {
