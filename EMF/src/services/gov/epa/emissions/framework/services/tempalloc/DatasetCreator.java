@@ -9,6 +9,7 @@ import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.TableCreator;
 import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.TableFormat;
+import gov.epa.emissions.commons.io.importer.TemporalResolution;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.DbServerFactory;
@@ -105,6 +106,18 @@ public class DatasetCreator {
         dataset.setModifiedDateTime(start);
         dataset.setAccessedDateTime(start);
         dataset.setStatus("Created by temporal allocation");
+        
+        dataset.setStartDateTime(temporalAllocation.getStartDay());
+        dataset.setStopDateTime(temporalAllocation.getEndDay());
+        dataset.setProject(temporalAllocation.getProject());
+        
+        if (type.getName().equals(DatasetType.TEMPORAL_ALLOCATION_MONTHLY_RESULT)) {
+            dataset.setTemporalResolution(TemporalResolution.MONTHLY.getName());
+        } else if (type.getName().equals(DatasetType.TEMPORAL_ALLOCATION_DAILY_RESULT)) {
+            dataset.setTemporalResolution(TemporalResolution.DAILY.getName());
+        } else if (type.getName().equals(DatasetType.TEMPORAL_ALLOCATION_EPISODIC_RESULT)) {
+            dataset.setTemporalResolution(TemporalResolution.EPISODIC.getName());
+        }
 
         // Add keywords to the dataset
         addKeyVals(dataset);

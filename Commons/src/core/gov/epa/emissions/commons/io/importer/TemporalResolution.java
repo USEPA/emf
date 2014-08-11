@@ -9,6 +9,8 @@ public final class TemporalResolution extends Enum {
     public static final TemporalResolution NOT_AVAILABLE = new TemporalResolution("N/A");
 
     public static final TemporalResolution ANNUAL = new TemporalResolution("Annual");
+    
+    public static final TemporalResolution EPISODIC = new TemporalResolution("Episodic");
 
     public static final TemporalResolution MONTHLY = new TemporalResolution("Monthly");
 
