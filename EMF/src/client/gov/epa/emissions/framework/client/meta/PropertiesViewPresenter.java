@@ -84,7 +84,7 @@ public class PropertiesViewPresenter {
     }
 
     public void set(NotesTabView view) throws EmfException {
-        NotesTabPresenter presenter = new NotesTabPresenter(dataset, session.dataCommonsService());
+        NotesTabPresenter presenter = new NotesTabPresenter(dataset, session);
         presenter.display(view);
     }
 

@@ -41,7 +41,7 @@ public class JobMessagesTableData extends ChangeableTableData {
 
     public void add(JobMessage msg) {
         rows.add(row(msg));
-        refresh();
+        refresh(); 
     }
 
     private List<Row> createRows(JobMessage[] values) {

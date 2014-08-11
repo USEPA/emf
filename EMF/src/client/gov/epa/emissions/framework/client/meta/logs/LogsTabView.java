@@ -7,5 +7,6 @@ public interface LogsTabView {
     void display(AccessLog[] accessLogs);
     
     void observe(LogsTabPresenter presenter);
-
+    
+    void doRefresh(AccessLog[] accessLogs);
 }

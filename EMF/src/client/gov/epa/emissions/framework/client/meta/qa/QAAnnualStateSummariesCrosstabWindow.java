@@ -102,8 +102,7 @@ public class QAAnnualStateSummariesCrosstabWindow extends DisposableInteralFrame
             // NOTE Auto-generated catch block
             e.printStackTrace();
         }
-        super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
-        super.display();
+        super.setLabel(qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );    
         this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
         messagePanel = new SingleLineMessagePanel();
         messagePanel.setMaximumSize( new Dimension(10000,30));
@@ -111,6 +110,7 @@ public class QAAnnualStateSummariesCrosstabWindow extends DisposableInteralFrame
         this.getContentPane().add(createLayout(dataset));
         this.getContentPane().add(pollSelectorPanel());
         this.getContentPane().add(buttonPanel());
+        super.display();
     }
 
     public void observe(EditQAAnnualStateSummariesCrosstabEmissionsPresenter presenter) {

@@ -36,9 +36,9 @@ public class EditQAEmissionsColumnBasedWindow extends EditQAEmissionsWindow impl
 
 
     public void display(EmfDataset dataset, QAStep qaStep) {
-        super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
-        super.display();
+        super.setLabel(qaStep.getName() +": " + dataset.getName() + "_" + qaStep.getId() );       
         this.getContentPane().add(createLayout(dataset));
+        super.display();
     }
     
     // A JList with Add and Remove buttons for the Emission Inventories.

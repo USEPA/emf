@@ -71,9 +71,9 @@ public class EditQAEmissionsWindow extends DisposableInteralFrame implements Edi
 
 
     public void display(EmfDataset dataset, QAStep qaStep) {
-        super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
-        super.display();
+        super.setLabel(qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );   
         this.getContentPane().add(createLayout(dataset));
+        super.display();
     }
 
     public void observe(EditQAEmissionsPresenter presenter1) {

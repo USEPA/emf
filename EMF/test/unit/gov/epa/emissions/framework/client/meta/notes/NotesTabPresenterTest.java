@@ -19,7 +19,8 @@ public class NotesTabPresenterTest extends EmfMockObjectTestCase {
         dataset.setId(2);
         service.stubs().method("getNotes").with(eq(dataset.getId())).will(returnValue(notes));
 
-        NotesTabPresenter presenter = new NotesTabPresenter(dataset, (DataCommonsService) service.proxy());
+        //NotesTabPresenter presenter = new NotesTabPresenter(dataset, (DataCommonsService) service.proxy());
+        NotesTabPresenter presenter = new NotesTabPresenter(dataset, null);
         view.expects(once()).method("display").with(eq(notes), same(presenter));
 
         presenter.display((NotesTabView) view.proxy());

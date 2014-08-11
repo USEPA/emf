@@ -22,6 +22,9 @@ import gov.epa.emissions.framework.client.meta.notes.EditNotesTab;
 import gov.epa.emissions.framework.client.meta.qa.EditableQATab;
 import gov.epa.emissions.framework.client.meta.revisions.RevisionsTab;
 import gov.epa.emissions.framework.client.meta.summary.EditableSummaryTab;
+import gov.epa.emissions.framework.client.swingworker.LightSwingWorkerPresenter;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
+import gov.epa.emissions.framework.client.swingworker.SaveSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.InfoDialog;
@@ -169,7 +172,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
     }
     
     private JPanel createKeywordsTab() {
-        keywordsTab = new EditableKeywordsTab(this, parentConsole);
+        keywordsTab = new EditableKeywordsTab(this, parentConsole, messagePanel);
 
         try {
             presenter.set(keywordsTab);
@@ -206,7 +209,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
 
     private JPanel createLogsTab(EmfDataset dataset, EmfConsole parentConsole) {
         try {
-            LogsTab view = new LogsTab(parentConsole);
+            LogsTab view = new LogsTab(parentConsole, messagePanel);
             LogsTabPresenter presenter = new LogsTabPresenter(view, dataset, session);
             presenter.display();
 
@@ -267,7 +270,9 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
 
         Button save = new SaveButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                doSave();
+                keywordsTab.commit();               
+                new SaveSwingWorkerTasks(tabbedPane, messagePanel, presenter).execute();
+                resetChanges();
             }
         });
         buttonsPanel.add(save);
@@ -334,16 +339,6 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
                 presenter.doClose();
         } catch (EmfException e) {
             showError("Could not close: " + e.getMessage());
-        }
-    }
-
-    private void doSave() {
-        keywordsTab.commit();
-        try {
-            presenter.doSave();
-            resetChanges();
-        } catch (EmfException e) {
-            showError(e.getMessage());
         }
     }
 

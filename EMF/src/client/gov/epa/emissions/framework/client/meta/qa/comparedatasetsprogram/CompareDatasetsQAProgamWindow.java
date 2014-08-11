@@ -101,14 +101,14 @@ public class CompareDatasetsQAProgamWindow extends DisposableInteralFrame implem
 
     public void display(EmfDataset dataset, QAStep qaStep) {
         this.defaultDatasetType = dataset.getDatasetType();
-        super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
-        super.display();
+        super.setLabel(qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );        
         try {
             this.getContentPane().add(createLayout(dataset));
         } catch (EmfException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
         }
+        super.display();
     }
 
     public void observe(EditQAEmissionsPresenter presenter) {

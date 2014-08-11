@@ -2,9 +2,11 @@ package gov.epa.emissions.framework.client.meta.keywords;
 
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.framework.client.data.datasettype.DatasetTypeKeyValueTableData;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.EmfTableModel;
+import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.TableData;
 
@@ -22,10 +24,11 @@ public class KeywordsTab extends JPanel implements KeywordsTabView, RefreshObser
     //private SingleLineMessagePanel messagePanel;
     private EmfDataset dataset;
     private KeywordsTabPresenter presenter;
+    private MessagePanel messagePanel;
     
-    public KeywordsTab() {
+    public KeywordsTab(MessagePanel messagePanel) {
         super.setName("viewKeywordsTab");
-        //messagePanel = new SingleLineMessagePanel();
+        this.messagePanel = messagePanel;
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
@@ -73,18 +76,18 @@ public class KeywordsTab extends JPanel implements KeywordsTabView, RefreshObser
     }
 
     public void doRefresh() throws EmfException {
-        try {           
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            this.dataset = presenter.reloadDataset();
-            super.removeAll();
-            createLayout();
-            super.validate();
-            //messagePanel.setMessage("Finished loading keywords.");
+        try {
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-        }    
+        }
+    }
+    
+    public void doRefresh(EmfDataset dataset){
+        this.dataset = dataset;
+        super.removeAll();
+        createLayout();
+        super.validate();
     }
 
 }

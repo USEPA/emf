@@ -9,6 +9,8 @@ import gov.epa.emissions.framework.services.data.QAStepResult;
 public interface EditableQATabView {
 
     void display(Dataset dataset, QAStep[] steps, QAStepResult[] qaStepResults, Version[] versions);
+    
+    void doRefresh(Dataset dataset, QAStep[] steps, QAStepResult[] qaStepResults, Version[] versions);
 
     void observe(EditableQATabPresenter presenter);
 

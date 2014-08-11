@@ -20,8 +20,10 @@ import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
 import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.client.swingworker.SwingWorkerTasks;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
+import gov.epa.emissions.framework.services.casemanagement.CaseInput;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
 import gov.epa.emissions.framework.services.casemanagement.outputs.CaseOutput;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -32,6 +34,7 @@ import gov.epa.emissions.framework.ui.YesNoDialog;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -40,12 +43,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
+import javax.swing.SwingWorker;
 
 public class EditOutputsTab extends JPanel implements EditOutputsTabView, RefreshObserver {
 
@@ -74,8 +79,6 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
     protected List<CaseJob> caseJobs; 
     
     protected CaseJob selectedJob=null;
-    
-    protected CaseOutput selectedOutput;
     
     protected DesktopManager desktopManager;
 
@@ -206,7 +209,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
                 try {
                     displayOutputDatasetsPropertiesViewer();
                 } catch (Exception e1) {
-                    messagePanel.setError("Could not get dataset for output " + selectedOutput.getName() + "." 
+                    messagePanel.setError("Could not get dataset for output." 
                             + (e1.getMessage() == null ? "" : e1.getMessage()));
                 }
             }
@@ -273,27 +276,93 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         }
     }
 
-    protected void displayOutputDatasetsPropertiesViewer() throws EmfException {
+    private void displayOutputDatasetsPropertiesViewer()  {
         messagePanel.clear();
-        List selected = table.selected();
-        
-        if (selected.size() == 0) {
-            messagePanel.setMessage("Please select one or more outputs to view.");
+        final List<EmfDataset> datasets = getSelectedDatasets(table.selected());
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select one or more inputs with datasets specified to view.");
             return;
         }
         
-        for (int i=0; i<selected.size(); i++) {
-            selectedOutput = (CaseOutput) selected.get(i);
-            if (selectedOutput == null){ 
-                throw new EmfException("Output is null "); 
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+        class ViewDatasetPropertiesTask extends SwingWorker<Void, Void> {
+
+            private Container parentContainer;
+
+            public ViewDatasetPropertiesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
             }
-            int id = selectedOutput.getDatasetId();
-            EmfDataset dataset = presenter.getDataset(id);
-            PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
-            DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-            presenter.doDisplay(view);
-        }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (Iterator<EmfDataset> iter = datasets.iterator(); iter.hasNext();) {
+                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                    EmfDataset dataset = iter.next();
+                    try {
+                        presenter.doDisplayPropertiesView(view, dataset);
+                    } catch (EmfException e) {
+                        messagePanel.setError(e.getMessage());
+                        //e.printStackTrace();
+                    } 
+                }
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+
+                } catch (InterruptedException e1) {
+                    //                messagePanel.setError(e1.getMessage());
+                    //                setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    //                messagePanel.setError(e1.getCause().getMessage());
+                    //                setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    //                this.parentContainer.setCursor(null); //turn off the wait cursor
+                    //                this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new ViewDatasetPropertiesTask(this).execute();
     }
+
+    
+    private List<EmfDataset> getSelectedDatasets(List outputlist) {
+        List<EmfDataset> datasetList = new ArrayList<EmfDataset>();
+
+        for (int i=0; i<outputlist.size(); i++) {
+            CaseOutput selectedOutput = (CaseOutput) outputlist.get(i);
+            if (selectedOutput != null){ 
+
+                int id = selectedOutput.getDatasetId();
+                EmfDataset dataset;
+                try {
+                    dataset = presenter.getDataset(id);
+                    if (dataset != null)
+                        datasetList.add(dataset);
+                } catch (EmfException e) {
+                    messagePanel.setError(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return datasetList;
+    }
+
 
     private void removeSelectedOutput(){
         messagePanel.clear();

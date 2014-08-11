@@ -49,20 +49,10 @@ public EditQANonsummaryEmissionsWindow(DesktopManager desktopManager, String pro
         this.datasets = datasets;
     }
 
-//public EditQANonsummaryEmissionsWindow(DesktopManager desktopManager, EmfSession session) {
-//    
-//    super("Set Inventories", new Dimension(600, 300), desktopManager);
-//
-//    this.session = session;
-//    this.datasets = null;
-//    this.getContentPane().add(createLayout());
-//    
-//}
-
     public void display(EmfDataset dataset, QAStep qaStep) {
-        super.setTitle("Set Inventories: " + qaStep.getName()+ "_" + qaStep.getId()+" ("+dataset.getName()+")");
+        super.setLabel(qaStep.getName()+ ": " + dataset.getName() + "_" + qaStep.getId());
+        this.getContentPane().add(createLayout(dataset)); 
         super.display();
-        this.getContentPane().add(createLayout(dataset));
     }
 
     public void observe(EditQANonsummaryEmissionsPresenter presenter1) {

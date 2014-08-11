@@ -10,9 +10,10 @@ import gov.epa.emissions.framework.client.meta.notes.EditNotesTabView;
 import gov.epa.emissions.framework.client.meta.qa.EditableQATabView;
 import gov.epa.emissions.framework.client.meta.revisions.RevisionsTabView;
 import gov.epa.emissions.framework.client.meta.summary.EditableSummaryTabView;
+import gov.epa.emissions.framework.client.swingworker.LightSwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 
-public interface PropertiesEditorPresenter {
+public interface PropertiesEditorPresenter extends LightSwingWorkerPresenter {
 
     void doDisplay() throws EmfException;
 

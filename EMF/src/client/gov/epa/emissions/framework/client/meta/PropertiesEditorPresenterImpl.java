@@ -18,6 +18,7 @@ import gov.epa.emissions.framework.client.meta.revisions.RevisionsTabPresenter;
 import gov.epa.emissions.framework.client.meta.revisions.RevisionsTabView;
 import gov.epa.emissions.framework.client.meta.summary.EditableSummaryTabPresenterImpl;
 import gov.epa.emissions.framework.client.meta.summary.EditableSummaryTabView;
+import gov.epa.emissions.framework.client.swingworker.LightSwingWorkerPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PropertiesEditorPresenterImpl implements PropertiesEditorPresenter {
+public class PropertiesEditorPresenterImpl implements PropertiesEditorPresenter, LightSwingWorkerPresenter {
 
     private EmfDataset dataset;
 
@@ -48,13 +49,11 @@ public class PropertiesEditorPresenterImpl implements PropertiesEditorPresenter 
 
     public void doDisplay() throws EmfException {
         view.observe(this);
-
         dataset = dataService().obtainLockedDataset(session.user(), dataset);
         if (!dataset.isLocked(session.user())) {// view mode, locked by another user
             view.notifyLockFailure(dataset);
             return;
         }
-
         display();
     }
 
@@ -158,5 +157,40 @@ public class PropertiesEditorPresenterImpl implements PropertiesEditorPresenter 
     
     public void doExport(ExportWindow exportView, ExportPresenter presenter) {
         presenter.display(exportView);
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        doSave();
+        return null;
+    }
+
+    @Override
+    public void saveDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub    
     }
 }

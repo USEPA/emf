@@ -28,7 +28,7 @@ public class CaseJobsRowSource implements RowSource {
     
     //NOTE: order is being stored in the job number field
     private Float getJobOrder(CaseJob job) {
-        return new Float(job.getJobNo());
+        return new Float(job.getJobNo()); 
     }
     
     private String getRegionName(CaseJob job) {

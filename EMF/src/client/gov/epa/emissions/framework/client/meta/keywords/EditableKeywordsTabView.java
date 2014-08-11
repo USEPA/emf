@@ -7,6 +7,7 @@ import gov.epa.emissions.framework.services.data.Keywords;
 
 public interface EditableKeywordsTabView {
     void display(EmfDataset dataset, Keywords masterKeywords);
+    void doRefresh(EmfDataset dataset, Keywords masterKeywords);
     
     EmfDataset getDataset();
 

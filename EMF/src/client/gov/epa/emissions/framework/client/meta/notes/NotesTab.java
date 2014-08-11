@@ -2,8 +2,10 @@ package gov.epa.emissions.framework.client.meta.notes;
 
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DatasetNote;
+import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 
@@ -27,11 +29,14 @@ public class NotesTab extends JPanel implements NotesTabView, RefreshObserver {
     private NotesTabPresenter presenter;
 
     private DesktopManager desktopManager;
+    
+    private MessagePanel messagePanel; 
 
-    public NotesTab(EmfConsole parentConsole, DesktopManager desktopManager) {
+    public NotesTab(EmfConsole parentConsole, DesktopManager desktopManager, MessagePanel messagePanel) {
         super.setName("notesTab");
         this.parentConsole = parentConsole;
         this.desktopManager = desktopManager;
+        this.messagePanel = messagePanel;
 
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
@@ -89,8 +94,7 @@ public class NotesTab extends JPanel implements NotesTabView, RefreshObserver {
     
     public void doRefresh() throws EmfException {        
         try {           
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            //presenter.display();
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
             super.removeAll();
             super.add(createLayout(presenter.getDatasetNotes()));
             super.validate();
@@ -99,5 +103,11 @@ public class NotesTab extends JPanel implements NotesTabView, RefreshObserver {
         } finally {
             setCursor(Cursor.getDefaultCursor());
         }
+    }
+    
+    public void doRefresh(DatasetNote[] notes){
+        super.removeAll();
+        super.add(createLayout(notes));
+        super.validate();
     }
 }

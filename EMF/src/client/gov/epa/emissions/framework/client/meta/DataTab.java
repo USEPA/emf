@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.meta;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.versions.VersionsPanel;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -28,6 +29,8 @@ public class DataTab extends JPanel implements DataTabView, RefreshObserver {
 
     private boolean editable;
     
+    private JPanel layout;
+    
     public DataTab(EmfConsole parentConsole, DesktopManager desktopManager, MessagePanel messagePanel, boolean editable) {
 
         setName("dataTab");
@@ -42,8 +45,7 @@ public class DataTab extends JPanel implements DataTabView, RefreshObserver {
     }
 
     public void display(EmfDataset dataset) {
-        this.dataset = dataset; 
-        
+        this.dataset = dataset;        
         createLayout();
     }
 
@@ -51,11 +53,19 @@ public class DataTab extends JPanel implements DataTabView, RefreshObserver {
         super.setLayout(new BorderLayout());
         //super.add(messagePanel, BorderLayout.PAGE_START);
         
-        JPanel container = new JPanel();
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-        container.add(versionsPanel());
+        layout = new JPanel();
+        layout.setLayout(new BoxLayout(layout, BoxLayout.Y_AXIS));
+        layout.add(versionsPanel());
 
-        super.add(container);
+        super.add(layout);
+    }
+    
+    public void doRefresh(EmfDataset dataset) {
+        this.dataset = dataset; 
+        super.removeAll();
+        createLayout();
+        super.validate();
+        messagePanel.setMessage("Finished loading dataset versions.");
     }
 
     private VersionsPanel versionsPanel() {
@@ -69,19 +79,12 @@ public class DataTab extends JPanel implements DataTabView, RefreshObserver {
         return versionsPanel;
     }
 
-    public void doRefresh(){
-        try {           
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            this.dataset = presenter.reloadDataset();
-            super.removeAll();
-            createLayout();
-            super.validate();
-            messagePanel.setMessage("Finished loading dataset versions.");
+    public void doRefresh() {
+        try { 
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
         } catch (Exception e) {
             messagePanel.setError(e.getMessage());
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-        }        
+        }
     }
 
 }

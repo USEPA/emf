@@ -5,10 +5,12 @@ import gov.epa.emissions.commons.gui.Editor;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.datasettype.DatasetTypeKeyValueTableData;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.ui.EmfTableModel;
+import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.TableData;
 
@@ -35,12 +37,13 @@ public class EditableKeywordsTab extends JPanel implements EditableKeywordsTabVi
     
     private EmfDataset dataset;
 
-    //private SingleLineMessagePanel messagePanel;
+    private MessagePanel messagePanel;
 
-    public EditableKeywordsTab(ManageChangeables changeablesList, EmfConsole parent) {
+    public EditableKeywordsTab(ManageChangeables changeablesList, EmfConsole parent,
+            MessagePanel messagePanel) {
         this.changeablesList = changeablesList;
         this.parent = parent;
-        //messagePanel = new SingleLineMessagePanel();
+        this.messagePanel = messagePanel;
         super.setName("editKeywordsTab");
         //super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
@@ -87,14 +90,18 @@ public class EditableKeywordsTab extends JPanel implements EditableKeywordsTabVi
     public EmfDataset getDataset() {
         return this.dataset;
     }
+    
+    public void doRefresh(EmfDataset dataset, Keywords masterKeywords) {       
+        this.dataset = dataset;
+        super.removeAll();
+        super.add(createDSTypeKeywordsPanel(dataset.getDatasetType().getKeyVals()));
+        super.add(createDSKeywordsPanel(masterKeywords));
+        super.validate();
+    }
 
     public void doRefresh() throws EmfException {
-        try {           
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            super.removeAll();
-            presenter.refresh();
-            super.validate();
-            //messagePanel.setMessage("Finished loading keywords.");
+        try {   
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {

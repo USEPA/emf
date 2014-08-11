@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.meta.revisions;
 
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -136,21 +137,24 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
     
     public void doRefresh() throws EmfException {
         try {
-            messagePanel.setMessage("Please wait while retrieving all dataset revisions...");
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            super.removeAll();
-            super.add(createLayout(presenter.getRevisions()));
-            super.validate();
-            messagePanel.setMessage("Finished loading dataset revisions.");
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
             setCursor(Cursor.getDefaultCursor());
         }
-
     }
     
-    public void refreshMSG(){
+    
+    public void doRefresh(Revision[] revisions){
+        super.removeAll();
+        super.add(createLayout(revisions));
+        super.validate();
+        messagePanel.setMessage("Finished loading dataset revisions.");
+    }
+
+    @Override
+    public void refreshMSG() {
         messagePanel.clear();
         messagePanel.setMessage("Refresh to see the changes in dataset revisions.");
     }

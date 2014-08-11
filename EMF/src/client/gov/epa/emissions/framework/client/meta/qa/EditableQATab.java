@@ -14,6 +14,7 @@ import gov.epa.emissions.framework.client.data.dataset.CopyQAStepToDatasetSelect
 import gov.epa.emissions.framework.client.data.dataset.CopyQAStepToDatasetSelectionView;
 import gov.epa.emissions.framework.client.meta.versions.VersionsSet;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
+import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
@@ -69,8 +70,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
     public void display(Dataset dataset, QAStep[] steps, QAStepResult[] qaStepResults, Version[] versions) {
         this.datasetID = dataset.getId(); // for uniqueness of window naming
         this.dataset = dataset;
-        this.versions = new VersionsSet(versions);
-        
+        this.versions = new VersionsSet(versions);        
         createLayout(steps, qaStepResults);
  
     }
@@ -403,25 +403,20 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
         dialog.confirm();
     }
 
-    public void doRefresh() {
+    
+    public void doRefresh() throws EmfException {
         try {
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            messagePanel.setMessage("Please wait while loading dataset QA...");
-            super.removeAll();
-            presenter.display();
-            super.validate();
-            messagePanel.setMessage("Finished loading dataset QA steps.");
+            new RefreshSwingWorkerTasks(this, messagePanel, presenter).execute();
         } catch (Exception e) {
-            messagePanel.setError(e.getMessage());
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-            try {
-                presenter.checkIfLockedByCurrentUser();
-            } catch (Exception e) {
-                messagePanel.setMessage(e.getMessage());
-            }
+            throw new EmfException(e.getMessage());
         }
-        
+    }
+    
+    public void doRefresh(Dataset dataset, QAStep[] steps, QAStepResult[] qaStepResults, Version[] versions){
+        super.removeAll();
+        display(dataset, steps, qaStepResults, versions);
+        super.validate();
+        messagePanel.setMessage("Finished loading dataset QA steps.");
     }
 
     public void displayResultsTable(String qaStepName, String exportedFileName) {

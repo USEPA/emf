@@ -76,13 +76,13 @@ public class EnhanceFlatFile2010PointSettingWindows extends DisposableInteralFra
     }
 
     public void display(EmfDataset dataset, QAStep qaStep) {
-        super.setTitle("Setup "+qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );
-        super.display();
+        super.setLabel(qaStep.getName()+": " + dataset.getName() + "_" + qaStep.getId() );        
         try {
             this.getContentPane().add(createLayout(dataset));
         } catch (EmfException e) {
             e.printStackTrace();
         }
+        super.display();
         
     }
     private Component createLayout(EmfDataset dataset) throws EmfException{

@@ -1,5 +1,7 @@
 package gov.epa.emissions.framework.client.meta.summary;
 
+import java.awt.Cursor;
+
 import gov.epa.emissions.commons.data.Project;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.framework.client.EmfSession;
@@ -53,6 +55,40 @@ public class EditableSummaryTabPresenterImpl implements EditableSummaryTabPresen
     @Override
     public Project[] getProjects() {
         return session.getProjects();
+    }
+
+    @Override
+    public Object[] saveProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object[] swProcessData() throws EmfException {
+        // NOTE Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void swDisplay(Object[] objs) throws EmfException {
+        // NOTE Auto-generated method stub     
+    }
+
+    @Override
+    public Object[] refreshProcessData() throws EmfException {
+        reloadDataset();
+        return getVersions();
+    }
+
+    @Override
+    public void refreshDisplay(Object[] objs) throws EmfException {
+        view.doRefresh(dataset, (Version[]) objs);
     }
 
 }
