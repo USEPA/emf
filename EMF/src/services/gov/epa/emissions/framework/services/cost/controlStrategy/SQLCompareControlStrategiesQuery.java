@@ -74,6 +74,7 @@ public class SQLCompareControlStrategiesQuery {
         sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Include Unspecified Costs", "include_unspecified_costs"));
         sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Is Final", "is_final"));
         sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Apply CAP Measures on HAP Pollutants", "apply_cap_measures_on_hap_pollutants"));
+        sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Apply Replacement Controls", "apply_replacement_controls"));
 
         sql.append(" union all SELECT 'Project' as \"key\", projects.name as \"value\" FROM emf.control_strategies left outer join emf.projects on projects.id = control_strategies.project_id where control_strategies.id = " + controlStrategyId);
         sql.append(" union all SELECT 'Creator' as \"key\", users.\"name\" as \"value\" FROM emf.control_strategies inner join emf.users on users.id = control_strategies.creator_id where control_strategies.id = " + controlStrategyId);
