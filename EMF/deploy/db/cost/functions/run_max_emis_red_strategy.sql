@@ -60,7 +60,7 @@ DECLARE
 	creator_user_id integer := 0;
 	is_cost_su boolean := false; 
 	get_strategty_ceff_equation_sql character varying;
-	apply_replacement_controls := true;
+	apply_replacement_controls boolean := true;
 
 	annual_cost_expression text;
 	capital_cost_expression text;
@@ -1060,9 +1060,10 @@ select
 			' else '' end || '
 			
 			-- ignore sources with device code but no efficiency info
-			and (apply_replacement_controls != false or
-			     coalesce(control_ids, '''') = '''' or
+			' || case when apply_replacement_controls = false then '
+			and (coalesce(control_ids, '''') = '''' or
 			     coalesce(inv.' || inv_ceff_expression || ', 0.0) <> 0.0)
+			' else '' end || '
 
 		order by inv.record_id,
 			er.control_measures_id, 
