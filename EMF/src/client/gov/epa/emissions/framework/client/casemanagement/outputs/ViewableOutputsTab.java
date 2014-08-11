@@ -72,8 +72,9 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
 //        this.presenter = presenter;
 //    }
     
-    public void doDisplay(ViewableOutputsTabPresenterImpl presenter){
+    public void doDisplay(ViewableOutputsTabPresenterImpl presenter, Case caseObj){
         this.presenter = presenter;
+        this.caseObj = caseObj;
         new SwingWorkerTasks(this, presenter).execute();
     }
     
@@ -151,6 +152,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
     private AbstractAction filterAction() {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
+                selectedJob = (CaseJob) jobCombo.getSelectedItem();
                 new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
                 messagePanel.clear();
             }

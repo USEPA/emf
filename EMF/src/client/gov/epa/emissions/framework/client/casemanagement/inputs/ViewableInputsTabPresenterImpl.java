@@ -19,28 +19,17 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-public class ViewableInputsTabPresenterImpl implements ViewableInputsTabPresenter {
-
-    private Case caseObj;
-
+public class ViewableInputsTabPresenterImpl extends EditInputsTabPresenterImpl {
+ 
     private ViewableInputsTab view;
-    
-    private int defaultPageSize = 20;
-
-    private EmfSession session;
-
+  
     public ViewableInputsTabPresenterImpl(EmfSession session, ViewableInputsTab view, Case caseObj) {
-        this.caseObj = caseObj;
+        super(session, caseObj);     
         this.view = view;
-        this.session = session;
     }
 
     public void display() {
         view.doDisplay(this);
-    }
-
-    private CaseService service() {
-        return session.caseService();
     }
 
     public void doEditInput(CaseInput input, EditCaseInputView inputEditor) throws EmfException {
@@ -159,7 +148,7 @@ public class ViewableInputsTabPresenterImpl implements ViewableInputsTabPresente
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }

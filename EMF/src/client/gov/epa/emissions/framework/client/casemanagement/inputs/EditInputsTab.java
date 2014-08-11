@@ -58,47 +58,52 @@ import javax.swing.SpringLayout;
 
 public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshObserver {
 
-    private EmfConsole parentConsole;
+    protected EmfConsole parentConsole;
 
-    private EditInputsTabPresenter presenter;
+    protected EditInputsTabPresenter presenter;
 
-    private Case caseObj;
+    protected Case caseObj;
 
-    private int caseId;
+    protected int caseId;
 
-    private Sector selectedSector;
+    protected Sector selectedSector;
 
-    private InputsTableData tableData;
+    protected InputsTableData tableData;
 
-    private JPanel mainPanel;
+    protected JPanel mainPanel;
 
-    private SelectableSortFilterWrapper table;
+    protected SelectableSortFilterWrapper table;
 
-    private MessagePanel messagePanel;
+    protected MessagePanel messagePanel;
 
-    private DesktopManager desktopManager;
+    protected DesktopManager desktopManager;
 
-    private TextField inputDir;
+    protected TextField inputDir;
     
-    private TextField envVarContains;
+    protected TextField envVarContains;
 
-    private ComboBox sectorsComboBox;
+    protected ComboBox sectorsComboBox;
 
-    private JCheckBox showAll;
+    protected JCheckBox showAll;
 
-    private EmfSession session;
+    protected EmfSession session;
 
     private ManageChangeables changeables;
-    private JPanel layout;
+    protected JPanel layout;
 
     public EditInputsTab(EmfConsole parentConsole, ManageChangeables changeables, MessagePanel messagePanel,
             DesktopManager desktopManager) {
+        this(parentConsole, messagePanel, desktopManager);
         super.setName("editInputsTab");
-        this.parentConsole = parentConsole;
-        this.messagePanel = messagePanel;
-        this.desktopManager = desktopManager;
         this.changeables = changeables;
         super.setLayout(new BorderLayout());
+    }
+    
+    public EditInputsTab(EmfConsole parentConsole, MessagePanel messagePanel,
+            DesktopManager desktopManager) {      
+        this.parentConsole = parentConsole;
+        this.messagePanel = messagePanel;
+        this.desktopManager = desktopManager;       
     }
     
     public void doDisplay(EditInputsTabPresenter presenter){
@@ -119,26 +124,8 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         messagePanel.setMessage("Please select a sector to retrieve case inputs.");
     }
  
-//
-//    private synchronized void retrieveInputs() {
-//        try {
-//            messagePanel.setMessage("Please wait while retrieving all case inputs...");
-//            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-//            doRefresh(listFreshInputs());
-//        } catch (Exception e) {
-//            messagePanel.setError("Cannot retrieve all case inputs.");
-//        } finally {
-//            setCursor(Cursor.getDefaultCursor());
-//
-//            try {
-//                presenter.checkIfLockedByCurrentUser();
-//            } catch (Exception e) {
-//                messagePanel.setMessage(e.getMessage());
-//            }
-//        }
-//    }
 
-    private void doRefresh(CaseInput[] inputs) throws Exception {
+    protected void doRefresh(CaseInput[] inputs) throws Exception {
         String inputFileDir = caseObj.getInputFileDir();
 
         if (!inputDir.getText().equalsIgnoreCase(inputFileDir))
@@ -151,13 +138,13 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         panelRefresh();
     }
 
-    private void panelRefresh() {
+    protected void panelRefresh() {
         mainPanel.removeAll();
         mainPanel.add(table);
         super.validate();
     }
 
-    private void setupTableModel(CaseInput[] inputs) {
+    protected void setupTableModel(CaseInput[] inputs) {
         tableData = new InputsTableData(inputs, session);
     }
 
@@ -171,7 +158,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return layout;
     }
 
-    private JPanel tablePanel(CaseInput[] inputs, EmfConsole parentConsole) {
+    protected JPanel tablePanel(CaseInput[] inputs, EmfConsole parentConsole) {
         setupTableModel(inputs);
 
         mainPanel = new JPanel(new BorderLayout());
@@ -181,13 +168,13 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return mainPanel;
     }
 
-    private SortCriteria sortCriteria() {
+    protected SortCriteria sortCriteria() {
         String[] columnNames = { "Envt. Var.", "Sector", "Input", "Job" };
         return new SortCriteria(columnNames, new boolean[] { true, true, true, true }, new boolean[] { false, false,
                 false, false });
     }
 
-    private JPanel createFolderNSectorPanel() {
+    protected JPanel createFolderNSectorPanel() {
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
@@ -215,7 +202,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return panel;
     }
 
-    private AbstractAction filterAction() {
+    protected AbstractAction filterAction() {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
@@ -228,7 +215,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         };
     }
     
-    private AbstractAction filterActionByName() {
+    protected AbstractAction filterActionByName() {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
@@ -247,7 +234,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         };
     }
 
-    private JPanel getFolderChooserPanel(final JTextField dir, final String title) {
+    protected JPanel getFolderChooserPanel(final JTextField dir, final String title) {
         Button browseButton = new BrowseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 clearMessage();
@@ -261,7 +248,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return folderPanel;
     }
 
-    private void selectFolder(JTextField dir, String title) {
+    protected void selectFolder(JTextField dir, String title) {
         EmfFileInfo initDir = new EmfFileInfo(dir.getText(), true, true);
         EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle(title);
@@ -361,7 +348,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return panel;
     }
 
-    private Action copyAction(final EditInputsTabPresenter localPresenter) {
+    protected Action copyAction(final EditInputsTabPresenter localPresenter) {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
@@ -453,7 +440,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
             throw new EmfException("Please specify model to run on summary tab. ");
     }
 
-    private void copyInputs(EditInputsTabPresenter presenter) throws Exception {
+    protected void copyInputs(EditInputsTabPresenter presenter) throws Exception {
         List<CaseInput> inputs = getSelectedInputs();
 
         if (inputs.size() == 0) {
@@ -506,7 +493,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         }
     }
 
-    private void doDisplayInputDatasetsPropertiesViewer() {
+    protected void doDisplayInputDatasetsPropertiesViewer() {
         List<EmfDataset> datasets = getSelectedDatasets(getSelectedInputs());
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more inputs with datasets specified to view.");
@@ -524,7 +511,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         }
     }
 
-    private void doExportInputDatasets(List inputlist) {
+    protected void doExportInputDatasets(List inputlist) {
         if (inputlist.size() == 0) {
             messagePanel.setMessage("Please select input(s) to export.");
             return;
@@ -551,7 +538,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         }
     }
 
-    private boolean checkExportDir(String exportDir) throws EmfException {
+    protected boolean checkExportDir(String exportDir) throws EmfException {
         if (exportDir == null || exportDir.equals("")) {
             messagePanel.setMessage("Please specify the input folder before exporting the case inputs.");
             return false;
@@ -604,7 +591,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return JOptionPane.YES_OPTION;
     }
 
-    private List<EmfDataset> getSelectedDatasets(List inputlist) {
+    protected List<EmfDataset> getSelectedDatasets(List inputlist) {
         List<EmfDataset> datasetList = new ArrayList<EmfDataset>();
 
         for (int i = 0; i < inputlist.size(); i++) {
@@ -621,16 +608,15 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         setMessage("Added \"" + input.getName() + "\".  Click Refresh to see it in the table.");
     }
 
-    private List<CaseInput> getSelectedInputs() {
+    protected List<CaseInput> getSelectedInputs() {
         return (List<CaseInput>) table.selected();
     }
 
     public Sector getSelectedSector() {
         this.selectedSector = (Sector) sectorsComboBox.getSelectedItem();
-        if (selectedSector == null ){
-            messagePanel.setMessage("Please select a sector to see full list of inputs.");
-        }
-        return this.selectedSector;
+        if ( selectedSector == null )
+            setMessage("Please select a sector to see list of inputs.");        
+        return this.selectedSector;     
     }
 
     public CaseInput[] caseInputs() {
@@ -650,18 +636,6 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         return Integer.parseInt(selectedCase.substring(index1, index2));
     }
 
-
-    
-//    private CaseInput[] listFreshInputs() throws EmfException {
-//        CaseInput[] freshList = presenter.getCaseInput(caseId, getSelectedSector(), nameContains(), showAll.isSelected());
-//
-//        if (getSelectedSector() == null && freshList.length == presenter.getPageSize())
-//            setMessage("Please select a sector to see full list of inputs.");
-//        else
-//            messagePanel.clear();
-//
-//        return freshList;
-//    }
     
     public Boolean isShowAll(){
         return showAll.isSelected();
@@ -705,7 +679,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         }
     }
 
-    private void viewCasesReleatedToDataset() {
+    protected void viewCasesReleatedToDataset() {
         List<CaseInput> inputlist = getSelectedInputs();
         if (inputlist == null || inputlist.size() != 1) {
             messagePanel.setMessage("Please select one input. ");

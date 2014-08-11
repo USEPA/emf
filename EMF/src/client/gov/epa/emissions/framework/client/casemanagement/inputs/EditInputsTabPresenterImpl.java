@@ -25,16 +25,17 @@ import javax.swing.JComponent;
 
 public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
 
-    private Case caseObj;
+    protected Case caseObj;
 
     private EditInputsTabView view;
     
-    private EmfSession session;
+    protected EmfSession session;
     
-    private int defaultPageSize = 20;
+    protected int defaultPageSize = 20;
 
+    
     public EditInputsTabPresenterImpl(EmfSession session, EditInputsTabView view, Case caseObj) {
-        this.caseObj = caseObj;
+        this(session, caseObj);
         this.view = view;
         this.session = session;
         try {
@@ -43,6 +44,11 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
         } catch (Exception e) {
             //NOTE: pass silently
         }
+    }
+    
+    public EditInputsTabPresenterImpl(EmfSession session, Case caseObj) {
+        this.caseObj = caseObj;
+        this.session = session;
     }
 
     public void display() {
@@ -85,7 +91,7 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
         }
     }
 
-    private CaseService service() {
+    protected CaseService service() {
         return session.caseService();
     }
 
@@ -237,7 +243,7 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }
@@ -245,7 +251,7 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
     @Override
     public Object[] refreshProcessData() throws EmfException {
         if (view.getSelectedSector() == null )
-            return null;
+            return new CaseInput[0];
         CaseInput[] freshList = getCaseInput(caseObj.getId(), view.getSelectedSector(), 
                 view.nameContains(), view.isShowAll() );
         return freshList;

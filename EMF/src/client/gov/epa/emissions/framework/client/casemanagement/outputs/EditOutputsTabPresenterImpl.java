@@ -34,7 +34,7 @@ public class EditOutputsTabPresenterImpl implements EditOutputsTabPresenter {
     }
 
     public void display() {
-        view.doDisplay(this);
+        view.doDisplay(this, caseObj);
     }
 
     public void doSave() throws EmfException {
@@ -140,7 +140,7 @@ public class EditOutputsTabPresenterImpl implements EditOutputsTabPresenter {
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }
@@ -163,7 +163,7 @@ public class EditOutputsTabPresenterImpl implements EditOutputsTabPresenter {
         if (jobId != null ){        
             return getCaseOutputs(caseObj.getId(), jobId);
         }
-        return null;
+        return new CaseOutput[0];
     }
 
     @Override

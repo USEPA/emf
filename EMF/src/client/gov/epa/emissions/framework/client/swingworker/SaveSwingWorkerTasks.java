@@ -46,7 +46,7 @@ public class SaveSwingWorkerTasks extends SwingWorker<Object[], Void> {
     public void done() {
         try {
             //make sure something didn't happen
-            presenter.saveData(get());         
+            presenter.saveDisplay(get());         
         } catch (InterruptedException e1) {
             messagePanel.setError(e1.getMessage());
         } catch (ExecutionException e1) {

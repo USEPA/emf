@@ -36,7 +36,7 @@ public class AddRemoveSectorWidget extends JPanel {
 
     }
 
-    public AddRemoveSectorWidget(Sector[] allSectors) {
+    public AddRemoveSectorWidget() {
         setupLayout();
 
     }

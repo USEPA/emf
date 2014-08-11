@@ -16,7 +16,7 @@ import gov.epa.emissions.framework.services.casemanagement.ModelToRun;
 import gov.epa.emissions.framework.services.casemanagement.Speciation;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 
-public abstract class CaseSummaryTabPresenterImpl implements ViewableCaseSummaryTabPresenter {
+public abstract class CaseSummaryTabPresenterImpl implements CaseSummaryTabPresenter {
 
     protected Case caseObj;
     protected CaseObjectManager caseObjectManager = null;

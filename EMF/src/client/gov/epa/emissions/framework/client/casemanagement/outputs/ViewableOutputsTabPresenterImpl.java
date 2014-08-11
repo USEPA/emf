@@ -24,7 +24,7 @@ public class ViewableOutputsTabPresenterImpl extends EditOutputsTabPresenterImpl
     }
 
     public void display() {
-        view.doDisplay(this);
+        view.doDisplay(this, caseObj);
     }
 
     public CaseOutput[] getCaseOutputs(int caseId, int jobId) throws EmfException {
@@ -62,7 +62,7 @@ public class ViewableOutputsTabPresenterImpl extends EditOutputsTabPresenterImpl
         if (jobId != null ){        
             return getCaseOutputs(caseObj.getId(), jobId);
         }
-        return null;
+        return new CaseOutput[0];
     }
 
     @Override

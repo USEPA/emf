@@ -36,9 +36,9 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 
-public class ViewableParametersTab extends EditParametersTab implements RefreshObserver {
+public class ViewableParametersTab extends EditParametersTab {
 
-    private ViewableParametersTabPresenterImpl presenter;
+    private EditParametersTabPresenter presenter;
 
     public ViewableParametersTab(EmfConsole parentConsole, MessagePanel messagePanel, DesktopManager desktopManager) {
         super(parentConsole, messagePanel, desktopManager);
@@ -190,69 +190,5 @@ public class ViewableParametersTab extends EditParametersTab implements RefreshO
             parameterEditor.viewOnly(title);
         }
     }
-
-    private Action copyAction(final ViewableParametersTabPresenterImpl localPresenter) {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent arg0) {
-                try {
-                    clearMessage();
-                    checkModelToRun();
-                    copyParameters(localPresenter);
-                } catch (Exception ex) {
-                    messagePanel.setError(ex.getMessage());
-                }
-            }
-        };
-    }
-    
-    private void checkModelToRun() throws EmfException{
-        if (caseObj.getModel() == null ||caseObj.getModel().getId() == 0 )
-            throw new EmfException("Please specify model to run on summary tab. ");
-    }
-    
-    private void copyParameters(ViewableParametersTabPresenterImpl presenter) throws Exception {
-        List<CaseParameter> params = getSelectedParameters();
-
-        if (params.size() == 0) {
-            messagePanel.setMessage("Please select parameter(s) to copy.");
-            return;
-        }
-
-        String[] caseIds = (String[]) presenter.getAllCaseNameIDs();      
-        CaseSelectionDialog view = new CaseSelectionDialog(parentConsole, caseIds);
-        String title = "Copy " + params.size()+" case parameter(s) to case: ";
-        
-        view.display(title, true);
-        
-        if (view.shouldCopy()){
-            String selectedCase=view.getCases()[0];
-            int selectedCaseId = getCaseId(selectedCase);
-
-            if (selectedCaseId != this.caseId) {
-                GeoRegion[] regions = presenter.getGeoregion(params);
-                if (regions.length >0 ) {
-                    String message = presenter.isGeoRegionInSummary(selectedCaseId, regions);
-                    if (message.trim().length()>0){
-                        message = "Add the region " + message + " to Case (" +
-                        selectedCase + ")? \n Note: if you don't add the region, the copy will be canceled. ";
-
-                        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
-                        if (selection == JOptionPane.YES_OPTION) 
-                            presenter.copyParameter(selectedCaseId, params);
-                        return;
-                    }
-                    presenter.copyParameter(selectedCaseId, params);
-                    return;
-                }
-                presenter.copyParameter(selectedCaseId, params);
-            }
-        }
-    }
- 
-    public CaseParameter[] caseParameters() {
-        return tableData.sources();
-    }
-  
 
 }

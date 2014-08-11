@@ -96,8 +96,9 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         this.messagePanel=messagePanel;
     }
     
-    public void doDisplay(EditOutputsTabPresenter presenter){
+    public void doDisplay(EditOutputsTabPresenter presenter, Case caseObj){
         this.presenter = presenter;
+        this.caseObj = caseObj;
         new SwingWorkerTasks(this, presenter).execute();
     }
     
@@ -114,7 +115,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
 
     private void doRefresh(CaseOutput[] outputs){
         messagePanel.clear();
-        selectedJob=(CaseJob) jobCombo.getSelectedItem();
+        //selectedJob=(CaseJob) jobCombo.getSelectedItem();
         setupTableModel(outputs);
         table.refresh(tableData);
         panelRefresh();
@@ -348,13 +349,10 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
     }
     
 
-    public void refreshJobList(CaseJob[] jobs) {
+    protected void refreshJobList(CaseJob[] jobs) {
         setAllJobs(jobs);
-//        jobCombo.removeActionListener(filterAction());
         jobCombo.resetModel(caseJobs.toArray(new CaseJob[0]));
         jobCombo.setSelectedItem(getCaseJob(caseJobs, this.selectedJob));
-//       
-//        jobCombo.addActionListener(filterAction());
     }
     
     private CaseJob getCaseJob(List<CaseJob> allJobs, CaseJob selectedJob) {
@@ -374,11 +372,20 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
     private AbstractAction filterAction() {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
+                selectedJob = (CaseJob) jobCombo.getSelectedItem();
                 new RefreshSwingWorkerTasks(layout, messagePanel, presenter).execute();
-                messagePanel.clear();
+                //messagePanel.clear();
             }
         };
     } 
+    
+//    private CaseJob getSelectedJob() {
+//        Object selected = jobCombo.getSelectedItem();
+//        if (selected == null)
+//            return new CaseJob("Select one");
+//
+//        return (CaseJob) selected;
+//    }   
 
     public void clearMessage() {
         messagePanel.clear();
@@ -429,8 +436,6 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
 
     @Override
     public Integer getSelectedJobId() {         
-        selectedJob = (CaseJob) jobCombo.getSelectedItem();
-     
         if ( selectedJob != null) 
             return selectedJob.getId();
         return null;

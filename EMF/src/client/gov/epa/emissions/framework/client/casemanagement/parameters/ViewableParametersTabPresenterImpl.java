@@ -43,7 +43,7 @@ public class ViewableParametersTabPresenterImpl extends EditParametersTabPresent
 
     public Object[] refreshProcessData() throws EmfException {
         if ( view.getSelectedSector() == null )
-            return null;
+            return new CaseParameter[0];
         CaseParameter[] freshList = getCaseParameters(caseObj.getId(), view.getSelectedSector(), 
                 view.nameContains(), view.isShowAll());
 

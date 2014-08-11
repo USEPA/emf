@@ -8,7 +8,7 @@ import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
 
 public interface EditJobsTabView extends JobsTabView {
 
-    void display(Case caseObj);
+    void display(Case caseObj, CaseJob[] caseJobs);
     
     void doDisplay(EditJobsTabPresenter presenter);
 

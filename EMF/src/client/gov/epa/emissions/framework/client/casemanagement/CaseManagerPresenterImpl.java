@@ -352,7 +352,7 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }

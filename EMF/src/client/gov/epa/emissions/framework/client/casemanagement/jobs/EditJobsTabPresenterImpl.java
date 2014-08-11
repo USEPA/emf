@@ -448,19 +448,19 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
     }
 
     @Override
-    public void saveData(Object[] objs) throws EmfException {
+    public void saveDisplay(Object[] objs) throws EmfException {
         // NOTE Auto-generated method stub
         
     }
 
     @Override
-    public Object[] swProcessData() throws EmfException {
+    public CaseJob[] swProcessData() throws EmfException {
         return getCaseJobs();
     }
 
     @Override
     public void swDisplay(Object[] objs) throws EmfException {
-        view.display(caseObj);      
+        view.display(caseObj, (CaseJob[]) objs);      
     }
 
     @Override
