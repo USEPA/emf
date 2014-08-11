@@ -276,4 +276,16 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
             
         }
     }
+    
+    public void prepareRun() throws EmfException {
+        if (temporalAllocation.getXrefDataset() == null) {
+            throw new EmfException("Please select a cross-reference dataset.");
+        }
+        if (temporalAllocation.getMonthlyProfileDataset() == null) {
+            throw new EmfException("Please select a year-to-month profile dataset.");
+        }
+        if (temporalAllocation.getWeeklyProfileDataset() == null) {
+            throw new EmfException("Please select a week-to-day profile dataset.");
+        }
+    }
 }

@@ -25,4 +25,8 @@ public class TemporalAllocationTimePeriodTabPresenter implements TemporalAllocat
     public void doRefresh() {
         
     }
+    
+    public void doPrepareRun() throws EmfException {
+        view.prepareRun();
+    }
 }

@@ -217,6 +217,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
             public void actionPerformed(ActionEvent event) {
                 try {
                     save();
+                    presenter.doPrepareRun();
                     runButton.setEnabled(false);
                     presenter.runTemporalAllocation();
                     messagePanel.setMessage("Running temporal allocation. Monitor the status window for progress.");

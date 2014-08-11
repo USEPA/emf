@@ -25,4 +25,8 @@ public class TemporalAllocationInventoriesTabPresenter implements TemporalAlloca
     public void doRefresh() {
         
     }
+    
+    public void doPrepareRun() throws EmfException {
+        view.prepareRun();
+    }
 }

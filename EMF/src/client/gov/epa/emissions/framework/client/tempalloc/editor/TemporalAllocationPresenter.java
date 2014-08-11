@@ -150,4 +150,10 @@ public class TemporalAllocationPresenter {
         updateTabs(temporalAllocation);
         refreshTabs();
     }
+    
+    public void doPrepareRun() throws EmfException {
+        for (TemporalAllocationTabPresenter element : tabPresenters) {
+            element.doPrepareRun();
+        }
+    }
 }

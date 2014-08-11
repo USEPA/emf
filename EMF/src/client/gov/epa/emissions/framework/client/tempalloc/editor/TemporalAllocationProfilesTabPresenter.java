@@ -25,4 +25,8 @@ public class TemporalAllocationProfilesTabPresenter implements TemporalAllocatio
     public void doRefresh() {
         
     }
+    
+    public void doPrepareRun() throws EmfException {
+        view.prepareRun();
+    }
 }

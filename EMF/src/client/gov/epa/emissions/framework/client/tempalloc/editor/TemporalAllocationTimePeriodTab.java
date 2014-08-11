@@ -100,10 +100,36 @@ public class TemporalAllocationTimePeriodTab extends JPanel implements TemporalA
         return panel;
     }
     
-    public void save() {
+    public void save() throws EmfException {
         messagePanel.clear();
         temporalAllocation.setResolution((TemporalAllocationResolution) resolution.getSelectedItem());
-        temporalAllocation.setStartDay(startDay.value());
-        temporalAllocation.setEndDay(endDay.value());
+        try {
+            temporalAllocation.setStartDay(startDay.value());
+        } catch (RuntimeException e) {
+            throw new EmfException("Please enter the time period start date formatted as MM/dd/yyyy.");
+        }
+        try {
+            temporalAllocation.setEndDay(endDay.value());
+        } catch (RuntimeException e) {
+            throw new EmfException("Please enter the time period end date formatted as MM/dd/yyyy.");
+        }
+    }
+    
+    public void prepareRun() throws EmfException {
+        if (temporalAllocation.getResolution() == null) {
+            throw new EmfException("Please select the output resolution for the temporal allocation.");
+        }
+        if (temporalAllocation.getResolution().getName().contains("Annual total")) {
+            throw new EmfException("Annual total output resolution is not yet supported.");
+        }
+        if (temporalAllocation.getStartDay() == null) {
+            throw new EmfException("Please enter the time period start date for the temporal allocation.");
+        }
+        if (temporalAllocation.getEndDay() == null) {
+            throw new EmfException("Please enter the time period end date for the temporal allocation.");
+        }
+        if (temporalAllocation.getStartDay().after(temporalAllocation.getEndDay())) {
+            throw new EmfException("The time period start date must be before the end date.");
+        }
     }
 }

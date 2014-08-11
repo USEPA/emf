@@ -343,4 +343,11 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
             refresh();
         }
     }
+    
+    public void prepareRun() throws EmfException {
+        if (tableData == null ||
+            tableData.rows().size() == 0) {
+            throw new EmfException("Please add at least one inventory to the temporal allocation.");
+        }
+    }
 }

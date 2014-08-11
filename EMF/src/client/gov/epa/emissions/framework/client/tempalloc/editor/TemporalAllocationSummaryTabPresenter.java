@@ -25,4 +25,8 @@ public class TemporalAllocationSummaryTabPresenter implements TemporalAllocation
     public void doRefresh() {
         view.refresh();
     }
+    
+    public void doPrepareRun() throws EmfException {
+        
+    }
 }
