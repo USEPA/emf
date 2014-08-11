@@ -149,6 +149,7 @@ public class TemporalAllocationPresenter {
         temporalAllocation = service().getById(temporalAllocation.getId());
         updateTabs(temporalAllocation);
         refreshTabs();
+        view.refresh(temporalAllocation);
     }
     
     public void doPrepareRun() throws EmfException {
