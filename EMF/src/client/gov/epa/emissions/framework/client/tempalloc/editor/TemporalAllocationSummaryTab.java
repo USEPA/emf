@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.tempalloc.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -20,7 +21,6 @@ import gov.epa.emissions.framework.ui.Border;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -36,6 +36,8 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
     private TextArea description;
     
     private EditableComboBox projectsCombo;
+    
+    private JLabel runStatus, startDate, completionDate;
 
     private EmfSession session;
 
@@ -58,29 +60,73 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(getBorderedPanel(createMainSection(), ""), BorderLayout.CENTER);
+        panel.add(getBorderedPanel(createResultsSection(), "Results"), BorderLayout.SOUTH);
         super.add(panel, BorderLayout.NORTH);
     }
 
     private JPanel createMainSection() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        
-        JPanel panelTop = new JPanel(new SpringLayout());
-        // panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
+        JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        layoutGenerator.addLabelWidgetPair("Name:", name(), panelTop);
-        layoutGenerator.addLabelWidgetPair("Description:", new ScrollableComponent(description()), panelTop);
-        layoutGenerator.addLabelWidgetPair("Project:", projects(), panelTop);
+        layoutGenerator.addLabelWidgetPair("Name:", name(), panel);
+        layoutGenerator.addLabelWidgetPair("Description:", new ScrollableComponent(description()), panel);
+        layoutGenerator.addLabelWidgetPair("Project:", projects(), panel);
         
-        layoutGenerator.addLabelWidgetPair("Last Modified Date:", lastModifiedDate(), panelTop);
-        layoutGenerator.addLabelWidgetPair("Creator:", creator(), panelTop);
-        layoutGenerator.makeCompactGrid(panelTop, 5, 2, // rows, cols
+        layoutGenerator.addLabelWidgetPair("Last Modified Date:", lastModifiedDate(), panel);
+        layoutGenerator.addLabelWidgetPair("Creator:", creator(), panel);
+
+        layoutGenerator.makeCompactGrid(panel, 5, 2, // rows, cols
                 5, 5, // initialX, initialY
                 10, 10);// xPad, yPad
-        panel.add(panelTop);
         
         return panel;
+    }
+    
+    private JPanel createResultsSection() {
+        JPanel panel = new JPanel(new SpringLayout());
+        SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
+        
+        runStatus = new JLabel("");
+        runStatus.setBackground(Color.white);
+        
+        startDate = new JLabel("");
+        startDate.setBackground(Color.white);
+
+        completionDate = new JLabel("");
+        completionDate.setBackground(Color.white);
+        
+        updateResultsSection();
+
+        layoutGenerator.addLabelWidgetPair("Run Status:", runStatus, panel);
+        layoutGenerator.addLabelWidgetPair("Start Date:", startDate, panel);
+        layoutGenerator.addLabelWidgetPair("Completion Date:", completionDate, panel);
+     
+        // Lay out the panel.
+        layoutGenerator.makeCompactGrid(panel, 3, 2, // rows, cols
+                5, 5, // initialX, initialY
+                10, 10);// xPad, yPad
+
+        return panel;
+    }
+    
+    private void updateResultsSection() {
+        String status = temporalAllocation.getRunStatus();
+        runStatus.setText(status);
+        
+        String labelText;
+        if (temporalAllocation.getStartDate() == null) {
+            labelText = status;
+        } else {
+            labelText = CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(temporalAllocation.getStartDate());
+        }
+        startDate.setText(labelText);
+        
+        if (status.indexOf("Finished") == -1) {
+            labelText = status;
+        } else {
+            labelText = CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(temporalAllocation.getCompletionDate());
+        }
+        completionDate.setText(labelText);
     }
 
     private JPanel getBorderedPanel(JPanel component, String border) {
