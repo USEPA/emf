@@ -8,6 +8,8 @@ import gov.epa.emissions.framework.services.EMFService;
 import gov.epa.emissions.framework.services.EmfException;
 
 public interface TemporalAllocationService extends EMFService {
+    
+    TemporalAllocation getById(int id) throws EmfException;
 
     TemporalAllocation[] getTemporalAllocations() throws EmfException;
     

@@ -56,6 +56,18 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
 
         return threadPool;
     }
+    
+    public synchronized TemporalAllocation getById(int id) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            return dao.getById(id, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not get Temporal Allocation", e);
+            throw new EmfException("Could not get Temporal Allocation");
+        } finally {
+            session.close();
+        }
+    }
 
     public synchronized TemporalAllocation[] getTemporalAllocations() throws EmfException {
         Session session = sessionFactory.getSession();

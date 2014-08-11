@@ -212,4 +212,8 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
     private Project project(String projectName) {
         return new Projects(session.getProjects()).get(projectName);
     }
+    
+    public void refresh() {
+        updateResultsSection();
+    }
 }

@@ -21,4 +21,8 @@ public class TemporalAllocationTimePeriodTabPresenter implements TemporalAllocat
     public void updateView(TemporalAllocation temporalAllocation) {
         view.setTemporalAllocation(temporalAllocation);
     }
+    
+    public void doRefresh() {
+        
+    }
 }

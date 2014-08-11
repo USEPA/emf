@@ -193,4 +193,15 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
     public void save() {
         
     }
+    
+    public void refresh() {
+        TemporalAllocationOutput[] outputs = null;
+        try {
+            outputs = session.temporalAllocationService().getTemporalAllocationOutputs(temporalAllocation);
+        } catch (Exception e) {
+            //
+        }
+        TemporalAllocationOutputTableData tableData = new TemporalAllocationOutputTableData(outputs);
+        table.refresh(tableData);
+    }
 }

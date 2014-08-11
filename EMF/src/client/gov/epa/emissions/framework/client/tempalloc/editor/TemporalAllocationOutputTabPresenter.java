@@ -21,4 +21,8 @@ public class TemporalAllocationOutputTabPresenter implements TemporalAllocationT
     public void updateView(TemporalAllocation temporalAllocation) {
         view.setTemporalAllocation(temporalAllocation);
     }
+    
+    public void doRefresh() {
+        view.refresh();
+    }
 }

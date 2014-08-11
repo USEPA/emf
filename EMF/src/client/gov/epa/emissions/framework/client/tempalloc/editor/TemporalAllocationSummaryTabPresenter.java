@@ -21,4 +21,8 @@ public class TemporalAllocationSummaryTabPresenter implements TemporalAllocation
     public void updateView(TemporalAllocation temporalAllocation) {
         view.setTemporalAllocation(temporalAllocation);
     }
+    
+    public void doRefresh() {
+        view.refresh();
+    }
 }

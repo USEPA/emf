@@ -29,6 +29,16 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
 
         return call;
     }
+    
+    public synchronized TemporalAllocation getById(int id) throws EmfException {
+        EmfCall call = call();
+        
+        call.setOperation("getById");
+        call.addIntegerParam("id");
+        call.setReturnType(mappings.temporalAllocation());
+        
+        return (TemporalAllocation) call.requestResponse(new Object[] { new Integer(id) });
+    }
 
     public synchronized TemporalAllocation[] getTemporalAllocations() throws EmfException {
         EmfCall call = call();

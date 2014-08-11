@@ -2,7 +2,6 @@ package gov.epa.emissions.framework.client.tempalloc.editor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -40,7 +39,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
 
     protected EmfConsole parentConsole;
     
-    protected Button runButton;
+    protected Button runButton, refreshButton;
     
     public TemporalAllocationWindow(DesktopManager desktopManager, EmfSession session, EmfConsole parentConsole) {
         super("Edit Temporal Allocation", new Dimension(760, 580), desktopManager);
@@ -142,6 +141,24 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         container.add(saveButton);
         
         runButton = new RunButton(runAction());
+        updateRunButtonStatus(temporalAllocation);
+        container.add(runButton);
+
+        refreshButton = new Button("Refresh", refreshAction());
+        container.add(refreshButton);
+
+        Button closeButton = new CloseButton(closeAction());
+        container.add(closeButton);
+        getRootPane().setDefaultButton(saveButton);
+
+        container.add(Box.createHorizontalStrut(20));
+
+        panel.add(container, BorderLayout.CENTER);
+
+        return panel;
+    }
+    
+    private void updateRunButtonStatus(TemporalAllocation temporalAllocation) {
         String status = temporalAllocation.getRunStatus();
         if (status != null && 
             (status.equals("Not started") || 
@@ -153,17 +170,6 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         else {
             runButton.setEnabled(false);
         }
-        container.add(runButton);
-
-        Button closeButton = new CloseButton(closeAction());
-        container.add(closeButton);
-        getRootPane().setDefaultButton(saveButton);
-
-        container.add(Box.createHorizontalStrut(20));
-
-        panel.add(container, BorderLayout.CENTER);
-
-        return panel;
     }
 
     protected void save() throws EmfException {
@@ -223,6 +229,19 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         return action;
     }
 
+    private Action refreshAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                clearMessage();
+                try {
+                    presenter.doRefresh();
+                } catch (EmfException e) {
+                    messagePanel.setError(e.getMessage());
+                }
+            }
+        };
+    }
+
     public void notifyLockFailure(TemporalAllocation temporalAllocation) {
         String message = "Cannot edit Temporal Allocation: " + temporalAllocation
                 + System.getProperty("line.separator") + " as it was locked by User: " + temporalAllocation.getLockOwner()
@@ -237,5 +256,9 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
 
     protected void clearMessage() {
         messagePanel.clear();
+    }
+    
+    public void refresh(TemporalAllocation temporalAllocation) {
+        updateRunButtonStatus(temporalAllocation);
     }
 }

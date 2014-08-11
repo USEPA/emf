@@ -21,4 +21,8 @@ public class TemporalAllocationInventoriesTabPresenter implements TemporalAlloca
     public void updateView(TemporalAllocation temporalAllocation) {
         view.setTemporalAllocation(temporalAllocation);
     }
+    
+    public void doRefresh() {
+        
+    }
 }

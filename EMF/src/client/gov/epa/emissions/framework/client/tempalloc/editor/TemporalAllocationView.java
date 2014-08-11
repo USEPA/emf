@@ -10,4 +10,6 @@ public interface TemporalAllocationView extends ManagedView {
     void display(TemporalAllocation temporalAllocation);
     
     void notifyLockFailure(TemporalAllocation temporalAllocation);
+    
+    void refresh(TemporalAllocation temporalAllocation);
 }

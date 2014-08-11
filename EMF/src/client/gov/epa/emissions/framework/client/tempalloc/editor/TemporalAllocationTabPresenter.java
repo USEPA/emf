@@ -10,4 +10,6 @@ public interface TemporalAllocationTabPresenter {
     public void doSave() throws EmfException;
     
     public void updateView(TemporalAllocation temporalAllocation);
+    
+    public void doRefresh();
 }

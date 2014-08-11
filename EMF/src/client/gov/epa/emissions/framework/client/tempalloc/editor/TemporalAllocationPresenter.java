@@ -91,6 +91,12 @@ public class TemporalAllocationPresenter {
         }
     }
     
+    private void refreshTabs() {
+        for (TemporalAllocationTabPresenter element : tabPresenters) {
+            element.doRefresh();
+        }
+    }
+    
     private TemporalAllocationService service() {
         return session.temporalAllocationService();
     }
@@ -137,5 +143,11 @@ public class TemporalAllocationPresenter {
         if (internalSources.length > 0)
             tableName = internalSources[0].getTable();
         return tableName;
+    }
+    
+    public void doRefresh() throws EmfException {
+        temporalAllocation = service().getById(temporalAllocation.getId());
+        updateTabs(temporalAllocation);
+        refreshTabs();
     }
 }

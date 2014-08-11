@@ -21,4 +21,8 @@ public class TemporalAllocationProfilesTabPresenter implements TemporalAllocatio
     public void updateView(TemporalAllocation temporalAllocation) {
         view.setTemporalAllocation(temporalAllocation);
     }
+    
+    public void doRefresh() {
+        
+    }
 }
