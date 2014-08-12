@@ -1,0 +1,13 @@
+"name","type","default value","mandatory","description","formatter","constraints","width","spaces","fixformat start","fixformat end"
+"scc","Varchar(20)",,TRUE,,,,,,,
+"fips","Varchar(12)",,TRUE,,,,,,,
+"plantid","Varchar(20)",,FALSE,,,,,,,
+"pointid","Varchar(20)",,FALSE,,,,,,,
+"stackid","Varchar(20)",,FALSE,,,,,,,
+"processid","Varchar(20)",,FALSE,,,,,,,
+"poll","Varchar(20)",,TRUE,,,,,,,
+"total_emis","double precision",,TRUE,,,,,,,
+"days_in_episode","integer",,TRUE,,,,,,,
+"avg_day_emis","double precision",,TRUE,,,,,,,
+"inv_dataset_id","integer",,TRUE,,,,,,,
+"inv_record_id","integer",,TRUE,,,,,,,

@@ -1,0 +1,10 @@
+"name","type","default value","mandatory","description","formatter","constraints","width","spaces","fixformat start","fixformat end"
+"PROFILE_ID","Varchar(15)",,TRUE,,,,,,,
+"MONDAY","double precision",,TRUE,,,,,,,
+"TUESDAY","double precision",,TRUE,,,,,,,
+"WEDNESDAY","double precision",,TRUE,,,,,,,
+"THURSDAY","double precision",,TRUE,,,,,,,
+"FRIDAY","double precision",,TRUE,,,,,,,
+"SATURDAY","double precision",,TRUE,,,,,,,
+"SUNDAY","double precision",,TRUE,,,,,,,
+"COMMENT","text",,FALSE,,,,,,,
