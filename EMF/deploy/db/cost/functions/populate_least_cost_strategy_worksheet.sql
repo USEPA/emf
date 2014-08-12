@@ -78,7 +78,7 @@ DECLARE
 	remaining_emis_sql character varying;
 	creator_user_id integer := 0;
 	is_cost_su boolean := false; 
-	apply_replacement_controls boolean := true;
+	apply_replacement_controls integer := 1;
 
 	get_strategty_ceff_equation_sql character varying;
 	
@@ -1029,11 +1029,24 @@ from (
 				)
 			)					
 			' else '' end || '
+			
+			-- restrict sources based on replacement control setting
 
-			-- ignore sources with device code but no efficiency info
-			' || case when apply_replacement_controls = false then '
+			-- 0 = only include sources where control ids are blank or ceff is set
+			' || case when apply_replacement_controls = 0 then '
 			and (coalesce(control_ids, '''') = '''' or
 			     coalesce(inv.' || inv_ceff_expression || ', 0.0) <> 0.0)
+
+      -- 2 = for sources with control ids but no ceff, match control ids to reference
+      --     and include sources where devices don''t control the source''s pollutant
+      ' when apply_replacement_controls = 2 then '
+      and (coalesce(control_ids, '''') = '''' or
+           coalesce(inv.' || inv_ceff_expression || ', 0.0) <> 0.0 or
+           (select count(*) 
+              from reference.control_device 
+             where control_device_code::varchar = any(string_to_array(control_ids, ''&''))
+               and (pollutants = ''Any''
+                or  poll = any(string_to_array(pollutants, '',''))))::integer = 0)
 			' else '' end || '
 
 		order by inv.record_id,

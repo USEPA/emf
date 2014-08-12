@@ -1600,6 +1600,6 @@ where name = 'Type 19';
 
 -- 05/18/2014 New parameter to indicate if replacement controls should be used
 ALTER TABLE emf.control_strategies
-   ADD COLUMN apply_replacement_controls boolean;
+   ADD COLUMN apply_replacement_controls integer;
 ALTER TABLE emf.control_strategies
-   ALTER COLUMN apply_replacement_controls SET DEFAULT true;
+   ALTER COLUMN apply_replacement_controls SET DEFAULT 1;
