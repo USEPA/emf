@@ -1,3 +1,30 @@
+CREATE TABLE emf.temporal_allocation_resolution
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(64) NOT NULL UNIQUE,
+  description varchar(255)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.temporal_allocation_resolution OWNER TO emf;
+CREATE INDEX temporal_allocation_resolution_id
+  ON emf.temporal_allocation_resolution
+  USING btree (id);
+ALTER TABLE emf.temporal_allocation_resolution CLUSTER ON temporal_allocation_resolution_id;
+
+INSERT INTO emf.temporal_allocation_resolution (name)
+VALUES ('Annual total (tons/year)'),
+('Monthly total (tons/month)'),
+('Monthly average (tons/day)'),
+('Ozone season average (tons/day)'),
+('Summer Weekday average (tons/day)'),
+('Summer Weekend average (tons/day)'),
+('Winter Weekday average (tons/day)'),
+('Winter Weekend average (tons/day)'),
+('Daily total (tons/day)'),
+('Episodic total (tons/episode)'),
+('Episodic average (tons/day)');
+
+
 CREATE TABLE emf.temporal_allocation (
   id SERIAL PRIMARY KEY,
   name varchar(255) not null unique,
@@ -48,32 +75,6 @@ CREATE INDEX temporal_allocation_input_dataset_tempalloc_id
   (temporal_allocation_id);
 
 
-CREATE TABLE emf.temporal_allocation_resolution
-(
-  id SERIAL PRIMARY KEY,
-  name varchar(64) NOT NULL UNIQUE,
-  description varchar(255)
-) 
-WITHOUT OIDS;
-ALTER TABLE emf.temporal_allocation_resolution OWNER TO emf;
-CREATE INDEX temporal_allocation_resolution_id
-  ON emf.temporal_allocation_resolution
-  USING btree (id);
-ALTER TABLE emf.temporal_allocation_resolution CLUSTER ON temporal_allocation_resolution_id;
-
-INSERT INTO emf.temporal_allocation_resolution (name)
-VALUES ('Annual total (tons/year)'),
-('Monthly total (tons/month)'),
-('Monthly average (tons/day)'),
-('Ozone season average (tons/day)'),
-('Summer Weekday average (tons/day)'),
-('Summer Weekend average (tons/day)'),
-('Winter Weekday average (tons/day)'),
-('Winter Weekend average (tons/day)'),
-('Daily total (tons/day)'),
-('Episodic total (tons/episode)'),
-('Episodic average (tons/day)');
-
 CREATE TABLE emf.temporal_allocation_output_type (
   id SERIAL PRIMARY KEY NOT NULL,
   name varchar(255) NOT NULL UNIQUE
@@ -83,6 +84,7 @@ INSERT INTO emf.temporal_allocation_output_type (name)
 VALUES ('Temporal Allocation Monthly Result'),
 ('Temporal Allocation Daily Result'),
 ('Temporal Allocation Episodic Result');
+
 
 CREATE TABLE emf.temporal_allocation_output (
   id SERIAL PRIMARY KEY NOT NULL,
