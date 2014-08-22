@@ -1,4 +1,3 @@
-﻿
 --select public.create_projected_future_year_inventory(81, 399, 0, 2750, 2822)
 CREATE OR REPLACE FUNCTION public.create_projected_future_year_inventory(
 	int_control_strategy_id integer, 
@@ -133,7 +132,8 @@ BEGIN
 	-- see if there is a primary_device_type_code column in the inventory
 	has_primary_device_type_code_column := public.check_table_for_columns(inv_table_name, 'primary_device_type_code', ',');
 
-	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_unit_numerator,design_capacity_unit_denominator', ',');
+	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_unit_numerator,design_capacity_unit_denominator', ',')
+		or public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_units', ',');
 
 	-- see if there is a pct_reduction column in the inventory
 	has_pct_reduction_col := public.check_table_for_columns(inv_table_name, 'pct_reduction', ',');
