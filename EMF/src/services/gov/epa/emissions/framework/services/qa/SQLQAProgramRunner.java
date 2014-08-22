@@ -136,12 +136,10 @@ public class SQLQAProgramRunner implements QAProgramRunner {
         String table = "QA_DSID" + qaStep.getDatasetId() + "_V" + qaStep.getVersion() + "_" + uID; //formattedDate;
 
         
-        if (table.length() < 64) { // postgresql table name max length is 64
-            String name = qaStep.getName();
-            int space = name.length() + table.length() - 64;
-//            table += name.substring((space < 0) ? 0 : space + 1);
-            table += name.substring(0, (space < 0) ? name.length() : 64 - table.length() - 1);
-        }
+        if (table.length() > 63) { // postgresql table name max length is 63
+//          int space = table.length() - 63;
+          table = table.substring(0, 63);
+      }
 
         for (int i = 0; i < table.length(); i++) {
             if (!Character.isLetterOrDigit(table.charAt(i))) {
@@ -149,9 +147,15 @@ public class SQLQAProgramRunner implements QAProgramRunner {
             }
         }
         // System.out.println("Table name is: " + table);
-        return table.trim().replaceAll(" ", "_");
+        //make sure the table name is a max of six characters
+        return table.replaceAll(" ", "_");
     }
 
+//    public static void main(String[] args) {
+//        String str = "12345678901234567890123456789012345678901234567890123456789012345678901234567890";
+//        System.out.println(str.substring(0,(str.length() >= 63 ? 63 : str.length()) ) + " " + str.substring(0,(str.length() >= 63 ? 63 : str.length()) ).length());
+//    }
+//
     protected String getExistedTableName(QAStep qaStep) {
         QAStepResult result = getResult(qaStep);
 

@@ -39,9 +39,8 @@ public class DataTable {
         String sufix = "_" + Math.abs(new Random().nextInt()); // to make name unique
         String table = prefix + name + sufix;
 
-        if (table.length() > 63) { // postgresql table name max length is 64
-            int space = table.length() - 63;
-            table = prefix + name.substring(space + 1) + sufix;
+        if (table.length() > 63) { // postgresql table name max length is 63
+            table = table.substring(0, 63);
         }
 
         for (int i = 0; i < table.length(); i++) {
@@ -53,19 +52,19 @@ public class DataTable {
         return table;
     }
 
-    public static String encodeTableName(String tableName) {
-        for (int i = 0; i < tableName.length(); i++) {
-            if (!Character.isLetterOrDigit(tableName.charAt(i))) {
-                tableName = tableName.replace(tableName.charAt(i), '_');
-            }
-        }
-
-        if (Character.isDigit(tableName.charAt(0))) {
-            tableName = tableName.replace(tableName.charAt(0), '_');
-            tableName = "DS" + tableName;
-        }
-        return tableName.trim().replaceAll(" ", "_");
-    }
+//    public static String encodeTableName(String tableName) {
+//        for (int i = 0; i < tableName.length(); i++) {
+//            if (!Character.isLetterOrDigit(tableName.charAt(i))) {
+//                tableName = tableName.replace(tableName.charAt(i), '_');
+//            }
+//        }
+//
+//        if (Character.isDigit(tableName.charAt(0))) {
+//            tableName = tableName.replace(tableName.charAt(0), '_');
+//            tableName = "DS" + tableName;
+//        }
+//        return tableName.trim().replaceAll(" ", "_");
+//    }
 
     public void create(String table, TableFormat tableFormat) throws ImporterException {
         try {
