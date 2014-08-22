@@ -13,6 +13,8 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.dataset.AddRemoveDatasetVersionWidget;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
@@ -31,6 +33,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -94,9 +97,9 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
         this.session = session;
         this.colOrders = colOrders;
         this.rowFilters = rowFilters;
-
         this.getContentPane().add(createLayout());
         this.pack();
+
     }
 
     private static String title(EmfDataset[] datasets) {
@@ -357,22 +360,49 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
             validateFilterDatasetAndJoinCondition();
             
             
-            Version[] versions=null;
-            if (datasets.length ==1)
-                versions=new Version[]{(Version) version.getSelectedItem()};
+            new GenericSwingWorker<Void>(this, messagePanel) {
+                @Override
+                public Void doInBackground() throws EmfException {
+                    Version[] versions=null;
+                    if (datasets.length ==1)
+                        versions=new Version[]{(Version) version.getSelectedItem()};
+                    
+                    if (!overwrite.isSelected())
+                        presenter.doExport(datasets, versions, folder.getText(), prefix.getText(), rowFilters, (filterDatasetVersionWidget.getDatasetVersions().length > 0 ? (DatasetVersion)filterDatasetVersionWidget.getDatasetVersions()[0] : null), filterDatasetJoinCondition.getText(), colOrders, purpose.getText(), false, download.isSelected());
+                    else
+                        presenter.doExport(datasets, versions, folder.getText(), prefix.getText(), rowFilters, (filterDatasetVersionWidget.getDatasetVersions().length > 0 ? (DatasetVersion)filterDatasetVersionWidget.getDatasetVersions()[0] : null), filterDatasetJoinCondition.getText(), colOrders, purpose.getText(), true, download.isSelected());
+                    return null;
+                }
+                
+                @Override
+                public void done() {
+                    try {
+                        //make sure something didn't happen
+                        get();
+
+
+                        messagePanel.setMessage("Started export. Please monitor the Status window "
+                                + "to track your Export request.");
+
+                    } catch (InterruptedException e1) {
+                        messagePanel.setError(e1.getMessage());
+//                        setErrorMsg(e1.getMessage());
+                    } catch (ExecutionException e1) {
+                        messagePanel.setError(e1.getMessage());
+//                        setErrorMsg(e1.getCause().getMessage());
+                    } finally {
+                        ComponentUtility.enableComponents(parentContainer, true);
+                        //leave it enabled when rowfilter is specified, this will make it easier
+                        //to spawn off multiple exports without having to reopen window
+                        if (!rowFilters.isEmpty()) 
+                            exportButton.setEnabled(true);
+                        else
+                            exportButton.setEnabled(false);
+                        this.parentContainer.setCursor(null); //turn off the wait cursor
+                    }
+                }
+            }.execute();
             
-            if (!overwrite.isSelected())
-                presenter.doExport(datasets, versions, folder.getText(), prefix.getText(), rowFilters, (filterDatasetVersionWidget.getDatasetVersions().length > 0 ? (DatasetVersion)filterDatasetVersionWidget.getDatasetVersions()[0] : null), filterDatasetJoinCondition.getText(), colOrders, purpose.getText(), false, download.isSelected());
-            else
-                presenter.doExport(datasets, versions, folder.getText(), prefix.getText(), rowFilters, (filterDatasetVersionWidget.getDatasetVersions().length > 0 ? (DatasetVersion)filterDatasetVersionWidget.getDatasetVersions()[0] : null), filterDatasetJoinCondition.getText(), colOrders, purpose.getText(), true, download.isSelected());
-
-            messagePanel.setMessage("Started export. Please monitor the Status window "
-                    + "to track your Export request.");
-
-            //leave it enabled when rowfilter is specified, this will make it easier
-            //to spawn off multiple exports without having to reopen window
-            if (rowFilters.isEmpty()) 
-                exportButton.setEnabled(false);
         } catch (EmfException e) {
             //e.printStackTrace();
             messagePanel.setError(e.getMessage());

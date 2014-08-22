@@ -60,39 +60,81 @@ public class FileDownloadTableCellRenderer extends JPanel implements TableCellRe
     
     public FileDownloadTableCellRenderer(){
         super();
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setOpaque(true);
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.setOpaque(true);
+//        this.fileDownload = fileDownload;
+        
+        
+        
+        //OLD APPROACH
+//        JPanel leftPanel = new JPanel(new BorderLayout());
+//        leftPanel.setOpaque(true);
+//        JPanel rightPanel = new JPanel(new BorderLayout());
+//        rightPanel.setOpaque(true);
+//        JPanel centerPanel = new JPanel();
+//        centerPanel.setOpaque(true);
+//        this.setLayout(new BorderLayout());
+//        
+//        nameLabel = new JLabel();
+//        leftPanel.add(nameLabel, BorderLayout.NORTH);
+//        sizeDateLabel = new JLabel();
+//        leftPanel.add(sizeDateLabel, BorderLayout.SOUTH);
+//        
+//        progressBar = new JProgressBar(0, 100);
+//        progressBar.setValue(0);
+//        progressBar.setStringPainted(true);
+//        progressBar.setVisible(false);
+//        progressBar.setSize(new Dimension(50, 40));
+//        rightPanel.add(progressBar, BorderLayout.SOUTH);
+//        messageLabel = new JLabel();
+//        rightPanel.add(messageLabel, BorderLayout.NORTH);
+//        noFocusBorder = new EmptyBorder(1, 2, 1, 2);
+////        setLineWrap(true);
+////        setWrapStyleWord(true);
+//        setOpaque(true);
+//        setBorder(noFocusBorder);
+////        setPreferredSize(new Dimension(250, 80));
+//        this.add(leftPanel, BorderLayout.WEST);
+//        this.add(centerPanel, BorderLayout.CENTER);
+//        this.add(rightPanel, BorderLayout.EAST);
+//        this.formatter = new DecimalFormat("#,###");
+
+    
+    
+    //NEW APPROACH
+        JPanel upperPanel = new JPanel(new BorderLayout());
+        upperPanel.setOpaque(true);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setOpaque(true);
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(true);
         
-//        this.fileDownload = fileDownload;
         this.setLayout(new BorderLayout());
         
         nameLabel = new JLabel();
-        leftPanel.add(nameLabel, BorderLayout.NORTH);
+        upperPanel.add(nameLabel, BorderLayout.NORTH);
         sizeDateLabel = new JLabel();
-        leftPanel.add(sizeDateLabel, BorderLayout.SOUTH);
+        sizeDateLabel.setSize(new Dimension(200, 40));
+        bottomPanel.add(sizeDateLabel, BorderLayout.WEST);
         
         progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
         progressBar.setVisible(false);
         progressBar.setSize(new Dimension(50, 40));
-        rightPanel.add(progressBar, BorderLayout.SOUTH);
+        bottomPanel.add(progressBar, BorderLayout.EAST);
         messageLabel = new JLabel();
-        rightPanel.add(messageLabel, BorderLayout.NORTH);
+//        rightPanel.add(messageLabel, BorderLayout.NORTH);
         noFocusBorder = new EmptyBorder(1, 2, 1, 2);
 //        setLineWrap(true);
 //        setWrapStyleWord(true);
         setOpaque(true);
         setBorder(noFocusBorder);
 //        setPreferredSize(new Dimension(250, 80));
-        this.add(leftPanel, BorderLayout.WEST);
+        this.add(upperPanel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
-        this.add(rightPanel, BorderLayout.EAST);
+        this.add(bottomPanel, BorderLayout.SOUTH);
         this.formatter = new DecimalFormat("#,###");
+        
+    
     }
     
     public void setForeground(Color c) {

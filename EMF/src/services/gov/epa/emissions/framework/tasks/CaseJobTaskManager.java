@@ -121,7 +121,7 @@ public class CaseJobTaskManager implements TaskManager {
 
     private CaseJobTaskManager(HibernateSessionFactory sessionFactory) {
         super();
-        log.info("CaseJobTaskManager constructor");
+//        log.info("CaseJobTaskManager constructor");
         if (DebugLevels.DEBUG_0())
             System.out.println("CaseJob Task Manager created @@@@@ THREAD ID: " + Thread.currentThread().getId());
 
@@ -216,7 +216,7 @@ public class CaseJobTaskManager implements TaskManager {
 
     private static boolean updateRunStatus(String taskId, String status, String[] msgs, String[] msgTypes,
             boolean regHistory) throws EmfException {
-        System.out.println("CaseJobTaskManager::updateRunStatus: " + taskId + " status= " + status);
+//        System.out.println("CaseJobTaskManager::updateRunStatus: " + taskId + " status= " + status);
 
         CaseJobTask cjt = null;
         String jobStatus = "";
@@ -226,12 +226,12 @@ public class CaseJobTaskManager implements TaskManager {
         try {
 
             if ((status.equals("completed")) || (status.equals("failed"))) {
-                System.out.println("CaseJobTaskManager::updateRunStatus: " + status);
+//                System.out.println("CaseJobTaskManager::updateRunStatus: " + status);
                 synchronized (runTable) {
                     cjt = (CaseJobTask) runTable.get(taskId);
 
                     if (!(cjt == null)) {
-                        System.out.println("Details of CJT: " + cjt.getJobName());
+//                        System.out.println("Details of CJT: " + cjt.getJobName());
                         runTable.remove(taskId);
                         if (DebugLevels.DEBUG_0())
                             System.out
@@ -249,20 +249,20 @@ public class CaseJobTaskManager implements TaskManager {
 
                 if (cjt == null) {
                     // CaseJobTask was null because it was not a running job therefore get from waitTable
-                    System.out
-                            .println("CaseJobTask was null because it was not a running job therefore get from waitTable");
+//                    System.out
+//                            .println("CaseJobTask was null because it was not a running job therefore get from waitTable");
                     synchronized (waitTable) {
                         cjt = (CaseJobTask) waitTable.get(taskId);
 
                         if (cjt == null) {
-                            System.out
-                                    .println("Job task (ID: " + taskId + ") has already been removed from waitTable.");
+//                            System.out
+//                                    .println("Job task (ID: " + taskId + ") has already been removed from waitTable.");
                             toRemove = false;
                         } else {
-                            System.out.println("Details of CJT: " + cjt.getJobName());
-                            System.out.println("CaseJobTask Id for failed exports = " + cjt.getJobId());
-                            System.out.println("CaseJobTask Id for failed exports = " + cjt.getTaskId());
-                            System.out.println("Size of the waitTable before remove: " + waitTable.size());
+//                            System.out.println("Details of CJT: " + cjt.getJobName());
+//                            System.out.println("CaseJobTask Id for failed exports = " + cjt.getJobId());
+//                            System.out.println("CaseJobTask Id for failed exports = " + cjt.getTaskId());
+//                            System.out.println("Size of the waitTable before remove: " + waitTable.size());
                             // waitTable.remove(taskId);
                             toRemove = true;
                             if (DebugLevels.DEBUG_0())
@@ -283,10 +283,10 @@ public class CaseJobTaskManager implements TaskManager {
                 }
             }
 
-            System.out.println("After removal from Run Table is the CJT null? " + (cjt == null));
+//            System.out.println("After removal from Run Table is the CJT null? " + (cjt == null));
 
             if (status.equals("export failed")) {
-                System.out.println("CaseJobTaskManager::updateRunStatus:  export failed");
+//                System.out.println("CaseJobTaskManager::updateRunStatus:  export failed");
                 synchronized (waitTable) {
                     if (DebugLevels.DEBUG_9())
                         System.out.println("Export Failed");

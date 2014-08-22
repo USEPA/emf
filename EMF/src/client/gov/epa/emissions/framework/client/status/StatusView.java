@@ -5,7 +5,7 @@ import gov.epa.emissions.framework.services.basic.Status;
 
 public interface StatusView extends EmfView {
 
-    void update(Status[] statuses);
+    void update();
 
     void notifyError(String message);
 

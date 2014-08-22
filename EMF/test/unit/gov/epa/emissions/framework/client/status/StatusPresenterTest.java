@@ -49,7 +49,7 @@ public class StatusPresenterTest extends MockObjectTestCase {
         view.expects(atLeastOnce()).method("update").with(same(messages));
         view.expects(once()).method("display").withNoArguments();
 
-        StatusPresenter presenter = new StatusPresenter(user, (DataCommonsService) service.proxy(), runner);
+        StatusPresenter presenter = new StatusPresenter((DataCommonsService) service.proxy(), runner);
         view.expects(once()).method("observe").with(same(presenter));
         presenter.display((StatusView) view.proxy());
 
@@ -64,7 +64,7 @@ public class StatusPresenterTest extends MockObjectTestCase {
         view.expects(once()).method("notifyError").with(eq("poll failure"));
         view.expects(once()).method("display").withNoArguments();
 
-        StatusPresenter presenter = new StatusPresenter(user, (DataCommonsService) service.proxy(), runner);
+        StatusPresenter presenter = new StatusPresenter((DataCommonsService) service.proxy(), runner);
         view.expects(once()).method("observe").with(same(presenter));
         presenter.display((StatusView) view.proxy());
 
@@ -78,7 +78,7 @@ public class StatusPresenterTest extends MockObjectTestCase {
         runner.expects(once()).method("start").with(new IsInstanceOf(StatusMonitor.class));
         runner.expects(once()).method("stop").withNoArguments();
 
-        StatusPresenter presenter = new StatusPresenter(user, (DataCommonsService) service.proxy(), (TaskRunner) runner
+        StatusPresenter presenter = new StatusPresenter((DataCommonsService) service.proxy(), (TaskRunner) runner
                 .proxy());
         view.expects(once()).method("observe").with(same(presenter));
         presenter.display((StatusView) view.proxy());
@@ -110,7 +110,7 @@ public class StatusPresenterTest extends MockObjectTestCase {
         Mock runner = mock(TaskRunner.class);
         runner.expects(once()).method("start").with(new IsInstanceOf(StatusMonitor.class));
 
-        StatusPresenter presenter = new StatusPresenter(user, (DataCommonsService) service.proxy(), (TaskRunner) runner
+        StatusPresenter presenter = new StatusPresenter((DataCommonsService) service.proxy(), (TaskRunner) runner
                 .proxy());
         view.expects(once()).method("observe").with(same(presenter));
         presenter.display((StatusView) view.proxy());

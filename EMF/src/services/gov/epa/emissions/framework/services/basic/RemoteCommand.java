@@ -31,7 +31,7 @@ public class RemoteCommand {
         String qId = null;
 
         // log the title of this series of message to the LOG
-        LOG.warn(title);
+//        LOG.warn(title);
 
         reader = new BufferedReader(new InputStreamReader(inStream));
 
@@ -47,7 +47,7 @@ public class RemoteCommand {
                 
                 while (message != null) {
                     lstNonNullMsg = message;
-                    LOG.warn(message);
+//                    LOG.warn(message);
 
                     if (qId == null)
                         qId = extractQId(message);
@@ -55,7 +55,7 @@ public class RemoteCommand {
                     message = reader.readLine();
                 }
                 
-                LOG.warn("QID extracted: " + qId);
+//                LOG.warn("QID extracted: " + qId);
                 
                 if (qId == null && !localHost)
                     throw new EmfException("please check your queue options " + (lstNonNullMsg == null ? "" : "(" + lstNonNullMsg + ")"));
@@ -81,7 +81,7 @@ public class RemoteCommand {
         BufferedReader reader = null;
 
         // log the title of this series of message to the LOG
-        LOG.warn(title);
+//        LOG.warn(title);
 
         reader = new BufferedReader(new InputStreamReader(inStream));
 
@@ -93,7 +93,7 @@ public class RemoteCommand {
                     message = reader.readLine();
                 
                 while (message != null) {
-                    LOG.warn(message);
+//                    LOG.warn(message);
                     message = reader.readLine();
                 }
             } catch (Exception e) {

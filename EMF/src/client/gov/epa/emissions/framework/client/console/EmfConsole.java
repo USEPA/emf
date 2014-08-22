@@ -84,15 +84,15 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
     }
 
     private void showStatus() {
-        StatusWindow status = new StatusWindow(this, desktopManager);
+        StatusWindow status = new StatusWindow(this, desktopManager, session.user());
         windowMenuPresenter.addPermanently(status);
 
-        presenter = new StatusPresenter(session.user(), session.dataCommonsService(), new ConcurrentTaskRunner());
+        presenter = new StatusPresenter(session.dataCommonsService(), new ConcurrentTaskRunner());
         presenter.display(status);
     }
 
     private void showFileDownload() {
-        FileDownloadWindow fileDownloadWindow = new FileDownloadWindow(this, desktopManager);
+        FileDownloadWindow fileDownloadWindow = new FileDownloadWindow(this, desktopManager, session.user());
         windowMenuPresenter.addPermanently(fileDownloadWindow);
 
         fileDownloadPresenter = new FileDownloadPresenter(session.user(), session.dataCommonsService(), new ConcurrentTaskRunner());

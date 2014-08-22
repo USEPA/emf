@@ -27,7 +27,7 @@ public class StatusDAO {
 //        this.sessionFactory2 = sessionFactory;
 //    }
     
-    public void add(Status status) {
+    public void add2(Status status) {
         StatelessSession session = sessionFactory.getStatelessSession();
         Transaction tx = null;
         try {
@@ -42,7 +42,7 @@ public class StatusDAO {
         }
     }
 
-    public void add2(Status status) {
+    public void add(Status status) {
         Session session = sessionFactory.getSession();
         try {
             dao.add(status, session);

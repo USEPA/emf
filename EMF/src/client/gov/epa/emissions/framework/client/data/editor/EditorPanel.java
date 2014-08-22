@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.data.editor;
 import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.commons.db.version.ChangeSet;
 import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.commons.db.version.VersionedRecord;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.framework.client.EmfSession;
@@ -72,19 +73,25 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     }
 
     private void doLayout(MessagePanel messagePanel) {
-        add(topPanel(messagePanel), BorderLayout.PAGE_START);
+        super.add(topPanel(messagePanel), BorderLayout.PAGE_START);
 
         pageContainer = new JPanel(new BorderLayout());
-        add(pageContainer, BorderLayout.CENTER);
+        super.add(pageContainer, BorderLayout.CENTER);
     }
 
     private JPanel topPanel(MessagePanel messagePanel) {
         JPanel panel = new JPanel(new BorderLayout());
-
         panel.add(sortFilterPanel(messagePanel), BorderLayout.CENTER);
+        panel.add(paginationPanel(messagePanel), BorderLayout.EAST);
 
+        return panel;
+    }
+
+    private JPanel paginationPanel(MessagePanel messagePanel) {
+        JPanel panel = new JPanel();
         paginationPanel = new PaginationPanel(messagePanel);
-        panel.add(paginationPanel, BorderLayout.EAST);
+        paginationPanel.revalidate();
+        panel.add(paginationPanel);
 
         return panel;
     }
@@ -95,16 +102,19 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     }
 
     public void observe(TablePresenter presenter) {
-        paginationPanel.init(presenter);
-        sortFilterPanel.init(presenter);
+        paginationPanel.observe(presenter);
+        sortFilterPanel.observe(presenter);
+        paginationPanel.init();
+        sortFilterPanel.init();
         tablePresenter = presenter;
     }
 
     public void display(Page page) {
-
         if (page != null) {
             this.page = page;
         }
+//        paginationPanel.init(page);
+//        sortFilterPanel.init();
 
         pageContainer.removeAll();
         paginationPanel.updateStatus(this.page);
@@ -155,8 +165,7 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     }
 
     public String getRowFilter() {
-        // NOTE Auto-generated method stub
-        return null;
+        return sortFilterPanel.getRowFilter().getText();
     }
     
     public DesktopManager getDesktopManager() {
@@ -171,8 +180,16 @@ public class EditorPanel extends JPanel implements EditorPanelView {
         this.emfSession = emfSession;
     }
     
-    public EmfSession getEmfSession() {
-        return emfSession;
+    @Override
+    public void clear() {
+        //onlu do if page already exists, if the page doesn't exist then table isn't built yet
+        if (page != null) {
+            page.setRecords(new VersionedRecord[] {});
+            editablePage = new EditablePage(dataset.getId(), version, page, tableMetadata);
+            editablePage.setDatasetName(dataset.getName());
+            editablePagePanel.clearCopied();
+            editablePagePanel.clearCopiedRecords();
+            editablePagePanel.refresh(editablePage);
+        }
     }
-
 }

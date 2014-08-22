@@ -5,6 +5,8 @@ import gov.epa.emissions.framework.services.editor.DataAccessToken;
 
 public interface TablePresenterDelegate {
 
+    void clear();
+
     void display() throws EmfException;
 
     void reloadCurrent() throws EmfException;
@@ -23,13 +25,13 @@ public interface TablePresenterDelegate {
 
     int totalRecords() throws EmfException;
 
-    void updateFilteredCount() throws EmfException;
+    void updateFilteredCount(int totalRecords);
 
     DataAccessToken token();
 
     void setRowAndSortFilter(String rowFilter, String sortOrder);
         
-    void doApplyConstraints(String rowFilter, String sortOrder) throws EmfException;
+    void doApplyConstraints(String rowFilter, String sortOrder, boolean forEditing);
 
     void doApplyFormat() throws EmfException;
 

@@ -13,17 +13,13 @@ public class StatusPresenter implements RefreshObserver {
 
     private StatusView view;
 
-    private User user;
-
     private StatusMonitor monitor;
 
     private TaskRunner runner;
 
-    public StatusPresenter(User user, DataCommonsService servoce, TaskRunner runner) {
-        this.user = user;
+    public StatusPresenter(DataCommonsService servoce, TaskRunner runner) {
         this.service = servoce;
         this.runner = runner;
-
         this.monitor = new StatusMonitor();
     }
 
@@ -46,14 +42,13 @@ public class StatusPresenter implements RefreshObserver {
     }
 
     public void doRefresh() {
-        try {
-            Status[] statuses = service.getStatuses(user.getUsername());
-            view.update(statuses);
-        } catch (EmfException e) {
-            view.notifyError(e.getMessage());
-        }
+        view.update();
     }
 
+    public Status[] getStatuses(String username) throws EmfException {
+        return service.getStatuses(username);
+    }
+    
     public void doClear() {
         view.clear();
     }

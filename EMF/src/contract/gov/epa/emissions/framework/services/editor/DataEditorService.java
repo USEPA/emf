@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.services.editor;
 
+import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.commons.db.version.ChangeSet;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.security.User;
@@ -24,5 +25,7 @@ public interface DataEditorService extends DataAccessService {
     DataAccessToken openSession(User user, DataAccessToken token) throws EmfException;
 
     void closeSession(User user, DataAccessToken token) throws EmfException;
+    
+    Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException;
     
 }

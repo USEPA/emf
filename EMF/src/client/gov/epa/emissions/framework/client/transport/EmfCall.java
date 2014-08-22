@@ -34,9 +34,11 @@ public class EmfCall {
         mappings.setStringReturnType(call);
     }
 
-    public void request(Object[] params) throws EmfException {
+    public synchronized void request(Object[] params) throws EmfException {
         try {
-            call.invoke(params);
+            synchronized (call) {
+                call.invoke(params);
+            }
         } catch (AxisFault fault) {
             throw new EmfServiceException(fault);
         } catch (Exception e) {
@@ -50,9 +52,11 @@ public class EmfCall {
         mappings.setReturnType(call, name);
     }
 
-    public Object requestResponse(Object[] params) throws EmfException {
+    public synchronized Object requestResponse(Object[] params) throws EmfException {
         try {
-            return call.invoke(params);
+            synchronized (call) {
+                return call.invoke(params);
+            }
         } catch (AxisFault fault) {
             System.out.println(fault.toString());
             fault.printStackTrace();

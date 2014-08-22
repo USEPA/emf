@@ -17,6 +17,8 @@ import gov.epa.emissions.framework.client.casemanagement.CaseSearchPresenter;
 import gov.epa.emissions.framework.client.casemanagement.CaseSearchWindow;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseCategory;
@@ -26,6 +28,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -33,6 +36,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -79,6 +83,14 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
     private DatasetType dsType;
     
     private EmfConsole parent;
+
+    private JPanel mainPanel;
+
+    private Keyword[] keywords;
+
+    private User[] users;
+
+    private Project[] projects;
     
     static final private Dimension frameDim = new Dimension(680, 560);
     
@@ -89,10 +101,56 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
     }
 
     public void display() {
-        getContentPane().add(createLayout());
+        this.mainPanel = createLayout();
+        getContentPane().add(this.mainPanel);
         super.display();
+        new PopulateSwingWorker(mainPanel, messagePanel).execute();
     }
 
+    private class PopulateSwingWorker extends GenericSwingWorker<Void> {
+
+        public PopulateSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+            super(parentContainer, messagePanel);
+        }
+        
+        @Override
+        public Void doInBackground() throws EmfException  {
+            allDSTypes = presenter.getDSTypes();
+            keywords = presenter.getKeywords();
+            users = presenter.getUsers();
+            projects = presenter.getProjects();
+            return null;
+        }
+
+        @Override
+        public void done() {
+            try {
+                //finishes background processing...
+                get();
+                
+                //populate combo boxes
+                dsTypesBox.resetModel(allDSTypes);
+                keyword.resetModel(keywords);
+                creatorsBox.resetModel(users);
+                projectsCombo.resetModel(projects);
+                
+            } catch (InterruptedException e1) {
+                if (e1.getMessage().length() > 100)
+                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                else
+                    messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                if (e1.getMessage().length() > 100)
+                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                else
+                    messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                super.finalize();            }
+        }
+    }
+    
     private JPanel createLayout() {
         JPanel panel = new JPanel(new BorderLayout());
 
@@ -115,18 +173,17 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
 
         Dimension dim = new Dimension(350, 60);
         
-        allDSTypes=getAllDSTypes();
-        dsTypesBox = new ComboBox("Select one", allDSTypes);
+        dsTypesBox = new ComboBox("Select one", new DatasetType[] {});
         dsTypesBox.setPreferredSize(dim);
         dsTypesBox.setSelectedItem(this.dsType);
          
-        keyword = new ComboBox("Select one", presenter.getKeywords());
+        keyword = new ComboBox("Select one", new Keyword[] {});
         keyword.setPreferredSize(dim);
          
-        creatorsBox = new ComboBox("Select one", getAllUsers());
+        creatorsBox = new ComboBox("Select one", new User[] {});
         creatorsBox.setPreferredSize(dim);
         
-        projectsCombo = new ComboBox("Select one", presenter.getProjects());
+        projectsCombo = new ComboBox("Select one", new Project[] {});
         projectsCombo.setPreferredSize(dim);
        
         name = new TextField("namefilter", 30);      
@@ -290,39 +347,11 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
         JPanel panel = new JPanel();
         Button okButton = new OKButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                try {
-                    messagePanel.clear();
-                    EmfDataset[] datasets;
-                    if (!checkFields())
-                        return;
-
-                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-
-                    if (caseName.getText().trim().isEmpty())
-                        usedByCasesID = new int[] {};
-
-                    datasets = search(getDataset(),qaStep.getText(), qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), false);
-
-                    if (datasets.length == 1 && datasets[0].getName().startsWith("Alert!!! More than 300 datasets selected.")) {
-                        String msg = "Number of datasets > 300. Would you like to continue?";
-                        int option = JOptionPane.showConfirmDialog(parent, msg, "Warning", JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
-                        if (option == JOptionPane.NO_OPTION)
-                            return;
-
-                        datasets = search(getDataset(),qaStep.getText(),qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), true);
-                    }
-
-                    DatasetType type = (DatasetType)dsTypesBox.getSelectedItem();
-                    presenter.refreshViewOnSearch(datasets, getDstype(datasets, type), name.getText());
-                } catch (EmfException e) {
-                    if (e.getMessage().length() > 100)
-                        messagePanel.setError(e.getMessage().substring(0, 100) + "...");
-                    else
-                        messagePanel.setError(e.getMessage());
-                } finally {
-                    setCursor(Cursor.getDefaultCursor());
-                }
+                messagePanel.clear();
+                if (!checkFields())
+                    return;
+                //perform search in a SwingWorker
+                new UnconditionalSearchSwingWorker(mainPanel, messagePanel).execute();
             }
         });
         okButton.setToolTipText("Search similar dataset(s)");
@@ -351,7 +380,98 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
         return controlPanel;
     }
 
+    private class UnconditionalSearchSwingWorker extends GenericSwingWorker<EmfDataset[]> {
+
+        public UnconditionalSearchSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+            super(parentContainer, messagePanel);
+        }
+        
+        @Override
+        public EmfDataset[] doInBackground() throws EmfException {
+            return search(getDataset(),qaStep.getText(), qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), false);
+        }
+
+        @Override
+        public void done() {
+            try {
+                if (caseName.getText().trim().isEmpty())
+                    usedByCasesID = new int[] {};
+
+                //make sure something didn't happen
+                EmfDataset[] datasets = get();
+                
+                if (datasets.length == 1 && datasets[0].getName().startsWith("Alert!!! More than 300 datasets selected.")) {
+                    String msg = "Number of datasets > 300. Would you like to continue?";
+                    int option = JOptionPane.showConfirmDialog(parent, msg, "Warning", JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (option == JOptionPane.NO_OPTION)
+                        return;
+                    //kick off another swingworker for second step...
+                    new ConditionalSearchSwingWorker(mainPanel, messagePanel).execute();
+                    return;
+                }
+
+                DatasetType type = (DatasetType)dsTypesBox.getSelectedItem();
+                presenter.refreshViewOnSearch(datasets, getDstype(datasets, type), name.getText());
+                messagePanel.setMessage("Found " + datasets.length + " datasets meeting your search criteria");
+                
+            } catch (InterruptedException e1) {
+                if (e1.getMessage().length() > 100)
+                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                else
+                    messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                if (e1.getMessage().length() > 100)
+                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                else
+                    messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                super.finalize();            }
+        }
+    }
+    
+    private class ConditionalSearchSwingWorker extends GenericSwingWorker<EmfDataset[]> {
+
+        public ConditionalSearchSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+            super(parentContainer, messagePanel);
+        }
+        
+        @Override
+        public EmfDataset[] doInBackground() throws EmfException {
+            return search(getDataset(),qaStep.getText(),qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), true);
+        }
+
+        @Override
+        public void done() {
+            try {
+                //make sure something didn't happen
+                EmfDataset[] datasets = get();
+                
+                DatasetType type = (DatasetType)dsTypesBox.getSelectedItem();
+                presenter.refreshViewOnSearch(datasets, getDstype(datasets, type), name.getText());
+                messagePanel.setMessage("Found " + datasets.length + " datasets meeting your search criteria");
+
+            } catch (InterruptedException e1) {
+                if (e1.getMessage().length() > 100)
+                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                else
+                    messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getMessage());
+            } catch (ExecutionException e1) {
+                if (e1.getMessage().length() > 100)
+                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                else
+                    messagePanel.setError(e1.getMessage());
+//                setErrorMsg(e1.getCause().getMessage());
+            } finally {
+                super.finalize();            }
+        }
+    }
+    
     private void clearFields() {
+        messagePanel.clear();
         name.setText("");
         desc.setText("");
         value.setText("");
@@ -417,19 +537,6 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
         }
         
         return ds;
-    }
-    
-    private DatasetType[] getAllDSTypes() throws EmfException {
-        List<DatasetType> dbDSTypes = new ArrayList<DatasetType>();
-        //dbDSTypes.add(new DatasetType("All"));
-        dbDSTypes.addAll(Arrays.asList(presenter.getDSTypes()));
-        return dbDSTypes.toArray(new DatasetType[0]);
-    }
-    
-    private User[] getAllUsers() throws EmfException {
-        List<User> users = new ArrayList<User>();
-        users.addAll(Arrays.asList(presenter.getUsers()));
-        return users.toArray(new User[0]);
     }
     
     private DatasetType getDstype(EmfDataset[] datasets, DatasetType type) {

@@ -1,6 +1,11 @@
 package gov.epa.emissions.framework.client.transport;
 
+import javax.xml.rpc.ServiceException;
+
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.threadsafe.DataEditorServiceImpl;
+import gov.epa.emissions.framework.client.threadsafe.DataEditorServiceImplService;
+import gov.epa.emissions.framework.client.threadsafe.DataEditorServiceImplServiceLocator;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.LoggingService;
 import gov.epa.emissions.framework.services.basic.UserService;
@@ -10,6 +15,7 @@ import gov.epa.emissions.framework.services.cost.ControlProgramService;
 import gov.epa.emissions.framework.services.cost.ControlStrategyService;
 import gov.epa.emissions.framework.services.cost.ControlMeasureService;
 import gov.epa.emissions.framework.services.sms.SectorScenarioService;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureExportService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureImportService;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -55,6 +61,8 @@ public class RemoteServiceLocator implements ServiceLocator {
     private SectorScenarioService sectorScenarioService;
     
     private FastService fastService;
+    
+    private TemporalAllocationService temporalAllocationService;
     
     private EmfSession emfSession;
     
@@ -107,8 +115,27 @@ public class RemoteServiceLocator implements ServiceLocator {
         return dataCommonsService;
     }
 
+    private DataEditorServiceImpl port = null;
+
+    private DataEditorServiceImpl getClientService() {
+        if (port == null) {
+            // Make a service
+            DataEditorServiceImplService service = new DataEditorServiceImplServiceLocator();
+
+            try {
+                port = service.getGovEpaEmfServicesEditorDataEditorService();
+            } catch (ServiceException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return port;
+    }
+    
     public DataEditorService dataEditorService() {
-        return new DataEditorServiceTransport(editCall);
+        
+        
+        return new DataEditorServiceTransport(getClientService()/*editCall*/);
     }
 
     public DataViewService dataViewService() {
@@ -173,6 +200,13 @@ public class RemoteServiceLocator implements ServiceLocator {
             fastService = new FastServiceTransport(baseUrl + "/gov.epa.emf.services.fast.FastService");
         
         return fastService;
+    }
+    
+    public TemporalAllocationService temporalAllocationService() {
+        if (temporalAllocationService == null)
+            temporalAllocationService = new TemporalAllocationServiceTransport(baseUrl + "/gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService");
+        
+        return temporalAllocationService;
     }
     
     /*

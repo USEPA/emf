@@ -13,8 +13,14 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.NoteType;
 import gov.epa.emissions.framework.services.editor.DataAccessToken;
 import gov.epa.emissions.framework.services.editor.DataEditorService;
+import gov.epa.emissions.framework.services.editor.DataViewService;
+import gov.epa.emissions.framework.ui.MessagePanel;
 
+import java.awt.Container;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+
+import javax.swing.SwingUtilities;
 
 public class DataEditorPresenterImpl implements DataEditorPresenter {
 
@@ -33,56 +39,61 @@ public class DataEditorPresenterImpl implements DataEditorPresenter {
     private EmfDataset dataset;
 
     private boolean changesSaved;
-    private EditVersionsView parentview;
     public DataEditorPresenterImpl(EmfDataset dataset, Version version, String table, EmfSession session) {
         this.dataset = dataset;
         this.version = version;
         this.table = table;
         this.session = session;
     }
-    
-    public DataEditorPresenterImpl(EmfDataset dataset, Version version, String table, 
-            EditVersionsView parentview, EmfSession session) {
-        this.dataset = dataset;
-        this.version = version;
-        this.table = table;
-        this.parentview = parentview;
-        this.session = session;
-    }
 
     public void display(DataEditorView view) throws EmfException {
-        token = new DataAccessToken(version, table);
-        token = dataEditorService().openSession(session.user(), token);
+//        token = new DataAccessToken(version, table);
+//        token = dataEditorService().openSession(session.user(), token);
 
-        if (!token.isLocked(session.user())) {// abort
-            view.notifyLockFailure(token);
-            return;
-        }
-        display(token, view);
+//        if (!token.isLocked(session.user())) {// abort
+//            view.notifyLockFailure(token);
+//            return;
+//        }
+//        display(token, view);
+        this.view = view;
+        view.observe(this);
+        view.display(version, table, session.user());
     }
 
     DataEditorService dataEditorService() {
         return session.dataEditorService();
     }
 
-    private void display(DataAccessToken token, DataEditorView view) throws EmfException {
-        this.view = view;
-        view.observe(this);
-        displayView(view);
-
-        view.updateLockPeriod(token.lockStart(), token.lockEnd());
+    DataViewService dataViewService() {
+        return session.dataViewService();
     }
 
-    private void displayView(DataEditorView view) throws EmfException {
-        TableMetadata tableMetadata = dataEditorService().getTableMetadata(table);
-        DatasetNote[] notes = commonsService().getDatasetNotes(dataset.getId());
+//    private void display(DataAccessToken token, DataEditorView view) throws EmfException {
+//        this.view = view;
+//        view.observe(this);
+//        displayView(view);
+//
+//        view.updateLockPeriod(token.lockStart(), token.lockEnd());
+//    }
 
-        view.display(version, table, session.user(), tableMetadata, notes);
+    public TableMetadata getTableMetadata() throws EmfException {
+        return dataEditorService().getTableMetadata(table);
     }
+    
+    public DatasetNote[] getDatasetNotes() throws EmfException {
+        return commonsService().getDatasetNotes(dataset.getId());
+    }
+    
+//    private void displayView(DataEditorView view) throws EmfException {
+//        TableMetadata tableMetadata = dataEditorService().getTableMetadata(table);
+//        DatasetNote[] notes = commonsService().getDatasetNotes(dataset.getId());
+//
+//        view.display(version, table, session.user(), tableMetadata, notes);
+//    }
 
-    public void displayTable(EditorPanelView tableView) throws EmfException {
-        tablePresenter = new EditableTablePresenterImpl(dataset.getDatasetType(), token, tableView.tableMetadata(),
-                tableView, dataEditorService(), this);
+    public void displayTable(EditorPanelView tableView, Container parentContainer, MessagePanel messagePanel, TableMetadata tableMetadata) throws EmfException {
+        tablePresenter = new EditableTablePresenterImpl(dataset.getDatasetType(), token, tableMetadata,
+                tableView, dataEditorService(), this, parentContainer, messagePanel);
         displayTable(tablePresenter);
     }
 
@@ -111,6 +122,10 @@ public class DataEditorPresenterImpl implements DataEditorPresenter {
         reset(view);
     }
 
+    public void discard() throws EmfException {
+        discard(dataEditorService(), token, tablePresenter);
+    }
+
     private void reset(DataEditorView view) {
         view.resetChanges();
         view.disableSaveDiscard();
@@ -119,16 +134,19 @@ public class DataEditorPresenterImpl implements DataEditorPresenter {
     void discard(DataEditorService service, DataAccessToken token, EditableTablePresenter tablePresenter)
             throws EmfException {
         service.discard(token);
+    }
+
+    public void reloadCurrent() throws EmfException {
         tablePresenter.reloadCurrent();
     }
 
     public void doSave() throws EmfException {
-        save(view, token, tablePresenter, dataEditorService(), closingRule());
-        parentview.refresh();
+        save(tablePresenter, closingRule());
+//        parentview.refresh();
     }
 
-    void save(DataEditorView view, DataAccessToken token, EditableTablePresenter tablePresenter,
-            DataEditorService service, ClosingRule closingRule) throws EmfException {
+    void save(EditableTablePresenter tablePresenter, ClosingRule closingRule) throws EmfException {
+        DataEditorService service = dataEditorService();
         int numOfRecords = service.getTotalRecords(token);
         boolean submitChanges = tablePresenter.submitChanges();
         changesSaved = changesSaved || submitChanges;
@@ -153,11 +171,25 @@ public class DataEditorPresenterImpl implements DataEditorPresenter {
 //                }
                 throw new EmfException(e.getMessage());
             }
-            tablePresenter.reloadCurrent();
-            view.updateLockPeriod(token.lockStart(), token.lockEnd());
-            reset(view);
-        } catch (EmfException e) {
-            view.notifySaveFailure(e.getMessage());
+            SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    view.updateLockPeriod(token.lockStart(), token.lockEnd());
+                    reset(view);
+                }
+            });
+        } catch (EmfException | InvocationTargetException | InterruptedException e) {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.notifySaveFailure(e.getMessage());
+                    }
+                });
+            } catch (InvocationTargetException | InterruptedException e1) {
+                // NOTE Auto-generated catch block
+                e1.printStackTrace();
+            }
             discard(service, token, tablePresenter);
             closingRule.proceedWithClose(session.user(), areChangesSaved());
         }
@@ -188,6 +220,18 @@ public class DataEditorPresenterImpl implements DataEditorPresenter {
     
     public void setSaveChanged(boolean changeSaved) {
         this.changesSaved = changeSaved;
+    }
+
+    @Override
+    public DataAccessToken openSession() throws EmfException {
+        token = new DataAccessToken(version, table);
+        token = dataEditorService().openSession(session.user(), token);
+        return token;
+    }
+
+    @Override
+    public void clearTable() {
+        tablePresenter.clear();
     }
 
 }

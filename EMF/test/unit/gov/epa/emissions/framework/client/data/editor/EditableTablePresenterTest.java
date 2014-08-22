@@ -87,7 +87,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
         stub(paginator, "isCurrent", Boolean.FALSE);
 
         TablePresenter p = new EditableTablePresenterImpl(null, (TablePaginator) paginator.proxy(), null,
-                (EditorPanelView) view.proxy(), null, null);
+                (EditorPanelView) view.proxy(), null, null, null, null);
 
         p.doDisplayPageWithRecord(21);
     }
@@ -100,7 +100,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
         stub(paginator, "totalRecords", new Integer(20));
 
         TablePresenter p = new EditableTablePresenterImpl(null, (TablePaginator) paginator.proxy(), null,
-                (EditorPanelView) view.proxy(), null, null);
+                (EditorPanelView) view.proxy(), null, null, null, null);
 
         p.doDisplayFirst();
     }
@@ -125,7 +125,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
 
         EditableTablePresenter p = new EditableTablePresenterImpl((DatasetType) datasetType.proxy(),
                 (TablePaginator) paginator.proxy(), tableMetadataProxy, (EditorPanelView) view.proxy(),
-                (DataEditorService) service.proxy(), null);
+                (DataEditorService) service.proxy(), null, null, null);
 
         Page page = new Page();
         service.expects(once()).method("applyConstraints").with(ANYTHING, eq(""), eq(sortOrder))
@@ -144,7 +144,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
         stub(paginator, "totalRecords", new Integer(20));
 
         TablePresenter p = new EditableTablePresenterImpl(null, (TablePaginator) paginator.proxy(), null,
-                (EditorPanelView) view.proxy(), null, null);
+                (EditorPanelView) view.proxy(), null, null, null, null);
 
         p.doDisplayLast();
     }

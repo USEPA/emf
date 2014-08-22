@@ -1,10 +1,13 @@
 package gov.epa.emissions.framework.client.status;
 
 import gov.epa.emissions.commons.gui.Button;
+import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
+import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.ui.ImageResources;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -20,6 +23,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,9 +45,12 @@ public class StatusWindow
 
     private EmfConsole parent;
     
-    public StatusWindow(EmfConsole parent, DesktopManager desktopManager) {
+    private User user;
+
+    public StatusWindow(EmfConsole parent, DesktopManager desktopManager, User user) {
         super("Status", desktopManager);
         super.setName("status");
+        this.user = user;
         this.parent = parent;
 
         position(parent);
@@ -152,13 +159,44 @@ public class StatusWindow
     public void display() {
         setVisible(true);
         // don't register through desktopmanager, since we don't want to close this window
+        update();
     }
 
-    public void update(Status[] statuses) {
-        messagePanel.setMessage("Last Update : " + CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(new Date()), Color.GRAY);
-        statusTableModel.refresh(statuses);
+    public void update() {
+        new GenericSwingWorker<Status[]>(getContentPane(), messagePanel) {
 
-        super.revalidate();
+            @Override
+            public Status[] doInBackground() throws EmfException {
+                return presenter.getStatuses(user.getUsername());
+            }
+
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    Status[] statuses = get();
+                    
+                    messagePanel.setMessage("Last Update : " + CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(new Date()), Color.GRAY);
+                    statusTableModel.refresh(statuses);
+
+                    parentContainer.revalidate();
+
+                } catch (InterruptedException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    super.finalize();            }
+            }
+        }.execute();
     }
 
     public void notifyError(String message) {
@@ -174,7 +212,7 @@ public class StatusWindow
         statusTableModel.clear();
     }
 
-    public void doRefresh() {
+    public void doRefresh() throws EmfException {
         presenter.doRefresh();
     }
 }

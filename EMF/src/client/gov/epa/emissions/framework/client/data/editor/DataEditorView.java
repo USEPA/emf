@@ -12,7 +12,7 @@ import java.util.Date;
 
 public interface DataEditorView extends ManagedView {
 
-    void display(Version version, String table, User user, TableMetadata tableMetadata, DatasetNote[] notes);
+    void display(Version version, String table, User user);
 
     void observe(DataEditorPresenter presenter);
 
@@ -33,5 +33,7 @@ public interface DataEditorView extends ManagedView {
     void disableSaveDiscard();
 
     boolean hasReplacedValues();
+
+    void populate(String table);
 
 }

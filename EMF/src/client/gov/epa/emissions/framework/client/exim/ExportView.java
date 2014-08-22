@@ -6,6 +6,6 @@ public interface ExportView extends ManagedView {
 
     void observe(ExportPresenter presenter);
 
-    void setMostRecentUsedFolder(String mostRecentUsedFolder);
+    void setMostRecentUsedFolder(String lastFolder);
 
 }
