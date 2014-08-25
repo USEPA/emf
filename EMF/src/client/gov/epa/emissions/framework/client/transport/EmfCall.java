@@ -36,7 +36,7 @@ public class EmfCall {
 
     public synchronized void request(Object[] params) throws EmfException {
         try {
-            synchronized (call) {
+                    synchronized (call) {
                 call.invoke(params);
             }
         } catch (AxisFault fault) {
@@ -54,7 +54,7 @@ public class EmfCall {
 
     public synchronized Object requestResponse(Object[] params) throws EmfException {
         try {
-            synchronized (call) {
+                    synchronized (call) {
                 return call.invoke(params);
             }
         } catch (AxisFault fault) {

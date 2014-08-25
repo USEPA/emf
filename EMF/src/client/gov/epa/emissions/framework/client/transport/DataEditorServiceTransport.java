@@ -29,8 +29,8 @@ public class DataEditorServiceTransport implements DataEditorService {
     }
 
     public DataEditorServiceTransport(DataEditorServiceImpl clientService) {
-        this.port = clientService;
-    }
+            this.port = clientService;
+        }
 
     private EmfCall _call;
     
@@ -50,20 +50,20 @@ public class DataEditorServiceTransport implements DataEditorService {
     private DataEditorServiceImpl port = null;
 
     private DataEditorServiceImpl getClientService() {
-        if (port == null) {
-            // Make a service
-            DataEditorServiceImplService service = new DataEditorServiceImplServiceLocator();
+            if (port == null) {
+                // Make a service
+                DataEditorServiceImplService service = new DataEditorServiceImplServiceLocator();
 
-            try {
-                port = service.getGovEpaEmfServicesEditorDataEditorService();
-            } catch (ServiceException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        return port;
-    }
-    
+                        try {
+                                port = service.getGovEpaEmfServicesEditorDataEditorService();
+                            } catch (ServiceException e) {
+                                // NOTE Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                        return port;
+                    }
+
     @Override
     public Page getPage(DataAccessToken token, int pageNumber) throws EmfException {
         try {
@@ -74,7 +74,7 @@ public class DataEditorServiceTransport implements DataEditorService {
         }
         return null;
     }
-
+        
     @Override
     public int getPageCount(DataAccessToken token) throws EmfException {
         try {
@@ -84,7 +84,7 @@ public class DataEditorServiceTransport implements DataEditorService {
             e.printStackTrace();
         }
         return 0;
-    }
+        }   
 
     @Override
     public Page getPageWithRecord(DataAccessToken token, int record) throws EmfException {
@@ -99,13 +99,14 @@ public class DataEditorServiceTransport implements DataEditorService {
 
     @Override
     public int getTotalRecords(DataAccessToken token) throws EmfException {
-        try {
-            return getClientService().getTotalRecords(token);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
-        return 0;
+            try {
+                    return getClientService().getTotalRecords(token);
+                } catch (RemoteException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+    }
+
+            return 0;
     }
 
     @Override
@@ -115,10 +116,11 @@ public class DataEditorServiceTransport implements DataEditorService {
         } catch (RemoteException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
-        }
-        return null;
     }
 
+        return null;
+        }  
+        
     @Override
     public Version getVersion(int datasetId, int version) throws EmfException {
         try {
@@ -126,7 +128,8 @@ public class DataEditorServiceTransport implements DataEditorService {
         } catch (RemoteException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
-        }
+    }
+
         return null;
     }
 
@@ -137,7 +140,8 @@ public class DataEditorServiceTransport implements DataEditorService {
         } catch (RemoteException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
-        }
+    }
+
         return null;
     }
 
@@ -150,7 +154,6 @@ public class DataEditorServiceTransport implements DataEditorService {
             e.printStackTrace();
         }
     }
-
     @Override
     public void discard(DataAccessToken token) throws EmfException {
         try {
@@ -161,275 +164,276 @@ public class DataEditorServiceTransport implements DataEditorService {
         }
     }
 
-    @Override
+  @Override
     public DataAccessToken save(DataAccessToken token, EmfDataset dataset, Version version) throws EmfException {
         try {
-            return getClientService().save(token, dataset, version);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
+                return getClientService().save(token, dataset, version);
+            } catch (RemoteException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+            }
+            return token;
         }
-        return token;
-    }
 
-    @Override
-    public Version derive(Version baseVersion, User user, String name) throws EmfException {
-        try {
-            return getClientService().derive(baseVersion, user, name);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
-        return baseVersion;
+  @Override
+  public Version derive(Version baseVersion, User user, String name) throws EmfException {
+      try {
+          return getClientService().derive(baseVersion, user, name);
+      } catch (RemoteException e) {
+          // NOTE Auto-generated catch block
+          e.printStackTrace();
+      }
+      return baseVersion;
     }
 
     @Override
     public Version markFinal(DataAccessToken token) throws EmfException {
-        try {
-            return getClientService().markFinal(token);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+              try {
+                      return getClientService().markFinal(token);
+                  } catch (RemoteException e) {
+                      // NOTE Auto-generated catch block
+                      e.printStackTrace();
+                  }
+          return null;
     }
 
-    @Override
-    public boolean hasChanges(DataAccessToken token) throws EmfException {
-        try {
-            return getClientService().hasChanges(token);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
+                @Override
+                public boolean hasChanges(DataAccessToken token) throws EmfException {
+                    try {
+                        return getClientService().hasChanges(token);
+                    } catch (RemoteException e) {
+                        // NOTE Auto-generated catch block
+                        e.printStackTrace();
         }
-        return false;
+
+                    return false;
+   }
+
+                  @Override
+                  public DataAccessToken openSession(User user, DataAccessToken token) throws EmfException {
+                      try {
+                          return getClientService().openSession(user, token);
+                      } catch (RemoteException e) {
+                          // NOTE Auto-generated catch block
+                          e.printStackTrace();
+                      }
+                      return token;
+                  }
+
+                  @Override
+                  public void closeSession(User user, DataAccessToken token) throws EmfException {
+                      try {
+                          getClientService().closeSession(user, token);
+                      } catch (RemoteException e) {
+                          // NOTE Auto-generated catch block
+                          e.printStackTrace();
+                      }
+                  }
+        
+                  @Override
+                  public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
+                      try {
+                          return getClientService().applyConstraints(token, rowFilter, sortOrder);
+                      } catch (RemoteException e) {
+                          // NOTE Auto-generated catch block
+                          e.printStackTrace();
+                      }
+                      return null;
     }
 
-    @Override
-    public DataAccessToken openSession(User user, DataAccessToken token) throws EmfException {
-        try {
-            return getClientService().openSession(user, token);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
-        return token;
-    }
+              //    public Page getPage(DataAccessToken token, int pageNumber) throws EmfException {
+              //        EmfCall call = getCall();
+              //        
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.addIntegerParam("pageNumber");
+              //
+              //        call.setOperation("getPage");
+              //        call.setReturnType(mappings.page());
+              //        
+              //        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(pageNumber) });
+              //        if ( CommonDebugLevel.DEBUG_PAGE_2) {
+              //            page.print();
+              //        }
+              //
+              //        return page;
+              //    }
+              //
+              //    public int getPageCount(DataAccessToken token) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.setOperation("getPageCount");
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.setIntegerReturnType();
+              //
+              //        Integer cnt = (Integer) call.requestResponse(new Object[] { token });
+              //        return cnt.intValue();
+              //    }
+              //
+              //    public Page getPageWithRecord(DataAccessToken token, int recordId) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.setOperation("getPageWithRecord");
+              //        call.setReturnType(mappings.page());
+              //
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.addIntegerParam("recordId");
+              //        
+              //        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(recordId) });
+              //        if ( CommonDebugLevel.DEBUG_PAGE_2) {
+              //            page.print();
+              //        }   
+              //
+              //        return page;
+              //    }
+              //
+              //    public int getTotalRecords(DataAccessToken token) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.setOperation("getTotalRecords");
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.setIntegerReturnType();
+              //
+              //        Integer cnt = (Integer) call.requestResponse(new Object[] { token });
+              //        return cnt.intValue();
+              //    }
+              //
+              //    public void close() throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.setOperation("close");
+              //        call.setVoidReturnType();
+              //
+              //        call.request(new Object[0]);
+              //    }
+              //
+              //    public Version derive(Version baseVersion, User user, String name) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addParam("baseVersion", mappings.version());
+              //        call.addParam("user",mappings.user());
+              //        call.addStringParam("name");
+              //
+              //        call.setOperation("derive");
+              //        call.setReturnType(mappings.version());
+              //
+              //        return (Version) call.requestResponse(new Object[] { baseVersion, user,name });
+              //    }
+              //
+              //    public void submit(DataAccessToken token, ChangeSet changeset, int pageNumber) throws EmfException {
+              //        EmfCall call = getCall();
+              //        
+              //        // TODO: JIZHEN debug ChangeSet
+              //        if ( CommonDebugLevel.DEBUG_PAGE_2 && changeset != null) {
+              //            changeset.print();
+              //        }  
+              //        
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.addParam("changeset", mappings.changeset());
+              //        call.addIntegerParam("pageNumber");
+              //        call.setOperation("submit");
+              //        call.setVoidReturnType();
+              //
+              //        call.request(new Object[] { token, changeset, new Integer(pageNumber) });
+              //    }
+              //
+                  public boolean hasChanges2(DataAccessToken token) throws EmfException {
+                      EmfCall call = getCall();
+                      call.addParam("token", mappings.dataAccessToken());
+                      call.setOperation("hasChanges");
+                      call.setBooleanReturnType();
 
-    @Override
-    public void closeSession(User user, DataAccessToken token) throws EmfException {
-        try {
-            getClientService().closeSession(user, token);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
+                          Object result = call.requestResponse(new Object[] { token });
+                          return ((Boolean) result).booleanValue();
     }
-
-    @Override
-    public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
-        try {
-            return getClientService().applyConstraints(token, rowFilter, sortOrder);
-        } catch (RemoteException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-//    public Page getPage(DataAccessToken token, int pageNumber) throws EmfException {
-//        EmfCall call = getCall();
-//        
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.addIntegerParam("pageNumber");
-//
-//        call.setOperation("getPage");
-//        call.setReturnType(mappings.page());
-//        
-//        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(pageNumber) });
-//        if ( CommonDebugLevel.DEBUG_PAGE_2) {
-//            page.print();
-//        }
-//
-//        return page;
-//    }
-//
-//    public int getPageCount(DataAccessToken token) throws EmfException {
-//        EmfCall call = getCall();
-//        call.setOperation("getPageCount");
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.setIntegerReturnType();
-//
-//        Integer cnt = (Integer) call.requestResponse(new Object[] { token });
-//        return cnt.intValue();
-//    }
-//
-//    public Page getPageWithRecord(DataAccessToken token, int recordId) throws EmfException {
-//        EmfCall call = getCall();
-//        call.setOperation("getPageWithRecord");
-//        call.setReturnType(mappings.page());
-//
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.addIntegerParam("recordId");
-//        
-//        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(recordId) });
-//        if ( CommonDebugLevel.DEBUG_PAGE_2) {
-//            page.print();
-//        }   
-//
-//        return page;
-//    }
-//
-//    public int getTotalRecords(DataAccessToken token) throws EmfException {
-//        EmfCall call = getCall();
-//        call.setOperation("getTotalRecords");
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.setIntegerReturnType();
-//
-//        Integer cnt = (Integer) call.requestResponse(new Object[] { token });
-//        return cnt.intValue();
-//    }
-//
-//    public void close() throws EmfException {
-//        EmfCall call = getCall();
-//        call.setOperation("close");
-//        call.setVoidReturnType();
-//
-//        call.request(new Object[0]);
-//    }
-//
-//    public Version derive(Version baseVersion, User user, String name) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addParam("baseVersion", mappings.version());
-//        call.addParam("user",mappings.user());
-//        call.addStringParam("name");
-//
-//        call.setOperation("derive");
-//        call.setReturnType(mappings.version());
-//
-//        return (Version) call.requestResponse(new Object[] { baseVersion, user,name });
-//    }
-//
-//    public void submit(DataAccessToken token, ChangeSet changeset, int pageNumber) throws EmfException {
-//        EmfCall call = getCall();
-//        
-//        // TODO: JIZHEN debug ChangeSet
-//        if ( CommonDebugLevel.DEBUG_PAGE_2 && changeset != null) {
-//            changeset.print();
-//        }  
-//        
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.addParam("changeset", mappings.changeset());
-//        call.addIntegerParam("pageNumber");
-//        call.setOperation("submit");
-//        call.setVoidReturnType();
-//
-//        call.request(new Object[] { token, changeset, new Integer(pageNumber) });
-//    }
-//
-    public boolean hasChanges2(DataAccessToken token) throws EmfException {
-        EmfCall call = getCall();
-        call.addParam("token", mappings.dataAccessToken());
-        call.setOperation("hasChanges");
-        call.setBooleanReturnType();
-
-        Object result = call.requestResponse(new Object[] { token });
-        return ((Boolean) result).booleanValue();
-    }
-//
-//    public void discard(DataAccessToken token) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.setOperation("discard");
-//        call.setVoidReturnType();
-//
-//        call.request(new Object[] { token });
-//    }
-//
-//    public DataAccessToken openSession(User user, DataAccessToken token) throws EmfException {
-//        EmfCall call = getCall();
-//        call.setOperation("openSession");
-//        call.addParam("user", mappings.user());
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.setReturnType(mappings.dataAccessToken());
-//
-//        return (DataAccessToken) call.requestResponse(new Object[] { user, token });
-//    }
-//
-//    public void closeSession(User user, DataAccessToken token) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addParam("user", mappings.user());
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.setOperation("closeSession");
-//        call.setVoidReturnType();
-//
-//        call.request(new Object[] { user, token });
-//    }
-//
-//    public DataAccessToken save(DataAccessToken token, EmfDataset dataset, Version version) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.addParam("dataset", mappings.dataset());
-//        call.addParam("version",mappings.version());
-//        
-//        call.setOperation("save");
-//        call.setReturnType(mappings.dataAccessToken());
-//
-//        return (DataAccessToken) call.requestResponse(new Object[] { token, dataset, version });
-//    }
-//
-//    public Version markFinal(DataAccessToken token) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.setOperation("markFinal");
-//        call.setReturnType(mappings.version());
-//
-//        return (Version) call.requestResponse(new Object[] { token });
-//    }
-//
-//    public Version[] getVersions(int datasetId) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addLongParam("datasetId");
-//        call.setOperation("getVersions");
-//        call.setReturnType(mappings.versions());
-//
-//        return (Version[]) call.requestResponse(new Object[] { new Integer(datasetId) });
-//    }
-//
-//    public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addParam("token", mappings.dataAccessToken());
-//        call.addStringParam("rowFilter");
-//        call.addStringParam("sortOrder");
-//
-//        call.setOperation("applyConstraints");
-//        call.setReturnType(mappings.page());
-//        
-//        Page page = (Page) call.requestResponse(new Object[] { token, rowFilter, sortOrder });
-//        if ( CommonDebugLevel.DEBUG_PAGE_2) {
-//            page.print();
-//        }
-//
-//        return page;
-//    }
-//
-//    public TableMetadata getTableMetadata(String table) throws EmfException {
-//        EmfCall call = getCall();
-//        call.addStringParam("table");
-//
-//        call.setOperation("getTableMetadata");
-//        call.setReturnType(mappings.tablemetadata());
-//        
-//        return (TableMetadata)call.requestResponse(new Object[] { table });
-//    }
-//
-//    public Version getVersion(int datasetId, int version) throws EmfException {
-//        EmfCall call = getCall();
-//        call.setOperation("getVersion");
-//        call.addLongParam("datasetId");
-//        call.addLongParam("version");
-//        call.setReturnType(mappings.version());
-//
-//        return (Version) call.requestResponse(new Object[] { new Integer(datasetId), new Integer(version) });
-//    }
+              //
+              //    public void discard(DataAccessToken token) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.setOperation("discard");
+              //        call.setVoidReturnType();
+              //
+              //        call.request(new Object[] { token });
+              //    }
+              //
+              //    public DataAccessToken openSession(User user, DataAccessToken token) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.setOperation("openSession");
+              //        call.addParam("user", mappings.user());
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.setReturnType(mappings.dataAccessToken());
+              //
+              //        return (DataAccessToken) call.requestResponse(new Object[] { user, token });
+              //    }
+              //
+              //    public void closeSession(User user, DataAccessToken token) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addParam("user", mappings.user());
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.setOperation("closeSession");
+              //        call.setVoidReturnType();
+              //
+              //        call.request(new Object[] { user, token });
+              //    }
+              //
+              //    public DataAccessToken save(DataAccessToken token, EmfDataset dataset, Version version) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.addParam("dataset", mappings.dataset());
+              //        call.addParam("version",mappings.version());
+              //        
+              //        call.setOperation("save");
+              //        call.setReturnType(mappings.dataAccessToken());
+              //
+              //        return (DataAccessToken) call.requestResponse(new Object[] { token, dataset, version });
+              //    }
+              //
+              //    public Version markFinal(DataAccessToken token) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.setOperation("markFinal");
+              //        call.setReturnType(mappings.version());
+              //
+              //        return (Version) call.requestResponse(new Object[] { token });
+              //    }
+              //
+              //    public Version[] getVersions(int datasetId) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addLongParam("datasetId");
+              //        call.setOperation("getVersions");
+              //        call.setReturnType(mappings.versions());
+              //
+              //        return (Version[]) call.requestResponse(new Object[] { new Integer(datasetId) });
+              //    }
+              //
+              //    public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addParam("token", mappings.dataAccessToken());
+              //        call.addStringParam("rowFilter");
+              //        call.addStringParam("sortOrder");
+              //
+              //        call.setOperation("applyConstraints");
+              //        call.setReturnType(mappings.page());
+              //        
+              //        Page page = (Page) call.requestResponse(new Object[] { token, rowFilter, sortOrder });
+              //        if ( CommonDebugLevel.DEBUG_PAGE_2) {
+              //            page.print();
+              //        }
+              //
+              //        return page;
+              //    }
+              //
+              //    public TableMetadata getTableMetadata(String table) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.addStringParam("table");
+              //
+              //        call.setOperation("getTableMetadata");
+              //        call.setReturnType(mappings.tablemetadata());
+              //        
+              //        return (TableMetadata)call.requestResponse(new Object[] { table });
+              //    }
+              //
+              //    public Version getVersion(int datasetId, int version) throws EmfException {
+              //        EmfCall call = getCall();
+              //        call.setOperation("getVersion");
+              //        call.addLongParam("datasetId");
+              //        call.addLongParam("version");
+              //        call.setReturnType(mappings.version());
+              //
+              //        return (Version) call.requestResponse(new Object[] { new Integer(datasetId), new Integer(version) });
+              //    }
 }

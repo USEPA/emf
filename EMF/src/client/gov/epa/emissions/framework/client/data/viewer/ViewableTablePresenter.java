@@ -23,13 +23,13 @@ public class ViewableTablePresenter implements TablePresenter {
     private int totalRecs; 
 
     public ViewableTablePresenter(DatasetType datasetType, DataAccessToken token, TableMetadata tableMetadata,
-            ViewerPanelView view, DataAccessService service, DataViewService dataViewService, Container parentContainer, MessagePanel messagePanel) {
-        this(datasetType, new TablePaginatorImpl(token, view, dataViewService, parentContainer, messagePanel), tableMetadata, view, service, parentContainer, messagePanel);
+                        ViewerPanelView view, DataAccessService service, DataViewService dataViewService, Container parentContainer, MessagePanel messagePanel) {
+                this(datasetType, new TablePaginatorImpl(token, view, dataViewService, parentContainer, messagePanel), tableMetadata, view, service, parentContainer, messagePanel);
     }
     
     public ViewableTablePresenter(DatasetType datasetType, TablePaginator paginator, TableMetadata tableMetadata,
-            ViewerPanelView view, DataAccessService service, Container parentContainer, MessagePanel messagePanel) {
-        this(new TablePresenterDelegateImpl(datasetType, paginator, tableMetadata, view, service, parentContainer, messagePanel), view);
+                        ViewerPanelView view, DataAccessService service, Container parentContainer, MessagePanel messagePanel) {
+                this(new TablePresenterDelegateImpl(datasetType, paginator, tableMetadata, view, service, parentContainer, messagePanel), view);
     }
 
     public ViewableTablePresenter(TablePresenterDelegate delegate, ViewerPanelView view) {
@@ -78,8 +78,8 @@ public class ViewableTablePresenter implements TablePresenter {
         return totalRecs ;
     }
 
-    public void doApplyConstraints(String rowFilter, String sortOrder) {
-        delegate.doApplyConstraints(rowFilter, sortOrder, false);
+        public void doApplyConstraints(String rowFilter, String sortOrder) {
+                delegate.doApplyConstraints(rowFilter, sortOrder, false);
     }
 
     public void doApplyFormat() throws EmfException {

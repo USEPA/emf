@@ -74,24 +74,25 @@ public class EditorPanel extends JPanel implements EditorPanelView {
 
     private void doLayout(MessagePanel messagePanel) {
         super.add(topPanel(messagePanel), BorderLayout.PAGE_START);
-
+        
         pageContainer = new JPanel(new BorderLayout());
         super.add(pageContainer, BorderLayout.CENTER);
     }
 
     private JPanel topPanel(MessagePanel messagePanel) {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(sortFilterPanel(messagePanel), BorderLayout.CENTER);
-        panel.add(paginationPanel(messagePanel), BorderLayout.EAST);
 
-        return panel;
-    }
+        panel.add(sortFilterPanel(messagePanel), BorderLayout.CENTER);
+            panel.add(paginationPanel(messagePanel), BorderLayout.EAST);
+    
+            return panel;
+        }
 
     private JPanel paginationPanel(MessagePanel messagePanel) {
-        JPanel panel = new JPanel();
+            JPanel panel = new JPanel();
         paginationPanel = new PaginationPanel(messagePanel);
-        paginationPanel.revalidate();
-        panel.add(paginationPanel);
+            paginationPanel.revalidate();
+            panel.add(paginationPanel);
 
         return panel;
     }
@@ -102,10 +103,10 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     }
 
     public void observe(TablePresenter presenter) {
-        paginationPanel.observe(presenter);
-        sortFilterPanel.observe(presenter);
-        paginationPanel.init();
-        sortFilterPanel.init();
+            paginationPanel.observe(presenter);
+            sortFilterPanel.observe(presenter);
+            paginationPanel.init();
+            sortFilterPanel.init();
         tablePresenter = presenter;
     }
 
@@ -113,8 +114,8 @@ public class EditorPanel extends JPanel implements EditorPanelView {
         if (page != null) {
             this.page = page;
         }
-//        paginationPanel.init(page);
-//        sortFilterPanel.init();
+    //        paginationPanel.init(page);
+    //        sortFilterPanel.init();
 
         pageContainer.removeAll();
         paginationPanel.updateStatus(this.page);
@@ -165,7 +166,7 @@ public class EditorPanel extends JPanel implements EditorPanelView {
     }
 
     public String getRowFilter() {
-        return sortFilterPanel.getRowFilter().getText();
+            return sortFilterPanel.getRowFilter().getText();
     }
     
     public DesktopManager getDesktopManager() {

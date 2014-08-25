@@ -161,10 +161,10 @@ public class DataSortFilterPanelViewer extends JPanel {
     }
 
     public void observe(final TablePresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public void init() {
+            this.presenter = presenter;
+        }
+    
+        public void init() {
 
         this.formatButton.setAction(new AbstractAction("Format") {
             public void actionPerformed(ActionEvent e) {
@@ -213,11 +213,11 @@ public class DataSortFilterPanelViewer extends JPanel {
     }
 
     private void doApplyConstraints(final TablePresenter presenter) {
-        messagePanel.clear();
+            messagePanel.clear();
 
-        String rowFilterValue = rowFilter.getText().trim();
-        String sortOrderValue = sortOrder.getText().trim();
-        presenter.doApplyConstraints(rowFilterValue, sortOrderValue);
+            String rowFilterValue = rowFilter.getText().trim();
+            String sortOrderValue = sortOrder.getText().trim();
+            presenter.doApplyConstraints(rowFilterValue, sortOrderValue);
     }
 
     public void setSortFilter(String filter) {

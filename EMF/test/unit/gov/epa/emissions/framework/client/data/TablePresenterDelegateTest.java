@@ -54,7 +54,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
                 (DataAccessService) service.proxy(), null, null);
 
         String sortOrder = "invalid-row";
-        p.doApplyConstraints(null, sortOrder, false);
+            p.doApplyConstraints(null, sortOrder, false);
 
         fail("Should have raised an exception when Sort Order contains invalid cols");
     }
@@ -99,7 +99,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         String sortOrder = "col3, invalid-row";
         stub(tableMetadata, "containsCol", "col3", Boolean.TRUE);
         stub(tableMetadata, "containsCol", "invalid-row", Boolean.FALSE);
-        p.doApplyConstraints(null, sortOrder, false);
+            p.doApplyConstraints(null, sortOrder, false);
 
         fail("Should have raised an exception when Sort Order contains invalid cols");
     }

@@ -35,5 +35,4 @@ public interface DataEditorView extends ManagedView {
     boolean hasReplacedValues();
 
     void populate(String table);
-
 }

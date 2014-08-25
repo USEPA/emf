@@ -9,7 +9,7 @@ public interface TableView {
     void display(Page page);
 
     void clear();
-
+    
     void scrollToPageEnd();
 
     TableMetadata tableMetadata();

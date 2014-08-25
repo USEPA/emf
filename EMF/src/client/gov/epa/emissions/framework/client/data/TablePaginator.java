@@ -28,5 +28,4 @@ public interface TablePaginator {
     boolean isCurrent(int record);
 
     void clear();
-
 }

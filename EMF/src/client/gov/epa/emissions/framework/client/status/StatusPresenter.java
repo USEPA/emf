@@ -42,13 +42,13 @@ public class StatusPresenter implements RefreshObserver {
     }
 
     public void doRefresh() {
-        view.update();
-    }
-
-    public Status[] getStatuses(String username) throws EmfException {
-        return service.getStatuses(username);
+            view.update();
     }
     
+        public Status[] getStatuses(String username) throws EmfException {
+            return service.getStatuses(username);
+    }
+
     public void doClear() {
         view.clear();
     }

@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.client.casemanagement.CaseSearchWindow;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseCategory;
@@ -83,6 +82,7 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
     private DatasetType dsType;
     
     private EmfConsole parent;
+    
 
     private JPanel mainPanel;
 
@@ -91,7 +91,7 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
     private User[] users;
 
     private Project[] projects;
-    
+
     static final private Dimension frameDim = new Dimension(680, 560);
     
     public DatasetSearchWindow(String title, EmfConsole parentConsole, DesktopManager desktopManager, DatasetType dsType) {
@@ -108,48 +108,48 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
     }
 
     private class PopulateSwingWorker extends GenericSwingWorker<Void> {
-
-        public PopulateSwingWorker(Container parentContainer, MessagePanel messagePanel) {
-            super(parentContainer, messagePanel);
+    
+            public PopulateSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+                super(parentContainer, messagePanel);
+            }
+            
+            @Override
+            public Void doInBackground() throws EmfException  {
+                allDSTypes = presenter.getDSTypes();
+                keywords = presenter.getKeywords();
+                users = presenter.getUsers();
+                projects = presenter.getProjects();
+                return null;
+            }
+    
+            @Override
+            public void done() {
+                try {
+                    //finishes background processing...
+                    get();
+                    
+                    //populate combo boxes
+                    dsTypesBox.resetModel(allDSTypes);
+                    keyword.resetModel(keywords);
+                    creatorsBox.resetModel(users);
+                    projectsCombo.resetModel(projects);
+                    
+                } catch (InterruptedException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+    //                setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+    //                setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    super.finalize();            }
+            }
         }
-        
-        @Override
-        public Void doInBackground() throws EmfException  {
-            allDSTypes = presenter.getDSTypes();
-            keywords = presenter.getKeywords();
-            users = presenter.getUsers();
-            projects = presenter.getProjects();
-            return null;
-        }
-
-        @Override
-        public void done() {
-            try {
-                //finishes background processing...
-                get();
-                
-                //populate combo boxes
-                dsTypesBox.resetModel(allDSTypes);
-                keyword.resetModel(keywords);
-                creatorsBox.resetModel(users);
-                projectsCombo.resetModel(projects);
-                
-            } catch (InterruptedException e1) {
-                if (e1.getMessage().length() > 100)
-                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
-                else
-                    messagePanel.setError(e1.getMessage());
-//                setErrorMsg(e1.getMessage());
-            } catch (ExecutionException e1) {
-                if (e1.getMessage().length() > 100)
-                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
-                else
-                    messagePanel.setError(e1.getMessage());
-//                setErrorMsg(e1.getCause().getMessage());
-            } finally {
-                super.finalize();            }
-        }
-    }
     
     private JPanel createLayout() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -347,11 +347,11 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
         JPanel panel = new JPanel();
         Button okButton = new OKButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                messagePanel.clear();
-                if (!checkFields())
-                    return;
-                //perform search in a SwingWorker
-                new UnconditionalSearchSwingWorker(mainPanel, messagePanel).execute();
+                            messagePanel.clear();
+                            if (!checkFields())
+                                return;
+                            //perform search in a SwingWorker
+                            new UnconditionalSearchSwingWorker(mainPanel, messagePanel).execute();
             }
         });
         okButton.setToolTipText("Search similar dataset(s)");
@@ -381,95 +381,95 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
     }
 
     private class UnconditionalSearchSwingWorker extends GenericSwingWorker<EmfDataset[]> {
-
-        public UnconditionalSearchSwingWorker(Container parentContainer, MessagePanel messagePanel) {
-            super(parentContainer, messagePanel);
-        }
-        
-        @Override
-        public EmfDataset[] doInBackground() throws EmfException {
-            return search(getDataset(),qaStep.getText(), qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), false);
-        }
-
-        @Override
-        public void done() {
-            try {
-                if (caseName.getText().trim().isEmpty())
-                    usedByCasesID = new int[] {};
-
-                //make sure something didn't happen
-                EmfDataset[] datasets = get();
-                
-                if (datasets.length == 1 && datasets[0].getName().startsWith("Alert!!! More than 300 datasets selected.")) {
-                    String msg = "Number of datasets > 300. Would you like to continue?";
-                    int option = JOptionPane.showConfirmDialog(parent, msg, "Warning", JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (option == JOptionPane.NO_OPTION)
+    
+            public UnconditionalSearchSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+                super(parentContainer, messagePanel);
+            }
+            
+            @Override
+            public EmfDataset[] doInBackground() throws EmfException {
+                return search(getDataset(),qaStep.getText(), qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), false);
+            }
+    
+            @Override
+            public void done() {
+                try {
+                    if (caseName.getText().trim().isEmpty())
+                        usedByCasesID = new int[] {};
+    
+                    //make sure something didn't happen
+                    EmfDataset[] datasets = get();
+                    
+                    if (datasets.length == 1 && datasets[0].getName().startsWith("Alert!!! More than 300 datasets selected.")) {
+                        String msg = "Number of datasets > 300. Would you like to continue?";
+                        int option = JOptionPane.showConfirmDialog(parent, msg, "Warning", JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE);
+                        if (option == JOptionPane.NO_OPTION)
+                            return;
+                        //kick off another swingworker for second step...
+                        new ConditionalSearchSwingWorker(mainPanel, messagePanel).execute();
                         return;
-                    //kick off another swingworker for second step...
-                    new ConditionalSearchSwingWorker(mainPanel, messagePanel).execute();
-                    return;
-                }
-
-                DatasetType type = (DatasetType)dsTypesBox.getSelectedItem();
-                presenter.refreshViewOnSearch(datasets, getDstype(datasets, type), name.getText());
-                messagePanel.setMessage("Found " + datasets.length + " datasets meeting your search criteria");
-                
-            } catch (InterruptedException e1) {
-                if (e1.getMessage().length() > 100)
-                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
-                else
-                    messagePanel.setError(e1.getMessage());
-//                setErrorMsg(e1.getMessage());
-            } catch (ExecutionException e1) {
-                if (e1.getMessage().length() > 100)
-                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
-                else
-                    messagePanel.setError(e1.getMessage());
-//                setErrorMsg(e1.getCause().getMessage());
-            } finally {
-                super.finalize();            }
-        }
-    }
+                    }
     
-    private class ConditionalSearchSwingWorker extends GenericSwingWorker<EmfDataset[]> {
-
-        public ConditionalSearchSwingWorker(Container parentContainer, MessagePanel messagePanel) {
-            super(parentContainer, messagePanel);
+                    DatasetType type = (DatasetType)dsTypesBox.getSelectedItem();
+                    presenter.refreshViewOnSearch(datasets, getDstype(datasets, type), name.getText());
+                    messagePanel.setMessage("Found " + datasets.length + " datasets meeting your search criteria");
+                    
+                } catch (InterruptedException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+    //                setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+    //                setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    super.finalize();            }
+            }
         }
         
-        @Override
-        public EmfDataset[] doInBackground() throws EmfException {
-            return search(getDataset(),qaStep.getText(),qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), true);
-        }
-
-        @Override
-        public void done() {
-            try {
-                //make sure something didn't happen
-                EmfDataset[] datasets = get();
-                
-                DatasetType type = (DatasetType)dsTypesBox.getSelectedItem();
-                presenter.refreshViewOnSearch(datasets, getDstype(datasets, type), name.getText());
-                messagePanel.setMessage("Found " + datasets.length + " datasets meeting your search criteria");
-
-            } catch (InterruptedException e1) {
-                if (e1.getMessage().length() > 100)
-                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
-                else
-                    messagePanel.setError(e1.getMessage());
-//                setErrorMsg(e1.getMessage());
-            } catch (ExecutionException e1) {
-                if (e1.getMessage().length() > 100)
-                    messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
-                else
-                    messagePanel.setError(e1.getMessage());
-//                setErrorMsg(e1.getCause().getMessage());
-            } finally {
-                super.finalize();            }
-        }
-    }
+        private class ConditionalSearchSwingWorker extends GenericSwingWorker<EmfDataset[]> {
     
+            public ConditionalSearchSwingWorker(Container parentContainer, MessagePanel messagePanel) {
+                super(parentContainer, messagePanel);
+            }
+            
+            @Override
+            public EmfDataset[] doInBackground() throws EmfException {
+                return search(getDataset(),qaStep.getText(),qaStepArguments.getText(), usedByCasesID, dataValueFilter.getText(), true);
+            }
+    
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    EmfDataset[] datasets = get();
+                    
+                    DatasetType type = (DatasetType)dsTypesBox.getSelectedItem();
+                    presenter.refreshViewOnSearch(datasets, getDstype(datasets, type), name.getText());
+                    messagePanel.setMessage("Found " + datasets.length + " datasets meeting your search criteria");
+    
+                } catch (InterruptedException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+    //                setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+                    if (e1.getMessage().length() > 100)
+                        messagePanel.setError(e1.getMessage().substring(0, 100) + "...");
+                    else
+                        messagePanel.setError(e1.getMessage());
+    //                setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    super.finalize();            }
+            }
+        }
+      
     private void clearFields() {
         messagePanel.clear();
         name.setText("");

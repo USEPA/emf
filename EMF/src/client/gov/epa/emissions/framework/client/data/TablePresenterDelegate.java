@@ -4,7 +4,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.editor.DataAccessToken;
 
 public interface TablePresenterDelegate {
-
+    
     void clear();
 
     void display() throws EmfException;

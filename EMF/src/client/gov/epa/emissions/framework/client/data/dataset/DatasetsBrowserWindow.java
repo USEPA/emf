@@ -585,11 +585,10 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
             messagePanel.setMessage("Please select one or more Datasets");
             return;
         }
-
-        for (Iterator iter = datasets.iterator(); iter.hasNext();) {
-            VersionedDataWindow view = new VersionedDataWindow(parentConsole, desktopManager);
-            presenter.doDisplayVersionedData(view, (EmfDataset) iter.next());
-        }
+            for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+                    VersionedDataWindow view = new VersionedDataWindow(parentConsole, desktopManager);
+                    presenter.doDisplayVersionedData(view, (EmfDataset) iter.next());
+                }
     }
 
     private void doRemove() {

@@ -100,43 +100,42 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
     }
 
     public void init() {
-        
-        doLayout(1);
-
-        new SwingWorker<Void, Void>() {
-
-            @Override
-            protected Void doInBackground() throws Exception {
-                totalRecords = presenter.totalRecords();
-                return null;
-            }
             
-            @Override
-            protected void done() {
-                try {
-                    get();
+            doLayout(1);
 
-                    presenter.setTotalRecords(totalRecords);
-                    updateFilteredRecordsCount(totalRecords);
+            new SwingWorker<Void, Void>() {
 
-                    if (totalRecords == 0)
-                        disableControlPanel();
-                    recordInput.setRange(1, totalRecords);
-                    slider.setMaximum(totalRecords);
-                    
-                } catch (InterruptedException e) {
-                    // NOTE Auto-generated catch block
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    // NOTE Auto-generated catch block
-                    e.printStackTrace();
+                @Override
+                protected Void doInBackground() throws Exception {
+                    totalRecords = presenter.totalRecords();
+                    return null;
                 }
-            }
-        }.execute();
-    }
+                
+                @Override
+                protected void done() {
+                    try {
+                        get();
 
-    private JPanel layoutControls(Integer totalRecords) {
-        JPanel panel = new JPanel();
+                        presenter.setTotalRecords(totalRecords);
+                        updateFilteredRecordsCount(totalRecords);
+
+                        if (totalRecords == 0)
+                            disableControlPanel();
+                        recordInput.setRange(1, totalRecords);
+                        slider.setMaximum(totalRecords);
+                        
+                    } catch (InterruptedException e) {
+                        // NOTE Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        // NOTE Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }.execute();
+        }
+
+    private JPanel layoutControls(Integer totalRecords) {        JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JToolBar top = new JToolBar();

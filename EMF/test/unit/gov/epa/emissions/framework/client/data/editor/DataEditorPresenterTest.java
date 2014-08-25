@@ -178,7 +178,7 @@ public class DataEditorPresenterTest extends EmfMockObjectTestCase {
         ClosingRule closingRuleProxy = (ClosingRule) closingRule.proxy();
 
         DataEditorPresenterImpl p = new DataEditorPresenterImpl(dataset, version, null, null);
-        p.save(tablePresenterProxy, closingRuleProxy);
+        p.save(tablePresenterProxy, null);
 
         assertFalse("Changes should not be saved on discard", p.areChangesSaved());
     }

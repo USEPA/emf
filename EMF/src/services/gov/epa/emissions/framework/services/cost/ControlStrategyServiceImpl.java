@@ -350,10 +350,10 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
 
     private void validateSectors(ControlStrategy strategy) throws EmfException {
         ControlStrategyInputDataset[] inputDatasets = strategy.getControlStrategyInputDatasets();
-        //don't worry about for projection or None specified strategies...
-        if (strategy.getStrategyType() == null || strategy.getStrategyType().getName().equals(StrategyType.projectFutureYearInventory))
-            return;
-        
+            //don't worry about for projection or None specified strategies...
+            if (strategy.getStrategyType() == null || strategy.getStrategyType().getName().equals(StrategyType.projectFutureYearInventory))
+                return;
+            
         if (inputDatasets == null || inputDatasets.length == 0)
             throw new EmfException("Input Dataset does not exist. ");
         for (ControlStrategyInputDataset dataset : inputDatasets) {

@@ -14,5 +14,4 @@ public interface FileDownloadView extends EmfView {
     void clear();
 
     void refresh();
-
 }
