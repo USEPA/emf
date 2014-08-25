@@ -131,6 +131,12 @@
 	   	<mapping resource="gov/epa/emissions/framework/services/fast/FastAnalysis.hbm.xml"/>
 	   	<mapping resource="gov/epa/emissions/framework/services/fast/FastAnalysisOutput.hbm.xml"/>
 	   	<mapping resource="gov/epa/emissions/framework/services/fast/FastAnalysisOutputType.hbm.xml"/>
+	   	
+	   	<!-- Mappings : Temporal Allocation -->
+	   	<mapping resource="gov/epa/emissions/framework/services/tempalloc/TemporalAllocation.hbm.xml"/>
+	    <mapping resource="gov/epa/emissions/framework/services/tempalloc/TemporalAllocationResolution.hbm.xml"/>
+	   	<mapping resource="gov/epa/emissions/framework/services/tempalloc/TemporalAllocationOutputType.hbm.xml"/>
+	   	<mapping resource="gov/epa/emissions/framework/services/tempalloc/TemporalAllocationOutput.hbm.xml"/>
     </session-factory>
 
 </hibernate-configuration>

@@ -309,7 +309,9 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
     
     private JCheckBox makeFinal() {
 
-        isFinalCheck = new JCheckBox("", null, controlStrategy.getIsFinal()); // need to check with database to see if it is final
+        Boolean isFinal = controlStrategy.getIsFinal();
+        if (isFinal == null) isFinal = false;
+        isFinalCheck = new JCheckBox("", null, isFinal); // need to check with database to see if it is final
         return isFinalCheck;
     }     
 

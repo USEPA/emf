@@ -83,6 +83,11 @@ import gov.epa.emissions.framework.services.sms.SectorScenario;
 import gov.epa.emissions.framework.services.sms.SectorScenarioInventory;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutputType;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationInputDataset;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutput;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution;
 
 import javax.xml.namespace.QName;
 
@@ -171,6 +176,12 @@ public class DataMappings extends Mappings {
         bean(call, FastAnalysisRun.class, fastAnalysisRun());
 
         controlBeans(call);
+        
+        bean(call, TemporalAllocation.class, temporalAllocation());
+        bean(call, TemporalAllocationInputDataset.class, temporalAllocationInputDataset());
+        bean(call, TemporalAllocationResolution.class, temporalAllocationResolution());
+        bean(call, TemporalAllocationOutputType.class, temporalAllocationOutputType());
+        bean(call, TemporalAllocationOutput.class, temporalAllocationOutput());
     }
 
     private void controlBeans(Call call) {
@@ -300,6 +311,12 @@ public class DataMappings extends Mappings {
         array(call, FastAnalysisOutput[].class, fastAnalysisOutputs());
         array(call, FastAnalysisOutputType[].class, fastAnalysisOutputTypes());
         array(call, FastAnalysisRun[].class, fastAnalysisRuns());
+        
+        array(call, TemporalAllocation[].class, temporalAllocations());
+        array(call, TemporalAllocationInputDataset[].class, temporalAllocationInputDatasets());
+        array(call, TemporalAllocationResolution[].class, temporalAllocationResolutions());
+        array(call, TemporalAllocationOutputType[].class, temporalAllocationOutputTypes());
+        array(call, TemporalAllocationOutput[].class, temporalAllocationOutputs());
     }
 
     public QName logs() {
@@ -918,6 +935,46 @@ public class DataMappings extends Mappings {
 
     public QName fileDownloads() {
         return qname("FileDownloads");
+    }
+    
+    public QName temporalAllocation() {
+        return qname("TemporalAllocation");
+    }
+    
+    public QName temporalAllocations() {
+        return qname("TemporalAllocations");
+    }
+
+    public QName temporalAllocationInputDataset() {
+        return qname("TemporalAllocationInputDataset");
+    }
+
+    public QName temporalAllocationInputDatasets() {
+        return qname("TemporalAllocationInputDatasets");
+    }
+
+    public QName temporalAllocationResolution() {
+        return qname("TemporalAllocationResolution");
+    }
+
+    public QName temporalAllocationResolutions() {
+        return qname("TemporalAllocationResolutions");
+    }
+
+    public QName temporalAllocationOutputType() {
+        return qname("TemporalAllocationOutputType");
+    }
+
+    public QName temporalAllocationOutputTypes() {
+        return qname("TemporalAllocationOutputTypes");
+    }
+
+    public QName temporalAllocationOutput() {
+        return qname("TemporalAllocationOutput");
+    }
+
+    public QName temporalAllocationOutputs() {
+        return qname("TemporalAllocationOutputs");
     }
 
 }

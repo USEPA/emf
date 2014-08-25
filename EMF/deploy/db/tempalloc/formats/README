@@ -1,0 +1,20 @@
+tempalloc_daily.csv
+Name: Temporal Allocation Daily Result
+Description: Automatically created by Temporal Allocation run
+
+tempalloc_episode.csv
+Name: Temporal Allocation Episodic Result
+Description: Automatically created by Temporal Allocation run
+
+tempalloc_monthly.csv
+Name: Temporal Allocation Monthly Result
+Description: Automatically created by Temporal Allocation run
+
+tpro_monthly.csv
+Name: Temporal Profile Monthly (CSV)
+
+tpro_weekly.csv
+Name: Temporal Profile Weekly (CSV)
+
+tref.csv
+Name: Temporal Cross Reference (CSV)

@@ -18,6 +18,7 @@ import gov.epa.emissions.framework.services.cost.ControlProgramService;
 import gov.epa.emissions.framework.services.cost.ControlStrategyService;
 import gov.epa.emissions.framework.services.cost.ControlMeasureService;
 import gov.epa.emissions.framework.services.sms.SectorScenarioService;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureExportService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureImportService;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -81,6 +82,8 @@ public interface EmfSession {
     SectorScenarioService sectorScenarioService();
 
     FastService fastService();
+    
+    TemporalAllocationService temporalAllocationService();
     
     //cache for things that are used all the time
     DatasetType[] getLightDatasetTypes();

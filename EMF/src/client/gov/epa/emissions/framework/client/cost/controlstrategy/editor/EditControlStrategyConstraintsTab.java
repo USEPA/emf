@@ -361,14 +361,15 @@ for (ControlStrategyTargetPollutant selectedTargetPollutant : selectedTargetPoll
         doNotApplyReplacement = new JRadioButton("Never apply replacement controls");
         replacementOptions.add(doNotApplyReplacement);
         matchDevicePollutant = new JRadioButton("Apply replacement controls when device pollutant doesn't match");
-        matchDevicePollutant.setEnabled(false);
         replacementOptions.add(matchDevicePollutant);
         alwaysApplyReplacement = new JRadioButton("Always apply replacement controls");
         replacementOptions.add(alwaysApplyReplacement);
         
         if (controlStrategy.getApplyReplacementControls() == null ||
-            controlStrategy.getApplyReplacementControls()) {
+            controlStrategy.getApplyReplacementControls() == 1) {
             alwaysApplyReplacement.setSelected(true);
+        } else if (controlStrategy.getApplyReplacementControls() == 2) {
+            matchDevicePollutant.setSelected(true);
         } else {
             doNotApplyReplacement.setSelected(true);
         }
@@ -573,9 +574,11 @@ for (ControlStrategyTargetPollutant selectedTargetPollutant : selectedTargetPoll
     public void save(ControlStrategy controlStrategy) throws EmfException {
         if (replacementOptions != null) {
             if (replacementOptions.getSelection().equals(alwaysApplyReplacement.getModel())) {
-                controlStrategy.setApplyReplacementControls(true);
+                controlStrategy.setApplyReplacementControls(1);
+            } else if (replacementOptions.getSelection().equals(matchDevicePollutant.getModel())) {
+                controlStrategy.setApplyReplacementControls(2);
             } else {
-                controlStrategy.setApplyReplacementControls(false);
+                controlStrategy.setApplyReplacementControls(0);
             }
         }
         

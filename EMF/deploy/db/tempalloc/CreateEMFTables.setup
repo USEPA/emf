@@ -1,0 +1,94 @@
+CREATE TABLE emf.temporal_allocation_resolution
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(64) NOT NULL UNIQUE,
+  description varchar(255)
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.temporal_allocation_resolution OWNER TO emf;
+CREATE INDEX temporal_allocation_resolution_id
+  ON emf.temporal_allocation_resolution
+  USING btree (id);
+ALTER TABLE emf.temporal_allocation_resolution CLUSTER ON temporal_allocation_resolution_id;
+
+INSERT INTO emf.temporal_allocation_resolution (name)
+VALUES ('Annual total (tons/year)'),
+('Monthly total (tons/month)'),
+('Monthly average (tons/day)'),
+('Ozone season average (tons/day)'),
+('Summer Weekday average (tons/day)'),
+('Summer Weekend average (tons/day)'),
+('Winter Weekday average (tons/day)'),
+('Winter Weekend average (tons/day)'),
+('Daily total (tons/day)'),
+('Episodic total (tons/episode)'),
+('Episodic average (tons/day)');
+
+
+CREATE TABLE emf.temporal_allocation (
+  id SERIAL PRIMARY KEY,
+  name varchar(255) not null unique,
+  description text,
+  run_status varchar(255),
+  project_id int4 references emf.projects (id),
+  creator_id int4 references emf.users(id),
+  filter text,
+  resolution_id int4 REFERENCES emf.temporal_allocation_resolution(id),
+  start_day date,
+  end_day date,
+  xref_dataset_id int4 REFERENCES emf.datasets (id),
+  xref_dataset_version int4,
+  monthly_profile_dataset_id int4 REFERENCES emf.datasets (id),
+  monthly_profile_dataset_version int4,
+  weekly_profile_dataset_id int4 REFERENCES emf.datasets (id),
+  weekly_profile_dataset_version int4,
+  daily_profile_dataset_id int4 REFERENCES emf.datasets (id),
+  daily_profile_dataset_version int4,
+  last_modified_date timestamp,
+  start_date timestamp,
+  completion_date timestamp,
+  lock_owner varchar(255),
+  lock_date timestamp
+)
+WITHOUT OIDS;
+ALTER TABLE emf.temporal_allocation OWNER TO emf;
+CREATE INDEX temporal_allocation_id ON emf.temporal_allocation USING btree (id);
+ALTER TABLE emf.temporal_allocation CLUSTER ON temporal_allocation_id;
+
+
+CREATE TABLE emf.temporal_allocation_input_dataset
+(
+  id SERIAL PRIMARY KEY,
+  temporal_allocation_id int4 NOT NULL REFERENCES emf.temporal_allocation(id),
+  list_index int4,
+  dataset_id int4 REFERENCES emf.datasets (id),
+  dataset_version integer DEFAULT 0
+) 
+WITHOUT OIDS;
+ALTER TABLE emf.temporal_allocation_input_dataset OWNER TO emf;
+CREATE INDEX temporal_allocation_input_dataset_dataset_id
+  ON emf.temporal_allocation_input_dataset
+  USING btree (dataset_id);
+CREATE INDEX temporal_allocation_input_dataset_tempalloc_id
+  ON emf.temporal_allocation_input_dataset
+  USING btree
+  (temporal_allocation_id);
+
+
+CREATE TABLE emf.temporal_allocation_output_type (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name varchar(255) NOT NULL UNIQUE
+);
+
+INSERT INTO emf.temporal_allocation_output_type (name)
+VALUES ('Temporal Allocation Monthly Result'),
+('Temporal Allocation Daily Result'),
+('Temporal Allocation Episodic Result');
+
+
+CREATE TABLE emf.temporal_allocation_output (
+  id SERIAL PRIMARY KEY NOT NULL,
+  temporal_allocation_id int NOT NULL REFERENCES emf.temporal_allocation(id),
+  temporal_allocation_output_type_id int NOT NULL REFERENCES emf.temporal_allocation_output_type(id),
+  output_dataset_id integer NOT NULL REFERENCES emf.datasets(id)
+);

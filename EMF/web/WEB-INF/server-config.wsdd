@@ -181,6 +181,14 @@
 			value="gov.epa.emissions.framework.services.fast.FastServiceImpl"/>
 	</service>
 	
+	<service name="gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService" provider="java:RPC"
+		style="RPC" use="encoded">
+		<parameter name="allowedMethods" value="*"/>
+		<parameter name="scope" value="session"/>
+		<parameter name="className"
+			value="gov.epa.emissions.framework.services.tempalloc.TemporalAllocationServiceImpl"/>
+	</service>
+	
 	<!-- Structs (Java Beans-style)-->
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.commons.io.ColumnMetaData"
@@ -1160,6 +1168,52 @@
 	<arrayMapping qname="ns1:FastAnalysisRuns" xmlns:ns1="urn:gov.epa.services.EmfService"
 		languageSpecificType="java:gov.epa.emissions.framework.services.fast.FastAnalysisRun[]"
 		innerType="ns1:FastAnalysisRun"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocation"
+		qname="ns1:TemporalAllocation" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocations" xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocation[]"
+		innerType="ns1:TemporalAllocation"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationInputDataset"
+		qname="ns1:TemporalAllocationInputDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocationInputDatasets"
+		xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationInputDataset[]"
+		innerType="ns1:TemporalAllocationInputDataset"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution"
+		qname="ns1:TemporalAllocationResolution" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocationResolutions" xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationResolution[]"
+		innerType="ns1:TemporalAllocationResolution"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType"
+		qname="ns1:TemporalAllocationOutputType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocationOutputTypes" xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType[]"
+		innerType="ns1:TemporalAllocationOutputType"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutput"
+		qname="ns1:TemporalAllocationOutput" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<arrayMapping qname="ns1:TemporalAllocationOutputs" xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutput[]"
+		innerType="ns1:TemporalAllocationOutput"
 		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 
 </deployment>

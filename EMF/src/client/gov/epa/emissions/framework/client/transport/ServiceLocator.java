@@ -9,6 +9,7 @@ import gov.epa.emissions.framework.services.cost.ControlMeasureService;
 import gov.epa.emissions.framework.services.cost.ControlProgramService;
 import gov.epa.emissions.framework.services.cost.ControlStrategyService;
 import gov.epa.emissions.framework.services.sms.SectorScenarioService;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureExportService;
 import gov.epa.emissions.framework.services.cost.controlmeasure.ControlMeasureImportService;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -54,6 +55,8 @@ public interface ServiceLocator {
     SectorScenarioService sectorScenarioService();
 
     FastService fastService();
+    
+    TemporalAllocationService temporalAllocationService();
 
     void setEmfSession(EmfSession emfSession);
 }

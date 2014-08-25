@@ -183,8 +183,10 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
         alwaysApplyReplacement.setEnabled(false);
         
         if (controlStrategy.getApplyReplacementControls() == null ||
-            controlStrategy.getApplyReplacementControls()) {
+            controlStrategy.getApplyReplacementControls() == 1) {
             alwaysApplyReplacement.setSelected(true);
+        } else if (controlStrategy.getApplyReplacementControls() == 2) {
+            matchDevicePollutant.setSelected(true);
         } else {
             doNotApplyReplacement.setSelected(true);
         }

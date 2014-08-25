@@ -1,0 +1,11 @@
+"name","type","default value","mandatory","description","formatter","constraints","width","spaces","fixformat start","fixformat end"
+"SCC","Varchar(20)",,FALSE,,,,,,,
+"FIPS","Varchar(12)",,FALSE,,,,,,,
+"PLANTID","Varchar(20)",,FALSE,,,,,,,
+"POINTID","Varchar(20)",,FALSE,,,,,,,
+"STACKID","Varchar(20)",,FALSE,,,,,,,
+"PROCESSID","Varchar(20)",,FALSE,,,,,,,
+"POLL","Varchar(20)",,FALSE,,,,,,,
+"PROFILE_TYPE","Varchar(10)",,TRUE,,,,,,,
+"PROFILE_ID","Varchar(15)",,TRUE,,,,,,,
+"COMMENT","text",,FALSE,,,,,,,

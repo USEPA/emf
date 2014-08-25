@@ -234,8 +234,8 @@ public class CaseJobTaskManager implements TaskManager {
 //                        System.out.println("Details of CJT: " + cjt.getJobName());
                         runTable.remove(taskId);
                         if (DebugLevels.DEBUG_0())
-                            System.out
-                                    .println("updateRunStatus Before remove from runTable on completed or failed job in thread");
+//                            System.out
+//                                    .println("updateRunStatus Before remove from runTable on completed or failed job in thread");
 
                         // Now remove the task from the persisted wait table
                         caseDAO.removePersistedTask(new PersistedWaitTask(cjt.getJobId(), cjt.getCaseId(), cjt
@@ -255,8 +255,8 @@ public class CaseJobTaskManager implements TaskManager {
                         cjt = (CaseJobTask) waitTable.get(taskId);
 
                         if (cjt == null) {
-//                            System.out
-//                                    .println("Job task (ID: " + taskId + ") has already been removed from waitTable.");
+                            System.out
+                                    .println("Job task (ID: " + taskId + ") has already been removed from waitTable.");
                             toRemove = false;
                         } else {
 //                            System.out.println("Details of CJT: " + cjt.getJobName());

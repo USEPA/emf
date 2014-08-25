@@ -58,7 +58,7 @@ DECLARE
 	has_control_ids_column boolean := false;
 	creator_user_id integer := 0;
 	is_cost_su boolean := false;
-
+  apply_replacement_controls integer := 1;
 
 	get_strategty_ceff_equation_sql character varying;
 
@@ -194,7 +194,8 @@ BEGIN
 		cs.discount_rate / 100,
 		coalesce(cs.include_unspecified_costs,true),
 		(select p.name from emf.pollutants p where p.id = intTargetPollutantId),
-		cs.creator_id
+		cs.creator_id,
+		cs.apply_replacement_controls
 	FROM emf.control_strategies cs
 	where cs.id = intControlStrategyId
 	INTO strategy_name,
@@ -208,7 +209,8 @@ BEGIN
 		discount_rate,
 		include_unspecified_costs,
 		target_pollutant,
-		creator_user_id;
+		creator_user_id,
+		apply_replacement_controls;
 
 
 	-- see if strategyt creator is a CoST SU
@@ -994,6 +996,25 @@ select
 					)
 				)
 			)					
+			' else '' end || '
+			
+			-- restrict sources based on replacement control setting
+
+			-- 0 = only include sources where control ids are blank or ceff is set
+			' || case when apply_replacement_controls = 0 then '
+			and (coalesce(control_ids, '''') = '''' or
+			     coalesce(inv.' || inv_ceff_expression || ', 0.0) <> 0.0)
+
+      -- 2 = for sources with control ids but no ceff, match control ids to reference
+      --     and include sources where devices don''t control the source''s pollutant
+      ' when apply_replacement_controls = 2 then '
+      and (coalesce(control_ids, '''') = '''' or
+           coalesce(inv.' || inv_ceff_expression || ', 0.0) <> 0.0 or
+           (select count(*) 
+              from reference.control_device 
+             where control_device_code::varchar = any(string_to_array(control_ids, ''&''))
+               and (pollutants = ''Any''
+                or  poll = any(string_to_array(pollutants, '',''))))::integer = 0)
 			' else '' end || '
 
 			-- dont include sources that have already been controlled by measures from a previous target pollutant iteration (cobenefit of applying the measure)
