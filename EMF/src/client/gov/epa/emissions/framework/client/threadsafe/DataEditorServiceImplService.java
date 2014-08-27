@@ -13,4 +13,6 @@ public interface DataEditorServiceImplService extends javax.xml.rpc.Service {
     public DataEditorServiceImpl getGovEpaEmfServicesEditorDataEditorService() throws javax.xml.rpc.ServiceException;
 
     public DataEditorServiceImpl getGovEpaEmfServicesEditorDataEditorService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException;
+
+    public void setGovEpaEmfServicesEditorDataEditorServiceAddress(String portAddress);
 }

@@ -123,6 +123,9 @@ public class RemoteServiceLocator implements ServiceLocator {
             DataEditorServiceImplService service = new DataEditorServiceImplServiceLocator();
 
             try {
+                service.setGovEpaEmfServicesEditorDataEditorServiceAddress(baseUrl
+                        + "/gov.epa.emf.services.editor.DataEditorService");
+//                        "http://localhost:8080/emf/services/gov.epa.emf.services.editor.DataEditorService"
                 port = service.getGovEpaEmfServicesEditorDataEditorService();
             } catch (ServiceException e) {
                 // NOTE Auto-generated catch block
