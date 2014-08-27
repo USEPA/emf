@@ -169,6 +169,7 @@ public class RetrieveControlMeasure {
                     cm.setAbbreviation(rs.getString(3));
                     cm.setDescription(rs.getString(4));
                     cm.setMajorPollutant(new Pollutant(rs.getInt(5), rs.getString(6)));
+                    cm.setCmClass(new ControlMeasureClass(rs.getString(8)));
                 }
 
                 String sectorString = rs.getString(7);
@@ -324,7 +325,7 @@ public class RetrieveControlMeasure {
         //Keep the sort order, this dictates how the list is built for the measure mgr!!!
         String query = "select cm.id, cm.name, " +
 			"cm.abbreviation, cm.description, cm.major_pollutant, mp.name, " +
-            "s.name " +
+            "s.name, cmc.name " +
             "from emf.control_measures cm " +
             "left outer join emf.control_measure_sectors cms " +
             "on cms.control_measure_id = cm.id " +
@@ -332,6 +333,8 @@ public class RetrieveControlMeasure {
             "on s.id = cms.sector_id " +
             "left outer join emf.pollutants mp " +
             "on mp.id = cm.major_pollutant " +
+            "left outer join emf.control_measure_classes cmc " +
+            "on cmc.id = cm.cm_class_id " +
             (whereFilter.length() > 0 ? " where " + whereFilter : "") + 
             " order by cm.name, cm.id, s.name";
 
@@ -343,7 +346,7 @@ public class RetrieveControlMeasure {
         //Keep the sort order, this dictates how the list is built for the measure mgr!!!
         String query = "select cm.id, cm.name, " +
         	"cm.abbreviation, cm.description, cm.major_pollutant, mp.name, " +
-        	"s.name " +
+        	"s.name, cmc.name " +
         	"from emf.control_measures cm " +
         	"left outer join emf.control_measure_sectors cms " +
         	"on cms.control_measure_id = cm.id " +
@@ -351,6 +354,8 @@ public class RetrieveControlMeasure {
         	"on s.id = cms.sector_id " +
         	"left outer join emf.pollutants mp " +
         	"on mp.id = cm.major_pollutant " +
+        	"left outer join emf.control_measure_classes cmc " +
+        	"on cmc.id = cm.cm_class_id " +
 	        "where (cm.major_pollutant = " + majorPollutantId + " " +
     	    " or cm.id in (select distinct control_measures_id from emf.aggregrated_efficiencyrecords mpers " +
         	"where mpers.pollutant_id = " + majorPollutantId + " )) " +

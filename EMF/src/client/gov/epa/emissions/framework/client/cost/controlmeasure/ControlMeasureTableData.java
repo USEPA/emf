@@ -145,7 +145,7 @@ public class ControlMeasureTableData extends AbstractTableData {
         return pollutant.getName();
     }
 
-    private String measureClass(ControlMeasureClass cmClass) {
+    protected String measureClass(ControlMeasureClass cmClass) {
         return (cmClass == null) ? "" : cmClass.getName();
     }
 
