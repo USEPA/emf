@@ -24,7 +24,7 @@ public class ViewableTablePresenter implements TablePresenter {
 
     public ViewableTablePresenter(DatasetType datasetType, DataAccessToken token, TableMetadata tableMetadata,
                         ViewerPanelView view, DataAccessService service, DataViewService dataViewService, Container parentContainer, MessagePanel messagePanel) {
-                this(datasetType, new TablePaginatorImpl(token, view, dataViewService, parentContainer, messagePanel), tableMetadata, view, service, parentContainer, messagePanel);
+                this(datasetType, new TablePaginatorImpl(token, view, dataViewService, parentContainer, messagePanel), tableMetadata, view, dataViewService, parentContainer, messagePanel);
     }
     
     public ViewableTablePresenter(DatasetType datasetType, TablePaginator paginator, TableMetadata tableMetadata,
@@ -78,8 +78,8 @@ public class ViewableTablePresenter implements TablePresenter {
         return totalRecs ;
     }
 
-        public void doApplyConstraints(String rowFilter, String sortOrder) {
-                delegate.doApplyConstraints(rowFilter, sortOrder, false);
+    public void doApplyConstraints(String rowFilter, String sortOrder) {
+        delegate.doApplyConstraints(rowFilter, sortOrder, false);
     }
 
     public void doApplyFormat() throws EmfException {
