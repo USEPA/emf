@@ -24,7 +24,6 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
 import gov.epa.emissions.framework.client.data.QAPrograms;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
@@ -38,7 +37,6 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -48,7 +46,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -59,7 +56,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.SwingWorker;
 
 public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepView {
     
@@ -246,7 +242,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         layoutGenerator.addLabelWidgetPair("", overideChkboxPanel(step), panel);
         
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(panel, 6, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(panel, 5, 2, // rows, cols
                 5, 5, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -606,122 +602,86 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     }
     
     private void viewResults() throws EmfException { // TODO: 2011-02
+        QAStepResult stepResult = presenter.getStepResult(step);
+        if (stepResult == null)
+            throw new EmfException("Please run the QA step before trying to view.");
+        resetRunStatus(stepResult);
+        
         final String exportDir = exportFolder.getText();
 
-        //long running methods.....
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this, false);
+//        if (exportDir == null || exportDir.trim().isEmpty())
+//            throw new EmfException("Please specify an export directory.");
 
-        //Instances of javax.swing.SwingWorker are not reusuable, so
-        //we create new instances as needed.
-        class ViewResultsTask extends SwingWorker<Void, Void> {
-
-            private Container parentContainer;
-
-            public ViewResultsTask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public Void doInBackground() throws EmfException  {
-                try { QAStepResult stepResult = presenter.getStepResult(step);
-                if (stepResult == null)
-                    throw new EmfException("Please run the QA step before trying to view.");
-                clear();
-
-                DefaultUserPreferences userPref = new DefaultUserPreferences();
-                String sLimit = userPref.property("View_QA_results_limit");
-
-                long rlimit;
-                if (sLimit == null) {
-                    JOptionPane.showMessageDialog(parentConsole,
-                            "View_QA_results_limit is not specified in EMFPrefs.txt, default value is 50000.",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    rlimit = 50000;
-                } else
-                    try {
-                        rlimit = Integer.parseInt(sLimit.trim());
-                    } catch (NumberFormatException e) {
-                        // just default if they entered a non number string
+        Thread viewResultsThread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    QAStepResult stepResult = presenter.getStepResult(step);
+                    clear();
+                    
+                    DefaultUserPreferences userPref = new DefaultUserPreferences();
+                    String sLimit = userPref.property("View_QA_results_limit");
+                    long rlimit;
+                    if ( sLimit == null ){
+                        JOptionPane.showMessageDialog(parentConsole, 
+                                "View_QA_results_limit is not specified in EMFPrefs.txt, default value is 50000.", "Warning", JOptionPane.WARNING_MESSAGE);
                         rlimit = 50000;
                     }
+                    else   
+                        try {
+                            rlimit = Integer.parseInt(sLimit.trim());
+                        } catch (NumberFormatException e) {
+                            //just default if they entered a non number string
+                            rlimit = 50000;
+                        }
+                    
+                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    long records = presenter.getTableRecordCount(stepResult);
+                    long viewCount =  records;
+                    
+                    if ( viewCount > rlimit) {
+                        messagePanel.setMessage("Total records: " + records + ", limit: "+rlimit );
+                        ViewQAResultDialg dialog = new ViewQAResultDialg(step.getName(), parentConsole);
+                        dialog.run();          
+                        if ( dialog.shouldViewNone() )
+                            return; 
+                        else if ( !dialog.shouldViewall()){ 
+                            viewCount = dialog.getLines();
+                        } 
+                        if ( viewCount > records ) viewCount = records;
+                        if (viewCount > 100000) {
+                            String title = "Warning";
+                            String message = "Are you sure you want to view more than 100,000 records?  It could take several minutes to load the data.";
+                            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE);
 
-                long records = presenter.getTableRecordCount(stepResult);
-                long viewCount = records;
-                if (records > rlimit) {
-                    messagePanel.setMessage("Total records: " + records + ", limit: " + rlimit);
-                    ViewQAResultDialg dialog = new ViewQAResultDialg(step.getName(), parentConsole);
-                    dialog.run();
-
-                    if (dialog.shouldViewNone())
-                        return null;
-                    else if (!dialog.shouldViewall()) {
-                        viewCount = dialog.getLines();
-                    }
-                    if (viewCount > records)
-                        viewCount = records;
-                    if (viewCount > 100000) {
-                        String title = "Warning";
-                        String message = "Are you sure you want to view more than 100,000 records?  It could take several minutes to load the data.";
-                        int selection = JOptionPane.showConfirmDialog(parentConsole, message, title,
-                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-                        if (selection == JOptionPane.NO_OPTION) {
-                            return null;
+                            if (selection == JOptionPane.NO_OPTION) {
+                                return;
+                            }
                         }
                     }
-                }
-                presenter.viewResults(step, stepResult, viewCount);
+                    presenter.viewResults(step, stepResult, viewCount);
                 } catch (EmfException e) {
                     try  {
-                        //dataset.
-                        //if ( presenter.checkBizzareCharInColumn(step, "plant")) { // sniff the msg to see if xml related, then check column name, then check
+                        //if ( presenter.checkBizzareCharInColumn(step, "plant")) {
                         if ( e.getMessage().contains("Invalid XML character")) {
                             messagePanel.setError("There are bizarre characters in the dataset." + 
                                     ((origDataset.getDatasetType().getName().equals(DatasetType.FLAT_FILE_2010_POINT) || 
-                                            origDataset.getDatasetType().getName().equals(DatasetType.orlPointInventory)) 
-                                            ? ", please run a QA step Detect Bizarre Characters." : "."));                                    
+                                      origDataset.getDatasetType().getName().equals(DatasetType.orlPointInventory)) 
+                                      ? ", please run a QA step Detect Bizarre Characters." : ".")); 
                         } else {
                             messagePanel.setError(e.getMessage());
                         }
                     } catch (Exception e2) {
                         messagePanel.setError(e2.getMessage());
                     }
-                } 
-
-                return null;
-            }
-
-            /*
-             * Executed in event dispatching thread
-             */
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen                    
-                    get();
-
-                } catch (InterruptedException e1) {
-                    //                messagePanel.setError(e1.getMessage());
-                    //                setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-                    //                messagePanel.setError(e1.getCause().getMessage());
-                    //                setErrorMsg(e1.getCause().getMessage());
                 } finally {
-                    //                this.parentContainer.setCursor(null); //turn off the wait cursor
-                    //                this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                    setCursor(Cursor.getDefaultCursor());
                 }
             }
-            };
-            new ViewResultsTask(this).execute();
-        }       
+        });
 
+        viewResultsThread.start();
+    }
     
     private Button closeButton() {
         Button cancel = new CloseButton(new AbstractAction() {

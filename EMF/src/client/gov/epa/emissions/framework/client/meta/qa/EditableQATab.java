@@ -15,7 +15,6 @@ import gov.epa.emissions.framework.client.data.dataset.CopyQAStepToDatasetSelect
 import gov.epa.emissions.framework.client.meta.versions.VersionsSet;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
@@ -26,19 +25,16 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 
 public class EditableQATab extends JPanel implements EditableQATabView, RefreshObserver {
 
@@ -208,67 +204,22 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
     private void doEdit() {
         clearMessage();
 
-        final List selected = table.selected();
+        List selected = table.selected();
         if (selected == null || selected.size() == 0) {
             messagePanel.setMessage("Please select a QA step.");
             return;
         }
 
-        //long running methods.....
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this, false);
-
-        //Instances of javax.swing.SwingWorker are not reusuable, so
-        //we create new instances as needed.
-        class EditQATask extends SwingWorker<Void, Void> {
-
-            private Container parentContainer;
-
-            public EditQATask(Container parentContainer) {
-                this.parentContainer = parentContainer;
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            QAStep step = (QAStep) iter.next();
+            EditQAStepWindow view = new EditQAStepWindow(desktop, parentConsole);
+            try {
+                presenter.doEdit(step, view, versions.name(step.getVersion()));
+            } catch (EmfException e) {
+                messagePanel.setError(e.getMessage());
             }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public Void doInBackground() throws EmfException  {
-                for (Iterator iter = selected.iterator(); iter.hasNext();) {
-                    QAStep step = (QAStep) iter.next();
-                    EditQAStepWindow view = new EditQAStepWindow(desktop, parentConsole);
-                    try {
-                        presenter.doEdit(step, view, versions.name(step.getVersion()));
-                    } catch (EmfException e) {
-                        messagePanel.setError(e.getMessage());
-                    }
-                }
-                return null;
-            }
-
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen
-                    get();
-
-                } catch (InterruptedException e1) {
-                    //                messagePanel.setError(e1.getMessage());
-                    //                setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-                    //                messagePanel.setError(e1.getCause().getMessage());
-                    //                setErrorMsg(e1.getCause().getMessage());
-                } finally {
-                    //                this.parentContainer.setCursor(null); //turn off the wait cursor
-                    //                this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
-                }
-            }
-        };
-        new EditQATask(this).execute();
+        }
     }
-
 
     private void doCopy() {
         clearMessage();
@@ -489,60 +440,43 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 throw new EmfException("Please run the QA step, " + step.getName() + ", before trying to view.");
         }
 
-        //long running methods.....
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this, false);
+        Thread viewResultsThread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    List selected = table.selected();
+                    for (Iterator iter = selected.iterator(); iter.hasNext();) {
 
-        //Instances of javax.swing.SwingWorker are not reusuable, so
-        //we create new instances as needed.
-        class ViewResultsTask extends SwingWorker<Void, Void> {
-
-            private Container parentContainer;
-
-            public ViewResultsTask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public Void doInBackground() throws EmfException  {
-
-                List selected = table.selected();
-                for (Iterator iter = selected.iterator(); iter.hasNext();) {
-
-                    QAStep step = (QAStep) iter.next();
-                    try {
-                        QAStepResult stepResult = presenter.getStepResult(step);
-                        clearMessage();
-
-                        DefaultUserPreferences userPref = new DefaultUserPreferences();
-                        String sLimit = userPref.property("View_QA_results_limit");
-                        long rlimit;
-                        if ( sLimit == null ){
-                            JOptionPane.showMessageDialog(parentConsole, 
-                                    "View_QA_results_limit is not specified in EMFPrefs.txt, default value is 50000.", "Warning", JOptionPane.WARNING_MESSAGE);
-                            rlimit = 50000;
-                        }
-                        else  { 
-                            try {
-                                rlimit = Integer.parseInt(sLimit.trim());
-                            } catch (NumberFormatException e) {
-                                //just default if they entered a non number string
+                        QAStep step = (QAStep) iter.next();
+                        try {
+                            QAStepResult stepResult = presenter.getStepResult(step);
+                            clearMessage();
+                            
+                            DefaultUserPreferences userPref = new DefaultUserPreferences();
+                            String sLimit = userPref.property("View_QA_results_limit");
+                            long rlimit;
+                            if ( sLimit == null ){
+                                JOptionPane.showMessageDialog(parentConsole, 
+                                        "View_QA_results_limit is not specified in EMFPrefs.txt, default value is 50000.", "Warning", JOptionPane.WARNING_MESSAGE);
                                 rlimit = 50000;
                             }
-                        }
+                            else   
+                                try {
+                                    rlimit = Integer.parseInt(sLimit.trim());
+                                } catch (NumberFormatException e) {
+                                    //just default if they entered a non number string
+                                    rlimit = 50000;
+                                }
+                          
+                            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                             long records = presenter.getTableRecordCount(stepResult);
                             long viewCount =  records;
                             if ( records > rlimit ){
                                 messagePanel.setMessage("Total records: " + records + ", limit: "+rlimit );
                                 ViewQAResultDialg dialog = new ViewQAResultDialg(step.getName(), parentConsole);
                                 dialog.run();
-
+                                 
                                 if ( dialog.shouldViewNone() )
-                                    return null; 
+                                    return; 
                                 else if ( !dialog.shouldViewall()){ 
                                     viewCount = dialog.getLines();
                                 } 
@@ -554,56 +488,37 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                                             JOptionPane.QUESTION_MESSAGE);
 
                                     if (selection == JOptionPane.NO_OPTION) {
-                                        return null;
+                                        return;
                                     }
                                 }
                             }
                             presenter.viewResults(step, viewCount);
-                        
-                    } catch (EmfException e) {
-                        try  {
-                            //dataset.
-                            //if ( presenter.checkBizzareCharInColumn(step, "plant")) { // sniff the msg to see if xml related, then check column name, then check
-                            if ( e.getMessage().contains("Invalid XML character")) {
-                                messagePanel.setError("There are bizarre characters in the dataset." + 
-                                        ((dataset.getDatasetType().getName().equals(DatasetType.FLAT_FILE_2010_POINT) || 
-                                                dataset.getDatasetType().getName().equals(DatasetType.orlPointInventory)) 
-                                                ? ", please run a QA step Detect Bizarre Characters." : "."));                                    
-                            } else {
-                                messagePanel.setError(e.getMessage());
+                        } catch (EmfException e) {
+                            try  {
+                                //dataset.
+                                //if ( presenter.checkBizzareCharInColumn(step, "plant")) { // sniff the msg to see if xml related, then check column name, then check
+                                if ( e.getMessage().contains("Invalid XML character")) {
+                                    messagePanel.setError("There are bizarre characters in the dataset." + 
+                                            ((dataset.getDatasetType().getName().equals(DatasetType.FLAT_FILE_2010_POINT) || 
+                                              dataset.getDatasetType().getName().equals(DatasetType.orlPointInventory)) 
+                                              ? ", please run a QA step Detect Bizarre Characters." : "."));                                    
+                                } else {
+                                    messagePanel.setError(e.getMessage());
+                                }
+                            } catch (Exception e2) {
+                                messagePanel.setError(e2.getMessage());
                             }
-                        } catch (Exception e2) {
-                            messagePanel.setError(e2.getMessage());
+                        } finally {
+                            setCursor(Cursor.getDefaultCursor());
                         }
-                    } 
-                }
-                return null;
-            }
-
-            /*
-             * Executed in event dispatching thread
-             */
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen                    
-                    get();
-
-                } catch (InterruptedException e1) {
-                    //                messagePanel.setError(e1.getMessage());
-                    //                setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-                    //                messagePanel.setError(e1.getCause().getMessage());
-                    //                setErrorMsg(e1.getCause().getMessage());
-                } finally {
-                    //                this.parentContainer.setCursor(null); //turn off the wait cursor
-                    //                this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                    }
+                } catch ( Exception e) {
+                    messagePanel.setError(e.getMessage());
                 }
             }
-        };
-        new ViewResultsTask(this).execute();
+        });
+
+        viewResultsThread.start();
     }
-
+    
 }
