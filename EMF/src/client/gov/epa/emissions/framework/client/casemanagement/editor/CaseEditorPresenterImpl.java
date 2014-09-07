@@ -257,7 +257,7 @@ public class CaseEditorPresenterImpl implements CaseEditorPresenter {
     public void saveDisplay(Object[] objs) throws EmfException {
         view.resetChanges();
         String jobSummaryMsg = service().getJobStatusMessage(caseObj.getId());
-        view.display(caseObj, jobSummaryMsg);
+        view.showRemindingMessage(jobSummaryMsg);
     }
     
 
