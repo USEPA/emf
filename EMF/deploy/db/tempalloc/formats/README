@@ -1,3 +1,6 @@
+All types are derived from Flexible File Format.
+For importing data, the CSV types need the EXPORT_COLUMN_LABEL keyword set to false.
+
 tempalloc_daily.csv
 Name: Temporal Allocation Daily Result
 Description: Automatically created by Temporal Allocation run
