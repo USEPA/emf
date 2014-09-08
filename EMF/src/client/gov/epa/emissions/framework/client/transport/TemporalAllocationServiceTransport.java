@@ -154,4 +154,14 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
     public void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate) {
         return;
     }
+    
+    public synchronized boolean isDuplicateName(String name) throws EmfException {
+        EmfCall call = call();
+        
+        call.setOperation("isDuplicateName");
+        call.addStringParam("name");
+        call.setBooleanReturnType();
+        
+        return (boolean) call.requestResponse(new Object[] { name });
+    }
 }

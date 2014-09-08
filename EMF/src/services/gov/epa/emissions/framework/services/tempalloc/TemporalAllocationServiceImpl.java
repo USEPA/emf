@@ -294,7 +294,7 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         try {
             return dao.getTemporalAllocationsByRunStatus(runStatus, session);
         } catch (RuntimeException e) {
-            throw new EmfException("Could not get Sector Scenarioes by run status: " + runStatus);
+            throw new EmfException("Could not get Temporal Allocations by run status: " + runStatus);
         } finally {
             session.close();
         }
@@ -311,11 +311,11 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         }
     }
     
-    private synchronized boolean isDuplicateName(String name) throws EmfException {
+    public synchronized boolean isDuplicateName(String name) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
             TemporalAllocation ta = dao.getByName(name, session);
-            return ta == null;
+            return ta != null;
         } catch (RuntimeException e) {
             LOG.error("Could not determine if Temporal Allocation name is already used", e);
             throw new EmfException("Could not determine if Temporal Allocation name is already used");

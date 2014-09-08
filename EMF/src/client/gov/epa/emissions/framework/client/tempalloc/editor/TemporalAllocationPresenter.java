@@ -70,6 +70,13 @@ public class TemporalAllocationPresenter {
     public void doSave() throws EmfException {
         saveTabs();
         temporalAllocation.setLastModifiedDate(new Date());
+        
+        // check for duplicate name
+        String name = temporalAllocation.getName();
+        if (service().isDuplicateName(name)) {
+            throw new EmfException("A Temporal Allocation named '" + name + "' already exists.");
+        }
+        
         if (temporalAllocation.getId() == 0) {
             int id = service().addTemporalAllocation(temporalAllocation);
             temporalAllocation = service().obtainLocked(session.user(), id);
