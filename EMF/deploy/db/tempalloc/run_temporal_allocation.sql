@@ -32,10 +32,10 @@ DECLARE
   
   is_flat_file_inventory boolean := false;
   inv_fips varchar(64) := 'inv.fips';
-  inv_plantid varchar(64) := 'inv.plantid';
-  inv_pointid varchar(64) := 'inv.pointid';
-  inv_stackid varchar(64) := 'inv.stackid';
-  inv_processid varchar(64) := 'inv.segment';
+  inv_plantid varchar(64) := 'plantid';
+  inv_pointid varchar(64) := 'pointid';
+  inv_stackid varchar(64) := 'stackid';
+  inv_processid varchar(64) := 'segment';
   inv_emissions varchar(64) := 'inv.ann_emis';
   
   orl_inv_month smallint := 0;
@@ -73,10 +73,10 @@ BEGIN
     -- set data field names
     is_flat_file_inventory := true;
     inv_fips := 'inv.region_cd';
-    inv_plantid := 'inv.facility_id';
-    inv_pointid := 'inv.unit_id';
-    inv_stackid := 'inv.rel_point_id';
-    inv_processid := 'inv.process_id';
+    inv_plantid := 'facility_id';
+    inv_pointid := 'unit_id';
+    inv_stackid := 'rel_point_id';
+    inv_processid := 'process_id';
     inv_emissions := 'inv.ann_value';
     
     -- check if inventory has monthly values
@@ -99,6 +99,19 @@ BEGIN
         orl_inv_month > EXTRACT(MONTH FROM end_day)) THEN
       RETURN;
     END IF;
+  END IF;
+  
+  -- check if inventory has point source characteristics
+  IF (public.check_table_for_columns(inventory_table_name, inv_plantid || ',' || inv_pointid || ',' || inv_stackid || ',' || inv_processid, ',')) THEN
+    inv_plantid := 'inv.' || inv_plantid;
+    inv_pointid := 'inv.' || inv_pointid;
+    inv_stackid := 'inv.' || inv_stackid;
+    inv_processid := 'inv.' || inv_processid;
+  ELSE
+    inv_plantid := 'NULL';
+    inv_pointid := 'NULL';
+    inv_stackid := 'NULL';
+    inv_processid := 'NULL';
   END IF;
   
   -- get inventory filter if specified
