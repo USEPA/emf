@@ -130,7 +130,7 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
     }
     
     private SortCriteria sortCriteria() {
-        String[] columnNames = { "Name" };
+        String[] columnNames = { "Last Modified" };
         return new SortCriteria(columnNames, new boolean[] { false }, new boolean[] { true });
     }
     
