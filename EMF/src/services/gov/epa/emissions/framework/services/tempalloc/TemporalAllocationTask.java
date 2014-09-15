@@ -10,12 +10,14 @@ import org.hibernate.Session;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.io.importer.DataTable;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DataCommonsServiceImpl;
+import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.DatasetTypesDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
@@ -112,6 +114,10 @@ public class TemporalAllocationTask {
                     throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
                 }
             }
+            
+            updateOutputDatasetVersionRecordCount(monthlyOutput);
+            updateOutputDatasetVersionRecordCount(dailyOutput);
+            updateOutputDatasetVersionRecordCount(episodicOutput);
             setStatus("Finished Temporal Allocation run.");
         } finally {
             disconnectDbServer();
@@ -329,5 +335,34 @@ public class TemporalAllocationTask {
         } catch (Exception e) {
             throw new EmfException("Could not disconnect DbServer - " + e.getMessage());
         }
+    }
+
+    protected void updateOutputDatasetVersionRecordCount(TemporalAllocationOutput output) throws EmfException {
+        Session session = sessionFactory.getSession();
+        DatasetDAO dao = new DatasetDAO();
+        
+        try {
+            EmfDataset result = output.getOutputDataset();
+            
+            if (result != null) {
+                Version version = dao.getVersion(session, result.getId(), result.getDefaultVersion());
+                
+                if (version != null) {
+                    updateVersion(result, version, dbServer, session, dao);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new EmfException("Cannot update result dataset (id: " + output.getId() + "). " + e.getMessage());
+        } finally {
+            if (session != null && session.isConnected())
+                session.close();
+        }
+    }
+    
+    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session, DatasetDAO dao) throws Exception {
+        version = dao.obtainLockOnVersion(user, version.getId(), session);
+        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, session, dataset, version));
+        dao.updateVersionNReleaseLock(version, session);
     }
 }
