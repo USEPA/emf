@@ -154,6 +154,10 @@ public class DatasetType implements Serializable, Lockable, Comparable<DatasetTy
     
     public static final String FLAT_FILE_2010_NONPOINT = "Flat File 2010 Nonpoint";
     
+    public static final String FLAT_FILE_2010_POINT_DAILY = "Flat File 2010 Point Daily";
+    
+    public static final String FLAT_FILE_2010_NONPOINT_DAILY = "Flat File 2010 Nonpoint Daily";
+    
     public static final String EXTERNAL_IMPORTER = "gov.epa.emissions.commons.io.external.ExternalFilesImporter";
     
     public static final String CSV_IMPORTER = "gov.epa.emissions.commons.io.csv.CSVImporter";

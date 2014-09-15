@@ -94,8 +94,13 @@ public class TemporalAllocationTask {
             
             for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
                 setStatus("Processing inventory: " + inputDataset.getInputDataset().getName());
-                String query = "SELECT public.run_temporal_allocation(" + 
-                        temporalAllocation.getId() + ", " + 
+                String query = "SELECT public.run_temporal_allocation";
+                String type = inputDataset.getInputDataset().getDatasetTypeName();
+                if (type.equals(DatasetType.FLAT_FILE_2010_NONPOINT_DAILY) ||
+                    type.equals(DatasetType.FLAT_FILE_2010_POINT_DAILY)) {
+                    query += "_daily";
+                }
+                query += "(" + temporalAllocation.getId() + ", " + 
                         inputDataset.getInputDataset().getId() + ", " + 
                         inputDataset.getVersion() + ", " +
                         monthlyOutput.getOutputDataset().getId() + ", " +

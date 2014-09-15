@@ -183,7 +183,9 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                     session.getLightDatasetType(DatasetType.orlNonroadInventory),
                     session.getLightDatasetType(DatasetType.orlOnroadInventory),
                     session.getLightDatasetType(DatasetType.FLAT_FILE_2010_POINT),
-                    session.getLightDatasetType(DatasetType.FLAT_FILE_2010_NONPOINT)
+                    session.getLightDatasetType(DatasetType.FLAT_FILE_2010_NONPOINT),
+                    session.getLightDatasetType(DatasetType.FLAT_FILE_2010_POINT_DAILY),
+                    session.getLightDatasetType(DatasetType.FLAT_FILE_2010_NONPOINT_DAILY)
                 });
         try {
             presenter.display(null, false);
