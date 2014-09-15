@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.tempalloc.editor;
 
 import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.FormattedDateField;
@@ -130,6 +131,15 @@ public class TemporalAllocationTimePeriodTab extends JPanel implements TemporalA
         }
         if (temporalAllocation.getStartDay().after(temporalAllocation.getEndDay())) {
             throw new EmfException("The time period start date must be before the end date.");
+        }
+        // make sure year of start and end day is the same
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(temporalAllocation.getStartDay());
+        int startYear = cal.get(Calendar.YEAR);
+        cal.setTime(temporalAllocation.getEndDay());
+        int endYear = cal.get(Calendar.YEAR);
+        if (startYear != endYear) {
+            throw new EmfException("The time period must start and end in the same year.");
         }
     }
 }
