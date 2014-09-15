@@ -169,9 +169,11 @@ public class TemporalAllocationTask {
         
         try {
             // clean cross-reference dataset
-            setStatus("Started cleaning cross-reference dataset (i.e., removing -9 or 0).");
-            cleanCrossReferenceDataset();
-            setStatus("Finished cleaning cross-reference dataset (i.e., removing -9 or 0).");
+            if (temporalAllocation.getXrefDataset() != null) {
+                setStatus("Started cleaning cross-reference dataset (i.e., removing -9 or 0).");
+                cleanCrossReferenceDataset();
+                setStatus("Finished cleaning cross-reference dataset (i.e., removing -9 or 0).");
+            }
         } catch (EmfException e) {
             throw e;
         }

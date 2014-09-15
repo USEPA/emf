@@ -21,6 +21,7 @@ import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
+import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationInputDataset;
 import gov.epa.emissions.framework.ui.Border;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
@@ -278,14 +279,26 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
     }
     
     public void prepareRun() throws EmfException {
-        if (temporalAllocation.getXrefDataset() == null) {
-            throw new EmfException("Please select a cross-reference dataset.");
+        // profiles aren't needed if all inventories are daily
+        boolean allDaily = true;
+        for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
+            String type = inputDataset.getInputDataset().getDatasetTypeName();
+            if (!type.equals(DatasetType.FLAT_FILE_2010_NONPOINT_DAILY) &&
+                !type.equals(DatasetType.FLAT_FILE_2010_POINT_DAILY)) {
+                allDaily = false;
+                break;
+            }
         }
-        if (temporalAllocation.getMonthlyProfileDataset() == null) {
-            throw new EmfException("Please select a year-to-month profile dataset.");
-        }
-        if (temporalAllocation.getWeeklyProfileDataset() == null) {
-            throw new EmfException("Please select a week-to-day profile dataset.");
+        if (!allDaily) {
+            if (temporalAllocation.getXrefDataset() == null) {
+                throw new EmfException("Please select a cross-reference dataset.");
+            }
+            if (temporalAllocation.getMonthlyProfileDataset() == null) {
+                throw new EmfException("Please select a year-to-month profile dataset.");
+            }
+            if (temporalAllocation.getWeeklyProfileDataset() == null) {
+                throw new EmfException("Please select a week-to-day profile dataset.");
+            }
         }
     }
 }
