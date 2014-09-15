@@ -19,6 +19,13 @@ DECLARE
   weekly_profile_dataset_id integer;
   weekly_profile_dataset_version integer;
   weekly_profile_table_name varchar(64);
+  daily_profile_dataset_id integer;
+  daily_profile_dataset_version integer;
+  daily_profile_table_name varchar(64);
+  
+  use_daily_profile boolean := false;
+  xref_type varchar(10);
+  prof_table_name varchar(64);
   
   inv_filter text := '';
   resolution varchar(64);
@@ -42,6 +49,8 @@ DECLARE
   flat_file_monthly boolean := false;
   
   xref_matching_sql text;
+  emis_sql text;
+  where_sql text;
   
   month_num_sql text := '';
   prof_month_name_sql text := '';
@@ -50,7 +59,7 @@ DECLARE
   is_weekend boolean;
   add_day boolean;
   dates_sql text := '';
-  day_name_sql text := '';
+  column_sql text := '';
 BEGIN
 
   -- get the inventory table name
@@ -135,13 +144,17 @@ BEGIN
          ta.monthly_profile_dataset_id,
          ta.monthly_profile_dataset_version,
          ta.weekly_profile_dataset_id,
-         ta.weekly_profile_dataset_version
+         ta.weekly_profile_dataset_version,
+         ta.daily_profile_dataset_id,
+         ta.daily_profile_dataset_version
     INTO xref_dataset_id,
          xref_dataset_version,
          monthly_profile_dataset_id,
          monthly_profile_dataset_version,
          weekly_profile_dataset_id,
-         weekly_profile_dataset_version
+         weekly_profile_dataset_version,
+         daily_profile_dataset_id,
+         daily_profile_dataset_version
     FROM emf.temporal_allocation ta
    WHERE ta.id = temporal_allocation_id;
   
@@ -165,11 +178,26 @@ BEGIN
     FROM emf.internal_sources i
    WHERE i.dataset_id = monthly_profile_dataset_id;
   
+  -- check if daily or weekly profiles should be used
+  IF daily_profile_dataset_id IS NOT NULL THEN
+    use_daily_profile := true;
+  END IF;
+  
   -- get weekly profile table name
-  SELECT LOWER(i.table_name)
-    INTO weekly_profile_table_name
-    FROM emf.internal_sources i
-   WHERE i.dataset_id = weekly_profile_dataset_id;
+  IF NOT use_daily_profile THEN
+    SELECT LOWER(i.table_name)
+      INTO weekly_profile_table_name
+      FROM emf.internal_sources i
+     WHERE i.dataset_id = weekly_profile_dataset_id;
+  END IF;
+  
+  -- get daily profile table name
+  IF use_daily_profile THEN
+    SELECT LOWER(i.table_name)
+      INTO daily_profile_table_name
+      FROM emf.internal_sources i
+     WHERE i.dataset_id = daily_profile_dataset_id;
+  END IF;
   
   -- get the monthly result dataset info
   SELECT LOWER(i.table_name)
@@ -377,14 +405,22 @@ BEGIN
 
   -- now do monthly to daily using monthly results just created
 
-  xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, inv_filter, xref_dataset_id, xref_dataset_version, 'WEEKLY');
+  IF use_daily_profile THEN
+    xref_type = 'DAILY';
+    prof_table_name = daily_profile_table_name;
+  ELSE
+    xref_type = 'WEEKLY';
+    prof_table_name = weekly_profile_table_name;
+  END IF;
+
+  xref_matching_sql := public.build_temporal_allocation_xref_sql(input_dataset_id, input_dataset_version, inv_filter, xref_dataset_id, xref_dataset_version, xref_type);
 
   loop_date := start_day;
   FOR month_num IN EXTRACT(MONTH FROM start_day)..EXTRACT(MONTH FROM end_day) LOOP
 
     -- build list of days to process for current month
     dates_sql := '';
-    day_name_sql := '';
+    column_sql := '';
     LOOP
       is_weekend := EXTRACT(DOW FROM loop_date) = 0 OR EXTRACT(DOW FROM loop_date) = 6;
 
@@ -399,11 +435,15 @@ BEGIN
       IF add_day THEN
         IF LENGTH(dates_sql) > 0 THEN
           dates_sql := dates_sql || ',';
-          day_name_sql := day_name_sql || ',';
+          column_sql := column_sql || ',';
         END IF;
         
         dates_sql := dates_sql || to_char(loop_date, 'YYYYMMDD');
-        day_name_sql := day_name_sql || to_char(loop_date, 'day');
+        IF use_daily_profile THEN
+          column_sql := column_sql || 'day' || to_char(loop_date, 'FMDD');
+        ELSE
+          column_sql := column_sql || to_char(loop_date, 'day');
+        END IF;
       END IF;
       
       loop_date := loop_date + 1;
@@ -413,6 +453,14 @@ BEGIN
     -- skip month if no days to process
     IF LENGTH(dates_sql) = 0 THEN
       CONTINUE;
+    END IF;
+    
+    IF use_daily_profile THEN
+      emis_sql := 'monthly.total_emis * unnest(array[' || column_sql || '])';
+      where_sql := public.build_version_where_filter(daily_profile_dataset_id, daily_profile_dataset_version, 'prof') || ' AND prof.month = ' || month_num;
+    ELSE
+      emis_sql := 'monthly.avg_day_emis * 7 * unnest(array[' || column_sql || '])';
+      where_sql := public.build_version_where_filter(weekly_profile_dataset_id, weekly_profile_dataset_version, 'prof');
     END IF;
 
     EXECUTE '
@@ -441,23 +489,23 @@ BEGIN
            ' || inv_pointid || ',
            ' || inv_stackid || ',
            ' || inv_processid || ',
-           ''WEEKLY'',
+           ''' || xref_type || ''',
            prof.profile_id,
-           unnest(array[' || day_name_sql || ']),
+           unnest(array[' || column_sql || ']),
            unnest(array[' || dates_sql || ']),
-           monthly.avg_day_emis * 7 * unnest(array[' || day_name_sql || ']),
+           ' || emis_sql || ',
            inv.dataset_id,
            inv.record_id
       FROM emissions.' || inventory_table_name || ' inv
       JOIN (' || xref_matching_sql || ') xref
         ON xref.record_id = inv.record_id
-      JOIN emissions.' || weekly_profile_table_name || ' prof
-        ON prof.profile_id = xref.profile_id
+      JOIN emissions.' || prof_table_name || ' prof
+        ON prof.profile_id::varchar(15) = xref.profile_id
       JOIN emissions.' || monthly_result_table_name || ' monthly
         ON monthly.inv_dataset_id = inv.dataset_id
        AND monthly.inv_record_id = inv.record_id
      WHERE ' || inv_filter || '
-       AND ' || public.build_version_where_filter(weekly_profile_dataset_id, weekly_profile_dataset_version, 'prof') || '
+       AND ' || where_sql || '
        AND monthly.month = ' || month_num;
   END LOOP;
   

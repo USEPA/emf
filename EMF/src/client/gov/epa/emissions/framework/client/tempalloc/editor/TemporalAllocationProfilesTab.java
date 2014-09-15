@@ -296,8 +296,9 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
             if (temporalAllocation.getMonthlyProfileDataset() == null) {
                 throw new EmfException("Please select a year-to-month profile dataset.");
             }
-            if (temporalAllocation.getWeeklyProfileDataset() == null) {
-                throw new EmfException("Please select a week-to-day profile dataset.");
+            if (temporalAllocation.getWeeklyProfileDataset() == null &&
+                temporalAllocation.getDailyProfileDataset() == null) {
+                throw new EmfException("Please select a week-to-day or month-to-day profile dataset.");
             }
         }
     }

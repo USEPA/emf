@@ -2017,3 +2017,11 @@ where id in (
 select id from emf.fileformat_columns where name = 'DATA_SET_ID' and file_format_id in (select id from emf.file_formats where id in (select file_format from emf.dataset_Types where name in ('Flat File 2010 Nonpoint','Flat File 2010 Point')))
 );
 
+-- 9/16/2014 - change daily temporal profile identifier to string
+UPDATE emf.fileformat_columns
+   SET TYPE = 'VARCHAR(15)'
+  FROM emf.dataset_types
+ WHERE dataset_types.file_format = fileformat_columns.file_format_id
+   AND dataset_types.name = 'Temporal Profile Daily (CSV)'
+   AND fileformat_columns.name = 'PROFILE_ID'
+   AND fileformat_columns.type = 'INTEGER';
