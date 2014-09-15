@@ -37,5 +37,5 @@ public interface TemporalAllocationService extends EMFService {
     
     void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate) throws EmfException;
     
-    boolean isDuplicateName(String name) throws EmfException;
+    int isDuplicateName(String name) throws EmfException;
 }

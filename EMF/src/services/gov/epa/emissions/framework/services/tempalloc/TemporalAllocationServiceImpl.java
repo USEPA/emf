@@ -118,7 +118,7 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
 
             String name = "Copy of " + element.getName();
             // make sure this won't cause duplicate issues...
-            if (isDuplicateName(name)) {
+            if (isDuplicate(name)) {
                 throw new EmfException("A Temporal Allocation named '" + name + "' already exists.");
             }
             
@@ -311,16 +311,20 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         }
     }
     
-    public synchronized boolean isDuplicateName(String name) throws EmfException {
+    public synchronized int isDuplicateName(String name) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
             TemporalAllocation ta = dao.getByName(name, session);
-            return ta != null;
+            return ta == null ? 0 : ta.getId();
         } catch (RuntimeException e) {
             LOG.error("Could not determine if Temporal Allocation name is already used", e);
             throw new EmfException("Could not determine if Temporal Allocation name is already used");
         } finally {
             session.close();
         }
+    }
+
+    private synchronized boolean isDuplicate(String name) throws EmfException {
+        return (isDuplicateName(name) != 0);
     }
 }

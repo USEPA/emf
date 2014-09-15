@@ -155,13 +155,13 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         return;
     }
     
-    public synchronized boolean isDuplicateName(String name) throws EmfException {
+    public synchronized int isDuplicateName(String name) throws EmfException {
         EmfCall call = call();
         
         call.setOperation("isDuplicateName");
         call.addStringParam("name");
-        call.setBooleanReturnType();
+        call.setIntegerReturnType();
         
-        return (boolean) call.requestResponse(new Object[] { name });
+        return (Integer) call.requestResponse(new Object[] { name });
     }
 }

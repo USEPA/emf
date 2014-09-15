@@ -73,12 +73,13 @@ public class TemporalAllocationPresenter {
         
         // check for duplicate name
         String name = temporalAllocation.getName();
-        if (service().isDuplicateName(name)) {
+        int id = service().isDuplicateName(name);
+        if (id != 0 && temporalAllocation.getId() != id) {
             throw new EmfException("A Temporal Allocation named '" + name + "' already exists.");
         }
         
         if (temporalAllocation.getId() == 0) {
-            int id = service().addTemporalAllocation(temporalAllocation);
+            id = service().addTemporalAllocation(temporalAllocation);
             temporalAllocation = service().obtainLocked(session.user(), id);
         } else {
             temporalAllocation = service().updateTemporalAllocationWithLock(temporalAllocation);
