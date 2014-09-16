@@ -10,6 +10,7 @@ public class TemporalAllocationOutput implements Serializable {
     private int temporalAllocationId;
     private TemporalAllocationOutputType type;
     private EmfDataset outputDataset;
+    private Integer recordCount = 0;
     
     public TemporalAllocationOutput() {
         //
@@ -45,5 +46,13 @@ public class TemporalAllocationOutput implements Serializable {
 
     public void setOutputDataset(EmfDataset outputDataset) {
         this.outputDataset = outputDataset;
+    }
+
+    public Integer getRecordCount() {
+        return recordCount;
+    }
+
+    public void setRecordCount(Integer recordCount) {
+        this.recordCount = recordCount;
     }
 }

@@ -1,0 +1,3 @@
+-- 9/16/2014 - add record count to outputs table
+ALTER TABLE emf.temporal_allocation_output
+ADD COLUMN record_count integer;

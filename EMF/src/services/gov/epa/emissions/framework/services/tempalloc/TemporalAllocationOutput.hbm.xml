@@ -9,6 +9,7 @@
 	  <generator class="identity"/>
  	</id>
 	<property name="temporalAllocationId" column="temporal_allocation_id" type="integer" not-null="true" />
+	<property name="recordCount" column="record_count" type="integer" not-null="false"/>
 	<many-to-one name="type"
 		 class ="gov.epa.emissions.framework.services.tempalloc.TemporalAllocationOutputType"
 		 column="temporal_allocation_output_type_id" unique="true" not-null="true"/>

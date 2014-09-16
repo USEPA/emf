@@ -349,6 +349,8 @@ public class TemporalAllocationTask {
                 
                 if (version != null) {
                     updateVersion(result, version, dbServer, session, dao);
+                    output.setRecordCount(version.getNumberRecords());
+                    saveOutput(output);
                 }
             }
         } catch (Exception e) {

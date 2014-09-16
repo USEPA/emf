@@ -25,17 +25,19 @@ public class TemporalAllocationOutputTableData extends AbstractTableData {
     }
 
     private void addRow(List rows, TemporalAllocationOutput temporalAllocationOutput) {
-        Object[] values = { temporalAllocationOutput.getType().getName(), 
+        Object[] values = { temporalAllocationOutput.getType().getName(),
+                temporalAllocationOutput.getRecordCount(), 
                 temporalAllocationOutput.getOutputDataset().getName() };
         Row row = new ViewableRow(temporalAllocationOutput, values);
         rows.add(row);
     }
 
     public String[] columns() {
-        return new String[] { "Result Type", "Result Dataset" };
+        return new String[] { "Result Type", "Record Count", "Result Dataset" };
     }
     
     public Class getColumnClass(int col) {
+        if (col == 1) return Integer.class;
         return String.class;
     }
 
