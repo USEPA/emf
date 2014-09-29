@@ -115,7 +115,7 @@ public class InfoTab extends JPanel implements InfoTabView, RefreshObserver {
         }
 
         int dsId = sourceTabPresenter.getCurrentDatasetId();
-        ExternalSource[] sources = sourceTabPresenter.getExternalSrcs(dsId, sourceLimit, nameFilter.getText());
+        ExternalSource[] sources = sourceTabPresenter.getExternalSrcs(dsId, sourceLimit, getNameFilter());
         displaySources("External Files", new ExternalSourcesTableData(sources), true);
     }
 
