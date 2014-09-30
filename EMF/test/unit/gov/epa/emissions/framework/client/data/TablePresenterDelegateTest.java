@@ -28,7 +28,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         stub(paginator, "totalRecords", filtered);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(),
-                tableMetadataProxy, (TableView) view.proxy(), (DataAccessService) service.proxy(), null, null);
+                tableMetadataProxy, (TableView) view.proxy(), (DataAccessService) service.proxy());
 
         String rowFilter = "rowFilter";
         String sortOrder = "col2";
@@ -40,7 +40,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
 
         view.expects(once()).method("updateFilteredRecordsCount").with(eq(filtered));
 
-        p.doApplyConstraints(rowFilter, sortOrder, false);
+        p.doApplyConstraints(rowFilter, sortOrder);
     }
 
     public void testShouldRaiseExceptionIfInvalidColsAreSpecifiedInSortOrderOnApplyConstraints() {
@@ -51,10 +51,14 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         TableMetadata tableMetadata = tableMetadata(cols);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, null, tableMetadata, (TableView) view.proxy(),
-                (DataAccessService) service.proxy(), null, null);
+                (DataAccessService) service.proxy());
 
         String sortOrder = "invalid-row";
-            p.doApplyConstraints(null, sortOrder, false);
+        try {
+            p.doApplyConstraints(null, sortOrder);
+        } catch (EmfException e) {
+            return;
+        }
 
         fail("Should have raised an exception when Sort Order contains invalid cols");
     }
@@ -77,7 +81,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         TableMetadata tableMetadataProxy = (TableMetadata) tableMetadata.proxy();
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl((DatasetType) datasetType.proxy(),
-                (TablePaginator) paginator.proxy(), tableMetadataProxy, null, (DataAccessService) service.proxy(), null, null);
+                (TablePaginator) paginator.proxy(), tableMetadataProxy, null, (DataAccessService) service.proxy());
 
         Page page = new Page();
         service.expects(once()).method("applyConstraints").with(ANYTHING, eq(""), eq(sortOrder))
@@ -94,12 +98,17 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         TableMetadata tableMetadataProxy = (TableMetadata) tableMetadata.proxy();
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, null, tableMetadataProxy, (TableView) view
-                .proxy(), (DataAccessService) service.proxy(), null, null);
+                .proxy(), (DataAccessService) service.proxy());
 
         String sortOrder = "col3, invalid-row";
         stub(tableMetadata, "containsCol", "col3", Boolean.TRUE);
         stub(tableMetadata, "containsCol", "invalid-row", Boolean.FALSE);
-            p.doApplyConstraints(null, sortOrder, false);
+        try {
+            p.doApplyConstraints(null, sortOrder);
+        } catch (EmfException e) {
+            assertEquals("Sort Order contains an invalid column: invalid-row", e.getMessage());
+            return;
+        }
 
         fail("Should have raised an exception when Sort Order contains invalid cols");
     }
@@ -117,7 +126,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         stub(paginator, "totalRecords", filtered);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(),
-                tableMetadata, (TableView) view.proxy(), (DataAccessService) service.proxy(), null, null);
+                tableMetadata, (TableView) view.proxy(), (DataAccessService) service.proxy());
 
         String rowFilter = "rowFilter";
         String sortOrder = "   ";
@@ -126,7 +135,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         view.expects(once()).method("display");
         view.expects(once()).method("updateFilteredRecordsCount").with(eq(filtered));
 
-        p.doApplyConstraints(rowFilter, sortOrder, false);
+        p.doApplyConstraints(rowFilter, sortOrder);
     }
 
     private TableMetadata tableMetadata(String[] cols) {
@@ -144,7 +153,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         stub(paginator, "totalRecords", filtered);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
 
         assertEquals(28, p.totalRecords());
     }
@@ -154,7 +163,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         expects(paginator, "doDisplay");
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplay(21);
     }
 
@@ -164,7 +173,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         stub(paginator, "isCurrent", Boolean.FALSE);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplayPageWithRecord(21);
     }
 
@@ -173,7 +182,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         stub(paginator, "isCurrent", Boolean.TRUE);
         
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplayPageWithRecord(21);
     }
 
@@ -181,7 +190,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         Mock paginator = mock(TablePaginator.class);
         
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplayPageWithRecord(0);
     }
 
@@ -190,7 +199,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         expects(paginator, "doDisplayFirst");
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplayFirst();
     }
 
@@ -199,7 +208,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         expects(paginator, "doDisplayPrevious");
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplayPrevious();
     }
 
@@ -208,7 +217,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         expects(paginator, "doDisplayNext");
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplayNext();
     }
 
@@ -217,7 +226,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
         expects(paginator, "doDisplayLast");
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,
-                null, null, null);
+                null);
         p.doDisplayLast();
     }
 

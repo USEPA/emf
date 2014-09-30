@@ -1,11 +1,6 @@
 package gov.epa.emissions.framework.client.transport;
 
-import javax.xml.rpc.ServiceException;
-
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.threadsafe.DataEditorServiceImpl;
-import gov.epa.emissions.framework.client.threadsafe.DataEditorServiceImplService;
-import gov.epa.emissions.framework.client.threadsafe.DataEditorServiceImplServiceLocator;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.LoggingService;
 import gov.epa.emissions.framework.services.basic.UserService;
@@ -115,30 +110,8 @@ public class RemoteServiceLocator implements ServiceLocator {
         return dataCommonsService;
     }
 
-    private DataEditorServiceImpl port = null;
-
-    private DataEditorServiceImpl getClientService() {
-        if (port == null) {
-            // Make a service
-            DataEditorServiceImplService service = new DataEditorServiceImplServiceLocator();
-
-            try {
-                service.setGovEpaEmfServicesEditorDataEditorServiceAddress(baseUrl
-                        + "/gov.epa.emf.services.editor.DataEditorService");
-//                        "http://localhost:8080/emf/services/gov.epa.emf.services.editor.DataEditorService"
-                port = service.getGovEpaEmfServicesEditorDataEditorService();
-            } catch (ServiceException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        return port;
-    }
-    
     public DataEditorService dataEditorService() {
-        
-        
-        return new DataEditorServiceTransport(getClientService()/*editCall*/);
+        return new DataEditorServiceTransport(editCall);
     }
 
     public DataViewService dataViewService() {

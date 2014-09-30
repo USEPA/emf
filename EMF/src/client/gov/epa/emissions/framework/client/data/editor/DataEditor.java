@@ -13,8 +13,6 @@ import gov.epa.emissions.framework.client.ManagedView;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.notes.NewNoteDialog;
-import gov.epa.emissions.framework.client.meta.versions.EditVersionsView;
-import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DatasetNote;
@@ -29,7 +27,6 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -38,8 +35,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 public class DataEditor extends DisposableInteralFrame implements DataEditorView {
@@ -52,7 +47,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private EmfDataset dataset;
 
-    private EditorPanel editorPanel;
+    private EditorPanel pageContainer;
 
     private JLabel lockInfo;
 
@@ -68,22 +63,14 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private boolean hasReplacedValues;
 
-    private JLabel loadingPanel;
-    
-    private EditVersionsView parentView;
-
-    public DataEditor(EmfDataset dataset, EmfConsole parent, DesktopManager desktopManager, EditVersionsView parentView) {
+    public DataEditor(EmfDataset dataset, EmfConsole parent, DesktopManager desktopManager) {
         super("Data Editor: " + dataset.getName(), desktopManager);
         setDimension();
         this.dataset = dataset;
         this.parent = parent;
-            this.parentView = parentView;
 
         layout = new JPanel(new BorderLayout());
         layout.add(topPanel(), BorderLayout.PAGE_START);
-            loadingPanel = new JLabel("Loading...", SwingConstants.CENTER);
-            loadingPanel.setFont(new Font("default", Font.BOLD, 40));
-            layout.add(loadingPanel, BorderLayout.CENTER);
 
         this.getContentPane().add(layout);
     }
@@ -113,21 +100,19 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
         this.presenter = presenter;
     }
 
-    public void display(Version version, String table, User user) {
+    public void display(Version version, String table, User user, TableMetadata tableMetadata, DatasetNote[] notes) {
         this.version = version;
         this.user = user;
 
         updateTitle(version, table);
         super.setName("dataEditor:" + version.getDatasetId() + ":" + version.getId());
 
-//        JPanel container = new JPanel(new BorderLayout());
-//        container.add(tablePanel(version, table, tableMetadata), BorderLayout.CENTER);
-//        container.add(bottomPanel(notes), BorderLayout.PAGE_END);
-//        layout.add(container, BorderLayout.CENTER);
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(tablePanel(version, table, tableMetadata), BorderLayout.CENTER);
+        container.add(bottomPanel(notes), BorderLayout.PAGE_END);
+        layout.add(container, BorderLayout.CENTER);
 
         super.display();
-            
-        populate(table);
     }
 
     private void updateTitle(Version version, String table) {
@@ -142,16 +127,67 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
     }
 
     private JPanel tablePanel(Version version, final String table, TableMetadata tableMetadata) {
-        editorPanel = new EditorPanel(dataset, version, tableMetadata, messagePanel, this, this);
-        editorPanel.setDesktopManager(desktopManager);
-        editorPanel.setEmfSession(presenter.getEmfSession());
-        displayTable(table, tableMetadata);
-        return editorPanel;
+        pageContainer = new EditorPanel(dataset, version, tableMetadata, messagePanel, this, this);
+        pageContainer.setDesktopManager(desktopManager);
+        pageContainer.setEmfSession(presenter.getEmfSession());
+        displayTable(table);
+//        
+//        ComponentUtility.enableComponents(this, false);
+//
+//        //long running methods.....
+//        
+//        //Instances of javax.swing.SwingWorker are not reusuable, so
+//        //we create new instances as needed.
+//        class LoadTableTask extends SwingWorker<Void, Void> {
+//            
+//            private Container parentContainer;
+//
+//            public LoadTableTask(Container parentContainer) {
+//                this.parentContainer = parentContainer;
+//            }
+//
+//            /*
+//             * Main task. Executed in background thread.
+//             * don't update gui here
+//             */
+//            @Override
+//            public Void doInBackground() throws EmfException  {
+//                displayTable(table);
+//                return null;
+//            }
+//
+//            /*
+//             * Executed in event dispatching thread
+//             */
+//            @Override
+//            public void done() {
+//                try {
+//                    //make sure something didn't happen
+//                    get();
+//                    
+//                } catch (InterruptedException e1) {
+////                    messagePanel.setError(e1.getMessage());
+////                    setErrorMsg(e1.getMessage());
+//                } catch (ExecutionException e1) {
+////                    messagePanel.setError(e1.getCause().getMessage());
+////                    setErrorMsg(e1.getCause().getMessage());
+//                } finally {
+////                    this.parentContainer.setCursor(null); //turn off the wait cursor
+////                    this.parentContainer.
+//                    ComponentUtility.enableComponents(parentContainer, true);
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                }
+//            }
+//        };
+//        new LoadTableTask(this).execute();
+        
+
+        return pageContainer;
     }
 
-    private void displayTable(String table, TableMetadata tableMetadata) {
+    private void displayTable(String table) {
         try {
-            presenter.displayTable(editorPanel, this, messagePanel, tableMetadata);
+            presenter.displayTable(pageContainer);
         } catch (EmfException e) {
             displayError("Could not display table: " + table + "." + e.getMessage());
         }
@@ -256,42 +292,13 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private void doSave() {
         clearMessages();
-            new GenericSwingWorker<Void>(layout, messagePanel) {
-        
-                    @Override
-                    public Void doInBackground() throws EmfException {
-                        presenter.doSave();
-                        return null;
-                    }
-        
-                    @Override
-                    public void done() {
-                        try {
-                            get();
-                            presenter.clearTable();
-                            SwingUtilities.invokeLater(new Runnable() {
-                                
-                                @Override
-                                public void run() {
-                                    try {
-                                        presenter.reloadCurrent();
-                                    } catch (EmfException e) {
-                                        // NOTE Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                            parentView.refresh();
-                            displayMessage("Saved changes.");
-                        } catch (InterruptedException | ExecutionException /*| EmfException */e) {
-                            e.printStackTrace();
-                            displayError("Could not save: " + e.getMessage());
-                        } finally {
-                            finalize();
-                        }
-                    }
-        
-                }.execute();
+        try {
+            presenter.doSave();
+            displayMessage("Saved changes.");
+        } catch (EmfException e) {
+            displayError("Could not save: " + e.getMessage());
+            return;
+        }
     }
 
     private void clearMessages() {
@@ -301,34 +308,16 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private void doClose() {
         clearMessages();
-             if (revisionPanel != null) 
-                     revisionPanel.enableWhatNWhy();
-                 ManagedView findReplaceWindow = desktopManager.getWindow("Find and Replace Column Values: "
-                         + dataset.getName() + " (version: " + version.getVersion() + ")");
-                 if (findReplaceWindow != null)
-                     findReplaceWindow.windowClosing(); // NOTE: to close the find and replace window
-                 new GenericSwingWorker<Void>(layout, messagePanel) {
-         
-                     @Override
-                     public Void doInBackground() throws EmfException {
-                         presenter.doClose();
-                         return null;
-                     }
-         
-                     @Override
-                     public void done() {
-                         try {
-                             get();
-                         } catch (InterruptedException e) {
-                             displayError("Could not close: " + e.getMessage());
-                         } catch (ExecutionException e) {
-                             displayError("Could not close: " + e.getMessage());
-                         } finally {
-                             finalize();
-                         }
-                     }
-         
-                 }.execute();
+        revisionPanel.enableWhatNWhy();
+        try {
+            ManagedView findReplaceWindow = desktopManager.getWindow("Find and Replace Column Values: "
+                    + dataset.getName() + " (version: " + version.getVersion() + ")");
+            if (findReplaceWindow != null)
+                findReplaceWindow.windowClosing(); // NOTE: to close the find and replace window
+            presenter.doClose();
+        } catch (EmfException e) {
+            displayError("Could not close: " + e.getMessage());
+        }
     }
 
     public Revision revision() {
@@ -341,33 +330,13 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private void doDiscard() {
         clearMessages();
-             new GenericSwingWorker<Void>(layout, messagePanel) {
-         
-                     @Override
-                     public Void doInBackground() throws EmfException {
-         //                presenter.doDiscard();
-                         presenter.discard();
-                         presenter.reloadCurrent();
-                         return null;
-                     }
-              
-                     @Override
-                     public void done() {
-                         try {
-                             get();
-                             resetChanges();
-                             disableSaveDiscard();
-                             displayMessage("Discarded changes.");
-                         } catch (InterruptedException e) {
-                             displayError("Could not close: " + e.getMessage());
-                         } catch (ExecutionException e) {
-                             displayError("Could not close: " + e.getMessage());
-                         } finally {
-                             finalize();
-                         }
-                     }
-         
-                 }.execute();
+        try {
+            presenter.doDiscard();
+            displayMessage("Discarded changes.");
+        } catch (EmfException e) {
+            displayError("Could not discard: " + e.getMessage());
+        }
+
     }
 
     public void windowClosing() {
@@ -430,57 +399,4 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
         presenter.setSaveChanged(true);
     }
 
- 
-     @Override
-     public void populate(final String table) {
-         new GenericSwingWorker<Void>(layout, messagePanel) {
-             
-             private String lockMessage = "Dataset lock issue";
-             private DataAccessToken token;
-             private TableMetadata tableMetadata;
-             private DatasetNote[] notes;
-             
-             @Override
-             public Void doInBackground() throws EmfException {
-                 token = presenter.openSession();
-                 if (!token.isLocked(user)) {// abort
-                     throw new EmfException(lockMessage);
-                 }
-                 tableMetadata = presenter.getTableMetadata();
-                 notes = presenter.getDatasetNotes();
- 
- //                display(version, table, session.user(), tableMetadata, notes);
- //                presenter.applyConstraints(token, null, null);
-                 return null;
-             }
- 
-             @Override
-             public void done() {
-                 try {
-                     get();
-                     JPanel container = new JPanel(new BorderLayout());
-                     container.add(tablePanel(version, table, tableMetadata), BorderLayout.CENTER);
-                     container.add(bottomPanel(notes), BorderLayout.PAGE_END);
-                     layout.remove(loadingPanel);
-                     layout.add(container, BorderLayout.CENTER);
-                     updateLockPeriod(token.lockStart(), token.lockEnd());
- 
-                 } catch (InterruptedException e) {
-                     e.printStackTrace();
-                     messagePanel.setError(e.getMessage());
-                 } catch (ExecutionException e) {
-                     if (e.getMessage().equals(lockMessage))
-                         notifyLockFailure(token);
-                     else {
-                         messagePanel.setError(e.getMessage());
-                     }
-                 } finally {
-                     finalize();
-                     System.out.println("All done");
-                     editorPanel.revalidate();
-                 }
-             }
- 
-         }.execute();
-     }
 }

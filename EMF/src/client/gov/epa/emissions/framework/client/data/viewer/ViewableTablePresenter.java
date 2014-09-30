@@ -1,7 +1,5 @@
 package gov.epa.emissions.framework.client.data.viewer;
 
-import java.awt.Container;
-
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.framework.client.data.TablePaginator;
@@ -11,8 +9,6 @@ import gov.epa.emissions.framework.client.data.TablePresenterDelegateImpl;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.editor.DataAccessService;
 import gov.epa.emissions.framework.services.editor.DataAccessToken;
-import gov.epa.emissions.framework.services.editor.DataViewService;
-import gov.epa.emissions.framework.ui.MessagePanel;
 
 public class ViewableTablePresenter implements TablePresenter {
 
@@ -23,13 +19,13 @@ public class ViewableTablePresenter implements TablePresenter {
     private int totalRecs; 
 
     public ViewableTablePresenter(DatasetType datasetType, DataAccessToken token, TableMetadata tableMetadata,
-                        ViewerPanelView view, DataAccessService service, DataViewService dataViewService, Container parentContainer, MessagePanel messagePanel) {
-                this(datasetType, new TablePaginatorImpl(token, view, dataViewService, parentContainer, messagePanel), tableMetadata, view, dataViewService, parentContainer, messagePanel);
+            ViewerPanelView view, DataAccessService service) {
+        this(datasetType, new TablePaginatorImpl(token, view, service), tableMetadata, view, service);
     }
     
     public ViewableTablePresenter(DatasetType datasetType, TablePaginator paginator, TableMetadata tableMetadata,
-                        ViewerPanelView view, DataAccessService service, Container parentContainer, MessagePanel messagePanel) {
-                this(new TablePresenterDelegateImpl(datasetType, paginator, tableMetadata, view, service, parentContainer, messagePanel), view);
+            ViewerPanelView view, DataAccessService service) {
+        this(new TablePresenterDelegateImpl(datasetType, paginator, tableMetadata, view, service), view);
     }
 
     public ViewableTablePresenter(TablePresenterDelegate delegate, ViewerPanelView view) {
@@ -78,8 +74,8 @@ public class ViewableTablePresenter implements TablePresenter {
         return totalRecs ;
     }
 
-    public void doApplyConstraints(String rowFilter, String sortOrder) {
-        delegate.doApplyConstraints(rowFilter, sortOrder, false);
+    public void doApplyConstraints(String rowFilter, String sortOrder) throws EmfException {
+        delegate.doApplyConstraints(rowFilter, sortOrder);
     }
 
     public void doApplyFormat() throws EmfException {

@@ -50,8 +50,6 @@ public class DataSortFilterPanelEditor extends JPanel {
 
     private DoubleRenderer doubleRenderer;
 
-    private TablePresenter presenter;
-
     public DataSortFilterPanelEditor(MessagePanel messagePanel, EmfDataset dataset, String rowFilters,
             DoubleRenderer doubleRenderer) {
 
@@ -142,11 +140,7 @@ public class DataSortFilterPanelEditor extends JPanel {
         return panel;
     }
 
-    public void observe(final TablePresenter presenter) {
-            this.presenter = presenter;
-        }
-    
-        public void init() {
+    public void init(final TablePresenter presenter) {
 
         this.formatButton.setAction(new AbstractAction("Format") {
             public void actionPerformed(ActionEvent e) {
@@ -188,11 +182,26 @@ public class DataSortFilterPanelEditor extends JPanel {
     }
 
     private void doApplyConstraints(final TablePresenter presenter) {
+        try {
+
             messagePanel.clear();
 
             String rowFilterValue = rowFilter.getText().trim();
             String sortOrderValue = sortOrder.getText().trim();
             presenter.doApplyConstraints(rowFilterValue, sortOrderValue);
+
+            if (rowFilterValue.length() == 0)
+                rowFilterValue = "No filter";
+            String sortMessage = sortOrderValue;
+            if (sortMessage.length() == 0)
+                sortMessage = "No sort";
+
+            if (isForEditor())
+                messagePanel.setMessage("Saved any changes and applied Sort '" + sortMessage + "' and Filter '"
+                        + rowFilterValue + "'");
+        } catch (EmfException ex) {
+            messagePanel.setError(ex.getMessage());
+        }
     }
 
     public void setSortFilter(String filter) {
