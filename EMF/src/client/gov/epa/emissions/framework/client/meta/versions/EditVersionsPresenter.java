@@ -57,8 +57,8 @@ public class EditVersionsPresenter {
         presenter.display();
     }
 
-    public void doEdit(Version version, String table, DataEditorView view) throws EmfException {
-            DataEditorPresenter presenter = new DataEditorPresenterImpl(dataset, version, table, session);
+    public void doEdit(Version version, String table, DataEditorView view, EditVersionsView parentview) throws EmfException {
+        DataEditorPresenter presenter = new DataEditorPresenterImpl(dataset, version, table, parentview, session);
         edit(version, view, presenter);
     }
 
@@ -85,11 +85,8 @@ public class EditVersionsPresenter {
     }
 
     public void reload() throws EmfException {
-            view.reload();
-        }
-    
-        public Version[] getVersions(final int datasetId) throws EmfException {
-            return editorService().getVersions(dataset.getId());
+        Version[] updatedVersions = editorService().getVersions(dataset.getId());
+        view.reload(updatedVersions);
     }
 
     public EmfSession getSession() {

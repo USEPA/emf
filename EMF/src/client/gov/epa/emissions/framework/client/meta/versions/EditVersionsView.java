@@ -8,7 +8,7 @@ public interface EditVersionsView {
 
     void add(Version version);
 
-    void reload();
+    void reload(Version[] versions);
     
     void refresh(); 
 
