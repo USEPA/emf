@@ -7,7 +7,6 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
@@ -17,17 +16,14 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 
 public class QATab extends JPanel implements QATabView, RefreshObserver {
 
@@ -113,32 +109,12 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
     }
 
     private void doView() {
-        final List steps = table.selected();
+        List steps = table.selected();
         if ( steps == null || steps.size() == 0 ){
             messagePanel.setMessage("Please select a QA step. ");
             return;
         }
         
-        //long running methods.....
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this, false);
-
-        //Instances of javax.swing.SwingWorker are not reusuable, so
-        //we create new instances as needed.
-        class viewQATask extends SwingWorker<Void, Void> {
-
-            private Container parentContainer;
-
-            public viewQATask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public Void doInBackground() throws EmfException  {
         for (Iterator iter = steps.iterator(); iter.hasNext();) {
             QAStep step = (QAStep) iter.next();
             ViewQAStepWindow view = new ViewQAStepWindow(parentConsole, session, desktopManager);
@@ -148,32 +124,7 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
                 messagePanel.setError(e.getMessage());
             }
         }
-        return null;
-            }
-            
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen
-                    get();
-
-                } catch (InterruptedException e1) {
-                    //                messagePanel.setError(e1.getMessage());
-                    //                setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-                    //                messagePanel.setError(e1.getCause().getMessage());
-                    //                setErrorMsg(e1.getCause().getMessage());
-                } finally {
-                    //                this.parentContainer.setCursor(null); //turn off the wait cursor
-                    //                this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
-                }
-            }
-        };
-        new viewQATask(this).execute();
     }
-
     
     public void doRefresh() {
         try {

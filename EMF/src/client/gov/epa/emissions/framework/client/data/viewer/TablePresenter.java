@@ -24,7 +24,7 @@ public interface TablePresenter {
     
     int getTotalRecords();
 
-    void doApplyConstraints(String rowFilter, String sortOrder);
+    void doApplyConstraints(String rowFilter, String sortOrder) throws EmfException;
 
     void doApplyFormat() throws EmfException;
 }

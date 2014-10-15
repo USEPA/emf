@@ -10,7 +10,5 @@ public interface EditableTablePresenter extends TablePresenter {
     boolean submitChanges() throws EmfException;
 
     void reloadCurrent() throws EmfException;
-    
-    void clear();
 
 }

@@ -11,22 +11,16 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.notes.NewNoteDialog;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.editor.DataAccessToken;
 import gov.epa.emissions.framework.ui.Dimensions;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
-import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 public class DataViewer extends DisposableInteralFrame implements DataView {
 
@@ -43,10 +37,6 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
     private boolean editable;
     private ViewerPanel viewerPanel;
 
-    protected DataAccessToken token;
-
-    private JLabel loadingPanel;
-
     public DataViewer(EmfDataset dataset, EmfConsole parent, DesktopManager desktopManager) {
         this(dataset, parent, desktopManager, true);
     }
@@ -61,9 +51,6 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
         
         layout = new JPanel(new BorderLayout());
         layout.add(topPanel(), BorderLayout.PAGE_START);
-            loadingPanel = new JLabel("Loading...", SwingConstants.CENTER);
-            loadingPanel.setFont(new Font("default", Font.BOLD, 40));
-            layout.add(loadingPanel, BorderLayout.CENTER);
 
         this.getContentPane().add(layout);
     }
@@ -83,9 +70,6 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
 
         layout = new JPanel(new BorderLayout());
         layout.add(topPanel(), BorderLayout.PAGE_START);
-            loadingPanel = new JLabel("Loading...", SwingConstants.CENTER);
-            loadingPanel.setFont(new Font("default", Font.BOLD, 40));
-            layout.add(loadingPanel, BorderLayout.CENTER);
 
         this.getContentPane().add(layout);
     }
@@ -108,18 +92,16 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
         this.presenter = presenter;
     }
 
-    public void display(Version version, String table) {
+    public void display(Version version, String table, TableMetadata tableMetadata) {
         updateTitle(version, table);
         super.setName("dataViewer:" + version.getDatasetId() + ":" + version.getId());
 
-    //        JPanel container = new JPanel(new BorderLayout());
-    //        container.add(tablePanel(tableMetadata), BorderLayout.CENTER);
-    //        container.add(controlsPanel(), BorderLayout.PAGE_END);
-    //        layout.add(container, BorderLayout.CENTER);
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(tablePanel(tableMetadata), BorderLayout.CENTER);
+        container.add(controlsPanel(), BorderLayout.PAGE_END);
+        layout.add(container, BorderLayout.CENTER);
 
         super.display();
-            
-            populate(table);
     }
 
     private void updateTitle(Version version, String table) {
@@ -132,7 +114,7 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
     private JPanel tablePanel(TableMetadata tableMetadata) {
         viewerPanel = new ViewerPanel(messagePanel, dataset, tableMetadata, filter);
         try {
-                    presenter.displayTable(viewerPanel, this, messagePanel, tableMetadata);
+            presenter.displayTable(viewerPanel);
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         }
@@ -182,65 +164,16 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
     }
 
     private void doClose() {
-
-        new GenericSwingWorker<Void>(layout, messagePanel) {
-
-            @Override
-            public Void doInBackground() throws EmfException {
-                if (viewerPanel != null) viewerPanel.saveColPref();
-                presenter.closeSession();
-                return null;
-            }
-
-            @Override
-            public void done() {
-                try {
-                    get();
-                    disposeView();
-                } catch (InterruptedException e) {
-                    messagePanel.setError("Could not close: " + e.getMessage());
-                } catch (ExecutionException e) {
-                    messagePanel.setError("Could not close: " + e.getMessage());
-                } finally {
-                    finalize();
-                }
-            }
-
-        }.execute();
+        try {
+            viewerPanel.saveColPref();
+            presenter.doClose();
+        } catch (EmfException e) {
+            messagePanel.setError("Could not close: " + e.getMessage());
+        }
     }
-    
+
     public void windowClosing() {
         doClose();
     }
 
-    @Override
-    public void populate(final String table) {
-        new GenericSwingWorker<Void>(layout, messagePanel) {
-            private TableMetadata tableMetadata;
-            @Override
-            public Void doInBackground() throws EmfException {
-                tableMetadata = presenter.getTableMetadata(table);
-                token = presenter.openSession();
-                presenter.applyConstraints(token, null, null);
-                return null;
-            }
-
-            @Override
-            public void done() {
-                try {
-                    get();
-                    JPanel container = new JPanel(new BorderLayout());
-                    container.add(tablePanel(tableMetadata), BorderLayout.CENTER);
-                    container.add(controlsPanel(), BorderLayout.PAGE_END);
-                    layout.remove(loadingPanel);
-                    layout.add(container, BorderLayout.CENTER);
-                } catch (InterruptedException | ExecutionException e) {
-                    messagePanel.setError(e.getMessage());
-                } finally {
-                    finalize();
-                }
-            }
-
-        }.execute();
-    }
 }

@@ -21,11 +21,10 @@ public interface TablePaginator {
 
     void doDisplayPageWithRecord(int record) throws EmfException;
 
-    int getTotalRecords() throws EmfException;
+    int totalRecords() throws EmfException;
 
     DataAccessToken token();
 
     boolean isCurrent(int record);
 
-    void clear();
 }

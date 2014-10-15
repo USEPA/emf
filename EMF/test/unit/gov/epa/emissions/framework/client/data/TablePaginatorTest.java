@@ -24,7 +24,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(once()).method("display");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
         paginator.doDisplayFirst();
 
         paginator.doDisplayPageWithRecord(20);
@@ -43,7 +43,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(once()).method("display");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
 
         paginator.doDisplay(3);
     }
@@ -59,7 +59,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(new InvokeCountMatcher(2)).method("display");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
 
         paginator.doDisplay(3);
         paginator.reloadCurrent();
@@ -76,7 +76,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(once()).method("display");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
 
         paginator.doDisplayFirst();
     }
@@ -93,7 +93,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(once()).method("display");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
 
         paginator.doDisplayNext();
     }
@@ -111,7 +111,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(once()).method("scrollToPageEnd");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
 
         paginator.doDisplayLast();
     }
@@ -129,7 +129,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(once()).method("scrollToPageEnd");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
 
         paginator.doDisplayLast();
         paginator.doDisplayLast();
@@ -146,7 +146,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
         view.expects(once()).method("display");
 
         TablePaginator paginator = new TablePaginatorImpl(null, null, (TableView) view.proxy(), (DataAccessService) service
-                .proxy(), null, null);
+                .proxy());
 
         paginator.doDisplayFirst();
         paginator.doDisplayFirst();
