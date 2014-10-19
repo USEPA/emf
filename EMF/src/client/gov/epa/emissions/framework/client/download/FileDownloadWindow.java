@@ -397,8 +397,7 @@ public class FileDownloadWindow
             }
             
             public void mousePressed(MouseEvent e) {
-                // NOTE Auto-generated method stub
-                
+                checkForPopup( e );
             }
             
             public void mouseExited(MouseEvent e) {
