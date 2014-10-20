@@ -14,6 +14,8 @@ import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditContro
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyWindow;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyView;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyWindow;
+import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
+import gov.epa.emissions.framework.client.preference.UserPreference;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -31,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +41,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -73,6 +77,8 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
     private volatile Thread populateThread;
 
     private static final List<String> COLUMN_NAMES_TO_FORMAT = new ArrayList<String>();
+    
+    private JFileChooser chooser;
     
     static {
         COLUMN_NAMES_TO_FORMAT.add("Total Cost");
@@ -276,6 +282,17 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         });
         crudPanel.add(compareButton);
         
+        Button summaryButton = new Button("Summarize", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                try {
+                    summarizeControlStrategies();
+                } catch (EmfException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        crudPanel.add(summaryButton);
 
         return crudPanel;
     }
@@ -409,6 +426,51 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
             ids[i] = ((ControlStrategy)strategies.get(i)).getId();
         }
         presenter.viewControlStrategyComparisonResult(ids, "");
+    }
+    
+    private void summarizeControlStrategies() throws EmfException {
+        List strategies = selected();
+        
+        if (strategies.isEmpty()) {
+            messagePanel.setMessage("Please select at least one control strategy to summarize.");
+            return;
+        }
+        
+        int[] ids = new int[strategies.size()];
+        
+        for (int i = 0; i < strategies.size(); ++i) {
+            ids[i] = ((ControlStrategy)strategies.get(i)).getId();
+        }
+        
+        // ask user for output file
+        File localFile = null;
+        
+        // reuse file chooser so previous selections are preserved
+        if (chooser == null) {
+            chooser = new JFileChooser();
+
+            // set initial location to user's temp dir
+            UserPreference preferences = new DefaultUserPreferences();
+            String tempDir = preferences.localTempDir();
+            if (tempDir == null || tempDir.isEmpty())
+                tempDir = System.getProperty("java.io.tmpdir");
+            File tempDirFile = new File(tempDir);
+            chooser.setCurrentDirectory(tempDirFile);
+
+            chooser.setSelectedFile(new File("strategy_summary.csv"));
+        }
+
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
+        
+        localFile = chooser.getSelectedFile();
+        if (localFile.exists()) {
+            String message = "The selected file already exists. Do you want to overwrite it?";
+            ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
+            if (!confirmDialog.confirm()) return;
+        }
+        
+        presenter.summarizeControlStrategies(ids, localFile);
+        messagePanel.setMessage("Saved control strategy summary file: " + localFile.getName());
     }
 
     private void copySelectedStrategy() throws EmfException {

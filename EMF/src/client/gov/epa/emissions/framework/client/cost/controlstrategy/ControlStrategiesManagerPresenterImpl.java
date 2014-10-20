@@ -140,6 +140,22 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
         view.displayControlStrategyComparisonResult("Control Strategy Comparison", localFile.getAbsolutePath());
     }
     
+    public void summarizeControlStrategies(int[] controlStrategyIds, File localFile) throws EmfException {
+        if (controlStrategyIds == null || controlStrategyIds.length == 0)
+            throw new EmfException("No strategies to summarize.");
+
+        try {
+            Writer output = new BufferedWriter(new FileWriter(localFile));
+            try {
+                output.write(getControlStrategySummary(controlStrategyIds));
+            } finally {
+                output.close();
+            }
+        } catch (Exception e) {
+            throw new EmfException(e.getMessage());
+        }
+    }
+    
     private String tempQAStepFilePath(String exportDir) throws EmfException {
         String separator = File.separator; 
         UserPreference preferences = new DefaultUserPreferences();
@@ -162,6 +178,10 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
 
     private String getControlStrategyComparisonResult(int[] caseIds) throws EmfException {
         return service().getControlStrategyComparisonResult(caseIds);
+    }
+    
+    private String getControlStrategySummary(int[] strategyIds) throws EmfException {
+        return service().getControlStrategySummary(strategyIds);
     }
 
 }

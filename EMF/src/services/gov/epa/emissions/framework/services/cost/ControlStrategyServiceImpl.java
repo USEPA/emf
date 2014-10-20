@@ -14,6 +14,7 @@ import gov.epa.emissions.framework.services.cost.analysis.SummarizeStrategy;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyConstraint;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.SQLCompareControlStrategiesQuery;
+import gov.epa.emissions.framework.services.cost.controlStrategy.SQLSummarizeControlStrategiesQuery;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -615,6 +616,24 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             throw new EmfException("Could not retrieve control strategy comparison result: " + e.getMessage(), e);
         } catch (ExporterException e) {
             throw new EmfException("Could not retrieve control strategy comparison result: " + e.getMessage(), e);
+        } finally {
+            try {
+                if (dbServer != null && dbServer.isConnected())
+                    dbServer.disconnect();
+            } catch (Exception e) {
+                throw new EmfException("ControlStrategyService: error closing db server. " + e.getMessage());
+            }
+        }
+    }
+    
+    public String getControlStrategySummary(int[] controlStrategyIds) throws EmfException {
+        DbServer dbServer = dbServerFactory.getDbServer();
+        try {
+            return new QueryToString(dbServer, new SQLSummarizeControlStrategiesQuery().createSummarizeQuery(controlStrategyIds), ",").toString();
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not retrieve control strategy summary: " + e.getMessage(), e);
+        } catch (ExporterException e) {
+            throw new EmfException("Could not retrieve control strategy summary: " + e.getMessage(), e);
         } finally {
             try {
                 if (dbServer != null && dbServer.isConnected())

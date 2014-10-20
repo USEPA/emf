@@ -1,5 +1,7 @@
 package gov.epa.emissions.framework.client.cost.controlstrategy;
 
+import java.io.File;
+
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyView;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyView;
@@ -34,4 +36,6 @@ public interface ControlStrategiesManagerPresenter {
     void loadControlMeasures() throws EmfException;
 
     void viewControlStrategyComparisonResult(int[] ids, String string) throws EmfException;
+
+    void summarizeControlStrategies(int[] ids, File localFile) throws EmfException;
 }

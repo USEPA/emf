@@ -69,4 +69,6 @@ public interface ControlStrategyService extends EMFService {
 
     String getControlStrategyComparisonResult(int[] controlStrategyIds) throws EmfException;
     
+    String getControlStrategySummary(int[] controlStrategyIds) throws EmfException;
+    
 }
