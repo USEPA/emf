@@ -12,6 +12,7 @@ DECLARE
 	region RECORD;
 	target_pollutant_id integer := 0;
 	target_pollutant character varying(255) := '';
+	target_pollutant_ids integer[];
 	measures_count integer := 0;
 	measure_with_region_count integer := 0;
 	measure_classes_count integer := 0;
@@ -211,6 +212,19 @@ BEGIN
 		target_pollutant,
 		creator_user_id,
 		apply_replacement_controls;
+		
+	-- match target pollutant to list of similar pollutants
+	SELECT ARRAY(
+		SELECT pollutant_id
+		  FROM emf.aggregrated_efficiencyrecords
+		  JOIN emf.pollutants
+		    ON pollutant_id = pollutants.id
+		 WHERE pollutants.name LIKE '%' || 
+		  CASE WHEN target_pollutant = 'PM2_5' THEN 'PM2'
+		       ELSE target_pollutant
+		   END || '%'
+		 GROUP BY pollutant_id)
+	  INTO target_pollutant_ids;
 
 
 	-- see if strategyt creator is a CoST SU
@@ -640,6 +654,7 @@ BEGIN
 		EXISTING_MEASURE_ABBREVIATION,
 		EXISTING_PRIMARY_DEVICE_TYPE_CODE,
 		strategy_name,
+		target_poll,
 		control_technology,
 		source_group,
 		apply_order,
@@ -697,6 +712,7 @@ select
 	existing_measure_abbr,
 	existing_dev_code,
 	strategy_name,
+	target_poll,
 	control_technology,
 	source_group, 
 	1 as apply_order,
@@ -716,9 +732,9 @@ from (
 -- did sum over window here, becuase REQUIRED inner distinct clause was causing the windowing functions to not aggregrate correclty!!!!
 select 
 	*	, sum(ann_cost) OVER w as source_annual_cost,
-			sum( case when pollutant_id = ' ||  intTargetPollutantId || '::integer then 1 else 0 end ) OVER w as source_tp_count,
+			sum( case when pollutant_id = ANY (''' || target_pollutant_ids::varchar || ''') then 1 else 0 end ) OVER w as source_tp_count,
 			sum( 1 ) OVER w as source_poll_count,
-			sum(case when pollutant_id = ' ||  intTargetPollutantId || '::integer then final_emissions else null::double precision end) OVER w  as source_tp_remaining_emis			
+			sum(case when pollutant_id = ANY (''' || target_pollutant_ids::varchar || ''') then final_emissions else null::double precision end) OVER w  as source_tp_remaining_emis			
 	from (
 
 
@@ -773,6 +789,7 @@ select
 			er.existing_measure_abbr,
 			er.existing_dev_code,
 			' || quote_literal(strategy_name) || ' as strategy_name,
+			' || quote_literal(target_pollutant) || ' as target_poll,
 			ct.name as control_technology,
 			sg.name as source_group,
 			fipscode.county,
@@ -931,7 +948,7 @@ select
 
 			-- only relevant for target pollutant
 			and (
-				(p.id = ' ||  intTargetPollutantId || '
+				(p.id = ANY (''' || target_pollutant_ids::varchar || ''')
 
 				-- dont include sources that have been fully controlled...
 				and coalesce(' || inv_pct_red_expression || ', 0) <> 100.0
@@ -968,7 +985,7 @@ select
 						' || coalesce(' and coalesce(' || annual_cost_expression || ', -1E+308) <= ' || max_ann_cost_constraint, '')  || '
 				)' else '' end || ')
 				or
-				p.id <> ' ||  intTargetPollutantId || '
+				p.id != ALL (''' || target_pollutant_ids::varchar || ''')
 
 			)
 			

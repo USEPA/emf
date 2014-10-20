@@ -2,7 +2,7 @@
 
 -- DROP FUNCTION get_least_cost_worksheet_emis_reduction(character varying, character varying, integer);
 
-CREATE OR REPLACE FUNCTION public.get_least_cost_worksheet_emis_reduction(worksheet_table_name character varying, target_pollutant character varying, target_record_offset integer)
+CREATE OR REPLACE FUNCTION public.get_least_cost_worksheet_emis_reduction(worksheet_table_name character varying, target_pollutant_names varchar[], target_record_offset integer)
   RETURNS double precision AS
 $BODY$
 DECLARE
@@ -16,7 +16,7 @@ BEGIN
 			SELECT emis_reduction, marginal, original_dataset_id, record_id, source, source_id, source_poll_cnt
 			FROM emissions.' || worksheet_table_name || '
 			where status is null 
-				and poll = ' || quote_literal(target_pollutant) || '
+				and poll = ANY (''' || target_pollutant_names::varchar || ''')
 			ORDER BY marginal, emis_reduction desc, source_poll_cnt desc, record_id
 			limit ' || target_record_offset || '
 		) tbl

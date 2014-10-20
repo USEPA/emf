@@ -396,7 +396,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     }
     
     private ComboBox majorPollutants() throws EmfException {
-        Pollutant[] pollutants = getAllPollutants(this.session);
+        Pollutant[] pollutants = getPollutants(this.session);
         majorPollutant = new ComboBox(pollutants);
         majorPollutant.setSelectedItem(controlStrategy.getTargetPollutant());
         majorPollutant.setPreferredSize(comboSize);
@@ -415,7 +415,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         Button set = new Button("Set", new AbstractAction(){
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    Pollutant[] pollutants = getAllPollutants(session);
+                    Pollutant[] pollutants = getPollutants(session);
                     TargetPollutantListWidget pollSetter = new TargetPollutantListWidget(pollutants, changeablesList, parentConsole);
                     pollSetter.setPollutants(targetPollutants);
                     pollSetter.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
@@ -437,8 +437,20 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         return panel;
     }
 
-    private Pollutant[] getAllPollutants(EmfSession session) throws EmfException {
-        return session.dataCommonsService().getPollutants();
+    private Pollutant[] getPollutants(EmfSession session) throws EmfException {
+        List<Pollutant> list = new ArrayList<Pollutant>();
+        for (Pollutant poll : session.dataCommonsService().getPollutants()) {
+            if (poll.getName().equals("NH3") ||
+                poll.getName().equals("NOX") ||
+                poll.getName().equals("PM10") ||
+                poll.getName().equals("PM2_5") ||
+                poll.getName().equals("SO2") ||
+                poll.getName().equals("VOC")) {
+                list.add(poll);
+            }
+        }
+        Pollutant[] array = new Pollutant[list.size()];
+        return list.toArray(array);
     }
 
     private JLabel createLeftAlignedLabel(String name) {
@@ -504,7 +516,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         } else {
             List<ControlStrategyTargetPollutant> list = new ArrayList<ControlStrategyTargetPollutant>();
             for (String targetPollutantName : multiPollField.getText().split("; ")) {
-                for (Pollutant pollutant : getAllPollutants(this.session)) {
+                for (Pollutant pollutant : getPollutants(this.session)) {
                     if (pollutant.getName().equals(targetPollutantName))
                         list.add(new ControlStrategyTargetPollutant(pollutant));
                 }

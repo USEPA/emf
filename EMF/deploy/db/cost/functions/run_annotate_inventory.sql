@@ -17,6 +17,8 @@ DECLARE
 	county_dataset_version integer := null;
 	region RECORD;
 	target_pollutant_id integer := 0;
+	target_pollutant character varying(255) := '';
+	target_pollutant_ids integer[];
 	measures_count integer := 0;
 	measure_with_region_count integer := 0;
 	measure_classes_count integer := 0;
@@ -101,8 +103,11 @@ BEGIN
 		cs.county_dataset_version,
 		cs.use_cost_equations,
 		cs.discount_rate / 100,
-		cs.creator_id
+		cs.creator_id,
+		p.name
 	FROM emf.control_strategies cs
+		inner join emf.pollutants p
+		on p.id = cs.pollutant_id
 	where cs.id = int_control_strategy_id
 	INTO target_pollutant_id,
 		inv_filter,
@@ -112,7 +117,21 @@ BEGIN
 		county_dataset_version,
 		use_cost_equations,
 		discount_rate,
-		creator_user_id;
+		creator_user_id,
+		target_pollutant;
+		
+	-- match target pollutant to list of similar pollutants
+	SELECT ARRAY(
+		SELECT pollutant_id
+		  FROM emf.aggregrated_efficiencyrecords
+		  JOIN emf.pollutants
+		    ON pollutant_id = pollutants.id
+		 WHERE pollutants.name LIKE '%' || 
+		  CASE WHEN target_pollutant = 'PM2_5' THEN 'PM2'
+		       ELSE target_pollutant
+		   END || '%'
+		 GROUP BY pollutant_id)
+	  INTO target_pollutant_ids;
 
 	-- see if strategyt creator is a CoST SU
 	SELECT 
@@ -446,7 +465,7 @@ BEGIN
 				' else '' end || '
 
 			where 	' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
-				and p.id = ' ||  target_pollutant_id || '
+				and p.id = ANY (''' || target_pollutant_ids::varchar || ''')
 				and inv.ceff > 0.0
 				-- measure region filter
 				' || case when measure_with_region_count > 0 then '

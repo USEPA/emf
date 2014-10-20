@@ -9,7 +9,7 @@
 --SELECT public.populate_least_cost_strategy_detailed_result(9, 2474, 0, 224, 36797.935745::double precision);
 
 CREATE OR REPLACE FUNCTION public.narrow_in_on_least_cost_target(worksheet_table_name varchar(64), 
-	target_pollutant varchar, 
+	target_pollutant_names varchar[], 
 	domain_wide_emis_reduction double precision) RETURNS integer AS $$
 DECLARE
 	target_record_offset integer;
@@ -26,12 +26,12 @@ BEGIN
 	execute 'SELECT count(1)
 		FROM emissions.' || worksheet_table_name || '
 		where status is null 
-			and poll = ' || quote_literal(target_pollutant)
+			and poll = ANY (''' || target_pollutant_names::varchar || ''')'
 		into record_count;
 
 	-- get maximum emission reduction that can be acheived...
 	max_emis_reduction := public.get_least_cost_worksheet_emis_reduction(worksheet_table_name, 
-			target_pollutant, 
+			target_pollutant_names, 
 			record_count);
 
 	IF domain_wide_emis_reduction >= max_emis_reduction THEN
@@ -44,7 +44,7 @@ BEGIN
 	WHILE continue_trying LOOP
 
 		emis_reduction := public.get_least_cost_worksheet_emis_reduction(worksheet_table_name, 
-			target_pollutant, 
+			target_pollutant_names, 
 			target_record_offset);
 
 --		raise notice '%', 'next starting point, first look at record_offset = ' || coalesce(target_record_offset,0) || ', previous_record_offset = ' || coalesce(prev_target_record_offset,0) || ', record_count = ' || record_count || ', emis_reduction = ' || coalesce(emis_reduction,0) || ' - ' || clock_timestamp();

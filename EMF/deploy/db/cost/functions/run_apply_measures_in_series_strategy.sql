@@ -7,6 +7,7 @@ CREATE OR REPLACE FUNCTION public.run_apply_measures_in_series_strategy(int_cont
 	input_dataset_version integer, 
 	strategy_result_id int) RETURNS integer AS $$
 DECLARE
+	strategy_name varchar(255) := '';
 	inv_table_name varchar(64) := '';
 	inv_filter text := '';
 	inv_fips_filter text := '';
@@ -16,6 +17,7 @@ DECLARE
 	county_dataset_version integer := null;
 	region RECORD;
 	target_pollutant_id integer := 0;
+	target_pollutant varchar(255) := '';
 	measures_count integer := 0;
 	measure_classes_count integer := 0;
 	county_dataset_filter_sql text := '';
@@ -90,7 +92,8 @@ BEGIN
 	END IF;
 
 	-- get target pollutant, inv filter, and county dataset info if specified
-	SELECT cs.pollutant_id,
+	SELECT cs.name,
+		cs.pollutant_id,
 		case when length(trim(cs.filter)) > 0 then '(' || public.alias_inventory_filter(cs.filter, 'inv') || ')' else null end,
 		cs.cost_year,
 		cs.analysis_year,
@@ -101,7 +104,8 @@ BEGIN
 		cs.creator_id
 	FROM emf.control_strategies cs
 	where cs.id = int_control_strategy_id
-	INTO target_pollutant_id,
+	INTO strategy_name,
+		target_pollutant_id,
 		inv_filter,
 		cost_year,
 		inventory_year,
@@ -110,6 +114,11 @@ BEGIN
 		use_cost_equations,
 		discount_rate,
 		creator_user_id;
+	
+	select p.name
+	FROM emf.pollutants p
+	where p.id = target_pollutant_id
+	INTO target_pollutant;
 
 	-- see if strategyt creator is a CoST SU
 	SELECT 
@@ -296,7 +305,9 @@ BEGIN
 		yloc,
 		plant,
 		sector,
-		equation_type
+		equation_type,
+		strategy_name,
+		target_poll
 		)
 	select 	' || detailed_result_dataset_id || '::integer,
 		abbreviation,
@@ -333,7 +344,9 @@ BEGIN
 		yloc,
 		plant,
 		' || quote_literal(inventory_sectors) || ' as sector,
-		equation_type
+		equation_type,
+		strategy_name,
+		target_poll
 	from (
 		select DISTINCT ON (inv.scc, inv.fips, ' || case when is_point_table = false then '' else 'inv.plantid, inv.pointid, inv.stackid, inv.segment, ' end || 'er.pollutant_id, er.control_measures_id) 
 			m.abbreviation,
@@ -368,7 +381,9 @@ BEGIN
 			' || get_strategt_cost_inner_sql || '.actual_equation_type as equation_type,
 			' || case when measures_count > 0 then 'csm.apply_order ' else '1.0' end || ' as apply_order,
 			' || case when has_latlong_columns then 'inv.xloc,inv.yloc,' else 'fipscode.centerlon as xloc,fipscode.centerlat as yloc,' end || '
-			' || case when has_plant_column then 'inv.plant' when not has_latlong_columns then 'fipscode.state_county_fips_code_desc as plant' else 'null::character varying as plant' end || '
+			' || case when has_plant_column then 'inv.plant' when not has_latlong_columns then 'fipscode.state_county_fips_code_desc as plant' else 'null::character varying as plant' end || ',
+			' || quote_literal(strategy_name) || ' as strategy_name,
+			' || quote_literal(target_pollutant) || ' as target_poll
 		FROM emissions.' || inv_table_name || ' inv
 
 			inner join emf.pollutants p
@@ -464,6 +479,7 @@ DECLARE
 	region RECORD;
 	target_pollutant_id integer := 0;
 	target_pollutant varchar(255) := '';
+	target_pollutant_names varchar[];
 	measure_with_region_count integer := 0;
 	min_emis_reduction_constraint real := null;
 	min_control_efficiency_constraint real := null;
@@ -513,6 +529,19 @@ BEGIN
 	FROM emf.pollutants p
 	where p.id = target_pollutant_id
 	INTO target_pollutant;
+		
+	-- match target pollutant to list of similar pollutants
+	SELECT ARRAY(
+		SELECT pollutants.name
+		  FROM emf.aggregrated_efficiencyrecords
+		  JOIN emf.pollutants
+		    ON pollutant_id = pollutants.id
+		 WHERE pollutants.name LIKE '%' || 
+		  CASE WHEN target_pollutant = 'PM2_5' THEN 'PM2'
+		       ELSE target_pollutant
+		   END || '%'
+		 GROUP BY pollutants.name)
+	  INTO target_pollutant_names;
 
 	-- get gdp chained values
 	SELECT chained_gdp
@@ -731,7 +760,7 @@ BEGIN
 				and inv2.stackid = inv.stackid
 				and inv2.segment = inv.segment' end || '
 				and inv2.cm_id = inv.cm_id
-				and inv2.poll = ' || quote_literal(target_pollutant) || '
+				and inv2.poll = ANY (''' || target_pollutant_names::varchar || ''')
 				and (
 					inv2.percent_reduction >= ' || coalesce(min_control_efficiency_constraint, -100.0) || '
 					' || coalesce(' and inv2.emis_reduction >= ' || min_emis_reduction_constraint, '')  || '
@@ -747,7 +776,7 @@ BEGIN
 						and inv3.pointid = inv.pointid
 						and inv3.stackid = inv.stackid
 						and inv3.segment = inv.segment' end || '
-						and inv3.poll = ' || quote_literal(target_pollutant) || '
+						and inv3.poll = ANY (''' || target_pollutant_names::varchar || ''')
 					)
 				';
 		-- update the apply order again, there are bound to be gaps...

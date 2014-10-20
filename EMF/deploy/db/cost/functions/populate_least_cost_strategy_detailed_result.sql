@@ -25,6 +25,7 @@ DECLARE
 	region RECORD;
 	target_pollutant_id integer := 0;
 	target_pollutant varchar;
+	target_pollutant_names varchar[];
 	county_dataset_filter_sql text := '';
 	inventory_year integer := null;
 	dataset_month smallint := 0;
@@ -135,6 +136,19 @@ BEGIN
 	from emf.pollutants
 	where id = target_pollutant_id
 	into target_pollutant;
+		
+	-- match target pollutant to list of similar pollutants
+	SELECT ARRAY(
+		SELECT pollutants.name
+		  FROM emf.aggregrated_efficiencyrecords
+		  JOIN emf.pollutants
+		    ON pollutant_id = pollutants.id
+		 WHERE pollutants.name LIKE '%' || 
+		  CASE WHEN target_pollutant = 'PM2_5' THEN 'PM2'
+		       ELSE target_pollutant
+		   END || '%'
+		 GROUP BY pollutants.name)
+	  INTO target_pollutant_names;
 
 	-- get month of the dataset, 0 (Zero) indicates an annual inventory
 	select public.get_dataset_month(input_dataset_id)
@@ -162,7 +176,7 @@ BEGIN
 	execute 'select sum(' || emis_sql || ') 
 		FROM emissions.' || inv_table_name || ' as inv
 		where ' || inv_filter || county_dataset_filter_sql || '
-			and poll = ' || quote_literal(target_pollutant)
+			and poll = ANY (''' || target_pollutant_names::varchar || ''')'
 	into uncontrolled_emis;
 
 	-- 
@@ -170,13 +184,13 @@ BEGIN
 				set status = null::integer
 				where status = 1';
 
-	execute 'select count(1) from emissions.' || worksheet_table_name || ' where status is null and poll = ' || quote_literal(target_pollutant)
+	execute 'select count(1) from emissions.' || worksheet_table_name || ' where status is null and poll = ANY (''' || target_pollutant_names::varchar || ''')'
 	into record_count;
 	record_count := coalesce(record_count, 0);
 	raise notice '%', 'emissions.' || worksheet_table_name || ' count = ' || record_count || ' - ' || clock_timestamp();
 
 	-- lets figure out what maximum emission reduction, is possible
-	select public.get_least_cost_worksheet_emis_reduction(worksheet_table_name, target_pollutant, record_count)
+	select public.get_least_cost_worksheet_emis_reduction(worksheet_table_name, target_pollutant_names, record_count)
 	into emis_reduction;
 /*	execute 'SELECT sum(emis_reduction)
 		from (
@@ -194,7 +208,7 @@ BEGIN
 	IF domain_wide_emis_reduction < emis_reduction THEN
 
 		apply_order := public.narrow_in_on_least_cost_target(worksheet_table_name, 
-			target_pollutant, 
+			target_pollutant_names, 
 			domain_wide_emis_reduction);
 
 	ELSE
@@ -219,7 +233,7 @@ BEGIN
 						SELECT emis_reduction, marginal, original_dataset_id, record_id, source, source_id, source_poll_cnt, cm_id
 						FROM emissions.' || worksheet_table_name || '
 						where status is null 
-							and poll = ' || quote_literal(target_pollutant) || '
+							and poll = ANY (''' || target_pollutant_names::varchar || ''')
 						ORDER BY marginal, emis_reduction desc, source_poll_cnt desc, record_id
 --						limit ' || (apply_order) || '
 						limit ' || (apply_order + 1) || '
@@ -253,7 +267,7 @@ BEGIN
 
 			from emissions.' || worksheet_table_name || '
 			where status is null 
-				and poll = ' || quote_literal(target_pollutant) || '
+				and poll = ANY (''' || target_pollutant_names::varchar || ''')
 
 			WINDOW w AS (ORDER BY marginal, emis_reduction desc, source_poll_cnt desc, record_id)
 
@@ -317,6 +331,7 @@ BEGIN
 		EXISTING_MEASURE_ABBREVIATION,
 		EXISTING_PRIMARY_DEVICE_TYPE_CODE,
 		strategy_name,
+		target_poll,
 		control_technology,
 		source_group,
 		county_name,
@@ -375,6 +390,7 @@ BEGIN
 		EXISTING_MEASURE_ABBREVIATION,
 		EXISTING_PRIMARY_DEVICE_TYPE_CODE,
 		' || quote_literal(strategy_name) || ' as strategy_name,
+    ' || quote_literal(target_pollutant) || ' as target_poll,
 		tbl.control_technology,
 		tbl.source_group,
 		county_name,
@@ -398,7 +414,7 @@ BEGIN
 					and ap.status is null 
 --					and tp.apply_order <= ' || coalesce(apply_order, record_count) || '
 					and tp.apply_order <= ' || coalesce(apply_order + 1, record_count) || '
-					and tp.poll = ' || quote_literal(target_pollutant) || '
+					and tp.poll = ANY (''' || target_pollutant_names::varchar || ''')
 				ORDER BY ap.source, ap.poll
 	) as tbl
 	
@@ -432,12 +448,12 @@ BEGIN
 				sum(dr.annual_oper_maint_cost), 
 				sum(dr.annualized_capital_cost), 
 				sum(dr.total_capital_cost), 
-				case when dr.poll = ' || quote_literal(target_pollutant) || ' then ' || domain_wide_emis_reduction || ' / ' || uncontrolled_emis || ' * 100 else null::double precision end, 
-				case when dr.poll = ' || quote_literal(target_pollutant) || ' then sum(dr.emis_reduction) / ' || uncontrolled_emis || ' * 100 else null::double precision end, 
+				case when dr.poll = ANY (''' || target_pollutant_names::varchar || ''') then ' || domain_wide_emis_reduction || ' / ' || uncontrolled_emis || ' * 100 else null::double precision end, 
+				case when dr.poll = ANY (''' || target_pollutant_names::varchar || ''') then sum(dr.emis_reduction) / ' || uncontrolled_emis || ' * 100 else null::double precision end, 
 				sum(dr.emis_reduction), 
-				case when dr.poll = ' || quote_literal(target_pollutant) || ' then ' || uncontrolled_emis || ' else null::double precision end
+				case when dr.poll = ANY (''' || target_pollutant_names::varchar || ''') then ' || uncontrolled_emis || ' else null::double precision end
 			from emissions.'|| detailed_result_table_name || ' dr
-			where dr.poll = ' || quote_literal(target_pollutant) || '
+			where dr.poll = ANY (''' || target_pollutant_names::varchar || ''')
 			group by dr.poll';
 	--			group by ' || costcurve_dataset_id || ', poll, ' || domain_wide_emis_reduction || ' / ' || uncontrolled_emis
 

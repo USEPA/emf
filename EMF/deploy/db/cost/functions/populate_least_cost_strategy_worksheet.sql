@@ -17,6 +17,8 @@ DECLARE
 	region RECORD;
 	target_pollutant_id integer := 0;
 	target_pollutant varchar;
+	target_pollutant_ids integer[];
+	target_pollutant_names varchar[];
 	measures_count integer := 0;
 	measure_with_region_count integer := 0;
 	measure_classes_count integer := 0;
@@ -251,6 +253,31 @@ BEGIN
 	from emf.pollutants
 	where id = target_pollutant_id
 	into target_pollutant;
+		
+	-- match target pollutant to list of similar pollutants
+	SELECT ARRAY(
+		SELECT pollutant_id
+		  FROM emf.aggregrated_efficiencyrecords
+		  JOIN emf.pollutants
+		    ON pollutant_id = pollutants.id
+		 WHERE pollutants.name LIKE '%' || 
+		  CASE WHEN target_pollutant = 'PM2_5' THEN 'PM2'
+		       ELSE target_pollutant
+		   END || '%'
+		 GROUP BY pollutant_id)
+	  INTO target_pollutant_ids;
+
+	SELECT ARRAY(
+		SELECT pollutants.name
+		  FROM emf.aggregrated_efficiencyrecords
+		  JOIN emf.pollutants
+		    ON pollutant_id = pollutants.id
+		 WHERE pollutants.name LIKE '%' || 
+		  CASE WHEN target_pollutant = 'PM2_5' THEN 'PM2'
+		       ELSE target_pollutant
+		   END || '%'
+		 GROUP BY pollutants.name)
+	  INTO target_pollutant_names;
 
 
 	-- see if there are point specific columns in the inventory
@@ -418,7 +445,7 @@ BEGIN
 			execute 'select ' || domain_wide_pct_reduction || ' / 100.0 * sum(' || emis_sql || ') 
 			FROM emissions.' || inv_table_name || ' as inv
 			where ' || inv_filter || county_dataset_filter_sql || '
-				and poll = ' || quote_literal(target_pollutant)
+				and poll = ANY (''' || target_pollutant_names::varchar || ''')'
 			into domain_wide_emis_reduction;
 
 			-- update so its viewable for client, via the constraints tab
@@ -429,7 +456,7 @@ BEGIN
 			execute 'select ' || domain_wide_emis_reduction || ' / sum(' || emis_sql || ') * 100.0 
 			FROM emissions.' || inv_table_name || ' as inv
 			where ' || inv_filter || county_dataset_filter_sql || '
-				and poll = ' || quote_literal(target_pollutant)
+				and poll = ANY (''' || target_pollutant_names::varchar || ''')'
 			into domain_wide_pct_reduction;
 
 			-- update so its viewable for client, via the constraints tab
@@ -757,9 +784,9 @@ select
 	sum(ann_cost) OVER w as source_annual_cost,
 --	case when pollutant_id = ' ||  target_pollutant_id || '::integer and coalesce(emis_reduction, 0) != 0 then coalesce(sum(ann_cost) OVER w / emis_reduction, 0.0) else null::double precision end as marginal,
 	case when coalesce(emis_reduction, 0) != 0 then coalesce(sum(ann_cost) OVER w / emis_reduction, 0.0) else null::double precision end as marginal,
-	sum( case when pollutant_id = ' ||  target_pollutant_id || '::integer then 1 else 0 end ) OVER w as source_tp_count,
+	sum( case when pollutant_id = ANY (''' || target_pollutant_ids::varchar || ''') then 1 else 0 end ) OVER w as source_tp_count,
 	sum( 1 ) OVER w as source_poll_cnt,
-	sum(case when pollutant_id = ' ||  target_pollutant_id || '::integer then final_emissions else null::double precision end) OVER w  as source_tp_remaining_emis
+	sum(case when pollutant_id = ANY (''' || target_pollutant_ids::varchar || ''') then final_emissions else null::double precision end) OVER w  as source_tp_remaining_emis
 from (
 
 
@@ -963,7 +990,7 @@ from (
 
 			-- only relevant for target pollutant
 			and (
-				(p.id = ' ||  target_pollutant_id || '
+				(p.id = ANY (''' || target_pollutant_ids::varchar || ''')
 
 				-- dont include sources that have been fully controlled...
 				and coalesce(' || inv_pct_red_expression || ', 0) <> 100.0
@@ -1000,7 +1027,7 @@ from (
 						' || coalesce(' and coalesce(' || annual_cost_expression || ', -1E+308) <= ' || max_ann_cost_constraint, '')  || '
 				)' else '' end || ')
 				or
-				p.id <> ' ||  target_pollutant_id || '
+				p.id != ALL (''' || target_pollutant_ids::varchar || ''')
 
 			)
 			

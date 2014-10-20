@@ -10,6 +10,7 @@ DECLARE
 	worksheet_dataset_id integer := null;
 	worksheet_table_name varchar(64) := '';
 	target_pollutant varchar;
+	target_pollutant_names varchar[];
 	gimme_count integer := 0;
 	include_unspecified_costs boolean := true; 
 BEGIN
@@ -47,6 +48,19 @@ BEGIN
 	INTO target_pollutant,
 		include_unspecified_costs;
 		
+	-- match target pollutant to list of similar pollutants
+	SELECT ARRAY(
+		SELECT pollutants.name
+		  FROM emf.aggregrated_efficiencyrecords
+		  JOIN emf.pollutants
+		    ON pollutant_id = pollutants.id
+		 WHERE pollutants.name LIKE '%' || 
+		  CASE WHEN target_pollutant = 'PM2_5' THEN 'PM2'
+		       ELSE target_pollutant
+		   END || '%'
+		 GROUP BY pollutants.name)
+	  INTO target_pollutant_names;
+		
 --	raise notice '%', 'start ' || clock_timestamp();
 
 
@@ -62,7 +76,7 @@ BEGIN
 					null::integer 
 			end as record_id
 		from emissions.' || worksheet_table_name || ' tbl
-		where poll = ' || quote_literal(target_pollutant) || '
+		where poll = ANY (''' || target_pollutant_names::varchar || ''')
 		order by source, emis_reduction desc, marginal
 /*
 		select 
@@ -120,7 +134,7 @@ BEGIN
 				and ap.cm_id = tp.cm_id
 				and coalesce(ap.original_dataset_id,0) = coalesce(tp.original_dataset_id,0)
 			where tp.status = 0
-				and tp.poll = ' || quote_literal(target_pollutant) || ');';
+				and tp.poll = ANY (''' || target_pollutant_names::varchar || '''));';
 				
 --	raise notice '%', 'delete from emissions.' || worksheet_table_name || ' where status = 0 ' || ' - ' || clock_timestamp();
 
