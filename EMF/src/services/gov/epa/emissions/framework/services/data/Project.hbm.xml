@@ -9,6 +9,7 @@
 	  <generator class="identity"/>
  	</id>
 	<property name="name"	column="name"	type="java.lang.String"	not-null="true"/>
+	<property name="notes"	column="notes"	type="java.lang.String"	not-null="false"/>
   </class> 
 </hibernate-mapping>  
 

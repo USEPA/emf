@@ -2025,3 +2025,7 @@ UPDATE emf.fileformat_columns
    AND dataset_types.name = 'Temporal Profile Daily (CSV)'
    AND fileformat_columns.name = 'PROFILE_ID'
    AND fileformat_columns.type = 'INTEGER';
+   
+-- 10/20/2014 - add project notes field
+ALTER TABLE emf.projects
+ADD COLUMN notes text;

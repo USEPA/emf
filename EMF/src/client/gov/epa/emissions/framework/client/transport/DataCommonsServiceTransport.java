@@ -703,4 +703,14 @@ public class DataCommonsServiceTransport implements DataCommonsService {
 
         call.requestResponse(new Object[] { userId });
     }
+    
+    public synchronized void updateProject(Project project) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("updateProject");
+        call.addParam("project", mappings.project());
+        call.setVoidReturnType();
+
+        call.requestResponse(new Object[] { project });
+    }
 }

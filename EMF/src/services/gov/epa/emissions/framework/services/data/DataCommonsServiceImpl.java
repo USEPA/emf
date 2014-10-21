@@ -1443,4 +1443,10 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         return " error: the Format Definition File has an unrecognized data type: "+ type;
     }
 
+    public synchronized void updateProject(Project project) throws EmfException {
+        Session session = sessionFactory.getSession();
+        dao.updateProject(project, session);
+        session.close();
+    }
+
 }

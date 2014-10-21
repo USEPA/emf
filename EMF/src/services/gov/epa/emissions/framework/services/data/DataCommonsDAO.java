@@ -15,6 +15,7 @@ import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
+import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
@@ -435,6 +436,10 @@ public class DataCommonsDAO {
     
     public List get(Class clazz, Criterion criterion, Session session){
         return hibernateFacade.get(clazz, criterion, session);
+    }
+    
+    public void updateProject(Project project, Session session) {
+        hibernateFacade.updateOnly(project, session);
     }
 
 }

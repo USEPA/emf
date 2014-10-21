@@ -7,6 +7,8 @@ public class Project implements Serializable, Comparable {
     private int id;
 
     private String name;
+    
+    private String notes;
 
     /*
      * Default constructor needed for hibernate and axis serialization
@@ -33,6 +35,14 @@ public class Project implements Serializable, Comparable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public String getNotes() {
+        return notes;
+    }
+    
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public boolean equals(Object other) {

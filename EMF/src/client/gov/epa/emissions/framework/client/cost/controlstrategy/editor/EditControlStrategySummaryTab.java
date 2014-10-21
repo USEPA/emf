@@ -17,6 +17,7 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.TargetPollutantListWidget;
 import gov.epa.emissions.framework.client.data.Projects;
 import gov.epa.emissions.framework.client.data.region.Regions;
+import gov.epa.emissions.framework.client.meta.EditProjectNotesDialog;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.StrategyType;
@@ -150,10 +151,18 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
 
         layoutGenerator.addLabelWidgetPair("Name:", name(), panelTop);
         layoutGenerator.addLabelWidgetPair("Description:", new ScrollableComponent(description()), panelTop);
-//      JPanel subPanel = new JPanel(new BorderLayout());
-//      subPanel.add(new JLabel("Project:"));
-//      subPanel.add(projects());
-        layoutGenerator.addLabelWidgetPair("Project:", projects(), panelTop);
+
+        // projects pull-down menu and notes button
+        JPanel projPanel = new JPanel();
+        projPanel.add(projects());
+        Button notesButton = new Button("Project Notes", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                editProjectNotes();
+            }
+        });
+        projPanel.add(notesButton);
+        layoutGenerator.addLabelWidgetPair("Project:", projPanel, panelTop);
+
 //      layoutGenerator.addWidgetPair(middleLeftPanel, middleRightPanel, panelBottom);
 //      layoutGenerator.addLabelWidgetPair("Creator:", creator(), panelTop);
 //      layoutGenerator.addLabelWidgetPair("Last Modified Date: ", lastModifiedDate(), panelTop);
@@ -748,5 +757,16 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     public void fireStrategyTypeChanges(StrategyType strategyType) {
         // NOTE Auto-generated method stub
         
+    }
+    
+    private void editProjectNotes() {
+        Object selected = projectsCombo.getSelectedItem();
+        if (selected instanceof Project) {
+            Project proj = (Project) selected;
+            EditProjectNotesDialog dialog = new EditProjectNotesDialog(parentConsole, session, proj);
+            dialog.display();
+        } else {
+            messagePanel.setMessage("Please select a project.");
+        }
     }
 }
