@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class name="gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup" table="strategy_groups" schema="emf">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="java.lang.String" not-null="true" length="255"/>
+        <property name="notes" column="notes" type="java.lang.String" not-null="false"/>
+        <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
+
+        <array name="controlStrategies" table="control_strategy_groups">
+            <key column="strategy_group_id" not-null="true"/>
+            <list-index column="list_index"/>
+            <many-to-many class="gov.epa.emissions.framework.services.cost.ControlStrategy" column="control_strategy_id"/>
+        </array>
+    </class>
+</hibernate-mapping>

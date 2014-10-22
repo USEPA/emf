@@ -115,6 +115,7 @@
 	    <mapping resource="gov/epa/emissions/framework/services/cost/ControlMeasureClass.hbm.xml"/>
 	    <mapping resource="gov/epa/emissions/framework/services/cost/ControlMeasurePropertyCategory.hbm.xml"/>
 	    <mapping resource="gov/epa/emissions/framework/services/cost/ControlStrategyConstraint.hbm.xml"/>
+	    <mapping resource="gov/epa/emissions/framework/services/cost/controlStrategy/StrategyGroup.hbm.xml"/>
 
 		<!-- Mappings : SMS -->
 	   	<mapping resource="gov/epa/emissions/framework/services/sms/SectorScenario.hbm.xml"/>

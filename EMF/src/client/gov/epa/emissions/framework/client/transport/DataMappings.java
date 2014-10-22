@@ -52,6 +52,7 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyTargetPollutant;
 import gov.epa.emissions.framework.services.cost.controlStrategy.CostYearTable;
+import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.cost.controlmeasure.Scc;
 import gov.epa.emissions.framework.services.cost.data.ControlStrategyResultsSummary;
@@ -212,6 +213,7 @@ public class DataMappings extends Mappings {
         bean(call, ControlMeasureNEIDevice.class, controlMeasureNEIDevice());
         bean(call, ControlMeasureProperty.class, controlMeasureProperty());
         bean(call, ControlMeasurePropertyCategory.class, controlMeasurePropertyCategory());
+        bean(call, StrategyGroup.class, strategyGroup());
     }
 
     private void registerArrays(Call call) {
@@ -286,6 +288,7 @@ public class DataMappings extends Mappings {
         array(call, ControlMeasureNEIDevice[].class, controlMeasureNEIDevices());
         array(call, ControlMeasureProperty[].class, controlMeasureProperties());
         array(call, ControlMeasurePropertyCategory[].class, controlMeasurePropertyCategories());
+        array(call, StrategyGroup[].class, strategyGroups());
         
         array(call, EmfFileInfo[].class, emfFileInfos());
         
@@ -651,6 +654,14 @@ public class DataMappings extends Mappings {
 
     public QName strategyTypes() {
         return qname("StrategyTypes");
+    }
+    
+    public QName strategyGroup() {
+        return qname("StrategyGroup");
+    }
+    
+    public QName strategyGroups() {
+        return qname("StrategyGroups");
     }
 
     public QName efficiencyRecord() {

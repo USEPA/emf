@@ -1603,3 +1603,22 @@ ALTER TABLE emf.control_strategies
    ADD COLUMN apply_replacement_controls integer;
 ALTER TABLE emf.control_strategies
    ALTER COLUMN apply_replacement_controls SET DEFAULT 1;
+
+-- 10/20/2014 Control strategy groups
+CREATE TABLE emf.strategy_groups (
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL UNIQUE,
+  notes text,
+  lock_owner varchar(255),
+  lock_date timestamp
+)
+WITHOUT OIDS;
+
+CREATE TABLE emf.control_strategy_groups
+(
+  id SERIAL PRIMARY KEY,
+  strategy_group_id int4 NOT NULL REFERENCES emf.strategy_groups (id),
+  control_strategy_id int4 NOT NULL REFERENCES emf.control_strategies (id),
+  list_index int4
+) 
+WITHOUT OIDS;
