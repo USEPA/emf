@@ -12,6 +12,8 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyView;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyWindow;
+import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGroupManagerView;
+import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGroupManagerWindow;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyView;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyWindow;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
@@ -293,6 +295,19 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
             }
         });
         crudPanel.add(summaryButton);
+        
+        Button groupsButton = new Button("Groups", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                try {
+                    StrategyGroupManagerView view = new StrategyGroupManagerWindow(parentConsole, session, desktopManager);
+                    presenter.doDisplayStrategyGroups(view);
+                } catch (EmfException exception) {
+                    messagePanel.setError(exception.getMessage());
+                }
+            }
+        });
+        crudPanel.add(groupsButton);
 
         return crudPanel;
     }

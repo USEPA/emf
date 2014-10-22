@@ -52,17 +52,26 @@ public class ControlStrategiesTableData extends AbstractTableData {
     private List createRows(ControlStrategy[] controlStrategies) {
         List rows = new ArrayList();
         for (int i = 0; i < controlStrategies.length; i++) {
-            ControlStrategy element = controlStrategies[i];
-            Object[] values = { element.getName(), format(element.getLastModifiedDate()), (element.getIsFinal() == null || !element.getIsFinal() ? false : true), element.getRunStatus(), region(element),
-                    element.getTargetPollutant(), element.getTotalCost() != null ? element.getTotalCost() : NAN_VALUE /*getTotalCost(element.getId())*/, element.getTotalReduction() != null ? element.getTotalReduction() : NAN_VALUE /*getReduction(element.getId())*/, element.getTotalReduction() != null && element.getTotalReduction() != 0.0D && element.getTotalCost() != null ? element.getTotalCost() / element.getTotalReduction() : NAN_VALUE, 
-                    project(element), analysisType(element), costYear(element), 
-                    "" + (element.getInventoryYear() != 0 ? element.getInventoryYear() : ""), 
-                    element.getCreator().getName() };
-            Row row = new ViewableRow(element, values);
-            rows.add(row);
+            Row row = row(controlStrategies[i]);
+            if ( row != null) {
+                rows.add(row);
+            }
         }
 
         return rows;
+    }
+    
+    private Row row(ControlStrategy strategy) {
+        if (strategy == null) return null;
+        
+        Object[] values = { strategy.getName(), format(strategy.getLastModifiedDate()), (strategy.getIsFinal() == null || !strategy.getIsFinal() ? false : true), strategy.getRunStatus(), region(strategy),
+                strategy.getTargetPollutant(), strategy.getTotalCost() != null ? strategy.getTotalCost() : NAN_VALUE /*getTotalCost(element.getId())*/, strategy.getTotalReduction() != null ? strategy.getTotalReduction() : NAN_VALUE /*getReduction(element.getId())*/, strategy.getTotalReduction() != null && strategy.getTotalReduction() != 0.0D && strategy.getTotalCost() != null ? strategy.getTotalCost() / strategy.getTotalReduction() : NAN_VALUE, 
+                project(strategy), analysisType(strategy), costYear(strategy), 
+                "" + (strategy.getInventoryYear() != 0 ? strategy.getInventoryYear() : ""), 
+                strategy.getCreator().getName() };
+        Row row = new ViewableRow(strategy, values);
+        
+        return row;
     }
 
 //    private Double getReduction(int controlStrategyId) throws EmfException {
@@ -140,5 +149,13 @@ public class ControlStrategiesTableData extends AbstractTableData {
     public void remove(ControlStrategy[] records) {
         for (int i = 0; i < records.length; i++)
             remove(records[i]);
+    }
+
+    public void add(ControlStrategy[] records) {
+        for (int i = 0; i < records.length; i++) {
+            Row row = row(records[i]);
+            if (!rows.contains(row))
+                rows.add(row);
+        }
     }
 }

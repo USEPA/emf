@@ -11,6 +11,8 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyPresenter;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyPresenterImpl;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyView;
+import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGroupManagerPresenter;
+import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGroupManagerView;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyPresenter;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyPresenterImpl;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyView;
@@ -184,4 +186,8 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
         return service().getControlStrategySummary(strategyIds);
     }
 
+    public void doDisplayStrategyGroups(StrategyGroupManagerView view) throws EmfException {
+        StrategyGroupManagerPresenter presenter = new StrategyGroupManagerPresenter(session, view);
+        presenter.display();
+    }
 }
