@@ -11,6 +11,7 @@ import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.cost.ControlStrategyService;
 import gov.epa.emissions.framework.services.cost.StrategyType;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
+import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 
 public class ControlStrategyServiceTransport implements ControlStrategyService {
@@ -332,4 +333,74 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         return (String) call.requestResponse(new Object[] { controlStrategyIds });
     }
 
+    public synchronized StrategyGroup[] getStrategyGroups() throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getStrategyGroups");
+        call.setReturnType(mappings.strategyGroups());
+
+        return (StrategyGroup[]) call.requestResponse(new Object[] {});
+    }
+
+    public synchronized StrategyGroup obtainLockedGroup(User owner, int id) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("obtainLockedGroup");
+        call.addParam("owner", mappings.user());
+        call.addIntegerParam("id");
+        call.setReturnType(mappings.strategyGroup());
+
+        return (StrategyGroup) call.requestResponse(new Object[] { owner, new Integer(id) });
+    }
+
+    public synchronized void releaseLockedGroup(User user, int id) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("releaseLockedGroup");
+        call.addParam("user", mappings.user());
+        call.addIntegerParam("id");
+        call.setReturnType(mappings.strategyGroup());
+
+        call.request(new Object[] { user, new Integer(id) });
+    }
+    
+    public synchronized int addStrategyGroup(StrategyGroup element) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("addStrategyGroup");
+        call.addParam("element", mappings.strategyGroup());
+        call.setIntegerReturnType();
+
+        return (Integer) call.requestResponse(new Object[] { element });
+    }
+    
+    public synchronized StrategyGroup updateStrategyGroupWithLock(StrategyGroup element) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("updateStrategyGroupWithLock");
+        call.addParam("element", mappings.strategyGroup());
+        call.setReturnType(mappings.strategyGroup());
+
+        return (StrategyGroup) call.requestResponse(new Object[] { element });
+    }
+
+    public synchronized int isDuplicateGroupName(String name) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("isDuplicateGroupName");
+        call.addStringParam("name");
+        call.setIntegerReturnType();
+        return (Integer) call.requestResponse(new Object[] { new String(name) });
+    }
+
+    public synchronized void removeStrategyGroups(int[] ids, User user) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("removeStrategyGroups");
+        call.addIntArrayParam();
+        call.addParam("user", mappings.user());
+        call.setVoidReturnType();
+
+        call.request(new Object[] { ids, user });
+    }
 }

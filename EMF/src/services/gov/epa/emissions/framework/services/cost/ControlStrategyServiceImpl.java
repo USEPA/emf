@@ -15,6 +15,7 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.SQLCompareControlStrategiesQuery;
 import gov.epa.emissions.framework.services.cost.controlStrategy.SQLSummarizeControlStrategiesQuery;
+import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -641,6 +642,135 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             } catch (Exception e) {
                 throw new EmfException("ControlStrategyService: error closing db server. " + e.getMessage());
             }
+        }
+    }
+
+    public synchronized StrategyGroup[] getStrategyGroups() throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List groups = dao.getAllStrategyGroups(session);
+            return (StrategyGroup[]) groups.toArray(new StrategyGroup[0]);
+        } catch (HibernateException e) {
+            LOG.error("Could not retrieve all control strategy groups. " + e.getMessage());
+            throw new EmfException("Could not retrieve all control strategy groups. " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized StrategyGroup obtainLockedGroup(User owner, int id) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            StrategyGroup locked = dao.obtainLockedGroup(owner, id, session);
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not obtain lock for Strategy Group: id = " + id + " by owner: "
+                            + owner.getUsername(), e);
+            throw new EmfException("Could not obtain lock for Strategy Group: id = " + id + " by owner: "
+                    + owner.getUsername());
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized void releaseLockedGroup(User user, int id) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            dao.releaseLockedGroup(user, id, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not release lock for Strategy Group id: " + id, e);
+            throw new EmfException("Could not release lock for Strategy Group id: " + id);
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized int addStrategyGroup(StrategyGroup group) throws EmfException {
+        Session session = sessionFactory.getSession();
+        int groupId;
+        try {
+            groupId = dao.addGroup(group, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not add Control Strategy Group: " + group, e);
+            throw new EmfException("Could not add Control Strategy Group: " + group);
+        } finally {
+            session.close();
+        }
+        return groupId;
+    }
+
+    public synchronized StrategyGroup updateStrategyGroupWithLock(StrategyGroup group) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            if (!dao.canUpdateGroup(group, session))
+                throw new EmfException("Control Strategy Group name already in use");
+
+            StrategyGroup groupWithLock = dao.updateGroupWithLock(group, session);
+
+            return groupWithLock;
+        } catch (RuntimeException e) {
+            LOG.error("Could not update Control Strategy Group: " + group, e);
+            throw new EmfException("Could not update Control Strategy Group: " + group);
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized int isDuplicateGroupName(String name) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            StrategyGroup group = dao.getGroupByName(name, session);
+            return group == null ? 0 : group.getId();
+        } catch (RuntimeException e) {
+            LOG.error("Could not determine if Control Strategy Group name is already used", e);
+            throw new EmfException("Could not determine if Control Strategy Group name is already used");
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized void removeStrategyGroups(int[] ids, User user) throws EmfException {
+        Session session = sessionFactory.getSession();
+        String exception = "";
+        try {
+            for (int i = 0; i < ids.length; i++) {
+                StrategyGroup group = dao.getGroupById(ids[i], session);
+                session.clear();
+
+                // check if admin user, then allow it to be removed.
+//                if (user.equals(cs.getCreator()) || user.isAdmin()) {
+//                    if (cs.isLocked())
+//                        exception += "The control strategy, " + cs.getName()
+//                                + ", is in edit mode and can not be removed. ";
+//                    else
+                        removeGroup(group);
+//                } else {
+//                    exception += "You do not have permission to remove the strategy: " + cs.getName() + ". ";
+//                }
+            }
+
+            if (exception.length() > 0)
+                throw new EmfException(exception);
+        } catch (RuntimeException e) {
+            LOG.error("Could not remove Control Strategy Group", e);
+            throw new EmfException("Could not remove Control Strategy Group");
+        } finally {
+            session.close();
+        }
+    }
+
+    private synchronized void removeGroup(StrategyGroup group) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            if (!dao.canUpdateGroup(group, session))
+                throw new EmfException("Control Strategy Group doesn't exist.");
+
+            dao.removeGroup(group, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not remove Control Strategy Group: " + group, e);
+            throw new EmfException("Could not remove Control Strategy Group: " + group.getName());
+        } finally {
+            session.close();
         }
     }
 }

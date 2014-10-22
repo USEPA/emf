@@ -7,6 +7,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyConstraint;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
+import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
@@ -542,6 +543,64 @@ public class ControlStrategyDAO {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public List getAllStrategyGroups(Session session) {
+        return hibernateFacade.getAll(StrategyGroup.class, Order.asc("name"), session);
+    }
+
+    public StrategyGroup getGroupById(int id, Session session) {
+        StrategyGroup group = (StrategyGroup) hibernateFacade.load(StrategyGroup.class, Restrictions.eq("id", new Integer(id)), session);
+        return group;
+    }
+
+    public StrategyGroup getGroupByName(String name, Session session) {
+        StrategyGroup group = (StrategyGroup) hibernateFacade.load(StrategyGroup.class, Restrictions.eq("name", new String(name)), session);
+        return group;
+    }
+
+    public StrategyGroup obtainLockedGroup(User owner, int id, Session session) {
+        return (StrategyGroup) lockingScheme.getLocked(owner, currentGroup(id, StrategyGroup.class, session), session);
+    }
+
+    public void releaseLockedGroup(User user, int id, Session session) {
+        StrategyGroup current = getGroupById(id, session);
+        lockingScheme.releaseLock(user, current, session);
+    }
+
+    public int addGroup(StrategyGroup group, Session session) {
+        return addObject(group, session);
+    }
+
+    public boolean canUpdateGroup(StrategyGroup strategyGroup, Session session) {
+        if (!exists(strategyGroup.getId(), StrategyGroup.class, session)) {
+            return false;
+        }
+
+        StrategyGroup current = currentGroup(strategyGroup.getId(), StrategyGroup.class, session);
+
+        session.clear();// clear to flush current
+
+        if (current.getName().equals(strategyGroup.getName()))
+            return true;
+
+        return !nameUsed(strategyGroup.getName(), StrategyGroup.class, session);
+    }
+
+    private StrategyGroup currentGroup(int id, Class clazz, Session session) {
+        return (StrategyGroup) hibernateFacade.current(id, clazz, session);
+    }
+    
+    public StrategyGroup updateGroupWithLock(StrategyGroup locked, Session session) throws EmfException {
+        return (StrategyGroup) lockingScheme.renewLockOnUpdate(locked, currentGroup(locked, session), session);
+    }
+
+    private StrategyGroup currentGroup(StrategyGroup strategyGroup, Session session) {
+        return currentGroup(strategyGroup.getId(), StrategyGroup.class, session);
+    }
+    
+    public void removeGroup(StrategyGroup strategyGroup, Session session) {
+        hibernateFacade.remove(strategyGroup, session);
     }
 
 }

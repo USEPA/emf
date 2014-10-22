@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EMFService;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
+import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 
 import java.util.Date;
@@ -70,5 +71,20 @@ public interface ControlStrategyService extends EMFService {
     String getControlStrategyComparisonResult(int[] controlStrategyIds) throws EmfException;
     
     String getControlStrategySummary(int[] controlStrategyIds) throws EmfException;
+    
+    // StrategyGroup methods
+    StrategyGroup[] getStrategyGroups() throws EmfException;
+
+    StrategyGroup obtainLockedGroup(User owner, int id) throws EmfException;
+
+    void releaseLockedGroup(User user, int id) throws EmfException;
+    
+    int addStrategyGroup(StrategyGroup element) throws EmfException;
+    
+    StrategyGroup updateStrategyGroupWithLock(StrategyGroup element) throws EmfException;
+
+    int isDuplicateGroupName(String name) throws EmfException;
+
+    void removeStrategyGroups(int[] ids, User user) throws EmfException;
     
 }
