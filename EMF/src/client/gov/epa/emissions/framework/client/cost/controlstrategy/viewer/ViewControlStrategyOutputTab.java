@@ -2,6 +2,8 @@ package gov.epa.emissions.framework.client.cost.controlstrategy.viewer;
 
 import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.InternalSource;
+import gov.epa.emissions.commons.data.KeyVal;
+import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.DisabledButton;
@@ -118,12 +120,10 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
             ControlStrategyResult[] controlStrategyResults = getSelectedDatasets();
             List<EmfDataset> datasetList = new ArrayList<EmfDataset>();
             for (int i = 0; i < controlStrategyResults.length; i++) {
-                // if
-                // (controlStrategyResults[i].getStrategyResultType().getName().equals(StrategyResultType.detailedStrategyResult))
-                // {
+                EmfDataset inv = null;
                 if (buttonGroup.getSelection().equals(invButton.getModel())) {
                     if (controlStrategyResults[i].getInputDataset() != null) {
-                        datasetList.add(controlStrategyResults[i].getInputDataset());
+                        inv = controlStrategyResults[i].getInputDataset();
                     }
                 } else if (buttonGroup.getSelection().equals(detailButton.getModel())) {
                     if (controlStrategyResults[i].getDetailedResultDataset() != null) {
@@ -131,20 +131,21 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
                     }
                 } else if (buttonGroup.getSelection().equals(contInvButton.getModel())) {
                     if (controlStrategyResults[i].getControlledInventoryDataset() != null) {
-                        datasetList.add((EmfDataset) controlStrategyResults[i].getControlledInventoryDataset());
+                        inv = (EmfDataset) controlStrategyResults[i].getControlledInventoryDataset();
                     } else if (controlStrategyResults[i].getStrategyResultType().getName().equals(
                             StrategyResultType.controlledInventory)
                             && controlStrategyResults[i].getDetailedResultDataset() != null) {
-                        datasetList.add((EmfDataset) controlStrategyResults[i].getDetailedResultDataset());
+                        inv = (EmfDataset) controlStrategyResults[i].getDetailedResultDataset();
                     } else {
                         showError("Please create controled inventory first.");
                     }
                 }
-                // } else {//if
-                // (controlStrategyResults[i].getStrategyResultType().getName().equals(StrategyResultType.strategySummary))
-                // {
-                // datasetList.add(controlStrategyResults[i].getInputDataset());
-                // }
+                if (inv != null) {
+                    // exclude comments in header when exporting inventories
+                    KeyVal keyword = new KeyVal(new Keyword(Dataset.header_comment_key), "false");
+                    inv.addKeyVal(keyword);
+                    datasetList.add(inv);
+                }
             }
             presenter.doExport(datasetList.toArray(new EmfDataset[0]), folder.getText());
             showMessage("Started Export. Please monitor the Status window to track your export request");
