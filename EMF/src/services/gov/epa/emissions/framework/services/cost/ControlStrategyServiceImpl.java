@@ -331,9 +331,6 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
         try {
 
             ControlStrategy strategy = getById(controlStrategyId);
-
-            // make sure a valid server-side export path was specified
-            validateExportPath(exportDirectory);
             
             StrategySummaryFactory factory = new StrategySummaryFactory();
 
@@ -363,18 +360,6 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             if (sectors == null || sectors.length == 0)
                 throw new EmfException("Inventory, " + dataset.getInputDataset().getName() + ", is missing a sector.  Edit dataset to add sector.");
         }
-    }
-
-    private void validateExportPath(String folderPath) throws EmfException {
-        
-        
-        if (folderPath == null || folderPath.trim().length() == 0) 
-            throw new EmfException("Missing export folder");
-        
-        File file = new File(folderPath);
-
-        if (!file.exists() || !file.isDirectory()) 
-            throw new EmfException("Export folder does not exist: " + folderPath);
     }
 
     public List<ControlStrategy> getControlStrategiesByRunStatus(String runStatus) throws EmfException {

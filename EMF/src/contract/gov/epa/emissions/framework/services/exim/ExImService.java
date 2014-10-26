@@ -21,6 +21,10 @@ public interface ExImService extends EMFService {
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException;
 
+    void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException;
+    
     //void exportDatasetsWithOverwrite(User user, EmfDataset[] datasets, Version[] versions, String folder, String purpose)
     //        throws EmfException;
 

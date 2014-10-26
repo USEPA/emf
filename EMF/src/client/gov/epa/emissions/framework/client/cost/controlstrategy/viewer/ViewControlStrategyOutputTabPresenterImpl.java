@@ -42,6 +42,10 @@ public class ViewControlStrategyOutputTabPresenterImpl implements ViewControlStr
     }
 
     public void doExport(EmfDataset[] datasets, String folder) throws EmfException {
+        doExport(datasets, folder, null, false);
+    }
+    
+    public void doExport(EmfDataset[] datasets, String folder, String prefix, boolean download) throws EmfException {
         view.clearMessage();
 
         if (datasets.length == 0) {
@@ -55,9 +59,12 @@ public class ViewControlStrategyOutputTabPresenterImpl implements ViewControlStr
         for (int i = 0; i < datasets.length; i++) {
             versions[i] = service.getVersion(datasets[i], datasets[i].getDefaultVersion());
         }
-
-        service.exportDatasets(session.user(), datasets, versions, folder, 
-                null, true, "", null, null, null, "", "Exporting datasets");
+        
+        if (download) {
+            service.downloadDatasets(session.user(), datasets, versions, prefix, true, "", null, null, null, "", "Exporting datasets");
+        } else {
+            service.exportDatasets(session.user(), datasets, versions, folder, prefix, true, "", null, null, null, "", "Exporting datasets");
+        }
     }
 
     public void doAnalyze(String controlStrategyName, EmfDataset[] datasets) throws EmfException {

@@ -11,6 +11,7 @@ import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.BrowseButton;
 import gov.epa.emissions.commons.gui.buttons.ExportButton;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
@@ -35,6 +36,8 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,16 +45,19 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JLabel;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.SpringLayout;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 public class EditControlStrategyOutputTab extends JPanel implements EditControlStrategyOutputTabView {
 
-    private TextField folder;
+    private TextField exportFolder, exportName;
+    
+    private JCheckBox download;
 
     private EditControlStrategyOutputTabPresenter presenter;
 
@@ -67,7 +73,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
 
     private JPanel tablePanel; 
 
-    private Button analysisButton, /*view, */viewDataButton, exportButton, createButton, editButton, customizeButton, summarizeButton;
+    private Button analysisButton, /*view, */viewDataButton, exportButton, createButton, editButton, customizeButton, summarizeButton, browseButton;
     
     private EmfSession session;
 
@@ -105,7 +111,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
     }
 
     public void save(ControlStrategy controlStrategy) {
-        controlStrategy.setExportDirectory(folder.getText());
+        controlStrategy.setExportDirectory(getExportFolder());
     }
 
     public void observe(EditControlStrategyOutputTabPresenter presenter) {
@@ -114,7 +120,8 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
 
     public void export() {
         try {
-            validateFolder(folder.getText());
+            if (!download.isSelected())
+                validateFolder(getExportFolder());
             
             ControlStrategyResult[] controlStrategyResults = getSelectedDatasets();
             List<EmfDataset> datasetList = new ArrayList<EmfDataset>();
@@ -141,7 +148,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                     datasetList.add(inv);
                 }
             }
-            presenter.doExport(datasetList.toArray(new EmfDataset[0]), folder.getText());
+            presenter.doExport(datasetList.toArray(new EmfDataset[0]), getExportFolder(), exportName.getText(), download.isSelected());
             messagePanel.setMessage("Started Export. Please monitor the Status window to track your export request");
         } catch (EmfException e) {
             messagePanel.setMessage(e.getMessage());
@@ -234,7 +241,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
             if (strategyResultTypes.length > 0) {
                 for (int i = 0; i < strategyResultTypes.length; i++) {
                     session.controlStrategyService().summarizeStrategy(session.user(), controlStrategy.getId(), 
-                            folder.getText(), strategyResultTypes[i]);
+                            "", strategyResultTypes[i]);
                 }
                 messagePanel
                     .setMessage("Running strategy summary. Monitor the status window, and refresh after completion to see results");
@@ -320,18 +327,44 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
     }
 
     private JPanel folderPanel() {
-        JLabel folderLabel = new JLabel("Export Folder: ");
-        folder = new TextField("folderName", 30);
+        exportFolder = new TextField("folderName", 30);
         String exportDirectory = controlStrategy.getExportDirectory();
         exportDirectory = (exportDirectory != null ? exportDirectory : presenter.folder());
-        folder.setText(exportDirectory);
+        exportFolder.setText(exportDirectory);
         
-        Button browseButton = new BrowseButton(browseAction());
+        browseButton = new BrowseButton(browseAction());
 
-        JPanel panel = new JPanel();
-        panel.add(folderLabel);
-        panel.add(folder);
-        panel.add(browseButton);
+        download = new JCheckBox("Download exported file(s) to local machine?");
+        download.setName("download");
+        download.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+
+                Object source = e.getItemSelectable();
+
+                if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    exportFolder.setEnabled(true);
+                    browseButton.setEnabled(true);
+                } else {
+                    exportFolder.setEnabled(false);
+                    browseButton.setEnabled(false);
+                }
+            }
+        });
+        
+        exportName = new TextField("fileName", 30);
+        exportName.setText("");
+
+        JPanel panel = new JPanel(new SpringLayout());
+        SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
+        layoutGenerator.addLabelWidgetPair("", download, panel);
+        JPanel linePanel = new JPanel();
+        linePanel.add(exportFolder);
+        linePanel.add(browseButton);
+        layoutGenerator.addLabelWidgetPair("Server Export Folder:", linePanel, panel);
+        layoutGenerator.addLabelWidgetPair("Export Name Prefix:", exportName, panel);
+        layoutGenerator.makeCompactGrid(panel, 3, 2, // rows, cols
+                5, 5, // initialX, initialY
+                10, 5);// xPad, yPad
 
         return panel;
     }
@@ -587,7 +620,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
     }
 
     private void selectFolder() {
-        EmfFileInfo initDir = new EmfFileInfo(folder.getText(), true, true);
+        EmfFileInfo initDir = new EmfFileInfo(getExportFolder(), true, true);
         
         EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle("Select a folder to contain the exported strategy results");
@@ -598,7 +631,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
             return;
 
         if (file.isDirectory()) {
-            folder.setText(file.getAbsolutePath());
+            exportFolder.setText(file.getAbsolutePath());
             presenter.setLastFolder(file.getAbsolutePath());
         }
     }
@@ -609,7 +642,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
 //    }
 
     public String getExportFolder() {
-        return folder.getText();
+        return exportFolder.getText();
     }
     
     public void displayAnalyzeTable(String controlStrategyName, String[] fileNames) {

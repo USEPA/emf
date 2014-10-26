@@ -38,6 +38,7 @@ public interface ControlStrategyService extends EMFService {
     
     void runStrategy (User user, int controlStrategyId) throws EmfException;
 
+    // 2014-10-26: export directory is unused - leaving in for compatibility with older clients
     void summarizeStrategy(User user, int controlStrategyId, String exportDirectory, StrategyResultType strategyResultType) throws EmfException;
 
     List<ControlStrategy> getControlStrategiesByRunStatus(String runStatus) throws EmfException;

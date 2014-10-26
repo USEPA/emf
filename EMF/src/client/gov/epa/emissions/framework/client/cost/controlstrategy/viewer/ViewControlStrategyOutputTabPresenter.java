@@ -12,6 +12,8 @@ public interface ViewControlStrategyOutputTabPresenter extends ViewControlStrate
 
     void doExport(EmfDataset[] datasets, String folder) throws EmfException;
 
+    void doExport(EmfDataset[] datasets, String folder, String prefix, boolean download) throws EmfException;
+
     void doAnalyze(String controlStrategyName, EmfDataset[] datasets) throws EmfException;
 
     void doDisplay(ControlStrategy controlStrategy, ControlStrategyResult[] controlStrategyResults) throws EmfException;

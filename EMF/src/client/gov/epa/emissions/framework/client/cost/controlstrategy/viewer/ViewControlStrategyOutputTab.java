@@ -12,6 +12,7 @@ import gov.epa.emissions.commons.gui.buttons.BrowseButton;
 import gov.epa.emissions.commons.gui.buttons.ExportButton;
 import gov.epa.emissions.framework.client.EmfPanel;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
@@ -37,6 +38,8 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,16 +48,19 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.SpringLayout;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 public class ViewControlStrategyOutputTab extends EmfPanel implements ViewControlStrategyOutputTabView {
 
-    private TextField folder;
+    private TextField exportFolder, exportName;
+    
+    private JCheckBox download;
 
     private ViewControlStrategyOutputTabPresenter presenter;
 
@@ -73,6 +79,8 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
     private Button customizeButton;
 
     private Button summarizeButton;
+    
+    private Button browseButton;
 
     private JRadioButton detailButton;
 
@@ -105,7 +113,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
     }
 
     public void save(ControlStrategy controlStrategy) {
-        controlStrategy.setExportDirectory(folder.getText());
+        controlStrategy.setExportDirectory(getExportFolder());
     }
 
     public void observe(ViewControlStrategyOutputTabPresenter presenter) {
@@ -115,7 +123,8 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
     public void export() {
 
         try {
-            validateFolder(folder.getText());
+            if (!download.isSelected())
+                validateFolder(getExportFolder());
 
             ControlStrategyResult[] controlStrategyResults = getSelectedDatasets();
             List<EmfDataset> datasetList = new ArrayList<EmfDataset>();
@@ -147,7 +156,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
                     datasetList.add(inv);
                 }
             }
-            presenter.doExport(datasetList.toArray(new EmfDataset[0]), folder.getText());
+            presenter.doExport(datasetList.toArray(new EmfDataset[0]), getExportFolder(), exportName.getText(), download.isSelected());
             showMessage("Started Export. Please monitor the Status window to track your export request");
         } catch (EmfException e) {
             showMessage(e.getMessage());
@@ -238,7 +247,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
         // if (strategyResultTypes.length > 0) {
         // for (int i = 0; i < strategyResultTypes.length; i++) {
         // session.controlStrategyService().summarizeStrategy(session.user(), controlStrategy.getId(),
-        // folder.getText(), strategyResultTypes[i]);
+        // "", strategyResultTypes[i]);
         // }
         // messagePanel
         // .setMessage("Running strategy summary. Monitor the status window, and refresh after completion to see results");
@@ -331,18 +340,44 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
     }
 
     private JPanel folderPanel() {
-        JLabel folderLabel = new JLabel("Export Folder: ");
-        folder = new TextField("folderName", 30);
+        exportFolder = new TextField("folderName", 30);
         String exportDirectory = controlStrategy.getExportDirectory();
         exportDirectory = (exportDirectory != null ? exportDirectory : presenter.folder());
-        folder.setText(exportDirectory);
+        exportFolder.setText(exportDirectory);
 
-        Button browseButton = new BrowseButton(browseAction());
+        browseButton = new BrowseButton(browseAction());
 
-        JPanel panel = new JPanel();
-        panel.add(folderLabel);
-        panel.add(folder);
-        panel.add(browseButton);
+        download = new JCheckBox("Download exported file(s) to local machine?");
+        download.setName("download");
+        download.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+
+                Object source = e.getItemSelectable();
+
+                if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    exportFolder.setEnabled(true);
+                    browseButton.setEnabled(true);
+                } else {
+                    exportFolder.setEnabled(false);
+                    browseButton.setEnabled(false);
+                }
+            }
+        });
+        
+        exportName = new TextField("fileName", 30);
+        exportName.setText("");
+
+        JPanel panel = new JPanel(new SpringLayout());
+        SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
+        layoutGenerator.addLabelWidgetPair("", download, panel);
+        JPanel linePanel = new JPanel();
+        linePanel.add(exportFolder);
+        linePanel.add(browseButton);
+        layoutGenerator.addLabelWidgetPair("Server Export Folder:", linePanel, panel);
+        layoutGenerator.addLabelWidgetPair("Export Name Prefix:", exportName, panel);
+        layoutGenerator.makeCompactGrid(panel, 3, 2, // rows, cols
+                5, 5, // initialX, initialY
+                10, 5);// xPad, yPad
 
         return panel;
     }
@@ -539,7 +574,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
 
     private void selectFolder() {
 
-        EmfFileInfo initDir = new EmfFileInfo(folder.getText(), true, true);
+        EmfFileInfo initDir = new EmfFileInfo(getExportFolder(), true, true);
 
         EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(this.getSession()
                 .dataCommonsService()));
@@ -551,13 +586,13 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
             return;
 
         if (file.isDirectory()) {
-            folder.setText(file.getAbsolutePath());
+            exportFolder.setText(file.getAbsolutePath());
             presenter.setLastFolder(file.getAbsolutePath());
         }
     }
 
     public String getExportFolder() {
-        return folder.getText();
+        return exportFolder.getText();
     }
 
     public void displayAnalyzeTable(String controlStrategyName, String[] fileNames) {

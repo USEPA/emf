@@ -47,19 +47,27 @@ public class EditControlStrategyOutputTabPresenter implements EditControlStrateg
     }
     
     public void doExport(EmfDataset[] datasets, String folder) throws EmfException {
+        doExport(datasets, folder, null, false);
+    }
+    
+    public void doExport(EmfDataset[] datasets, String folder, String prefix, boolean download) throws EmfException {
         view.clearMsgPanel();
         
         if(datasets.length==0){
             throw new EmfException("Please select one or more result datasets");
         }
-//        validateFolder(folder);
+
         session.setMostRecentExportFolder(folder);
         ExImService service = session.eximService();
         Version[] versions = new Version [datasets.length];
         for (int i = 0; i < datasets.length; i++) {
             versions[i] = service.getVersion(datasets[i], datasets[i].getDefaultVersion());
         }
-        service.exportDatasets(session.user(), datasets, versions, folder, null, true, "", null, null, null, "", "Exporting datasets");
+        if (download) {
+            service.downloadDatasets(session.user(), datasets, versions, prefix, true, "", null, null, null, "", "Exporting datasets");
+        } else {
+            service.exportDatasets(session.user(), datasets, versions, folder, prefix, true, "", null, null, null, "", "Exporting datasets");
+        }
     }
 
 //    private String mapToRemote(String dir) {

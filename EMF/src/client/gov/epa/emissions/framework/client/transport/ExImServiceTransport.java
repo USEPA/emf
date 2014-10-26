@@ -40,6 +40,26 @@ public class ExImServiceTransport implements ExImService {
         call.request(new Object[] { user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose });
     }
 
+    public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
+        call.setOperation("downloadDatasets");
+        call.addParam("user", mappings.user());
+        call.addParam("datasets", mappings.datasets());
+        call.addParam("versions", mappings.versions());
+        call.addStringParam("prefix");
+        call.addBooleanParameter("overwrite");
+        call.addStringParam("rowFilters");
+        call.addParam("filterDataset", mappings.dataset());
+        call.addParam("filterDatasetVersion", mappings.version());
+        call.addStringParam("filterDatasetJoinCondition");
+        call.addStringParam("colOrders");
+        call.addStringParam("purpose");
+        call.setVoidReturnType();
+
+        call.request(new Object[] { user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose });
+    }
+
     public void importDataset(User user, String folderPath, String[] fileNames, DatasetType datasetType,
             String datasetName) throws EmfException {
         call.setOperation("importDataset");

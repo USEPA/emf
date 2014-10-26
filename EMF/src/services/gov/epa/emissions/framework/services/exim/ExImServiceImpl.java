@@ -100,9 +100,10 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
             System.out.println("rowFilters: "+rowFilters+" colOrders: "+colOrders);
     }
 
-    public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
+    public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
+        String dirName = this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/";
         if (DebugLevels.DEBUG_4())
             System.out.println(">>## calling export datasets in eximSvcImp: " + myTag() + " for datasets: "
                     + datasets.toString());
@@ -244,12 +245,12 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
                 for (int j = 0; j < numOfDS; j++)
                     defaultVersions[j] = getVersion(datasets[j], datasets[j].getDefaultVersion());
 
-                downloadDatasets(user, datasets, defaultVersions, this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/", prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
+                downloadDatasets(user, datasets, defaultVersions, prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
                 return;
             }
 
             // Invoke the local method that uses the datasets
-            downloadDatasets(user, datasets, versions, this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/", prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
+            downloadDatasets(user, datasets, versions, prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
         } catch (RuntimeException e) {
             // NOTE Auto-generated catch block
             //e.printStackTrace();
