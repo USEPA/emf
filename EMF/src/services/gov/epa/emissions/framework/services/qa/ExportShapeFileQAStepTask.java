@@ -655,7 +655,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
     private String fileName() {
         if ( fileName == null || fileName.trim().length()==0)
             return result.getTable();
-        return fileName;
+        return fileName.replace(" ", "_");
     }
 
     private boolean findColumn(String actualColumnName, String columnNameToFind) {

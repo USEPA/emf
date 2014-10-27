@@ -190,6 +190,16 @@ public class ManagedExportService {
 
         return prefix + name + "_" + date.toLowerCase() + versionString + suffix;
     }
+    
+    private String getCleanPrefix(String prefix) {
+        if (prefix == null) return "";
+
+        String trimmed = prefix.trim().replace(" ", "_");
+        if (trimmed.isEmpty()) return "";
+
+        if (trimmed.endsWith("_")) return trimmed;
+        return trimmed + "_";
+    }
 
     public synchronized String exportForJob(User user, List<CaseInput> inputs, String cjtId, String purpose,
             CaseJob job, Case caseObj) throws EmfException {
@@ -682,8 +692,7 @@ public class ManagedExportService {
                     + " but version shows dataset id=" + version.getDatasetId() + ")");
 
         Services services = services();
-        File file = validateExportFile(path, "" + (prefix==null ? "" : prefix.trim())  + 
-                ( (prefix==null || prefix.trim().isEmpty() || prefix.trim().endsWith("_")) ? "" : "_") + 
+        File file = validateExportFile(path, getCleanPrefix(prefix) + 
                 getCleanDatasetName(dataset, version), overwrite);
 
         AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),
@@ -714,8 +723,7 @@ public class ManagedExportService {
                     + " but version shows dataset id=" + version.getDatasetId() + ")");
 
         Services services = services();
-        File file = validateExportFile(path, "" + (prefix==null ? "" : prefix.trim())  + 
-                ( (prefix==null || prefix.trim().isEmpty() || prefix.trim().endsWith("_")) ? "" : "_") + 
+        File file = validateExportFile(path, getCleanPrefix(prefix) + 
                 getCleanDatasetName(dataset, version), true);
 
         AccessLog accesslog = new AccessLog(user.getUsername(), dataset.getId(), dataset.getAccessedDateTime(),

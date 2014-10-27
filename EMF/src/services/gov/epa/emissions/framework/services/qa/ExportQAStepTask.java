@@ -206,7 +206,7 @@ public class ExportQAStepTask implements Runnable {
     private String fileName() {
         if ( fileName == null || fileName.trim().length() == 0)
             return result.getTable() + ".csv";
-        return fileName + ".csv";
+        return fileName.replace(" ", "_") + ".csv";
     }
 
     private File validateDir(String dirName) throws EmfException {
