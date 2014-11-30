@@ -17,6 +17,7 @@ import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
@@ -38,12 +39,17 @@ public class TemporalAllocationTimePeriodTab extends JPanel implements TemporalA
 
     private MessagePanel messagePanel;
     
-    public TemporalAllocationTimePeriodTab(TemporalAllocation temporalAllocation, EmfSession session, ManageChangeables changeablesList, SingleLineMessagePanel messagePanel) {
+    private TemporalAllocationPresenter presenter;
+    
+    public TemporalAllocationTimePeriodTab(TemporalAllocation temporalAllocation, EmfSession session, 
+            ManageChangeables changeablesList, SingleLineMessagePanel messagePanel,
+            TemporalAllocationPresenter presenter) {
         super.setName("timeperiod");
         this.temporalAllocation = temporalAllocation;
         this.session = session;
         this.changeablesList = changeablesList;
         this.messagePanel = messagePanel;
+        this.presenter = presenter;
     }
     
     public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
@@ -74,12 +80,22 @@ public class TemporalAllocationTimePeriodTab extends JPanel implements TemporalA
             messagePanel.setError("Could not retrieve temporal allocation measures");
         }
         changeablesList.addChangeable(resolution);
-        layoutGenerator.addLabelWidgetPair("Resolution:", resolution, panelTop);
+        if (presenter.isEditing()) {
+            layoutGenerator.addLabelWidgetPair("Resolution:", resolution, panelTop);
+        } else {
+            JLabel viewLabel = new JLabel("Not selected");
+            if (temporalAllocation.getResolution() != null) {
+                viewLabel.setText(temporalAllocation.getResolution().getName());
+            }
+            layoutGenerator.addLabelWidgetPair("Resolution:", viewLabel, panelTop);
+        }
 
         startDay = new FormattedDateField("startDay", temporalAllocation.getStartDay(), DATE_FORMATTER, messagePanel);
         endDay = new FormattedDateField("endDay", temporalAllocation.getEndDay(), DATE_FORMATTER, messagePanel);
         changeablesList.addChangeable(startDay);
         changeablesList.addChangeable(endDay);
+        startDay.setEditable(presenter.isEditing());
+        endDay.setEditable(presenter.isEditing());
         layoutGenerator.addLabelWidgetPair("Time Period Start:", startDay, panelTop);
         layoutGenerator.addLabelWidgetPair("Time Period End:", endDay, panelTop);
         startDay.setToolTipText("Enter a date with the format MM/dd/yyyy");

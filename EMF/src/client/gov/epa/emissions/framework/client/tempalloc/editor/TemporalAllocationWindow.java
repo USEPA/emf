@@ -42,7 +42,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
     protected Button runButton, refreshButton;
     
     public TemporalAllocationWindow(DesktopManager desktopManager, EmfSession session, EmfConsole parentConsole) {
-        super("Edit Temporal Allocation", new Dimension(760, 580), desktopManager);
+        super("View Temporal Allocation", new Dimension(760, 580), desktopManager);
 
         this.session = session;
         this.parentConsole = parentConsole;
@@ -53,6 +53,9 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
     }
 
     public void display(TemporalAllocation temporalAllocation) {
+        if (presenter.isEditing()) {
+            super.setTitle("Edit Temporal Allocation");
+        }
         super.setLabel(super.getTitle() + ": " + temporalAllocation.getName());
         doLayout(temporalAllocation);
         super.display();
@@ -88,12 +91,14 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
     private JPanel createTab(String tabName, TemporalAllocation temporalAllocation) {
         TemporalAllocationTabView tabView = null;
         if (presenter.SUMMARY_TAB.equals(tabName)) {
-            tabView = new TemporalAllocationSummaryTab(temporalAllocation, session, this, messagePanel);
+            tabView = new TemporalAllocationSummaryTab(temporalAllocation, session, this, messagePanel, 
+                    presenter);
         } else if (presenter.INVENTORIES_TAB.equals(tabName)) {
             tabView = new TemporalAllocationInventoriesTab(temporalAllocation, session, this, messagePanel, 
                     parentConsole, desktopManager, presenter);
         } else if (presenter.TIMEPERIOD_TAB.equals(tabName)) {
-            tabView = new TemporalAllocationTimePeriodTab(temporalAllocation, session, this, messagePanel);
+            tabView = new TemporalAllocationTimePeriodTab(temporalAllocation, session, this, messagePanel,
+                    presenter);
         } else if (presenter.PROFILES_TAB.equals(tabName)) {
             tabView = new TemporalAllocationProfilesTab(temporalAllocation, session, this, messagePanel,
                     parentConsole, desktopManager, presenter);
@@ -138,6 +143,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         container.setLayout(layout);
 
         Button saveButton = new SaveButton(saveAction());
+        saveButton.setEnabled(presenter.isEditing());
         container.add(saveButton);
         
         runButton = new RunButton(runAction());
@@ -159,6 +165,10 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
     }
     
     private void updateRunButtonStatus(TemporalAllocation temporalAllocation) {
+        if (!presenter.isEditing()) {
+            runButton.setEnabled(false);
+            return;
+        }
         String status = temporalAllocation.getRunStatus();
         if (status != null && 
             (status.equals("Not started") || 
@@ -192,7 +202,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
 
     protected void doClose() {
         try {
-            if (shouldDiscardChanges()) presenter.doClose();
+            if (!presenter.isEditing() || shouldDiscardChanges()) presenter.doClose();
         } catch (EmfException e) {
             messagePanel.setError("Could not close: " + e.getMessage());
         }
@@ -201,6 +211,8 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
     private Action saveAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
+                // must be editing to save temporal allocation
+                if (!presenter.isEditing()) return;
                 try {
                     save();
                 } catch (EmfException e) {
@@ -215,6 +227,8 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
     private Action runAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
+                // must be editing to run temporal allocation
+                if (!presenter.isEditing()) return;
                 try {
                     save();
                     presenter.doPrepareRun();

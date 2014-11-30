@@ -213,11 +213,10 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
     private SelectAwareButton viewButton(ConfirmDialog confirmDialog) {
         Action viewAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                //viewTemporalAllocations();
+                viewTemporalAllocations();
             }
         };
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
-        viewButton.setEnabled(false);
         return viewButton;
     }
 
@@ -231,10 +230,27 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
         return editButton;
     }
     
+    private void viewTemporalAllocations() {
+        List temporalAllocations = selected();
+        if (temporalAllocations.isEmpty()) {
+            messagePanel.setMessage("Please select one or more Temporal Allocations to view.");
+            return;
+        }
+        for (int i = 0; i < temporalAllocations.size(); i++) {
+            TemporalAllocation temporalAllocation = (TemporalAllocation) temporalAllocations.get(i);
+            TemporalAllocationView view = new TemporalAllocationWindow(desktopManager, session, parentConsole);
+            try {
+                presenter.doView(view, temporalAllocation);
+            } catch (EmfException e) {
+                messagePanel.setError(e.getMessage());
+            }
+        }
+    }
+    
     private void editTemporalAllocations() {
         List temporalAllocations = selected();
         if (temporalAllocations.isEmpty()) {
-            messagePanel.setMessage("Please select one or more Temporal Allocations");
+            messagePanel.setMessage("Please select one or more Temporal Allocations to edit.");
             return;
         }
         for (int i = 0; i < temporalAllocations.size(); i++) {

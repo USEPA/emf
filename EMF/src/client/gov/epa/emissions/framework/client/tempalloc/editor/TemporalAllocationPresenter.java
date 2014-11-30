@@ -26,27 +26,42 @@ public class TemporalAllocationPresenter {
     
     private List<TemporalAllocationTabPresenter> tabPresenters;
     
+    private boolean viewOnly;
+    
     public final String SUMMARY_TAB = "Summary";
     public final String INVENTORIES_TAB = "Inventories";
     public final String TIMEPERIOD_TAB = "Time Period";
     public final String PROFILES_TAB = "Profiles";
     public final String OUTPUT_TAB = "Output";
     
-    public TemporalAllocationPresenter(TemporalAllocation temporalAllocation, EmfSession session, TemporalAllocationView view) {
+    public TemporalAllocationPresenter(TemporalAllocation temporalAllocation, EmfSession session, 
+            TemporalAllocationView view) {
         this.temporalAllocation = temporalAllocation;
         this.session = session;
         this.view = view;
         this.tabPresenters = new ArrayList<TemporalAllocationTabPresenter>();
+        this.viewOnly = false;
+    }
+    
+    public TemporalAllocationPresenter(TemporalAllocation temporalAllocation, EmfSession session,
+            TemporalAllocationView view, boolean viewOnly) {
+        this(temporalAllocation, session, view);
+        this.viewOnly = viewOnly;
     }
     
     public void doDisplay() throws EmfException {
         view.observe(this);
         
-        temporalAllocation = service().obtainLocked(session.user(), temporalAllocation.getId());
-        
-        if (!temporalAllocation.isLocked(session.user())) {
-            view.notifyLockFailure(temporalAllocation);
-            return;
+        if (isEditing()) {
+            temporalAllocation = service().obtainLocked(session.user(), temporalAllocation.getId());
+            
+            if (!temporalAllocation.isLocked(session.user())) {
+                view.notifyLockFailure(temporalAllocation);
+                return;
+            }
+        } else {
+            // retrieve fresh copy from database
+            temporalAllocation = service().getById(temporalAllocation.getId());
         }
         
         view.display(temporalAllocation);
@@ -58,7 +73,7 @@ public class TemporalAllocationPresenter {
     }
 
     public void doClose() throws EmfException {
-        if (temporalAllocation.getId() != 0)
+        if (isEditing() && temporalAllocation.getId() != 0)
             service().releaseLocked(session.user(), temporalAllocation.getId());
         closeView();
     }
@@ -164,5 +179,9 @@ public class TemporalAllocationPresenter {
         for (TemporalAllocationTabPresenter element : tabPresenters) {
             element.doPrepareRun();
         }
+    }
+    
+    public boolean isEditing() {
+        return !viewOnly;
     }
 }

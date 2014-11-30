@@ -39,6 +39,11 @@ public class TemporalAllocationManagerPresenter implements RefreshObserver {
         view.disposeView();
     }
     
+    public void doView(TemporalAllocationView view, TemporalAllocation temporalAllocation) throws EmfException {
+        TemporalAllocationPresenter presenter = new TemporalAllocationPresenter(temporalAllocation, session, view, true);
+        presenter.doDisplay();
+    }
+    
     public void doNew(TemporalAllocationView view) {
         TemporalAllocation temporalAllocation = new TemporalAllocation();
         temporalAllocation.setName("");

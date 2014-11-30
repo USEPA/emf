@@ -43,12 +43,17 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
 
     private MessagePanel messagePanel;
     
-    public TemporalAllocationSummaryTab(TemporalAllocation temporalAllocation, EmfSession session, ManageChangeables changeablesList, SingleLineMessagePanel messagePanel) {
+    private TemporalAllocationPresenter presenter;
+    
+    public TemporalAllocationSummaryTab(TemporalAllocation temporalAllocation, EmfSession session, 
+            ManageChangeables changeablesList, SingleLineMessagePanel messagePanel,
+            TemporalAllocationPresenter presenter) {
         super.setName("summary");
         this.temporalAllocation = temporalAllocation;
         this.session = session;
         this.changeablesList = changeablesList;
         this.messagePanel = messagePanel;
+        this.presenter = presenter;
     }
     
     public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
@@ -70,7 +75,15 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
 
         layoutGenerator.addLabelWidgetPair("Name:", name(), panel);
         layoutGenerator.addLabelWidgetPair("Description:", new ScrollableComponent(description()), panel);
-        layoutGenerator.addLabelWidgetPair("Project:", projects(), panel);
+        if (presenter.isEditing()) {
+            layoutGenerator.addLabelWidgetPair("Project:", projects(), panel);
+        } else {
+            JLabel viewLabel = new JLabel();
+            if (temporalAllocation.getProject() != null) {
+                viewLabel.setText(temporalAllocation.getProject().getName());
+            }
+            layoutGenerator.addLabelWidgetPair("Project:", viewLabel, panel);
+        }
         
         layoutGenerator.addLabelWidgetPair("Last Modified Date:", lastModifiedDate(), panel);
         layoutGenerator.addLabelWidgetPair("Creator:", creator(), panel);
@@ -148,6 +161,7 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
     private TextArea description() {
         description = new TextArea("description", temporalAllocation.getDescription() != null ? temporalAllocation.getDescription() : "", 40, 3);
         changeablesList.addChangeable(description);
+        description.setEditable(presenter.isEditing());
 
         return description;
     }
@@ -157,6 +171,7 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
         name.setText(temporalAllocation.getLastModifiedDate() != null ? temporalAllocation.getName() : "");
         name.setMaximumSize(new Dimension(300, 15));
         changeablesList.addChangeable(name);
+        name.setEditable(presenter.isEditing());
 
         return name;
     }

@@ -105,6 +105,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
 
     private JPanel buttonPanel() {
         JPanel panel = new JPanel();
+
         Button addButton = new BorderlessButton("Add", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 try {
@@ -115,19 +116,25 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 }
             }
         });
+        addButton.setEnabled(presenter.isEditing());
         panel.add(addButton);
+
         Button editButton = new BorderlessButton("Set Version", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 setVersionAction();
             }
         });
+        editButton.setEnabled(presenter.isEditing());
         panel.add(editButton);
+
         Button removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
                     removeAction();
             }
         });
+        removeButton.setEnabled(presenter.isEditing());
         panel.add(removeButton);
+
         Button viewButton = new BorderlessButton("View", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 try {
@@ -138,6 +145,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
             }
         });
         panel.add(viewButton);
+
         Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 try {
@@ -163,6 +171,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         filter.setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_EMIS>5000 and SCC like '30300%')");
         JScrollPane scrollPane = new JScrollPane(filter);
         changeablesList.addChangeable(filter);
+        filter.setEditable(presenter.isEditing());
         
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
         layoutGenerator.addLabelWidgetPair("Inventory Filter:", scrollPane, panel);

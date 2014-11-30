@@ -29,6 +29,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
@@ -120,7 +121,15 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
             selectDataset.setSelectedItem(currentDataset);
         }
         changeablesList.addChangeable(selectDataset);
-        layoutGenerator.addLabelWidgetPair("Dataset:", selectDataset, panel);
+        if (presenter.isEditing()) {
+            layoutGenerator.addLabelWidgetPair("Dataset:", selectDataset, panel);
+        } else {
+            JLabel viewLabel = new JLabel("Not selected");
+            if (currentDataset != null) {
+                viewLabel.setText(currentDataset.getName());
+            }
+            layoutGenerator.addLabelWidgetPair("Dataset:", viewLabel, panel);
+        }
         
         selectVersion.setPreferredSize(new Dimension(200, selectVersion.getHeight()));
         if (currentDataset != null) {
@@ -132,7 +141,15 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
         changeablesList.addChangeable(selectVersion);
         
         JPanel versionPanel = new JPanel(new BorderLayout(5, 0));
-        versionPanel.add(selectVersion, BorderLayout.LINE_START);
+        if (presenter.isEditing()) {
+            versionPanel.add(selectVersion, BorderLayout.LINE_START);
+        } else {
+            JLabel viewLabel = new JLabel("Not selected");
+            if (currentVersion != null) {
+                viewLabel.setText(selectVersion.getSelectedItem().toString());
+            }
+            versionPanel.add(viewLabel, BorderLayout.LINE_START);
+        }
 
         Button viewButton = new BorderlessButton("View", new ViewDatasetAction(selectDataset));
         versionPanel.add(viewButton);
