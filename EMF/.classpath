@@ -38,7 +38,7 @@
 	<classpathentry kind="lib" path="lib/swarmcache-1.0rc2.jar"/>
 	<classpathentry kind="lib" path="lib/versioncheck.jar"/>
 	<classpathentry kind="lib" path="lib/dev/commons-configuration-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/dev/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/dev/dbunit-2.1.jar" sourcepath="lib/dev/dbunit-src.zip"/>
 	<classpathentry kind="lib" path="lib/dev/jmock/jmock-cglib-1.0.1.jar"/>
