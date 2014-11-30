@@ -153,7 +153,7 @@ public class TableColumnHeadersViewer implements MouseListener, ActionListener {
         if ( hideCols != null && hideCols.length > 0){
             for ( int i=0; i< hideCols.length; i++){
                 TableColumn col1 = containColumn(allColumns, hideCols[i]); //save it when exist
-                TableColumn col2 = containColumn(hideList, orderCols[i]);
+                TableColumn col2 = containColumn(hideList, hideCols[i]);
                 if (col1 !=null && col2 == null ) {
                     hideList.add(col1);
                 }
