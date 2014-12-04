@@ -11,6 +11,7 @@ import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.util.CustomDateFormat;
+import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -621,6 +622,9 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
             String projectName = ((String) selected).trim();
             if (projectName.length() > 0) {
                 Project project = project(projectName);// checking for duplicates
+                if (project.getId() == 0) {
+                    session.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
+                }
                 controlStrategy.setProject(project);
             }
         } else if (selected instanceof Project) {

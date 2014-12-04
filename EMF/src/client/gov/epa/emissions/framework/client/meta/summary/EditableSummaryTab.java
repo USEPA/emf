@@ -19,6 +19,7 @@ import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.client.data.Projects;
 import gov.epa.emissions.framework.client.data.region.Regions;
 import gov.epa.emissions.framework.client.swingworker.RefreshSwingWorkerTasks;
@@ -351,6 +352,9 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
             if (projectName.length() > 0) {
                 Project project = project(projectName);// checking for duplicates
                 dataset.setProject(project);
+                if (project.getId() == 0) {
+                    session.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
+                }
             }
         } else if (selected instanceof Project) {
             dataset.setProject((Project) selected);

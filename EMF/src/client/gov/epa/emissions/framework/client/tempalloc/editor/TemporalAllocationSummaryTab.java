@@ -14,6 +14,7 @@ import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.client.data.Projects;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
@@ -218,6 +219,9 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
             if (projectName.length() > 0) {
                 Project project = project(projectName); // checking for duplicates
                 temporalAllocation.setProject(project);
+                if (project.getId() == 0) {
+                    session.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
+                }
             }
         } else if (selected instanceof Project) {
             temporalAllocation.setProject((Project) selected);
