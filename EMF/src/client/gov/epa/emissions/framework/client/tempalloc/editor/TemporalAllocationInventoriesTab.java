@@ -68,7 +68,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
             TemporalAllocationPresenter presenter) {
         super.setName("inventories");
         this.temporalAllocation = temporalAllocation;
-        tableData = new TemporalAllocationInventoriesTableData(temporalAllocation.getTemporalAllocationInputDatasets());
+        tableData = new TemporalAllocationInventoriesTableData(temporalAllocation.getTemporalAllocationInputDatasets(), session);
         this.session = session;
         this.changeablesList = changeablesList;
         this.messagePanel = messagePanel;
@@ -349,7 +349,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 }
             }
             //repopulate the table data
-            tableData = new TemporalAllocationInventoriesTableData(datasets);
+            tableData = new TemporalAllocationInventoriesTableData(datasets, session);
             
             refresh();
         }
@@ -359,6 +359,21 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         if (tableData == null ||
             tableData.rows().size() == 0) {
             throw new EmfException("Please add at least one inventory to the temporal allocation.");
+        }
+        if (temporalAllocation.getFilter().length() == 0) {
+            String title = "Warning";
+            String message = "You haven't entered an inventory filter.\n"
+                    + "Are you sure you want to process all the sources in the inventor";
+            if (tableData.rows().size() > 1) {
+                message += "ies?";
+            } else {
+                message += "y?";
+            }
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (selection == JOptionPane.NO_OPTION) {
+                throw new EmfException("Please enter an inventory filter.");
+            }
         }
     }
 }

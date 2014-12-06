@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationInputDataset;
 import gov.epa.emissions.framework.ui.AbstractTableData;
 import gov.epa.emissions.framework.ui.Row;
@@ -13,7 +17,11 @@ public class TemporalAllocationInventoriesTableData extends AbstractTableData {
 
     private List rows;
     
-    public TemporalAllocationInventoriesTableData(TemporalAllocationInputDataset[] temporalAllocationInputDatasets) {
+    private EmfSession session;
+    
+    public TemporalAllocationInventoriesTableData(TemporalAllocationInputDataset[] temporalAllocationInputDatasets,
+            EmfSession session) {
+        this.session = session;
         rows = createRows(temporalAllocationInputDatasets);
     }
     
@@ -27,18 +35,30 @@ public class TemporalAllocationInventoriesTableData extends AbstractTableData {
     }
 
     private Row row(TemporalAllocationInputDataset temporalAllocationInputDataset) {
-        Object[] values = { temporalAllocationInputDataset.getInputDataset().getDatasetType().getName(), 
-                temporalAllocationInputDataset.getInputDataset().getName(), 
-                temporalAllocationInputDataset.getVersion() };
+        EmfDataset inputDataset = temporalAllocationInputDataset.getInputDataset();
+        
+        int versionNum = temporalAllocationInputDataset.getVersion();
+        int numRecords = 0;
+
+        try {
+            Version version = session.dataEditorService().getVersion(inputDataset.getId(), versionNum);
+            if (version != null) numRecords = version.getNumberRecords();
+        } catch (EmfException e) {
+            // nothing
+        }
+
+        Object[] values = { inputDataset.getDatasetType().getName(), inputDataset.getName(), 
+                versionNum, numRecords };
+
         return new ViewableRow(temporalAllocationInputDataset, values);
     }
 
     public String[] columns() {
-        return new String[] { "Type", "Dataset", "Version" };
+        return new String[] { "Type", "Dataset", "Version", "# of Records" };
     }
 
     public Class getColumnClass(int col) {
-        if (col == 2) return Integer.class;
+        if (col > 1) return Integer.class;
         return String.class;
     }
 
