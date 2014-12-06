@@ -135,7 +135,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         removeButton.setEnabled(presenter.isEditing());
         panel.add(removeButton);
 
-        Button viewButton = new BorderlessButton("View", new AbstractAction() {
+        Button viewButton = new BorderlessButton("View Properties", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 try {
                     viewAction();

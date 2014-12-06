@@ -87,7 +87,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
     
     private JPanel buttonPanel() {
         JPanel buttonPanel = new JPanel();
-        Button viewButton = new Button("View", new AbstractAction() {
+        Button viewButton = new Button("View Properties", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 messagePanel.clear();
                 try {

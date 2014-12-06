@@ -151,7 +151,7 @@ public class TemporalAllocationProfilesTab extends JPanel implements TemporalAll
             versionPanel.add(viewLabel, BorderLayout.LINE_START);
         }
 
-        Button viewButton = new BorderlessButton("View", new ViewDatasetAction(selectDataset));
+        Button viewButton = new BorderlessButton("View Properties", new ViewDatasetAction(selectDataset));
         versionPanel.add(viewButton);
 
         viewButton = new BorderlessButton("View Data", new ViewDataAction(selectDataset));
