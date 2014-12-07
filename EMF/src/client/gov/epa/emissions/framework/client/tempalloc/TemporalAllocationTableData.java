@@ -42,8 +42,8 @@ public class TemporalAllocationTableData extends AbstractTableData {
             TemporalAllocationResolution resolution = element.getResolution();
             Object[] values = { element.getName(), 
                     (resolution == null ? "" : element.getResolution().getName()),
-                    formatDay(element.getStartDay()),
-                    formatDay(element.getEndDay()),
+                    formatDay(element.adjustedStartDay()),
+                    formatDay(element.adjustedEndDay()),
                     format(element.getLastModifiedDate()),
                     element.getRunStatus(),
                     element.getCreator().getName() };

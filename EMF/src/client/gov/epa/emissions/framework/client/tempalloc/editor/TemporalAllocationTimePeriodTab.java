@@ -90,8 +90,8 @@ public class TemporalAllocationTimePeriodTab extends JPanel implements TemporalA
             layoutGenerator.addLabelWidgetPair("Resolution:", viewLabel, panelTop);
         }
 
-        startDay = new FormattedDateField("startDay", temporalAllocation.getStartDay(), DATE_FORMATTER, messagePanel);
-        endDay = new FormattedDateField("endDay", temporalAllocation.getEndDay(), DATE_FORMATTER, messagePanel);
+        startDay = new FormattedDateField("startDay", temporalAllocation.adjustedStartDay(), DATE_FORMATTER, messagePanel);
+        endDay = new FormattedDateField("endDay", temporalAllocation.adjustedEndDay(), DATE_FORMATTER, messagePanel);
         changeablesList.addChangeable(startDay);
         changeablesList.addChangeable(endDay);
         startDay.setEditable(presenter.isEditing());
@@ -150,9 +150,9 @@ public class TemporalAllocationTimePeriodTab extends JPanel implements TemporalA
         }
         // make sure year of start and end day is the same
         Calendar cal = Calendar.getInstance();
-        cal.setTime(temporalAllocation.getStartDay());
+        cal.setTime(temporalAllocation.adjustedStartDay());
         int startYear = cal.get(Calendar.YEAR);
-        cal.setTime(temporalAllocation.getEndDay());
+        cal.setTime(temporalAllocation.adjustedEndDay());
         int endYear = cal.get(Calendar.YEAR);
         if (startYear != endYear) {
             throw new EmfException("The time period must start and end in the same year.");

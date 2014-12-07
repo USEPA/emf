@@ -9,7 +9,9 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class TemporalAllocation implements Lockable, Serializable {
@@ -286,5 +288,32 @@ public class TemporalAllocation implements Lockable, Serializable {
 
     public boolean isLocked() {
         return lock.isLocked();
+    }
+
+    // When the client displays the temporal allocation start or end date, differences
+    // in the server and client time zones can cause the dates to be displayed 
+    // incorrectly. For example, if the server's local time zone is GMT and the client
+    // is Eastern, a date like 08/01/2011 gets displayed as 07/31/2011. To fix this,
+    // we check if the hour of the day is not midnight and adjust it to midnight. If
+    // the hour is less than 12, we assume the server is behind the client (e.g., server 
+    // is Pacific, client is Eastern) and don't bother adjusting the time since the date 
+    // will be displayed correctly.
+    private Date adjustDay(Date date) {
+        if (date == null) return null;
+        GregorianCalendar calDate = new GregorianCalendar();
+        calDate.setTime(date);
+        int hour = calDate.get(Calendar.HOUR_OF_DAY);
+        if (hour != 0 && hour > 12) {
+            calDate.add(Calendar.HOUR_OF_DAY, 24 - hour);
+        }
+        return calDate.getTime();
+    }
+    
+    public Date adjustedStartDay() {
+        return adjustDay(startDay);
+    }
+    
+    public Date adjustedEndDay() {
+        return adjustDay(endDay);
     }
 }
