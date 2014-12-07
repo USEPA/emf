@@ -27,6 +27,6 @@ public class TemporalAllocationOutputTabPresenter implements TemporalAllocationT
     }
     
     public void doPrepareRun() throws EmfException {
-        
+        view.prepareRun();
     }
 }

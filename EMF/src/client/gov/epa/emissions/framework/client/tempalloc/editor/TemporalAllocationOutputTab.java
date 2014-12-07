@@ -27,6 +27,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class TemporalAllocationOutputTab extends JPanel implements TemporalAllocationTabView {
@@ -203,5 +204,27 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
         }
         TemporalAllocationOutputTableData tableData = new TemporalAllocationOutputTableData(outputs);
         table.refresh(tableData);
+    }
+    
+    public void prepareRun() throws EmfException {
+        // check if run has existing outputs
+        TemporalAllocationOutput[] outputs = null;
+        try {
+            outputs = session.temporalAllocationService().getTemporalAllocationOutputs(temporalAllocation);
+        } catch (Exception e) {
+            throw new EmfException("Could not check existing run outputs");
+        }
+
+        if (outputs != null && outputs.length > 0) {
+            String title = "Warning";
+            String message = "There are results available for this temporal allocation.\n"
+                    + "Re-running it will delete the existing outputs and any QA steps.\n"
+                    + "Are you sure you want to re-run?";
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (selection == JOptionPane.CANCEL_OPTION) {
+                throw new EmfException("Run cancelled.");
+            }
+        }    
     }
 }
