@@ -1,3 +1,35 @@
 -- 9/16/2014 - add record count to outputs table
 ALTER TABLE emf.temporal_allocation_output
 ADD COLUMN record_count integer;
+
+-- 12/08/2014 - change output resolution options
+UPDATE emf.temporal_allocation_resolution
+SET name = 'Episodic weekday average (tons/day)'
+WHERE name = 'Summer Weekday average (tons/day)';
+
+UPDATE emf.temporal_allocation_resolution
+SET name = 'Episodic weekend average (tons/day)'
+WHERE name = 'Summer Weekend average (tons/day)';
+
+UPDATE emf.temporal_allocation
+SET resolution_id = (SELECT id FROM emf.temporal_allocation_resolution 
+WHERE name = 'Episodic average (tons/day)')
+WHERE resolution_id = (SELECT id FROM emf.temporal_allocation_resolution 
+WHERE name = 'Ozone season average (tons/day)');
+
+UPDATE emf.temporal_allocation
+SET resolution_id = (SELECT id FROM emf.temporal_allocation_resolution 
+WHERE name = 'Episodic weekday average (tons/day)')
+WHERE resolution_id = (SELECT id FROM emf.temporal_allocation_resolution 
+WHERE name = 'Winter Weekday average (tons/day)');
+
+UPDATE emf.temporal_allocation
+SET resolution_id = (SELECT id FROM emf.temporal_allocation_resolution 
+WHERE name = 'Episodic weekend average (tons/day)')
+WHERE resolution_id = (SELECT id FROM emf.temporal_allocation_resolution 
+WHERE name = 'Winter Weekend average (tons/day)');
+
+DELETE FROM emf.temporal_allocation_resolution
+WHERE name IN ('Ozone season average (tons/day)',
+'Winter Weekday average (tons/day)',
+'Winter Weekend average (tons/day)');
