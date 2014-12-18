@@ -133,8 +133,8 @@ public class ORLMergedFileFormat implements FileFormatWithOptionalCols, Delimite
 
         //new columns used for control strategy runs...
         cols.add(new Column("DESIGN_CAPACITY", types.realType(), new RealFormatter()));
-        cols.add(new Column("DESIGN_CAPACITY_UNIT_NUMERATOR", types.stringType(10), 10, new StringFormatter(10)));
-        cols.add(new Column("DESIGN_CAPACITY_UNIT_DENOMINATOR", types.stringType(10), 10, new StringFormatter(10)));
+        cols.add(new Column("DESIGN_CAPACITY_UNIT_NUMERATOR", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("DESIGN_CAPACITY_UNIT_DENOMINATOR", types.stringType(20), 20, new StringFormatter(20)));
         cols.add(new Column("CONTROL_MEASURES", types.text(), new NullFormatter()));
         cols.add(new Column("PCT_REDUCTION", types.text(), new NullFormatter()));
         cols.add(new Column("CURRENT_COST", types.realType(), new RealFormatter()));
