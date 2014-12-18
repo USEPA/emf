@@ -179,7 +179,8 @@ public class StatusWindow
                     messagePanel.setMessage("Last Update : " + CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(new Date()), Color.GRAY);
                     statusTableModel.refresh(statuses);
 
-                    parentContainer.revalidate();
+                    parentContainer.invalidate();
+                    parentContainer.validate();
 
                 } catch (InterruptedException e1) {
                     if (e1.getMessage().length() > 100)
