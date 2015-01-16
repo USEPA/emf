@@ -55,5 +55,5 @@ SEP_PCTRED,double precision,"",false,"","","",0,0,0,0
 OCT_PCTRED,double precision,"",false,"","","",0,0,0,0
 NOV_PCTRED,double precision,"",false,"","","",0,0,0,0
 DEC_PCTRED,double precision,"",false,"","","",0,0,0,0
-COMMENT,VARCHAR(256),"",false,"","","",256,0,0,0
+COMMENT,VARCHAR(512),"",false,"","","",512,0,0,0
 DATA_SET_ID,VARCHAR(20),"",false,"","","",20,0,0,0
