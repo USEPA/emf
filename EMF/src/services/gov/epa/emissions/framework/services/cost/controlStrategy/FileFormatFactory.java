@@ -39,10 +39,9 @@ public class FileFormatFactory {
         if (type.getName().equals(DatasetType.orlMergedInventory))
             return new VersionedTableFormat(new ORLMergedFileFormat(types), types);
         
-        if (type.getName().equals(DatasetType.FLAT_FILE_2010_POINT))
-            return new VersionedTableFormat(type.getFileFormat(), types);
-
-        if (type.getName().equals(DatasetType.FLAT_FILE_2010_NONPOINT))
+        if (type.getName().equals(DatasetType.FLAT_FILE_2010_POINT) ||
+            type.getName().equals(DatasetType.FLAT_FILE_2010_NONPOINT) ||
+            type.getName().equals(DatasetType.ff10MergedInventory))
             return new VersionedTableFormat(type.getFileFormat(), types);
 
         if (!suppressException)

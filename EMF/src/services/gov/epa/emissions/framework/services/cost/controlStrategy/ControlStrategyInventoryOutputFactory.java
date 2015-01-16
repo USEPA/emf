@@ -42,7 +42,8 @@ public class ControlStrategyInventoryOutputFactory {
             return new AnnotatedControlStrategyInventoryOutput(user, controlStrategy, 
                     controlStrategyResult, namePrefix, 
                     sessionFactory, dbServerFactory);
-        if (controlStrategyResult.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory))
+        if (controlStrategyResult.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory) ||
+            controlStrategyResult.getInputDataset().getDatasetType().getName().equals(DatasetType.ff10MergedInventory))
             return new MergedControlStrategyInventoryOutput(user, controlStrategy, 
                     controlStrategyResult, namePrefix,
                     sessionFactory, dbServerFactory);

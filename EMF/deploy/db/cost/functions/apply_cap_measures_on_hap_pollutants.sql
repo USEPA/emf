@@ -57,7 +57,6 @@ DECLARE
 	stackid_expression character varying(64) := 'stackid';
 	segment_expression character varying(64) := 'segment';
 	is_flat_file_inventory boolean := false;
-	is_flat_file_point_inventory boolean := false;
 	inv_pct_red_expression character varying(256);
 	inv_ceff_expression character varying(64) := 'ceff';
 	longitude_expression character varying(64) := 'xloc';
@@ -127,7 +126,7 @@ raise notice '%', intInputDatasetId || ' ' || intInputDatasetVersion || ' ' || i
 			into dataset_type_name;
 
 			--if Flat File 2010 Types then change primary key field expression variables...
-			IF dataset_type_name = 'Flat File 2010 Point' or dataset_type_name = 'Flat File 2010 Nonpoint' THEN
+			IF dataset_type_name = 'Flat File 2010 Point' or dataset_type_name = 'Flat File 2010 Nonpoint' or dataset_type_name = 'Flat File 2010 Merged' THEN
 				fips_expression := 'region_cd';
 				plantid_expression := 'facility_id';
 				pointid_expression := 'unit_id';

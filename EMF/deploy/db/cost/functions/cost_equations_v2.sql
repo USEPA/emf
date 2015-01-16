@@ -129,7 +129,6 @@ DECLARE
 	stackid_expression character varying(64) := 'stackid';
 	segment_expression character varying(64) := 'segment';
 	is_flat_file_inventory boolean := false;
-	is_flat_file_point_inventory boolean := false;
 	inv_pct_red_expression character varying(256);
 	annualized_emis_sql character varying;
 	design_capacity_units_expression character varying(64) := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
@@ -212,7 +211,7 @@ BEGIN
 	into dataset_type_name;
 
 	--if Flat File 2010 Types then change primary key field expression variables...
-	IF dataset_type_name = 'Flat File 2010 Point' or dataset_type_name = 'Flat File 2010 Nonpoint' THEN
+	IF dataset_type_name = 'Flat File 2010 Point' or dataset_type_name = 'Flat File 2010 Nonpoint' or dataset_type_name = 'Flat File 2010 Merged' THEN
 		fips_expression := 'region_cd';
 		plantid_expression := 'facility_id';
 		pointid_expression := 'unit_id';
@@ -221,9 +220,6 @@ BEGIN
 		inv_ceff_expression := 'ann_pct_red';
 		design_capacity_units_expression  := 'design_capacity_units';
 		is_flat_file_inventory := true;
-		IF dataset_type_name = 'Flat File 2010 Point' THEN
-			is_flat_file_point_inventory := true;
-		END IF;
 		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, '');
 		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, 'MW');
 	ELSE

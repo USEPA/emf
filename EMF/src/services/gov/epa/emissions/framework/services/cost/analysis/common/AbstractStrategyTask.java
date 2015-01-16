@@ -534,7 +534,8 @@ public abstract class AbstractStrategyTask implements Strategy {
             EmfDataset mergedInventory = null;
             //we need to create a controlled inventory for each invnentory, except the merged inventory
             for (int i = 0; i < inventories.length; i++) {
-                if (inventories[i].getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory)) {
+                if (inventories[i].getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory) ||
+                    inventories[i].getInputDataset().getDatasetType().getName().equals(DatasetType.ff10MergedInventory)) {
                     mergedInventory = inventories[i].getInputDataset();
                     break;
                 }
@@ -544,7 +545,8 @@ public abstract class AbstractStrategyTask implements Strategy {
                 for (int i = 0; i < inventories.length; i++) {
 //                      EmfDataset inventory = inventories[i].getInputDataset();
                   ControlStrategyInputDataset inventory = inventories[i];
-                  if (!inventory.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory)) {
+                  if (!inventory.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory) &&
+                      !inventory.getInputDataset().getDatasetType().getName().equals(DatasetType.ff10MergedInventory)) {
 
                       for (int j = 0; j < results.length; j++) {
                           if (results[j].getDetailedResultDataset() != null 

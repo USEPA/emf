@@ -53,7 +53,8 @@ public class MergedControlStrategyInventoryOutput extends AbstractControlStrateg
             for (int i = 0; i < inventories.length; i++) {
 //                EmfDataset inventory = inventories[i].getInputDataset();
                 this.inputDataset = inventories[i].getInputDataset();
-                if (!inputDataset.getDatasetType().getName().equals(DatasetType.orlMergedInventory)) {
+                if (!inputDataset.getDatasetType().getName().equals(DatasetType.orlMergedInventory) &&
+                    !inputDataset.getDatasetType().getName().equals(DatasetType.ff10MergedInventory)) {
                     tableFormat = new FileFormatFactory(dbServer).tableFormat(inputDataset.getDatasetType());
                     //create controlled inventory dataset
                     EmfDataset dataset = creator.addControlledInventoryDataset(creator.createControlledInventoryDatasetName(namePrefix, inputDataset), 

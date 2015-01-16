@@ -66,7 +66,6 @@ DECLARE
 	stackid_expression character varying(64) := 'stackid';
 	segment_expression character varying(64) := 'segment';
 	is_flat_file_inventory boolean := false;
-	is_flat_file_point_inventory boolean := false;
 BEGIN
 
 	-- get the input dataset info
@@ -84,16 +83,13 @@ BEGIN
 	into dataset_type_name;
 
 	--if Flat File 2010 Types then change primary key field expression variables...
-	IF dataset_type_name = 'Flat File 2010 Point' or dataset_type_name = 'Flat File 2010 Nonpoint' THEN
+	IF dataset_type_name = 'Flat File 2010 Point' or dataset_type_name = 'Flat File 2010 Nonpoint' or dataset_type_name = 'Flat File 2010 Merged' THEN
 		fips_expression := 'region_cd';
 		plantid_expression := 'facility_id';
 		pointid_expression := 'unit_id';
 		stackid_expression := 'rel_point_id';
 		segment_expression := 'process_id';
 		is_flat_file_inventory := true;
-		IF dataset_type_name = 'Flat File 2010 Point' THEN
-			is_flat_file_point_inventory := true;
-		END IF;
 	ELSE
 		fips_expression := 'fips';
 		plantid_expression := 'plantid';

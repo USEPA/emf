@@ -4,8 +4,10 @@ import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.db.version.Versions;
+import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.TableFormat;
 import gov.epa.emissions.commons.io.VersionedQuery;
+import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.io.orl.ORLMergedFileFormat;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
@@ -25,6 +27,7 @@ import gov.epa.emissions.framework.tasks.DebugLevels;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.hibernate.Session;
@@ -49,7 +52,8 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
             Date stopDate2 = null;
             int count = 0;
             for (ControlStrategyInputDataset inputDataset : controlStrategy.getControlStrategyInputDatasets())
-                if (!inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory)) {
+                if (!inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory) &&
+                    !inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.ff10MergedInventory)) {
                     startDate1 = inputDatasets[0].getInputDataset().getStartDateTime();
                     stopDate1 = inputDatasets[0].getInputDataset().getStopDateTime();
                     if (startDate1 == null || stopDate1 == null)
@@ -100,31 +104,32 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
             dataset = inputDatasets[0];
         } else {
             for (ControlStrategyInputDataset inputDataset : controlStrategy.getControlStrategyInputDatasets())
-                if (inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory)) {
+                if (inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory) ||
+                    inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.ff10MergedInventory)) {
                     dataset = inputDataset;
                 }
         }
         return dataset;
     }
-
-    protected DatasetType getORLMergedInventoryDatasetType() {
+    
+    protected DatasetType getMergedInventoryDatasetType(String type) {
         DatasetType datasetType = null;
         Session session = sessionFactory.getSession();
         try {
-            datasetType = new DatasetTypesDAO().get(DatasetType.orlMergedInventory, session);
+            datasetType = new DatasetTypesDAO().get(type, session);
         } finally {
             session.close();
         }
         return datasetType;
     }
 
-    protected EmfDataset createMergedInventoryDataset(String country) throws EmfException {
+    protected EmfDataset createMergedORLInventoryDataset(String country) throws EmfException {
         // TableFormat tableFormat = new ORLMergedFileFormat(dbServer.getSqlDataTypes());
         TableFormat tableFormat = new VersionedTableFormat(new ORLMergedFileFormat(dbServer.getSqlDataTypes()),
                 dbServer.getSqlDataTypes());
         // "MergedORL_",
         EmfDataset mergedDataset = creator.addDataset("DS", DatasetCreator.createDatasetName(controlStrategy.getName() + "_MergedORL"),
-                getORLMergedInventoryDatasetType(), tableFormat, getORLMergedInventoryDatasetDescription(tableFormat,
+                getMergedInventoryDatasetType(DatasetType.orlMergedInventory), tableFormat, getORLMergedInventoryDatasetDescription(tableFormat,
                         country));
 
         //auto - update sector with the all sector
@@ -133,9 +138,26 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
         
         return mergedDataset;
     }
+    
+    protected EmfDataset createMergedFF10InventoryDataset(String country) throws EmfException {
+        DatasetType type = getMergedInventoryDatasetType(DatasetType.ff10MergedInventory);
+        TableFormat tableFormat = new VersionedTableFormat(type.getFileFormat(), dbServer.getSqlDataTypes());
+        EmfDataset mergedDataset = creator.addDataset("DS", DatasetCreator.createDatasetName(controlStrategy.getName() + "_MergedFF10"),
+                type, tableFormat, getFF10MergedInventoryDatasetDescription(tableFormat,
+                        country));
+
+        mergedDataset.addSector(getSector("All Sectors"));
+        creator.update(mergedDataset);
+        
+        return mergedDataset;
+    }
 
     protected String getORLMergedInventoryDatasetDescription(TableFormat tableFormat, String country) {
         return "#" + tableFormat.identify() + "\n#COUNTRY " + country + "\n#YEAR " + controlStrategy.getInventoryYear();
+    }
+
+    protected String getFF10MergedInventoryDatasetDescription(TableFormat tableFormat, String country) {
+        return "#FORMAT=FF10\n#COUNTRY " + country + "\n#YEAR " + controlStrategy.getInventoryYear();
     }
 
     protected void populateORLMergedDataset(EmfDataset mergedDataset) throws EmfException {
@@ -268,6 +290,71 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
             throw new EmfException("Error occured when inserting data into the merged inventory dataset table" + "\n" + e.getMessage());
         }
     }
+    
+    protected void populateFF10MergedDataset(EmfDataset mergedDataset) throws EmfException {
+        try {
+            StrategyLoader loader = this.getLoader();
+            if (loader instanceof LeastCostAbstractStrategyLoader) {
+                LeastCostAbstractStrategyLoader leastCostAbstractStrategyLoader = (LeastCostAbstractStrategyLoader)loader;
+                XFileFormat fileFormat = getMergedInventoryDatasetType(DatasetType.ff10MergedInventory).getFileFormat();
+                
+                String columnDelimitedList = "";
+                Column[] columns = fileFormat.cols();
+                for (int i = 0; i < columns.length; i++) {
+                    columnDelimitedList += (i > 0 ? ", " + columns[i].name() : columns[i].name());
+                }
+                
+                ControlStrategyInputDataset[] controlStrategyInputDatasets = controlStrategy.getControlStrategyInputDatasets();
+                for (int i = 0; i < controlStrategyInputDatasets.length; i++) {
+                    EmfDataset inputDataset = controlStrategyInputDatasets[i].getInputDataset();
+                    if (inputDataset.getId() == mergedDataset.getId()) continue;
+                    
+                    String sql = "INSERT INTO " + qualifiedEmissionTableName(mergedDataset) + " (dataset_id, "+ columnDelimitedList + ") ";
+                    
+                    boolean isPointDataset = inputDataset.getDatasetType().getName().equals(DatasetType.FLAT_FILE_2010_POINT);
+                    String inventoryColumnDelimitedList = columnDelimitedList;
+
+                    if (!isPointDataset) {
+                        ArrayList<String> colsToReplace = new ArrayList<String>();
+                        colsToReplace.add("FACILITY_ID");
+                        colsToReplace.add("UNIT_ID");
+                        colsToReplace.add("REL_POINT_ID");
+                        colsToReplace.add("PROCESS_ID");
+                        colsToReplace.add("FACILITY_NAME");
+                        colsToReplace.add("STKHGT");
+                        colsToReplace.add("STKDIAM");
+                        colsToReplace.add("STKTEMP");
+                        colsToReplace.add("STKFLOW");
+                        colsToReplace.add("STKVEL");
+                        colsToReplace.add("NAICS");
+                        colsToReplace.add("DESIGN_CAPACITY,");
+                        colsToReplace.add("DESIGN_CAPACITY_UNITS");
+                        colsToReplace.add("ANNUAL_AVG_HOURS_PER_YEAR");
+                        
+                        for (String column : colsToReplace) {
+                            inventoryColumnDelimitedList = inventoryColumnDelimitedList.replaceAll(column, "NULL AS " + column);
+                        }
+                    }
+                    inventoryColumnDelimitedList = inventoryColumnDelimitedList.replaceAll("ORIGINAL_DATASET_ID", inputDataset.getId() +  "::integer as ORIGINAL_DATASET_ID");
+                    inventoryColumnDelimitedList = inventoryColumnDelimitedList.replaceAll("ORIGINAL_RECORD_ID", "RECORD_ID as ORIGINAL_RECORD_ID");
+                    
+                    VersionedQuery versionedQuery = new VersionedQuery(version(inputDataset, controlStrategyInputDatasets[i].getVersion()));
+                    sql += 
+                        "SELECT " + mergedDataset.getId() + " AS dataset_id, " + inventoryColumnDelimitedList + " " +
+                        "FROM " + qualifiedEmissionTableName(inputDataset) + " e " +
+                        "WHERE " + versionedQuery.query() +
+                        leastCostAbstractStrategyLoader.getFilterForSourceQuery();
+                    if (DebugLevels.DEBUG_25())
+                        System.out.println(System.currentTimeMillis() + " " + sql);
+                    setStatus("Started populating FF10 Merged inventory, " + mergedDataset.getName() + ", with the inventory, " + inputDataset.getName() + ".");
+                    datasource.query().execute(sql);
+                    setStatus("Completed populating FF10 Merged inventory, " + mergedDataset.getName() + ", with the inventory, " + inputDataset.getName() + ".");
+                }
+            }
+        } catch (SQLException e) {
+            throw new EmfException("Error occured when inserting data into the merged inventory dataset table" + "\n" + e.getMessage());
+        }
+    }
 
     protected String getDatasetSector(EmfDataset dataset) {
         String sector = "";
@@ -280,11 +367,11 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
         return sector;
     }
 
-    protected void truncateORLMergedDataset(EmfDataset mergedDataset) throws EmfException {
+    protected void truncateMergedDataset(EmfDataset mergedDataset) throws EmfException {
         try {
             datasource.query().execute("TRUNCATE " + qualifiedEmissionTableName(mergedDataset));
         } catch (SQLException e) {
-            throw new EmfException("Error occured when inserting data into the merged inventory dataset table" + "\n"
+            throw new EmfException("Error occured when truncating the merged inventory dataset table" + "\n"
                     + e.getMessage());
         }
     }
@@ -333,8 +420,8 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
                 compareInventoriesTemporalResolution();
                 // look for missing sector
                 for (ControlStrategyInputDataset inputDataset : inputDatasets)
-                    if (!inputDataset.getInputDataset().getDatasetType().getName().equals(
-                            DatasetType.orlMergedInventory)) {
+                    if (!inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory) &&
+                        !inputDataset.getInputDataset().getDatasetType().getName().equals(DatasetType.ff10MergedInventory)) {
                         if (getDatasetSector(inputDataset.getInputDataset()).length() == 0)
                             setStatus("The dataset: " + inputDataset.getInputDataset().getName()
                                     + ", does not have a sector specified.");
@@ -342,18 +429,28 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
 
                 // check to see if exists already, if so, then truncate its data and start over...
                 boolean hasMergedDataset = false;
+                boolean useFF10Merged = true;
                 EmfDataset mergedDataset = null;
                 // see if it already has a merged dataset
-                for (ControlStrategyInputDataset inputDataset : inputDatasets)
-                    if (inputDataset.getInputDataset().getDatasetType().getName()
-                            .equals(DatasetType.orlMergedInventory)) {
+                for (ControlStrategyInputDataset inputDataset : inputDatasets) {
+                    String typeName = inputDataset.getInputDataset().getDatasetType().getName();
+                    if (typeName.equals(DatasetType.orlMergedInventory) ||
+                        typeName.equals(DatasetType.ff10MergedInventory)) {
                         hasMergedDataset = true;
                         mergedDataset = inputDataset.getInputDataset();
+                    } else if (!typeName.equals(DatasetType.FLAT_FILE_2010_NONPOINT) &&
+                        !typeName.equals(DatasetType.FLAT_FILE_2010_POINT)) {
+                        useFF10Merged = false;
                     }
+                }
                 EmfDataset inputDataset = inputDatasets[0].getInputDataset();
                 String country = inputDataset.getCountry() != null ? inputDataset.getCountry().getName() : "US";
                 if (!hasMergedDataset) {
-                    mergedDataset = createMergedInventoryDataset(country);
+                    if (useFF10Merged) {
+                        mergedDataset = createMergedFF10InventoryDataset(country);
+                    } else {
+                        mergedDataset = createMergedORLInventoryDataset(country);
+                    }
                     // add to strategy...
                     ControlStrategyInputDataset controlStrategyInputDataset = new ControlStrategyInputDataset(
                             mergedDataset);
@@ -366,8 +463,12 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
 //                if (controlStrategy.getDeleteResults() || results.length == 0) {
                 //always truncate and repopulate this merged dataset, something could have changed
                 //from prior run...
-                truncateORLMergedDataset(mergedDataset);
-                populateORLMergedDataset(mergedDataset);
+                truncateMergedDataset(mergedDataset);
+                if (useFF10Merged) {
+                    populateFF10MergedDataset(mergedDataset);
+                } else {
+                    populateORLMergedDataset(mergedDataset);
+                }
                 leastCostAbstractStrategyLoader.makeSureInventoryDatasetHasIndexes(mergedDataset);
                 creator.updateVersionZeroRecordCount(mergedDataset);
 //                }

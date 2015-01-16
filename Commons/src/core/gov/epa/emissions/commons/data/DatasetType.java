@@ -47,6 +47,8 @@ public class DatasetType implements Serializable, Lockable, Comparable<DatasetTy
 
     public static final String orlMergedInventory = "ORL Merged Inventory";
 
+    public static final String ff10MergedInventory = "Flat File 2010 Merged";
+
     public static final String orlNonpointInventory = "ORL Nonpoint Inventory (ARINV)";
 
     public static final String orlPointInventory = "ORL Point Inventory (PTINV)";

@@ -62,7 +62,7 @@ BEGIN
 	into dataset_type_name;
 
 	--if Flat File 2010 Types then change primary key field expression variables...
-	IF dataset_type_name = 'Flat File 2010 Point' or  dataset_type_name = 'Flat File 2010 Nonpoint' THEN
+	IF dataset_type_name = 'Flat File 2010 Point' or  dataset_type_name = 'Flat File 2010 Nonpoint' or dataset_type_name = 'Flat File 2010 Merged' THEN
 		fips_expression := 'inv.region_cd';
 		plantid_expression := 'inv.facility_id';
 		pointid_expression := 'inv.unit_id';

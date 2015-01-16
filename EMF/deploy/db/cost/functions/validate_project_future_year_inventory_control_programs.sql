@@ -38,7 +38,6 @@ DECLARE
 	is_monthly_source_sql character varying := 'coalesce(jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value) is not null';
 	is_annual_source_sql character varying := 'coalesce(jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value) is null and ann_value is not null';
 	is_control_packet_extended_format boolean := false;
-	is_flat_file_inventory boolean := false;
 BEGIN
 
 	-- get the detailed result dataset info

@@ -484,7 +484,8 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 
         String datsetTypeName = controlStrategyInputDataset.getInputDataset().getDatasetType().getName();
         boolean isFlatFileInventory = datsetTypeName.equals(DatasetType.FLAT_FILE_2010_POINT) 
-            || datsetTypeName.equals(DatasetType.FLAT_FILE_2010_NONPOINT);
+            || datsetTypeName.equals(DatasetType.FLAT_FILE_2010_NONPOINT)
+            || datsetTypeName.equals(DatasetType.ff10MergedInventory);
         String sqlAnnEmis = (isFlatFileInventory ? "ann_value" : (month != -1 ? "coalesce(" + daysInMonth + " * avd_emis, ann_emis)" : "ann_emis"));
         
         String query = "SELECT sum(" + sqlAnnEmis + ") "
