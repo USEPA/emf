@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.cost.ControlMeasureDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
@@ -11,6 +12,7 @@ import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -37,16 +39,22 @@ public class CMExportTask implements Runnable {
     private ControlMeasureDAO controlMeasureDao;
     
     private DbServerFactory dbServerFactory;
+
+    private boolean download;
+
+    private FileDownloadDAO fileDownloadDAO;
     
-    public CMExportTask(File folder, String prefix, int[] controlMeasureIds, User user, HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
+    public CMExportTask(File folder, String prefix, int[] controlMeasureIds, User user, HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory, boolean download) {
         this.folder = folder;
         this.prefix = prefix;
         this.user = user;
+        this.download = download;
         this.controlMeasureIds = controlMeasureIds;
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
         this.controlMeasureDao = new ControlMeasureDAO();
 //        this.statusDao = new StatusDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
     }
 
     public void run() {
@@ -57,6 +65,12 @@ public class CMExportTask implements Runnable {
             String[] selectedAbbrevAndSCCs = getSelectedAbbrevAndSCCs(controlMeasureIds);
             ControlMeasuresExporter exporter = new ControlMeasuresExporter(folder, prefix, getControlMeasures(controlMeasureIds, session), selectedAbbrevAndSCCs, user, sessionFactory, dbServerFactory);
             exporter.run();
+            
+            if (download) {
+                for (String fileName : exporter.getFileNames()) {
+                    fileDownloadDAO.add(user, new Date(), fileName, "Dataset Export", false);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logError("Failed to export control measures", e); // FIXME: report generation

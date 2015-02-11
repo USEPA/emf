@@ -36,22 +36,22 @@ public class CMExportPresenter {
         return (lastFolder != null) ? lastFolder : getDefaultFolder();
     }
 
-    public void doExportWithOverwrite(int[] controlMeasureIds, String folder, String prefix) throws EmfException {
-        doExport(controlMeasureIds, folder, true, prefix);
+    public void doExportWithOverwrite(int[] controlMeasureIds, String folder, String prefix, boolean download) throws EmfException {
+        doExport(controlMeasureIds, folder, true, prefix, download);
     }
 
-    public void doExportWithoutOverwrite(int[] controlMeasureIds, String folder, String prefix) throws EmfException {
-        doExport(controlMeasureIds, folder, false, prefix);
+    public void doExportWithoutOverwrite(int[] controlMeasureIds, String folder, String prefix, boolean download) throws EmfException {
+        doExport(controlMeasureIds, folder, false, prefix, download);
     }
 
-    private void doExport(int[] controlMeasureIds, String folder, boolean overwrite, String prefix) throws EmfException {
+    private void doExport(int[] controlMeasureIds, String folder, boolean overwrite, String prefix, boolean download) throws EmfException {
         ControlMeasureExportService service = session.controlMeasureExportService();
         lastFolder=folder;
         
         if (overwrite)
-            service.exportControlMeasuresWithOverwrite(folder, prefix, controlMeasureIds, session.user());
+            service.exportControlMeasuresWithOverwrite(folder, prefix, controlMeasureIds, session.user(), download);
         else
-            service.exportControlMeasures(folder, prefix, controlMeasureIds, session.user());
+            service.exportControlMeasures(folder, prefix, controlMeasureIds, session.user(), download);
 
         session.setMostRecentExportFolder(folder);
         

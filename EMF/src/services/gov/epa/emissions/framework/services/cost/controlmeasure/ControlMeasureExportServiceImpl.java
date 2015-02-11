@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.GCEnforcerTask;
+import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.cost.controlmeasure.io.CMExportTask;
 import gov.epa.emissions.framework.services.data.DataCommonsDAO;
@@ -25,6 +26,8 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
     private HibernateSessionFactory sessionFactory;
 
     private DataCommonsDAO dataCommonsDAO;
+    
+    private FileDownloadDAO fileDownloadDAO;
 
     private PooledExecutor threadPool;
 
@@ -39,6 +42,7 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
         this.dataCommonsDAO = new DataCommonsDAO();
         this.threadPool = createThreadPool();
         this.dbServerFactory = dbServerFactory;
+        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
     }
 
     public synchronized void finalize() throws Throwable {
@@ -55,26 +59,41 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
         return threadPool;
     }
 
+    public synchronized void exportControlMeasures(String folderPath, String prefix, int[] controlMeasureIds, User user, boolean download)
+            throws EmfException {
+        doExport(folderPath, prefix, controlMeasureIds, user, false, download);
+    }
+
+    public synchronized void exportControlMeasuresWithOverwrite(String folderPath, String prefix, int[] controlMeasureIds,
+            User user, boolean download) throws EmfException {
+        doExport(folderPath, prefix, controlMeasureIds, user, true, download);
+    }
+
     public synchronized void exportControlMeasures(String folderPath, String prefix, int[] controlMeasureIds, User user)
             throws EmfException {
-        doExport(folderPath, prefix, controlMeasureIds, user, false);
+        exportControlMeasures(folderPath, prefix, controlMeasureIds, user, false);
     }
 
     public synchronized void exportControlMeasuresWithOverwrite(String folderPath, String prefix, int[] controlMeasureIds,
             User user) throws EmfException {
-        doExport(folderPath, prefix, controlMeasureIds, user, true);
+        exportControlMeasuresWithOverwrite(folderPath, prefix, controlMeasureIds, user, false);
     }
 
     private synchronized void doExport(String folderPath, String prefix, int[] controlMeasureIds, User user,
-            boolean overwrite) throws EmfException {
+            boolean overwrite, boolean download) throws EmfException {
         try {
-            File dir = new File(folderPath);
+            File dir;
+            if (download) {
+                dir = new File(this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/");
+            } else {
+                dir = new File(folderPath);
+            }
             if (!dir.isDirectory())
                 throw new EmfException("Export folder does not exist: " + folderPath);
             
-            validateExportFile(new File(folderPath), prefix, overwrite);
-            CMExportTask exportTask = new CMExportTask(new File(folderPath), prefix, controlMeasureIds, user,
-                    sessionFactory, dbServerFactory);
+            validateExportFile(dir, prefix, overwrite);
+            CMExportTask exportTask = new CMExportTask(dir, prefix, controlMeasureIds, user,
+                    sessionFactory, dbServerFactory, download);
             threadPool.execute(new GCEnforcerTask(
                     "Export control measures (id): " + controlMeasureIds[0] + ", etc.", exportTask));
         } catch (Exception e) {

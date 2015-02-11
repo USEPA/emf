@@ -27,6 +27,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,12 +56,16 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
     private SingleLineMessagePanel messagePanel;
 
     private JTextField folder;
+    
+    private Button browseButton;
 
     private CMExportPresenter presenter;
 
     private JCheckBox overwrite;
 
     private JTextField prefix;
+    
+    private JCheckBox download;
     
     private JButton exportButton;
     
@@ -286,40 +292,55 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
     private JPanel createExportPanel() {
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
+        
+        download = new JCheckBox("Download exported files to local machine?");
+        download.setEnabled(true);
+        download.setName("download");
+        download.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+
+                Object source = e.getItemSelectable();
+
+                if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    folder.setEnabled(true);
+                    browseButton.setEnabled(true);
+                } else {
+                    folder.setEnabled(false);
+                    browseButton.setEnabled(false);
+                }
+            }
+        });
+        layoutGenerator.addLabelWidgetPair("", download, panel);
 
         // folder
         folder = new JTextField(30);
         folder.setName("folder");
-        Button button = new BrowseButton(new AbstractAction() {
+        browseButton = new BrowseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 selectFolder();
             }
         });
         Icon icon = new ImageResources().open("Export a Control Measure");
-        button.setIcon(icon);
+        browseButton.setIcon(icon);
         
         JPanel folderPanel = new JPanel(new BorderLayout(2,0));
         folderPanel.add(folder, BorderLayout.LINE_START);
-        folderPanel.add(button, BorderLayout.LINE_END);
-        layoutGenerator.addLabelWidgetPair("Folder", folderPanel, panel);
+        folderPanel.add(browseButton, BorderLayout.LINE_END);
+        layoutGenerator.addLabelWidgetPair("Server Export Folder", folderPanel, panel);
 
         // purpose
         prefix = new JTextField(30);
         prefix.setName("prefix");
-        layoutGenerator.addLabelWidgetPair("Prefix", prefix, panel);
+        layoutGenerator.addLabelWidgetPair("File Name Prefix", prefix, panel);
 
         // overwrite
-        JPanel overwritePanel = new JPanel(new BorderLayout());
         overwrite = new JCheckBox("Overwrite files if they exist?", false);
         overwrite.setEnabled(true);
         overwrite.setName("overwrite");
-        overwritePanel.add(overwrite, BorderLayout.LINE_START);
-
-        panel.add(new JPanel());// filler
-        panel.add(overwritePanel);
+        layoutGenerator.addLabelWidgetPair("", overwrite, panel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(panel, 3, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(panel, 4, 2, // rows, cols
                 5, 5, // initialX, initialY
                 5, 5);// xPad, yPad
         
@@ -399,29 +420,30 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
 
     private void doExport() {
         try {
-            validateFolder(folder.getText());
+            if (!download.isSelected())
+                validateFolder(folder.getText());
             
             if (!overwrite.isSelected()) {
                 if ( !this.bySector) {
-                    presenter.doExportWithoutOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText());
+                    presenter.doExportWithoutOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText(), download.isSelected());
                 }
                 else {
                     int [] sectorIDs = this.getSectorIDs();
                     if ( sectorIDs != null){
                         ControlMeasure[] controlMeasures = presenter.getControlMeasureBySector(sectorIDs, includeAllClasses.isSelected());
-                        presenter.doExportWithoutOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText());
+                        presenter.doExportWithoutOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText(), download.isSelected());
                     } else {
                         return;
                     }
                 }
             } else {
                 if ( !this.bySector) {
-                    presenter.doExportWithOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText());
+                    presenter.doExportWithOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText(), download.isSelected());
                 } else {
                     int [] sectorIDs = this.getSectorIDs();
                     if ( sectorIDs != null){
                         ControlMeasure[] controlMeasures = presenter.getControlMeasureBySector(sectorIDs, includeAllClasses.isSelected());
-                        presenter.doExportWithOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText());
+                        presenter.doExportWithOverwrite(getControlMeasureIds(controlMeasures), folder.getText(), prefix.getText(), download.isSelected());
                     } else {
                         return;
                     }

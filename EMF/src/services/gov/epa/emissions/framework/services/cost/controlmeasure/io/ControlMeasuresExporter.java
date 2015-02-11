@@ -12,7 +12,9 @@ import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ControlMeasuresExporter implements Exporter {
 
@@ -489,6 +491,17 @@ public class ControlMeasuresExporter implements Exporter {
 
     public long getExportedLinesCount() {
         return this.exportedLinesCount;
+    }
+    
+    public List<String> getFileNames() {
+        List<String> fileNames = new ArrayList<String>();
+        fileNames.add(prefix + "_summary.csv");
+        fileNames.add(prefix + "_efficiencies.csv");
+        fileNames.add(prefix + "_SCCs.csv");
+        fileNames.add(prefix + "_equations.csv");
+        fileNames.add(prefix + "_Refs.csv");
+        fileNames.add(prefix + "_Props.csv");
+        return fileNames;
     }
     
 }

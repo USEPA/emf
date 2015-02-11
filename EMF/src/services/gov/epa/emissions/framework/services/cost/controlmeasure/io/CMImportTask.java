@@ -82,7 +82,7 @@ public class CMImportTask implements Runnable {
                 EmfProperty property = new EmfPropertiesDAO().getProperty("COST_CMDB_BACKUP_FOLDER", session);
                 String backupFolder = property.getValue();
                 CMExportTask exportTask = new CMExportTask(new File(backupFolder), CustomDateFormat.format_YYDDHHMMSS(new Date()), ids, user,
-                        sessionFactory, dbServerFactory);
+                        sessionFactory, dbServerFactory, false);
                 exportTask.run();
                 
                 //look for dependencies on Control Strategies and Control Programs

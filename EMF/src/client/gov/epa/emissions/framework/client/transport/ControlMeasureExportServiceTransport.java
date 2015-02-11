@@ -25,18 +25,28 @@ public class ControlMeasureExportServiceTransport implements ControlMeasureExpor
         return call;
     }
 
+    public synchronized void exportControlMeasures(String folderPath, String prefix, int[] controlMeasureIds, User user, boolean download)
+            throws EmfException {
+        doExport("exportControlMeasures", folderPath, prefix, controlMeasureIds, user, download);
+    }
+
+    public synchronized void exportControlMeasuresWithOverwrite(String folderPath, String prefix, int[] controlMeasureIds,
+            User user, boolean download) throws EmfException {
+        doExport("exportControlMeasuresWithOverwrite", folderPath, prefix, controlMeasureIds, user, download);
+    }
+
     public synchronized void exportControlMeasures(String folderPath, String prefix, int[] controlMeasureIds, User user)
             throws EmfException {
-        doExport("exportControlMeasures", folderPath, prefix, controlMeasureIds, user);
+        //
     }
 
     public synchronized void exportControlMeasuresWithOverwrite(String folderPath, String prefix, int[] controlMeasureIds,
             User user) throws EmfException {
-        doExport("exportControlMeasuresWithOverwrite", folderPath, prefix, controlMeasureIds, user);
+        //
     }
 
     private synchronized void doExport(String operation, String folderPath, String prefix, int[] controlMeasureIds,
-            User user) throws EmfException {
+            User user, boolean download) throws EmfException {
         EmfCall call = call();
 
         call.setOperation(operation);
@@ -44,9 +54,10 @@ public class ControlMeasureExportServiceTransport implements ControlMeasureExpor
         call.addParam("prefix", mappings.string());
         call.addIntArrayParam();
         call.addParam("user", mappings.user());
+        call.addBooleanParameter("download");
         call.setVoidReturnType();
 
-        call.request(new Object[] { folderPath, prefix, controlMeasureIds, user });
+        call.request(new Object[] { folderPath, prefix, controlMeasureIds, user, download });
     }
 
     public synchronized Status[] getExportStatus(User user) throws EmfException {
