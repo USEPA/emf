@@ -117,14 +117,20 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
 //    }
 
     public synchronized void removeControlStrategies(int[] ids, User user) throws EmfException {
+        removeControlStrategies(ids, user, false, false);
+    }
+
+    public synchronized void removeControlStrategies(int[] ids, User user, boolean deleteResults, boolean deleteCntlInvs) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("removeControlStrategies");
         call.addIntArrayParam();
         call.addParam("user", mappings.user());
+        call.addBooleanParameter("deleteResults");
+        call.addBooleanParameter("deleteCntlInvs");
         call.setVoidReturnType();
 
-        call.request(new Object[] { ids, user });
+        call.request(new Object[] { ids, user, deleteResults, deleteCntlInvs });
     }
 
     public synchronized void runStrategy(User user, int controlStrategyId) throws EmfException {

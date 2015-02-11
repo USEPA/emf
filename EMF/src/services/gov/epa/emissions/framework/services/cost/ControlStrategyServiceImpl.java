@@ -25,6 +25,7 @@ import gov.epa.emissions.framework.services.qa.QueryToString;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -214,6 +215,10 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     // }
 
     public synchronized void removeControlStrategies(int[] ids, User user) throws EmfException {
+        removeControlStrategies(ids, user, false, false);
+    }
+
+    public synchronized void removeControlStrategies(int[] ids, User user, boolean deleteResults, boolean deleteCntlInvs) throws EmfException {
         Session session = sessionFactory.getSession();
         String exception = "";
         try {
@@ -227,7 +232,7 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
                         exception += "The control strategy, " + cs.getName()
                                 + ", is in edit mode and can not be removed. ";
                     else
-                        remove(cs);
+                        remove(cs, user, deleteResults, deleteCntlInvs);
                 } else {
                     exception += "You do not have permission to remove the strategy: " + cs.getName() + ". ";
                 }
@@ -243,7 +248,7 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
         }
     }
 
-    private synchronized void remove(ControlStrategy element) throws EmfException {
+    private synchronized void remove(ControlStrategy element, User user, boolean deleteResults, boolean deleteCntlInvs) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
 
@@ -252,7 +257,21 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
 
             ControlStrategyResult[] controlStrategyResults = getControlStrategyResults(element.getId());
             for (int i = 0; i < controlStrategyResults.length; i++) {
+                List<Integer> dsIDList = new ArrayList<Integer>();
+                EmfDataset controlledInv = (EmfDataset)controlStrategyResults[i].getControlledInventoryDataset();
+                if (controlledInv != null && deleteCntlInvs) {
+                    dsIDList.add(controlledInv.getId());
+                }
+                EmfDataset dataset = (EmfDataset)controlStrategyResults[i].getDetailedResultDataset();
+                if (dataset != null && deleteResults) {
+                    dsIDList.add(dataset.getId());
+                }
+                
                 dao.remove(controlStrategyResults[i], session);
+                
+                if (dsIDList != null && dsIDList.size() > 0) {
+                    removeResultDatasets(dsIDList.toArray(new Integer[0]), user);
+                }
             }
 
             dao.remove(element, session);

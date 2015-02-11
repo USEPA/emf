@@ -26,7 +26,7 @@ public interface ControlStrategiesManagerPresenter {
 
 //    void doRemove(ControlStrategy[] strategies) throws EmfException;
 
-    void doRemove(int[] ids) throws EmfException;
+    void doRemove(int[] ids, boolean deleteResults, boolean deleteCntlInvs) throws EmfException;
 
 //    void doSaveCopiedStrategies(ControlStrategy coppied, String name) throws EmfException;
 

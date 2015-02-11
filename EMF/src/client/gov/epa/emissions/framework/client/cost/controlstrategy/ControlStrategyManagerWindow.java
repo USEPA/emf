@@ -43,6 +43,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -402,22 +403,24 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
             messagePanel.setError("Please select an item to remove.");
             return;
         }
-
-        String title = "Warning";
-        String message = (records.length == 1) ? 
-                "Are you sure you want to remove the selected strategy?" :
-                "Are you sure you want to remove the "+records.length+" selected strategies?";
-       int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
+        
+        String title = "Confirm Deletion";
+        String message = "For the selected strateg" + (records.length == 1 ? "y" : "ies") + ", "
+                + "which output datasets should be removed?";
+        JCheckBox deleteResults = new JCheckBox("Strategy results, messages, and summaries");
+        JCheckBox deleteCntlInvs = new JCheckBox("Controlled inventories");
+        Object[] contents = {message, deleteResults, deleteCntlInvs};
+        int selection = JOptionPane.showConfirmDialog(parentConsole, contents, title, JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if (selection == JOptionPane.YES_OPTION) {
+        if (selection == JOptionPane.OK_OPTION) {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             int[] ids = new int[records.length];
             for (int i = 0; i < records.length; i++) {
                 ids[i] = records[i].getId(); 
             }
             try {
-                presenter.doRemove(ids);
+                presenter.doRemove(ids, deleteResults.isSelected(), deleteCntlInvs.isSelected());
             } catch (EmfException ex) {
                 throw ex;
             } finally {
