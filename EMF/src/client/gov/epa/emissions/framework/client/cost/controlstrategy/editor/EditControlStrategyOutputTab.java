@@ -139,7 +139,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                     } else if (controlStrategyResults[i].getStrategyResultType().getName().equals(StrategyResultType.controlledInventory) && controlStrategyResults[i].getDetailedResultDataset() != null) {
                         inv = (EmfDataset)controlStrategyResults[i].getDetailedResultDataset();
                     } else
-                        messagePanel.setError("Please create controled inventory first.");
+                        messagePanel.setError("Please create controlled inventory first.");
                 }
                 if (inv != null) {
                     // exclude comments in header when exporting inventories
@@ -179,7 +179,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
 //                      } else if (controlStrategyResults[i].getStrategyResultType().getName().equals(StrategyResultType.controlledInventory) && controlStrategyResults[i].getDetailedResultDataset() != null) {
 //                      datasetList.add((EmfDataset)controlStrategyResults[i].getDetailedResultDataset());
 //                      } else
-//                      messagePanel.setError("Please create controled inventory first.");
+//                      messagePanel.setError("Please create controlled inventory first.");
 //                      }
 //                      } else {//if (controlStrategyResults[i].getStrategyResultType().getName().equals(StrategyResultType.strategySummary)) {
 //                      datasetList.add(controlStrategyResults[i].getInputDataset());
@@ -192,7 +192,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                     
                     if (presenter.getTableRecordCount(datasetList.get(0)) > 300000) {
                         String title = "Warning";
-                        String message = "Are you sure you want to view the result, the table has over 300,000 records?  It could take several minutes to load the data.";
+                        String message = "Are you sure you want to view the result? The table has over 300,000 records. It could take several minutes to load the data.";
                         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title,
                                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -289,7 +289,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
             //see if cont inv are already being created...
             if (creatingControlledInventories || hasControlledInventories) {
                 String title = "Warning";
-                String message = "Are you sure you want to create controlled inventories, there are controlled inventories that " + (creatingControlledInventories ? "are already being created" : "have already being created") + "?";
+                String message = "Are you sure you want to create controlled inventories? There are controlled inventories that " + (creatingControlledInventories ? "are already being created" : "have already been created") + ".";
                 int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
 
@@ -297,17 +297,6 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                     return;
                 }
             }
-//            //see if cont inv have already being created...
-//            if (creatingControlledInventories) {
-//                String title = "Warning";
-//                String message = "Are you sure you want to create controlled inventories, there are controlled inventories that are already being created?";
-//                int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-//                        JOptionPane.QUESTION_MESSAGE);
-//
-//                if (selection != JOptionPane.YES_OPTION) {
-//                    return;
-//                }
-//            }
             
             String namePrefix = JOptionPane.showInputDialog(parentConsole, "Enter a name prefix for the controlled inventories", "");
             presenter.doInventory(controlStrategy, controlStrategyResults, namePrefix);

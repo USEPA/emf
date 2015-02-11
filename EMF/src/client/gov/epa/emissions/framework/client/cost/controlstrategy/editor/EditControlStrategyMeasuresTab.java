@@ -151,7 +151,7 @@ public class EditControlStrategyMeasuresTab extends JPanel implements ControlStr
               ControlStrategyMeasure[] selectedMeasures = (table.selected()).toArray(new ControlStrategyMeasure[0]);
               int measureSize =selectedMeasures.length;
               if (measureSize == 0) {
-                  messagePanel.setMessage("Please select an items that you want to edit.");
+                  messagePanel.setMessage("Please select an item that you want to edit.");
                   return;
               }
               propertySetView(measureSize);

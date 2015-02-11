@@ -51,7 +51,7 @@ public class ExportOrlDatasetsTest extends UserAcceptanceTestCase {
         exportActions.setOverwriteFalse();
         exportActions.clickExport();
 
-        exportActions.assertErrorMessage("Cannot export to existing file.  Choose overwrite option");
+        exportActions.assertErrorMessage("Cannot export to existing file.  Choose overwrite option.");
     }
 
     public void testShouldExportMultipleSelectedDatasetsToFilesOnClickOfExportButton() throws Exception {

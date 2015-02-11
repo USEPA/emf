@@ -142,7 +142,7 @@ public class EditSectorScenarioOutputsTab extends JPanel implements EditSectorSc
                     
                     if (presenter.getTableRecordCount(datasetList.get(0)) > 300000) {
                         String title = "Warning";
-                        String message = "Are you sure you want to view the result, the table has over 300,000 records?  It could take several minutes to load the data.";
+                        String message = "Are you sure you want to view the result? The table has over 300,000 records. It could take several minutes to load the data.";
                         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title,
                                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 

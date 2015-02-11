@@ -146,7 +146,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
                             && controlStrategyResults[i].getDetailedResultDataset() != null) {
                         inv = (EmfDataset) controlStrategyResults[i].getDetailedResultDataset();
                     } else {
-                        showError("Please create controled inventory first.");
+                        showError("Please create controlled inventory first.");
                     }
                 }
                 if (inv != null) {
@@ -192,7 +192,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
                         // && controlStrategyResults[i].getDetailedResultDataset() != null) {
                         // datasetList.add((EmfDataset)controlStrategyResults[i].getDetailedResultDataset());
                         // } else
-                        // messagePanel.setError("Please create controled inventory first.");
+                        // messagePanel.setError("Please create controlled inventory first.");
                         // }
                         // } else {//if
                         // (controlStrategyResults[i].getStrategyResultType().getName().equals(StrategyResultType.strategySummary))
@@ -207,7 +207,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
 
                     if (presenter.getTableRecordCount(datasetList.get(0)) > 300000) {
                         String title = "Warning";
-                        String message = "Are you sure you want to view the result, the table has over 300,000 records?  It could take several minutes to load the data.";
+                        String message = "Are you sure you want to view the result? The table has over 300,000 records. It could take several minutes to load the data.";
                         int selection = JOptionPane.showConfirmDialog(getParentConsole(), message, title,
                                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -318,9 +318,9 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
             if (creatingControlledInventories || hasControlledInventories) {
 
                 String title = "Warning";
-                String message = "Are you sure you want to create controlled inventories, there are controlled inventories that "
-                        + (creatingControlledInventories ? "are already being created" : "have already being created")
-                        + "?";
+                String message = "Are you sure you want to create controlled inventories? There are controlled inventories that "
+                        + (creatingControlledInventories ? "are already being created" : "have already been created")
+                        + ".";
                 int selection = JOptionPane.showConfirmDialog(this.getParentConsole(), message, title,
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 

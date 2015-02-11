@@ -262,7 +262,7 @@ public class EditablePagePanel extends JPanel {
     private void doPastHighlighted(DataEditorTable editableTable, boolean above) {
         messagePanel.clear();
         if ( rowsCopiedHighlighted == null || rowsCopiedHighlighted.length==0) {
-            messagePanel.setError("Please copy row(s) before click the paste button");
+            messagePanel.setError("Please copy row(s) before clicking the paste button");
             return; 
         }
         int selectedRow = Ints.max(rowsCopiedHighlighted);
@@ -292,7 +292,7 @@ public class EditablePagePanel extends JPanel {
     private void doPastSelected(DataEditorTable editableTable, boolean above) {
         messagePanel.clear();
         if ( selectedRecords == null || selectedRecords.length==0) {
-            messagePanel.setError("Please copy row(s) before click the paste button");
+            messagePanel.setError("Please copy row(s) before clicking the paste button");
             return; 
         }
         int [] rowsHighlightedOrSelected;
@@ -304,7 +304,7 @@ public class EditablePagePanel extends JPanel {
             rowsHighlightedOrSelected = this.editableTable.getSelectedRows();
         }
         if ( rowsHighlightedOrSelected == null || rowsHighlightedOrSelected.length == 0) {
-            messagePanel.setError("Please select or highlight row(s) before click the paste button");
+            messagePanel.setError("Please select or highlight row(s) before clicking the paste button");
             return; 
         }
         

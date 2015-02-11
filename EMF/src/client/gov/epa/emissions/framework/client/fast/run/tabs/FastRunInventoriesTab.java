@@ -41,7 +41,7 @@ public class FastRunInventoriesTab extends AbstractFastRunTab {
 
     private ChangeableImpl changeable = new ChangeableImpl();
 
-//    private static final String WARNING_MESSAGE = "You have asked to open several windows. Do you want proceed?";
+//    private static final String WARNING_MESSAGE = "You have asked to open several windows. Do you want to proceed?";
 
     public FastRunInventoriesTab(FastRun run, EmfSession session, MessagePanel messagePanel,
             EmfInternalFrame parentInternalFrame, DesktopManager desktopManager, EmfConsole parentConsole,

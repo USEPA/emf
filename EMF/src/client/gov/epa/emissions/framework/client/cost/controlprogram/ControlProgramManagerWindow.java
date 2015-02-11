@@ -192,7 +192,7 @@ public class ControlProgramManagerWindow extends ReusableInteralFrame implements
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
 
-        String message = "You have asked to open a lot of windows. Do you want proceed?";
+        String message = "You have asked to open a lot of windows. Do you want to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
 
         crudPanel.add(viewButton(confirmDialog));

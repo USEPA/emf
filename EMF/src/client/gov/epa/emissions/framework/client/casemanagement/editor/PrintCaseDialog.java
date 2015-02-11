@@ -78,7 +78,7 @@ public class PrintCaseDialog extends JDialog {
 
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel);
-        messagePanel.setMessage("Optionally select server foler, local folder or both. ");
+        messagePanel.setMessage("Optionally select server folder, local folder or both. ");
         panel.add(createServerFolderPanel());
         panel.add(createLocalFolderPanel());
         panel.add(createButtonsPanel());

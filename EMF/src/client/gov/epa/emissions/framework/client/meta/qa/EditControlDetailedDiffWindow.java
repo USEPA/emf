@@ -54,7 +54,7 @@ public class EditControlDetailedDiffWindow extends DisposableInteralFrame implem
             EmfSession session, EmfDataset[] invBase, EmfDataset[] invCompare, 
             String summaryType) {
         
-        super("Contorled Strategy Detailed Editor", new Dimension(600, 400), desktopManager);
+        super("Controlled Strategy Detailed Editor", new Dimension(600, 400), desktopManager);
         this.program=program; 
         this.session = session;
         this.resultBase = invBase;
