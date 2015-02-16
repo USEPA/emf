@@ -49,9 +49,13 @@ public class TemporalAllocationRunTask implements Runnable {
         if (runningCount < poolSize) {
             try {
                 prepare();
-                temporalAllocationTask.run();
-                completeStatus = "Finished";
-                addCompletedStatus();
+                if (temporalAllocationTask.run()) {
+                    completeStatus = "Finished";
+                    addCompletedStatus();
+                } else {
+                    completeStatus = "Cancelled";
+                    addCancelledStatus();
+                }
             } catch (EmfException e) {
                 completeStatus = "Failed";
                 logError("Failed to run temporal allocation : ", e);
@@ -125,6 +129,10 @@ public class TemporalAllocationRunTask implements Runnable {
 
     private void addCompletedStatus() {
         setStatus("Completed running temporal allocation: " + temporalAllocationTask.getTemporalAllocation().getName() + ".");
+    }
+
+    private void addCancelledStatus() {
+        setStatus("Cancelled running temporal allocation: " + temporalAllocationTask.getTemporalAllocation().getName() + ".");
     }
 
     private void setStatus(String message) {

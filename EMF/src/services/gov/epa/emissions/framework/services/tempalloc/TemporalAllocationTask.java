@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.services.tempalloc;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +48,8 @@ public class TemporalAllocationTask {
     private Keywords keywords;
     
     private DatasetCreator creator;
+    
+    private TemporalAllocationOutput monthlyOutput, dailyOutput, episodicOutput, messagesOutput;
 
     public TemporalAllocationTask(TemporalAllocation temporalAllocation, User user,
             DbServerFactory dbServerFactory, 
@@ -77,7 +80,7 @@ public class TemporalAllocationTask {
         statusDAO.add(endStatus);
     }
     
-    public void run() throws EmfException {
+    public boolean run() throws EmfException {
         deleteOutputsAndDatasets();
         
         // run any pre-processing
@@ -88,40 +91,161 @@ public class TemporalAllocationTask {
             throw new EmfException(e.getMessage());
         }
         
+        String resolution = temporalAllocation.getResolution().getName();
+        
         try {
+            if (isRunStatusCancelled()) return false;
+            
             setStatus("Creating Temporal Allocation Result datasets.");
-            TemporalAllocationOutput monthlyOutput = createMonthlyOutput();
-            TemporalAllocationOutput dailyOutput = createDailyOutput();
-            TemporalAllocationOutput episodicOutput = createEpisodicOutput();
+            createOutputs();
+            if (isRunStatusCancelled()) return false;
             
             for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
                 setStatus("Processing inventory: " + inputDataset.getInputDataset().getName());
-                String query = "SELECT public.run_temporal_allocation";
+
                 String type = inputDataset.getInputDataset().getDatasetTypeName();
                 if (type.equals(DatasetType.FLAT_FILE_2010_NONPOINT_DAILY) ||
                     type.equals(DatasetType.FLAT_FILE_2010_POINT_DAILY)) {
-                    query += "_daily";
-                }
-                query += "(" + temporalAllocation.getId() + ", " + 
-                        inputDataset.getInputDataset().getId() + ", " + 
-                        inputDataset.getVersion() + ", " +
-                        monthlyOutput.getOutputDataset().getId() + ", " +
-                        dailyOutput.getOutputDataset().getId() + ", " +
-                        episodicOutput.getOutputDataset().getId() + ")";
-                try {
-                    datasource.query().execute(query);
-                } catch (SQLException e) {
-                    throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    String query = null;
+                    if (resolution.startsWith("Monthly")) {
+                        query = "SELECT public.run_temporal_allocation_daily_to_month(" + 
+                                temporalAllocation.getId() + ", " +
+                                inputDataset.getInputDataset().getId() + ", " +
+                                inputDataset.getVersion() + ", " +
+                                monthlyOutput.getOutputDataset().getId() + ")";
+                    } else if (!resolution.startsWith("Daily")) {
+                        query = "SELECT public.run_temporal_allocation_daily_to_episode(" + 
+                                temporalAllocation.getId() + ", " +
+                                inputDataset.getInputDataset().getId() + ", " +
+                                inputDataset.getVersion() + ", " +
+                                episodicOutput.getOutputDataset().getId() + ")";
+                    }
+                    
+                    if (query != null) {
+                        try {
+                            datasource.query().execute(query);
+                        } catch (SQLException e) {
+                            throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                        }
+                    }
+
+                    if (isRunStatusCancelled()) return false;
+
+                } else {
+                    setStatus("Assigning monthly profiles to inventory: " + inputDataset.getInputDataset().getName());
+                    String query = "SELECT public.create_monthly_temporal_allocation_xref(" +
+                            temporalAllocation.getId() + ", " +
+                            inputDataset.getInputDataset().getId() + ", " +
+                            inputDataset.getVersion() + ")";
+                    try {
+                        datasource.query().execute(query);
+                    } catch (SQLException e) {
+                        throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    }
+                    if (isRunStatusCancelled()) return false;
+                    
+                    // check monthly profiles assignment
+                    query = "SELECT public.check_monthly_temporal_allocation_xref(" +
+                            temporalAllocation.getId() + ", " +
+                            inputDataset.getInputDataset().getId() + ", " +
+                            inputDataset.getVersion() + ", " +
+                            messagesOutput.getOutputDataset().getId() + ")";
+                    try {
+                        datasource.query().execute(query);
+                    } catch (SQLException e) {
+                        throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    }
+                    updateOutputDatasetVersionRecordCount(messagesOutput);
+                    if (isRunStatusCancelled()) return false;
+                    
+                    setStatus("Calculating monthly values from inventory: " + inputDataset.getInputDataset().getName());
+                    query = "SELECT public.run_temporal_allocation_to_month(" +
+                            temporalAllocation.getId() + ", " + 
+                            inputDataset.getInputDataset().getId() + ", " + 
+                            inputDataset.getVersion() + ", " +
+                            monthlyOutput.getOutputDataset().getId() + ")";
+                    try {
+                        datasource.query().execute(query);
+                    } catch (SQLException e) {
+                        throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    }
+                    updateOutputDatasetVersionRecordCount(monthlyOutput);
+                    if (isRunStatusCancelled()) return false;
+                    
+                    if (resolution.startsWith("Monthly")) {
+                        continue;
+                    }
+                    
+                    setStatus("Assigning weekly/daily profiles to inventory: " + inputDataset.getInputDataset().getName());
+                    query = "SELECT public.create_daily_temporal_allocation_xref(" +
+                            temporalAllocation.getId() + ", " +
+                            inputDataset.getInputDataset().getId() + ", " +
+                            inputDataset.getVersion() + ")";
+                    try {
+                        datasource.query().execute(query);
+                    } catch (SQLException e) {
+                        throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    }
+                    if (isRunStatusCancelled()) return false;
+                    
+                    // check weekly/daily profiles assignment
+                    query = "SELECT public.check_daily_temporal_allocation_xref(" +
+                            temporalAllocation.getId() + ", " +
+                            inputDataset.getInputDataset().getId() + ", " +
+                            inputDataset.getVersion() + ", " +
+                            messagesOutput.getOutputDataset().getId() + ")";
+                    try {
+                        datasource.query().execute(query);
+                    } catch (SQLException e) {
+                        throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    }
+                    updateOutputDatasetVersionRecordCount(messagesOutput);
+                    if (isRunStatusCancelled()) return false;
+                    
+                    setStatus("Calculating daily values from inventory: " + inputDataset.getInputDataset().getName());
+                    query = "SELECT public.run_temporal_allocation_to_day(" +
+                            temporalAllocation.getId() + ", " + 
+                            inputDataset.getInputDataset().getId() + ", " + 
+                            inputDataset.getVersion() + ", " +
+                            monthlyOutput.getOutputDataset().getId() + ", " +
+                            dailyOutput.getOutputDataset().getId() + ")";
+                    try {
+                        datasource.query().execute(query);
+                    } catch (SQLException e) {
+                        throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    }
+                    updateOutputDatasetVersionRecordCount(dailyOutput);
+                    if (isRunStatusCancelled()) return false;
+                    
+                    if (resolution.startsWith("Daily")) {
+                        continue;
+                    }
+                    
+                    setStatus("Calculating episodic values from inventory: " + inputDataset.getInputDataset().getName());
+                    query = "SELECT public.run_temporal_allocation_to_episode(" +
+                            temporalAllocation.getId() + ", " + 
+                            dailyOutput.getOutputDataset().getId() + ", " +
+                            episodicOutput.getOutputDataset().getId() + ")";
+                    try {
+                        datasource.query().execute(query);
+                    } catch (SQLException e) {
+                        throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
+                    }
+                    updateOutputDatasetVersionRecordCount(episodicOutput);
+                    if (isRunStatusCancelled()) return false;
                 }
             }
             
-            updateOutputDatasetVersionRecordCount(monthlyOutput);
-            updateOutputDatasetVersionRecordCount(dailyOutput);
-            updateOutputDatasetVersionRecordCount(episodicOutput);
+            if (monthlyOutput != null) updateOutputDatasetVersionRecordCount(monthlyOutput);
+            if (dailyOutput != null) updateOutputDatasetVersionRecordCount(dailyOutput);
+            if (episodicOutput != null) updateOutputDatasetVersionRecordCount(episodicOutput);
+            updateOutputDatasetVersionRecordCount(messagesOutput);
             setStatus("Finished Temporal Allocation run.");
         } finally {
             disconnectDbServer();
         }
+        
+        return true;
     }
     
     private void deleteOutputsAndDatasets() throws EmfException {
@@ -192,6 +316,38 @@ public class TemporalAllocationTask {
             throw new EmfException(e.getMessage());
         }
     }
+    
+    private void createOutputs() throws EmfException {
+        boolean allDaily = true;
+        for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
+            String type = inputDataset.getInputDataset().getDatasetTypeName();
+            if (!type.equals(DatasetType.FLAT_FILE_2010_NONPOINT_DAILY) &&
+                !type.equals(DatasetType.FLAT_FILE_2010_POINT_DAILY)) {
+                allDaily = false;
+                break;
+            }
+        }
+        
+        String resolution = temporalAllocation.getResolution().getName();
+        if (allDaily) {
+            if (resolution.startsWith("Monthly")) {
+                monthlyOutput = createMonthlyOutput();
+            } else if (!resolution.startsWith("Daily")) {
+                episodicOutput = createEpisodicOutput();
+            }
+        } else {
+            monthlyOutput = createMonthlyOutput();
+            if (!resolution.startsWith("Monthly")) {
+                dailyOutput = createDailyOutput();
+                
+                if (!resolution.startsWith("Daily")) {
+                    episodicOutput = createEpisodicOutput();
+                }
+            }
+        }
+        
+        messagesOutput = createMessagesOutput();
+    }
 
     private TemporalAllocationOutput createMonthlyOutput() throws EmfException {
         TemporalAllocationOutput output = new TemporalAllocationOutput();
@@ -220,6 +376,15 @@ public class TemporalAllocationTask {
         return output;
     }
     
+    private TemporalAllocationOutput createMessagesOutput() throws EmfException {
+        TemporalAllocationOutput output = new TemporalAllocationOutput();
+        output.setTemporalAllocationId(temporalAllocation.getId());
+        output.setOutputDataset(createMessagesDataset());
+        output.setType(getOutputType(TemporalAllocationOutputType.messagesType));
+        saveOutput(output);
+        return output;
+    }
+    
     private void saveOutput(TemporalAllocationOutput output) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
@@ -237,7 +402,7 @@ public class TemporalAllocationTask {
                 DatasetCreator.createDatasetName("Temp_Alloc_Monthly"),
                 datasetType, 
                 new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
-                "");
+                resultDescription());
     }
     
     private EmfDataset createDailyResultDataset() throws EmfException {
@@ -246,7 +411,7 @@ public class TemporalAllocationTask {
                 DatasetCreator.createDatasetName("Temp_Alloc_Daily"),
                 datasetType, 
                 new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
-                "");
+                resultDescription());
     }
     
     private EmfDataset createEpisodicResultDataset() throws EmfException {
@@ -255,7 +420,64 @@ public class TemporalAllocationTask {
                 DatasetCreator.createDatasetName("Temp_Alloc_Episodic"),
                 datasetType,
                 new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
-                "");
+                resultDescription());
+    }
+    
+    private EmfDataset createMessagesDataset() throws EmfException {
+        DatasetType datasetType = getDatasetType(DatasetType.TEMPORAL_ALLOCATION_MESSAGES);
+        return creator.addDataset("ds", 
+                DatasetCreator.createDatasetName("Temp_Alloc_Messages"), 
+                datasetType, 
+                new VersionedTableFormat(datasetType.getFileFormat(), dbServer.getSqlDataTypes()),
+                resultDescription());
+    }
+    
+    private String resultDescription() {
+        StringBuffer desc = new StringBuffer("#Temporal allocation details\n" +
+                "#Temporal allocation name: " + temporalAllocation.getName() + "\n");
+
+        if (!temporalAllocation.getDescription().isEmpty()) {
+            desc.append("#Temporal allocation description: " + temporalAllocation.getDescription() + "\n");
+        }
+        
+        desc.append("#Input inventories: ");
+        for (TemporalAllocationInputDataset inputDataset : temporalAllocation.getTemporalAllocationInputDatasets()) {
+            desc.append(inputDataset.getInputDataset().getName() + ", ");
+        }
+        // remove trailing comma
+        desc.delete(desc.length() - 2, desc.length());
+        desc.append("\n");
+
+        if (!temporalAllocation.getFilter().isEmpty()) {
+            desc.append("#Inventory filter: " + temporalAllocation.getFilter() + "\n");
+        }
+        
+        desc.append("#Resolution: " + temporalAllocation.getResolution().getName() + "\n");
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy");
+        if (temporalAllocation.getResolution().getName().startsWith("Monthly")) {
+            formatter = new SimpleDateFormat("MMMM yyyy");
+        }
+        desc.append("#Time period: " + formatter.format(temporalAllocation.getStartDay()) + 
+                    " through " + formatter.format(temporalAllocation.getEndDay()) + "\n");
+
+        if (temporalAllocation.getXrefDataset() != null) {
+            desc.append("#Cross-reference dataset: " + temporalAllocation.getXrefDataset().getName() + "\n");
+        }
+        
+        if (temporalAllocation.getMonthlyProfileDataset() != null) {
+            desc.append("#Year-to-month profile dataset: " + temporalAllocation.getMonthlyProfileDataset().getName() + "\n");
+        }
+
+        if (temporalAllocation.getWeeklyProfileDataset() != null) {
+            desc.append("#Week-to-day profile dataset: " + temporalAllocation.getWeeklyProfileDataset().getName() + "\n");
+        }
+        
+        if (temporalAllocation.getDailyProfileDataset() != null) {
+            desc.append("#Month-to-day profile dataset: " + temporalAllocation.getDailyProfileDataset().getName() + "\n");
+        }
+
+        return desc.toString();
     }
 
     protected DatasetType getDatasetType(String name) {
@@ -366,5 +588,16 @@ public class TemporalAllocationTask {
         version = dao.obtainLockOnVersion(user, version.getId(), session);
         version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, session, dataset, version));
         dao.updateVersionNReleaseLock(version, session);
+    }
+
+    private boolean isRunStatusCancelled() throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            return temporalAllocationDAO.getTemporalAllocationRunStatus(temporalAllocation.getId(), session).equals("Pending Cancel");
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not check if temporal allocation run was cancelled.");
+        } finally {
+            session.close();
+        }
     }
 }
