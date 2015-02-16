@@ -138,6 +138,7 @@ public class DatasetType implements Serializable, Lockable, Comparable<DatasetTy
     public static final String TEMPORAL_ALLOCATION_MONTHLY_RESULT = "Temporal Allocation Monthly Result";
     public static final String TEMPORAL_ALLOCATION_DAILY_RESULT = "Temporal Allocation Daily Result";
     public static final String TEMPORAL_ALLOCATION_EPISODIC_RESULT = "Temporal Allocation Episodic Result";
+    public static final String TEMPORAL_ALLOCATION_MESSAGES = "Temporal Allocation Messages";
     
     //For new dataset type   
     public static final String EXTERNAL = "External File";

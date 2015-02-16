@@ -33,3 +33,7 @@ DELETE FROM emf.temporal_allocation_resolution
 WHERE name IN ('Ozone season average (tons/day)',
 'Winter Weekday average (tons/day)',
 'Winter Weekend average (tons/day)');
+
+-- 02/16/2014 - add messages output type
+INSERT INTO emf.temporal_allocation_output_type (name)
+VALUES ('Temporal Allocation Messages');

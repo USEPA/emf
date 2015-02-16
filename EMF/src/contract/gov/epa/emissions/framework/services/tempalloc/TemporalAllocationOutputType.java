@@ -11,6 +11,7 @@ public class TemporalAllocationOutputType implements Serializable, Comparable {
     public static final String monthlyType = "Temporal Allocation Monthly Result";
     public static final String dailyType = "Temporal Allocation Daily Result";
     public static final String episodicType = "Temporal Allocation Episodic Result";
+    public static final String messagesType = "Temporal Allocation Messages";
 
     public TemporalAllocationOutputType() {
         //
