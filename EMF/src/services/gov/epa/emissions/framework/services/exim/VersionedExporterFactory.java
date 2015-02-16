@@ -32,7 +32,7 @@ public class VersionedExporterFactory {
         this.batchSize = batchSize;
     }
 
-    public Exporter create(Dataset dataset, Version version, String rowFilters, String colOrders, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition) throws EmfException {
+    public Exporter create(Dataset dataset, Version version, String rowFilters, String colOrders, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, String colsToExport) throws EmfException {
         try {
             String exporterName = dataset.getDatasetType().getExporterClassName();
             Class[] classParams;
@@ -42,16 +42,21 @@ public class VersionedExporterFactory {
                 throw new Exception("Exporter class name not specified with this dataset type.");
 
             Class exporterClass = Class.forName(exporterName);
-//            if (exporterName.equals(DatasetType.FLEXIBLE_EXPORTER)){
-//                Exporter exporter = new FlexibleDBExporter(dataset, dbServer,rowFilters, colOrders, 
-//                        new VersionedDataFormatFactory(version, dataset), new Integer(batchSize));
-//                return exporter;
-//            }
             classParams = new Class[] { Dataset.class, String.class, DbServer.class,
                     DataFormatFactory.class, Integer.class, Dataset.class, Version.class, String.class };
             params = new Object[] { dataset, rowFilters, dbServer, new VersionedDataFormatFactory(version, dataset),
                     new Integer(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition };
-
+            
+            // for now, FlexibleDBExporter is only class that supports colsToExport
+            if (exporterName.equals(DatasetType.FLEXIBLE_EXPORTER)) {
+                classParams = new Class[] { Dataset.class, String.class, DbServer.class,
+                        DataFormatFactory.class, Integer.class, Dataset.class, Version.class, String.class,
+                        String.class };
+                params = new Object[] { dataset, rowFilters, dbServer, new VersionedDataFormatFactory(version, dataset),
+                        new Integer(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition,
+                        colsToExport };
+            }
+            
             Constructor exporterConstructor = exporterClass.getDeclaredConstructor(classParams);
             return (Exporter) exporterConstructor.newInstance(params);
         } catch (ClassNotFoundException e) {

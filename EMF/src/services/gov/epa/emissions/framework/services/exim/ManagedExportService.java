@@ -90,7 +90,7 @@ public class ManagedExportService {
         if (!overwrite) {
             if (file.exists() && file.isFile()) {
                 // log.error("File exists and cannot be overwritten");
-                throw new EmfException("Cannot export to existing file.  Select overwrite option");
+                throw new EmfException("Cannot export to existing file.  Select overwrite option.");
             }
         }
         return file;
@@ -376,7 +376,8 @@ public class ManagedExportService {
 
     public synchronized String exportForClient(User user, EmfDataset[] datasets, Version[] versions, String dirName,
             String prefix, String rowFilters, EmfDataset filterDataset,
-            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, boolean overwrite) throws EmfException {
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, boolean overwrite,
+            String[] dsExportPrefs) throws EmfException {
 
         // FIXME: always overwrite
         // FIXME: hardcode overwite=true until verified with Alison
@@ -409,7 +410,7 @@ public class ManagedExportService {
 
         if (datasets.length != versions.length) {
             log.error("Export failed: version numbers do not match those for specified datasets.");
-            throw new EmfException("Export failed: version numbers do not match " + "those for specified datasets.");
+            throw new EmfException("Export failed: version numbers do not match those for specified datasets.");
         }
 
         if (DebugLevels.DEBUG_9())
@@ -423,10 +424,11 @@ public class ManagedExportService {
                 // Services services = services();
                 EmfDataset dataset = datasets[i];
                 Version version = versions[i];
+                String colsToExport = dsExportPrefs[i];
 
                 // FIXME: Investigate if services reference needs to be unique for each dataset in this call
                 if (isExportable(dataset, version, services, user)) {
-                    ExportTask tsk = createExportTask(user, purpose, overwrite,rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+                    ExportTask tsk = createExportTask(user, purpose, overwrite,rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
                     eximTasks.add(tsk);
 
@@ -470,7 +472,8 @@ public class ManagedExportService {
     
     public synchronized String downloadForClient(User user, EmfDataset[] datasets, Version[] versions, String dirName,
             String prefix, String rowFilters, EmfDataset filterDataset,
-            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
+            String[] dsExportPrefs) throws EmfException {
 
         if (DebugLevels.DEBUG_9())
             System.out.println("ManagedExportService:export() called at: " + new Date());
@@ -500,7 +503,7 @@ public class ManagedExportService {
 
         if (datasets.length != versions.length) {
             log.error("Export failed: version numbers do not match those for specified datasets.");
-            throw new EmfException("Export failed: version numbers do not match " + "those for specified datasets.");
+            throw new EmfException("Export failed: version numbers do not match those for specified datasets.");
         }
 
         if (DebugLevels.DEBUG_9())
@@ -514,10 +517,11 @@ public class ManagedExportService {
                 // Services services = services();
                 EmfDataset dataset = datasets[i];
                 Version version = versions[i];
+                String colsToExport = (dsExportPrefs != null ? dsExportPrefs[i] : "");
 
                 // FIXME: Investigate if services reference needs to be unique for each dataset in this call
                 if (isExportable(dataset, version, services, user)) {
-                    ExportTask tsk = createDownloadTask(user, purpose, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+                    ExportTask tsk = createDownloadTask(user, purpose, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
                     eximTasks.add(tsk);
 
@@ -593,7 +597,7 @@ public class ManagedExportService {
 
         if (datasets.length != versions.length) {
             log.error("Export failed: version numbers do not match those for specified datasets.");
-            throw new EmfException("Export failed: version numbers do not match " + "those for specified datasets.");
+            throw new EmfException("Export failed: version numbers do not match those for specified datasets.");
         }
 
         if (DebugLevels.DEBUG_9())
@@ -682,7 +686,8 @@ public class ManagedExportService {
     private synchronized ExportTask createExportTask(User user, String purpose, boolean overwrite, 
             String rowFilters, String colOrders, File path,
             String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
-            Version filterDatasetVersion, String filterDatasetJoinCondition) throws Exception {
+            Version filterDatasetVersion, String filterDatasetJoinCondition,
+            String colsToExport) throws Exception {
         if (DebugLevels.DEBUG_9())
             System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
 
@@ -704,7 +709,7 @@ public class ManagedExportService {
                     + (dbFactory == null) + " dataset: " + dataset.getName());
         ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
                 rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
-                filterDatasetJoinCondition);
+                filterDatasetJoinCondition, colsToExport);
         // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
 
         return eximTask;
@@ -713,7 +718,8 @@ public class ManagedExportService {
     private synchronized ExportTask createDownloadTask(User user, String purpose, String rowFilters, 
             String colOrders, File path,
             String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
-            Version filterDatasetVersion, String filterDatasetJoinCondition) throws Exception {
+            Version filterDatasetVersion, String filterDatasetJoinCondition,
+            String colsToExport) throws Exception {
         if (DebugLevels.DEBUG_9())
             System.out.println(">>## In export service:doExport() " + myTag() + " for datasetId: " + dataset.getId());
 
@@ -735,7 +741,7 @@ public class ManagedExportService {
                     + (dbFactory == null) + " dataset: " + dataset.getName());
         ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
                 rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
-                filterDatasetJoinCondition, true);
+                filterDatasetJoinCondition, true, colsToExport);
         // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
 
         return eximTask;

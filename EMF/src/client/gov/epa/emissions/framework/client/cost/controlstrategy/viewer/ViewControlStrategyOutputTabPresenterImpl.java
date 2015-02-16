@@ -56,14 +56,20 @@ public class ViewControlStrategyOutputTabPresenterImpl implements ViewControlStr
         ExImService service = session.eximService();
 
         Version[] versions = new Version[datasets.length];
+        String[] dsExportPrefs = new String [datasets.length];
         for (int i = 0; i < datasets.length; i++) {
             versions[i] = service.getVersion(datasets[i], datasets[i].getDefaultVersion());
+            
+            // check for export preference
+            String prefName = datasets[i].getDatasetTypeName().replace(" ", "_") + "_column_export";
+            String prefVal = ((DefaultUserPreferences)session.preferences()).property(prefName);
+            dsExportPrefs[i] = (prefVal != null ? prefVal : "");
         }
         
         if (download) {
-            service.downloadDatasets(session.user(), datasets, versions, prefix, true, "", null, null, null, "", "Exporting datasets");
+            service.downloadDatasets(session.user(), datasets, versions, prefix, true, "", null, null, null, "", "Exporting datasets", dsExportPrefs);
         } else {
-            service.exportDatasets(session.user(), datasets, versions, folder, prefix, true, "", null, null, null, "", "Exporting datasets");
+            service.exportDatasets(session.user(), datasets, versions, folder, prefix, true, "", null, null, null, "", "Exporting datasets", dsExportPrefs);
         }
     }
 

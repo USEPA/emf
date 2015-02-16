@@ -84,6 +84,13 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
+        exportDatasets(user, datasets, versions, dirName, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+    }
+
+    public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
+            String[] dsExportPrefs) throws EmfException {
         if (DebugLevels.DEBUG_4())
             System.out.println(">>## calling export datasets in eximSvcImp: " + myTag() + " for datasets: "
                     + datasets.toString());
@@ -93,7 +100,8 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 //        else
         submitterId = exportService.exportForClient(user, datasets, versions, dirName, 
                     prefix, rowFilters, filterDataset,
-                    filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, overwrite);
+                    filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, overwrite,
+                    dsExportPrefs);
         if (DebugLevels.DEBUG_4())
             System.out.println("In ExImServiceImpl:exportDatasets() SUBMITTERID= " + submitterId);
         if (DebugLevels.DEBUG_21())
@@ -103,6 +111,13 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
+        downloadDatasets(user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+    }
+
+    public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
+            String[] dsExportPrefs) throws EmfException {
         String dirName = this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/";
         if (DebugLevels.DEBUG_4())
             System.out.println(">>## calling export datasets in eximSvcImp: " + myTag() + " for datasets: "
@@ -113,7 +128,8 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 //        else
         submitterId = exportService.downloadForClient(user, datasets, versions, dirName, 
                     prefix, rowFilters, filterDataset,
-                    filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
+                    filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose,
+                    dsExportPrefs);
         if (DebugLevels.DEBUG_4())
             System.out.println("In ExImServiceImpl:exportDatasets() SUBMITTERID= " + submitterId);
         if (DebugLevels.DEBUG_21())
@@ -177,12 +193,12 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
                 for (int j = 0; j < numOfDS; j++)
                     defaultVersions[j] = getVersion(datasets[j], datasets[j].getDefaultVersion());
 
-                exportDatasets(user, datasets, defaultVersions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
+                exportDatasets(user, datasets, defaultVersions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
                 return;
             }
 
             // Invoke the local method that uses the datasets
-            exportDatasets(user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
+            exportDatasets(user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
         } catch (RuntimeException e) {
             // NOTE Auto-generated catch block
             //e.printStackTrace();
@@ -245,12 +261,12 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
                 for (int j = 0; j < numOfDS; j++)
                     defaultVersions[j] = getVersion(datasets[j], datasets[j].getDefaultVersion());
 
-                downloadDatasets(user, datasets, defaultVersions, prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
+                downloadDatasets(user, datasets, defaultVersions, prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
                 return;
             }
 
             // Invoke the local method that uses the datasets
-            downloadDatasets(user, datasets, versions, prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose);
+            downloadDatasets(user, datasets, versions, prefix, true, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
         } catch (RuntimeException e) {
             // NOTE Auto-generated catch block
             //e.printStackTrace();

@@ -19,6 +19,17 @@ public interface ExImService extends EMFService {
 
     void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String folder, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
+            String[] dsExportPrefs) throws EmfException;
+
+    void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
+            String[] dsExportPrefs) throws EmfException;
+    
+    // retained pre-version 2.7.5 methods for server compatibility with older clients
+    void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String folder, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException;
 
     void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,

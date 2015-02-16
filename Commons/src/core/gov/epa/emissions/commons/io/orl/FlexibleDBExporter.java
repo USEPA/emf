@@ -46,8 +46,11 @@ public class FlexibleDBExporter extends GenericExporter {
     
     private boolean withColNames = true;   //true: first data line is column names
     
+    protected Map<String, String> colsToExport;
+    
     public FlexibleDBExporter(Dataset dataset, String rowFilters, DbServer dbServer, DataFormatFactory dataFormatFactory,
-            Integer optimizedBatchSize, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition) {
+            Integer optimizedBatchSize, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition,
+            String colsToExport) {
         super(dataset, rowFilters, dbServer, dataset.getDatasetType().getFileFormat(), dataFormatFactory, optimizedBatchSize, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
         this.dataset = dataset;
         this.fileFormat = dataset.getDatasetType().getFileFormat();
@@ -57,10 +60,23 @@ public class FlexibleDBExporter extends GenericExporter {
         if (System.getProperty("os.name").toUpperCase().startsWith("WINDOWS"))
             windowsOS = true;
         setDelimiter(",");
+        
+        // colsToExport format: <dataset column name>=<output column name>,<name 1>,...
+        if (!colsToExport.equals("")) {
+            this.colsToExport = new HashMap<String, String>();
+            for (String prefValue : colsToExport.split(",")) {
+                String parts[] = prefValue.split("=");
+                if (parts.length > 1) {
+                    this.colsToExport.put(parts[0].toLowerCase(), parts[1]);
+                } else {
+                    this.colsToExport.put(parts[0].toLowerCase(), "");
+                }
+            }
+        }
     }
 
     public FlexibleDBExporter(Dataset dataset, String rowFilters, DbServer dbServer, Integer optimizeBatchSize) {
-        this(dataset, rowFilters, dbServer, new NonVersionedDataFormatFactory(), optimizeBatchSize, null, null, null);
+        this(dataset, rowFilters, dbServer, new NonVersionedDataFormatFactory(), optimizeBatchSize, null, null, null, null);
     }
 
     public void export(File file) throws ExporterException {
@@ -256,9 +272,25 @@ public class FlexibleDBExporter extends GenericExporter {
         
         for (int i = 0; i < numCols; i++) {
             String colName = cols[i].name();
+            String outputName = colName;
+            if (colsToExport != null) {
+                String colValue = colsToExport.get(colName.toLowerCase());
+                if (colValue == null) continue; // column is not exported
+                if (!colValue.equals("")) {
+                    outputName = colValue;
+                }
+            }
             // make sure you only include columns that exist in the table, new columns could have been
             // added to the ORL file format...
-            selectColsString += (tableColsMap.containsKey(colName.toLowerCase()) ? "\"" + tableColsMap.get(colName.toLowerCase()) + "\"" : "null as \"" + colName + "\"") + ",";
+            if (tableColsMap.containsKey(colName.toLowerCase())) {
+                selectColsString += "\"" + tableColsMap.get(colName.toLowerCase()) + "\"";
+                if (!outputName.equals(colName)) {
+                    selectColsString += " as \"" + outputName + "\"";
+                }
+            } else {
+                selectColsString += "null as \"" + outputName + "\"";
+            }
+            selectColsString += ",";
         }
 
         selectColsString = selectColsString.substring(0, selectColsString.length() - 1);
@@ -281,10 +313,19 @@ public class FlexibleDBExporter extends GenericExporter {
         int numCols = cols.length;
 
         for (int i = 0; i < numCols; i++) {
+            String colName = cols[i].name();
+            String outputName = colName;
+            if (colsToExport != null) {
+                String colValue = colsToExport.get(colName.toLowerCase());
+                if (colValue == null) continue; // column is not exported
+                if (!colValue.equals("")) {
+                    outputName = colValue;
+                }
+            }
             String colType = cols[i].sqlType().toUpperCase();
 
             if (colType.startsWith("VARCHAR") || colType.startsWith("TEXT"))
-                colNames += cols[i].name() + delimiter;
+                colNames += outputName + delimiter;
         }
 
         return (colNames.length() > 0) ? colNames.substring(0, colNames.length() - 1) : colNames;

@@ -82,6 +82,8 @@ public class ExportTask extends Task {
     private Version filterDatasetVersion;
 
     private String filterDatasetJoinCondition;
+    
+    private String colsToExport;
 
     private boolean download;
 
@@ -109,19 +111,22 @@ public class ExportTask extends Task {
     
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog,
             String rowFilters, String colOrders,
-            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition) {
+            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition,
+            String colsToExport) {
         this(user, file, dataset, services, accesslog, dbFactory, sessionFactory, version);
         this.rowFilters = rowFilters;
         this.colOrders = colOrders;
         this.filterDataset = filterDataset;
         this.filterDatasetVersion = filterDatasetVersion;
         this.filterDatasetJoinCondition = filterDatasetJoinCondition;
+        this.colsToExport = colsToExport;
     } 
 
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog,
             String rowFilters, String colOrders,
-            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download) {
-        this(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download,
+            String colsToExport) {
+        this(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
         this.download = download;
     } 
 
@@ -157,7 +162,7 @@ public class ExportTask extends Task {
                 dbServer = this.dbFactory.getDbServer();
                 VersionedExporterFactory exporterFactory = new VersionedExporterFactory(dbServer, dbServer
                         .getSqlDataTypes(), batchSize(session));
-                Exporter exporter = exporterFactory.create(dataset, version, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+                Exporter exporter = exporterFactory.create(dataset, version, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
                 if (exporter instanceof ExternalFilesExporter)
                     ((ExternalFilesExporter) exporter).setExternalSources(extSrcs);
@@ -283,7 +288,7 @@ public class ExportTask extends Task {
             dbServer = this.dbFactory.getDbServer();
             VersionedExporterFactory exporterFactory = new VersionedExporterFactory(dbServer, dbServer
                     .getSqlDataTypes(), batchSize(session));
-            Exporter exporter = exporterFactory.create(dataset, version, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+            Exporter exporter = exporterFactory.create(dataset, version, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
             if (exporter instanceof ExternalFilesExporter)
                 ((ExternalFilesExporter) exporter).setExternalSources(extSrcs);

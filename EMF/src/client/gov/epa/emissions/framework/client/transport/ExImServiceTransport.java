@@ -22,6 +22,14 @@ public class ExImServiceTransport implements ExImService {
     public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String folder, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
+        exportDatasets(user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset,
+                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+    }
+        
+    public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String folder, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, 
+            String[] dsExportPrefs) throws EmfException {
         call.setOperation("exportDatasets");
         call.addParam("user", mappings.user());
         call.addParam("datasets", mappings.datasets());
@@ -35,14 +43,23 @@ public class ExImServiceTransport implements ExImService {
         call.addStringParam("filterDatasetJoinCondition");
         call.addStringParam("colOrders");
         call.addStringParam("purpose");
+        call.addParam("dsExportPrefs", mappings.strings());
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose });
+        call.request(new Object[] { user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs });
     }
 
     public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
+        downloadDatasets(user, datasets, versions, prefix, overwrite, rowFilters, filterDataset,
+                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+    }
+
+    public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
+            String[] dsExportPrefs) throws EmfException {
         call.setOperation("downloadDatasets");
         call.addParam("user", mappings.user());
         call.addParam("datasets", mappings.datasets());
@@ -55,9 +72,10 @@ public class ExImServiceTransport implements ExImService {
         call.addStringParam("filterDatasetJoinCondition");
         call.addStringParam("colOrders");
         call.addStringParam("purpose");
+        call.addParam("dsExportPrefs", mappings.strings());
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose });
+        call.request(new Object[] { user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs });
     }
 
     public void importDataset(User user, String folderPath, String[] fileNames, DatasetType datasetType,

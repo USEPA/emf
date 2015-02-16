@@ -27,7 +27,7 @@ public class VersionedExporterFactoryTest extends MockObjectTestCase {
         Version version = new Version();
         version.setVersion(0);
 
-        Exporter exporter = factory.create(dataset, version, "", "", null, null, null);
+        Exporter exporter = factory.create(dataset, version, "", "", null, null, null, null);
 
         assertEquals(datasetType.getExporterClassName(), exporter.getClass().getName());
     }
@@ -46,7 +46,7 @@ public class VersionedExporterFactoryTest extends MockObjectTestCase {
         Version version = new Version();
         version.setVersion(0);
 
-        Exporter exporter = factory.create(dataset, version, "", "", null, null, null);
+        Exporter exporter = factory.create(dataset, version, "", "", null, null, null, null);
 
         assertEquals(datasetType.getExporterClassName(), exporter.getClass().getName());
     }
