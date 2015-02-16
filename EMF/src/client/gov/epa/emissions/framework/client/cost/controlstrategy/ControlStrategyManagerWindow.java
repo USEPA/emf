@@ -42,6 +42,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -234,20 +235,26 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
 
     private JPanel createCrudPanel() {
         JPanel crudPanel = new JPanel();
-        crudPanel.setLayout(new FlowLayout());
+        crudPanel.setLayout(new BoxLayout(crudPanel, BoxLayout.Y_AXIS));
+        
+        JPanel row1Panel = new JPanel();
+        row1Panel.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 2));
+        
+        JPanel row2Panel = new JPanel();
+        row2Panel.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
 
         String message = "You have asked to open a lot of windows. Do you want to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
 
-        crudPanel.add(viewButton(confirmDialog));
-        crudPanel.add(editButton(confirmDialog));
+        row1Panel.add(viewButton(confirmDialog));
+        row1Panel.add(editButton(confirmDialog));
 
         Button newButton = new NewButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 createNewStrategy();
             }
         });
-        crudPanel.add(newButton);
+        row1Panel.add(newButton);
 
         Button removeButton = new RemoveButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -258,7 +265,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
-        crudPanel.add(removeButton);
+        row1Panel.add(removeButton);
         
         Button copyButton = new CopyButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -270,7 +277,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                     }
             }
         });
-        crudPanel.add(copyButton);
+        row1Panel.add(copyButton);
 
         Button compareButton = new Button("Compare", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -283,7 +290,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
-        crudPanel.add(compareButton);
+        row1Panel.add(compareButton);
         
         Button summaryButton = new Button("Summarize", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -295,9 +302,21 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
-        crudPanel.add(summaryButton);
+        row2Panel.add(summaryButton);
         
-        Button groupsButton = new Button("Groups", new AbstractAction() {
+        Button resultsButton = new Button("Export Results", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                try {
+                    exportStrategyDetailedResults();
+                } catch (EmfException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        row2Panel.add(resultsButton);
+        
+        Button groupsButton = new Button("Strategy Groups", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 messagePanel.clear();
                 try {
@@ -308,7 +327,10 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
-        crudPanel.add(groupsButton);
+        row2Panel.add(groupsButton);
+        
+        crudPanel.add(row1Panel);
+        crudPanel.add(row2Panel);
 
         return crudPanel;
     }
@@ -489,6 +511,25 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         
         presenter.summarizeControlStrategies(ids, localFile);
         messagePanel.setMessage("Saved control strategy summary file: " + localFile.getName());
+    }
+    
+    private void exportStrategyDetailedResults() throws EmfException {
+        List strategies = selected();
+        
+        if (strategies.isEmpty()) {
+            messagePanel.setMessage("Please select at least one control strategy to export results.");
+            return;
+        }
+        
+        // prompt for file name prefix
+        String prefix = JOptionPane.showInputDialog(parentConsole, 
+                "Enter a prefix for the exported filenames (leave blank for no prefix).", 
+                "Use filename prefix?",
+                JOptionPane.PLAIN_MESSAGE);
+        if (prefix == null) return; // user clicked Cancel
+        
+        presenter.exportControlStrategyResults(strategies, prefix);
+        messagePanel.setMessage("Results export started. Check the Status window for updates.");
     }
 
     private void copySelectedStrategy() throws EmfException {

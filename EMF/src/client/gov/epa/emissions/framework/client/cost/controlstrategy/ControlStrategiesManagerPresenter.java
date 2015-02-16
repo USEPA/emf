@@ -1,7 +1,5 @@
 package gov.epa.emissions.framework.client.cost.controlstrategy;
 
-import java.io.File;
-
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyView;
 import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGroupManagerView;
@@ -9,6 +7,9 @@ import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewContro
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.LightControlMeasure;
+
+import java.io.File;
+import java.util.List;
 
 public interface ControlStrategiesManagerPresenter {
 
@@ -40,5 +41,7 @@ public interface ControlStrategiesManagerPresenter {
 
     void summarizeControlStrategies(int[] ids, File localFile) throws EmfException;
     
-    public void doDisplayStrategyGroups(StrategyGroupManagerView view) throws EmfException;
+    void exportControlStrategyResults(List<ControlStrategy> strategies, String prefix) throws EmfException;
+    
+    void doDisplayStrategyGroups(StrategyGroupManagerView view) throws EmfException;
 }

@@ -4,8 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.UUID;
 
+import gov.epa.emissions.commons.data.Sector;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyPresenter;
@@ -22,6 +25,9 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyService;
 import gov.epa.emissions.framework.services.cost.LightControlMeasure;
+import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
+import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 
 public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, ControlStrategiesManagerPresenter {
@@ -155,6 +161,30 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
             }
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
+        }
+    }
+    
+    public void exportControlStrategyResults(List<ControlStrategy> strategies, String prefix) throws EmfException {        
+        for (ControlStrategy strategy : strategies) {
+            for (ControlStrategyResult result : service().getControlStrategyResults(strategy.getId())) {
+                if (result.getStrategyResultType().getName().equals(StrategyResultType.detailedStrategyResult)) {
+                    EmfDataset resultDataset = (EmfDataset)result.getDetailedResultDataset();
+
+                    String comboPrefix = prefix;
+                    Sector[] datasetSectors = resultDataset.getSectors();
+                    if (datasetSectors != null) {
+                        if (!comboPrefix.isEmpty())
+                            comboPrefix += "_";
+                        comboPrefix += datasetSectors[0].getName();
+                    }
+
+                    Version resultVersion = session.eximService().getVersion(resultDataset, resultDataset.getDefaultVersion());
+                    
+                    session.eximService().downloadDatasets(session.user(), new EmfDataset[] { resultDataset }, 
+                            new Version[] { resultVersion }, comboPrefix, true ,"", null, null, null,
+                            "", "Exporting detailed results", null);
+                }
+            }
         }
     }
     
