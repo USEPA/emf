@@ -61,6 +61,20 @@ DECLARE
   dates_sql text := '';
   column_sql text := '';
 BEGIN
+  
+  -- get output time period information
+  SELECT LOWER(res.name),
+         EXTRACT(YEAR FROM ta.start_day),
+         ta.start_day,
+         ta.end_day
+    INTO resolution,
+         inventory_year,
+         start_day,
+         end_day
+    FROM emf.temporal_allocation ta
+    JOIN emf.temporal_allocation_resolution res
+      ON ta.resolution_id = res.id
+   WHERE ta.id = temporal_allocation_id;
 
   -- get the inventory table name
   SELECT LOWER(i.table_name)
@@ -75,6 +89,21 @@ BEGIN
     JOIN emf.dataset_types
       ON dataset_types.id = datasets.dataset_type
    WHERE datasets.id = input_dataset_id;
+  
+  -- get inventory filter if specified
+  SELECT CASE
+           WHEN LENGTH(TRIM(ta.filter)) > 0 THEN 
+             '(' || public.alias_inventory_filter(ta.filter, 'inv') || ')' 
+           ELSE NULL 
+         END
+    INTO inv_filter
+    FROM emf.temporal_allocation ta
+   WHERE ta.id = temporal_allocation_id;
+  
+  -- build version info into inventory filter
+  inv_filter := 
+    '(' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || ')' || 
+    COALESCE(' AND ' || inv_filter, '');
 
   IF inventory_dataset_type_name = 'Flat File 2010 Point' OR
      inventory_dataset_type_name = 'Flat File 2010 Nonpoint' THEN
@@ -91,8 +120,9 @@ BEGIN
     -- check if inventory has monthly values
     EXECUTE '
     SELECT COUNT(*) > 0
-      FROM emissions.' || inventory_table_name || '
-     WHERE COALESCE(jan_value, feb_value, mar_value, apr_value, 
+      FROM emissions.' || inventory_table_name || ' inv
+     WHERE ' || inv_filter || '
+       AND COALESCE(jan_value, feb_value, mar_value, apr_value, 
                     may_value, jun_value, jul_value, aug_value, 
                     sep_value, oct_value, nov_value, dec_value) IS NOT NULL'
       INTO flat_file_monthly;
@@ -123,21 +153,6 @@ BEGIN
     inv_processid := 'NULL';
   END IF;
   
-  -- get inventory filter if specified
-  SELECT CASE
-           WHEN LENGTH(TRIM(ta.filter)) > 0 THEN 
-             '(' || public.alias_inventory_filter(ta.filter, 'inv') || ')' 
-           ELSE NULL 
-         END
-    INTO inv_filter
-    FROM emf.temporal_allocation ta
-   WHERE ta.id = temporal_allocation_id;
-  
-  -- build version info into inventory filter
-  inv_filter := 
-    '(' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || ')' || 
-    COALESCE(' AND ' || inv_filter, '');
-  
   -- get the cross-reference and profile dataset ids and versions
   SELECT ta.xref_dataset_id,
          ta.xref_dataset_version,
@@ -156,20 +171,6 @@ BEGIN
          daily_profile_dataset_id,
          daily_profile_dataset_version
     FROM emf.temporal_allocation ta
-   WHERE ta.id = temporal_allocation_id;
-  
-  -- get output time period information
-  SELECT LOWER(res.name),
-         EXTRACT(YEAR FROM ta.start_day),
-         ta.start_day,
-         ta.end_day
-    INTO resolution,
-         inventory_year,
-         start_day,
-         end_day
-    FROM emf.temporal_allocation ta
-    JOIN emf.temporal_allocation_resolution res
-      ON ta.resolution_id = res.id
    WHERE ta.id = temporal_allocation_id;
   
   -- get monthly profile table name
