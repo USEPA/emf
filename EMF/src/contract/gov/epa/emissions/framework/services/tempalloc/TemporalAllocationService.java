@@ -31,6 +31,8 @@ public interface TemporalAllocationService extends EMFService {
     
     void runTemporalAllocation(User user, TemporalAllocation element) throws EmfException;
     
+    void stopTemporalAllocation(TemporalAllocation element) throws EmfException;
+    
     List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus) throws EmfException;
     
     Long getTemporalAllocationRunningCount() throws EmfException;

@@ -271,7 +271,7 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
         Session session = sessionFactory.getSession();
         try {
             // check if temporal allocation is already running
-            String runStatus = element.getRunStatus();
+            String runStatus = dao.getTemporalAllocationRunStatus(element.getId(), session);
             if (runStatus.equals("Running")) {
                 return;
             }
@@ -284,6 +284,21 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
             dao.setRunStatusAndCompletionDate(element, "Failed", null, session);
             
             throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    public void stopTemporalAllocation(TemporalAllocation element) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            String runStatus = dao.getTemporalAllocationRunStatus(element.getId(), session);
+            if (runStatus.equals("Waiting") || runStatus.equals("Running")) {
+                dao.setRunStatusAndCompletionDate(element, "Pending Cancel", null, session);
+            }
+        } catch (RuntimeException e) {
+            LOG.error("Could not set Temporal Allocation run status: " + element.getId(), e);
+            throw new EmfException("Could not set Temporal Allocation run status: " + element.getId());
         } finally {
             session.close();
         }

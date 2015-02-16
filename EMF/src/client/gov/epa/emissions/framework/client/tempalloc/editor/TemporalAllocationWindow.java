@@ -12,6 +12,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -19,6 +20,7 @@ import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.RunButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
+import gov.epa.emissions.commons.gui.buttons.StopButton;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
@@ -39,7 +41,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
 
     protected EmfConsole parentConsole;
     
-    protected Button runButton, refreshButton;
+    protected Button runButton, refreshButton, stopButton;
     
     public TemporalAllocationWindow(DesktopManager desktopManager, EmfSession session, EmfConsole parentConsole) {
         super("View Temporal Allocation", new Dimension(760, 580), desktopManager);
@@ -147,11 +149,15 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
         container.add(saveButton);
         
         runButton = new RunButton(runAction());
-        updateRunButtonStatus(temporalAllocation);
         container.add(runButton);
 
         refreshButton = new Button("Refresh", refreshAction());
         container.add(refreshButton);
+        
+        stopButton = new StopButton(stopAction());
+        container.add(stopButton);
+        
+        updateRunButtonStatus(temporalAllocation);
 
         Button closeButton = new CloseButton(closeAction());
         container.add(closeButton);
@@ -167,6 +173,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
     private void updateRunButtonStatus(TemporalAllocation temporalAllocation) {
         if (!presenter.isEditing()) {
             runButton.setEnabled(false);
+            stopButton.setEnabled(false);
             return;
         }
         String status = temporalAllocation.getRunStatus();
@@ -176,9 +183,11 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
              status.equals("Failed") || 
              status.equals("Cancelled"))) {
             runButton.setEnabled(true);
+            stopButton.setEnabled(false);
         }
         else {
             runButton.setEnabled(false);
+            stopButton.setEnabled(true);
         }
     }
 
@@ -233,6 +242,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
                     save();
                     presenter.doPrepareRun();
                     runButton.setEnabled(false);
+                    stopButton.setEnabled(true);
                     presenter.runTemporalAllocation();
                     messagePanel.setMessage("Running temporal allocation. Monitor the status window for progress.");
                 } catch (EmfException e) {
@@ -252,6 +262,28 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
                     presenter.doRefresh();
                 } catch (EmfException e) {
                     messagePanel.setError(e.getMessage());
+                }
+            }
+        };
+    }
+    
+    private Action stopAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                clearMessage();
+                try {
+                    String title = "Confirm Cancellation";
+                    
+                    String[] messages = {"Are you sure you want to stop the temporal allocation run?",
+                            "The run will be stopped once the currently running task is completed."};
+                    int selection = JOptionPane.showConfirmDialog(parentConsole, messages, title, JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (selection == JOptionPane.YES_OPTION) {
+                        presenter.doStop();
+                        messagePanel.setMessage("Request to cancel run submitted. Monitor the status window for cancellation.");
+                    }
+                } catch (EmfException e) {
+                    messagePanel.setError("Error stopping running temporal allocation: " + e.getMessage());
                 }
             }
         };

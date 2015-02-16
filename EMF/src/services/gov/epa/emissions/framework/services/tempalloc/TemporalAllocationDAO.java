@@ -126,7 +126,11 @@ public class TemporalAllocationDAO {
     
     public List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus, Session session) {
       return session.createQuery("SELECT new TemporalAllocation(ta.id, ta.name) FROM TemporalAllocation ta WHERE ta.runStatus = :runStatus order by ta.lastModifiedDate").setString("runStatus", runStatus).list();
-  }
+    }
+    
+    public String getTemporalAllocationRunStatus(int id, Session session) {
+        return (String)session.createQuery("SELECT runStatus FROM TemporalAllocation WHERE id = " + id).uniqueResult();
+    }
     
     public void updateTemporalAllocationOutput(TemporalAllocationOutput output, Session session) {
         hibernateFacade.saveOrUpdate(output, session);

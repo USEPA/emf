@@ -143,6 +143,16 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         call.request(new Object[] { user, element });
     }
 
+    public synchronized void stopTemporalAllocation(TemporalAllocation element) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("stopTemporalAllocation");
+        call.addParam("element", mappings.temporalAllocation());
+        call.setVoidReturnType();
+
+        call.request(new Object[] { element });
+    }
+
     public Long getTemporalAllocationRunningCount() {
         return null;
     }

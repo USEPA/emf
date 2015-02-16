@@ -175,6 +175,11 @@ public class TemporalAllocationPresenter {
         view.refresh(temporalAllocation);
     }
     
+    public void doStop() throws EmfException {
+        service().stopTemporalAllocation(temporalAllocation);
+        doRefresh();
+    }
+    
     public void doPrepareRun() throws EmfException {
         for (TemporalAllocationTabPresenter element : tabPresenters) {
             element.doPrepareRun();
