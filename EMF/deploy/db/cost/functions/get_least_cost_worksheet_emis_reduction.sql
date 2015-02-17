@@ -20,7 +20,7 @@ BEGIN
 			ORDER BY marginal, emis_reduction desc, source_poll_cnt desc, record_id
 			limit ' || target_record_offset || '
 		) tbl
-		ORDER BY source, original_dataset_id, source_id, marginal, emis_reduction desc, source_poll_cnt desc, record_id
+		ORDER BY source, original_dataset_id, source_id, emis_reduction desc, source_poll_cnt desc, record_id
 	) tbl' 
 	into emis_reduction;
 

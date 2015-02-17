@@ -234,7 +234,7 @@ BEGIN
 --						limit ' || (apply_order) || '
 						limit ' || (apply_order + 1) || '
 					) tbl
-					ORDER BY source, original_dataset_id, source_id, marginal, emis_reduction desc, source_poll_cnt desc, record_id
+					ORDER BY source, original_dataset_id, source_id, emis_reduction desc, source_poll_cnt desc, record_id
 --					source, marginal, emis_reduction desc, source_poll_cnt desc, record_id
 				) tp
 				on tp.source = ap.source

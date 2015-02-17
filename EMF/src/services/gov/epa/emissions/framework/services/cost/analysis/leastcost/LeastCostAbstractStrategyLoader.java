@@ -239,7 +239,7 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
             + "             and poll = '" + controlStrategy.getTargetPollutant().getName() + "' "
             + "         ORDER BY marginal, emis_reduction desc, source_poll_cnt desc, record_id "
             + "     ) tbl "
-            + "     ORDER BY source, original_dataset_id, source_id, marginal, emis_reduction desc, source_poll_cnt desc, record_id "
+            + "     ORDER BY source, original_dataset_id, source_id, emis_reduction desc, source_poll_cnt desc, record_id "
             + " ) tbl; ";
         
         ResultSet rs = null;
