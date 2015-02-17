@@ -1,6 +1,7 @@
 
 CREATE OR REPLACE FUNCTION public.run_temporal_allocation_to_episode(
   temporal_allocation_id integer,
+  input_dataset_id integer,
   daily_result_dataset_id integer,
   episodic_result_dataset_id integer
   ) RETURNS void AS $$
@@ -52,6 +53,7 @@ BEGIN
          result.inv_dataset_id,
          result.inv_record_id
     FROM emissions.' || daily_result_table_name || ' result
+   WHERE result.inv_dataset_id = ' || input_dataset_id || '
 GROUP BY result.inv_dataset_id, result.inv_record_id, result.poll,
          result.scc,
          result.fips,

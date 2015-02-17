@@ -224,6 +224,7 @@ public class TemporalAllocationTask {
                     setStatus("Calculating episodic values from inventory: " + inputDataset.getInputDataset().getName());
                     query = "SELECT public.run_temporal_allocation_to_episode(" +
                             temporalAllocation.getId() + ", " + 
+                            inputDataset.getInputDataset().getId() + ", " + 
                             dailyOutput.getOutputDataset().getId() + ", " +
                             episodicOutput.getOutputDataset().getId() + ")";
                     try {
