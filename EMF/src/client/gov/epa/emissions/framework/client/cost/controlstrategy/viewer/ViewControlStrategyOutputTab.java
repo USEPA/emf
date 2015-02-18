@@ -162,6 +162,15 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
             showMessage(e.getMessage());
         }
     }
+    
+    public String promptForColumnPrefix() {
+        String prefix = JOptionPane.showInputDialog(getParentConsole(), 
+                "Enter a prefix to use in the column names (leave blank for no prefix).", 
+                "Use column name prefix?",
+                JOptionPane.PLAIN_MESSAGE);
+        if (prefix == null) prefix = "";
+        return prefix;
+    }
 
     public void analyze() {
 

@@ -57,13 +57,24 @@ public class ViewControlStrategyOutputTabPresenterImpl implements ViewControlStr
 
         Version[] versions = new Version[datasets.length];
         String[] dsExportPrefs = new String [datasets.length];
+        String colPrefix = null;
         for (int i = 0; i < datasets.length; i++) {
             versions[i] = service.getVersion(datasets[i], datasets[i].getDefaultVersion());
             
             // check for export preference
             String prefName = datasets[i].getDatasetTypeName().replace(" ", "_") + "_column_export";
             String prefVal = ((DefaultUserPreferences)session.preferences()).property(prefName);
-            dsExportPrefs[i] = (prefVal != null ? prefVal : "");
+            if (prefVal == null) prefVal = "";
+            
+            // replace wildcard with column prefix
+            if (prefVal.contains("*")) {
+                if (colPrefix == null) {
+                    colPrefix = view.promptForColumnPrefix();
+                }
+                prefVal = prefVal.replace("*", colPrefix);
+            }
+            
+            dsExportPrefs[i] = prefVal;
         }
         
         if (download) {
