@@ -1150,6 +1150,19 @@ public class DataServiceImpl implements DataService {
                 System.out.println("Query to replace column values: " + updateQuery);
                 System.out.println("Query to update previous delete_versions: " + updateDelVersions);
             }
+            
+            // test user-entered syntax for find filter and update SQL
+            try {
+                dataModifier.execute(selectQuery);
+            } catch (SQLException e) {
+                throw new EmfException("Bad syntax in SQL Filter.");
+            }
+
+            try {
+                dataModifier.execute(updateQuery + " AND 1 = 0");
+            } catch (SQLException e) {
+                throw new EmfException("Bad syntax in UPDATE SET SQL.");
+            }
 
             // NOTE: replace values of records in previous versions and also in current version
             if (dataModifier.resultExists(selectQuery)) {
