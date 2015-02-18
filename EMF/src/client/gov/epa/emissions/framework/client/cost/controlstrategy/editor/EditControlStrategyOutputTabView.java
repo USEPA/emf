@@ -20,4 +20,5 @@ public interface EditControlStrategyOutputTabView extends EditControlStrategyTab
     
     void display(ControlStrategy strategy, ControlStrategyResult[] controlStrategyResults) throws EmfException ;
     
+    String promptForColumnPrefix();
 }
