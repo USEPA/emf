@@ -424,7 +424,7 @@ public class ManagedExportService {
                 // Services services = services();
                 EmfDataset dataset = datasets[i];
                 Version version = versions[i];
-                String colsToExport = dsExportPrefs[i];
+                String colsToExport = (dsExportPrefs != null ? dsExportPrefs[i] : "");
 
                 // FIXME: Investigate if services reference needs to be unique for each dataset in this call
                 if (isExportable(dataset, version, services, user)) {
