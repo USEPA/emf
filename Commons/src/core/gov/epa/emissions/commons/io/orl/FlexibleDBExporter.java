@@ -62,7 +62,7 @@ public class FlexibleDBExporter extends GenericExporter {
         setDelimiter(",");
         
         // colsToExport format: <dataset column name>:<output column name>,<name 1>,...
-        if (!colsToExport.equals("")) {
+        if (colsToExport != null && !colsToExport.equals("")) {
             this.colsToExport = new HashMap<String, String>();
             for (String prefValue : colsToExport.split(",")) {
                 String parts[] = prefValue.split(":");
