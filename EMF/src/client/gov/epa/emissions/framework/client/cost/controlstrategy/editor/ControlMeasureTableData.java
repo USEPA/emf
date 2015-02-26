@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.cost.controlstrategy.editor;
 
+import gov.epa.emissions.framework.services.cost.ControlMeasureClass;
 import gov.epa.emissions.framework.services.cost.LightControlMeasure;
 import gov.epa.emissions.framework.ui.AbstractTableData;
 import gov.epa.emissions.framework.ui.Row;
@@ -27,12 +28,16 @@ public class ControlMeasureTableData extends AbstractTableData {
     }
 
     private Row row(LightControlMeasure cm) {
-        String[] values = { cm.getAbbreviation(), cm.getName() };
+        String[] values = { cm.getAbbreviation(), cm.getName(), measureClass(cm.getCmClass()) };
         return new ViewableRow(cm, values);
+    }
+    
+    protected String measureClass(ControlMeasureClass cmClass) {
+        return (cmClass == null) ? "" : cmClass.getName();
     }
 
     public String[] columns() {
-        return new String[] { "Abbrev", "Name" };
+        return new String[] { "Abbrev", "Name", "Class" };
     }
 
     public Class getColumnClass(int col) {
