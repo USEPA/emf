@@ -342,4 +342,16 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
     private synchronized boolean isDuplicate(String name) throws EmfException {
         return (isDuplicateName(name) != 0);
     }
+    
+    public synchronized String getTemporalAllocationRunStatus(int id) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            return dao.getTemporalAllocationRunStatus(id, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not retrieve temporal allocation run status.", e);
+            throw new EmfException("Could not retrieve temporal allcation run status.");
+        } finally {
+            session.close();
+        }
+    }
 }

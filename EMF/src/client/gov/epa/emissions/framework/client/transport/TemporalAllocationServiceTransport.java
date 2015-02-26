@@ -174,4 +174,14 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         
         return (Integer) call.requestResponse(new Object[] { name });
     }
+    
+    public synchronized String getTemporalAllocationRunStatus(int id) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getTemporalAllocationRunStatus");
+        call.addIntegerParam("id");
+        call.setReturnType(mappings.string());
+
+        return (String) call.requestResponse(new Object[] { new Integer(id) });
+    }
 }

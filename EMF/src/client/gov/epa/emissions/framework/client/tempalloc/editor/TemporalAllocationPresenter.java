@@ -97,9 +97,13 @@ public class TemporalAllocationPresenter {
             id = service().addTemporalAllocation(temporalAllocation);
             temporalAllocation = service().obtainLocked(session.user(), id);
         } else {
+            // make sure we don't overwrite the run status
+            String currentRunStatus = service().getTemporalAllocationRunStatus(temporalAllocation.getId());
+            temporalAllocation.setRunStatus(currentRunStatus);
             temporalAllocation = service().updateTemporalAllocationWithLock(temporalAllocation);
         }
         updateTabs(temporalAllocation);
+        view.refresh(temporalAllocation);
     }
 
     protected void saveTabs() throws EmfException {

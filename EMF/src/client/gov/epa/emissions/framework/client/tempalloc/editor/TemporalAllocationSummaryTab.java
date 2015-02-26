@@ -59,6 +59,7 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
     
     public void setTemporalAllocation(TemporalAllocation temporalAllocation) {
         this.temporalAllocation = temporalAllocation;
+        updateResultsSection();
     }
     
     public void display() {
