@@ -37,3 +37,25 @@ WHERE name IN ('Ozone season average (tons/day)',
 -- 02/16/2014 - add messages output type
 INSERT INTO emf.temporal_allocation_output_type (name)
 VALUES ('Temporal Allocation Messages');
+
+-- 02/26/2014 - add default indices to x-ref and profile dataset types
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+SELECT (SELECT id FROM emf.dataset_types WHERE "name" = 'Temporal Cross Reference (CSV)') as dataset_type_id,
+  (SELECT COALESCE(MAX(list_index) + 1, 0) FROM emf.dataset_types_keywords WHERE 
+    dataset_type_id = (SELECT id FROM emf.dataset_types WHERE "name" = 'Temporal Cross Reference (CSV)')) AS list_index,
+  (SELECT id FROM emf.keywords WHERE "name" = 'INDICES') as keyword_id,
+  'scc|fips|plantid|pointid|stackid|processid|poll|profile_type' AS "value", 'INDICES' as kwname;
+
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+SELECT (SELECT id FROM emf.dataset_types WHERE "name" = 'Temporal Profile Monthly (CSV)') as dataset_type_id,
+  (SELECT COALESCE(MAX(list_index) + 1, 0) FROM emf.dataset_types_keywords WHERE 
+    dataset_type_id = (SELECT id FROM emf.dataset_types WHERE "name" = 'Temporal Profile Monthly (CSV)')) AS list_index,
+  (SELECT id FROM emf.keywords WHERE "name" = 'INDICES') as keyword_id,
+  'profile_id' AS "value", 'INDICES' as kwname;
+  
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+SELECT (SELECT id FROM emf.dataset_types WHERE "name" = 'Temporal Profile Daily (CSV)') as dataset_type_id,
+  (SELECT COALESCE(MAX(list_index) + 1, 0) FROM emf.dataset_types_keywords WHERE 
+    dataset_type_id = (SELECT id FROM emf.dataset_types WHERE "name" = 'Temporal Profile Daily (CSV)')) AS list_index,
+  (SELECT id FROM emf.keywords WHERE "name" = 'INDICES') as keyword_id,
+  'profile_id' AS "value", 'INDICES' as kwname;
