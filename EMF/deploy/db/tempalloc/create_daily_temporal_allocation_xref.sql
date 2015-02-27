@@ -447,6 +447,7 @@ BEGIN
    ORDER BY tbl.record_id, tbl.ranking';
 
   EXECUTE '
-  INSERT INTO temp_alloc_xref (record_id, profile_id) ' || sql;
+  INSERT INTO temp_alloc_xref (record_id, profile_id) ' || sql || ';
+  ANALYZE temp_alloc_xref;';
 END;
 $$ LANGUAGE plpgsql;
