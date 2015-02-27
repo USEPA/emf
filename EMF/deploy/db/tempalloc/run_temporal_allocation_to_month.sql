@@ -326,5 +326,8 @@ BEGIN
      WHERE ' || inv_filter;
   END IF;
   
+  EXECUTE '
+  ANALYZE emissions.' || monthly_result_table_name;
+  
 END;
 $$ LANGUAGE plpgsql;

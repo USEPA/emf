@@ -262,5 +262,8 @@ BEGIN
        AND monthly.month = ' || month_num;
   END LOOP;
   
+  EXECUTE '
+  ANALYZE emissions.' || daily_result_table_name;
+  
 END;
 $$ LANGUAGE plpgsql;
