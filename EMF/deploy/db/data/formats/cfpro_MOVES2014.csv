@@ -1,0 +1,8 @@
+# Name: MOVES Control Factor CFPRO-MOVES2014 (CSV)
+# Desc: Movesmrg adjustment factor file (CFPRO) for SMOKE 3.5 and above
+"name","type","default value","mandatory","description","formatter","constraints","width","spaces","fixformat start","fixformat end"
+"FIPS","VARCHAR(5)",,TRUE,,,,,,,
+"SCC","VARCHAR(10)",,FALSE,,,,,,,
+"POLL","VARCHAR(20)",,FALSE,,,,,,,
+"MONTH","INTEGER",,FALSE,,,,,,,
+"FACTOR","double precision",,FALSE,,,,,,,
