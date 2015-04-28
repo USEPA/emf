@@ -8,8 +8,8 @@ remote.output.drive=C:/
 default.input.folder=
 default.output.folder=
 
-user.name=delvecch
-user.password=delvecch12345
+user.name=joellenb
+user.password=jwizzard3
 
 web.site=http://www.ie.unc.edu/cempd/projects/emf/install/
 emf.install.folder=C:/
@@ -17,7 +17,7 @@ server.import.folder=
 server.export.folder=
 server.address=http://localhost:8080/emf/services
 java.home=
-local.temp.dir=D:/temp
+local.temp.dir=C:/tmp
 r.home=
 
 View_QA_results_limit=100
