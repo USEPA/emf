@@ -1622,3 +1622,13 @@ CREATE TABLE emf.control_strategy_groups
   list_index int4
 ) 
 WITHOUT OIDS;
+
+-- 05/06/2015 Add sector to FF10 Merged dataset type
+INSERT INTO emf.fileformat_columns
+(file_format_id, list_index, name, type, default_value, description, formatter, constraints, width)
+SELECT file_format, MAX(list_index) + 1, 'SECTOR', 'VARCHAR(64)', '', '', '', '', 64
+FROM emf.dataset_types
+JOIN emf.fileformat_columns
+ON file_format = file_format_id
+WHERE dataset_types.name = 'Flat File 2010 Merged'
+GROUP BY file_format;
