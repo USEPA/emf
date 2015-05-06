@@ -28,7 +28,7 @@ public class ControlMeasureTableData extends AbstractTableData {
     }
 
     private Row row(LightControlMeasure cm) {
-        String[] values = { cm.getAbbreviation(), cm.getName(), measureClass(cm.getCmClass()) };
+        String[] values = { cm.getAbbreviation(), cm.getName(), measureClass(cm.getCmClass()), pollutantName(cm) };
         return new ViewableRow(cm, values);
     }
     
@@ -36,8 +36,14 @@ public class ControlMeasureTableData extends AbstractTableData {
         return (cmClass == null) ? "" : cmClass.getName();
     }
 
+    private String pollutantName(LightControlMeasure measure) {
+        if (measure.getMajorPollutant() == null)
+            return "";
+        return measure.getMajorPollutant().getName();
+    }
+
     public String[] columns() {
-        return new String[] { "Abbrev", "Name", "Class" };
+        return new String[] { "Abbrev", "Name", "Class", "Major Pollutant" };
     }
 
     public Class getColumnClass(int col) {
