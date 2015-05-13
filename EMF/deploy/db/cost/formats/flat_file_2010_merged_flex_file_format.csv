@@ -57,3 +57,4 @@ NOV_PCTRED,double precision,"",false,"","","",0,0,0,0
 DEC_PCTRED,double precision,"",false,"","","",0,0,0,0
 COMMENT,VARCHAR(512),"",false,"","","",512,0,0,0
 DATA_SET_ID,VARCHAR(20),"",false,"","","",20,0,0,0
+SECTOR,VARCHAR(64),"",false,"","","",64,0,0,0

@@ -52,6 +52,7 @@ DECLARE
 	mact_expression character varying(64) := 'inv.mact';
 	is_flat_file_inventory boolean := false;
 	is_monthly_source_sql character varying := 'coalesce(jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value) is not null';
+	has_projection_factor_column boolean := false;
 BEGIN
 	--get dataset type name
 	select dataset_types."name"
@@ -146,6 +147,9 @@ BEGIN
 
 	-- see if there is a cumulative_cost column in the inventory
 	has_cumulative_cost_col := public.check_table_for_columns(inv_table_name, 'cumulative_cost', ',');
+
+	-- see if there is a projection_factor column in the inventory
+	has_projection_factor_column := public.check_table_for_columns(inv_table_name, 'projection_factor', ',');
 
 	-- get month of the dataset, 0 (Zero) indicates an annual inventory
 	select public.get_dataset_month(input_dataset_id)
@@ -416,7 +420,7 @@ BEGIN
 			insert_column_list_sql := insert_column_list_sql || ',' || column_name;
 		ELSIF column_name = 'projection_factor' THEN
 			select_column_list_sql := select_column_list_sql || ', ' ||
-			'coalesce(cr.adj_factor, proj.adj_factor) as projection_factor';
+			'coalesce(cr.adj_factor, proj.adj_factor' || case when has_projection_factor_column then ',inv.projection_factor' else '' end || ') as projection_factor';
 			insert_column_list_sql := insert_column_list_sql || ',' || column_name;
 		ELSIF column_name = 'ann_pct_red' THEN
 			--and cont.ceff <> 0.0 indicates a pass through situation, don't control source
