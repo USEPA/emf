@@ -1,16 +1,4 @@
-﻿/*
-select * from emf.control_strategies where name = 'test mer nc so2 costing type 3 4 11';
-select * from emf.strategy_results where control_strategy_id = 156;
-
-select public.apply_cap_measures_on_hap_pollutants(156, 
-	'{ 6307, 6309, 6311, 6313 }');
-
-select public.apply_cap_measures_on_hap_pollutants(157, 
-	'{ 6323 }');
-*/
-
-
-CREATE OR REPLACE FUNCTION public.apply_cap_measures_on_hap_pollutants(intControlStrategyId integer, 
+﻿CREATE OR REPLACE FUNCTION public.apply_cap_measures_on_hap_pollutants(intControlStrategyId integer, 
 	intStrategyResultIds int[]) RETURNS void AS $$
 DECLARE
 	intInputDatasetId integer;

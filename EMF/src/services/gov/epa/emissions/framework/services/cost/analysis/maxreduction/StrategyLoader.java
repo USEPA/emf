@@ -24,10 +24,13 @@ public class StrategyLoader extends AbstractStrategyLoader {
     }
 
     public ControlStrategyResult loadStrategyResult(ControlStrategyInputDataset controlStrategyInputDataset) throws Exception {
+//        setStatus("in StrategyLoader");
         EmfDataset inputDataset = controlStrategyInputDataset.getInputDataset();
+//        setStatus("have inputDataSet; ready to call makeSureInventoryDatasetHasIndexes");
         //make sure inventory has indexes created...
         makeSureInventoryDatasetHasIndexes(inputDataset);
-        //make sure inventory has the target pollutant, if not show a warning message
+//        setStatus("now ready to call inventoryHasTargetPollutant");
+        //make sure inventory has the target pollutant; if not show a warning message
         if (!inventoryHasTargetPollutant(controlStrategyInputDataset)) {
             setStatus("Error processing input dataset: " + controlStrategyInputDataset.getInputDataset().getName() + ". Target pollutant, " + controlStrategy.getTargetPollutant().getName() + ", is not in the inventory.");
 //            throw new EmfException("Error processing input dataset: " + controlStrategyInputDataset.getInputDataset().getName() + ". Target pollutant, " + controlStrategy.getTargetPollutant().getName() + ", is not in the inventory.");

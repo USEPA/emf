@@ -43,53 +43,29 @@ import java.util.List;
 import org.hibernate.Session;
 
 public abstract class AbstractStrategyLoader implements StrategyLoader {
-
     protected TableFormat detailedResultTableFormat;
-
     protected ControlStrategy controlStrategy;
-    
     protected double totalCost = 0.0;
-
     protected double totalReduction = 0.0;
-    
-//    private DecimalFormat decFormat;
-
+    //    private DecimalFormat decFormat;
     protected RecordGenerator recordGenerator;
-    
     protected int recordCount = 0;
-    
     protected Datasource datasource;
-    
     protected DatasetCreator creator;
-    
     protected HibernateSessionFactory sessionFactory;
-    
     protected User user;
-    
     protected DbServerFactory dbServerFactory;
-    
     protected DbServer dbServer;
-    
     protected Keywords keywords;
-
     private DatasetType controlStrategyDetailedResultDatasetType;
-    
     private StrategyResultType detailedStrategyResultType;
-    
     private String filterForSourceQuery;
-
     protected int daysInMonth = 31; //useful only if inventory is monthly based and not yearly.
-
     protected int month = -1; //useful only if inventory is monthly based and not yearly.
-
     private StatusDAO statusDAO;
-    
     protected ControlStrategyResult[] results;
-
     protected List<ControlStrategyResult> strategyMessageResultList = new ArrayList<ControlStrategyResult>();
-
     protected ControlStrategyDAO controlStrategyDAO;
-    
     protected ControlStrategyResult strategyMessagesResult;
 
     public AbstractStrategyLoader(User user, DbServerFactory dbServerFactory, 
@@ -98,7 +74,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         this.dbServerFactory = dbServerFactory;
         this.sessionFactory = sessionFactory;
         this.controlStrategy = controlStrategy;
-//        this.decFormat = new DecimalFormat("0.###E0");
+        //        this.decFormat = new DecimalFormat("0.###E0");
         this.keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
         this.dbServer = dbServerFactory.getDbServer();
         this.detailedResultTableFormat = new StrategyDetailedResultTableFormat(dbServer.getSqlDataTypes());
@@ -134,7 +110,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         result.setInputDataset(inputDataset);
         result.setInputDatasetVersion(inputDatasetVersion);
         result.setDetailedResultDataset(createResultDataset(inputDataset));
-        
+
         result.setStrategyResultType(getDetailedStrategyResultType());
         result.setStartTime(new Date());
         result.setRunStatus("Start processing dataset");
@@ -189,32 +165,32 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     }
 
     private EmfDataset createStrategyMessagesDataset() throws Exception {
-      return creator.addDataset("DS", 
-              DatasetCreator.createDatasetName(controlStrategy.getName() + "_strategy_msgs"), 
-              getDatasetType("Strategy Messages (CSV)"), 
-              new VersionedTableFormat(new StrategyMessagesFileFormat(dbServer.getSqlDataTypes()), dbServer.getSqlDataTypes()), 
-              strategyMessagesDatasetDescription());
+        return creator.addDataset("DS", 
+                DatasetCreator.createDatasetName(controlStrategy.getName() + "_strategy_msgs"), 
+                getDatasetType("Strategy Messages (CSV)"), 
+                new VersionedTableFormat(new StrategyMessagesFileFormat(dbServer.getSqlDataTypes()), dbServer.getSqlDataTypes()), 
+                strategyMessagesDatasetDescription());
     }
 
     private EmfDataset createStrategyMessagesDataset(EmfDataset inventory) throws Exception {
-      return creator.addDataset("DS", 
-              DatasetCreator.createDatasetName(inventory.getName() + "_strategy_msgs"), 
-              getDatasetType("Strategy Messages (CSV)"), 
-              new VersionedTableFormat(new StrategyMessagesFileFormat(dbServer.getSqlDataTypes()), dbServer.getSqlDataTypes()), 
-              strategyMessagesDatasetDescription());
+        return creator.addDataset("DS", 
+                DatasetCreator.createDatasetName(inventory.getName() + "_strategy_msgs"), 
+                getDatasetType("Strategy Messages (CSV)"), 
+                new VersionedTableFormat(new StrategyMessagesFileFormat(dbServer.getSqlDataTypes()), dbServer.getSqlDataTypes()), 
+                strategyMessagesDatasetDescription());
     }
-  
+
     protected EmfDataset createStrategyMessagesDataset(String namePrefix, EmfDataset inventory) throws Exception {
         return creator.addDataset("DS", 
                 DatasetCreator.createDatasetName(namePrefix + "_" + inventory.getName() + "_strategy_msgs"), 
                 getDatasetType("Strategy Messages (CSV)"), 
                 new VersionedTableFormat(new StrategyMessagesFileFormat(dbServer.getSqlDataTypes()), dbServer.getSqlDataTypes()), 
                 strategyMessagesDatasetDescription());
-      }
-    
+    }
+
     private String strategyMessagesDatasetDescription() {
         return "#Strategy Messages\n" + 
-            "#Implements control strategy: " + controlStrategy.getName() + "\n#";
+                "#Implements control strategy: " + controlStrategy.getName() + "\n#";
     }
 
     protected DatasetType getControlStrategyDetailedResultDatasetType() {
@@ -232,26 +208,49 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     public final int getRecordCount() {
         return recordCount;
     }
-    
+
     protected boolean inventoryHasTargetPollutant(ControlStrategyInputDataset controlStrategyInputDataset) throws EmfException {
         String versionedQuery = new VersionedQuery(version(controlStrategyInputDataset)).query();
+        //setStatus("inventoryHasTargetPollutant: versionedQuery = " + versionedQuery);
 
-        String query = "SELECT 1 as Found "
-            + " FROM " + qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) 
-            + " where " + versionedQuery
-            + " and poll = '" + controlStrategy.getTargetPollutant().getName() + "' "
-            + getFilterForSourceQuery() + " limit 1;";
-        //System.out.println(System.currentTimeMillis() + " " + query);
+        String aPollutant = controlStrategy.getTargetPollutant().getName().toUpperCase().trim();
+
+        String myPollutant = null;
+        switch(aPollutant)
+        {
+        case "NOX":
+            myPollutant = "LIKE '%NOX%' ";
+            break;
+        case ("PM10"):
+            myPollutant = "LIKE '%PM10%' ";
+        break;
+        case ("PM2_5"):
+            myPollutant = "LIKE '%PM2%' ";
+        break;
+        default:
+            myPollutant = "LIKE '%" + aPollutant + "%' ";
+        }
+
+        String query = "select distinct emf.pollutants.id from emf.pollutants, "
+                +  qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) //emf.aggregrated_efficiencyrecords
+                + " where pollutants.name " + myPollutant //LIKE '%NOX%' 
+                + "and " + qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) // aggregrated_efficiencyrecords.pollutant_id
+                + ".poll = emf.pollutants.name"
+                + " intersect "
+                + "select distinct emf.pollutants.id from emf.pollutants, " 
+                + qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) // emissions.DS_2011NEIv1_NC_nonroad_20130621_16jul2013_v3_csv_19850990 
+                + " where pollutants.name " + myPollutant // LIKE '%NOX%' 
+                + " and '" + controlStrategy.getTargetPollutant().getName() // emissions.DS_2011NEIv1_NC_nonroad_20130621_16jul2013_v3_csv_19850990.poll 
+                + "' = emf.pollutants.name";
+
+        //setStatus("query = " + query);
         ResultSet rs = null;
         Statement statement = null;
         try {
             statement = datasource.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = statement.executeQuery(query);
-//            rs = datasource.query().executeQuery(query);
-            while (rs.next()) {
-                if (rs.getInt(1) > 0)
-                    return true;
-            }
+            if(!rs.wasNull())
+                return true;
             rs.close();
             rs = null;
             statement.close();
@@ -300,7 +299,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         dataTable.addIndex(table, "poll", false);
         dataTable.addIndex(table, "scc", false);
         dataTable.addIndex(table, "naics", false);
-        
+
         //for flat file inventories
         dataTable.addIndex(table, "country_cd", false);
         dataTable.addIndex(table, "region_cd", false);
@@ -310,11 +309,11 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         dataTable.addIndex(table, "rel_point_id", false);
         dataTable.addIndex(table, "process_id", false);
         dataTable.addIndex(table, "reg_codes", false);
-        
+
         //finally analyze the table, so the indexes take affect immediately, 
         //NOT when the SQL engine gets around to analyzing eventually
         dataTable.analyzeTable(table);
-    
+
         setStatus("Completed creating indexes on inventory, " 
                 + dataset.getName() 
                 + ".");
@@ -325,18 +324,18 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         String sqlFilter = "";
         String versionedQuery = new VersionedQuery(version(controlStrategy.getCountyDataset().getId(), controlStrategy.getCountyDatasetVersion())).query();
         String query = "SELECT distinct fips "
-            + " FROM " + qualifiedEmissionTableName(controlStrategy.getCountyDataset()) 
-            + " where " + versionedQuery;
+                + " FROM " + qualifiedEmissionTableName(controlStrategy.getCountyDataset()) 
+                + " where " + versionedQuery;
         return sqlFilter.length() > 0 ? " and fips in (" + query + ")" : "" ;
     }
 
     protected void setResultTotalCostTotalReductionAndCount(ControlStrategyResult controlStrategyResult) throws EmfException {
         String query = "SELECT count(1) as record_count, sum(Annual_Cost) as total_cost, " 
-            + (controlStrategy.getTargetPollutant() == null || controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)
-                    ? "null::double precision" 
-                    : "sum(case when poll = '" + controlStrategy.getTargetPollutant().getName() + "' then Emis_Reduction else null::double precision end)"
-            ) + " as total_reduction "
-            + " FROM " + qualifiedEmissionTableName(controlStrategyResult.getDetailedResultDataset());
+                + (controlStrategy.getTargetPollutant() == null || controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)
+                ? "null::double precision" 
+                        : "sum(case when poll = '" + controlStrategy.getTargetPollutant().getName() + "' then Emis_Reduction else null::double precision end)"
+                        ) + " as total_reduction "
+                        + " FROM " + qualifiedEmissionTableName(controlStrategyResult.getDetailedResultDataset());
         ResultSet rs = null;
         //System.out.println(System.currentTimeMillis() + " " + query);
         try {
@@ -365,7 +364,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 
     protected void setResultCount(ControlStrategyResult controlStrategyResult) throws EmfException {
         String query = "SELECT count(1) as record_count "
-            + " FROM " + qualifiedEmissionTableName(controlStrategyResult.getDetailedResultDataset());
+                + " FROM " + qualifiedEmissionTableName(controlStrategyResult.getDetailedResultDataset());
         ResultSet rs = null;
         //System.out.println(System.currentTimeMillis() + " " + query);
         try {
@@ -390,7 +389,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         if (filterForSourceQuery == null) {
             String sqlFilter = getFilterFromRegionDataset();
             String filter = controlStrategy.getFilter();
-            
+
             //get and build strategy filter...
             if (filter == null || filter.trim().length() == 0)
                 sqlFilter = "";
@@ -426,7 +425,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     }
 
     protected String qualifiedName(String table) throws EmfException {
-     // VERSIONS TABLE - Completed - throws exception if the following case is true
+        // VERSIONS TABLE - Completed - throws exception if the following case is true
         if ("emissions".equalsIgnoreCase(datasource.getName()) && "versions".equalsIgnoreCase(table.toLowerCase())) {
             throw new EmfException("Table versions moved to schema emf."); // VERSIONS TABLE
         }
@@ -436,11 +435,11 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     protected int getDaysInMonth(int month) {
         return month != - 1 ? DateUtil.daysInZeroBasedMonth(controlStrategy.getInventoryYear(), month) : 31;
     }
-    
+
     protected double getEmission(double annEmis, double avdEmis) {
         return month != - 1 ? (avdEmis == 0.0 ? annEmis : avdEmis * daysInMonth) : annEmis;
     }
-    
+
     protected void updateDataset(EmfDataset dataset) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
@@ -463,7 +462,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 
         statusDAO.add(endStatus);
     }
-    
+
     public ControlStrategyResult[] getControlStrategyResults() {
         if (results == null) {
             Session session = sessionFactory.getSession();
@@ -475,7 +474,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         }
         return results;
     }
-    
+
     protected double getUncontrolledEmission(ControlStrategyInputDataset controlStrategyInputDataset) throws EmfException {
         String versionedQuery = new VersionedQuery(version(controlStrategyInputDataset)).query();
         int month = controlStrategyInputDataset.getInputDataset().applicableMonth();
@@ -484,15 +483,15 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 
         String datsetTypeName = controlStrategyInputDataset.getInputDataset().getDatasetType().getName();
         boolean isFlatFileInventory = datsetTypeName.equals(DatasetType.FLAT_FILE_2010_POINT) 
-            || datsetTypeName.equals(DatasetType.FLAT_FILE_2010_NONPOINT)
-            || datsetTypeName.equals(DatasetType.ff10MergedInventory);
+                || datsetTypeName.equals(DatasetType.FLAT_FILE_2010_NONPOINT)
+                || datsetTypeName.equals(DatasetType.ff10MergedInventory);
         String sqlAnnEmis = (isFlatFileInventory ? "ann_value" : (month != -1 ? "coalesce(" + daysInMonth + " * avd_emis, ann_emis)" : "ann_emis"));
-        
+
         String query = "SELECT sum(" + sqlAnnEmis + ") "
-            + " FROM " + qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) 
-            + " where " + versionedQuery
-            + " and poll = '" + controlStrategy.getTargetPollutant().getName() + "' "
-            + getFilterForSourceQuery() + ";";
+                + " FROM " + qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) 
+                + " where " + versionedQuery
+                + " and poll = '" + controlStrategy.getTargetPollutant().getName() + "' "
+                + getFilterForSourceQuery() + ";";
         ResultSet rs = null;
         //System.out.println(System.currentTimeMillis() + " " + query);
         try {
@@ -515,7 +514,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 
     protected void createDetailedResultTableIndexes(ControlStrategyInputDataset controlStrategyInputDataset, ControlStrategyResult controlStrategyResult) throws EmfException {
         String query = "SELECT public.create_strategy_detailed_result_table_indexes('" + emissionTableName(controlStrategyResult.getDetailedResultDataset()) + "');analyze emissions." + emissionTableName(controlStrategyResult.getDetailedResultDataset()) + ";";
-        
+
         //System.out.println(System.currentTimeMillis() + " " + query);
         try {
             datasource.query().execute(query);
@@ -536,11 +535,11 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
             session.close();
         }
     }
-    
+
     public int getMessageDatasetRecordCount() {
         return strategyMessagesResult != null ? strategyMessagesResult.getRecordCount() : 0;
     }
-    
+
     public ControlStrategyResult getStrategyMessagesResult() {
         return strategyMessagesResult;
     }
@@ -575,8 +574,8 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     {
         strategyMessagesResult = new ControlStrategyResult();
         strategyMessagesResult.setControlStrategyId(controlStrategy.getId());
-//        result.setInputDataset(inventory);
-//        result.setInputDatasetVersion(inventoryVersion);
+        //        result.setInputDataset(inventory);
+        //        result.setInputDatasetVersion(inventoryVersion);
         strategyMessagesResult.setDetailedResultDataset(createStrategyMessagesDataset());
 
         strategyMessagesResult.setStrategyResultType(getStrategyMessagesResultType());
@@ -612,7 +611,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 
         return strategyMessagesResult;
     }
-    
+
     protected ControlStrategyResult createStrategyMessagesResult(String namePrefix, EmfDataset inventory, int inventoryVersion) throws Exception 
     {
         strategyMessagesResult = new ControlStrategyResult();
@@ -633,13 +632,13 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 
         return strategyMessagesResult;
     }
-    
+
     protected void deleteStrategyMessageResult(ControlStrategyResult strategyMessagesResult) throws EmfException {
         //get rid of strategy results...
         Session session = sessionFactory.getSession();
         try {
             EmfDataset[] ds = controlStrategyDAO.getResultDatasets(controlStrategy.getId(), strategyMessagesResult.getId(), session);
-            
+
             //get rid of old strategy results...
             controlStrategyDAO.removeControlStrategyResult(controlStrategy.getId(), strategyMessagesResult.getId(), session);
             //delete and purge datasets
