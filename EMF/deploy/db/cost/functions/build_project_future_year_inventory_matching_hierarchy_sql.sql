@@ -908,8 +908,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) and (cp.poll is not null) then 14::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) and (cp.poll is not null) then 16::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) and (cp.poll is not null) then 14::double precision
+				when (' || cp_fips_expression || ' is not null) and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) and (cp.poll is not null) then 16::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -954,8 +954,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (' || cp_mact_expression || ' is not null) and (cp.poll is not null) then 15::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (' || cp_mact_expression || ' is not null) and (cp.poll is not null) then 17::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (' || cp_mact_expression || ' is not null) and (cp.poll is not null) then 15::double precision
+				when (' || cp_fips_expression || ' is not null) and (' || cp_mact_expression || ' is not null) and (cp.poll is not null) then 17::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1086,8 +1086,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) then 20::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) then 22::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) then 20::double precision
+				when (' || cp_fips_expression || ' is not null) and (' || cp_mact_expression || ' is not null) and (cp.scc is not null) then 22::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1131,8 +1131,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (' || cp_mact_expression || ' is not null) then 21::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (' || cp_mact_expression || ' is not null) then 23::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (' || cp_mact_expression || ' is not null) then 21::double precision
+				when (' || cp_fips_expression || ' is not null) and (' || cp_mact_expression || ' is not null) then 23::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1281,8 +1281,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.naics is not null) and (cp.scc is not null) and (cp.poll is not null) then 25.01::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.naics is not null) and (cp.scc is not null) and (cp.poll is not null) then 25.03::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.naics is not null) and (cp.scc is not null) and (cp.poll is not null) then 25.01::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.naics is not null) and (cp.scc is not null) and (cp.poll is not null) then 25.03::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1327,8 +1327,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.naics is not null) and (cp.poll is not null) then 25.02::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.naics is not null) and (cp.poll is not null) then 25.04::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.naics is not null) and (cp.poll is not null) then 25.02::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.naics is not null) and (cp.poll is not null) then 25.04::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1459,8 +1459,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.naics is not null) and (cp.scc is not null) then 25.07::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.naics is not null) and (cp.scc is not null) then 25.09::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.naics is not null) and (cp.scc is not null) then 25.07::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.naics is not null) and (cp.scc is not null) then 25.09::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1504,8 +1504,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.naics is not null) then 25.08::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.naics is not null) then 25.10::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.naics is not null) then 25.08::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.naics is not null) then 25.10::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1640,8 +1640,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.sic is not null) and (cp.scc is not null) and (cp.poll is not null) then 25.5::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.sic is not null) and (cp.scc is not null) and (cp.poll is not null) then 27.5::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.sic is not null) and (cp.scc is not null) and (cp.poll is not null) then 25.5::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.sic is not null) and (cp.scc is not null) and (cp.poll is not null) then 27.5::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1686,8 +1686,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.sic is not null) and (cp.poll is not null) then 26::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.sic is not null) and (cp.poll is not null) then 28::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.sic is not null) and (cp.poll is not null) then 26::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.sic is not null) and (cp.poll is not null) then 28::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1818,8 +1818,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.sic is not null) and (cp.scc is not null) then 31.5::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.sic is not null) and (cp.scc is not null) then 33.5::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.sic is not null) and (cp.scc is not null) then 31.5::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.sic is not null) and (cp.scc is not null) then 33.5::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1863,8 +1863,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.sic is not null) then 32::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.sic is not null) then 34::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.sic is not null) then 32::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.sic is not null) then 34::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 
@@ -1993,8 +1993,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.scc is not null) and (cp.poll is not null) then 38::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.scc is not null) and (cp.poll is not null) then 42::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.scc is not null) and (cp.poll is not null) then 38::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.scc is not null) and (cp.poll is not null) then 42::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 			' || join_type || ' join inv
@@ -2071,8 +2071,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.scc is not null) then 50::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.scc is not null) then 54::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.scc is not null) then 50::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.scc is not null) then 54::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 			' || join_type || ' join inv
@@ -2147,8 +2147,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (cp.poll is not null) then 62::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) and (cp.poll is not null) then 64::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') and (cp.poll is not null) then 62::double precision
+				when (' || cp_fips_expression || ' is not null) and (cp.poll is not null) then 64::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 			' || join_type || ' join inv
@@ -2186,8 +2186,8 @@ BEGIN
 		|| 'select 
 			' || (case when match_type = 2 then 'null::integer as record_id' else 'inv.record_id' end) || ',' || coalesce(select_columns || ',','') || '
 			case 
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) then 63::double precision
-				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 2 or length(' || cp_fips_expression || ') = 3) then 65::double precision
+				when (' || cp_fips_expression || ' is not null) and (length(' || cp_fips_expression || ') = 5 or length(' || cp_fips_expression || ') = 6) and (substr(' || cp_fips_expression || ',3,3) != ''000'') then 63::double precision
+				when (' || cp_fips_expression || ' is not null) then 65::double precision
 			end as ranking
 		FROM emissions.' || control_program_table_name || ' cp
 			' || join_type || ' join inv
