@@ -25,7 +25,7 @@
 	<classpathentry kind="lib" path="lib/dev/commons-configuration-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/dev/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/dev/dbunit-2.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
 	<classpathentry kind="lib" path="lib/asm.jar"/>
 	<classpathentry kind="lib" path="lib/asm-attrs.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate3.jar"/>

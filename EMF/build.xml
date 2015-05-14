@@ -2,8 +2,8 @@
 <project name="EMF" default="core" basedir=".">
 
 	<!--  =================== Properties ====================================== -->
-	<property name="ant.build.javac.target" value="1.7" />
-	<property name="ant.build.javac.source" value="1.7" />
+	<property name="ant.build.javac.target" value="1.6" />
+	<property name="ant.build.javac.source" value="1.6" />
 	
 	<property file="build.properties" />
 	<property file="${user.home}/build.properties" />
@@ -48,21 +48,23 @@
 	<property name="war-path" value="file:///${tomcat.webapps}/${app.name}.war" />
 
 	<property name="tomcat.manager.url" value="http://${tomcat.server}:8080/manager" />
-	<property name="tomcat.start.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}/common/endorsed&quot; ${tomcat.memory.vmargs} &quot;${tomcat.home}/bin/bootstrap.jar&quot;" />
-	<property name="tomcat.start" value="&quot;${tomcat.start.prefix}&quot; start" />
-	<property name="tomcat.start.debug.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}/common/endorsed&quot; ${tomcat.memory.vmargs} ${tomcat.debug.vmargs} &quot;${tomcat.home}/bin/bootstrap.jar&quot;" />
-	<property name="tomcat.start.debug" value="&quot;${tomcat.start.debug.prefix}&quot; start" />
+	<property name="tomcat.start.prefix" value="-jar -Duser.dir=${tomcat.home} -Djava.endorsed.dirs=${tomcat.home}/common/endorsed ${tomcat.memory.vmargs} ${tomcat.home}/bin/bootstrap.jar" />
+	<property name="tomcat.start" value="${tomcat.start.prefix} start" />
+	<property name="tomcat.start.debug.prefix" value="-jar -Duser.dir=${tomcat.home} -Djava.endorsed.dirs=${tomcat.home}/common/endorsed ${tomcat.memory.vmargs} ${tomcat.debug.vmargs} ${tomcat.home}/bin/bootstrap.jar" />
+	<property name="tomcat.start.debug" value="${tomcat.start.debug.prefix} start" />
 
-	<property name="tomcat.stop.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; &quot;${tomcat.home}/bin/bootstrap.jar&quot;" />
-	<property name="tomcat.stop" value="&quot;${tomcat.stop.prefix}&quot; stop" />
+	<property name="tomcat.stop.prefix" value="-jar -Duser.dir=${tomcat.home} ${tomcat.home}/bin/bootstrap.jar" />
+	<property name="tomcat.stop" value="${tomcat.stop.prefix} stop" />
 	
-	<property name="win7.tomcat.start.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}/common/endorsed&quot; ${tomcat.memory.vmargs} -classpath &quot;${tomcat.home}/bin/bootstrap.jar&quot;;&quot;${tomcat.home}/bin/tomcat-juli.jar&quot; org.apache.catalina.startup.Bootstrap" />
+	<property name="win7.tomcat.start.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}&quot;/common/endorsed ${tomcat.memory.vmargs} -classpath &quot;${tomcat.home}&quot;/bin/bootstrap.jar;&quot;${tomcat.home}&quot;/bin/tomcat-juli.jar org.apache.catalina.startup.Bootstrap" />
+<!--	<property name="win7.tomcat.start.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}&quot;/common/endorsed ${tomcat.memory.vmargs} -classpath C:\Apache_Software_Foundation\Tomcat_7.0\bin\bootstrap.jar;C:\Apache_Software_Foundation\Tomcat_7.0\bin\tomcat-juli.jar &quot;${tomcat.home}&quot;/bin/bootstrap.jar" />-->
 	<property name="win7.tomcat.start" value="${win7.tomcat.start.prefix} start" />
 	
-	<property name="win7.tomcat.start.debug.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}/common/endorsed&quot; ${tomcat.memory.vmargs} ${tomcat.debug.vmargs} -classpath &quot;${tomcat.home}/bin/bootstrap.jar&quot;;&quot;${tomcat.home}/bin/tomcat-juli.jar&quot; org.apache.catalina.startup.Bootstrap" />
+	<property name="win7.tomcat.start.debug.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -Djava.endorsed.dirs=&quot;${tomcat.home}&quot;/common/endorsed ${tomcat.memory.vmargs} ${tomcat.debug.vmargs} -classpath &quot;${tomcat.home}&quot;/bin/bootstrap.jar;&quot;${tomcat.home}&quot;/bin/tomcat-juli.jar org.apache.catalina.startup.Bootstrap" />
 	<property name="win7.tomcat.start.debug" value="${win7.tomcat.start.debug.prefix} start" />
 
-	<property name="win7.tomcat.stop.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -classpath &quot;${tomcat.home}/bin/bootstrap.jar&quot;;&quot;${tomcat.home}/bin/tomcat-juli.jar&quot; org.apache.catalina.startup.Bootstrap" />
+	<property name="win7.tomcat.stop.prefix" value="-Duser.dir=&quot;${tomcat.home}&quot; -classpath &quot;${tomcat.home}&quot;/bin/bootstrap.jar;&quot;${tomcat.home}&quot;/bin/tomcat-juli.jar org.apache.catalina.startup.Bootstrap" />
+<!--	<property name="win7.tomcat.stop.prefix" value="-jar -Duser.dir=&quot;${tomcat.home}&quot; &quot;${tomcat.home}&quot;/bin/bootstrap.jar" />-->
 	<property name="win7.tomcat.stop" value="${win7.tomcat.stop.prefix} stop" />
 	
 	<property name="osx.tomcat.start" value="/usr/local/tomcat/bin/startup.sh" />

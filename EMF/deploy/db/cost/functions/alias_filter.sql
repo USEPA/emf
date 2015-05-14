@@ -21,7 +21,7 @@ BEGIN
 			WHERE c.relname = ' || lower(quote_literal(table_name)) || '
 				AND a.attnum > 0
 			order by a.attname desc'	
--- NOTE JOELLENB WAS HERE! keep sort order this make sure we don't want to double alias columns with similar names (i.e., scc and scc_code)
+-- NOTE keep sort order this make sure we don't want to double alias columns with similar names (i.e., scc and scc_code)
 		LOOP
 			pattern := E'([[:space:],;=(])(' || table_column.column_name || E'[[:space:],;=)])';
 			rep := E'\\1' || table_alias || E'.\\2';
