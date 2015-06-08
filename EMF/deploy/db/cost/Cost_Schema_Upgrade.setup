@@ -1632,3 +1632,7 @@ JOIN emf.fileformat_columns
 ON file_format = file_format_id
 WHERE dataset_types.name = 'Flat File 2010 Merged'
 GROUP BY file_format;
+
+-- 05/21/2015 New parameter to restrict measures by major pollutant
+ALTER TABLE emf.control_strategies
+	ADD COLUMN match_major_pollutant boolean DEFAULT false;

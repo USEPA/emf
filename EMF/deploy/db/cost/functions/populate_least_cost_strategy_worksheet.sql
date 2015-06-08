@@ -81,6 +81,7 @@ DECLARE
 	creator_user_id integer := 0;
 	is_cost_su boolean := false; 
 	apply_replacement_controls integer := 1;
+	match_major_pollutant boolean := false;
 
 	get_strategty_ceff_equation_sql character varying;
 	
@@ -212,7 +213,8 @@ BEGIN
 		st."name",
 		coalesce(cs.include_unspecified_costs,true),
 		cs.creator_id,
-		cs.apply_replacement_controls
+		cs.apply_replacement_controls,
+		cs.match_major_pollutant
 	FROM emf.control_strategies cs
 		inner join emf.strategy_types st
 		on st.id = cs.strategy_type_id
@@ -229,7 +231,8 @@ BEGIN
 		strategy_type,
 		include_unspecified_costs,
 		creator_user_id,
-		apply_replacement_controls;
+		apply_replacement_controls,
+		match_major_pollutant;
 
 	-- see if strategyt creator is a CoST SU
 	SELECT 
@@ -987,6 +990,11 @@ from (
 			-- only relevant for target pollutant
 			and (
 				(p.id = ANY (''' || target_pollutant_ids::varchar || ''')
+
+				-- check major pollutant against target
+				' || case when match_major_pollutant then '
+				and m.major_pollutant = ANY (''' || target_pollutant_ids::varchar || ''')
+				' else '' end || '
 
 				-- dont include sources that have been fully controlled...
 				and coalesce(' || inv_pct_red_expression || ', 0) <> 100.0

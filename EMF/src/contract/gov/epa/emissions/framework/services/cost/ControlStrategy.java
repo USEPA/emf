@@ -92,6 +92,8 @@ public class ControlStrategy implements Lockable, Serializable {
     
     private Integer applyReplacementControls;
     
+    private Boolean matchMajorPollutant;
+    
     public ControlStrategy() {
         this.lock = new Mutex();
 //        this.controlStrategyInputDatasets = new ArrayList();
@@ -479,5 +481,13 @@ public class ControlStrategy implements Lockable, Serializable {
 
     public Integer getApplyReplacementControls() {
         return this.applyReplacementControls;
+    }
+
+    public void setMatchMajorPollutant(Boolean matchMajorPollutant) {
+        this.matchMajorPollutant = matchMajorPollutant;
+    }
+
+    public Boolean getMatchMajorPollutant() {
+        return this.matchMajorPollutant;
     }
 }

@@ -60,6 +60,7 @@ DECLARE
 	creator_user_id integer := 0;
 	is_cost_su boolean := false;
   apply_replacement_controls integer := 1;
+  match_major_pollutant boolean := false;
 
 	get_strategty_ceff_equation_sql character varying;
 
@@ -192,7 +193,8 @@ BEGIN
 		coalesce(cs.include_unspecified_costs,true),
 		(select p.name from emf.pollutants p where p.id = intTargetPollutantId),
 		cs.creator_id,
-		cs.apply_replacement_controls
+		cs.apply_replacement_controls,
+		cs.match_major_pollutant
 	FROM emf.control_strategies cs
 	where cs.id = intControlStrategyId
 	INTO strategy_name,
@@ -207,7 +209,8 @@ BEGIN
 		include_unspecified_costs,
 		target_pollutant,
 		creator_user_id,
-		apply_replacement_controls;
+		apply_replacement_controls,
+		match_major_pollutant;
 		
 	-- match target pollutant to list of similar pollutants
 	SELECT ARRAY(
@@ -945,6 +948,11 @@ select
 			-- only relevant for target pollutant
 			and (
 				(p.id = ANY (''' || target_pollutant_ids::varchar || ''')
+
+				-- check major pollutant against target
+				' || case when match_major_pollutant then '
+				and m.major_pollutant = ANY (''' || target_pollutant_ids::varchar || ''')
+				' else '' end || '
 
 				-- dont include sources that have been fully controlled...
 				and coalesce(' || inv_pct_red_expression || ', 0) <> 100.0

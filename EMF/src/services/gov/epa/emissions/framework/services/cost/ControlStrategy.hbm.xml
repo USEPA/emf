@@ -38,6 +38,7 @@
 	
 	<property name="applyCAPMeasuresOnHAPPollutants" column="apply_cap_measures_on_hap_pollutants" type="boolean" not-null="false"/>
 	<property name="applyReplacementControls" column="apply_replacement_controls" type="integer" not-null="false"/>
+	<property name="matchMajorPollutant" column="match_major_pollutant" type="boolean" not-null="false"/>
 
 
 	<many-to-one name="countyDataset" class="gov.epa.emissions.framework.services.data.EmfDataset" column="county_dataset_id"/>

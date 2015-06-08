@@ -112,6 +112,8 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     private EditControlStrategyPresenter presenter;
 
     private JCheckBox applyCAPMeasureOnHAPPollCheck;
+    
+    private JCheckBox matchMajorPollutantCheck;
 
     public EditControlStrategySummaryTab(ControlStrategy controlStrategy,
             ControlStrategyResult[] controlStrategyResults, EmfSession session, ManageChangeables changeablesList,
@@ -286,7 +288,8 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         // panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
         SpringLayoutGenerator middleRightLayoutGenerator = new SpringLayoutGenerator();
         middleRightLayoutGenerator.addLabelWidgetPair("<html>Include Measures<br/>with No Cost Data:</html>", includeUnspecifiedCostsCheckBox(), middleRightPanel);
-        middleRightLayoutGenerator.makeCompactGrid(middleRightPanel, 1, 2, // rows, cols
+        middleRightLayoutGenerator.addLabelWidgetPair("<html>Major Pollutant<br/>must match Target:</html>", matchMajorPollutantCheckBox(), middleRightPanel);
+        middleRightLayoutGenerator.makeCompactGrid(middleRightPanel, 2, 2, // rows, cols
                 5, 5, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -326,6 +329,12 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
 
         includeUnspecifiedCostsCheck = new JCheckBox(" ", null, controlStrategy.getIncludeUnspecifiedCosts() != null ? controlStrategy.getIncludeUnspecifiedCosts() : true);
         return includeUnspecifiedCostsCheck;
+    }
+    
+    private JCheckBox matchMajorPollutantCheckBox() {
+
+        matchMajorPollutantCheck = new JCheckBox(" ", null, controlStrategy.getMatchMajorPollutant() != null ? controlStrategy.getMatchMajorPollutant() : false);
+        return matchMajorPollutantCheck;
     }
 
     private IntTextField costYearTextField() {
@@ -536,6 +545,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         controlStrategy.setUseCostEquations(useCostEquationCheck.isSelected());
         controlStrategy.setApplyCAPMeasuresOnHAPPollutants(applyCAPMeasureOnHAPPollCheck.isSelected());
         controlStrategy.setIncludeUnspecifiedCosts(includeUnspecifiedCostsCheck.isSelected());
+        controlStrategy.setMatchMajorPollutant(matchMajorPollutantCheck.isSelected());
         
         Boolean isFinal = makeFinalCheck.isSelected();
         controlStrategy.setIsFinal(isFinal);

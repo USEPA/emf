@@ -106,6 +106,8 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
     private ViewControlStrategyPresenter presenter;
 
     private JCheckBox applyCAPMeasureOnHAPPollCheck;
+    
+    private JCheckBox matchMajorPollutantCheck;
 
     public ViewControlStrategySummaryTab(ControlStrategy controlStrategy,
             ControlStrategyResult[] controlStrategyResults, CostYearTable costYearTable, MessagePanel messagePanel,
@@ -257,7 +259,9 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
         SpringLayoutGenerator middleRightLayoutGenerator = new SpringLayoutGenerator();
         middleRightLayoutGenerator.addLabelWidgetPair("<html>Include Measures<br/>with No Cost Data:</html>",
                 includeUnspecifiedCostsCheckBox(), middleRightPanel);
-        middleRightLayoutGenerator.makeCompactGrid(middleRightPanel, 1, 2, // rows, cols
+        middleRightLayoutGenerator.addLabelWidgetPair("<html>Major Pollutant<br/>must match Target:</html>", 
+                matchMajorPollutantCheckBox(), middleRightPanel);
+        middleRightLayoutGenerator.makeCompactGrid(middleRightPanel, 2, 2, // rows, cols
                 5, 5, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -323,6 +327,13 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
         this.includeUnspecifiedCostsCheck.setEnabled(false);
 
         return this.includeUnspecifiedCostsCheck;
+    }
+    
+    private JCheckBox matchMajorPollutantCheckBox() {
+
+        matchMajorPollutantCheck = new JCheckBox(" ", null, controlStrategy.getMatchMajorPollutant() != null ? controlStrategy.getMatchMajorPollutant() : false);
+        this.matchMajorPollutantCheck.setEnabled(false);
+        return matchMajorPollutantCheck;
     }
 
     private JComponent costYearTextField() {
