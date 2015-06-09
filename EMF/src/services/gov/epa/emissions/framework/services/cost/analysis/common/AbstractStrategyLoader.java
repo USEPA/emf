@@ -236,10 +236,19 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     protected boolean inventoryHasTargetPollutant(ControlStrategyInputDataset controlStrategyInputDataset) throws EmfException {
         String versionedQuery = new VersionedQuery(version(controlStrategyInputDataset)).query();
 
+        String pollToMatch = controlStrategy.getTargetPollutant().getName();
+        if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
+
         String query = "SELECT 1 as Found "
             + " FROM " + qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) 
             + " where " + versionedQuery
-            + " and poll = '" + controlStrategy.getTargetPollutant().getName() + "' "
+            + " and poll IN ("
+            + "   SELECT DISTINCT p.name"
+            + "   FROM emf.pollutants p"
+            + "   JOIN emf.aggregrated_efficiencyrecords r"
+            + "   ON r.pollutant_id = p.id"
+            + "   WHERE p.name LIKE '%" + pollToMatch + "%'"
+            + ")"
             + getFilterForSourceQuery() + " limit 1;";
         //System.out.println(System.currentTimeMillis() + " " + query);
         ResultSet rs = null;
