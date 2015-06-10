@@ -340,10 +340,13 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     }
 
     protected void setResultTotalCostTotalReductionAndCount(ControlStrategyResult controlStrategyResult) throws EmfException {
+        String pollToMatch = controlStrategy.getTargetPollutant().getName();
+        if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
+        
         String query = "SELECT count(1) as record_count, sum(Annual_Cost) as total_cost, " 
             + (controlStrategy.getTargetPollutant() == null || controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)
                     ? "null::double precision" 
-                    : "sum(case when poll = '" + controlStrategy.getTargetPollutant().getName() + "' then Emis_Reduction else null::double precision end)"
+                    : "sum(case when poll LIKE '%" + pollToMatch + "%' then Emis_Reduction else null::double precision end)"
             ) + " as total_reduction "
             + " FROM " + qualifiedEmissionTableName(controlStrategyResult.getDetailedResultDataset());
         ResultSet rs = null;
@@ -497,10 +500,19 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
             || datsetTypeName.equals(DatasetType.ff10MergedInventory);
         String sqlAnnEmis = (isFlatFileInventory ? "ann_value" : (month != -1 ? "coalesce(" + daysInMonth + " * avd_emis, ann_emis)" : "ann_emis"));
         
+        String pollToMatch = controlStrategy.getTargetPollutant().getName();
+        if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
+
         String query = "SELECT sum(" + sqlAnnEmis + ") "
             + " FROM " + qualifiedEmissionTableName(controlStrategyInputDataset.getInputDataset()) 
             + " where " + versionedQuery
-            + " and poll = '" + controlStrategy.getTargetPollutant().getName() + "' "
+            + " and poll IN ("
+            + "   SELECT DISTINCT p.name"
+            + "   FROM emf.pollutants p"
+            + "   JOIN emf.aggregrated_efficiencyrecords r"
+            + "   ON r.pollutant_id = p.id"
+            + "   WHERE p.name LIKE '%" + pollToMatch + "%'"
+            + ")"
             + getFilterForSourceQuery() + ";";
         ResultSet rs = null;
         //System.out.println(System.currentTimeMillis() + " " + query);

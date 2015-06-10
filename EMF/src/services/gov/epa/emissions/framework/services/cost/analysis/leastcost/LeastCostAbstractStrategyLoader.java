@@ -229,6 +229,10 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
 
     protected double getMaximumEmissionReduction(ControlStrategyResult leastCostCMWorksheetResult) throws EmfException {
         double maximumEmissionReduction = 0.0D;
+        
+        String pollToMatch = controlStrategy.getTargetPollutant().getName();
+        if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
+        
         String query = " SELECT sum(emis_reduction) "
             + " from ( "
             + "     SELECT distinct on (source, original_dataset_id, source_id) emis_reduction "
@@ -236,7 +240,7 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
             + "         SELECT emis_reduction, marginal, original_dataset_id, record_id, source, source_id, source_poll_cnt "
             + "         FROM " + qualifiedEmissionTableName(leastCostCMWorksheetResult.getDetailedResultDataset()) 
             + "         where status is null  "
-            + "             and poll = '" + controlStrategy.getTargetPollutant().getName() + "' "
+            + "             and poll LIKE '%" + pollToMatch + "%' "
             + "         ORDER BY marginal, emis_reduction desc, source_poll_cnt desc, record_id "
             + "     ) tbl "
             + "     ORDER BY source, original_dataset_id, source_id, emis_reduction desc, source_poll_cnt desc, record_id "
@@ -306,6 +310,9 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
     
     protected void addDetailedResultSummaryDatasetKeywords(EmfDataset dataset,
             double emisReduction) throws EmfException {
+        String pollToMatch = controlStrategy.getTargetPollutant().getName();
+        if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
+        
         String query = "select sum(annual_cost) as total_annual_cost, "
             + "case when sum(emis_reduction) <> 0 then sum(annual_cost) / sum(emis_reduction) else null::double precision end as average_ann_cost_per_ton, "
             + "sum(annual_oper_maint_cost) as Total_Annual_Oper_Maint_Cost, "
@@ -315,7 +322,7 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
             + "case when " + uncontrolledEmis + " <> 0 then sum(emis_reduction) / " + uncontrolledEmis + " * 100 else null::double precision end as Actual_Percent_Reduction, "
             + "sum(emis_reduction) as Total_Emis_Reduction " 
             + "FROM " + qualifiedEmissionTableName(dataset)
-            + " where poll='" + controlStrategy.getTargetPollutant().getName() + "'"
+            + " where poll='%" + pollToMatch + "%'"
             + " group by poll";
         if (DebugLevels.DEBUG_25())
             System.out.println(System.currentTimeMillis() + " " + query);
