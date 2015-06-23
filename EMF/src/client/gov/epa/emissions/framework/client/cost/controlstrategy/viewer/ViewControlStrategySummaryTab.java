@@ -331,7 +331,7 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
     
     private JCheckBox matchMajorPollutantCheckBox() {
 
-        matchMajorPollutantCheck = new JCheckBox(" ", null, controlStrategy.getMatchMajorPollutant() != null ? controlStrategy.getMatchMajorPollutant() : false);
+        matchMajorPollutantCheck = new JCheckBox(" ", null, controlStrategy.getMatchMajorPollutant() != null ? controlStrategy.getMatchMajorPollutant() : true);
         this.matchMajorPollutantCheck.setEnabled(false);
         return matchMajorPollutantCheck;
     }

@@ -333,7 +333,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     
     private JCheckBox matchMajorPollutantCheckBox() {
 
-        matchMajorPollutantCheck = new JCheckBox(" ", null, controlStrategy.getMatchMajorPollutant() != null ? controlStrategy.getMatchMajorPollutant() : false);
+        matchMajorPollutantCheck = new JCheckBox(" ", null, controlStrategy.getMatchMajorPollutant() != null ? controlStrategy.getMatchMajorPollutant() : true);
         return matchMajorPollutantCheck;
     }
 
