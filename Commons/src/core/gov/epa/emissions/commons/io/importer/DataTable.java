@@ -36,12 +36,14 @@ public class DataTable {
     public String createName(String name) {
         name = name.trim();
         String prefix = "DS_";
-        String sufix = "_" + Math.abs(new Random().nextInt()); // to make name unique
-        String table = prefix + name + sufix;
+        String suffix = "_" + Math.abs(new Random().nextInt()); // to make name unique
+        String table = prefix + name;
 
-        if (table.length() > 63) { // postgresql table name max length is 63
-            table = table.substring(0, 63);
+        int maxLength = 63 - suffix.length();
+        if (table.length() > maxLength) { // postgresql table name max length is 63
+            table = table.substring(0, maxLength);
         }
+        table += suffix;
 
         for (int i = 0; i < table.length(); i++) {
             if (!Character.isLetterOrDigit(table.charAt(i))) {
