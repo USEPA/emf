@@ -82,7 +82,7 @@ public class EditableSummaryTabPresenterImpl implements EditableSummaryTabPresen
 
     @Override
     public Object[] refreshProcessData() throws EmfException {
-        reloadDataset();
+        this.dataset = reloadDataset();
         return getVersions();
     }
 

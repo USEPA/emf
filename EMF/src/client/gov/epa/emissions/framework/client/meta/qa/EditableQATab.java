@@ -173,6 +173,22 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
         });
         container.add(viewResults);
 
+        JButton archive = new BorderlessButton("Archive", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                archiveResults();
+            }
+        });
+        container.add(archive);
+
+        JButton restore = new BorderlessButton("Restore", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                restoreResults();
+            }
+        });
+        container.add(restore);
+
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(container, BorderLayout.WEST);
 
@@ -278,6 +294,75 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 }
             } catch (Exception exp) {
                 messagePanel.setError(exp.getMessage());
+            }
+        }
+    }
+
+    private void archiveResults() {
+        clearMessage();
+
+        List selected = table.selected();
+        if (selected == null || selected.size() == 0) {
+            messagePanel.setMessage("Please select a QA step.");
+            return;
+        }
+
+        int answer = JOptionPane.showConfirmDialog(this, "Archive QA Step Results?");
+        if (answer == JOptionPane.CANCEL_OPTION) {
+            return;
+        } else if ( answer == JOptionPane.YES_OPTION) {
+            int[] datasetIds = new int[1];
+            datasetIds[0] = dataset.getId();
+            try {
+                int counter = 0;
+                for (QAStep qaStep : (QAStep[])selected.toArray(new QAStep[0])) {
+                    QAStepResult stepResult = presenter.getStepResult(qaStep);
+                    if (stepResult != null
+                            && !stepResult.getTableCreationStatus().equals("Archived")
+                            && stepResult.getTable() != null
+                            ) {
+                        this.presenter.archiveQAStep(stepResult.getId());
+                        counter++;
+                    }
+                }
+                messagePanel.setMessage("Archived " + counter + " QA Step Results.");
+            } catch (EmfException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+                messagePanel.setError(e.getMessage());
+            }
+        }
+    }
+
+    private void restoreResults() {
+        clearMessage();
+
+        List selected = table.selected();
+        if (selected == null || selected.size() == 0) {
+            messagePanel.setMessage("Please select a QA step.");
+            return;
+        }
+
+        int answer = JOptionPane.showConfirmDialog(this, "Restore QA Step Results?");
+        if (answer == JOptionPane.CANCEL_OPTION) {
+            return;
+        } else if ( answer == JOptionPane.YES_OPTION) {
+            int[] datasetIds = new int[1];
+            datasetIds[0] = dataset.getId();
+            try {
+                int counter = 0;
+                for (QAStep qaStep : (QAStep[])selected.toArray(new QAStep[0])) {
+                    QAStepResult stepResult = presenter.getStepResult(qaStep);
+                    if (stepResult != null && stepResult.getTableCreationStatus().equals("Archived")) {
+                        this.presenter.restoreQAStep(stepResult.getId());
+                        counter++;
+                    }
+                }
+                messagePanel.setMessage("Restored " + counter + " QA Step Results.");
+            } catch (EmfException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+                messagePanel.setError(e.getMessage());
             }
         }
     }

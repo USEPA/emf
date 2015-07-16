@@ -470,7 +470,29 @@ public class DataServiceTransport implements DataService {
         
     }
 
-    public EmfDataset[] findDatasets(EmfDataset dataset, String qaStep, String qaArgument, 
+    @Override
+    public void archiveDataset(Integer datasetId, String username) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("archiveDataset");
+        call.addIntegerParam("datasetId");
+        call.addStringParam("username");
+        call.setVoidReturnType();
+        call.request(new Object[]{datasetId, username});
+    }
+
+    @Override
+    public void restoreDataset(Integer datasetId, String username) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("restoreDataset");
+        call.addIntegerParam("datasetId");
+        call.addStringParam("username");
+        call.setVoidReturnType();
+        call.request(new Object[]{datasetId, username});
+    }
+
+    public EmfDataset[] findDatasets(EmfDataset dataset, String qaStep, String qaArgument,
             int[] usedByCasesID, String dataValueFilter, boolean unconditional, int userId) throws EmfException {
         EmfCall call = call();
         

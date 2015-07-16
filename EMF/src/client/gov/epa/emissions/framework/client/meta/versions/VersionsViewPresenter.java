@@ -45,4 +45,13 @@ public class VersionsViewPresenter {
     public Integer[] getDatasetRecords(int datasetID, Version[] versions, String tableName) throws EmfException{
         return session.dataService().getNumOfRecords(datasetID, versions, tableName);
     }
+
+
+    public void archiveDataset(Integer datasetID) throws EmfException {
+        session.dataService().archiveDataset(datasetID, session.user().getUsername());
+    }
+
+    public void restoreDataset(Integer datasetID) throws EmfException {
+        session.dataService().restoreDataset(datasetID, session.user().getUsername());
+    }
 }

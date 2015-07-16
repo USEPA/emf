@@ -133,6 +133,11 @@ public class MySqlTableDefinition implements TableDefinition {
         
     }
 
+    @Override
+    public boolean isConsolidationTable(String tableName) throws SQLException {
+        return false;
+    }
+
     public void addIndex(String table, String colList, boolean clustered) {
         // TODO Auto-generated method stub
         

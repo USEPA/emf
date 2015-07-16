@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.services.data;
 
+import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.ExternalSource;
 import gov.epa.emissions.commons.data.InternalSource;
@@ -19,11 +20,17 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.EmfArrays;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.GCEnforcerTask;
+import gov.epa.emissions.framework.services.casemanagement.RunQACaseReports;
 import gov.epa.emissions.framework.services.cost.controlStrategy.DoubleValue;
+import gov.epa.emissions.framework.services.db.PostgresDump;
+import gov.epa.emissions.framework.services.db.PostgresRestore;
+import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.qa.TableToString;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -40,6 +47,8 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
+import javax.mail.Folder;
+
 public class DataServiceImpl implements DataService {
     private static Log LOG = LogFactory.getLog(DataServiceImpl.class);
 
@@ -48,11 +57,15 @@ public class DataServiceImpl implements DataService {
     private DbServerFactory dbServerFactory;
 
     private DatasetDAO dao;
-    
+
+    private EmfPropertiesDAO propertyDao;
+
+    private PooledExecutor threadPool;
+
     public enum DeleteType {
         GENERAL, FAST, SECTOR_SCENARIO, CONTROL_STRATEGY, CONTROL_PROGRAM, TEMPORAL_ALLOCATION
     }
-    
+
     public DataServiceImpl() {
         this(DbServerFactory.get(), HibernateSessionFactory.get());
     }
@@ -65,8 +78,101 @@ public class DataServiceImpl implements DataService {
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
         dao = new DatasetDAO(dbServerFactory);
+        this.propertyDao = new EmfPropertiesDAO(sessionFactory);
+        threadPool = createThreadPool();
     }
 
+    private synchronized PooledExecutor createThreadPool() {
+        PooledExecutor threadPool = new PooledExecutor(20);
+        threadPool.setMinimumPoolSize(1);
+        threadPool.setKeepAliveTime(1000 * 60 * 3);// terminate after 3 (unused) minutes
+
+        return threadPool;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        this.sessionFactory = null;
+        this.dbServerFactory = null;
+        this.dao = null;
+
+        threadPool.shutdownAfterProcessingCurrentlyQueuedTasks();
+        threadPool.awaitTerminationAfterShutdown();
+        super.finalize();
+    }
+
+    public synchronized void archiveDataset(Integer datasetId, String username) throws  EmfException {
+
+        DbServer dbServer = null;
+        Session session = null;
+        try {
+
+            dbServer = dbServerFactory.getDbServer();
+            session = sessionFactory.getSession();
+
+            //stop consolidated from being archived at this point, maybe in the future
+            EmfDataset dataset = getDataset(datasetId);
+            InternalSource[] internalSources = dataset.getInternalSources();
+            String[] tableNames = new String[internalSources.length];
+            for (int i = 0; i < internalSources.length; i++) {
+                tableNames[i] = internalSources[i].getTable();
+            }
+
+            //if just one table, see if its consolidated, if so then don't allow the archival
+            if (tableNames.length == 1 && dbServer.getEmissionsDatasource().tableDefinition().isConsolidationTable(tableNames[0]))
+                throw new EmfException("Not allowed to archive a dataset that shares a consolidated table.");
+
+            ArchiveDatasetTask archiveDatasetTask = new ArchiveDatasetTask(dbServerFactory, sessionFactory, datasetId, username);
+            threadPool.execute(new GCEnforcerTask("Run ArchiveDatasetTask", archiveDatasetTask));
+
+        } catch (Exception e) {
+            LOG.error("Error archiving dataset", e);
+            throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+            closeDB(dbServer);
+        }
+
+    }
+
+    public synchronized void restoreDataset(Integer datasetId, String username) throws  EmfException {
+
+        DbServer dbServer = null;
+        try {
+
+            dbServer = dbServerFactory.getDbServer();
+
+            //stop consolidated from being archived at this point, maybe in the future
+            EmfDataset dataset = getDataset(datasetId);
+            InternalSource[] internalSources = dataset.getInternalSources();
+            String[] tableNames = new String[internalSources.length];
+            for (int i = 0; i < internalSources.length; i++) {
+                tableNames[i] = internalSources[i].getTable();
+            }
+
+            //if just one table, see if its consolidated, if so then don't allow the archival
+            if (tableNames.length == 1 && dbServer.getEmissionsDatasource().tableDefinition().isConsolidationTable(tableNames[0]))
+                throw new EmfException("Not allowed to restore a dataset that shares a consolidated table.");
+
+
+            RestoreDatasetTask restoreDatasetTask = new RestoreDatasetTask(dbServerFactory, sessionFactory, datasetId, username);
+            threadPool.execute(new GCEnforcerTask("Run RestoreDatasetTask", restoreDatasetTask));
+
+
+
+        } catch (Exception e) {
+            LOG.error("Error restoring dataset", e);
+            throw new EmfException(e.getMessage());
+        } finally {
+            closeDB(dbServer);
+        }
+
+    }
+
+
+    private String getProperty(String name) {
+        return propertyDao.getProperty(name).getValue();
+    }
     public synchronized EmfDataset[] getDatasets(String nameContains, int userId) throws EmfException {
         Session session = sessionFactory.getSession();
         List datasets;

@@ -100,7 +100,7 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
             LOG.error("Could not open Session for Dataset: " + token.datasetId() + ", Version: "
                     + token.getVersion().getVersion(), e);
             throw new EmfException("Could not open Session for Dataset: " + token.datasetId() + ", Version: "
-                    + token.getVersion().getVersion());
+                    + token.getVersion().getVersion(), e);
         }
     }
 

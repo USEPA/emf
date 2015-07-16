@@ -54,7 +54,7 @@ public class RemoveDownloadFilesTask implements Runnable {
             
         } catch (Exception e) {
             //Important, suppress all errors so process doesn't kill anything...
-            logError("Failed to remvoe file downloads", e);
+            logError("Failed to remove file downloads", e);
         } finally {
             //
         }
@@ -66,27 +66,31 @@ public class RemoveDownloadFilesTask implements Runnable {
     }
     
     public static void main(String[] args) {
-        File file = new File("C:/Apache_Software_Foundation/Tomcat_7.0/webapps");
-            //TODO:  make it work...
-            File downloadExportFolderObj = new File("C:/Apache_Software_Foundation/Tomcat_7.0/webapps");
-            
-            String[] userFolders = downloadExportFolderObj.list(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return new File(dir, name).isDirectory();
-                }
-            });
-            System.out.println(Arrays.toString(userFolders));
-            for (String userFolder : userFolders) {
-                File userFolderObj = new File(downloadExportFolderObj.getAbsolutePath() + File.separatorChar + userFolder);
-                String[] userFiles = userFolderObj.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        return !new File(dir, name).isDirectory();
-                    }
-                });
-                System.out.println(Arrays.toString(userFiles));
-            }
+
+        RemoveDownloadFilesTask task = new RemoveDownloadFilesTask("C:\\Users\\DDelVecc\\Documents\\emf_dev\\downloads\\", 10 );
+        task.run();
+
+//        File file = new File("C:/Apache_Software_Foundation/Tomcat_7.0/webapps");
+//            //TODO:  make it work...
+//            File downloadExportFolderObj = new File("C:/Apache_Software_Foundation/Tomcat_7.0/webapps");
+//
+//            String[] userFolders = downloadExportFolderObj.list(new FilenameFilter() {
+//                @Override
+//                public boolean accept(File dir, String name) {
+//                    return new File(dir, name).isDirectory();
+//                }
+//            });
+//            System.out.println(Arrays.toString(userFolders));
+//            for (String userFolder : userFolders) {
+//                File userFolderObj = new File(downloadExportFolderObj.getAbsolutePath() + File.separatorChar + userFolder);
+//                String[] userFiles = userFolderObj.list(new FilenameFilter() {
+//                    @Override
+//                    public boolean accept(File dir, String name) {
+//                        return !new File(dir, name).isDirectory();
+//                    }
+//                });
+//                System.out.println(Arrays.toString(userFiles));
+//            }
     }
     
 }

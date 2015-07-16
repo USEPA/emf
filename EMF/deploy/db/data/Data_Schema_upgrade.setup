@@ -2029,3 +2029,27 @@ UPDATE emf.fileformat_columns
 -- 10/20/2014 - add project notes field
 ALTER TABLE emf.projects
 ADD COLUMN notes text;
+
+
+
+
+
+
+
+
+
+
+
+-- 06/16/2015 - need to add PK to all meta data tables
+ALTER TABLE emf.properties
+  ADD PRIMARY KEY (id);
+ALTER TABLE emf.properties
+  ADD UNIQUE (name);
+
+-- stores backup directory for the emissions schema
+insert into emf.properties (name, value)
+values ('postgres-backup-dir-for-emissions-schema', 'C:\backups\EMF\emissions_schema\');
+
+insert into emf.properties (name, value)
+values ('postgres-backup-dir-for-emissions-schema', '/backups/EMF/emissions_schema/');
+

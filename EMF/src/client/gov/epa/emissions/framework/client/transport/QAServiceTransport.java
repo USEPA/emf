@@ -236,4 +236,28 @@ public class QAServiceTransport implements QAService {
         return (Boolean)call.requestResponse(new Object[]{ stepResult });
     }
 
+    @Override
+    public void archiveQAStep(Integer qaStepResultId, String username) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("archiveQAStep");
+        call.addParam("qaStepResultId", mappings.integer());
+        call.addParam("username", mappings.string());
+        call.setVoidReturnType();
+
+        call.request(new Object[] { qaStepResultId, username });
+    }
+
+    @Override
+    public void restoreQAStep(Integer qaStepResultId, String username) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("restoreQAStep");
+        call.addParam("qaStepResultId", mappings.integer());
+        call.addParam("username", mappings.string());
+        call.setVoidReturnType();
+
+        call.request(new Object[] { qaStepResultId, username });
+    }
+
 }

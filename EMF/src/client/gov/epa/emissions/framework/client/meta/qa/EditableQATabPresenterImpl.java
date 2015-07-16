@@ -230,6 +230,16 @@ public class EditableQATabPresenterImpl implements EditableQATabPresenter{
     }
 
     @Override
+    public void archiveQAStep(Integer qaStepResultId) throws EmfException {
+        session.qaService().archiveQAStep(qaStepResultId, session.user().getUsername());
+    }
+
+    @Override
+    public void restoreQAStep(Integer qaStepResultId) throws EmfException {
+        session.qaService().restoreQAStep(qaStepResultId, session.user().getUsername());
+    }
+
+    @Override
     public Object[] swProcessData() throws EmfException {
         // NOTE Auto-generated method stub
         return null;

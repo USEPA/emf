@@ -9,6 +9,7 @@ import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.viewer.DataViewer;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.Border;
@@ -33,6 +34,7 @@ import javax.swing.border.CompoundBorder;
 
 public class VersionsPanel extends JPanel implements VersionsView {
 
+    private boolean archived;
     private VersionsTableData tableData;
 
     private MessagePanel messagePanel;
@@ -57,7 +59,10 @@ public class VersionsPanel extends JPanel implements VersionsView {
     
     private Integer sIndex=0; // index of source table
     private Version[] versions;
-    
+    private Button archive;
+    private Button view;
+    private Button copy;
+
     public VersionsPanel(EmfDataset dataset, MessagePanel messagePanel, EmfConsole parentConsole,
             DesktopManager desktopManager, boolean editable) {
 
@@ -69,6 +74,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
         this.parentConsole = parentConsole;
         this.desktopManager = desktopManager;
         this.editable = editable;
+        this.archived = dataset.getStatus().equals("Archived");
     }
 
     private void setBorder() {
@@ -137,7 +143,9 @@ public class VersionsPanel extends JPanel implements VersionsView {
         scrollableTable.setColumnWidth("Date", 106);
         
         scrollableTable.resetTextFont(font);
-        
+
+        if (archived) ComponentUtility.enableComponents(scrollableTable, false);
+
         return scrollableTable;
     }
 
@@ -162,28 +170,92 @@ public class VersionsPanel extends JPanel implements VersionsView {
         tableCombo.addActionListener(sourceAction());
         panel.add(tableCombo);
 
-        Button view = new ViewButton(new AbstractAction() {
+        view = new ViewButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clear();
                 doView(tableCombo);
             }
         });
-        
+        view.setEnabled(!archived);
         panel.add(view);
 
-        Button copy = new CopyButton(new AbstractAction() {
+        copy = new CopyButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clear();
                 copyDataSet(tableCombo.getSelectedItem());
             }
         });
-        
+        copy.setEnabled(!archived);
         copy.setToolTipText("Copy a Version to New Dataset");
         panel.add(copy);
-        
+
+        //only show Archive button if in Editable mode
+        if (this.editable) {
+            Button archive = archiveButton(tableCombo);
+            if (dataset.getDatasetType() != null &&
+                    ( dataset.getDatasetType().isExternal() ||
+                            dataset.getInternalSources().length == 0)) {
+                archive.setEnabled(false);
+            }
+            panel.add(archive);
+        }
+
         return panel;
     }
- 
+
+    private Button archiveButton(final JComboBox tableCombo) {
+        String label = "";
+        if (dataset.getStatus().equals("Archived")) {
+            label = "Restore";
+        } else {
+            label = "Archive";
+        }
+
+        archive = new Button(label, new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                clear();
+                archiveDataset();
+            }
+        });
+        archive.setToolTipText(label + " Dataset");
+        return archive;
+    }
+
+    private void archiveDataset() {
+        try {
+            String message = "";
+            if (dataset.getStatus().equals("Archived")) {
+                message = "Would you like to restore this dataset?";
+            } else {
+                message = "Would you like to archive this dataset?";
+            }
+
+            if (JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE)
+                    == JOptionPane.YES_OPTION)
+                if (dataset.getStatus().equals("Archived")) {
+                    presenter.restoreDataset(dataset.getId());
+                    this.archived = false;
+                    archive.setText("Archive");
+                    view.setEnabled(true);
+                    copy.setEnabled(true);
+                } else {
+                    presenter.archiveDataset(dataset.getId());
+                    this.archived = true;
+                    archive.setText("Restore");
+                    view.setEnabled(false);
+                    copy.setEnabled(false);
+                }
+            else
+                return;
+        } catch (EmfException e) {
+            displayError(e.getMessage());
+            return;
+        }
+
+        messagePanel.setMessage("Please go to the dataset manager window and Refresh to see if the dataset has been archived.");
+    }
+
     private int getYesNoSelection(){
         String message = " Would you like to copy a version to new dataset? ";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
@@ -291,6 +363,6 @@ public class VersionsPanel extends JPanel implements VersionsView {
             version.setNumberRecords(nRecords[i]);
             sIndex = tableCombo.getSelectedIndex();
         }  
-        reload(versions);   
+        reload(versions);
     }
 }

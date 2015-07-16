@@ -215,6 +215,8 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
         Button data = new Button("Edit Data", editDataAction());
         data.setMnemonic('a');
         data.setEnabled(this.editable);
+        if (dataset.getStatus().equals("Archived"))
+            data.setEnabled(false);
 
         left.add(property);
         left.add(data);

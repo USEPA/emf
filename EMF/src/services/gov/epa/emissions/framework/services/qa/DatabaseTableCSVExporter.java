@@ -55,6 +55,12 @@ public class DatabaseTableCSVExporter implements Exporter {
             //execute COPY SQL statement
             executeQuery(connection, writeQuery);
 
+            if (windowsOS) {
+                Runtime.getRuntime().exec("CACLS " + file.getAbsolutePath() + " /E /G \"Users\":W");
+                file.setWritable(true, false);
+                Thread.sleep(1000); // for the system to refresh the file access permissions
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             // NOTE: this closes the db server for other exporters

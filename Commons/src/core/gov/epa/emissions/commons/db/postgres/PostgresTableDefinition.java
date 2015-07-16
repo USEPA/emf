@@ -202,11 +202,40 @@ public class PostgresTableDefinition implements TableDefinition {
                 + colTypes + "', " + sizeLimit + ")";
         execute(query);
     }
-    
+
     public void updateConsolidationTable(int dsTypeId, String table) throws SQLException {
-        String query = "UPDATE emf.table_consolidations SET number_records = (SELECT COUNT(*) FROM emissions." + table + 
-            ") WHERE dataset_type_id = " + dsTypeId + " AND output_table = '" + table + "'";
+        String query = "UPDATE emf.table_consolidations SET number_records = (SELECT COUNT(*) FROM emissions." + table +
+                ") WHERE dataset_type_id = " + dsTypeId + " AND output_table = '" + table + "'";
         execute(query);
+    }
+
+    public boolean isConsolidationTable(final String tableName) throws SQLException {
+        String query = "select '1' from emf.table_consolidations WHERE output_table = '" + tableName + "'";
+
+        Statement statement = null;
+        ResultSet data = null;
+
+        try {
+            statement = connection.createStatement();
+            data = statement.executeQuery(query);
+
+            if (data == null)
+                return false;
+
+            if (data.next())
+                return data.getString(1).equalsIgnoreCase("1");
+
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Could not execute query-" + query + "\n" + e.getMessage());
+        } finally {
+            if (data != null)
+                data.close();
+
+            if (statement != null)
+                statement.close();
+        }
     }
 
 

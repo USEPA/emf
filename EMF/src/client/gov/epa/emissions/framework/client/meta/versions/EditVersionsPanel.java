@@ -329,6 +329,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             view.setEnabled(false);
         }
         view.setText("View Data");
+        if (dataset.getStatus().equals("Archived")) view.setEnabled(false);
         panel.add(view);
 
         Button edit = editButton(tableCombo);
@@ -338,6 +339,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             edit.setEnabled(false);
         }
         edit.setText("Edit Data");
+        if (dataset.getStatus().equals("Archived")) edit.setEnabled(false);
         panel.add(edit);
 
         Button copy = copyButton(tableCombo);
@@ -346,6 +348,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
                   dataset.getInternalSources().length == 0)) {  
             copy.setEnabled(false);
         }
+        if (dataset.getStatus().equals("Archived")) copy.setEnabled(false);
         panel.add(copy);
 
         container.add(panel, BorderLayout.CENTER);

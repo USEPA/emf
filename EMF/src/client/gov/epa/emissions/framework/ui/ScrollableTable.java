@@ -149,4 +149,9 @@ public class ScrollableTable extends JScrollPane {
     public JTable getTable() {
         return table;
     }
+
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        table.setEnabled(enabled);
+    }
 }

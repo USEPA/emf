@@ -80,7 +80,29 @@ public class QADAO {
         
         return null;
     }
-    
+
+    public QAStepResult getQAStepResult(Integer qaStepResultId, Session session) {
+        Criterion c1 = Restrictions.eq("id", qaStepResultId);
+        Criterion[] criterions =  { c1 };
+        List list = hibernateFacade.get(QAStepResult.class, criterions, session);
+
+        if (!list.isEmpty())
+            return (QAStepResult) list.get(0);
+
+        return null;
+    }
+
+    public QAStep getQAStep(Integer qaStepId, Session session) {
+        Criterion c1 = Restrictions.eq("id", qaStepId);
+        Criterion[] criterions =  { c1 };
+        List list = hibernateFacade.get(QAStep.class, criterions, session);
+
+        if (!list.isEmpty())
+            return (QAStep) list.get(0);
+
+        return null;
+    }
+
     public void removeQAStepResult(QAStepResult stepResult, Session session) {
         hibernateFacade.remove(stepResult, session);
     }

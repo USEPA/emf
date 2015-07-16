@@ -56,6 +56,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,6 +123,12 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
     private Button saveButton;
 
     private Button runButton;
+
+    private Button viewResults;
+
+    private Button refresh;
+
+    private Button export;
 
     private JCheckBox currentTable;
 
@@ -710,14 +717,21 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         runButton = runButton();
         panel.add(runButton);
 
-        Button viewResults = viewResultsButton();
+        viewResults = viewResultsButton();
         panel.add(viewResults);
 
-        Button export = exportButton();
+        export = exportButton();
         panel.add(export);
 
-        Button refresh = refreshButton();
+        refresh = refreshButton();
         panel.add(refresh);
+
+        if (qaStepResult == null
+                || (qaStepResult != null && qaStepResult.getTableCreationStatus().equals("Archived"))) {
+            viewResults.setEnabled(false);
+            export.setEnabled(false);
+            refresh.setEnabled(false);
+        }
 
         return panel;
     }
@@ -2321,6 +2335,9 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         who.setText(presenter.userName());
         saveButton.setEnabled(false);// to prevent user from clicking save after started running a qa step
         runButton.setEnabled(false); // only allow user to run one time at a open window session
+        viewResults.setEnabled(false);
+        refresh.setEnabled(true);
+        export.setEnabled(false);
 
         presenter.run();
         resetChanges();
@@ -2329,9 +2346,12 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
     private void resetRunStatus(QAStepResult result) throws EmfException {
         saveButton.setEnabled(true);
         runButton.setEnabled(true);
+
         saveQA();
 
         if (result != null) {
+            viewResults.setEnabled(true);
+            export.setEnabled(true);
             who.setText(step.getWho());
             date.setText(DATE_FORMATTER.format(step.getDate()));
             status.setSelectedItem(step.getStatus());
@@ -2361,7 +2381,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
             if (!checkExportName())
                 return;
             // if (!presenter.ignoreShapeFileFunctionality()
-            // && presenter.isShapeFileCapable(qaStepResult)) {
+            // && presenter.isShapeFileCapable(getQAStepResult)) {
             QAStepExportWizard dialog = new QAStepExportWizard(parentConsole);
             QAStepExportWizardPresenter presenter2 = new QAStepExportWizardPresenter(session);
             presenter2.display(dialog, stepResult);
@@ -2400,11 +2420,11 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
             // if (download.isSelected()) {
             // messagePanel.setMessage("Started Export to download. Please monitor the Status window "
             // + "to track your export request.");
-            // this.presenter.download(step, qaStepResult, exportName.getText(), overide.isSelected());
+            // this.presenter.download(step, getQAStepResult, exportName.getText(), overide.isSelected());
             // } else {
             // messagePanel.setMessage("Started Export. Please monitor the Status window "
             // + "to track your export request.");
-            // this.presenter.export(step, qaStepResult, exportFolder.getText(), exportName.getText(),
+            // this.presenter.export(step, getQAStepResult, exportFolder.getText(), exportName.getText(),
             // overide.isSelected()); // pass in fileName
             // }
             // }

@@ -48,4 +48,7 @@ public interface QAService {
 
     boolean isShapefileCapable(QAStepResult stepResult) throws EmfException;
 
+    void archiveQAStep(Integer qaStepResultId, String username) throws EmfException;
+
+    void restoreQAStep(Integer qaStepResultId, String username) throws EmfException;
 }

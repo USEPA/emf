@@ -521,7 +521,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
             if ( !checkExportName()) 
                 return;
 //            if (!presenter.ignoreShapeFileFunctionality() 
-//                    && presenter.isShapeFileCapable(qaStepResult)) {
+//                    && presenter.isShapeFileCapable(getQAStepResult)) {
                 QAStepExportWizard dialog = new QAStepExportWizard(parentConsole);
                 QAStepExportWizardPresenter presenter2 = new QAStepExportWizardPresenter(session);
                 presenter2.display(dialog, qaStepResult);
@@ -553,11 +553,11 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
 //                if (download.isSelected()) {
 //                    messagePanel.setMessage("Started Export to download. Please monitor the Status window "
 //                            + "to track your export request.");
-//                    this.presenter.download(step, qaStepResult, exportName.getText(), overide.isSelected());
+//                    this.presenter.download(step, getQAStepResult, exportName.getText(), overide.isSelected());
 //                } else {
 //                    messagePanel.setMessage("Started Export. Please monitor the Status window "
 //                            + "to track your export request.");
-//                    this.presenter.export(step, qaStepResult, exportFolder.getText(), exportName.getText(), overide.isSelected(), dialog.get); // pass in fileName
+//                    this.presenter.export(step, getQAStepResult, exportFolder.getText(), exportName.getText(), overide.isSelected(), dialog.get); // pass in fileName
 //                }
 //            }
         } catch (EmfException e) {

@@ -788,6 +788,7 @@ public class DatasetDAO {
                 deleteFromOutputsTable(datasetIDs, session);
             } catch (Exception e) {
                 LOG.error(e);
+                e.printStackTrace();
                 exception = e;
             }
 
@@ -795,6 +796,7 @@ public class DatasetDAO {
                 deleteFromEmfTables(datasetIDs, emissionTableTool, session);
             } catch (Exception e) {
                 LOG.error(e);
+                e.printStackTrace();
                 exception = e;
             }
 
@@ -804,6 +806,7 @@ public class DatasetDAO {
                 hibernateFacade.remove(datasets, session);
             } catch (Exception e) {
                 LOG.error(e);
+                e.printStackTrace();
                 exception = e;
             }
 
@@ -811,6 +814,7 @@ public class DatasetDAO {
                 dropDataTables(datasets, emissionTableTool, session);
             } catch (Exception e) {
                 LOG.error(e);
+                e.printStackTrace();
                 exception = e;
             }
         }

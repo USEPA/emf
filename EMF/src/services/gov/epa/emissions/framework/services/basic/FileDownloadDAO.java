@@ -96,6 +96,7 @@ public class FileDownloadDAO {
         } catch (Exception e) {
             //suppress all errors this shouldn't stop the process from working....
             //throw new EmfException(e.getMessage());
+            e.printStackTrace();
         }
    }
     
@@ -114,7 +115,7 @@ public class FileDownloadDAO {
         //persist record
         add(fileDownload);
     }
-    
+
     public List getFileDownloads(Integer userId, Session session) {
 //        return this.getHibernateTemplate().find(
 //                "from FileDownload as FD where "

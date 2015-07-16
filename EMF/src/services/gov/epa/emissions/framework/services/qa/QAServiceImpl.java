@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.services.qa;
 
+import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.PivotConfiguration;
 import gov.epa.emissions.commons.data.ProjectionShapeFile;
 import gov.epa.emissions.commons.data.QAProgram;
@@ -16,17 +17,11 @@ import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.RemoteCommand;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.data.DatasetDAO;
-import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.data.QAStepResult;
+import gov.epa.emissions.framework.services.data.*;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -749,4 +744,38 @@ public class QAServiceImpl implements QAService {
 //        status.setTimestamp(new Date());
 //        statusDAO.add(status);
 //    }
+
+
+    public synchronized void archiveQAStep(Integer qaStepResultId, String username) throws  EmfException {
+
+        try {
+
+            ArchiveQAStepTask archiveQAStepTask = new ArchiveQAStepTask(dbServerFactory, sessionFactory, qaStepResultId, username);
+            threadPool.execute(new GCEnforcerTask("Run ArchiveQAStepTask", archiveQAStepTask));
+
+        } catch (Exception e) {
+            LOG.error("Error archiving QA Step Result", e);
+            throw new EmfException(e.getMessage());
+        } finally {
+
+        }
+
+    }
+
+    public synchronized void restoreQAStep(Integer qaStepResultId, String username) throws  EmfException {
+
+        try {
+
+            RestoreQAStepTask restoreQAStepTask = new RestoreQAStepTask(dbServerFactory, sessionFactory, qaStepResultId, username);
+            threadPool.execute(new GCEnforcerTask("Run RestoreQAStepTask", restoreQAStepTask));
+
+        } catch (Exception e) {
+            LOG.error("Error restoring QA Step Result", e);
+            throw new EmfException(e.getMessage());
+        } finally {
+            //
+        }
+
+    }
+
 }
