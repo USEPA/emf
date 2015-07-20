@@ -1,5 +1,8 @@
 package gov.epa.emissions.framework.client.cost.controlprogram.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.framework.client.EmfSession;
@@ -38,7 +41,15 @@ public class ControlProgramSummaryTabPresenter  implements ControlProgramTabPres
     }
 
     public DatasetType[] getDatasetTypes() {
-        return session.getLightDatasetTypes();
+        List<DatasetType> types = new ArrayList<DatasetType>();
+        types.add(session.getLightDatasetType("Allowable Packet"));
+        types.add(session.getLightDatasetType("Allowable Packet Extended"));
+        types.add(session.getLightDatasetType("Control Packet"));
+        types.add(session.getLightDatasetType("Control Packet Extended"));
+        types.add(session.getLightDatasetType("Plant Closure (CSV)"));
+        types.add(session.getLightDatasetType("Projection Packet"));
+        types.add(session.getLightDatasetType("Projection Packet Extended"));
+        return types.toArray(new DatasetType[0]);
      }
 
      public EmfDataset[] getDatasets(DatasetType type) throws EmfException
