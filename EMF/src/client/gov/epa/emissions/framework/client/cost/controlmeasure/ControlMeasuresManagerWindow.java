@@ -364,7 +364,7 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
             }
         });
 
-        topPanel.add(getItem("Name contains:", textFilter, 150, 25), constraints);
+        topPanel.add(getItem("Name or Abbr contains:", textFilter, 150, 25), constraints);
 
         return topPanel;
     }

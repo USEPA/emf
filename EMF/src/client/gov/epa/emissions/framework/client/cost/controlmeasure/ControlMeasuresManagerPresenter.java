@@ -110,7 +110,8 @@ public class ControlMeasuresManagerPresenter implements RefreshObserver {
             if (nameContains != null && nameContains.length() > 0) {
 
                 String escapedNameContains = getPattern(nameContains.toLowerCase().trim());
-                whereFilteSB.append(" lower(cm.name) like ").append(escapedNameContains).append(" ");
+                whereFilteSB.append(" (lower(cm.name) like ").append(escapedNameContains)
+                    .append(" or lower(cm.abbreviation) like ").append(escapedNameContains).append(") ");
             }
 
             String whereFilterString = whereFilteSB.toString();
@@ -143,7 +144,8 @@ public class ControlMeasuresManagerPresenter implements RefreshObserver {
         if (nameContains != null && nameContains.trim().length() > 0) {
 
             String escapedNameContains = getPattern(nameContains.toLowerCase().trim());
-            whereFilter += " and lower(cm.name) like " + escapedNameContains + " ";
+            whereFilter += " and (lower(cm.name) like " + escapedNameContains + " " +
+                    "or lower(cm.abbreviation) like " + escapedNameContains + ") ";
         }
 
         if (pollutant.getName().equals("ALL") || pollutant.getName().equalsIgnoreCase("Select one"))
