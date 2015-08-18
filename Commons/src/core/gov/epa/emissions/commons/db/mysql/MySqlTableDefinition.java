@@ -133,6 +133,9 @@ public class MySqlTableDefinition implements TableDefinition {
         
     }
 
+    /**
+     * @throws SQLException
+     */
     @Override
     public boolean isConsolidationTable(String tableName) throws SQLException {
         return false;
