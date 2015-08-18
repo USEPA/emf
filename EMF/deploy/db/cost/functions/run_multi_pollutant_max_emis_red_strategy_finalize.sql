@@ -40,9 +40,7 @@ DECLARE
 	has_target_pollutant integer := 0;
 	has_latlong_columns boolean := false;
 	has_plant_column boolean := false;
-	get_strategt_cost_sql character varying;
 	has_rpen_column boolean := false;
-	get_strategt_cost_inner_sql character varying;
 	annualized_uncontrolled_emis_sql character varying;
 	uncontrolled_emis_sql character varying;
 	emis_sql character varying;
@@ -297,35 +295,6 @@ else -- has NO existing control
 	' || emis_sql || ' * (1.0 - ' || percent_reduction_sql || ' / 100.0)
 end
 */
-	get_strategt_cost_sql := '(public.get_strategy_costs(' || case when use_cost_equations then 'true' else 'false' end || '::boolean, tpm.control_measures_id, 
-			abbreviation, ' || discount_rate|| ', 
-			tpm.equipment_life, er.cap_ann_ratio, 
-			er.cap_rec_factor, er.ref_yr_cost_per_ton, 
-			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * ' || percent_reduction_sql || ' / 100, ' || ref_cost_year_chained_gdp || ' / cast(gdplev.chained_gdp as double precision), 
-			' || case when use_cost_equations then 
-			'et.name, 
-			eq.value1, eq.value2, 
-			eq.value3, eq.value4, 
-			eq.value5, eq.value6, 
-			eq.value7, eq.value8, 
-			eq.value9, eq.value10, 
-			' || case when not is_point_table then 'null' else 'inv.stkflow * 60.0' end || ', ' || case when not is_point_table then 'null' else case when not has_design_capacity_columns then 'null' else 'inv.design_capacity' end end || ', 
-			' || case when not is_point_table then 'null' else case when not has_design_capacity_columns then 'null' else 'inv.design_capacity_unit_numerator' end end || ', ' || case when not is_point_table then 'null' else case when not has_design_capacity_columns then 'null' else 'inv.design_capacity_unit_denominator' end end || ', ' || case when not is_point_table then 'null' else 'inv.annual_avg_hours_per_year' end 
-			else
-			'null, 
-			null, null, 
-			null, null, 
-			null, null, 
-			null, null, 
-			null, null, 
-			null, null, 
-			null, null, 
-			null'
-			end
-			|| ',inv.nceff, ' || ref_cost_year_chained_gdp || '::double precision / gdplev_incr.chained_gdp::double precision * er.incremental_cost_per_ton))';
-
-	--select strpos('abc,def,ght','ght')
-	get_strategt_cost_inner_sql := replace(replace(get_strategt_cost_sql,'tpm.control_measures_id','m.id'),'tpm.equipment_life','m.equipment_life');
 			
 
 	return;
