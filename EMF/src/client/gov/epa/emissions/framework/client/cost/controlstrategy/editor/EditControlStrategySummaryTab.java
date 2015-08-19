@@ -636,6 +636,8 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
                     session.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
                 }
                 controlStrategy.setProject(project);
+            } else {
+                controlStrategy.setProject(null);
             }
         } else if (selected instanceof Project) {
             controlStrategy.setProject((Project) selected);

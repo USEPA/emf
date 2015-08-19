@@ -223,6 +223,8 @@ public class TemporalAllocationSummaryTab extends JPanel implements TemporalAllo
                 if (project.getId() == 0) {
                     session.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
                 }
+            } else {
+                temporalAllocation.setProject(null);
             }
         } else if (selected instanceof Project) {
             temporalAllocation.setProject((Project) selected);

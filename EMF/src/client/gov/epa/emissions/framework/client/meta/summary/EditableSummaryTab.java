@@ -355,6 +355,8 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
                 if (project.getId() == 0) {
                     session.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
                 }
+            } else {
+                dataset.setProject(null);
             }
         } else if (selected instanceof Project) {
             dataset.setProject((Project) selected);

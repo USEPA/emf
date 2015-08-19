@@ -562,6 +562,8 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
             if (projectName.length() > 0) {
                 Project project = project(projectName);// checking for duplicates
                 controlStrategy.setProject(project);
+            } else {
+                controlStrategy.setProject(null);
             }
         } else if (selected instanceof Project) {
             controlStrategy.setProject((Project) selected);
