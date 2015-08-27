@@ -616,8 +616,8 @@ public class SQLCompareVOCSpeciationWithHAPInventoryQuery extends SQLQAProgramQu
         + "    on s.source = i.scc || i.fips || "
         + (
             capIsPoint
-            ? "rpad(coalesce(i.plantid, ''''), 15) || rpad(coalesce(i.pointid, ''''), 15) || rpad(coalesce(i.stackid, ''''), 15) || rpad(coalesce(i.segment, ''''), 15) \n"
-            : "repeat('' '', 60)  \n"
+            ? "rpad(coalesce(i.plantid, ''''), 20) || rpad(coalesce(i.pointid, ''''), 20) || rpad(coalesce(i.stackid, ''''), 20) || rpad(coalesce(i.segment, ''''), 20) \n"
+            : "repeat('' '', 80)  \n"
             )
         + " \n"
         + "   -- get profilecode by SCC and pollutant \n"
@@ -729,8 +729,8 @@ public class SQLCompareVOCSpeciationWithHAPInventoryQuery extends SQLQAProgramQu
         + "    on s.source = i.scc || i.fips || "
         + (
             hapIsPoint
-            ? "rpad(coalesce(i.plantid, ''''), 15) || rpad(coalesce(i.pointid, ''''), 15) || rpad(coalesce(i.stackid, ''''), 15) || rpad(coalesce(i.segment, ''''), 15) \n"
-            : "repeat('' '', 60)  \n"
+            ? "rpad(coalesce(i.plantid, ''''), 20) || rpad(coalesce(i.pointid, ''''), 20) || rpad(coalesce(i.stackid, ''''), 20) || rpad(coalesce(i.segment, ''''), 20) \n"
+            : "repeat('' '', 80)  \n"
             )
         + " \n"
         + "   -- get profilecode by SCC and pollutant \n"
@@ -814,8 +814,8 @@ public class SQLCompareVOCSpeciationWithHAPInventoryQuery extends SQLQAProgramQu
         + "    on s.source = i.scc || i.fips || "
         + (
             capIsPoint
-            ? "rpad(coalesce(i.plantid, ''''), 15) || rpad(coalesce(i.pointid, ''''), 15) || rpad(coalesce(i.stackid, ''''), 15) || rpad(coalesce(i.segment, ''''), 15) \n"
-            : "repeat('' '', 60)  \n"
+            ? "rpad(coalesce(i.plantid, ''''), 20) || rpad(coalesce(i.pointid, ''''), 20) || rpad(coalesce(i.stackid, ''''), 20) || rpad(coalesce(i.segment, ''''), 20) \n"
+            : "repeat('' '', 80)  \n"
             )
         + " \n"
         + "    -- get profilecode by SCC and pollutant \n"
@@ -905,8 +905,8 @@ public class SQLCompareVOCSpeciationWithHAPInventoryQuery extends SQLQAProgramQu
         + "    on s.source = i.scc || i.fips || "
         + (
             hapIsPoint
-            ? "rpad(coalesce(i.plantid, ''''), 15) || rpad(coalesce(i.pointid, ''''), 15) || rpad(coalesce(i.stackid, ''''), 15) || rpad(coalesce(i.segment, ''''), 15) \n"
-            : "repeat('' '', 60)  \n"
+            ? "rpad(coalesce(i.plantid, ''''), 20) || rpad(coalesce(i.pointid, ''''), 20) || rpad(coalesce(i.stackid, ''''), 20) || rpad(coalesce(i.segment, ''''), 20) \n"
+            : "repeat('' '', 80)  \n"
             )
         + " \n"
         + "    -- get profilecode by SCC and pollutant \n"

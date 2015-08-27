@@ -858,7 +858,7 @@ from (
 			on p.name = inv.poll
 
 			inner join emf.sources
-			on sources.source = inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'repeat('' '', 60) ' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 15) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 15) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 15) || rpad(coalesce(inv.' || segment_expression || ', ''''), 15)' end || '
+			on sources.source = inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'repeat('' '', 80) ' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 20) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 20) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 20) || rpad(coalesce(inv.' || segment_expression || ', ''''), 20)' end || '
 
 			left outer join inv_overrides inv_ovr
 			on inv_ovr.record_id = inv.record_id
