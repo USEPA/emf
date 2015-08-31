@@ -60,7 +60,7 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     private synchronized void init(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
-        dao = new ControlStrategyDAO();
+        dao = new ControlStrategyDAO(dbServerFactory, sessionFactory);
         threadPool = createThreadPool();
 
     }
@@ -256,22 +256,23 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
                 throw new EmfException("Control Strategy name already in use");
 
             ControlStrategyResult[] controlStrategyResults = getControlStrategyResults(element.getId());
+            List<EmfDataset> dsList = new ArrayList<EmfDataset>();
             for (int i = 0; i < controlStrategyResults.length; i++) {
-                List<Integer> dsIDList = new ArrayList<Integer>();
                 EmfDataset controlledInv = (EmfDataset)controlStrategyResults[i].getControlledInventoryDataset();
                 if (controlledInv != null && deleteCntlInvs) {
-                    dsIDList.add(controlledInv.getId());
+                    dsList.add(controlledInv);
                 }
                 EmfDataset dataset = (EmfDataset)controlStrategyResults[i].getDetailedResultDataset();
                 if (dataset != null && deleteResults) {
-                    dsIDList.add(dataset.getId());
+                    dsList.add(dataset);
                 }
-                
-                dao.remove(controlStrategyResults[i], session);
-                
-                if (dsIDList != null && dsIDList.size() > 0) {
-                    removeResultDatasets(dsIDList.toArray(new Integer[0]), user);
-                }
+            }
+            
+            dao.removeControlStrategyResults(element.getId(), session);
+
+            if (dsList.size() > 0) {
+                dao.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, session,
+                        dbServerFactory.getDbServer());
             }
 
             dao.remove(element, session);

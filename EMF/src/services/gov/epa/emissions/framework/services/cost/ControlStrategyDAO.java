@@ -338,7 +338,7 @@ public class ControlStrategyDAO {
             return;
         
         try {
-            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, datasets, DeleteType.CONTROL_STRATEGY);
+            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, lockedDatasets, DeleteType.CONTROL_STRATEGY);
         } catch (EmfException e) {
 //            releaseLocked(lockedDatasets, user, session);
 //            throw new EmfException(e.getMessage());
