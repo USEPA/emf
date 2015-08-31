@@ -1636,3 +1636,18 @@ GROUP BY file_format;
 -- 05/21/2015 New parameter to restrict measures by major pollutant
 ALTER TABLE emf.control_strategies
 	ADD COLUMN match_major_pollutant boolean DEFAULT false;
+
+-- 08/31/2015 Update emf.source field sizes
+-- copied from deploy/db/20140430/change_source_group_keys.sql
+ALTER TABLE emf.sources
+   ALTER COLUMN scc TYPE character varying(12);
+ALTER TABLE emf.sources
+   ALTER COLUMN plantid TYPE character varying(20);
+ALTER TABLE emf.sources
+   ALTER COLUMN pointid TYPE character varying(20);
+ALTER TABLE emf.sources
+   ALTER COLUMN stackid TYPE character varying(20);
+ALTER TABLE emf.sources
+   ALTER COLUMN segment TYPE character varying(20);
+ALTER TABLE emf.sources
+   ALTER COLUMN source TYPE character varying(98);

@@ -39,15 +39,15 @@ BEGIN
 	'insert into emf.sources (scc, fips ' || case when is_point_table = false then '' else ', plantid, pointid, stackid, segment' end || ', source)
 	select distinct on (inv.scc, inv.' || fips_expression || '' || case when is_point_table = false then '' else ', inv.' || plantid_expression || ', inv.' || pointid_expression || ', inv.' || stackid_expression || ', inv.' || segment_expression || '' end || ')
 		inv.scc, inv.' || fips_expression || ' ' || case when is_point_table = false then '' else ', inv.' || plantid_expression || ', inv.' || pointid_expression || ', inv.' || stackid_expression || ', inv.' || segment_expression || '' end || ',
-		inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'rpad('''', 60)' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 15) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 15) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 15) || rpad(coalesce(inv.' || segment_expression || ', ''''), 15)' end || '
+		inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'rpad('''', 80)' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 20) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 20) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 20) || rpad(coalesce(inv.' || segment_expression || ', ''''), 20)' end || '
 	FROM emissions.' || inv_table_name || ' inv
 	where not exists (select 1 
 		from emf.sources 
-		where sources.source = inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'rpad('''', 60)' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 15) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 15) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 15) || rpad(coalesce(inv.' || segment_expression || ', ''''), 15)' end || '
+		where sources.source = inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'rpad('''', 80)' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 20) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 20) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 20) || rpad(coalesce(inv.' || segment_expression || ', ''''), 20)' end || '
 		)
 /*
 		left outer join emf.sources
-		on sources.source = inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'rpad('''', 60)' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 15) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 15) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 15) || rpad(coalesce(inv.' || segment_expression || ', ''''), 15)' end || '
+		on sources.source = inv.scc || inv.' || fips_expression || ' || ' || case when is_point_table = false then 'rpad('''', 80)' else 'rpad(coalesce(inv.' || plantid_expression || ', ''''), 20) || rpad(coalesce(inv.' || pointid_expression || ', ''''), 20) || rpad(coalesce(inv.' || stackid_expression || ', ''''), 20) || rpad(coalesce(inv.' || segment_expression || ', ''''), 20)' end || '
 		sources.scc = inv.scc
 		and sources.fips = inv.' || fips_expression || '
 		' || case when is_point_table = false then '
