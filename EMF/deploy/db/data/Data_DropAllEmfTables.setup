@@ -68,3 +68,15 @@ DROP TABLE emf.qa_programs CASCADE;
 DROP TABLE emf.datasets_notes CASCADE;
 
 DROP TABLE emf.georegions CASCADE;
+
+DROP TABLE emf.external_dataset_access CASCADE;
+DROP TABLE emf.file_downloads CASCADE;
+DROP TABLE emf.file_formats CASCADE;
+DROP TABLE emf.fileformat_columns CASCADE;
+DROP TABLE emf.references CASCADE;
+DROP TABLE emf.region_type CASCADE;
+DROP TABLE emf.table_consolidations CASCADE;
+DROP TABLE emf.user_excluded_dataset_types CASCADE;
+DROP TABLE emf.user_excluded_features CASCADE;
+DROP TABLE emf.user_features CASCADE;
+DROP TABLE emf.versions CASCADE;

@@ -136,6 +136,21 @@ CREATE TABLE emf.properties
 WITHOUT OIDS;
 --emf.properties
 --
+-- emf.file_formats
+CREATE TABLE emf.file_formats
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(128) NOT NULL UNIQUE,
+  description text,
+  delimiter varchar(32),
+  fixed_format bool DEFAULT false,
+  date_added timestamp without time zone,
+  last_modified_date timestamp without time zone,
+  creator int4 NOT NULL REFERENCES emf.users (id)
+) 
+WITHOUT OIDS;
+-- emf.file_formats
+
 -- emf.dataset_types
 CREATE TABLE emf.dataset_types
 (
@@ -165,7 +180,7 @@ CREATE TABLE emf.datasets
   id SERIAL PRIMARY KEY,
   name varchar(255) NOT NULL UNIQUE,
   creator varchar(255) NOT NULL REFERENCES emf.users (username),
-  creator_full_name varchar(255) REFERENCES emf.users (name),
+  creator_full_name varchar(255),
   status varchar(255),
   dataset_type int4 REFERENCES emf.dataset_types (id),
   units varchar(255),
@@ -464,21 +479,6 @@ CREATE TABLE emf."references"
 WITH (OIDS=FALSE);
 ALTER TABLE emf."references" OWNER TO emf;
 -- emf.references
-
--- emf.file_formats
-CREATE TABLE emf.file_formats
-(
-  id SERIAL PRIMARY KEY,
-  name varchar(128) NOT NULL UNIQUE,
-  description text,
-  delimiter varchar(32),
-  fixed_format bool DEFAULT false,
-  date_added timestamp without time zone,
-  last_modified_date timestamp without time zone,
-  creator int4 NOT NULL REFERENCES emf.users (id)
-) 
-WITHOUT OIDS;
--- emf.file_formats
 
 -- emf.fileformat_columns
 CREATE TABLE emf.fileformat_columns
