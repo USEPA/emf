@@ -88,8 +88,15 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
             } else {
                 dir = new File(folderPath);
             }
-            if (!dir.isDirectory())
-                throw new EmfException("Export folder does not exist: " + folderPath);
+            if (!dir.isDirectory()) {
+                if (download) {
+                    dir.mkdir();
+                    dir.setReadable(true, true);
+                    dir.setWritable(true, false);
+                } else {
+                    throw new EmfException("Export folder does not exist: " + folderPath);
+                }
+            }
             
             validateExportFile(dir, prefix, overwrite);
             CMExportTask exportTask = new CMExportTask(dir, prefix, controlMeasureIds, user,
