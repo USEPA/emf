@@ -12,65 +12,6 @@ CREATE OR REPLACE FUNCTION public.get_cost_expressions(
 	gdplev_table_alias character varying(64), 
 	inv_override_table_alias character varying(64), 
 	gdplev_incr_table_alias character varying(64),
-	OUT annual_cost_expression text, 
-	OUT capital_cost_expression text, 
-	OUT operation_maintenance_cost_expression text, 
-	OUT fixed_operation_maintenance_cost_expression text, 
-	OUT variable_operation_maintenance_cost_expression text, 
-	OUT annualized_capital_cost_expression text, 
-	OUT computed_cost_per_ton_expression text, 
-	OUT actual_equation_type_expression text)  AS $$
-DECLARE
-
-	discount_rate double precision;
-BEGIN
-
-	SELECT cs.discount_rate / 100
-	FROM emf.control_strategies cs
-	where cs.id = int_control_strategy_id
-	INTO discount_rate;
-
-	select public.get_cost_expressions(
-		int_control_strategy_id,
-		int_input_dataset_id,
-		use_override_dataset,
-		inv_table_alias, 
-		control_measure_table_alias, 
-		equation_type_table_alias, 
-		control_measure_equation_table_alias, 
-		control_measure_efficiencyrecord_table_alias, 
-		control_strategy_measure_table_alias, 
-		gdplev_table_alias, 
-		inv_override_table_alias, 
-		gdplev_incr_table_alias,
-		discount_rate)
-	into annual_cost_expression, 
-		capital_cost_expression, 
-		operation_maintenance_cost_expression, 
-		fixed_operation_maintenance_cost_expression, 
-		variable_operation_maintenance_cost_expression, 
-		annualized_capital_cost_expression, 
-		computed_cost_per_ton_expression, 
-		actual_equation_type_expression;
-
-END;
-$$ LANGUAGE plpgsql STRICT IMMUTABLE;
-
-
-
-CREATE OR REPLACE FUNCTION public.get_cost_expressions(
-	int_control_strategy_id integer,
-	int_input_dataset_id integer,
-	use_override_dataset boolean,
-	inv_table_alias character varying(64), 
-	control_measure_table_alias character varying(64), 
-	equation_type_table_alias character varying(64), 
-	control_measure_equation_table_alias character varying(64), 
-	control_measure_efficiencyrecord_table_alias character varying(64), 
-	control_strategy_measure_table_alias character varying(64), 
-	gdplev_table_alias character varying(64), 
-	inv_override_table_alias character varying(64), 
-	gdplev_incr_table_alias character varying(64),
 	discount_rate double precision,
 	OUT annual_cost_expression text, 
 	OUT capital_cost_expression text, 
@@ -287,15 +228,15 @@ BEGIN
 	
 
 	IF NOT is_flat_file_inventory THEN
-		inv_pct_red_expression := 'coalesce(' || inv_table_alias || '.ceff, inv_ovr.ceff) * coalesce(coalesce(' || inv_table_alias || '.reff, inv_ovr.reff) / 100, 1.0)' || case when has_rpen_column then ' * coalesce(coalesce(' || inv_table_alias || '.rpen, inv_ovr.rpen) / 100, 1.0)' else '' end;
+		inv_pct_red_expression := 'coalesce(' || inv_table_alias || '.ceff, ' || inv_override_table_alias || '.ceff) * coalesce(coalesce(' || inv_table_alias || '.reff, ' || inv_override_table_alias || '.reff) / 100, 1.0)' || case when has_rpen_column then ' * coalesce(coalesce(' || inv_table_alias || '.rpen, ' || inv_override_table_alias || '.rpen) / 100, 1.0)' else '' end;
 		emis_sql := public.get_ann_emis_expression(inv_table_alias, no_days_in_month);
 		annualized_emis_sql := case when dataset_month != 0 then 'coalesce(inv.avd_emis * ' || no_days_in_year || ', inv.ann_emis)' else 'inv.ann_emis' end;
 	ELSE
-		inv_pct_red_expression := 'coalesce(inv.ann_pct_red, inv_ovr.ceff)';
+		inv_pct_red_expression := 'coalesce(inv.ann_pct_red, ' || inv_override_table_alias || '.ceff)';
 		emis_sql := 'inv.ann_value';
 		annualized_emis_sql := 'inv.ann_value';
 	END IF;
-	so2_emis_sql := 'inv_ovr.so2_ann_value';
+	so2_emis_sql := inv_override_table_alias || '.so2_ann_value';
 
 
 
@@ -3611,7 +3552,8 @@ select (public.get_cost_expressions(
 	'csm'::character varying, --control_strategy_measure_table_alias
 	'gdplev'::character varying, --gdplev_incr_table_alias
 	'inv_ovr'::character varying, --inv_override_table_alias
-	'gdplev_incr'::character varying --gdplev_incr_table_alias
+	'gdplev_incr'::character varying, --gdplev_incr_table_alias
+	0.07 -- discount_rate
 	)).annual_cost_expression, 
 	(public.get_cost_expressions(
 	141, -- int_control_strategy_id
@@ -3624,7 +3566,8 @@ select (public.get_cost_expressions(
 	'ef', --control_measure_efficiencyrecord_table_alias
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
-	'gdplev_incr' --gdplev_incr_table_alias
+	'gdplev_incr', --gdplev_incr_table_alias
+	0.07 -- discount_rate
 	)).capital_cost_expression, 
 	(public.get_cost_expressions(
 	141, -- int_control_strategy_id
@@ -3637,7 +3580,8 @@ select (public.get_cost_expressions(
 	'ef', --control_measure_efficiencyrecord_table_alias
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
-	'gdplev_incr' --gdplev_incr_table_alias
+	'gdplev_incr', --gdplev_incr_table_alias
+	0.07 -- discount_rate
 	)).annualized_capital_cost_expression, 
 	(public.get_cost_expressions(
 	141, -- int_control_strategy_id
@@ -3650,7 +3594,8 @@ select (public.get_cost_expressions(
 	'ef', --control_measure_efficiencyrecord_table_alias
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
-	'gdplev_incr' --gdplev_incr_table_alias
+	'gdplev_incr', --gdplev_incr_table_alias
+	0.07 -- discount_rate
 	)).operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
 	141, -- int_control_strategy_id
@@ -3663,7 +3608,8 @@ select (public.get_cost_expressions(
 	'ef', --control_measure_efficiencyrecord_table_alias
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
-	'gdplev_incr' --gdplev_incr_table_alias
+	'gdplev_incr', --gdplev_incr_table_alias
+	0.07 -- discount_rate
 	)).fixed_operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
 	141, -- int_control_strategy_id
@@ -3676,7 +3622,8 @@ select (public.get_cost_expressions(
 	'ef', --control_measure_efficiencyrecord_table_alias
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
-	'gdplev_incr' --gdplev_incr_table_alias
+	'gdplev_incr', --gdplev_incr_table_alias
+	0.07 -- discount_rate
 	)).variable_operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
 	141, -- int_control_strategy_id
@@ -3689,6 +3636,7 @@ select (public.get_cost_expressions(
 	'ef', --control_measure_efficiencyrecord_table_alias
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
-	'gdplev_incr' --gdplev_incr_table_alias
+	'gdplev_incr', --gdplev_incr_table_alias
+	0.07 -- discount_rate
 	)).computed_cost_per_ton_expression;
 */
