@@ -397,6 +397,16 @@
 
 	</target>
 
+	<target name="client-installer(only jar)" depends="clean, init, compile-client-no-clean-init" description="Creates just the EMF Client Installer jar file">
+		<jar jarfile="${build.home}/${app.name}-client-installer.jar" basedir="${build.classes.dir}">
+			<include name="gov/epa/emissions/framework/install/installer/*" />
+			<include name="gov/epa/emissions/framework/client/preference/CommentedProperties.class" />
+			<include name="logo.JPG" />
+			<include name="EMFPrefsTemplate.txt" />
+		</jar>
+		<copy todir="${build.home}" file="./src/client/gov/epa/emissions/framework/install/installer/runinstaller.bat" />
+	</target>
+
 	<!-- <target name="client-installer-dist" depends="clean, init, compile-client, client-env, client-dist-sandbox, commons-dist" description="Builds the EMF Client installer distribution files excluding dependent jar file"> -->
 	<target name="client-installer-dist" depends="clean, init, compile-client, client-env, client-dist, commons-dist" description="Builds the EMF Client installer distribution files excluding dependent jar file">
 

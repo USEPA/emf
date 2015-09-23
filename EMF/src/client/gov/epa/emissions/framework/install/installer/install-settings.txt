@@ -1,32 +1,53 @@
+Building the EMF Client Installer
+
+- Run the ant task "client-installer(only jar)" to create the file emf-client-installer.jar in EMF/build/sandbox/. The batch file runinstaller.bat is also copied to EMF/build/sandbox/.
+  - emf-client-installer.jar contains:
+    gov/epa/emissions/framework/install/installer/*
+    gov/epa/emissions/framework/client/preference/CommentedProperties.class
+    EMFPrefsTemplate.txt
+    logo.JPG
+
+- Create a zip file named emfinst.zip that contains emf-client-installer.jar and runinstaller.bat.
+
+- On Windows, download and install FreeExtractor from http://freeextractor.sourceforge.net/FreeExtractor/FESetup.exe
+
+- Launch C:\Program Files\FreeExtractor\FEWizard. Here are the options for each step:
+
+Select Zip File (Step 1 of 5)
+- Select emfinst.zip.
+
+Options (Step 2 of 5)
+
+Archive Name
 EMF Client Installer Extractor
 
-http://www.ie.unc.edu/cempd/projects/emf/install
+Website Address
+http://www.ie.unc.edu/cempd/projects/emf/install/
 
+Introduction Message
 This is an executable version of the EMF Client Installer.  The installer should start automatically after the package is expanded, but it may take a few seconds.
 
 To download updates to the EMF client software, run the installer again by double clicking on the EMF Client Installer icon on your desktop.
 
+Advanced Options (Step 3 of 5)
 
-Default:
-
+Default Extraction Path
 C:\Program Files\EMF Client Installer
 
-
-Execute:
-
+Execute when completed
 $targetdir$\runinstaller.bat
 
+Shortcuts (Step 4 of 5)
+- Click Add button
 
-Shortcut:
-
-$startmenu$\EMF Client Installer\Installer.lnk
-
-$startmenu$\EMF Client Installer\Uninstall.lnk
-
+Shortcut Location
 $desktop$\EMF Client Installer.lnk
 
-$targetdir$\emf-client-installer.jar
+Shortcut Target
+$targetdir$\runinstaller.bat
 
-$targetdir$\uninstall.jar
+Custom Icon (Step 5 of 5)
+- Nothing to do.
 
 
+- After FreeExtractor finishes creating emfinst.exe, create a zip file that contains just the exe. Upload emfinst.zip so it's available at http://www.ie.unc.edu/cempd/projects/emf/install/emfinst.zip
