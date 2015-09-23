@@ -100,7 +100,7 @@ public class InstallWindow extends JFrame implements InstallView {
         serverField.setToolTipText("EMF service site URL");
         
         preferencesText = new JTextField(30);
-        preferencesText.setText(Constants.USER_HOME + "\\" + Constants.EMF_PREFERENCES_FILE);
+        preferencesText.setText(Constants.USER_HOME + File.separatorChar + Constants.EMF_PREFERENCES_FILE);
         preferencesText.setEditable(false);
 
         urlLabel = new JLabel("EMF Download URL", SwingConstants.RIGHT);
@@ -486,7 +486,7 @@ public class InstallWindow extends JFrame implements InstallView {
         String installhome = installDirField.getText();
         String server = serverField.getText();
         String rhome = rHomeField.getText();
-        presenter.createBatchFile(installhome + "\\" + Constants.EMF_BATCH_FILE, Constants.EMF_PREFERENCES_FILE,
+        presenter.createBatchFile(installhome + File.separatorChar + Constants.EMF_BATCH_FILE, Constants.EMF_PREFERENCES_FILE,
                 javahome, rhome, server);
     }
 

@@ -49,9 +49,9 @@ public class ClientBatchFile {
     }
 
     private String[] getJarFiles() throws Exception {
-        File libDir = new File(batchFile.getParent() + "\\lib");
+        File libDir = new File(batchFile.getParent() + File.separator + "lib");
         if (!libDir.exists())
-            libDir = new File(System.getProperty("user.dir") + "\\lib");
+            libDir = new File(System.getProperty("user.dir") + File.separator + "lib");
         String[] fileNames = libDir.list();
         return new FilePatternMatcher(libDir, "*.jar").matchingNames(fileNames);
     }
