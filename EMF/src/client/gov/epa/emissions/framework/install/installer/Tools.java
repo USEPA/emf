@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.install.installer;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,40 +61,20 @@ public class Tools {
 
     public static void writePreference(String website, String input, String output, String javahome, String rhome,
             String emfhome, String tmpDir, String server) throws Exception {
-        String separator = Constants.SEPARATOR;
         InstallPreferences up = Tools.getUserPreference();
-        int sigDigits = 0;
-        int deciPlace = 2;
-        String doubleOption = up.doubleOption();
+        up.setPreference("web.site", website);
+        up.setPreference("emf.install.folder", emfhome.replace('\\', '/'));
+        up.setPreference("server.import.folder", input.replace('\\', '/'));
+        up.setPreference("server.export.folder", output.replace('\\', '/'));
+        up.setPreference("server.address", server);
+        up.setPreference("java.home", javahome.replace('\\', '/'));
+        up.setPreference("local.temp.dir", tmpDir.replace('\\', '/'));
+        up.setPreference("r.home", rhome.replace('\\', '/'));
 
-        try {
-            sigDigits = Integer.parseInt(up.significantDigits());
-            deciPlace = Integer.parseInt(up.decimalPlaces());
-        } catch (Exception e) {
-            // NOTE cat parse exception, but do nothing
-        }
-
-        String header = "#EMF Client/Installer - Preferences" + separator + "#comments '#'" + separator
-                + "#preference specified by key,value pair separted by '='" + separator + "#case sensitive" + separator
-                + "#white spaces and line terminators can be escaped by '\'" + separator
-                + "#If the value aren't specified then default value will be empty string" + separator
-                + "#Use '/' for path separator for file names" + separator + separator;
-
-        String emfPrefString = "web.site=" + website + separator + "emf.install.folder=" + emfhome.replace('\\', '/')
-                + separator + "server.import.folder=" + input.replace('\\', '/') + separator + "server.export.folder="
-                + output.replace('\\', '/') + separator + "server.address=" + server + separator + "java.home="
-                + javahome.replace('\\', '/') + separator + "local.temp.dir=" + tmpDir.replace('\\', '/') + separator
-                + "r.home=" + rhome.replace('\\', '/') + separator;
-
-        String analysisEnginePrefString = separator + separator + "#Analysis Engine Preferences" + separator
-                + "format.double.decimal_places=" + deciPlace + separator + "format.double.option=" + doubleOption + separator
-                + "#legal options: Standard_Notation,Scientific_Notation, Dollars, Percentage, Custom" + separator
-                + "format.double.significant_digits=" + sigDigits;
-
-        PrintWriter userPrefWriter = new PrintWriter(new BufferedWriter(new FileWriter(System.getProperty("user.home")
-                + "\\" + Constants.EMF_PREFERENCES_FILE)));
-        userPrefWriter.write(header + emfPrefString + analysisEnginePrefString);
-        userPrefWriter.close();
+        FileOutputStream outStream = new FileOutputStream(System.getProperty("user.home")
+                + File.separatorChar + Constants.EMF_PREFERENCES_FILE);
+        up.props().store(outStream, null);
+        outStream.close();
     }
 
     public static void createShortcut(String installhome) throws IOException, InterruptedException {

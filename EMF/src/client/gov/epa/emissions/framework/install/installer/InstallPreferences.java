@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Properties;
+
+import gov.epa.emissions.framework.client.preference.CommentedProperties;
 
 public class InstallPreferences {
 
@@ -34,10 +35,10 @@ public class InstallPreferences {
 
     public static final String EMF_PREFERENCE = "USER_PREFERENCES";
 
-    private Properties props;
+    private CommentedProperties props;
 
     public InstallPreferences() throws Exception {
-        props = new Properties();
+        props = new CommentedProperties();
         FileInputStream inStream = null;
         
         try {
@@ -53,7 +54,7 @@ public class InstallPreferences {
     }
 
     public InstallPreferences(File prefFile) throws Exception {
-        props = new Properties();
+        props = new CommentedProperties();
         FileInputStream inStream = null;
         
         try {
@@ -70,7 +71,7 @@ public class InstallPreferences {
     }
     
     public InstallPreferences(InputStream inStream) throws Exception {
-        props = new Properties();
+        props = new CommentedProperties();
         try {
             props.load(inStream);
         } catch (FileNotFoundException e) {
@@ -81,10 +82,6 @@ public class InstallPreferences {
             if (inStream != null)
                 inStream.close();
         }
-    }
-
-    public InstallPreferences(Properties props) {
-        this.props = props;
     }
 
     private File getFile() {
@@ -117,7 +114,7 @@ public class InstallPreferences {
     }
 
     public String emfInstallFolder() {
-        return property(EMF_INSTALL_FOLDER).replace('/', '\\');
+        return property(EMF_INSTALL_FOLDER);
     }
 
     public String emfWebSite() {
@@ -150,6 +147,14 @@ public class InstallPreferences {
     
     public String doubleOption() {
         return property(DOUBLE_OPTION);
+    }
+
+    public CommentedProperties props() {
+        return props;
+    }
+
+    public void setPreference(String preferenceKey, String preferenceValue) {
+        props.add(preferenceKey, preferenceValue);
     }
 
 }
