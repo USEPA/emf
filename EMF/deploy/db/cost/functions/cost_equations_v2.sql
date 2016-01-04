@@ -43,7 +43,7 @@ DECLARE
 --	has_cpri_column boolean := false; 
 --	has_primary_device_type_code_column boolean := false; 
 
-	ref_cost_year integer := 2006;
+	ref_cost_year integer := 2013;
 	cost_year_chained_gdp double precision := null;
 	ref_cost_year_chained_gdp double precision := null;
 	chained_gdp_adjustment_factor double precision := null;

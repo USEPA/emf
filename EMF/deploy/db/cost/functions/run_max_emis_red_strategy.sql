@@ -33,7 +33,7 @@ DECLARE
 	dataset_month smallint := 0;
 	no_days_in_month smallint := 31;
 	no_days_in_year smallint := 365;
-	ref_cost_year integer := 2006;
+	ref_cost_year integer := 2013;
 	cost_year_chained_gdp double precision := null;
 	ref_cost_year_chained_gdp double precision := null;
 	chained_gdp_adjustment_factor double precision := null;

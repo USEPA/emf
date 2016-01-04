@@ -64,7 +64,7 @@ public class ConstraintFilter {
         
         List records = new ArrayList();
         for (int i = 0; i < efficiencyRecords.length; i++) {
-            //convert cost to year system wide reference cost year (i.e.,2006)
+            //convert cost to year system wide reference cost year (i.e.,2013)
             if (efficiencyRecords[i].getCostPerTon() == null 
                     || efficiencyRecords[i].getCostPerTon() * costYearTable.factor(CostYearTable.REFERENCE_COST_YEAR, efficiencyRecords[i].getCostYear()) < minCostPerTon)
                 records.add(efficiencyRecords[i]);

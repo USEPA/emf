@@ -11,7 +11,7 @@ public class CostYearTable implements Serializable {
 
     private int targetYear;
 
-    public static int REFERENCE_COST_YEAR = 2006;
+    public static int REFERENCE_COST_YEAR = 2013;
 
     private DoubleList gdpValues;
 

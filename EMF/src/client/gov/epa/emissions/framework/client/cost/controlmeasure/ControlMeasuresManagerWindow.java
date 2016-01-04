@@ -467,7 +467,7 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
 
     private void createYearsComboBox() {
         costYear = new EditableComboBox(years);
-        costYear.setSelectedIndex(7);
+        costYear.setSelectedIndex(14);
         costYear.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getEfficiencyAndCost();

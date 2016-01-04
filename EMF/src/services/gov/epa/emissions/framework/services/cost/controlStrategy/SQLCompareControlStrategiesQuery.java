@@ -149,8 +149,8 @@ public class SQLCompareControlStrategiesQuery {
         sql.append("from ( ");
         sql.append(buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Minimum Emissions Reduction (tons)", "max_emis_reduction"));
         sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Minimum Control Efficiency (%)", "max_control_efficiency"));
-        sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Maximum 2006 Cost per Ton ($/ton)", "min_cost_per_ton"));
-        sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Maximum 2006 Annualized Cost ($/yr)", "min_ann_cost"));
+        sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Maximum 2013 Cost per Ton ($/ton)", "min_cost_per_ton"));
+        sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Maximum 2013 Annualized Cost ($/yr)", "min_ann_cost"));
         sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Minimum Percent Reduction Difference for Replacement Control (%)", "replacement_control_min_eff_diff"));
         sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Minimum Percent Reduction Difference for Predicting Controls (%) - Project Future Year Specific", "control_program_measure_min_pct_red_diff"));
         sql.append(" union all " + buildGetControlStrategyConstraintColumnValueSQL(controlStrategyId, "Domain Wide Emission Reduction (tons) - Least Cost Specific", "domain_wide_emis_reduction"));

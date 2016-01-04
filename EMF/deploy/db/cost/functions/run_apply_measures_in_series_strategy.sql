@@ -23,7 +23,7 @@ DECLARE
 	county_dataset_filter_sql text := '';
 	cost_year integer := null;
 	inventory_year integer := null;
-	ref_cost_year integer := 2006;
+	ref_cost_year integer := 2013;
 	cost_year_chained_gdp double precision := null;
 	ref_cost_year_chained_gdp double precision := null;
 	chained_gdp_adjustment_factor double precision := null;
@@ -487,7 +487,7 @@ DECLARE
 	max_ann_cost_constraint real := null;
 	has_constraints boolean := null;
 	cost_year integer := null;
-	ref_cost_year integer := 2006;
+	ref_cost_year integer := 2013;
 	cost_year_chained_gdp double precision := null;
 	ref_cost_year_chained_gdp double precision := null;
 	is_point_table boolean := false;

@@ -38,7 +38,7 @@ public class ControlMeasureTableData extends AbstractTableData {
         this.costYearTable = costYearTable;
         this.pollutant = pollutant;
 //        filter(pollutant, year);
-        this.targetYear = (year != null) ? new Integer(year) : 2000;
+        this.targetYear = (year != null) ? new Integer(year) : 2013;
         this.rows = createRows(measures);
     }
 
