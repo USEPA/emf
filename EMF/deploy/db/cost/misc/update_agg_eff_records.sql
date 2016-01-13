@@ -1,4 +1,4 @@
-DELETE FROM aggregrated_efficiencyrecords;
+DELETE FROM emf.aggregrated_efficiencyrecords;
 
 INSERT INTO emf.aggregrated_efficiencyrecords 
      SELECT er.control_measures_id, 
