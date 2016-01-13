@@ -123,8 +123,8 @@ public class AggregateEfficiencyRecordDAO {
         String query = removeQuery(controlMeasureId) + " " +
             "insert into emf.aggregrated_efficiencyrecords " +
             "select er.control_measures_id, er.pollutant_id, max(er.efficiency) as maxefficiency, min(er.efficiency) as minefficiency, " + 
-            "avg(er.efficiency) as avgefficiency, max(er.cost_per_ton) as maxcpt, " +
-            "min(er.cost_per_ton) as mincpt, avg(er.cost_per_ton) as avgcpt, " +
+            "avg(er.efficiency) as avgefficiency, max(er.ref_yr_cost_per_ton) as maxcpt, " +
+            "min(er.ref_yr_cost_per_ton) as mincpt, avg(er.ref_yr_cost_per_ton) as avgcpt, " +
             "avg(er.rule_effectiveness) as avgruleff, avg(er.rule_penetration) as avgrulpen " + 
             "from emf.control_measure_efficiencyrecords er " +
             "left outer join emf.aggregrated_efficiencyrecords aer " +
