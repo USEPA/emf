@@ -36,9 +36,9 @@ DECLARE
 	dataset_month smallint := 0;
 	no_days_in_month smallint := 31;
 	ref_cost_year integer := 2013;
-	cost_year_chained_gdp double precision := null;
-	ref_cost_year_chained_gdp double precision := null;
-	chained_gdp_adjustment_factor double precision := null;
+	cost_year_deflator_gdp double precision := null;
+	ref_cost_year_deflator_gdp double precision := null;
+	deflator_gdp_adjustment_factor double precision := null;
 	discount_rate double precision;
 	has_design_capacity_columns boolean := false; 
 	has_sic_column boolean := false; 
@@ -216,17 +216,17 @@ BEGIN
 		no_days_in_month := 31;
 	END IF;
 
-	-- get gdp chained values
-	SELECT chained_gdp
+	-- get gdp price deflator values
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = cost_year
-	INTO cost_year_chained_gdp;
-	SELECT chained_gdp
+	INTO cost_year_deflator_gdp;
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = ref_cost_year
-	INTO ref_cost_year_chained_gdp;
+	INTO ref_cost_year_deflator_gdp;
 
-	chained_gdp_adjustment_factor := cost_year_chained_gdp / ref_cost_year_chained_gdp;
+	deflator_gdp_adjustment_factor := cost_year_deflator_gdp / ref_cost_year_deflator_gdp;
 
 	-- if strategy have measures, then store these in a temp table for later use...
 	IF measure_with_region_count > 0 THEN
@@ -300,7 +300,7 @@ BEGIN
 			abbreviation, ' || discount_rate|| ', 
 			m.equipment_life, er.cap_ann_ratio, 
 			er.cap_rec_factor, er.ref_yr_cost_per_ton, 
-			' || annual_emis_sql || ' * ' || percent_reduction_sql || ' / 100, ' || ref_cost_year_chained_gdp || ' / cast(chained_gdp as double precision), 
+			' || annual_emis_sql || ' * ' || percent_reduction_sql || ' / 100, ' || ref_cost_year_deflator_gdp || ' / cast(deflator_gdp as double precision), 
 			' || case when use_cost_equations then 
 			'et.name, 
 			eq.value1, eq.value2, 
@@ -320,7 +320,7 @@ BEGIN
 			null, null, 
 			null, null'
 			end
-			|| ',inv.ceff, ' || ref_cost_year_chained_gdp || '::double precision / gdplev_incr.chained_gdp::double precision * er.incremental_cost_per_ton))';
+			|| ',inv.ceff, ' || ref_cost_year_deflator_gdp || '::double precision / gdplev_incr.deflator_gdp::double precision * er.incremental_cost_per_ton))';
 	get_strategt_cost_inner_sql := replace(get_strategt_cost_sql,'m.control_measures_id','m.id');
 
 	-- build insert column list and select column list
@@ -497,9 +497,9 @@ BEGIN
 				and (
 						' || percent_reduction_sql || ' >= ' || coalesce(min_control_efficiency_constraint, -100.0) || '
 						' || coalesce(' and ' || percent_reduction_sql || ' / 100 * ' || annualized_emis_sql || ' >= ' || min_emis_reduction_constraint, '')  || '
-						' || coalesce(' and coalesce(' || chained_gdp_adjustment_factor || '
+						' || coalesce(' and coalesce(' || deflator_gdp_adjustment_factor || '
 							* ' || get_strategt_cost_inner_sql || '.computed_cost_per_ton, -1E+308) <= ' || max_cost_per_ton_constraint, '')  || '
-						' || coalesce(' and coalesce(' || percent_reduction_sql || ' / 100 * ' || annualized_emis_sql || ' * ' || chained_gdp_adjustment_factor || '
+						' || coalesce(' and coalesce(' || percent_reduction_sql || ' / 100 * ' || annualized_emis_sql || ' * ' || deflator_gdp_adjustment_factor || '
 							* ' || get_strategt_cost_inner_sql || '.computed_cost_per_ton, -1E+308) <= ' || max_ann_cost_constraint, '')  || '
 				)' else '' end || '
 

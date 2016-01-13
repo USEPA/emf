@@ -24,14 +24,15 @@ public class CostYearTableReader {
         ResultSet rs = null;
         try {
             DataQuery query = datasource.query();
-            String queryString = "SELECT * FROM " + qualifiedTableName() + " order by annual";
+            String queryString = "SELECT annual, deflator_gdp FROM " + qualifiedTableName() + 
+                    " ORDER BY annual";
             rs = query.executeQuery(queryString);
             if (rs.next())
-                table.addFirst(rs.getInt(1), rs.getDouble(3));
+                table.addFirst(rs.getInt(1), rs.getDouble(2));
             while (rs.next()) {
-                double gdp = rs.getDouble(3);
+                double deflator = rs.getDouble(2);
                 int year = rs.getInt(1);
-                table.add(year, gdp);
+                table.add(year, deflator);
             }
         } catch (Exception e) {
             throw new EmfException("Could not get records from " + qualifiedTableName());

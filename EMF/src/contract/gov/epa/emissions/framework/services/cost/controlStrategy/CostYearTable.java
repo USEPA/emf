@@ -13,14 +13,14 @@ public class CostYearTable implements Serializable {
 
     public static int REFERENCE_COST_YEAR = 2013;
 
-    private DoubleList gdpValues;
+    private DoubleList deflatorValues;
 
     private int startYear;
     
     private int endYear;
 
     public CostYearTable() {
-        gdpValues = new ArrayDoubleList();
+        deflatorValues = new ArrayDoubleList();
     }
 
     public CostYearTable(int targetYear) {
@@ -29,41 +29,41 @@ public class CostYearTable implements Serializable {
     }
 
     public int size() {
-        return gdpValues.size();
+        return deflatorValues.size();
     }
 
-    public void addFirst(int startYear, double gdp) {
+    public void addFirst(int startYear, double deflator) {
         this.startYear = startYear;
         this.endYear = startYear;
-        gdpValues.add(gdp);
+        deflatorValues.add(deflator);
     }
 
-    public void add(int year, double gdp) {
+    public void add(int year, double deflator) {
         this.endYear = year;
-        gdpValues.add(gdp);
+        deflatorValues.add(deflator);
     }
 
     public double factor(int year) throws EmfException {
-        double yearGdp = gdpValue(year);
-        double targetYearGdp = gdpValue(targetYear);
-        return targetYearGdp / yearGdp;
+        double yearDeflator = deflatorValue(year);
+        double targetYearDeflator = deflatorValue(targetYear);
+        return targetYearDeflator / yearDeflator;
 
     }
 
     public double factor(int targetYear, int referenceCostYear) throws EmfException {
-        double yearGdp = gdpValue(referenceCostYear);
-        double targetYearGdp = gdpValue(targetYear);
-        return targetYearGdp / yearGdp;
+        double yearDeflator = deflatorValue(referenceCostYear);
+        double targetYearDeflator = deflatorValue(targetYear);
+        return targetYearDeflator / yearDeflator;
 
     }
 
-    private double gdpValue(int year) throws EmfException {
+    private double deflatorValue(int year) throws EmfException {
         int index = year - this.startYear;
         if (index > size() - 1 || index < 0) {
 //            throw new EmfException("The cost year conversion is available between 1929 to 2005");
             throw new EmfException("The cost year conversion is available between " + this.startYear + " to " + this.endYear);
         }
-        return gdpValues.get(index);
+        return deflatorValues.get(index);
     }
 
     public void setTargetYear(int targetYear) {
@@ -74,19 +74,19 @@ public class CostYearTable implements Serializable {
         return this.targetYear;
     }
 
-    public DoubleValue[] getGdpValues() {
-        DoubleValue[] doubles = new DoubleValue[gdpValues.size()];
+    public DoubleValue[] getDeflatorValues() {
+        DoubleValue[] doubles = new DoubleValue[deflatorValues.size()];
         for (int i = 0; i < doubles.length; i++) {
             doubles[i] = new DoubleValue();
-            doubles[i].setValue(gdpValues.get(i));
+            doubles[i].setValue(deflatorValues.get(i));
         }
         return doubles;
     }
 
-    public void setGdpValues(DoubleValue[] values) {
-        this.gdpValues = new ArrayDoubleList();
+    public void setDeflatorValues(DoubleValue[] values) {
+        this.deflatorValues = new ArrayDoubleList();
         for (int i = 0; i < values.length; i++) {
-            gdpValues.add(values[i].getValue());
+            deflatorValues.add(values[i].getValue());
         }
     }
 

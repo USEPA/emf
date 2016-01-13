@@ -44,9 +44,9 @@ DECLARE
 --	has_primary_device_type_code_column boolean := false; 
 
 	ref_cost_year integer := 2013;
-	cost_year_chained_gdp double precision := null;
-	ref_cost_year_chained_gdp double precision := null;
-	chained_gdp_adjustment_factor double precision := null;
+	cost_year_deflator_gdp double precision := null;
+	ref_cost_year_deflator_gdp double precision := null;
+	deflator_gdp_adjustment_factor double precision := null;
 	cost_year integer := null;
 	inventory_year integer := null;
 
@@ -59,7 +59,7 @@ DECLARE
 	capital_recovery_factor_expression text;
 	inv_ceff_expression varchar(69) := inv_table_alias || '.ceff';
 
-	chained_gdp_adjustment_factor_expression text;
+	deflator_gdp_adjustment_factor_expression text;
 
 	
 	--support for flat file ds types...
@@ -212,19 +212,19 @@ BEGIN
 	select public.get_days_in_year(inventory_year::smallint)
 	into no_days_in_year;
 	
-	-- get gdp chained values
-	SELECT chained_gdp
+	-- get gdp price deflator values
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = cost_year
-	INTO cost_year_chained_gdp;
-	SELECT chained_gdp
+	INTO cost_year_deflator_gdp;
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = ref_cost_year
-	INTO ref_cost_year_chained_gdp;
+	INTO ref_cost_year_deflator_gdp;
 
-	chained_gdp_adjustment_factor := cost_year_chained_gdp / ref_cost_year_chained_gdp;
+	deflator_gdp_adjustment_factor := cost_year_deflator_gdp / ref_cost_year_deflator_gdp;
 
-	chained_gdp_adjustment_factor_expression := '(' || chained_gdp_adjustment_factor || ' * ' || ref_cost_year_chained_gdp || ' / cast(' || gdplev_table_alias || '.chained_gdp as double precision))';
+	deflator_gdp_adjustment_factor_expression := '(' || deflator_gdp_adjustment_factor || ' * ' || ref_cost_year_deflator_gdp || ' / cast(' || gdplev_table_alias || '.deflator_gdp as double precision))';
 	
 
 	IF NOT is_flat_file_inventory THEN
@@ -733,7 +733,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
-					*/|| chained_gdp_adjustment_factor_expression || ' * ' || '
+					*/|| deflator_gdp_adjustment_factor_expression || ' * ' || '
 					(
 					/*annualized_capital_cost*/ 
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
@@ -764,7 +764,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/)
 					)
@@ -811,7 +811,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					case 
@@ -852,7 +852,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(990000 + 9.836 * ' || stkflow_expression || ')/*capital_cost*/ 
 					* ' || capital_recovery_factor_expression || '/*annualized_capital_cost*/ 
@@ -887,7 +887,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(2882540 + 244.74 * ' || stkflow_expression || ')/*capital_cost*/ 
 					* ' || capital_recovery_factor_expression || '/*annualized_capital_cost*/ 
@@ -922,7 +922,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(3449803 + 135.86 * ' || stkflow_expression || ')/*capital_cost*/ 
 					* ' || capital_recovery_factor_expression || '/*annualized_capital_cost*/ 
@@ -951,7 +951,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					case 
 						when ' || stkflow_expression || ' < 1028000 then 
@@ -993,7 +993,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 								else default_annualized_cpt_factor * emis_reduction
 							end;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					case 
 						when ' || stkflow_expression || ' >= 5.0 then 
@@ -1032,7 +1032,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost :=  annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					((((' || control_measure_equation_table_alias || '.value1/*total_equipment_cost_factor*/ * ' || stkflow_expression || ') + ' || control_measure_equation_table_alias || '.value2/*total_equipment_cost_constant*/) * ' || control_measure_equation_table_alias || '.value3/*equipment_to_capital_cost_multiplier*/)/*capital_cost*/ * (' || capital_recovery_factor_expression || '))/*annualized_capital_cost*/ 
 					+ (((' || control_measure_equation_table_alias || '.value4/*electricity_factor*/ * ' || stkflow_expression || ') + ' || control_measure_equation_table_alias || '.value5/*electricity_constant*/) + ((' || control_measure_equation_table_alias || '.value6/*dust_disposal_factor*/ * ' || stkflow_expression || ') + ' || control_measure_equation_table_alias || '.value7/*dust_disposal_constant*/) + ((' || control_measure_equation_table_alias || '.value8/*bag_replacement_factor*/ * ' || stkflow_expression || ') + ' || control_measure_equation_table_alias || '.value9/*bag_replacement_constant*/))/*operation_maintenance_cost*/
@@ -1064,7 +1064,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					((' || convert_design_capacity_expression_default_MW_units || ' * ' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * 1000 * (250.0 / ' || convert_design_capacity_expression_default_MW_units || ') ^ ' || control_measure_equation_table_alias || '.value2/*capital_cost_exponent*/)/*capital_cost*/ * (' || capital_recovery_factor_expression || '))/*annualized_capital_cost*/ 
 					+ ((' || control_measure_equation_table_alias || '.value3/*variable_operation_maintenance_cost_multiplier*/ * ' || convert_design_capacity_expression_default_MW_units || ' * 0.85 * ' || inv_table_alias || '.annual_avg_hours_per_year)/*variable_operation_maintenance_cost*/ + (' || convert_design_capacity_expression_default_MW_units || ' * 1000 * ' || control_measure_equation_table_alias || '.value4/*fixed_operation_maintenance_cost_multiplier*/ * (250 / ' || convert_design_capacity_expression_default_MW_units || ') ^ ' || control_measure_equation_table_alias || '.value5/*fixed_operation_maintenance_cost_exponent*/)/*fixed_operation_maintenance_cost*/)/*operation_maintenance_cost*/
@@ -1090,7 +1090,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					' || emis_reduction_sql || ' 
 					* (case 
@@ -1124,7 +1124,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := operation_maintenance_cost + annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 						(coalesce(' || control_measure_equation_table_alias || '.value3/*annual_operating_cost_fixed_factor*/, 0.0)) * ((' || stkflow_expression || '/*stack_flow_rate*/ * 520 / (' || inv_table_alias || '.stktemp/*stack_temperature*/ + 460.0)) / 150000)
@@ -1159,7 +1159,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var9 = O&M cost size exponent No. 2
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
 					+ (' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
@@ -1170,36 +1170,36 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				-- Equation Type 14 Fabric Filter Equations
 				when ' || t14_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t14_tac || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t14_tac || ')
 				' end || '
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 15
 				when ' || t15_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t15_tac || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t15_tac || ')
 				' end || '
 
 				' || case when not is_point_table then '' else '
 				-- Equation Type 16
 				when ' || t16_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t16_tac || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t16_tac || ')
 
 				-- Equation Type 17
 				when ' || t17_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t17_tac || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t17_tac || ')
 
 				-- Equation Type 18
 				when ' || t18_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t18_tac || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t18_tac || ')
 
 				-- Equation Type 19
 				when ' || t19_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t19_tac || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t19_tac || ')
 				' end || '
 
 				-- Filler when clause, just in case no when part shows up from conditional logic
@@ -1207,7 +1207,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				else 
 		' else '
 	' end || '
-				' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || chained_gdp_adjustment_factor || ' * ' || ref_cost_year_chained_gdp || ' / cast(' || gdplev_incr_table_alias || '.chained_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || chained_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end)
+				' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || deflator_gdp_adjustment_factor || ' * ' || ref_cost_year_deflator_gdp || ' / cast(' || gdplev_incr_table_alias || '.deflator_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || deflator_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end)
 
 	' || case 
 		when use_cost_equations then '
@@ -1240,7 +1240,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
 					* (case 
@@ -1265,7 +1265,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)
 					)
@@ -1311,7 +1311,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					case 
@@ -1346,7 +1346,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(990000 + 9.836 * ' || stkflow_expression || ')/*capital_cost*/ 
 					)
@@ -1377,7 +1377,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(2882540 + 244.74 * ' || stkflow_expression || ')/*capital_cost*/ 
 					)
@@ -1408,7 +1408,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(3449803 + 135.86 * ' || stkflow_expression || ')/*capital_cost*/ 
 					)
@@ -1433,7 +1433,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					case 
 						when ' || stkflow_expression || ' < 1028000 then 
@@ -1473,7 +1473,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 								else default_annualized_cpt_factor * emis_reduction
 							end;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					case 
 						when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value1/*capital_control_cost_factor*/ * ' || stkflow_expression || '
@@ -1496,7 +1496,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost :=  annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 						(
@@ -1535,7 +1535,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || convert_design_capacity_expression_default_MW_units || ' * ' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * 1000 * (250.0 / ' || convert_design_capacity_expression_default_MW_units || ') ^ ' || control_measure_equation_table_alias || '.value2/*capital_cost_exponent*/)/*capital_cost*/
 					)
@@ -1559,7 +1559,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					' || emis_reduction_sql || ' 
 					* (case 
@@ -1591,7 +1591,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := operation_maintenance_cost + annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					coalesce(' || control_measure_equation_table_alias || '.value1/*total_capital_investment_fixed_factor*/, 0.0) 
@@ -1627,7 +1627,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var9 = O&M cost size exponent No. 2
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ 
 					
 				' end || '
@@ -1636,36 +1636,36 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				-- Equation Type 14 Fabric Filter Equations
 				when ' || t14_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t14_tci || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t14_tci || ')
 				' end || '
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 15
 				when ' || t15_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t15_tci || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t15_tci || ')
 				' end || '
 
 				' || case when not is_point_table then '' else '
 				-- Equation Type 16
 				when ' || t16_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t16_tci || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t16_tci || ')
 
 				-- Equation Type 17
 				when ' || t17_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t17_tci || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t17_tci || ')
 
 				-- Equation Type 18
 				when ' || t18_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t18_tci || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t18_tci || ')
 
 				-- Equation Type 19
 				when ' || t19_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t19_tci || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t19_tci || ')
 				' end || '
 
 				-- Filler when clause, just in case no when part shows up from conditional logic
@@ -1683,7 +1683,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - coalesce(annualized_capital_cost, 0);
 					*/
-					' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || chained_gdp_adjustment_factor || ' * ' || ref_cost_year_chained_gdp || ' / cast(' || gdplev_incr_table_alias || '.chained_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || chained_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end) * ' || control_measure_efficiencyrecord_table_alias || '.cap_ann_ratio::double precision
+					' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || deflator_gdp_adjustment_factor || ' * ' || ref_cost_year_deflator_gdp || ' / cast(' || gdplev_incr_table_alias || '.deflator_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || deflator_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end) * ' || control_measure_efficiencyrecord_table_alias || '.cap_ann_ratio::double precision
 	' || case 
 		when use_cost_equations then '
 			end 
@@ -1715,7 +1715,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					/*operation_maintenance_cost*/
 					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/, 0) 
@@ -1736,7 +1736,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/)
 					- (
@@ -1785,7 +1785,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 						(0.486 * 6.9 * ' || stkflow_expression || ')/*fixed_operation_maintenance_cost*/
@@ -1819,7 +1819,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					75800/*fixed_operation_maintenance_cost*/ + (12.82 * ' || stkflow_expression || ')/*variable_operation_maintenance_cost*/
@@ -1852,7 +1852,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					749170/*fixed_operation_maintenance_cost*/ + (148.40 * ' || stkflow_expression || ')/*variable_operation_maintenance_cost*/
@@ -1885,7 +1885,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					797667/*fixed_operation_maintenance_cost*/ + (58.84 * ' || stkflow_expression || ')/*variable_operation_maintenance_cost*/
@@ -1912,7 +1912,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(749170 + (148.40 * ' || stkflow_expression || ') + (3.35 + (0.000729 * 8736 ) * (' || stkflow_expression || ') ^ 0.9383))/*operation_maintenance_cost*/
 					)
@@ -1947,7 +1947,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 								else default_annualized_cpt_factor * emis_reduction
 							end;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					case 
 						when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value2/*om_control_cost_factor*/ * ' || stkflow_expression || '
@@ -1970,7 +1970,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost :=  annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(((' || control_measure_equation_table_alias || '.value4/*electricity_factor*/ * ' || stkflow_expression || ') + ' || control_measure_equation_table_alias || '.value5/*electricity_constant*/) + ((' || control_measure_equation_table_alias || '.value6/*dust_disposal_factor*/ * ' || stkflow_expression || ') + ' || control_measure_equation_table_alias || '.value7/*dust_disposal_constant*/) + ((' || control_measure_equation_table_alias || '.value8/*bag_replacement_factor*/ * ' || stkflow_expression || ') + ' || control_measure_equation_table_alias || '.value9/*bag_replacement_constant*/))/*operation_maintenance_cost*/
 					)
@@ -2000,7 +2000,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					((' || control_measure_equation_table_alias || '.value3/*variable_operation_maintenance_cost_multiplier*/ * ' || convert_design_capacity_expression_default_MW_units || ' * 0.85 * ' || inv_table_alias || '.annual_avg_hours_per_year)/*variable_operation_maintenance_cost*/ + (' || convert_design_capacity_expression_default_MW_units || ' * 1000 * ' || control_measure_equation_table_alias || '.value4/*fixed_operation_maintenance_cost_multiplier*/ * (250 / ' || convert_design_capacity_expression_default_MW_units || ') ^ ' || control_measure_equation_table_alias || '.value5/*fixed_operation_maintenance_cost_exponent*/)/*fixed_operation_maintenance_cost*/)/*operation_maintenance_cost*/
 					)
@@ -2024,7 +2024,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					' || emis_reduction_sql || ' 
 					* (case 
@@ -2063,7 +2063,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := operation_maintenance_cost + annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(coalesce(' || control_measure_equation_table_alias || '.value3/*annual_operating_cost_fixed_factor*/, 0.0)) * ((' || stkflow_expression || '/*stack_flow_rate*/ * 520 / (' || inv_table_alias || '.stktemp/*stack_temperature*/ + 460.0)) / 150000)
 					+ (coalesce(' || control_measure_equation_table_alias || '.value4/*annual_operating_cost_variable_factor*/, 0.0)) * ((' || stkflow_expression || '/*stack_flow_rate*/ * 520 / (' || inv_table_alias || '.stktemp/*stack_temperature*/ + 460.0)) / 150000)
@@ -2096,7 +2096,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var9 = O&M cost size exponent No. 2
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
 					
 				' end || '
@@ -2117,8 +2117,8 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - coalesce(annualized_capital_cost, 0);
 					*/
-					' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || chained_gdp_adjustment_factor || ' * ' || ref_cost_year_chained_gdp || ' / cast(' || gdplev_incr_table_alias || '.chained_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || chained_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end)
-					 - coalesce(' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || chained_gdp_adjustment_factor || ' * ' || ref_cost_year_chained_gdp || ' / cast(' || gdplev_incr_table_alias || '.chained_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || chained_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end) * ' || control_measure_efficiencyrecord_table_alias || '.cap_ann_ratio::double precision * ' || capital_recovery_factor_expression || ', 0)
+					' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || deflator_gdp_adjustment_factor || ' * ' || ref_cost_year_deflator_gdp || ' / cast(' || gdplev_incr_table_alias || '.deflator_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || deflator_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end)
+					 - coalesce(' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || deflator_gdp_adjustment_factor || ' * ' || ref_cost_year_deflator_gdp || ' / cast(' || gdplev_incr_table_alias || '.deflator_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || deflator_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end) * ' || control_measure_efficiencyrecord_table_alias || '.cap_ann_ratio::double precision * ' || capital_recovery_factor_expression || ', 0)
 	' || case 
 		when use_cost_equations then '
 			end 
@@ -2150,7 +2150,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/
 					)
@@ -2169,7 +2169,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 				' end || '
 				' || case when not is_point_table then '' else '
@@ -2212,7 +2212,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(0.486 * 6.9 * ' || stkflow_expression || ')/*fixed_operation_maintenance_cost*/
 					)
@@ -2243,7 +2243,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					75800/*fixed_operation_maintenance_cost*/
 
 				--Equation Type 5
@@ -2272,7 +2272,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					749170.0/*fixed_operation_maintenance_cost*/
 
 				--Equation Type 6
@@ -2301,7 +2301,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					797667.0/*fixed_operation_maintenance_cost*/
 
 				--Equation Type 7
@@ -2324,7 +2324,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 
 				--Equation Type 8
@@ -2357,7 +2357,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 								else default_annualized_cpt_factor * emis_reduction
 							end;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 
 				-- Equation Type 9
@@ -2375,7 +2375,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost :=  annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 
 				' end || '
@@ -2403,7 +2403,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || convert_design_capacity_expression_default_MW_units || ' * 1000 * ' || control_measure_equation_table_alias || '.value4/*fixed_operation_maintenance_cost_multiplier*/ * (250 / ' || convert_design_capacity_expression_default_MW_units || ') ^ ' || control_measure_equation_table_alias || '.value5/*fixed_operation_maintenance_cost_exponent*/)/*fixed_operation_maintenance_cost*/
 					)
@@ -2427,7 +2427,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 				' end || '
 				' || case when not is_point_table then '' else '
@@ -2452,7 +2452,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := operation_maintenance_cost + annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(coalesce(' || control_measure_equation_table_alias || '.value3/*annual_operating_cost_fixed_factor*/, 0.0)) * ((' || stkflow_expression || '/*stack_flow_rate*/ * 520 / (' || inv_table_alias || '.stktemp/*stack_temperature*/ + 460.0)) / 150000)
 					)
@@ -2460,7 +2460,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
-					|| chained_gdp_adjustment_factor_expression || ' * 
+					|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 				' end || '
 				-- Filler when clause, just in case no when part shows up from conditional logic
@@ -2500,7 +2500,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					' || control_measure_equation_table_alias || '.value3/*variable_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ' || control_measure_equation_table_alias || '.value6/*capacity_factor*/ * 8760/*variable_operation_maintenance_cost*/
 					)
@@ -2519,7 +2519,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 					
 				' end || '
@@ -2562,7 +2562,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					0.486 * 0.0015 * 8736 * ' || stkflow_expression || '/*variable_operation_maintenance_cost*/
 					)
@@ -2593,7 +2593,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(12.82 * ' || stkflow_expression || ')/*variable_operation_maintenance_cost*/
 					)
@@ -2624,7 +2624,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(148.40 * ' || stkflow_expression || ')/*variable_operation_maintenance_cost*/
 					)
@@ -2655,7 +2655,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(58.84 * ' || stkflow_expression || ')/*variable_operation_maintenance_cost*/
 					)
@@ -2680,7 +2680,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 
 				--Equation Type 8
@@ -2713,7 +2713,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 								else default_annualized_cpt_factor * emis_reduction
 							end;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 
 				-- Equation Type 9
@@ -2731,7 +2731,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost :=  annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 
 				' end || '
@@ -2759,7 +2759,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					((' || control_measure_equation_table_alias || '.value3/*variable_operation_maintenance_cost_multiplier*/ * ' || convert_design_capacity_expression_default_MW_units || ' * 0.85 * ' || inv_table_alias || '.annual_avg_hours_per_year))/*variable_operation_maintenance_cost*/
 					)
@@ -2783,7 +2783,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 				' end || '
 				' || case when not is_point_table then '' else '
@@ -2808,7 +2808,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := operation_maintenance_cost + annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(coalesce(' || control_measure_equation_table_alias || '.value4/*annual_operating_cost_variable_factor*/, 0.0)) * ((' || stkflow_expression || '/*stack_flow_rate*/ * 520 / (' || inv_table_alias || '.stktemp/*stack_temperature*/ + 460.0)) / 150000)
 					)
@@ -2816,7 +2816,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
-					|| chained_gdp_adjustment_factor_expression || ' * 
+					|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 				' end || '
 				-- Filler when clause, just in case no when part shows up from conditional logic
@@ -2856,7 +2856,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
 					* (case 
@@ -2882,7 +2882,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)
 					* (' || capital_recovery_factor_expression || ')
@@ -2928,7 +2928,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					case 
@@ -2964,7 +2964,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(990000 + 9.836 * ' || stkflow_expression || ')/*capital_cost*/ 
 					* (' || capital_recovery_factor_expression || ')
@@ -2996,7 +2996,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(2882540 + 244.74 * ' || stkflow_expression || ')/*capital_cost*/ 
 					* (' || capital_recovery_factor_expression || ')
@@ -3028,7 +3028,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(3449803 + 135.86 * ' || stkflow_expression || ')/*capital_cost*/ 
 					* (' || capital_recovery_factor_expression || ')
@@ -3054,7 +3054,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					case 
 						when ' || stkflow_expression || ' < 1028000 then 
@@ -3095,7 +3095,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 								else default_annualized_cpt_factor * emis_reduction
 							end;
 
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					case 
 						when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value1/*capital_control_cost_factor*/ * ' || stkflow_expression || '
@@ -3119,7 +3119,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost :=  annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 						(
@@ -3159,7 +3159,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := annualized_capital_cost + operation_maintenance_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || convert_design_capacity_expression_default_MW_units || ' * ' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * 1000 * (250.0 / ' || convert_design_capacity_expression_default_MW_units || ') ^ ' || control_measure_equation_table_alias || '.value2/*capital_cost_exponent*/)/*capital_cost*/
 					* (' || capital_recovery_factor_expression || ')
@@ -3184,7 +3184,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					' || emis_reduction_sql || ' 
 					* (case 
@@ -3217,7 +3217,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 						-- calculate annual cost
 						annual_cost := operation_maintenance_cost + annualized_capital_cost;
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(
 					coalesce(' || control_measure_equation_table_alias || '.value1/*total_capital_investment_fixed_factor*/, 0.0) 
@@ -3254,7 +3254,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var9 = O&M cost size exponent No. 2
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
-					*/|| chained_gdp_adjustment_factor_expression || ' * 
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
 					
 				' end || '
@@ -3263,36 +3263,36 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				-- Equation Type 14 Fabric Filter Equations
 				when ' || t14_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t14_tci || ') * (' || capital_recovery_factor_expression || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t14_tci || ') * (' || capital_recovery_factor_expression || ')
 				' end || '
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 15
 				when ' || t15_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t15_tci || ') * (' || capital_recovery_factor_expression || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t15_tci || ') * (' || capital_recovery_factor_expression || ')
 				' end || '
 
 				' || case when not is_point_table then '' else '
 				-- Equation Type 16
 				when ' || t16_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t16_tci || ') * (' || capital_recovery_factor_expression || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t16_tci || ') * (' || capital_recovery_factor_expression || ')
 
 				-- Equation Type 17
 				when ' || t17_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t17_tci || ') * (' || capital_recovery_factor_expression || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t17_tci || ') * (' || capital_recovery_factor_expression || ')
 
 				-- Equation Type 18
 				when ' || t18_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t18_tci || ') * (' || capital_recovery_factor_expression || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t18_tci || ') * (' || capital_recovery_factor_expression || ')
 
 				-- Equation Type 19
 				when ' || t19_use_equation || ' then '
 					/*
-					*/|| chained_gdp_adjustment_factor_expression || ' * (' || t19_tci || ') * (' || capital_recovery_factor_expression || ')
+					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t19_tci || ') * (' || capital_recovery_factor_expression || ')
 				' end || '
 
 				-- Filler when clause, just in case no when part shows up from conditional logic
@@ -3310,7 +3310,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - coalesce(annualized_capital_cost, 0);
 					*/
-					' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || chained_gdp_adjustment_factor || ' * ' || ref_cost_year_chained_gdp || ' / cast(' || gdplev_incr_table_alias || '.chained_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || chained_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end) * ' || control_measure_efficiencyrecord_table_alias || '.cap_ann_ratio::double precision
+					' || emis_reduction_sql || ' * (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) <> 0.0 and coalesce(' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton, 0.0) <> 0.0 then (' || deflator_gdp_adjustment_factor || ' * ' || ref_cost_year_deflator_gdp || ' / cast(' || gdplev_incr_table_alias || '.deflator_gdp as double precision)) * ' || control_measure_efficiencyrecord_table_alias || '.incremental_cost_per_ton else ' || deflator_gdp_adjustment_factor || ' * ' || control_measure_efficiencyrecord_table_alias || '.ref_yr_cost_per_ton end) * ' || control_measure_efficiencyrecord_table_alias || '.cap_ann_ratio::double precision
 					* (' || capital_recovery_factor_expression || ')
 	' || case 
 		when use_cost_equations then '

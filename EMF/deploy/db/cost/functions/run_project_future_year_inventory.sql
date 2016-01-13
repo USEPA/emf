@@ -60,9 +60,9 @@ DECLARE
 	dataset_month smallint := 0;
 	no_days_in_month smallint := 31;
 	ref_cost_year integer := 2013;
-	cost_year_chained_gdp double precision := null;
-	ref_cost_year_chained_gdp double precision := null;
-	chained_gdp_adjustment_factor double precision := null;
+	cost_year_deflator_gdp double precision := null;
+	ref_cost_year_deflator_gdp double precision := null;
+	deflator_gdp_adjustment_factor double precision := null;
 	discount_rate double precision;
 	has_design_capacity_columns boolean := false; 
 	has_sic_column boolean := false; 
@@ -318,17 +318,17 @@ BEGIN
 		into no_days_in_month;
 	END IF;
 
-	-- get gdp chained values
-	SELECT chained_gdp
+	-- get gdp price deflator values
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = cost_year
-	INTO cost_year_chained_gdp;
-	SELECT chained_gdp
+	INTO cost_year_deflator_gdp;
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = ref_cost_year
-	INTO ref_cost_year_chained_gdp;
+	INTO ref_cost_year_deflator_gdp;
 
-	chained_gdp_adjustment_factor := cost_year_chained_gdp / ref_cost_year_chained_gdp;
+	deflator_gdp_adjustment_factor := cost_year_deflator_gdp / ref_cost_year_deflator_gdp;
 
 	-- load the Compliance and Effective Date Cutoff Day/Month (Stored as properties)
 	select value
@@ -1296,7 +1296,7 @@ BEGIN
 					when cont.replacement = ''R'' then ' || uncontrolled_emis_sql || ' * ' || cont_packet_percent_reduction_sql || ' / 100.0
 					when cont.replacement = ''A'' then ' || emis_sql || ' * ' || cont_packet_percent_reduction_sql || ' / 100.0
 				end
-				, ' || ref_cost_year_chained_gdp || ' / cast(gdplev.chained_gdp as double precision), 
+				, ' || ref_cost_year_deflator_gdp || ' / cast(gdplev.deflator_gdp as double precision), 
 				' || case when use_cost_equations then 
 				'et.name, 
 				eq.value1, eq.value2, 
@@ -1316,7 +1316,7 @@ BEGIN
 				null, null, 
 				null, null'
 				end
-				|| ',' || case when is_flat_file_inventory then 'inv.ann_pct_red' else 'inv.ceff' end || ', ' || ref_cost_year_chained_gdp || '::double precision / gdplev_incr.chained_gdp::double precision * er.incremental_cost_per_ton))';
+				|| ',' || case when is_flat_file_inventory then 'inv.ann_pct_red' else 'inv.ceff' end || ', ' || ref_cost_year_deflator_gdp || '::double precision / gdplev_incr.deflator_gdp::double precision * er.incremental_cost_per_ton))';
 
 
 		-- make sure the apply order is 1, this should be the first thing happening to a source....this is important when the controlled inventpory is created.
@@ -1397,11 +1397,11 @@ BEGIN
 			inv.scc,
 			inv.' || fips_expression || ',
 			' || case when is_point_table = false then '' else 'inv.' || plantid_expression || ', inv.' || pointid_expression || ', inv.' || stackid_expression || ', inv.' || segment_expression || ', ' end || '
-			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.operation_maintenance_cost else null::double precision end as operation_maintenance_cost,
-			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.annualized_capital_cost else null::double precision end as annualized_capital_cost,
-			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.capital_cost else null::double precision end as capital_cost,
-			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.annual_cost else null::double precision end as ann_cost,
-			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.computed_cost_per_ton else null::double precision end as computed_cost_per_ton,
+			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.operation_maintenance_cost else null::double precision end as operation_maintenance_cost,
+			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.annualized_capital_cost else null::double precision end as annualized_capital_cost,
+			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.capital_cost else null::double precision end as capital_cost,
+			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.annual_cost else null::double precision end as ann_cost,
+			case when cont.pri_cm_abbrev is null and er.id is not null and cont.ann_pctred <> 0 and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0 then ' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_sql || '.computed_cost_per_ton else null::double precision end as computed_cost_per_ton,
 			case 
 				when coalesce((' 
 				|| case 

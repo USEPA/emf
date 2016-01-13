@@ -1,4 +1,18 @@
 -- Cost Equation Functions
+DROP FUNCTION get_strategy_costs(boolean,integer,character varying,double precision,double precision,double precision,
+double precision,double precision,double precision,double precision,character varying,double precision,double precision,
+double precision,double precision,double precision,double precision,double precision,double precision,double precision,
+double precision,double precision,double precision,character varying,character varying,double precision,double precision);
+DROP FUNCTION get_strategy_costs(boolean,integer,character varying,double precision,double precision,double precision,
+double precision,double precision,double precision,double precision,character varying,double precision,double precision,
+double precision,double precision,double precision,double precision,double precision,double precision,double precision,
+double precision,double precision,double precision,character varying,character varying,double precision,double precision,
+double precision);
+DROP FUNCTION get_strategy_costs(boolean,integer,character varying,double precision,double precision,double precision,
+double precision,double precision,double precision,double precision,character varying,double precision,double precision,
+double precision,double precision,double precision,double precision,double precision,double precision,double precision,
+double precision,double precision,double precision,double precision,character varying,character varying,double precision,
+double precision,double precision);
 
 CREATE OR REPLACE FUNCTION public.get_default_costs(
 	discount_rate double precision, 
@@ -773,7 +787,7 @@ CREATE OR REPLACE FUNCTION public.get_strategy_costs(
 	capital_recovery_factor double precision, 
 	ref_yr_cost_per_ton double precision,  
 	emis_reduction double precision, 
-	ref_yr_chained_gdp_adjustment_factor double precision,
+	ref_yr_deflator_gdp_adjustment_factor double precision,
 	equation_type character varying(255), 
 	variable_coefficient1 double precision, 
 	variable_coefficient2 double precision, 
@@ -849,11 +863,11 @@ BEGIN
 						actual_equation_type := '-Type 1';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -899,11 +913,11 @@ BEGIN
 							actual_equation_type := '-Type 2';
 						END IF;
 						-- adjust costs to the reference cost year
-						annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-						capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-						operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-						annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-						computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+						annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+						capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+						operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+						annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+						computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 						return;
 					END IF;
 				END IF;
@@ -938,11 +952,11 @@ BEGIN
 						actual_equation_type := '-Type 7';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -983,11 +997,11 @@ BEGIN
 						actual_equation_type := '-Type 8';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				--END IF;
 				valid_cost := false;
@@ -1030,11 +1044,11 @@ BEGIN
 						actual_equation_type := '-Type 9';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1077,11 +1091,11 @@ BEGIN
 						actual_equation_type := '-Type 11';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1133,7 +1147,7 @@ CREATE OR REPLACE FUNCTION public.get_strategy_costs(
 	capital_recovery_factor double precision, 
 	ref_yr_cost_per_ton double precision,  
 	emis_reduction double precision, 
-	ref_yr_chained_gdp_adjustment_factor double precision,
+	ref_yr_deflator_gdp_adjustment_factor double precision,
 	equation_type character varying(255), 
 	variable_coefficient1 double precision, 
 	variable_coefficient2 double precision, 
@@ -1207,13 +1221,13 @@ BEGIN
 						actual_equation_type := '-Type 3';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					variable_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * variable_operation_maintenance_cost;
-					fixed_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * fixed_operation_maintenance_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					variable_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * variable_operation_maintenance_cost;
+					fixed_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * fixed_operation_maintenance_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1251,13 +1265,13 @@ BEGIN
 						actual_equation_type := '-Type 4';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					variable_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * variable_operation_maintenance_cost;
-					fixed_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * fixed_operation_maintenance_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					variable_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * variable_operation_maintenance_cost;
+					fixed_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * fixed_operation_maintenance_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1295,13 +1309,13 @@ BEGIN
 						actual_equation_type := '-Type 5';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					variable_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * variable_operation_maintenance_cost;
-					fixed_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * fixed_operation_maintenance_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					variable_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * variable_operation_maintenance_cost;
+					fixed_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * fixed_operation_maintenance_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1339,13 +1353,13 @@ BEGIN
 						actual_equation_type := '-Type 6';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					variable_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * variable_operation_maintenance_cost;
-					fixed_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * fixed_operation_maintenance_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					variable_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * variable_operation_maintenance_cost;
+					fixed_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * fixed_operation_maintenance_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1408,13 +1422,13 @@ BEGIN
 						actual_equation_type := '-Type 10';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					variable_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * variable_operation_maintenance_cost;
-					fixed_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * fixed_operation_maintenance_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					variable_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * variable_operation_maintenance_cost;
+					fixed_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * fixed_operation_maintenance_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1439,7 +1453,7 @@ BEGIN
 					capital_recovery_factor, 
 					ref_yr_cost_per_ton,  
 					emis_reduction, 
-					ref_yr_chained_gdp_adjustment_factor,
+					ref_yr_deflator_gdp_adjustment_factor,
 					equation_type, 
 					variable_coefficient1, 
 					variable_coefficient2, 
@@ -1511,7 +1525,7 @@ CREATE OR REPLACE FUNCTION public.get_strategy_costs(
 	capital_recovery_factor double precision, 
 	ref_yr_cost_per_ton double precision,  
 	emis_reduction double precision, 
-	ref_yr_chained_gdp_adjustment_factor double precision,
+	ref_yr_deflator_gdp_adjustment_factor double precision,
 	equation_type character varying(255), 
 	variable_coefficient1 double precision, 
 	variable_coefficient2 double precision, 
@@ -1591,13 +1605,13 @@ BEGIN
 						actual_equation_type := '-Type 12';
 					END IF;
 					-- adjust costs to the reference cost year
-					annual_cost := ref_yr_chained_gdp_adjustment_factor * annual_cost;
-					capital_cost := ref_yr_chained_gdp_adjustment_factor * capital_cost;
-					variable_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * variable_operation_maintenance_cost;
-					fixed_operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * fixed_operation_maintenance_cost;
-					operation_maintenance_cost := ref_yr_chained_gdp_adjustment_factor * operation_maintenance_cost;
-					annualized_capital_cost := ref_yr_chained_gdp_adjustment_factor * annualized_capital_cost;
-					computed_cost_per_ton := ref_yr_chained_gdp_adjustment_factor * computed_cost_per_ton;
+					annual_cost := ref_yr_deflator_gdp_adjustment_factor * annual_cost;
+					capital_cost := ref_yr_deflator_gdp_adjustment_factor * capital_cost;
+					variable_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * variable_operation_maintenance_cost;
+					fixed_operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * fixed_operation_maintenance_cost;
+					operation_maintenance_cost := ref_yr_deflator_gdp_adjustment_factor * operation_maintenance_cost;
+					annualized_capital_cost := ref_yr_deflator_gdp_adjustment_factor * annualized_capital_cost;
+					computed_cost_per_ton := ref_yr_deflator_gdp_adjustment_factor * computed_cost_per_ton;
 					return;
 				END IF;
 				valid_cost := false;
@@ -1623,7 +1637,7 @@ BEGIN
 					capital_recovery_factor, 
 					ref_yr_cost_per_ton,  
 					emis_reduction, 
-					ref_yr_chained_gdp_adjustment_factor,
+					ref_yr_deflator_gdp_adjustment_factor,
 					equation_type, 
 					variable_coefficient1, 
 					variable_coefficient2, 
@@ -1780,7 +1794,7 @@ select public.get_strategy_costs(
 	0.243890694, --capital_recovery_factor double precision, 
 	null, --ref_yr_cost_per_ton double precision,  
 	1, --emis_reduction double precision, 
-	1, --ref_yr_chained_gdp_adjustment_factor double precision,
+	1, --ref_yr_deflator_gdp_adjustment_factor double precision,
 	'Type 12', --equation_type character varying(255), 
 	20000, --variable_coefficient1 double precision, 
 	null, --variable_coefficient2 double precision, 

@@ -24,9 +24,9 @@ DECLARE
 	cost_year integer := null;
 	inventory_year integer := null;
 	ref_cost_year integer := 2013;
-	cost_year_chained_gdp double precision := null;
-	ref_cost_year_chained_gdp double precision := null;
-	chained_gdp_adjustment_factor double precision := null;
+	cost_year_deflator_gdp double precision := null;
+	ref_cost_year_deflator_gdp double precision := null;
+	deflator_gdp_adjustment_factor double precision := null;
 	is_point_table boolean := false;
 	use_cost_equations boolean := false;
 	discount_rate double precision;
@@ -196,17 +196,17 @@ BEGIN
 
 	raise notice '%', 'start ' || clock_timestamp();
 
-	-- get gdp chained values
-	SELECT chained_gdp
+	-- get gdp price deflator values
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = cost_year
-	INTO cost_year_chained_gdp;
-	SELECT chained_gdp
+	INTO cost_year_deflator_gdp;
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = ref_cost_year
-	INTO ref_cost_year_chained_gdp;
+	INTO ref_cost_year_deflator_gdp;
 
-	chained_gdp_adjustment_factor := cost_year_chained_gdp / ref_cost_year_chained_gdp;
+	deflator_gdp_adjustment_factor := cost_year_deflator_gdp / ref_cost_year_deflator_gdp;
 
 	uncontrolled_emis_sql := 
 			case 
@@ -241,7 +241,7 @@ BEGIN
 			abbreviation, ' || discount_rate|| ', 
 			m.equipment_life, er.cap_ann_ratio, 
 			er.cap_rec_factor, er.ref_yr_cost_per_ton, 
-			' || emis_sql || ' * ' || percent_reduction_sql || ' / 100, ' || ref_cost_year_chained_gdp || ' / cast(gdplev.chained_gdp as double precision), 
+			' || emis_sql || ' * ' || percent_reduction_sql || ' / 100, ' || ref_cost_year_deflator_gdp || ' / cast(gdplev.deflator_gdp as double precision), 
 			' || case when use_cost_equations then 
 			'et.name, 
 			eq.value1, eq.value2, 
@@ -261,7 +261,7 @@ BEGIN
 			null, null, 
 			null, null'
 			end
-			|| ',inv.ceff, ' || ref_cost_year_chained_gdp || '::double precision / gdplev_incr.chained_gdp::double precision * er.incremental_cost_per_ton))';
+			|| ',inv.ceff, ' || ref_cost_year_deflator_gdp || '::double precision / gdplev_incr.deflator_gdp::double precision * er.incremental_cost_per_ton))';
 	get_strategt_cost_inner_sql := replace(get_strategt_cost_sql,'m.control_measures_id','m.id');
 
 
@@ -355,11 +355,11 @@ BEGIN
 			inv.fips,
 			' || case when is_point_table = false then '' else 'inv.plantid, inv.pointid, inv.stackid, inv.segment, ' end || '
 
-			' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.operation_maintenance_cost as operation_maintenance_cost,
-			' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.annualized_capital_cost as annualized_capital_cost,
-			' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.capital_cost as capital_cost,
-			' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.annual_cost as ann_cost,
-			' || chained_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.computed_cost_per_ton as computed_cost_per_ton,
+			' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.operation_maintenance_cost as operation_maintenance_cost,
+			' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.annualized_capital_cost as annualized_capital_cost,
+			' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.capital_cost as capital_cost,
+			' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.annual_cost as ann_cost,
+			' || deflator_gdp_adjustment_factor || ' * ' || get_strategt_cost_inner_sql || '.computed_cost_per_ton as computed_cost_per_ton,
 			er.efficiency as efficiency,
 			' || case when measures_count > 0 then 'coalesce(csm.rule_penetration, er.rule_penetration)' else 'er.rule_penetration' end || ' as rule_pen,
 			' || case when measures_count > 0 then 'coalesce(csm.rule_effectiveness, er.rule_effectiveness)' else 'er.rule_effectiveness' end || ' as rule_eff,
@@ -488,8 +488,8 @@ DECLARE
 	has_constraints boolean := null;
 	cost_year integer := null;
 	ref_cost_year integer := 2013;
-	cost_year_chained_gdp double precision := null;
-	ref_cost_year_chained_gdp double precision := null;
+	cost_year_deflator_gdp double precision := null;
+	ref_cost_year_deflator_gdp double precision := null;
 	is_point_table boolean := false;
 	gimme_count integer := 0;
 BEGIN
@@ -543,15 +543,15 @@ BEGIN
 		 GROUP BY pollutants.name)
 	  INTO target_pollutant_names;
 
-	-- get gdp chained values
-	SELECT chained_gdp
+	-- get gdp price deflator values
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = cost_year
-	INTO cost_year_chained_gdp;
-	SELECT chained_gdp
+	INTO cost_year_deflator_gdp;
+	SELECT deflator_gdp
 	FROM reference.gdplev
 	where annual = ref_cost_year
-	INTO ref_cost_year_chained_gdp;
+	INTO ref_cost_year_deflator_gdp;
 
 	-- get strategy constraints
 	SELECT max_emis_reduction,
@@ -723,12 +723,12 @@ BEGIN
 	-- discuss with alison...
 	EXECUTE	'update emissions.' || detailed_result_table_name || ' as inv
 	set 	emis_reduction = inv.inv_emissions * inv.percent_reduction / 100 * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
-		annual_cost = ' || cost_year_chained_gdp || ' / ' || ref_cost_year_chained_gdp || ' * inv.ann_cost_per_ton * inv.inv_emissions * inv.percent_reduction / 100 * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
+		annual_cost = ' || cost_year_deflator_gdp || ' / ' || ref_cost_year_deflator_gdp || ' * inv.ann_cost_per_ton * inv.inv_emissions * inv.percent_reduction / 100 * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
 		apply_order = (select count(1) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id <= inv.record_id),
 		input_emis = inv.inv_emissions * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
 		output_emis = inv.inv_emissions * (1 - inv.percent_reduction / 100) * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
 		final_emissions = null,
-		ann_cost_per_ton = ' || cost_year_chained_gdp || ' / ' || ref_cost_year_chained_gdp || ' * ann_cost_per_ton';
+		ann_cost_per_ton = ' || cost_year_deflator_gdp || ' / ' || ref_cost_year_deflator_gdp || ' * ann_cost_per_ton';
 
 	-- make sure we meet the constraints, if not get rid of the applicable measures...
 	IF has_constraints THEN

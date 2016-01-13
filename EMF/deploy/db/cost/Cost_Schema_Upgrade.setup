@@ -1651,3 +1651,6 @@ ALTER TABLE emf.sources
    ALTER COLUMN segment TYPE character varying(20);
 ALTER TABLE emf.sources
    ALTER COLUMN source TYPE character varying(98);
+
+-- 01/04/2016 Add reference.gdplev deflator_gdp column
+ALTER TABLE reference.gdplev ADD COLUMN deflator_gdp double precision;
