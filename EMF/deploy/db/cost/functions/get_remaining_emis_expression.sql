@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.get_remaining_emis_expression(
+CREATE OR REPLACE FUNCTION public.get_remaining_emis_expression(
 	int_input_dataset_id integer,
 	inventory_year integer,
 	inv_table_alias character varying(64), 

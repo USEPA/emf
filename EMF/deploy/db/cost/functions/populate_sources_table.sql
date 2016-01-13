@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.populate_sources_table(
+CREATE OR REPLACE FUNCTION public.populate_sources_table(
 	inv_table_name varchar(64),
 	inv_filter text
 ) RETURNS void AS $$

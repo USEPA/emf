@@ -1,4 +1,4 @@
-﻿drop FUNCTION public.eliminate_least_cost_strategy_source_measures(integer, 
+drop FUNCTION public.eliminate_least_cost_strategy_source_measures(integer, 
 	integer, 
 	integer);
 	

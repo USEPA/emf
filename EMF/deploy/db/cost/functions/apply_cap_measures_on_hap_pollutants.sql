@@ -1,4 +1,4 @@
-﻿/*
+/*
 select * from emf.control_strategies where name = 'test mer nc so2 costing type 3 4 11';
 select * from emf.strategy_results where control_strategy_id = 156;
 

@@ -1,4 +1,4 @@
-﻿--select public.validate_project_future_year_inventory_control_programs(162, 6552);
+--select public.validate_project_future_year_inventory_control_programs(162, 6552);
 
 CREATE OR REPLACE FUNCTION public.validate_project_future_year_inventory_control_programs(
 	control_strategy_id integer,

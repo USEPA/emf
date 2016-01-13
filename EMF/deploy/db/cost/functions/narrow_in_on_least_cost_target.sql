@@ -1,4 +1,4 @@
-﻿--select public.narrow_in_on_least_cost_target('cslcm__measure_worksheet_nc_ptnonipm_20080420_20080420054230884', 
+--select public.narrow_in_on_least_cost_target('cslcm__measure_worksheet_nc_ptnonipm_20080420_20080420054230884', 
 --	'NOX', 
 --	36797.935745);
 

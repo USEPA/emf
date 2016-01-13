@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.clean_project_future_year_inventory_control_programs(
+CREATE OR REPLACE FUNCTION public.clean_project_future_year_inventory_control_programs(
 	control_strategy_id integer) RETURNS void AS
 $BODY$
 DECLARE

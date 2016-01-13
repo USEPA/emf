@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.get_days_in_year("year" smallint) RETURNS smallint AS $$
+CREATE OR REPLACE FUNCTION public.get_days_in_year("year" smallint) RETURNS smallint AS $$
 DECLARE
 BEGIN
 

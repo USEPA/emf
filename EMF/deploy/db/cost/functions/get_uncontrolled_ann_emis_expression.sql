@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.get_uncontrolled_ann_emis_expression(
+CREATE OR REPLACE FUNCTION public.get_uncontrolled_ann_emis_expression(
 	inv_table_alias character varying(64), 
 	no_days_in_month integer,
 	inv_override_table_alias character varying(64),

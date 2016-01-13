@@ -1,4 +1,4 @@
-﻿drop FUNCTION public.populate_least_cost_strategy_worksheet(integer, 
+drop FUNCTION public.populate_least_cost_strategy_worksheet(integer, 
 	integer, 
 	integer);
 

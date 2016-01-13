@@ -1,4 +1,4 @@
-﻿--
+--
 
 CREATE OR REPLACE FUNCTION public.create_insert_script_for_dataset_type(dataset_type_name character varying)
   RETURNS text AS

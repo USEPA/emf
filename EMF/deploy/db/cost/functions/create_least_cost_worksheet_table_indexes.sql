@@ -1,4 +1,4 @@
-﻿-- Function: create_least_cost_worksheet_table_indexes(character varying)
+-- Function: create_least_cost_worksheet_table_indexes(character varying)
 
 -- DROP FUNCTION public.create_least_cost_worksheet_table_indexes(character varying);
 

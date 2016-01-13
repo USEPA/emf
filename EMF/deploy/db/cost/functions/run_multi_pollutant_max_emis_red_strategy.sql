@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.run_multi_pollutant_max_emis_red_strategy(intControlStrategyId integer, intInputDatasetId integer, 
+CREATE OR REPLACE FUNCTION public.run_multi_pollutant_max_emis_red_strategy(intControlStrategyId integer, intInputDatasetId integer, 
 	intInputDatasetVersion integer, intStrategyResultId int, intTargetPollutantId int) RETURNS void AS $$
 DECLARE
 	strategy_name varchar(255) := '';

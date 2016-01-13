@@ -1,4 +1,4 @@
-﻿
+
 CREATE OR REPLACE FUNCTION public.get_uncontrolled_emis_expression(
 	pct_red_expression character varying,
 	emis_expression character varying

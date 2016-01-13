@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.get_convert_design_capacity_expression(
+CREATE OR REPLACE FUNCTION public.get_convert_design_capacity_expression(
 	inv_table_alias character varying(64), 
 	unit_numerator_default_value character varying(10), 
 	unit_denominator_default_value character varying(10)) RETURNS text AS $$

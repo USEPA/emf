@@ -1,4 +1,4 @@
-﻿-- Function: get_least_cost_worksheet_emis_reduction(character varying, character varying, integer)
+-- Function: get_least_cost_worksheet_emis_reduction(character varying, character varying, integer)
 
 -- DROP FUNCTION get_least_cost_worksheet_emis_reduction(character varying, character varying, integer);
 

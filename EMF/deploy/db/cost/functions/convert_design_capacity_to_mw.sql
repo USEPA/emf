@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.convert_design_capacity_to_mw(design_capacity double precision, design_capacity_unit_numerator character varying, design_capacity_unit_denominator character varying)
+CREATE OR REPLACE FUNCTION public.convert_design_capacity_to_mw(design_capacity double precision, design_capacity_unit_numerator character varying, design_capacity_unit_denominator character varying)
   RETURNS double precision AS
 $BODY$
 DECLARE

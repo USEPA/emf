@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.create_table_index(table_name character varying, table_col_list character varying, index_name_prefix character varying)
+CREATE OR REPLACE FUNCTION public.create_table_index(table_name character varying, table_col_list character varying, index_name_prefix character varying)
   RETURNS void AS
 $BODY$
 DECLARE

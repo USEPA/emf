@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION public.populate_strategy_messages(
+CREATE OR REPLACE FUNCTION public.populate_strategy_messages(
 	intControlStrategyId integer, 
 	input_dataset_id integer, 
 	input_dataset_version integer, 

@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 select * from emf.control_strategies where strategy_type_id = 10;
 select * from emf.strategy_results where control_strategy_id = 137;

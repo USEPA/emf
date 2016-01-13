@@ -1,4 +1,4 @@
-﻿drop FUNCTION public.populate_least_cost_strategy_detailed_result(integer, 
+drop FUNCTION public.populate_least_cost_strategy_detailed_result(integer, 
 	integer, 
 	integer, 
 	integer,
