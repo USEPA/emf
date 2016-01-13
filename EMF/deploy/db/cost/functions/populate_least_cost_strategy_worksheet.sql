@@ -30,10 +30,6 @@ DECLARE
 	dataset_month smallint := 0;
 	no_days_in_month smallint := 31;
 	no_days_in_year smallint := 365;
-	ref_cost_year integer := 2013;
-	cost_year_chained_gdp double precision := null;
-	ref_cost_year_chained_gdp double precision := null;
-	chained_gdp_adjustment_factor double precision := null;
 	discount_rate double precision;
 	has_design_capacity_columns boolean := false; 
 	has_sic_column boolean := false; 
@@ -464,18 +460,6 @@ BEGIN
 			where control_strategy_id = ' || int_control_strategy_id;
 		END IF;
 	END IF;
-
-	-- get gdp chained values
-	SELECT chained_gdp
-	FROM reference.gdplev
-	where annual = cost_year
-	INTO cost_year_chained_gdp;
-	SELECT chained_gdp
-	FROM reference.gdplev
-	where annual = ref_cost_year
-	INTO ref_cost_year_chained_gdp;
-
-	chained_gdp_adjustment_factor := cost_year_chained_gdp / ref_cost_year_chained_gdp;
 
 	EXECUTE '
 		CREATE TEMP TABLE inv_overrides (

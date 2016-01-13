@@ -29,10 +29,6 @@ DECLARE
 	has_constraints boolean := null;
 	dataset_month smallint := 0;
 	no_days_in_month smallint := 31;
-	ref_cost_year integer := 2013;
-	cost_year_chained_gdp double precision := null;
-	ref_cost_year_chained_gdp double precision := null;
-	chained_gdp_adjustment_factor double precision := null;
 	discount_rate double precision;
 	has_design_capacity_columns boolean := false; 
 	has_sic_column boolean := false; 
@@ -205,18 +201,6 @@ target_pollutant := 1;
 	ELSIF dataset_month = 12 THEN
 		no_days_in_month := 31;
 	END IF;
-
-	-- get gdp chained values
-	SELECT chained_gdp
-	FROM reference.gdplev
-	where annual = cost_year
-	INTO cost_year_chained_gdp;
-	SELECT chained_gdp
-	FROM reference.gdplev
-	where annual = ref_cost_year
-	INTO ref_cost_year_chained_gdp;
-
-	chained_gdp_adjustment_factor := cost_year_chained_gdp / ref_cost_year_chained_gdp;
 
 
 --	uncontrolled_emis_sql := case when dataset_month != 0 then 'coalesce(inv.avd_emis * ' || no_days_in_month || ', inv.ann_emis)' else 'inv.ann_emis' end;
