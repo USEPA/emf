@@ -27,6 +27,6 @@ BEGIN
 	RETURN coalesce(emis_reduction,0.0);
 END;
 $BODY$
-  LANGUAGE 'plpgsql' IMMUTABLE
+  LANGUAGE 'plpgsql' STABLE
   COST 100;
 ALTER FUNCTION public.get_least_cost_worksheet_emis_reduction(character varying, character varying, integer) OWNER TO postgres;

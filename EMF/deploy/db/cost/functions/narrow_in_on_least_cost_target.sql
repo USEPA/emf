@@ -91,4 +91,4 @@ BEGIN
 
 	RETURN target_record_offset;
 END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$ LANGUAGE plpgsql STABLE;
