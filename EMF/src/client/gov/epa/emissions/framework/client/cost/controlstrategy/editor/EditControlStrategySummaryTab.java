@@ -651,7 +651,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     public void setRunMessage(ControlStrategy controlStrategy) {
         messagePanel.clear();
         updateStartDate(controlStrategy);
-        updateSummaryPanelValuesExceptStartDate("Running", "", null, null);
+        updateSummaryPanelValuesExceptStartDate("Waiting", "", null, null);
     }
 
     public void refresh(ControlStrategy controlStrategy, ControlStrategyResult[] controlStrategyResults) {

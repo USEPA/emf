@@ -355,7 +355,6 @@ public class EditControlStrategyWindow extends DisposableInteralFrame implements
 //                    validatePath(outputTabView.getExportFolder());
                     controlStrategy.setDeleteResults(deleteResults);
                     controlStrategy.setExportDirectory(outputTabView.getExportFolder());
-                    controlStrategy.setRunStatus("Waiting");
                     //get all values from various tabs and persist to strategy object
                     save();
                     controlStrategy.setStartDate(new Date());

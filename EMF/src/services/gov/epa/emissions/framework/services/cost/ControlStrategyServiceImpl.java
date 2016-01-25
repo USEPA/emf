@@ -310,11 +310,6 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     public synchronized void runStrategy(User user, int controlStrategyId) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
-            // first see if the strategy has been canceled, is so don't run it...
-            String runStatus = dao.getControlStrategyRunStatus(controlStrategyId, session);
-            if (runStatus.equals("Cancelled"))
-                return;
-
             ControlStrategy strategy = getById(controlStrategyId);
             validateSectors(strategy);
             //get rid of for now, since we don't auto export anything
