@@ -50,13 +50,7 @@ DECLARE
 	is_point_table boolean := false;
 	use_cost_equations boolean := false;
 	gimme_count integer := 0;
-	min_emis_reduction_constraint real := null;
-	min_control_efficiency_constraint real := null;
-	max_cost_per_ton_constraint real := null;
-	max_ann_cost_constraint real := null;
-	replacement_control_min_eff_diff_constraint double precision := null;
 	control_program_measure_min_pct_red_diff_constraint double precision := null;
-	has_constraints boolean := null;
 	dataset_month smallint := 0;
 	no_days_in_month smallint := 31;
 	ref_cost_year integer := 2013;
@@ -287,26 +281,10 @@ BEGIN
 	has_facility_name_column := public.check_table_for_columns(inv_table_name, 'facility_name', ',');
 
 	-- get strategy constraints
-	SELECT max_emis_reduction,
-		max_control_efficiency,
-		min_cost_per_ton,
-		min_ann_cost,
-		replacement_control_min_eff_diff,
-		control_program_measure_min_pct_red_diff
+	SELECT control_program_measure_min_pct_red_diff
 	FROM emf.control_strategy_constraints csc
 	where csc.control_strategy_id = int_control_strategy_id
-	INTO min_emis_reduction_constraint,
-		min_control_efficiency_constraint,
-		max_cost_per_ton_constraint,
-		max_ann_cost_constraint,
-		replacement_control_min_eff_diff_constraint,
-		control_program_measure_min_pct_red_diff_constraint;
-
-	select case when min_emis_reduction_constraint is not null 
-		or min_control_efficiency_constraint is not null 
-		or max_cost_per_ton_constraint is not null 
-		or max_ann_cost_constraint is not null then true else false end
-	into has_constraints;
+	INTO control_program_measure_min_pct_red_diff_constraint;
 
 	--Get month and no of days in month for ONLY ORL inventories, Flat File have monthly and annual data defined in the table structure
 	IF  Not (dataset_type_name = 'Flat File 2010 Point' or dataset_type_name = 'Flat File 2010 Nonpoint' or dataset_type_name = 'Flat File 2010 Merged') THEN
