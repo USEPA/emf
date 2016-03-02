@@ -85,6 +85,7 @@ public class RetrieveControlMeasure {
         int cmId = Integer.MIN_VALUE;
         String pollutant = "";
         String sector = "";
+        String eqType = "";
         ControlMeasure cm = null;
         try {
             boolean next = rs.next();
@@ -98,6 +99,7 @@ public class RetrieveControlMeasure {
                     //reset
                     pollutant = "";
                     sector = "";
+                    eqType = "";
                     cm = new ControlMeasure();
                     cm.setId(rs.getInt(1));
                     cm.setName(rs.getString(2));
@@ -127,9 +129,13 @@ public class RetrieveControlMeasure {
                 if (rs.getString(20) != null && !sector.trim().equalsIgnoreCase(rs.getString(20).trim())) {
                   cm.addSector(new Sector("", rs.getString(20)));
                 }
+                if (rs.getString(34) != null && !eqType.trim().equalsIgnoreCase(rs.getString(34).trim())) {
+                    cm.addEquation(new ControlMeasureEquation(new EquationType(rs.getString(34))));
+                }
                 cmId = rs.getInt(1);
                 pollutant = rs.getString(22) != null ? rs.getString(22) : "";
                 sector = rs.getString(20) != null ? rs.getString(20) : "";
+                eqType = rs.getString(34) != null ? rs.getString(34) : "";
                 next = rs.next();
             }
             if (hasRecords) {
@@ -210,7 +216,8 @@ public class RetrieveControlMeasure {
                 "aer.avg_efficiency, aer.max_cost_per_ton, " +
                 "aer.min_cost_per_ton, aer.avg_cost_per_ton, " +
                 "aer.avg_rule_effectiveness, aer.avg_rule_penetration, " +
-                "cm.equipment_life, cm.data_souce, cms.sector_id " +
+                "cm.equipment_life, cm.data_souce, cms.sector_id, " +
+                "eqtype.name " +
                 "from emf.control_measures cm " +
                 "left outer join emf.control_measure_sectors cms " +
                 "on cms.control_measure_id = cm.id " +
@@ -246,6 +253,10 @@ public class RetrieveControlMeasure {
                 "on p.id = aer.pollutant_id " +
                 "left outer join emf.pollutants mp " +
                 "on mp.id = cm.major_pollutant " +
+                "left join emf.control_measure_equations eq " +
+                "on eq.control_measure_id = cm.id " +
+                "left join emf.equation_types eqtype " +
+                "on eqtype.id = eq.equation_type_id " +
               //don't include filter if no sccs
               (whereFilter.length() > 0 ? " where " + whereFilter : "") + 
              //cm.id in (select control_measures_id from emf.control_measure_sccs where name in ('2000123213','SCC2','','','')) " + 
@@ -272,7 +283,8 @@ public class RetrieveControlMeasure {
         "aer.avg_efficiency, aer.max_cost_per_ton, " +
         "aer.min_cost_per_ton, aer.avg_cost_per_ton, " +
         "aer.avg_rule_effectiveness, aer.avg_rule_penetration, " +
-        "cm.equipment_life, cm.data_souce, cms.sector_id " +
+        "cm.equipment_life, cm.data_souce, cms.sector_id, " +
+        "eqtype.name " +
         "from emf.control_measures cm " +
         "left outer join emf.control_measure_sectors cms " +
         "on cms.control_measure_id = cm.id " +
@@ -308,6 +320,10 @@ public class RetrieveControlMeasure {
         "on p.id = aer.pollutant_id " +
         "left outer join emf.pollutants mp " +
         "on mp.id = cm.major_pollutant " +
+        "left join emf.control_measure_equations eq " +
+        "on eq.control_measure_id = cm.id " +
+        "left join emf.equation_types eqtype " +
+        "on eqtype.id = eq.equation_type_id " +
 //        if (whereFilter.trim().equals("") )
          "where (cm.major_pollutant = " + majorPollutantId + " " +
          "    or cm.id in (select distinct control_measures_id from emf.aggregrated_efficiencyrecords mpers " +

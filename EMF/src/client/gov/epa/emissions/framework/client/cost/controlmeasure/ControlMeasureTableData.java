@@ -7,6 +7,7 @@ import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.cost.ControlMeasureClass;
+import gov.epa.emissions.framework.services.cost.ControlMeasureEquation;
 import gov.epa.emissions.framework.services.cost.controlStrategy.CostYearTable;
 import gov.epa.emissions.framework.services.cost.controlmeasure.YearValidation;
 import gov.epa.emissions.framework.services.cost.data.SumEffRec;
@@ -54,7 +55,7 @@ public class ControlMeasureTableData extends AbstractTableData {
                 "Max CE", "Min CPT", "Max CPT", 
                 "Avg Rule Eff.", "Avg Rule Pen.", "Control Technology", 
                 "Source Group", "Equipment Life", 
-                "Sectors", "Class", "Last Modified Time", 
+                "Sectors", "Class", "Eq Type", "Last Modified Time", 
                 "Last Modified By", "Date Reviewed", "Creator", 
                 "Data Source", "Description" };
     }
@@ -93,7 +94,7 @@ public class ControlMeasureTableData extends AbstractTableData {
                             new Double(aper.getMaxCE()), getCostPerTon(aper.getMinCPT()), getCostPerTon(aper.getMaxCPT()), 
                             new Double(aper.getAvgRE()), new Double(aper.getAvgRP()), getControlTechnology(measure), 
                             getSourceGroup(measure), new Double(measure.getEquipmentLife()),  
-                            getSectors(measure), measureClass(measure.getCmClass()), getLastModifiedTime(measure), 
+                            getSectors(measure), measureClass(measure.getCmClass()), getEquationTypes(measure), getLastModifiedTime(measure), 
                             measure.getLastModifiedBy(), getDateReviewed(measure), measure.getCreator().getName(), 
                             measure.getDataSouce(), measure.getDescription() };
                     Row row = new ViewableRow(measure, values);
@@ -106,7 +107,7 @@ public class ControlMeasureTableData extends AbstractTableData {
                             new Double(aper.getMaxCE()), getCostPerTon(aper.getMinCPT()), getCostPerTon(aper.getMaxCPT()), 
                             new Double(aper.getAvgRE()), new Double(aper.getAvgRP()), getControlTechnology(measure), 
                             getSourceGroup(measure), new Double(measure.getEquipmentLife()),  
-                            getSectors(measure), measureClass(measure.getCmClass()), getLastModifiedTime(measure), 
+                            getSectors(measure), measureClass(measure.getCmClass()), getEquationTypes(measure), getLastModifiedTime(measure), 
                             measure.getLastModifiedBy(), getDateReviewed(measure), measure.getCreator().getName(), 
                             measure.getDataSouce(), measure.getDescription() };
                     Row row = new ViewableRow(measure, values);
@@ -121,7 +122,7 @@ public class ControlMeasureTableData extends AbstractTableData {
                         NAN_VALUE, NAN_VALUE, NAN_VALUE, 
                         NAN_VALUE, NAN_VALUE, getControlTechnology(measure), 
                         getSourceGroup(measure), new Double(measure.getEquipmentLife()),  
-                        getSectors(measure), measureClass(measure.getCmClass()), getLastModifiedTime(measure), 
+                        getSectors(measure), measureClass(measure.getCmClass()), getEquationTypes(measure), getLastModifiedTime(measure), 
                         measure.getLastModifiedBy(), getDateReviewed(measure), measure.getCreator().getName(), 
                         measure.getDataSouce(), measure.getDescription() };
                 Row row = new ViewableRow(measure, values);
@@ -166,6 +167,24 @@ public class ControlMeasureTableData extends AbstractTableData {
         }
 
         return sectorsString;
+    }
+    
+    private String getEquationTypes(ControlMeasure measure) {
+        ControlMeasureEquation[] equations = measure.getEquations();
+        String equationsString = "";
+        if (equations.length == 0)
+            return null;
+        
+        for (int i = 0; i < equations.length; i++) {
+            if (i == equations.length - 1) {
+                equationsString += equations[i].getEquationType().getName();
+                break;
+            }
+            
+            equationsString += equations[i].getEquationType().getName() + "|";
+        }
+        
+        return equationsString;
     }
 
     private Object getDateReviewed(ControlMeasure measure) {
