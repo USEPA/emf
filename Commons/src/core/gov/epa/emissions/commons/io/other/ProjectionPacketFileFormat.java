@@ -47,7 +47,7 @@ public class ProjectionPacketFileFormat implements FileFormatWithOptionalCols, D
     public Column[] minCols() {
         List<Column> columns = new ArrayList<Column>();
 
-        columns.add(new Column("FIPS", types.stringType(6), 6, new StringFormatter(6)));
+        columns.add(new Column("FIPS", types.stringType(12), 12, new StringFormatter(12)));
         columns.add(new Column("SCC", types.stringType(10), 10, new StringFormatter(10)));
         columns.add(new Column("PROJ_FACTOR", types.realType(), new RealFormatter()));
         columns.add(new Column("POLL", types.stringType(16), 16, new StringFormatter(16)));
