@@ -123,8 +123,8 @@ public class CMEfficiencyRecordReader {
                 capitalRecoveryFactor(efficiencyRecord, tokens[12], sb);
                 discountFactor(efficiencyRecord, tokens[13], sb);
                 details(efficiencyRecord, tokens[14]);
-            //v2 file format
-            } else if (this.colCount == 18) {
+            //new file formats
+            } else if (this.colCount == 18 || this.colCount == 20 || this.colCount == 22) {
                 minEmis(efficiencyRecord, tokens[6], sb);
                 maxEmis(efficiencyRecord, tokens[7], sb);
                 controlEfficiency(efficiencyRecord, tokens[8], sb);
@@ -138,26 +138,19 @@ public class CMEfficiencyRecordReader {
                 equationType(efficiencyRecord, tokens[13]);
                 capitalRecoveryFactor(efficiencyRecord, tokens[14], sb);
                 discountFactor(efficiencyRecord, tokens[15], sb);
-                details(efficiencyRecord, tokens[16]);
-            }
-            //v3 file format
-            else if (this.colCount == 20){
-                minEmis(efficiencyRecord, tokens[6], sb);
-                maxEmis(efficiencyRecord, tokens[7], sb);
-                controlEfficiency(efficiencyRecord, tokens[8], sb);
-                costYear(efficiencyRecord, tokens[9], sb);
-                costPerTon(efficiencyRecord, tokens[0], controlMeasures,
-                        tokens[10], tokens[9], 
-                        sb);
-                refYrCostPerTon(efficiencyRecord, tokens[9], tokens[10]);
-                ruleEffectiveness(efficiencyRecord, tokens[11], sb);
-                rulePenetration(efficiencyRecord, tokens[12], sb);
-                equationType(efficiencyRecord, tokens[13]);
-                capitalRecoveryFactor(efficiencyRecord, tokens[14], sb);
-                discountFactor(efficiencyRecord, tokens[15], sb);
-                capitalAnnulizdRatio(efficiencyRecord, tokens[16],sb);
-                incrementalCTP(efficiencyRecord, tokens[17],sb);
-                details(efficiencyRecord, tokens[18]);  
+                if (this.colCount == 18) {
+                    details(efficiencyRecord, tokens[16]);
+                } else {
+                    capitalAnnulizdRatio(efficiencyRecord, tokens[16],sb);
+                    incrementalCTP(efficiencyRecord, tokens[17],sb);
+                    if (this.colCount == 20) {
+                        details(efficiencyRecord, tokens[18]);
+                    } else {
+                        minCapacity(efficiencyRecord, tokens[18], sb);
+                        maxCapacity(efficiencyRecord, tokens[19], sb);
+                        details(efficiencyRecord, tokens[20]);
+                    }
+                }
             }
 
         } catch (CMImporterException e) {
@@ -381,6 +374,22 @@ public class CMEfficiencyRecordReader {
                 efficiencyRecord.setRefYrCostPerTon(null);
         } catch (EmfException e) {
             //don't propagate exception, these would have been taken care of from the cost per ton and cost year validation
+        }
+    }
+
+    private void minCapacity(EfficiencyRecord efficiencyRecord, String minCapacityValue, StringBuffer sb) {
+        try {
+            efficiencyRecord.setMinCapacity(validation.minCapacity(minCapacityValue));
+        } catch (EmfException e) {
+            sb.append(format(e.getMessage()));
+        }
+    }
+
+    private void maxCapacity(EfficiencyRecord efficiencyRecord, String maxCapacityValue, StringBuffer sb) {
+        try {
+            efficiencyRecord.setMaxCapacity(validation.maxCapacity(maxCapacityValue));
+        } catch (EmfException e) {
+            sb.append(format(e.getMessage()));
         }
     }
 

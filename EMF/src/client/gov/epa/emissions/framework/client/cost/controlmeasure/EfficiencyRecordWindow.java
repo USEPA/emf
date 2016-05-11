@@ -108,6 +108,10 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
     
     protected Button cancel;
 
+    protected TextField minCapacity;
+
+    protected TextField maxCapacity;
+
     public EfficiencyRecordWindow(String title, ManageChangeables changeablesList, DesktopManager desktopManager,
             EmfSession session, CostYearTable costYearTable) {
         super(title, new Dimension(675, 500), desktopManager);
@@ -261,7 +265,15 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
         efficiency.setToolTipText("Enter the Control Efficiency as a percentage (e.g., 90%, or -10% for a disbenefit)");
         layoutGenerator.addLabelWidgetPair("Control Efficiency (% Red):*", efficiency, panel);
 
-        widgetLayout(10, 2, 5, 5, 10, 10, layoutGenerator, panel);
+        minEmis = new TextField("Minimum Emissions", 10);
+        this.addChangeable(minEmis);
+        layoutGenerator.addLabelWidgetPair("Minimum Emissions:", minEmis, panel);
+
+        maxEmis = new TextField("Maximum Emissions", 10);
+        this.addChangeable(maxEmis);
+        layoutGenerator.addLabelWidgetPair("Maximum Emissions:", maxEmis, panel);
+
+        widgetLayout(12, 2, 5, 5, 10, 10, layoutGenerator, panel);
 
         return panel;
     }
@@ -299,14 +311,6 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        minEmis = new TextField("Minimum Emissions", 10);
-        this.addChangeable(minEmis);
-        layoutGenerator.addLabelWidgetPair("Minimum Emissions:", minEmis, panel);
-
-        maxEmis = new TextField("Maximum Emissions", 10);
-        this.addChangeable(maxEmis);
-        layoutGenerator.addLabelWidgetPair("Maximum Emissions:", maxEmis, panel);
-
         ruleEffectiveness = new TextField("Rule Effectiveness", 10);
         ruleEffectiveness.addFocusListener(new FocusAdapter() {
             public void focusLost(FocusEvent e) {
@@ -343,6 +347,13 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
         this.addChangeable(incrementalCPT);
         layoutGenerator.addLabelWidgetPair("<html>Incremental CPT (Based on<br/>specified cost year dollars):</html>", incrementalCPT, panel);
 
+        minCapacity = new TextField("Minimum Capacity", 10);
+        this.addChangeable(minCapacity);
+        layoutGenerator.addLabelWidgetPair("Minimum Capacity (MW):", minCapacity, panel);
+
+        maxCapacity = new TextField("Maximum Capacity", 10);
+        this.addChangeable(maxCapacity);
+        layoutGenerator.addLabelWidgetPair("Maximum Capacity (MW):", maxCapacity, panel);
 
         lastModifiedBy = new TextField("Last Modified By", 10);
         lastModifiedBy.setEnabled(false);
@@ -409,6 +420,7 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
         record.setLastModifiedBy(session.user().getName());
         record.setLastModifiedTime(new Date());
         saveExistingDevCode();
+        saveMinMaxCapacity();
     }
 
     private void saveIncrementalCPT() throws EmfException {
@@ -565,6 +577,27 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
             throw new EmfException("The minimum emission must be be less than maximum emission.");
     }
 
+    private void saveMinMaxCapacity() throws EmfException {
+        double minCapacityValue = 0;
+        double maxCapacityValue = Double.NaN;
+        if (minCapacity.getText().trim().length() > 0) {
+            minCapacityValue = verifier.parseDouble(minCapacity);
+            record.setMinCapacity(minCapacityValue);
+        } else {
+            record.setMinCapacity(null);
+        }
+        if (maxCapacity.getText().trim().length() > 0) {
+            maxCapacityValue = verifier.parseDouble(maxCapacity);
+            record.setMaxCapacity(maxCapacityValue);
+        } else {
+            record.setMaxCapacity(null);
+        }
+        if (minCapacityValue != Double.NaN 
+                && maxCapacityValue != Double.NaN
+                && minCapacityValue >= maxCapacityValue)
+            throw new EmfException("The minimum capacity must be be less than the maximum capacity.");
+    }
+
     private void widgetLayout(int rows, int cols, int initX, int initY, int xPad, int yPad,
             SpringLayoutGenerator layoutGenerator, JPanel panel) {
         // Lay out the panel.
@@ -597,6 +630,8 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
         this.capAnnRatio.setEditable(false);
         this.incrementalCPT.setEditable(false);
         this.detail.setEditable(false);
+        this.minCapacity.setEditable(false);
+        this.maxCapacity.setEditable(false);
         
         this.saveRecord.setVisible(false);
         this.cancel.setText("Close");

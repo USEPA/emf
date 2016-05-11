@@ -54,6 +54,10 @@ public class EfficiencyRecord implements Serializable {
 
     private Double incrementalCostPerTon;
 
+    private Double minCapacity;
+
+    private Double maxCapacity;
+
     public Double getCapRecFactor() {
         return capRecFactor;
     }
@@ -266,5 +270,21 @@ public class EfficiencyRecord implements Serializable {
 
     public Double getIncrementalCostPerTon() {
         return incrementalCostPerTon;
+    }
+
+    public void setMinCapacity(Double minCapacity) {
+        this.minCapacity = minCapacity;
+    }
+
+    public Double getMinCapacity() {
+        return minCapacity;
+    }
+
+    public void setMaxCapacity(Double maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public Double getMaxCapacity() {
+        return maxCapacity;
     }
 }

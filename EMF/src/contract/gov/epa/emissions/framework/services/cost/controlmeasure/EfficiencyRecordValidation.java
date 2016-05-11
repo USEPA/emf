@@ -135,6 +135,18 @@ public class EfficiencyRecordValidation {
         return value;
     }
 
+    public Double minCapacity(String minCapacityValue) throws EmfException {
+        if (minCapacityValue.trim().length() == 0) return null;
+        double value = parseDouble("minimum capacity", minCapacityValue);
+        return value;
+    }
+
+    public Double maxCapacity(String maxCapacityValue) throws EmfException {
+        if (maxCapacityValue.trim().length() == 0) return null;
+        double value = parseDouble("maximum capacity", maxCapacityValue);
+        return value;
+    }
+
     public int parseInteger(String msgPrefix, String value) throws EmfException {
         try {
             return Integer.parseInt(value);

@@ -90,16 +90,20 @@ public class CMImporters {
         CMEfficiencyFileFormat fileFormat = new CMEfficiencyFileFormat();
         CMEfficiencyFileFormatv2 fileFormatv2 = new CMEfficiencyFileFormatv2();
         CMEfficiencyFileFormatv3 fileFormatv3 = new CMEfficiencyFileFormatv3();
+        CMEfficiencyFileFormatv4 fileFormatv4 = new CMEfficiencyFileFormatv4();
         String[] cols = fileFormat.cols();
         String[] colsv2 = fileFormatv2.cols();
         String[] colsv3 = fileFormatv3.cols();
+        String[] colsv4 = fileFormatv4.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
                 return new CMEfficiencyImporter(files[i], fileFormat, user, sessionFactory, dbServer);
             } else if (matches(colsv2, records[i].getTokens())){
                 return new CMEfficiencyImporter(files[i], fileFormatv2, user, sessionFactory, dbServer); 
-            }else if (matches(colsv3, records[i].getTokens())) {
+            } else if (matches(colsv3, records[i].getTokens())) {
                 return new CMEfficiencyImporter(files[i], fileFormatv3, user, sessionFactory, dbServer);
+            } else if (matches(colsv4, records[i].getTokens())) {
+                return new CMEfficiencyImporter(files[i], fileFormatv4, user, sessionFactory, dbServer);
             }
         }
         throw new EmfException("Failed to import control measures: Control Measure Efficiency file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv3));

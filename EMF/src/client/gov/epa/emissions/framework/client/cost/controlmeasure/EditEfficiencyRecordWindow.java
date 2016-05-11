@@ -43,6 +43,9 @@ public class EditEfficiencyRecordWindow extends EfficiencyRecordWindow implement
         
         capAnnRatio.setText((record.getCapitalAnnualizedRatio() != null ? record.getCapitalAnnualizedRatio(): "") + "");
         incrementalCPT.setText((record.getIncrementalCostPerTon() !=null ? record.getIncrementalCostPerTon(): "") +"");
+
+        minCapacity.setText((record.getMinCapacity() != null ? record.getMinCapacity() : "") + "");
+        maxCapacity.setText((record.getMaxCapacity() != null ? record.getMaxCapacity() : "") + "");
         
         detail.setText(record.getDetail());
         effectiveDate.setText(formatEffectiveDate());

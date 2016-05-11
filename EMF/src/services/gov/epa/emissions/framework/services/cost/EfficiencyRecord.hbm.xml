@@ -34,6 +34,8 @@
 		<property name="maxEmis" column="max_emis" type="double" not-null="false"/>
 		<property name="capitalAnnualizedRatio" column="cap_ann_ratio" type="double" not-null="false"/>
 		<property name="incrementalCostPerTon" column="incremental_cost_per_ton" type="double" not-null="false"/>
+		<property name="minCapacity" column="min_capacity" type="double" not-null="false"/>
+		<property name="maxCapacity" column="max_capacity" type="double" not-null="false"/>
     </class>
 </hibernate-mapping>  
 

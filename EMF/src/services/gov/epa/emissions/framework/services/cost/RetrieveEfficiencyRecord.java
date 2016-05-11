@@ -48,6 +48,8 @@ public class RetrieveEfficiencyRecord {
         effRecColumnMap.put("Incremental CPT", "er.incremental_cost_per_ton");
         effRecColumnMap.put("Min Emis", "er.min_emis");
         effRecColumnMap.put("Max Emis", "er.max_emis");
+        effRecColumnMap.put("Min Capacity", "er.min_capacity");
+        effRecColumnMap.put("Max Capacity", "er.max_capacity");
     }
 
     public EfficiencyRecord[] getEfficiencyRecords(int recordLimit, String filter) throws SQLException, EmfException {
@@ -69,10 +71,12 @@ public class RetrieveEfficiencyRecord {
         double eff = 0;
         double minEmis = 0;
         double maxEmis = 0;
-        double capRecFactor=0;
-        double discountRate=0;
-        double capAnnRatio=0;
-        double incrementalCPT=0;
+        double capRecFactor = 0;
+        double discountRate = 0;
+        double capAnnRatio = 0;
+        double incrementalCPT = 0;
+        double minCapacity = 0;
+        double maxCapacity = 0;
         
         try {
             while (rs.next()) {
@@ -94,9 +98,9 @@ public class RetrieveEfficiencyRecord {
                 effRec.setRulePenetration(rs.getFloat(13));
                 effRec.setEquationType(rs.getString(14));
                 
-                capRecFactor=rs.getDouble(15);
+                capRecFactor = rs.getDouble(15);
                 effRec.setCapRecFactor(!rs.wasNull() ? capRecFactor : null);
-                discountRate=rs.getDouble(16);
+                discountRate = rs.getDouble(16);
                 effRec.setDiscountRate(!rs.wasNull() ? discountRate : null);
        
                 effRec.setDetail(rs.getString(17));
@@ -110,10 +114,15 @@ public class RetrieveEfficiencyRecord {
                 maxEmis = rs.getDouble(23);
                 effRec.setMaxEmis(!rs.wasNull() ? maxEmis : null);
                 
-                capAnnRatio=rs.getDouble(24);
+                capAnnRatio = rs.getDouble(24);
                 effRec.setCapitalAnnualizedRatio(!rs.wasNull() ? capAnnRatio : null);
-                incrementalCPT=rs.getDouble(25);
+                incrementalCPT = rs.getDouble(25);
                 effRec.setIncrementalCostPerTon(!rs.wasNull() ? incrementalCPT : null);    
+                
+                minCapacity = rs.getDouble(26);
+                effRec.setMinCapacity(!rs.wasNull() ? minCapacity : null);
+                maxCapacity = rs.getDouble(27);
+                effRec.setMaxCapacity(!rs.wasNull() ? maxCapacity : null);
 
                 effRecs.add(effRec);
             }
@@ -132,7 +141,8 @@ public class RetrieveEfficiencyRecord {
             + ", er.record_id, er.pollutant_id , p.name, er.existing_measure_abbr, er.existing_dev_code, er.locale"
             + ", er.efficiency, er.cost_year, er.cost_per_ton, er.rule_effectiveness, er.rule_penetration"
             + ", er.equation_type, er.cap_rec_factor, er.discount_rate, er.detail, er.effective_date, er.last_modified_by, "
-            + "er.last_modified_time, er.ref_yr_cost_per_ton, er.min_emis, er.max_emis, er.cap_ann_ratio, er.incremental_cost_per_ton "
+            + "er.last_modified_time, er.ref_yr_cost_per_ton, er.min_emis, er.max_emis, er.cap_ann_ratio, er.incremental_cost_per_ton, "
+            + "er.min_capacity, er.max_capacity "
             + "from emf.control_measure_efficiencyrecords er "
             + "inner join emf.pollutants p "
             + "on p.id = er.pollutant_id "

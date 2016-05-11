@@ -1654,3 +1654,7 @@ ALTER TABLE emf.sources
 
 -- 01/04/2016 Add reference.gdplev deflator_gdp column
 ALTER TABLE reference.gdplev ADD COLUMN deflator_gdp double precision;
+
+-- 03/22/2016 Add min and max capacity constraints to efficiency records
+ALTER TABLE emf.control_measure_efficiencyrecords ADD COLUMN min_capacity double precision;
+ALTER TABLE emf.control_measure_efficiencyrecords ADD COLUMN max_capacity double precision;

@@ -33,7 +33,8 @@ public class ControlMeasureEfficiencyTableData extends AbstractTableData {
                 "Max Emis", "Rule Effectiveness", 
                 "Rule Penetration", "Equation Type", 
                 "Capital Rec Fac", "Discount Rate", "Cap Ann Ratio", "Incremental CPT", 
-                "Last Modifed By", "Last Modifed Date", 
+                "Min Capacity", "Max Capacity", 
+                "Last Modified By", "Last Modified Date", 
                 "Details", "Existing Measure", 
                 "Existing NEI Dev"};
     }
@@ -64,6 +65,8 @@ public class ControlMeasureEfficiencyTableData extends AbstractTableData {
                 new Double(record.getDiscountRate()!= null ? record.getDiscountRate() : NAN_VALUE), 
                 new Double(record.getCapitalAnnualizedRatio()!= null ? record.getCapitalAnnualizedRatio() : NAN_VALUE), 
                 new Double(record.getIncrementalCostPerTon()!= null ? record.getIncrementalCostPerTon() : NAN_VALUE),
+                record.getMinCapacity() != null ? record.getMinCapacity() : NAN_VALUE,
+                record.getMaxCapacity() != null ? record.getMaxCapacity() : NAN_VALUE,
                 record.getLastModifiedBy(), 
                 CustomDateFormat.format_MM_DD_YYYY_HH_mm(record.getLastModifiedTime()), 
                 record.getDetail(), 
@@ -90,11 +93,12 @@ public class ControlMeasureEfficiencyTableData extends AbstractTableData {
     }
 
     public Class getColumnClass(int col) {
-        if (col == 20)
+        if (col == 22)
             return Integer.class;
 
         if (col == 4 || col == 5 || col == 6 || col == 7 || col == 8 || 
-                col == 9 || col == 10 || col == 12 || col == 13 || col==14 || col==15 )
+                col == 9 || col == 10 || col == 12 || col == 13 || col == 14 || col == 15 ||
+                col == 16 || col == 17)
             return Double.class;
 
         return String.class;

@@ -89,6 +89,9 @@ DECLARE
 	latitude_expression character varying(64) := 'yloc';
 	plant_name_expression character varying(64) := 'plant';
 	control_ids_expression character varying(255) := 'control_ids';
+	
+	design_capacity_units_expression character varying(64) := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
+	convert_design_capacity_expression text;
 BEGIN
 
 	-- get the input dataset info
@@ -118,6 +121,8 @@ BEGIN
 		latitude_expression := 'latitude';
 		plant_name_expression := 'facility_name';
 		control_ids_expression := 'control_ids';
+		design_capacity_units_expression := 'design_capacity_units';
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '');
 	ELSE
 		fips_expression := 'fips';
 		plantid_expression := 'plantid';
@@ -140,6 +145,8 @@ BEGIN
 		ELSIF dataset_type_name = 'ORL Merged Inventory' THEN
 			control_ids_expression := 'case when coalesce(cpri,0) <> 0 then coalesce(cpri || '''','''') else '''' end || coalesce(PRIMARY_DEVICE_TYPE_CODE,'''')';
 		END IF;
+		design_capacity_units_expression := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '', '');
 	END If;
 
 	-- get the detailed result dataset info
@@ -251,7 +258,7 @@ BEGIN
 	has_rpen_column := public.check_table_for_columns(inv_table_name, 'rpen', ',');
 
 	-- see if there is design capacity columns in the inventory
-	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_unit_numerator,design_capacity_unit_denominator', ',');
+	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,' || design_capacity_units_expression, ',');
 
 	-- see if there is lat & long columns in the inventory
 	has_latlong_columns := public.check_table_for_columns(inv_table_name, '' || longitude_expression || ',' || latitude_expression || '', ',');
@@ -879,6 +886,14 @@ select
 
 
 			)
+			-- capacity restrictions
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			     or
+			     (' || has_design_capacity_columns || ' and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
+			        COALESCE(er.min_capacity, -1E+308) and
+			        COALESCE(er.max_capacity, 1E+308)))
 
 
 			left outer join reference.gdplev gdplev_incr

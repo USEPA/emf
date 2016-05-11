@@ -48,7 +48,8 @@ DECLARE
 	percent_reduction_sql character varying;
 	inventory_sectors character varying := '';
 	creator_user_id integer := 0;
-	is_cost_su boolean := false; 
+	is_cost_su boolean := false;
+	convert_design_capacity_expression text;
 BEGIN
 --	SET work_mem TO '512MB';
 --	SET enable_seqscan TO 'off';
@@ -147,6 +148,7 @@ BEGIN
 
 	-- see if there is design capacity columns in the inventory
 	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_unit_numerator,design_capacity_unit_denominator', ',');
+	convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '', '');
 
 	-- see if there is lat & long columns in the inventory
 	has_latlong_columns := public.check_table_for_columns(inv_table_name, 'xloc,yloc', ',');
@@ -440,6 +442,15 @@ BEGIN
 			and (er.locale = inv.fips or er.locale = substr(inv.fips, 1, 2) or er.locale = '''')
 			-- effecive date filter
 			and ' || inventory_year || '::integer >= coalesce(date_part(''year'', er.effective_date), ' || inventory_year || '::integer)
+
+			-- capacity restrictions
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			     or
+			     (' || has_design_capacity_columns || ' and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
+			        COALESCE(er.min_capacity, -1E+308) and
+			        COALESCE(er.max_capacity, 1E+308)))
 
 			left outer join reference.gdplev gdplev_incr
 			on gdplev_incr.annual = er.cost_year

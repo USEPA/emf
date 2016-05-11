@@ -163,6 +163,9 @@ DECLARE
 	is_control_packet_extended_format boolean := false;
 	projection_column_list varchar := 'ann_proj_factor,jan_proj_factor,feb_proj_factor,mar_proj_factor,apr_proj_factor,may_proj_factor,jun_proj_factor,jul_proj_factor,aug_proj_factor,sep_proj_factor,oct_proj_factor,nov_proj_factor,dec_proj_factor';
 	number_of_days_in_year smallint;
+	
+	design_capacity_units_expression character varying(64) := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
+	convert_design_capacity_expression text;
 BEGIN
 
 	-- get the input dataset info
@@ -190,12 +193,16 @@ BEGIN
 		IF dataset_type_name = 'Flat File 2010 Point' THEN
 			is_flat_file_point_inventory := true;
 		END IF;
+		design_capacity_units_expression := 'design_capacity_units';
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '');
 	ELSE
 		fips_expression := 'fips';
 		plantid_expression := 'plantid';
 		pointid_expression := 'pointid';
 		stackid_expression := 'stackid';
 		segment_expression := 'segment';
+		design_capacity_units_expression := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '', '');
 	END If;
 
 	-- get the detailed result dataset info
@@ -270,8 +277,7 @@ BEGIN
 	has_primary_device_type_code_column := public.check_table_for_columns(inv_table_name, 'primary_device_type_code', ',');
 
 	-- see if there is design capacity columns in the inventory
-	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_unit_numerator,design_capacity_unit_denominator', ',')
-		or public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_units', ',');
+	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,' || design_capacity_units_expression, ',');
 
 	-- see if there is lat & long columns in the inventory
 	has_latlong_columns := public.check_table_for_columns(inv_table_name, 'xloc,yloc', ',');
@@ -2401,6 +2407,15 @@ BEGIN
 			and abs(er.efficiency - cont.ann_pctred) <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision
 			and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0
 --			and ' || cont_packet_percent_reduction_sql || ' <> 0.0
+
+			-- capacity restrictions
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			     or
+			     (' || has_design_capacity_columns || ' and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
+			        COALESCE(er.min_capacity, -1E+308) and
+			        COALESCE(er.max_capacity, 1E+308)))
 			
 			left outer join reference.gdplev gdplev_incr
 			on gdplev_incr.annual = er.cost_year
@@ -3319,6 +3334,15 @@ BEGIN
 			-- effecive date filter
 			and ' || inventory_year || '::smallint >= coalesce(date_part(''year'', er.effective_date), ' || inventory_year || '::smallint)
 			and abs(er.efficiency - case when ' || emis_sql || ' <> 0 then coalesce(cont.ann_replacement, cont.ann_cap) * ' || number_of_days_in_year || ' / ' || emis_sql || ' else 0.0::double precision end) <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision
+
+			-- capacity restrictions
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			     or
+			     (' || has_design_capacity_columns || ' and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
+			        COALESCE(er.min_capacity, -1E+308) and
+			        COALESCE(er.max_capacity, 1E+308)))
 
 			left outer join emf.control_measures m
 			on m.id = er.control_measures_id

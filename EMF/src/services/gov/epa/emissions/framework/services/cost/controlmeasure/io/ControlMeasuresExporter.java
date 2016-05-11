@@ -320,6 +320,8 @@ public class ControlMeasuresExporter implements Exporter {
             + "     er.discount_rate as DiscountRate, "
             + "     er.cap_ann_ratio as CapAnnRatio, "
             + "     er.incremental_cost_per_ton as IncrementalCPT, "
+            + "     er.min_capacity as MinCapacity, "
+            + "     er.max_capacity as MaxCapacity, "
             + "     er.detail as Details, "
             + "     er.ref_yr_cost_per_ton as RefYrCostPerTon "
             + " from emf.control_measures m "
