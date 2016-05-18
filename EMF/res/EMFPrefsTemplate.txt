@@ -12,7 +12,7 @@ server.import.folder=
 server.export.folder=
 server.address=http://sage.nesc.epa.gov:8080/emf/services
 java.home=C:/Program Files/Java/jre6
-local.temp.dir=C:/
+local.temp.dir=
 r.home=C:/Program Files/R/rw2000/bin
 
 

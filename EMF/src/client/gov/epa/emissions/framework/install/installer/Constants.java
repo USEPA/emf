@@ -6,6 +6,7 @@ public class Constants {
 	public static final String SEPARATOR = System.getProperty("line.separator");
     public static final String WORK_DIR = System.getProperty("user.dir");
     public static final String USER_HOME = System.getProperty("user.home");
+    public static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
 	
 	public static final String TIME_FORMAT = "MM/dd/yyyy hh:mmaaa";
     public static final String EMF_URL = "http://www.ie.unc.edu/cempd/projects/emf/install/";

@@ -93,7 +93,7 @@ public class InstallWindow extends JFrame implements InstallView {
         installDirField = new JTextField(30);
         installDirField.setToolTipText("Home directory user chooses to install EMF client software");
 
-        tmpDirField = new JTextField(30);
+        tmpDirField = new JTextField(Constants.TEMP_DIR);
         tmpDirField.setToolTipText("QA reports will be downloaded into this directory");
 
         serverField = new JTextField(30);
@@ -191,7 +191,8 @@ public class InstallWindow extends JFrame implements InstallView {
             outputDirField.setText(outputString);
             installDirField.setText(windowsOS ? installString.replace('/', '\\') : installString);
             rHomeField.setText(windowsOS ? rhome.replace('/', '\\') : rhome);
-            tmpDirField.setText(windowsOS ? localTmpDir.replace('/', '\\') : localTmpDir);
+            if (!localTmpDir.isEmpty())
+                tmpDirField.setText(windowsOS ? localTmpDir.replace('/', '\\') : localTmpDir);
             serverField.setText(serverString);
         } catch (Exception e) {
             presenter.displayErr(e.getMessage());
