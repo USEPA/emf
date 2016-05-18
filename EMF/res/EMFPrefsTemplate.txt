@@ -6,8 +6,8 @@
 #If the value aren't specified then default value will be empty string
 #Use '/' for path separator for file names
 
-web.site=http://www.ie.unc.edu/cempd/projects/emf/install/
-emf.install.folder=C:/
+web.site=https://www.cmascenter.org/emf/install/
+emf.install.folder=C:/Program Files/EMF Client
 server.import.folder=
 server.export.folder=
 server.address=http://sage.nesc.epa.gov:8080/emf/services

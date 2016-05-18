@@ -2,14 +2,14 @@ package gov.epa.emissions.framework.install.installer;
 
 
 public class Constants {
-	public static final String VERSION = "9/22/2015";
+	public static final String VERSION = "5/17/2016";
 	public static final String SEPARATOR = System.getProperty("line.separator");
     public static final String WORK_DIR = System.getProperty("user.dir");
     public static final String USER_HOME = System.getProperty("user.home");
     public static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
 	
 	public static final String TIME_FORMAT = "MM/dd/yyyy hh:mmaaa";
-    public static final String EMF_URL = "http://www.ie.unc.edu/cempd/projects/emf/install/";
+    public static final String EMF_URL = "https://www.cmascenter.org/emf/install/";
 	public static final String SERVER_ADDRESS = "http://sage.nesc.epa.gov:8080/emf/services";
     
 	public static final String INSTALLER_PREFERENCES_FILE = "EMFPrefsTemplate.txt";
