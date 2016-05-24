@@ -91,7 +91,7 @@ public class PostgresCOPYExport {
     private String getNeedQuotesCols(String selectQuery) {
         String colNames = "";
         ResultSet rs = null;
-        String sql = selectQuery + (selectQuery.toLowerCase().indexOf("where") > 0 ? " and " : " where ") + "1 = 0";
+        String sql = selectQuery + " limit 0";
         try {
             rs = datasource.query().executeQuery(sql);
             ResultSetMetaData md = rs.getMetaData();
