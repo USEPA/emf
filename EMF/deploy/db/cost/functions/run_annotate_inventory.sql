@@ -167,7 +167,7 @@ BEGIN
 
 	-- see if there is design capacity columns in the inventory
 	has_design_capacity_columns := public.check_table_for_columns(inv_table_name, 'design_capacity,design_capacity_unit_numerator,design_capacity_unit_denominator', ',');
-	convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '', '');
+	convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', 'scc', '', '');
 
 
 	-- get strategy constraints

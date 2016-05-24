@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS public.get_cost_expressions(integer, integer, boolean, character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), double precision);
 
 CREATE OR REPLACE FUNCTION public.get_cost_expressions(
 	int_control_strategy_id integer,
@@ -12,6 +13,7 @@ CREATE OR REPLACE FUNCTION public.get_cost_expressions(
 	gdplev_table_alias character varying(64), 
 	inv_override_table_alias character varying(64), 
 	gdplev_incr_table_alias character varying(64),
+	control_measure_sccs_table_alias character varying(64),
 	discount_rate double precision,
 	OUT annual_cost_expression text, 
 	OUT capital_cost_expression text, 
@@ -161,8 +163,8 @@ BEGIN
 		inv_ceff_expression := 'ann_pct_red';
 		design_capacity_units_expression  := 'design_capacity_units';
 		is_flat_file_inventory := true;
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, '');
-		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, 'MW');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, '');
+		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, 'MW');
 	ELSE
 		fips_expression := 'fips';
 		plantid_expression := 'plantid';
@@ -171,8 +173,8 @@ BEGIN
 		segment_expression := 'segment';
 		inv_ceff_expression := 'ceff';
 		design_capacity_units_expression := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, '', '');
-		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, 'MW', '');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, '', '');
+		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, 'MW', '');
 	END If;
 
 	-- get target pollutant, inv filter, and county dataset info if specified
@@ -3553,6 +3555,7 @@ select (public.get_cost_expressions(
 	'gdplev'::character varying, --gdplev_incr_table_alias
 	'inv_ovr'::character varying, --inv_override_table_alias
 	'gdplev_incr'::character varying, --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).annual_cost_expression, 
 	(public.get_cost_expressions(
@@ -3567,6 +3570,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).capital_cost_expression, 
 	(public.get_cost_expressions(
@@ -3581,6 +3585,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).annualized_capital_cost_expression, 
 	(public.get_cost_expressions(
@@ -3595,6 +3600,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
@@ -3609,6 +3615,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).fixed_operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
@@ -3623,6 +3630,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).variable_operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
@@ -3637,6 +3645,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).computed_cost_per_ton_expression;
 */

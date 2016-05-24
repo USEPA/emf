@@ -1,5 +1,9 @@
+DROP FUNCTION IF EXISTS public.get_convert_design_capacity_expression(character varying(64), character varying(10), character varying(10));
+DROP FUNCTION IF EXISTS public.get_convert_design_capacity_expression(character varying(64), character varying(20));
+
 CREATE OR REPLACE FUNCTION public.get_convert_design_capacity_expression(
 	inv_table_alias character varying(64), 
+	control_measure_sccs_table_alias character varying(64),
 	unit_numerator_default_value character varying(10), 
 	unit_denominator_default_value character varying(10)) RETURNS text AS $$
 DECLARE
@@ -25,14 +29,15 @@ BEGIN
 			else 
 				'coalesce(' || inv_table_alias || '.design_capacity_unit_denominator, '''')' 
 		end
-		|| ')';
+		|| control_measure_sccs_table_alias || '.combustion_efficiency)';
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
---select public.get_convert_design_capacity_expression('inv', 'MW', 'hr');
+--select public.get_convert_design_capacity_expression('inv', 'scc', 'MW', 'hr');
 
 CREATE OR REPLACE FUNCTION public.get_convert_design_capacity_expression(
 	inv_table_alias character varying(64), 
+	control_measure_sccs_table_alias character varying(64),
 	units_default_value character varying(20)) RETURNS text AS $$
 DECLARE
 BEGIN
@@ -47,7 +52,7 @@ BEGIN
 			else 
 				'coalesce(' || inv_table_alias || '.design_capacity_units, '''')' 
 		end
-		|| ')';
+		|| control_measure_sccs_table_alias || '.combustion_efficiency)';
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 

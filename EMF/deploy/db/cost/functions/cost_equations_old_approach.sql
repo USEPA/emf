@@ -829,7 +829,7 @@ BEGIN
 			-- Type 1
 			IF equation_type = 'Type 1' THEN
 
-				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator);
+				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, null);
 
 				IF coalesce(design_capacity, 0) <> 0 THEN
 					select costs.annual_cost,
@@ -877,7 +877,7 @@ BEGIN
 			-- Type 2
 			IF equation_type = 'Type 2' THEN
 
-				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator);
+				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, null);
 				-- convert design capacity to mmBtu/hr
 				converted_design_capacity := 3.412 * converted_design_capacity;
 				IF coalesce(converted_design_capacity, 0) <> 0 THEN
@@ -1059,7 +1059,7 @@ BEGIN
 			IF equation_type = 'Type 11' THEN
 
 				-- convert design capacity to mmBTU/hr
-				converted_design_capacity := 3.412 * public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator);
+				converted_design_capacity := 3.412 * public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, null);
 
 				IF coalesce(converted_design_capacity, 0) <> 0 THEN
 					select costs.annual_cost,
@@ -1378,7 +1378,7 @@ BEGIN
 						else
 							design_capacity_unit_numerator
 					end
-					, design_capacity_unit_denominator);
+					, design_capacity_unit_denominator, null);
 --					case 
 --						when len(coalesce(design_capacity_unit_numerator, '')) = 0 then 
 --							public.convert_design_capacity_to_mw(design_capacity, 'MW'::character varying, design_capacity_unit_denominator)

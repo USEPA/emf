@@ -194,7 +194,7 @@ BEGIN
 			is_flat_file_point_inventory := true;
 		END IF;
 		design_capacity_units_expression := 'design_capacity_units';
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', 'sccs', '');
 	ELSE
 		fips_expression := 'fips';
 		plantid_expression := 'plantid';
@@ -202,7 +202,7 @@ BEGIN
 		stackid_expression := 'stackid';
 		segment_expression := 'segment';
 		design_capacity_units_expression := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '', '');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', 'sccs', '', '');
 	END If;
 
 	-- get the detailed result dataset info
