@@ -112,10 +112,14 @@ public class CMImporters {
 
     private CMSCCImporter createSCCImporter() throws EmfException {
         CMSCCsFileFormat fileFormat = new CMSCCsFileFormat();
+        CMSCCsFileFormatv2 fileFormatv2 = new CMSCCsFileFormatv2();
         String[] cols = fileFormat.cols();
+        String[] colsv2 = fileFormatv2.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
                 return new CMSCCImporter(files[i], fileFormat, user, sessionFactory);
+            } else if (matches(colsv2, records[i].getTokens())) {
+                return new CMSCCImporter(files[i], fileFormatv2, user, sessionFactory);
             }
         }
 

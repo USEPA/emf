@@ -401,7 +401,8 @@ public class ControlMeasuresExporter implements Exporter {
         String selectQuery = 
             "   select m.abbreviation as CMAbbreviation, "
             + "     scc.name as SCC, "
-            + "     scc.status as Status "
+            + "     scc.status as Status, "
+            + "     scc.combustion_efficiency as CombustionEfficiency "
             + " from emf.control_measures m "
             + "     inner join emf.control_measure_sccs scc "
             + "     on scc.control_measures_id = m.id "

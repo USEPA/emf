@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class CMSCCRecordReader {
 
-    private CMSCCsFileFormat fileFormat;
+    private CMFileFormat fileFormat;
 
     private CMAddImportStatus status;
 //    private HashSet sccSet;
@@ -23,7 +23,7 @@ public class CMSCCRecordReader {
 
     private int errorLimit = 100;
 
-    public CMSCCRecordReader(CMSCCsFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
+    public CMSCCRecordReader(CMFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
         this.fileFormat = fileFormat;
         this.status = new CMAddImportStatus(user, sessionFactory);
  //       this.sccSet = new HashSet();
@@ -40,6 +40,15 @@ public class CMSCCRecordReader {
             Scc scc = new Scc();
             scc.setCode(tokens[1]);
             scc.setStatus(tokens[2]);
+            if (fileFormat.cols().length == 4 && tokens[3].trim().length() > 0) {
+                try {
+                    scc.setCombustionEfficiency(Float.parseFloat(tokens[3]));
+                } catch (NumberFormatException e) {
+                    sb.append(format("combustion efficiency should be a float, value = " + tokens[3]));
+                }
+            } else {
+                scc.setCombustionEfficiency(null);
+            }
             cm.addScc(scc);
         }
         if (sb.length() > 0) {
