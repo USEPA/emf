@@ -29,7 +29,7 @@ BEGIN
 			else 
 				'coalesce(' || inv_table_alias || '.design_capacity_unit_denominator, '''')' 
 		end
-		|| control_measure_sccs_table_alias || '.combustion_efficiency)';
+		|| ', ' || control_measure_sccs_table_alias || '.combustion_efficiency)';
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
@@ -52,7 +52,7 @@ BEGIN
 			else 
 				'coalesce(' || inv_table_alias || '.design_capacity_units, '''')' 
 		end
-		|| control_measure_sccs_table_alias || '.combustion_efficiency)';
+		|| ', ' || control_measure_sccs_table_alias || '.combustion_efficiency)';
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
