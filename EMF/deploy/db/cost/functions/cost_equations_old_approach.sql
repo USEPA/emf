@@ -88,19 +88,14 @@ BEGIN
         END IF;
 
 	-- calculate scaling factor
-	scaling_factor := 
-		case 
-			when (measure_abbreviation = 'NSCR_UBCW' or measure_abbreviation = 'NSCR_UBCT') and design_capacity >= 600.0 then 1.0
-			when design_capacity >= 500.0 then 1.0
-			else scaling_factor_model_size ^ scaling_factor_exponent
-		end;
+	scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 
 	-- calculate capital cost
 	capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000;
 
 	-- calculate operation maintenance cost
 	-- calculate fixed operation maintenance cost
-	fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+	fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 	-- calculate variable operation maintenance cost
 	variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
 	-- calculate total operation maintenance cost

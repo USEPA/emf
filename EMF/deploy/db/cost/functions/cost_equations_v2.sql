@@ -724,14 +724,9 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
@@ -739,16 +734,12 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					/*annualized_capital_cost*/ 
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
-					* case 
-						when (' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCW'' or ' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCT'') and ' || convert_design_capacity_expression || ' >= 600.0 then 1.0
-						when ' || convert_design_capacity_expression || ' >= 500.0 then 1.0
-						else ' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/
-					end /*scaling_factor*/
+					* ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/
 					* 1000) /*capital_cost*/
 					* ' || capital_recovery_factor_expression || '
 					+ 
 					/*operation_maintenance_cost*/
-					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/, 0) 
+					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/ * 1000/*fixed_operation_maintenance_cost*/, 0) 
 					+ coalesce(' || control_measure_equation_table_alias || '.value3/*variable_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ' || control_measure_equation_table_alias || '.value6/*capacity_factor*/ * 8760/*variable_operation_maintenance_cost*/, 0)
 					)
 
@@ -1231,25 +1222,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
-					* (case 
-						when (' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCW'' or ' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCT'') and ' || convert_design_capacity_expression || ' >= 600.0 then 1.0
-						when ' || convert_design_capacity_expression || ' >= 500.0 then 1.0
-						else ' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/
-					end) /*scaling_factor*/
+					* ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/
 					* 1000) /*capital_cost*/
 					)
 
@@ -1706,21 +1688,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					/*operation_maintenance_cost*/
-					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/, 0) 
+					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/ * 1000/*fixed_operation_maintenance_cost*/, 0) 
 					+ coalesce(' || control_measure_equation_table_alias || '.value3/*variable_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ' || control_measure_equation_table_alias || '.value6/*capacity_factor*/ * 8760/*variable_operation_maintenance_cost*/, 0)
 					)
 
@@ -2141,20 +2118,15 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/
+					' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/ * 1000/*fixed_operation_maintenance_cost*/
 					)
 
 				--Equation Type 2 
@@ -2491,14 +2463,9 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
@@ -2847,25 +2814,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
-					* (case 
-						when (' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCW'' or ' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCT'') and ' || convert_design_capacity_expression || ' >= 600.0 then 1.0
-						when ' || convert_design_capacity_expression || ' >= 500.0 then 1.0
-						else ' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/
-					end) /*scaling_factor*/
+					* ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/
 					* 1000) /*capital_cost*/
 					* (' || capital_recovery_factor_expression || ')
 					)
