@@ -110,13 +110,13 @@ public class CMImportWindow extends ReusableInteralFrame implements CMImportView
                 sectorIDs = this.importInputPanel.getSectorIDs();
             }
             
-            presenter.doImport(this.importInputPanel.toPurge(), sectorIDs, importInputPanel.folder(), importInputPanel.files());
+            importing = presenter.doImport(this.importInputPanel.toPurge(), sectorIDs, importInputPanel.folder(), importInputPanel.files());
             
-            importing = true;
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         } finally {
             this.setCursor(Cursor.getDefaultCursor());
+            if (!importing) importButton.setEnabled(true);
         }
     }
 
