@@ -106,7 +106,7 @@ public class CMImporters {
                 return new CMEfficiencyImporter(files[i], fileFormatv4, user, sessionFactory, dbServer);
             }
         }
-        throw new EmfException("Failed to import control measures: Control Measure Efficiency file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv3));
+        throw new EmfException("Failed to import control measures: Control Measure Efficiency file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv4));
 
     }
 
@@ -123,7 +123,7 @@ public class CMImporters {
             }
         }
 
-        throw new EmfException("Failed to import control measures: Control Measure SCC file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(cols));
+        throw new EmfException("Failed to import control measures: Control Measure SCC file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv2));
 
     }
 
