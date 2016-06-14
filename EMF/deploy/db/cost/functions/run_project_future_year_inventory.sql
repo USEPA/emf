@@ -2409,13 +2409,14 @@ BEGIN
 --			and ' || cont_packet_percent_reduction_sql || ' <> 0.0
 
 			-- capacity restrictions
-			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL) '
+			     || case when has_design_capacity_columns then '
 			     or
-			     (' || has_design_capacity_columns || ' and
-			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			     (COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
 			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
 			        COALESCE(er.min_capacity, -1E+308) and
-			        COALESCE(er.max_capacity, 1E+308)))
+			        COALESCE(er.max_capacity, 1E+308)) '
+			     else '' end || ')
 			
 			left outer join reference.gdplev gdplev_incr
 			on gdplev_incr.annual = er.cost_year
@@ -3336,13 +3337,14 @@ BEGIN
 			and abs(er.efficiency - case when ' || emis_sql || ' <> 0 then coalesce(cont.ann_replacement, cont.ann_cap) * ' || number_of_days_in_year || ' / ' || emis_sql || ' else 0.0::double precision end) <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision
 
 			-- capacity restrictions
-			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL) '
+			     || case when has_design_capacity_columns then '
 			     or
-			     (' || has_design_capacity_columns || ' and
-			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			     (COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
 			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
 			        COALESCE(er.min_capacity, -1E+308) and
-			        COALESCE(er.max_capacity, 1E+308)))
+			        COALESCE(er.max_capacity, 1E+308)) '
+			     else '' end || ')
 
 			left outer join emf.control_measures m
 			on m.id = er.control_measures_id

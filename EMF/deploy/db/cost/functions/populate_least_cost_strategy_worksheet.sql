@@ -931,13 +931,14 @@ from (
 
 			)
 			-- capacity restrictions
-			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL) '
+			     || case when has_design_capacity_columns then '
 			     or
-			     (' || has_design_capacity_columns || ' and
-			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			     (COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
 			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
 			        COALESCE(er.min_capacity, -1E+308) and
-			        COALESCE(er.max_capacity, 1E+308)))
+			        COALESCE(er.max_capacity, 1E+308)) '
+			     else '' end || ')
 
 
 			left outer join reference.gdplev gdplev_incr
