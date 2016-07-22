@@ -43,6 +43,7 @@
         <mapping resource="gov/epa/emissions/framework/services/data/Country.hbm.xml"/>
         <mapping resource="gov/epa/emissions/framework/services/data/DatasetType.hbm.xml"/>
     	<mapping resource="gov/epa/emissions/framework/services/data/Dataset.hbm.xml"/>
+        <mapping resource="gov/epa/emissions/framework/services/data/ModuleType.hbm.xml"/>
     	<mapping resource="gov/epa/emissions/framework/services/data/Pollutant.hbm.xml"/>
     	<mapping resource="gov/epa/emissions/framework/services/data/SourceGroup.hbm.xml"/>
     	<mapping resource="gov/epa/emissions/framework/services/basic/AccessLog.hbm.xml"/>    	

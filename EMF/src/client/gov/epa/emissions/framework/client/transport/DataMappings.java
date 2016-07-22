@@ -2,6 +2,12 @@ package gov.epa.emissions.framework.client.transport;
 
 import gov.epa.emissions.commons.data.Country;
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.data.ModuleType;
+import gov.epa.emissions.commons.data.ModuleTypeVersion;
+import gov.epa.emissions.commons.data.ModuleTypeVersionDataset;
+import gov.epa.emissions.commons.data.ModuleTypeVersionParameter;
+import gov.epa.emissions.commons.data.ModuleTypeVersionRevision;
+import gov.epa.emissions.commons.data.ModuleDatasetParameterMode;
 import gov.epa.emissions.commons.data.ExternalSource;
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.KeyVal;
@@ -107,6 +113,13 @@ public class DataMappings extends Mappings {
 
         bean(call, EmfDataset.class, dataset());
         bean(call, DatasetType.class, datasetType());
+
+        bean(call, ModuleType.class,                 moduleType());
+        bean(call, ModuleTypeVersion.class,          moduleTypeVersion());
+        bean(call, ModuleTypeVersionDataset.class,   moduleTypeVersionDataset());
+        bean(call, ModuleTypeVersionParameter.class, moduleTypeVersionParameter());
+        bean(call, ModuleTypeVersionRevision.class,  moduleTypeVersionRevision());
+        bean(call, ModuleDatasetParameterMode.class, moduleDatasetParameterMode());
 
         bean(call, InternalSource.class, "InternalSource");
         bean(call, ExternalSource.class, externalSource());
@@ -223,6 +236,8 @@ public class DataMappings extends Mappings {
         array(call, EmfDataset[].class, datasets());
         array(call, DatasetType[].class, datasetTypes());
 
+        array(call, ModuleType[].class, moduleTypes());
+
         array(call, ExternalSource[].class, externalSources());
         array(call, InternalSource[].class, "InternalSources");
 
@@ -334,6 +349,10 @@ public class DataMappings extends Mappings {
         return qname("DatasetTypes");
     }
 
+    public QName moduleTypes() {
+        return qname("ModuleTypes");
+    }
+
     public QName sector() {
         return qname("Sector");
     }
@@ -408,6 +427,30 @@ public class DataMappings extends Mappings {
 
     public QName datasetType() {
         return qname("DatasetType");
+    }
+
+    public QName moduleType() {
+        return qname("ModuleType");
+    }
+
+    public QName moduleTypeVersion() {
+        return qname("ModuleTypeVersion");
+    }
+
+    public QName moduleTypeVersionDataset() {
+        return qname("ModuleTypeVersionDataset");
+    }
+
+    public QName moduleTypeVersionParameter() {
+        return qname("ModuleTypeVersionParameter");
+    }
+
+    public QName moduleTypeVersionRevision() {
+        return qname("ModuleTypeVersionRevision");
+    }
+
+    public QName moduleDatasetParameterMode() {
+        return qname("ModuleDatasetParameterMode");
     }
 
     public QName dataset() {

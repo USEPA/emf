@@ -23,6 +23,8 @@ import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserView;
 import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserWindow;
 import gov.epa.emissions.framework.client.data.datasettype.DatasetTypesManagerView;
 import gov.epa.emissions.framework.client.data.datasettype.DatasetTypesManagerWindow;
+import gov.epa.emissions.framework.client.data.moduletype.ModuleTypesManagerView;
+import gov.epa.emissions.framework.client.data.moduletype.ModuleTypesManagerWindow;
 import gov.epa.emissions.framework.client.data.sector.SectorsManagerView;
 import gov.epa.emissions.framework.client.data.sector.SectorsManagerWindow;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerView;
@@ -124,6 +126,18 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doManageDatasetTypes(parent, messagePanel);
+            }
+        });
+
+        return menuItem;
+    }
+
+    private JMenuItem createModuleTypes(final EmfConsole parent, final MessagePanel messagePanel) {
+        JMenuItem menuItem = new JMenuItem("Module Types");
+        menuItem.setName("moduleTypes");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                doManageModuleTypes(parent, messagePanel);
             }
         });
 
@@ -281,6 +295,15 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         }
     }
 
+    private void doManageModuleTypes(final EmfConsole parent, final MessagePanel messagePanel) {
+        try {
+            ModuleTypesManagerView view = new ModuleTypesManagerWindow(session, parent, desktopManager);
+            presenter.doDisplayModuleTypesManager(view);
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+    }
+
     private void doManageSectors(final EmfConsole parent, final MessagePanel messagePanel) {
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
@@ -379,6 +402,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         }
         super.addSeparator();
         super.add(createDatasetTypes(parent, messagePanel));
+        super.add(createModuleTypes(parent, messagePanel));
         super.add(createSectors(parent, messagePanel));
         super.addSeparator();
         if (!excludeItem("Control Measures"))

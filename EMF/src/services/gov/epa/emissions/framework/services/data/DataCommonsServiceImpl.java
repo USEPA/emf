@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.Record;
 import gov.epa.emissions.commons.data.Country;
 import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.data.ModuleType;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.data.Pollutant;
@@ -329,7 +330,73 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             throw new EmfException("Could not release lock on DatasetType: " + type.getName());
         }
     }
-    
+
+    public synchronized ModuleType[] getModuleTypes() throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            List<ModuleType> list = dao.getModuleTypes(session);
+            session.close();
+
+            ModuleType[] moduleTypes = list.toArray(new ModuleType[0]); 
+            return moduleTypes;
+        } catch (RuntimeException e) {
+            LOG.error("Could not get all ModuleTypes", e);
+            throw new EmfException("Could not get all ModuleTypes ");
+        }
+    }
+
+    public void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
+        Session session = this.sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+
+        try {
+            if (owner.isAdmin()){
+                for (int i=0; i<types.length; i++) {
+                    dao.removeModuleType(types[i], session);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error deleting module types. " , e);
+            throw new EmfException("Error deleting module types. \n" + e.getMessage());
+        } finally {
+            session.close(); 
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
+    }
+
+    public synchronized ModuleType obtainLockedModuleType(User user, ModuleType type) throws EmfException {
+        Session session = sessionFactory.getSession();
+
+        try {
+            ModuleType locked = dao.obtainLockedModuleType(user, type, session);
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not obtain lock for ModuleType: " + type.getName(), e);
+            throw new EmfException("Could not obtain lock for ModuleType: " + type.getName());
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized ModuleType releaseLockedModuleType(User user, ModuleType type) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            ModuleType locked = dao.releaseLockedModuleType(user, type, session);
+            session.close();
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not release lock on ModuleType: " + type.getName(), e);
+            throw new EmfException("Could not release lock on ModuleType: " + type.getName());
+        }
+    }
+
     public void deleteDatasetTypes(User owner, DatasetType[] types) throws EmfException {
         Session session = this.sessionFactory.getSession();
         DbServer dbServer = dbServerFactory.getDbServer();
@@ -339,7 +406,8 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 for (int i =0; i<types.length; i++) {
                     checkIfUsedByCases(types[i], session); 
                     checkIfUsedByDeletedDS(types[i], session);
-                    checkIfUsedByDatasets(types[i], session); 
+                    checkIfUsedByDatasets(types[i], session);
+                    checkIfUsedByModuleTypes(types[i], session);
                     dao.removeUserExcludedDatasetType(types[i], dbServer);
                     dao.removeTableConsolidation(types[i], dbServer);
                     dao.removeDatasetTypes(types[i], session);
@@ -405,6 +473,34 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
         if (list != null && list.size() > 0) {
             throw new EmfException("Dataset type \" " + type.getName()+ "\" is used by dataset " + list.get(0) );
+        }
+    }
+
+    private void checkIfUsedByModuleTypes(DatasetType type, Session session) throws EmfException {
+        List list = null;
+
+        // check if dataset is an input dataset for some modules
+        list = session.createQuery("SELECT DISTINCT mt.name " +
+                                   "FROM emf.module_types_versions_datasets AS mtvd " +
+                                   "INNER JOIN emf.module_types_versions AS mtv ON mtvd.module_type_version_id = mtv.id " +
+                                   "INNER JOIN emf.module_types AS mt ON mtv.module_type_id = mt.id " +
+                                   "WHERE (mtvd.module_type_version_id = " + type.getId()+ ")").list();
+
+        if (list != null && list.size() > 0) {
+            StringBuilder message = new StringBuilder();
+            message.append("Dataset type \"" + type.getName()+ "\" is used by ");
+            if (list.size() == 1) {
+                message.append("one module type (");
+            } else {
+                message.append(list.size() + " module types (");
+            }
+            for(int i = 0; i < Math.min(list.size(), 3); i++) {
+                if (i > 0) message.append(", ");
+                message.append("\"" + list.get(i) + "\"");
+            }
+            if (list.size() > 3) message.append(", ...");
+            message.append(")");
+            throw new EmfException(message.toString());
         }
     }
 
@@ -632,7 +728,33 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             }
         }
     }
-    
+
+    public synchronized void addModuleType(ModuleType type) throws EmfException {
+        Session session = sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+        try {
+
+            if (dao.nameUsed(type.getName(), ModuleType.class, session))
+                throw new EmfException("The \"" + type.getName() + "\" name is already in use");
+
+            dao.add(type, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not add new ModuleType", e);
+            throw new EmfException("Could not add module type " + type.getName() + ": " + e.toString());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
+    }
+
     public synchronized XFileFormat addFileFormat(XFileFormat format) throws EmfException {
         Session session = sessionFactory.getSession();
         

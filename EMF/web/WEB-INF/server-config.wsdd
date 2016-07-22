@@ -255,6 +255,30 @@
 		qname="ns1:DatasetType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersion"
+		qname="ns1:ModuleTypeVersion" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersionDataset"
+		qname="ns1:ModuleTypeVersionDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersionParameter"
+		qname="ns1:ModuleTypeVersionParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersionRevision"
+		qname="ns1:ModuleTypeVersionRevision" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleDatasetParameterMode"
+		qname="ns1:ModuleDatasetParameterMode" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleType"
+		qname="ns1:ModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.data.EmfDataset"
 		qname="ns1:EmfDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
@@ -898,6 +922,12 @@
 		xmlns:ns1="urn:gov.epa.services.EmfService"
 		languageSpecificType="java:gov.epa.emissions.commons.data.DatasetType[]"
 		innerType="ns1:DatasetType"
+		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+	
+	<arrayMapping qname="ns1:ModuleTypes"
+		xmlns:ns1="urn:gov.epa.services.EmfService"
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleType[]"
+		innerType="ns1:ModuleType"
 		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 	
 	<arrayMapping qname="ns1:EmfDatasets"

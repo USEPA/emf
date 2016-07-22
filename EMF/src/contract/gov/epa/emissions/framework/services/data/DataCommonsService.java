@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.services.data;
 import gov.epa.emissions.commons.data.Country;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.Keyword;
+import gov.epa.emissions.commons.data.ModuleType;
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.commons.data.Project;
 import gov.epa.emissions.commons.data.QAStepTemplate;
@@ -82,6 +83,17 @@ public interface DataCommonsService {
             int[] datasetTypeIds, boolean replace) throws EmfException;
 
     DatasetType releaseLockedDatasetType(User owner, DatasetType type) throws EmfException;
+
+    // Module Types
+    ModuleType[] getModuleTypes() throws EmfException;
+
+    void addModuleType(ModuleType moduleType) throws EmfException;
+
+    void deleteModuleTypes(User owner, ModuleType[] moduleTypes) throws EmfException;
+
+    ModuleType obtainLockedModuleType(User owner, ModuleType moduleType) throws EmfException;
+
+    ModuleType releaseLockedModuleType(User owner, ModuleType type) throws EmfException;
 
     // FileDownload
     FileDownload[] getFileDownloads(Integer userId) throws EmfException;

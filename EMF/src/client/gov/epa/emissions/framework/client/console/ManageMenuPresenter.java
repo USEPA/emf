@@ -16,6 +16,8 @@ import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserPresenter;
 import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserView;
 import gov.epa.emissions.framework.client.data.datasettype.DatasetTypesManagerPresenter;
 import gov.epa.emissions.framework.client.data.datasettype.DatasetTypesManagerView;
+import gov.epa.emissions.framework.client.data.moduletype.ModuleTypesManagerPresenter;
+import gov.epa.emissions.framework.client.data.moduletype.ModuleTypesManagerView;
 import gov.epa.emissions.framework.client.data.sector.SectorsManagerPresenter;
 import gov.epa.emissions.framework.client.data.sector.SectorsManagerView;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerPresenter;
@@ -61,6 +63,11 @@ public class ManageMenuPresenter {
 
     public void doDisplayDatasetTypesManager(DatasetTypesManagerView view) throws EmfException {
         DatasetTypesManagerPresenter presenter = new DatasetTypesManagerPresenter(session, view);
+        presenter.doDisplay();
+    }
+
+    public void doDisplayModuleTypesManager(ModuleTypesManagerView view) throws EmfException {
+        ModuleTypesManagerPresenter presenter = new ModuleTypesManagerPresenter(session, view);
         presenter.doDisplay();
     }
 
