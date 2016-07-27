@@ -1,0 +1,116 @@
+﻿-- Table: modules.modules
+
+-- DROP TABLE modules.modules;
+
+CREATE TABLE modules.modules
+(
+  id serial NOT NULL PRIMARY KEY,
+  name character varying(255) NOT NULL UNIQUE,
+  description text,
+  module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  creator integer NOT NULL
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  creation_date timestamp without time zone,
+  last_mod_date timestamp without time zone,
+  is_final boolean NOT NULL DEFAULT FALSE,
+  lock_owner character varying(255),
+  lock_date timestamp without time zone
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_datasets_in
+
+-- DROP TABLE modules.modules_datasets_in;
+
+CREATE TABLE modules.modules_datasets_in
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_name character varying(63) NOT NULL,
+  dataset_id integer NOT NULL
+      REFERENCES emf.datasets(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  version integer NOT NULL DEFAULT 0
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_datasets_in
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_datasets_out_new
+
+-- DROP TABLE modules.modules_datasets_out_new;
+
+CREATE TABLE modules.modules_datasets_out_new
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_name character varying(63) NOT NULL,
+  dataset_name_pattern character varying(255),
+  overwrite_existing boolean NOT NULL DEFAULT FALSE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_datasets_out_new
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_datasets_out_replace
+
+-- DROP TABLE modules.modules_datasets_out_replace;
+
+CREATE TABLE modules.modules_datasets_out_replace
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_name character varying(63) NOT NULL,
+  dataset_id integer NOT NULL
+      REFERENCES emf.datasets(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_datasets_out_replace
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_parameters_in
+
+-- DROP TABLE modules.modules_parameters_in;
+
+CREATE TABLE modules.modules_parameters_in
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  parameter_name character varying(63) NOT NULL,
+  value character varying(256) NOT NULL
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_parameters
+  OWNER TO emf;

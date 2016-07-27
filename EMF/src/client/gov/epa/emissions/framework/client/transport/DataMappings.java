@@ -7,7 +7,11 @@ import gov.epa.emissions.commons.data.ModuleTypeVersion;
 import gov.epa.emissions.commons.data.ModuleTypeVersionDataset;
 import gov.epa.emissions.commons.data.ModuleTypeVersionParameter;
 import gov.epa.emissions.commons.data.ModuleTypeVersionRevision;
-import gov.epa.emissions.commons.data.ModuleDatasetParameterMode;
+import gov.epa.emissions.commons.data.Module;
+import gov.epa.emissions.commons.data.ModuleDatasetIn;
+import gov.epa.emissions.commons.data.ModuleDatasetOutNew;
+import gov.epa.emissions.commons.data.ModuleDatasetOutReplace;
+import gov.epa.emissions.commons.data.ModuleParameterIn;
 import gov.epa.emissions.commons.data.ExternalSource;
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.KeyVal;
@@ -119,7 +123,12 @@ public class DataMappings extends Mappings {
         bean(call, ModuleTypeVersionDataset.class,   moduleTypeVersionDataset());
         bean(call, ModuleTypeVersionParameter.class, moduleTypeVersionParameter());
         bean(call, ModuleTypeVersionRevision.class,  moduleTypeVersionRevision());
-        bean(call, ModuleDatasetParameterMode.class, moduleDatasetParameterMode());
+
+        bean(call, Module.class,                  module());
+        bean(call, ModuleDatasetIn.class,         moduleDatasetIn());
+        bean(call, ModuleDatasetOutNew.class,     moduleDatasetOutNew());
+        bean(call, ModuleDatasetOutReplace.class, moduleDatasetOutReplace());
+        bean(call, ModuleParameterIn.class,       moduleParameterIn());
 
         bean(call, InternalSource.class, "InternalSource");
         bean(call, ExternalSource.class, externalSource());
@@ -238,6 +247,8 @@ public class DataMappings extends Mappings {
 
         array(call, ModuleType[].class, moduleTypes());
 
+        array(call, Module[].class, modules());
+
         array(call, ExternalSource[].class, externalSources());
         array(call, InternalSource[].class, "InternalSources");
 
@@ -353,6 +364,10 @@ public class DataMappings extends Mappings {
         return qname("ModuleTypes");
     }
 
+    public QName modules() {
+        return qname("Modules");
+    }
+
     public QName sector() {
         return qname("Sector");
     }
@@ -449,8 +464,24 @@ public class DataMappings extends Mappings {
         return qname("ModuleTypeVersionRevision");
     }
 
-    public QName moduleDatasetParameterMode() {
-        return qname("ModuleDatasetParameterMode");
+    public QName module() {
+        return qname("Module");
+    }
+
+    public QName moduleDatasetIn() {
+        return qname("ModuleDatasetIn");
+    }
+
+    public QName moduleDatasetOutNew() {
+        return qname("ModuleDatasetOutNew");
+    }
+
+    public QName moduleDatasetOutReplace() {
+        return qname("ModuleDatasetOutReplace");
+    }
+
+    public QName moduleParameterIn() {
+        return qname("ModuleParameterIn");
     }
 
     public QName dataset() {

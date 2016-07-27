@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.data.Country;
 import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.ModuleType;
+import gov.epa.emissions.commons.data.Module;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.data.Pollutant;
@@ -49,9 +50,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 //@Transactional(readOnly = true)
 //@Repository
@@ -394,6 +392,72 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         } catch (RuntimeException e) {
             LOG.error("Could not release lock on ModuleType: " + type.getName(), e);
             throw new EmfException("Could not release lock on ModuleType: " + type.getName());
+        }
+    }
+
+    public synchronized Module[] getModules() throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            List<Module> list = dao.getModules(session);
+            session.close();
+
+            Module[] modules = list.toArray(new Module[0]); 
+            return modules;
+        } catch (RuntimeException e) {
+            LOG.error("Could not get all modules", e);
+            throw new EmfException("Could not get all modules ");
+        }
+    }
+
+    public void deleteModules(User owner, Module[] modules) throws EmfException {
+        Session session = this.sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+
+        try {
+            if (owner.isAdmin()){
+                for (int i=0; i<modules.length; i++) {
+                    dao.removeModule(modules[i], session);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error deleting modules. " , e);
+            throw new EmfException("Error deleting modules. \n" + e.getMessage());
+        } finally {
+            session.close(); 
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
+    }
+
+    public synchronized Module obtainLockedModule(User user, Module module) throws EmfException {
+        Session session = sessionFactory.getSession();
+
+        try {
+            Module locked = dao.obtainLockedModule(user, module, session);
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not obtain lock for Module: " + module.getName(), e);
+            throw new EmfException("Could not obtain lock for Module: " + module.getName());
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized Module releaseLockedModule(User user, Module module) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            Module locked = dao.releaseLockedModule(user, module, session);
+            session.close();
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not release lock on Module: " + module.getName(), e);
+            throw new EmfException("Could not release lock on Module: " + module.getName());
         }
     }
 
@@ -741,6 +805,32 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         } catch (RuntimeException e) {
             LOG.error("Could not add new ModuleType", e);
             throw new EmfException("Could not add module type " + type.getName() + ": " + e.toString());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
+    }
+
+    public synchronized void addModule(Module module) throws EmfException {
+        Session session = sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+        try {
+
+            if (dao.nameUsed(module.getName(), Module.class, session))
+                throw new EmfException("The \"" + module.getName() + "\" name is already in use");
+
+            dao.add(module, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not add new Module", e);
+            throw new EmfException("Could not add module " + module.getName() + ": " + e.toString());
         } catch (Exception e) {
             LOG.error(e.getMessage());
             throw new EmfException(e.getMessage());

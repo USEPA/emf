@@ -1,6 +1,6 @@
-package gov.epa.emissions.framework.client.data.datasettype;
+package gov.epa.emissions.framework.client.data.module;
 
-import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.data.Module;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
@@ -36,16 +36,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
-public class DatasetTypesManagerWindow extends ReusableInteralFrame implements DatasetTypesManagerView, RefreshObserver {
+public class ModulesManagerWindow extends ReusableInteralFrame implements ModulesManagerView, RefreshObserver {
 
-    private DatasetTypesManagerPresenter presenter;
-
-    //private SortFilterSelectModel selectModel;
+    private ModulesManagerPresenter presenter;
 
     private SelectableSortFilterWrapper table;
 
     private JPanel layout;
-    
+
     private JPanel tablePanel;
 
     private MessagePanel messagePanel;
@@ -54,27 +52,26 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
 
     private EmfSession session;
 
-    public DatasetTypesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Dataset Type Manager", new Dimension(700, 350), desktopManager);
-        super.setName("datasetTypeManager");
-        
+    public ModulesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
+        super("Module Manager", new Dimension(700, 350), desktopManager);
+        super.setName("moduleManager");
+
         this.session = session;
         this.parentConsole = parentConsole;
-        
+
         layout = new JPanel();
         this.getContentPane().add(layout);
     }
 
-    public void observe(DatasetTypesManagerPresenter presenter) {
+    public void observe(ModulesManagerPresenter presenter) {
         this.presenter = presenter;
     }
 
-    public void refresh(DatasetType[] types) {
-        //doLayout(types);
-        table.refresh(new DatasetTypesTableData(types));
+    public void refresh(Module[] modules) {
+        table.refresh(new ModulesTableData(modules));
         panelRefresh();
     }
-    
+
     private void panelRefresh() {
         tablePanel.removeAll();
         tablePanel.add(table);
@@ -92,15 +89,8 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
         layout.setLayout(new BorderLayout());
 
         layout.add(createTopPanel(), BorderLayout.NORTH);
-        layout.add(tablePanel(), BorderLayout.CENTER);
+        layout.add(createTablePanel(), BorderLayout.CENTER);
         layout.add(createControlPanel(), BorderLayout.SOUTH);
-    }
-
-    private JPanel tablePanel() {
-        tablePanel = new JPanel(new BorderLayout());
-        table = new SelectableSortFilterWrapper(parentConsole, new DatasetTypesTableData(new DatasetType[] {}), null);
-        tablePanel.add(table);
-        return tablePanel;
     }
 
     private JPanel createTopPanel() {
@@ -109,10 +99,17 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel, BorderLayout.CENTER);
 
-        Button button = new RefreshButton(this, "Refresh Dataset Types", messagePanel);
+        Button button = new RefreshButton(this, "Refresh Module Types", messagePanel);
         panel.add(button, BorderLayout.EAST);
 
         return panel;
+    }
+
+    private JPanel createTablePanel() {
+        tablePanel = new JPanel(new BorderLayout());
+        table = new SelectableSortFilterWrapper(parentConsole, new ModulesTableData(new Module[] {}), null);
+        tablePanel.add(table);
+        return tablePanel;
     }
 
     private JPanel createControlPanel() {
@@ -142,28 +139,28 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
 
         Action viewAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                viewDatasetTypes();
+                viewModules();
             }
         };
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
 
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                editDatasetTypes();
+                editModules();
             }
         };
         SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
 
         Action createAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                createDatasetType();
+                createModule();
             }
         };
         Button newButton = new NewButton(createAction);
-        
+
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                removeDatasetType();
+                removeModule();
             }
         };
         Button removeButton = new RemoveButton(removeAction);
@@ -182,59 +179,59 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
         return crudPanel;
     }
 
-    private void viewDatasetTypes() {
-        List selected = selected();
-        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            DatasetType type = (DatasetType) iter.next();
-            try {
-                presenter.doView(type, viewableView());
-            } catch (EmfException e) {
-                messagePanel.setError("Could not display: " + type.getName() + "." + e.getMessage());
-                break;
-            }
-        }
+    private void viewModules() {
+//        List selected = selected();
+//        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+//            Module module = (Module) iter.next();
+//            try {
+//                presenter.doView(module, viewableView());
+//            } catch (EmfException e) {
+//                messagePanel.setError("Could not display: " + module.getName() + "." + e.getMessage());
+//                break;
+//            }
+//        }
     }
 
-    private void editDatasetTypes() {
-        List selected = selected();
-        if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more dataset types");
-            return;
-        }   
-        
-        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            DatasetType type = (DatasetType) iter.next();
-            try {
-                presenter.doEdit(type, editableView(), viewableView());
-            } catch (EmfException e) {
-                messagePanel.setError("Could not display: " + type.getName() + "." + e.getMessage());
-                break;
-            }
-        }
+    private void editModules() {
+//        List selected = selected();
+//        if (selected.isEmpty()) {
+//            messagePanel.setMessage("Please select one or more dataset modules");
+//            return;
+//        }   
+//
+//        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+//            Module module = (Module) iter.next();
+//            try {
+//                presenter.doEdit(module, editableView(), viewableView());
+//            } catch (EmfException e) {
+//                messagePanel.setError("Could not display: " + module.getName() + "." + e.getMessage());
+//                break;
+//            }
+//        }
     }
 
-    private void createDatasetType() {
-        NewDatasetTypeWindow view = new NewDatasetTypeWindow(parentConsole, desktopManager, session);
-        presenter.displayNewDatasetTypeView(view);
+    private void createModule() {
+//        NewModuleWindow view = new NewModuleWindow(parentConsole, desktopManager, session);
+//        presenter.displayNewModuleView(view);
     }
-    
-    private void removeDatasetType() {
+
+    private void removeModule() {
         messagePanel.clear();
         List<?> selected = selected();
         if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more dataset types");
+            messagePanel.setMessage("Please select one or more module modules");
             return;
         }   
 
-        String message = "Are you sure you want to remove the selected " + selected.size() + " dataset type(s)?";
+        String message = "Are you sure you want to remove the selected " + selected.size() + " module module(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
-                presenter.doRemove(selected.toArray(new DatasetType[0]));
+                presenter.doRemove(selected.toArray(new Module[0]));
                 messagePanel.setMessage(selected.size()
-                        + " dataset types have been removed. Please Refresh to see the revised list of types.");
+                        + " module modules have been removed. Please Refresh to see the revised list of modules.");
             } catch (EmfException e) {
               JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
             }
@@ -246,15 +243,15 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
         return table.selected();
     }
 
-    private ViewableDatasetTypeWindow viewableView() {
-        ViewableDatasetTypeWindow view = new ViewableDatasetTypeWindow(desktopManager);
-        return view;
-    }
-
-    private EditableDatasetTypeView editableView() {
-        EditableDatasetTypeWindow view = new EditableDatasetTypeWindow(session,parentConsole, desktopManager);
-        return view;
-    }
+//    private ViewableModuleWindow viewableView() {
+//        ViewableModuleWindow view = new ViewableModuleWindow(desktopManager);
+//        return view;
+//    }
+//
+//    private EditableModuleView editableView() {
+//        EditableModuleWindow view = new EditableModuleWindow(session,parentConsole, desktopManager);
+//        return view;
+//    }
 
     public EmfConsole getParentConsole() {
         return this.parentConsole;
@@ -272,11 +269,11 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
 
         //Instances of javax.swing.SwingWorker are not reusable, so
         //we create new instances as needed.
-        class GetDatasetTypesTask extends SwingWorker<DatasetType[], Void> {
-            
+        class GetModulesTask extends SwingWorker<Module[], Void> {
+
             private Container parentContainer;
 
-            public GetDatasetTypesTask(Container parentContainer) {
+            public GetModulesTask(Container parentContainer) {
                 this.parentContainer = parentContainer;
             }
 
@@ -285,8 +282,8 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
              * don't update gui here
              */
             @Override
-            public DatasetType[] doInBackground() throws EmfException  {
-                return presenter.getDatasetTypes();
+            public Module[] doInBackground() throws EmfException  {
+                return presenter.getModules();
             }
 
             /*
@@ -311,6 +308,6 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
                 }
             }
         };
-        new GetDatasetTypesTask(this).execute();
+        new GetModulesTask(this).execute();
     }
 }

@@ -25,23 +25,22 @@ import gov.epa.emissions.framework.client.data.datasettype.DatasetTypesManagerVi
 import gov.epa.emissions.framework.client.data.datasettype.DatasetTypesManagerWindow;
 import gov.epa.emissions.framework.client.data.moduletype.ModuleTypesManagerView;
 import gov.epa.emissions.framework.client.data.moduletype.ModuleTypesManagerWindow;
+import gov.epa.emissions.framework.client.data.module.ModulesManagerView;
+import gov.epa.emissions.framework.client.data.module.ModulesManagerWindow;
 import gov.epa.emissions.framework.client.data.sector.SectorsManagerView;
 import gov.epa.emissions.framework.client.data.sector.SectorsManagerWindow;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerView;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerWindow;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerView;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerWindow;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerView;
 import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerWindow;
 
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -138,6 +137,18 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doManageModuleTypes(parent, messagePanel);
+            }
+        });
+
+        return menuItem;
+    }
+
+    private JMenuItem createModules(final EmfConsole parent, final MessagePanel messagePanel) {
+        JMenuItem menuItem = new JMenuItem("Modules");
+        menuItem.setName("modules");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                doManageModules(parent, messagePanel);
             }
         });
 
@@ -304,6 +315,15 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         }
     }
 
+    private void doManageModules(final EmfConsole parent, final MessagePanel messagePanel) {
+        try {
+            ModulesManagerView view = new ModulesManagerWindow(session, parent, desktopManager);
+            presenter.doDisplayModulesManager(view);
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+    }
+
     private void doManageSectors(final EmfConsole parent, final MessagePanel messagePanel) {
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
@@ -395,6 +415,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         }
 
         super.add(createDatasets(parent, messagePanel));
+        super.add(createModules(parent, messagePanel));
 
         if ((showCasesMenu == null) || (!showCasesMenu.equalsIgnoreCase("false"))) {
             if (!excludeItem("Cases"))

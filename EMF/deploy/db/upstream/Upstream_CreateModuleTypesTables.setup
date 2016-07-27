@@ -1,0 +1,149 @@
+-- Table: modules.module_types
+
+-- DROP TABLE modules.module_types;
+
+CREATE TABLE modules.module_types
+(
+  id serial NOT NULL,
+  name character varying(255) NOT NULL,
+  description text,
+  lock_owner character varying(255),
+  lock_date timestamp without time zone,
+  creation_date timestamp without time zone,
+  last_mod_date timestamp without time zone,
+  creator integer NOT NULL,
+  default_version integer,
+  CONSTRAINT module_types_pkey PRIMARY KEY (id),
+  CONSTRAINT module_types_creator_fkey FOREIGN KEY (creator)
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT module_types_name_ukey UNIQUE (name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions
+
+-- DROP TABLE modules.module_types_versions;
+
+CREATE TABLE modules.module_types_versions
+(
+  id serial NOT NULL,
+  module_type_id integer NOT NULL,
+  version integer NOT NULL DEFAULT 0,
+  name character varying(255) NOT NULL,
+  description text,
+  creation_date timestamp without time zone,
+  last_mod_date timestamp without time zone,
+  creator integer,
+  base_version integer NOT NULL DEFAULT 0,
+  algorithm text,
+  is_final boolean NOT NULL DEFAULT FALSE,
+  CONSTRAINT module_types_versions_pkey PRIMARY KEY (id),
+  CONSTRAINT module_types_versions_fkey_1 FOREIGN KEY (module_type_id)
+      REFERENCES modules.module_types(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT module_types_versions_fkey_2 FOREIGN KEY (creator)
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT module_types_versions_ukey_1 UNIQUE (module_type_id, version),
+  CONSTRAINT module_types_versions_ukey_2 UNIQUE (module_type_id, name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_datasets
+
+-- DROP TABLE modules.module_types_version_datasets;
+
+CREATE TABLE modules.module_types_versions_datasets
+(
+  id serial NOT NULL,
+  module_type_version_id integer NOT NULL,
+  placeholder_name character varying(63) NOT NULL, -- (NAMEDATALEN-1) for consistency -- could be larger if necessary
+  mode character varying(5) NOT NULL,              -- constrained to 'IN', 'INOUT', or 'OUT'
+  dataset_type_id integer NOT NULL,
+  description text,
+  CONSTRAINT module_types_versions_datasets_pkey PRIMARY KEY (id),
+  CONSTRAINT module_types_versions_datasets_fkey_1 FOREIGN KEY (module_type_version_id)
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT module_types_versions_datasets_fkey_2 FOREIGN KEY (dataset_type_id)
+      REFERENCES emf.dataset_types(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  CONSTRAINT module_types_versions_datasets_ukey UNIQUE (module_type_version_id, placeholder_name),
+  CONSTRAINT module_types_versions_datasets_mode_check CHECK (mode IN ('IN', 'INOUT', 'OUT') )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_datasets
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_parameters
+
+-- DROP TABLE modules.module_types_versions_parameters;
+
+CREATE TABLE modules.module_types_versions_parameters
+(
+  id serial NOT NULL,
+  module_type_version_id integer NOT NULL,
+  parameter_name character varying(63) NOT NULL,      -- must be shorter than NAMEDATALEN (which is 64 by default)
+  mode character varying(5) NOT NULL,                 -- constrained to 'IN', 'INOUT', or 'OUT'
+  sql_parameter_type character varying(256) NOT NULL, -- should be large enough
+  description text,
+  CONSTRAINT module_types_versions_parameters_pkey PRIMARY KEY (id),
+  CONSTRAINT module_types_versions_parameters_fkey FOREIGN KEY (module_type_version_id)
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT module_types_versions_parameters_ukey UNIQUE (module_type_version_id, parameter_name),
+  CONSTRAINT module_types_versions_parameters_mode_check CHECK (mode IN ('IN', 'INOUT', 'OUT') )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_parameters
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_revisions
+
+-- DROP TABLE modules.module_types_versions_revisions;
+
+CREATE TABLE modules.module_types_versions_revisions
+(
+  id serial NOT NULL,
+  module_type_version_id integer NOT NULL,
+  revision integer NOT NULL DEFAULT 0,
+  description text,
+  creation_date timestamp without time zone,
+  creator integer,
+  CONSTRAINT module_types_versions_revisions_pkey PRIMARY KEY (id),
+  CONSTRAINT module_types_versions_revisions_fkey_1 FOREIGN KEY (module_type_version_id)
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT module_types_versions_revisions_fkey_2 FOREIGN KEY (creator)
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT module_types_versions_revisions_ukey UNIQUE (module_type_version_id, revision)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_revisions
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------

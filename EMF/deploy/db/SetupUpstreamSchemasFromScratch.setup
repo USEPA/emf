@@ -1,0 +1,21 @@
+#!/bin/bash
+
+## Creates and populates the initial upstream schema
+##
+## Should be run from the same directory as this file 
+##
+## postgres user must already be created -- see the postgresql
+## installation for details
+##------------------------------------------------------------##
+
+## create emf user and the 'EMF' database
+createuser -U postgres -s -P emf
+createdb -U emf -E UTF8 EMF
+
+## setup the initial schemas and tables
+psql -d EMF -U emf < upstream/Upstream_CreateSchema.setup
+psql -d EMF -U emf < upstream/Upstream_CreateModuleTypesTables.setup
+psql -d EMF -U emf < upstream/Upstream_CreateModulesTables.setup
+
+## test data
+#psql -d EMF -U emf < upstream/Upstream_InsertTestData.setup

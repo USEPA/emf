@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.transport;
 import gov.epa.emissions.commons.data.Country;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.ModuleType;
+import gov.epa.emissions.commons.data.Module;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.commons.data.Project;
@@ -262,6 +263,65 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.setReturnType(mappings.moduleType());
 
         return (ModuleType) call.requestResponse(new Object[] { owner, type });
+    }
+
+    public synchronized Module[] getModules() throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getModules");
+        call.setReturnType(mappings.modules());
+
+        return (Module[]) call.requestResponse(new Object[] {});
+    }
+
+    public synchronized void addModule(Module module) throws EmfException
+    {
+        EmfCall call = call();
+
+        call.addParam("module", mappings.module());
+        call.setOperation("addModule");
+        call.setVoidReturnType();
+
+        call.request(new Object[] { module });
+
+        //make sure we refresh the client-side cache
+        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
+    }
+
+    public void deleteModules(User owner, Module[] modules) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("deleteModules");
+        call.addParam("owner", mappings.user());
+        call.addParam("modules", mappings.modules());
+        call.setVoidReturnType();
+
+        call.request(new Object[]{owner, modules}); 
+
+        //make sure we refresh the client-side cache
+        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
+    }
+
+    public synchronized Module obtainLockedModule(User owner, Module module) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("obtainLockedModule");
+        call.addParam("owner", mappings.user());
+        call.addParam("module", mappings.module());
+        call.setReturnType(mappings.module());
+
+        return (Module) call.requestResponse(new Object[] { owner, module });
+    }
+
+    public synchronized Module releaseLockedModule(User owner, Module module) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("releaseLockedModule");
+        call.addParam("owner", mappings.user());
+        call.addParam("module", mappings.module());
+        call.setReturnType(mappings.module());
+
+        return (Module) call.requestResponse(new Object[] { owner, module });
     }
 
     public synchronized Status[] getStatuses(String username) throws EmfException {
