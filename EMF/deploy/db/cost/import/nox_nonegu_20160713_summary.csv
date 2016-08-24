@@ -1,0 +1,182 @@
+cmname,cmabbreviation,majorpoll,controltechnology,sourcegroup,sector,class,equiplife,neidevicecode,datereviewed,datasource,months,description
+"Cullet Preheat; Glass Manufacturing - Container","NCLPTGMCN","NOX","Cullet Preheat","Glass Manufacturing - Container","ptnonipm","Known",10,,2006,"74|90",,"Application:  This control is the use of cullet preheat technologies to reduce NOx emissions from glass manufacturing operations.  
+
+This control is applicable to container glass manufacturing operations classified under 305010402."
+"Cullet Preheat; Glass Manufacturing - Pressed","NCUPHGMPD","NOX","Cullet Preheat","Glass Manufacturing - Pressed","ptnonipm","Known",10,,2006,"74|90",,"Application:  This control is the use of cullet preheat technologies to reduce NOx emissions from glass manufacturing operations.  
+
+This control is applicable to pressed glass manufacturing operations classified under 305010404."
+"OXY-Firing; Glass Manufacturing - General","NDOXYFGMG","NOX","OXY-Firing","Glass Manufacturing - General","ptnonipm","Emerging",10,,,"84",,"Application: This control is the use of OXY-firing in glass manufacturing furnaces to reduce NOx emissions.  Oxygen enrichment refers to the substitution of oxygen for nitrogen in the combustion air used to burn the fuel in a glass furnace. Oxygen enrichment above 90 percent is sometimes called ""oxy-firing.""
+
+Discussion: The basic rationale for oxy-firing is improved efficiency, i.e., more of the theoretical heat of combustion is transferred to the glass melt and is not lost in the flue gas. Many other co"
+"Electric Boost; Glass Manufacturing - Container","NELBOGMCN","NOX","Electric Boost","Glass Manufacturing - Container","ptnonipm","Known",10,,2006,"74|90",,"Application:  This control is the use of electric boost technologies to reduce NOx emissions from glass manufacturing operations. 
+
+This control applies to container glass manufacturing operations classified under SCC 30501402.
+
+Discussion: The 250 tons per day plant is assumed to be representative of container glass plants (Pechan, 1998)."
+"Electric Boost; Glass Manufacturing - Flat","NELBOGMFT","NOX","Electric Boost","Glass Manufacturing - Flat","ptnonipm","Known",10,,2006,"74|90",,"Application:  This control is the use of electric boost technologies to reduce NOx emissions from glass manufacturing operations. 
+
+This control applies to flat glass manufacturing operations classified under SCC 30501403.
+
+Discussion: The 500 tons per day plant is assumed to be representative of flat glass plants (Pechan, 1998)."
+"Electric Boost; Glass Manufacturing - Pressed","NELBOGMPD","NOX","Electric Boost","Glass Manufacturing - Pressed","ptnonipm","Known",10,,2006,"74|90",,"Application:  This control is the use of electric boost technologies to reduce NOx emissions from glass manufacturing operations. 
+
+This control applies to pressed glass manufacturing operations classified under SCC 30501403.
+
+Discussion: The 50 tons per day plant is assumed to be representative of pressed glass plants (Pechan, 1998)."
+"Low NOx Burner and Flue Gas Recirculation; Ammonia Prod; Feedstock Desulfurization","NLNBFAPFD","NOX","Low NOx Burner and Flue Gas Recirculation","Ammonia Prod; Feedstock Desulfurization","ptnonipm","Known",10,,2006,"74|89|80",,"Application:  This control is the use of low NOx burner (LNB) technology and flue gas recirculation (FGR) to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+This control is applicable to small (<1 ton per OSD) feedstock desulfurization processes in ammonia products operations with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: It is assumed that the superheated steam needed to regenerate the activated carbon bed used in the desulfurization process is the NOx source.
+
+LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually used by LNB to supply excess air to cool the combustion process or to reduce available oxygen in the flame zone.  Staged-air LNBs create a fuel-rich reducing primary combustion zone and a fuel-lean secondary combustion zone.  Staged-fuel LNBs create a lean combustion zone that is relatively cool due to the presence of excess air, which acts as a heat sink to lower combustion temperatures (EPA, 2002)."
+"Low NOx Burner and Flue Gas Recirculation; Ammonia - NG-Fired Reformers","NLNBFFRNG","NOX","Low NOx Burner and Flue Gas Recirculation","Ammonia - NG-Fired Reformers","ptnonipm","Known",10,,2006,"74|89|81",,"Application:  This control is the use of low NOx burner (LNB) technology and flue gas recirculation (FGR) to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+This control is applicable to small (<1 ton NOx per OSD) ammonia production operations with natural gas-fired reformers (SCC 30100306) and uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually used by LNB to supply excess air to cool the combustion process or to reduce available oxygen in the flame zone.  Staged-air LNBs create a fuel-rich reducing primary combustion zone and a fuel-lean secondary combustion zone.  Staged-fuel LNBs create a lean combustion zone that is relatively cool due to the presence of excess air, which acts as a heat sink to lower combustion temperatures (EPA, 2002)."
+"Low NOx Burner and Flue Gas Recirculation; Ammonia - Oil-Fired Reformers","NLNBFFROL","NOX","Low NOx Burner and Flue Gas Recirculation","Ammonia - Oil-Fired Reformers","ptnonipm","Known",10,,2006,"6",,"Application:  This control is the use of low NOx burner (LNB) technology and flue gas recirculation (FGR) to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+Discussion: LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually us"
+"Low NOx Burner; Ammonia - NG-Fired Reformers","NLNBUFRNG","NOX","Low NOx Burner","Ammonia - NG-Fired Reformers","ptnonipm","Known",10,"204|205",2013,"74|89|80|155",,"Application:  This control is the use of low NOx burner (LNB) technology to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+This control is applicable to small (<1 ton NOx per OSD) ammonia production operations with natural gas-fired reformers (SCC 30100306) and uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually used by LNB to supply excess air to cool the combustion process or to reduce available oxygen in the flame zone.  Staged-air LNBs create a fuel-rich reducing primary combustion zone and a fuel-lean secondary combustion zone.  Staged-fuel LNBs create a lean combustion zone that is relatively cool due to the presence of excess air, which acts as a heat sink to lower combustion temperatures (EPA, 2002)."
+"Low NOx Burner; Ammonia - Oil-Fired Reformers","NLNBUFROL","NOX","Low NOx Burner","Ammonia - Oil-Fired Reformers","ptnonipm","Known",10,"204|205",2006,"6",,"Application:  This control is the use of low NOx burner (LNB) technology to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+Discussion: LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually used by LNB to supply excess air to"
+"Low NOx Burner; Glass Manufacturing - Container","NLNBUGMCN","NOX","Low NOx Burner","Glass Manufacturing - Container","ptnonipm","Known",10,"204|205",2006,"74|89|90",,"Application:  This control is the use of low NOx burner (LNB) technology to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+This control is applicable to container glass manufacturing operations classified under 305010402 with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: The 250 tons per day plant is assumed to be representative of container glass plants (Pechan, 1998).
+
+LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually used by LNB to supply excess air to cool the combustion process or to reduce available oxygen in the flame zone.  Staged-air LNBs create a fuel-rich reducing primary combustion zone and a fuel-lean secondary combustion zone.  Staged-fuel LNBs create a lean combustion zone that is relatively cool due to the presence of excess air, which acts as a heat sink to lower combustion temperatures (EPA, 2002)."
+"Low NOx Burner; Glass Manufacturing - Flat","NLNBUGMFT","NOX","Low NOx Burner","Glass Manufacturing - Flat","ptnonipm","Known",3,"204|205",2006,"74|89|90",,"Application:  This control is the use of low NOx burner (LNB) technology to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+This control is applicable to flat glass manufacturing operations classified under 305010404 with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: The 500 tons per day plant is assumed to be representative of flat glass plants (Pechan, 1998).
+
+LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually used by LNB to supply excess air to cool the combustion process or to reduce available oxygen in the flame zone.  Staged-air LNBs create a fuel-rich reducing primary combustion zone and a fuel-lean secondary combustion zone.  Staged-fuel LNBs create a lean combustion zone that is relatively cool due to the presence of excess air, which acts as a heat sink to lower combustion temperatures (EPA, 2002)."
+"Low NOx Burner; Glass Manufacturing - Pressed","NLNBUGMPD","NOX","Low NOx Burner","Glass Manufacturing - Pressed","ptnonipm","Known",10,"204|205",2006,"74|89|90",,"Application:  This control is the use of low NOx burner (LNB) technology to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+This control is applicable to pressed glass manufacturing operations classified under 305010404 with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: The 500 tons per day plant is assumed to be representative of flat glass plants (Pechan, 1998).
+
+LNBs are designed to ""stage"" combustion so that two combustion zones are created, one fuel-rich combustion and one at a lower temperature.  Staging techniques are usually used by LNB to supply excess air to cool the combustion process or to reduce available oxygen in the flame zone.  Staged-air LNBs create a fuel-rich reducing primary combustion zone and a fuel-lean secondary combustion zone.  Staged-fuel LNBs create a lean combustion zone that is relatively cool due to the presence of excess air, which acts as a heat sink to lower combustion temperatures (EPA, 2002)."
+"Low NOx Burner; Gas Turbines - Natural Gas","NLNBUGTNG","NOX","Low NOx Burner","Gas Turbines - Natural Gas","ptnonipm","Known",15,"204|205",2006,"74|89|121",,"Application:  This control is the use of low NOx burner (LNB) technology to reduce NOx emissions.  LNBs reduce the amount of NOx created from reaction between fuel nitrogen and oxygen by lowering the temperature of one combustion zone and reducing the amount of oxygen available in another.
+
+This control applies to large (83.3 MW to 161 MW) natural gas fired turbines with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: LNBs are designed to ""stage"" combustion so that two combustion "
+"OXY-Firing; Glass Manufacturing - Container","NOXYFGMCN","NOX","OXY-Firing","Glass Manufacturing - Container","ptnonipm","Known",10,,2006,"6",,"Application: This control is the use of OXY-firing in container glass manufacturing furnaces to reduce NOx emissions.  Oxygen enrichment refers to the substitution of oxygen for nitrogen in the combustion air used to burn the fuel in a glass furnace. Oxygen enrichment above 90 percent is sometimes called ""oxy-firing."" 
+
+Discussion: The basic rationale for oxy-firing is improved efficiency, i.e., more of the theoretical heat of combustion is transferred to the glass melt and is not lost in the flue gas. Ma"
+"OXY-Firing; Glass Manufacturing - Flat","NOXYFGMFT","NOX","OXY-Firing","Glass Manufacturing - Flat","ptnonipm","Known",10,,2006,"6",,"Application:  This control is the use of OXY-firing in flat glass manufacturing furnaces to reduce NOx emissions.  Oxygen enrichment refers to the substitution of oxygen for nitrogen in the combustion air used to burn the fuel in a glass furnace. Oxygen enrichment above 90 percent is sometimes called ""oxy-firing."" 
+
+This control applies to flat-glass manufacturing operations with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: The basic rationale for oxy-firing is improved efficie"
+"OXY-Firing; Glass Manufacturing - Pressed","NOXYFGMPD","NOX","OXY-Firing","Glass Manufacturing - Pressed","ptnonipm","Known",10,,2006,"6",,"Application: This control is the use of OXY-firing in pressed glass manufacturing furnaces to reduce NOx emissions.  Oxygen enrichment refers to the substitution of oxygen for nitrogen in the combustion air used to burn the fuel in a glass furnace. Oxygen enrichment above 90 percent is sometimes called ""oxy-firing.""
+
+Discussion: The basic rationale for oxy-firing is improved efficiency, i.e., more of the theoretical heat of combustion is transferred to the glass melt and is not lost in the flue gas. Many "
+"Selective Catalytic Reduction; Ammonia - NG-Fired Reformers","NSCRFRNG","NOX","Selective Catalytic Reduction","Ammonia - NG-Fired Reformers2","ptnonipm","Known",20,"139",2006,"84|74|89|132|131|139",,"Application:  This control is the selective catalytic reduction of NOx through add-on controls.  SCR controls are post-combustion control technologies based on the chemical reduction of nitrogen oxides (NOx) into molecular nitrogen (N2) and water vapor  (H2O). The SCR utilizes a catalyst to increase the NOx removal efficiency, which allows the process to occur at lower temperatures.
+
+Applies to natural-gas fired reformers involved in the production of ammonia (SCC 30100306) with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: Selective Catalytic Reduction (SCR) has been widely applied to stationary source, fossil fuel-fired, combustion units for emission control since the early 1970s.  SCR is typically implemented on units requiring a higher level of NOx control than achievable by SNCR or other combustion controls (EPA, 2002).
+
+Like SNCR, SCR is based on the chemical reduction of the NOx molecule.  The primary difference between SNCR and SCR is that SCR uses a metal-based catalyst to increase the rate of reaction (EPA, 2002).  A nitrogen based reducing reagent, such as ammonia or urea, is injected into the flue gas. The reagent reacts selectively with the flue gas NOx within a specific temperature range and in the presence of the catalyst and oxygen to reduce the NOx.  
+
+The use of a catalyst results in two advantages of the SCR process over SNCR, the higher NOx reduction efficiency and the lower and broader temperature ranges.  However, the decrease in reaction temperature and increase in efficiency is accompanied by a significant increase in capital and operating costs (EPA, 2002). The cost increase is due to the large amount of catalyst required.
+
+The SCR system can utilize either aqueous or anhydrous ammonia as the reagent.  Anhydrous ammonia is a gas at atmospheric pressure and normal temperatures.  There are safety issues with the use of anhydrous ammonia, as it must be transported and stored under pressure (EPA, 2002).  Aqueous ammonia is generally transported and stored at a concentration of 29.4% ammonia in water.
+
+Today, catalyst formulations include single component, multi-component, or active phase with a support structure.  Most catalyst formulations contain additional compounds or sup-ports, providing thermal and structural stability or to increase surface area (EPA, 2002).  
+
+The rate of reaction determines the amount of NOx removed from the flue gas. The important design and operational factors that affect the rate of reduction include:  reaction temperature range; residence time available in the optimum temperature range; degree of mixing between the injected reagent and the combustion gases; uncontrolled NOx concentration level; molar ratio of injected reagent to uncontrolled NOx; ammonia slip; catalyst activity; catalyst selectivity; pressure drop across the catalyst; catalyst pitch; catalyst deactivation; and catalyst management (EPA, 2001)."
+"Selective Catalytic Reduction; Ammonia - Oil-Fired Reformers","NSCRFROL","NOX","Selective Catalytic Reduction","Ammonia - Oil-Fired Reformers","ptnonipm","Known",20,"139",2006,"6",,"Application:  This control is the selective catalytic reduction of NOx through add-on controls.  SCR controls are post-combustion control technologies based on the chemical reduction of nitrogen oxides (NOx) into molecular nitrogen (N2) and water vapor  (H2O). The SCR utilizes a catalyst to increase the NOx removal efficiency, which allows the process to occur at lower temperatures.
+
+Applies to oil fired reformers involved in the production of ammonia with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: Selective Catalytic Reduction (SCR) has been widely applied to stationary source, fossil fuel-fired, combustion units for emission control since the early 1970s.  SCR is typically implemented on units requiring a higher level of NOx control than achievable by SNCR or other combustion controls (EPA, 2002).
+
+Like SNCR, SCR is based on the chemical reduction of the NOx molecule.  The primary difference between SNCR and SCR is that SCR uses a metal-based catalyst to increase the rate of reaction (EPA, 2002).  A nitrogen based reducing reagent, such as ammonia or urea, is injected into the flue gas. The reagent reacts selectively with the flue gas NOx within a specific temperature range and in the presence of the catalyst and oxygen to reduce the NOx.  
+
+The use of a catalyst results in two advantages of the SCR process over SNCR, the higher NOx reduction efficiency and the lower and broader temperature ranges.  However, the decrease in reaction temperature and increase in efficiency is accompanied by a significant increase in capital and operating costs (EPA, 2002). The cost increase is due to the large amount of catalyst required.
+
+The SCR system can utilize either aqueous or anhydrous ammonia as the reagent.  Anhydrous ammonia is a gas at atmospheric pressure and normal temperatures.  There are safety issues with the use of anhydrous ammonia, as it must be transported and stored under pressure (EPA, 2002).  Aqueous ammonia is generally transported and stored at a concentration of 29.4% ammonia in water.
+
+Today, catalyst formulations include single component, multi-component, or active phase with a support structure.  Most catalyst formulations contain additional compounds or sup-ports, providing thermal and structural stability or to increase surface area (EPA, 2002).  
+
+The rate of reaction determines the amount of NOx removed from the flue gas. The important design and operational factors that affect the rate of reduction include:  reaction temperature range; residence time available in the optimum temperature range; degree of mixing between the injected reagent and the combustion gases; uncontrolled NOx concentration level; molar ratio of injected reagent to uncontrolled NOx; ammonia slip; catalyst activity; catalyst selectivity; pressure drop across the catalyst; catalyst pitch; catalyst deactivation; and catalyst management (EPA, 2001)."
+"Selective Catalytic Reduction; Glass Manufacturing - Container","NSCRGMCN","NOX","Selective Catalytic Reduction","Glass Manufacturing - Container","ptnonipm","Known",10,"139",2006,"74|89|90|139",,"Application:  This control is the selective catalytic reduction of NOx through add-on controls.  SCR controls are post-combustion control technologies based on the chemical reduction of nitrogen oxides (NOx) into molecular nitrogen (N2) and water vapor  (H2O). The SCR utilizes a catalyst to increase the NOx removal efficiency, which allows the process to occur at lower temperatures.
+
+Applies to glass-container manufacturing processes, classified under SCC 30501402 and uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: Selective Catalytic Reduction (SCR) has been widely applied to stationary source, fossil fuel-fired, combustion units for emission control since the early 1970s.  SCR is typically implemented on units requiring a higher level of NOx control than achievable by SNCR or other combustion controls (EPA, 2002).
+
+Like SNCR, SCR is based on the chemical reduction of the NOx molecule.  The primary difference between SNCR and SCR is that SCR uses a metal-based catalyst to increase the rate of reaction (EPA, 2002).  A nitrogen based reducing reagent, such as ammonia or urea, is injected into the flue gas. The reagent reacts selectively with the flue gas NOx within a specific temperature range and in the presence of the catalyst and oxygen to reduce the NOx.  
+
+The use of a catalyst results in two advantages of the SCR process over SNCR, the higher NOx reduction efficiency and the lower and broader temperature ranges.  However, the decrease in reaction temperature and increase in efficiency is accompanied by a significant increase in capital and operating costs (EPA, 2002). The cost increase is due to the large amount of catalyst required.
+
+The SCR system can utilize either aqueous or anhydrous ammonia as the reagent.  Anhydrous ammonia is a gas at atmospheric pressure and normal temperatures.  There are safety issues with the use of anhydrous ammonia, as it must be transported and stored under pressure (EPA, 2002).  Aqueous ammonia is generally transported and stored at a concentration of 29.4% ammonia in water.
+
+Today, catalyst formulations include single component, multi-component, or active phase with a support structure.  Most catalyst formulations contain additional compounds or sup-ports, providing thermal and structural stability or to increase surface area (EPA, 2002).  
+
+The rate of reaction determines the amount of NOx removed from the flue gas. The important design and operational factors that affect the rate of reduction include:  reaction temperature range; residence time available in the optimum temperature range; degree of mixing between the injected reagent and the combustion gases; uncontrolled NOx concentration level; molar ratio of injected reagent to uncontrolled NOx; ammonia slip; catalyst activity; catalyst selectivity; pressure drop across the catalyst; catalyst pitch; catalyst deactivation; and catalyst management (EPA, 2001)."
+"Selective Catalytic Reduction; Glass Manufacturing - Flat","NSCRGMFT","NOX","Selective Catalytic Reduction","Glass Manufacturing - Flat","ptnonipm","Known",10,"139",2006,"74|89|90|81|139",,"Application:  This control is the selective catalytic reduction of NOx through add-on controls.  SCR controls are post-combustion control technologies based on the chemical reduction of nitrogen oxides (NOx) into molecular nitrogen (N2) and water vapor  (H2O). The SCR utilizes a catalyst to increase the NOx removal efficiency, which allows the process to occur at lower temperatures.
+
+Applies to large(>1 ton NOx per OSD) flat-glass manufacturing operations (SCC 30501403) with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: Selective Catalytic Reduction (SCR) has been widely applied to stationary source, fossil fuel-fired, combustion units for emission control since the early 1970s.  SCR is typically implemented on units requiring a higher level of NOx control than achievable by SNCR or other combustion controls (EPA, 2002).
+
+Like SNCR, SCR is based on the chemical reduction of the NOx molecule.  The primary difference between SNCR and SCR is that SCR uses a metal-based catalyst to increase the rate of reaction (EPA, 2002).  A nitrogen based reducing reagent, such as ammonia or urea, is injected into the flue gas. The reagent reacts selectively with the flue gas NOx within a specific temperature range and in the presence of the catalyst and oxygen to reduce the NOx.  
+
+The use of a catalyst results in two advantages of the SCR process over SNCR, the higher NOx reduction efficiency and the lower and broader temperature ranges.  However, the decrease in reaction temperature and increase in efficiency is accompanied by a significant increase in capital and operating costs (EPA, 2002). The cost increase is due to the large amount of catalyst required.
+
+The SCR system can utilize either aqueous or anhydrous ammonia as the reagent.  Anhydrous ammonia is a gas at atmospheric pressure and normal temperatures.  There are safety issues with the use of anhydrous ammonia, as it must be transported and stored under pressure (EPA, 2002).  Aqueous ammonia is generally transported and stored at a concentration of 29.4% ammonia in water.
+
+Today, catalyst formulations include single component, multi-component, or active phase with a support structure.  Most catalyst formulations contain additional compounds or sup-ports, providing thermal and structural stability or to increase surface area (EPA, 2002).  
+
+The rate of reaction determines the amount of NOx removed from the flue gas. The important design and operational factors that affect the rate of reduction include:  reaction temperature range; residence time available in the optimum temperature range; degree of mixing between the injected reagent and the combustion gases; uncontrolled NOx concentration level; molar ratio of injected reagent to uncontrolled NOx; ammonia slip; catalyst activity; catalyst selectivity; pressure drop across the catalyst; catalyst pitch; catalyst deactivation; and catalyst management (EPA, 2001)."
+"Selective Catalytic Reduction; Glass Manufacturing - Pressed","NSCRGMPD","NOX","Selective Catalytic Reduction","Glass Manufacturing - Pressed","ptnonipm","Known",10,"139",2006,"74|89|90|81|139",,"Application:  This control is the selective catalytic reduction of NOx through add-on controls.  SCR controls are post-combustion control technologies based on the chemical reduction of nitrogen oxides (NOx) into molecular nitrogen (N2) and water vapor  (H2O). The SCR utilizes a catalyst to increase the NOx removal efficiency, which allows the process to occur at lower temperatures.
+
+Applies to pressed-glass manufacturing operations, classified under SCC 30101404 and uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: Selective Catalytic Reduction (SCR) has been widely applied to stationary source, fossil fuel-fired, combustion units for emission control since the early 1970s.  SCR is typically implemented on units requiring a higher level of NOx control than achievable by SNCR or other combustion controls (EPA, 2002).
+
+Like SNCR, SCR is based on the chemical reduction of the NOx molecule.  The primary difference between SNCR and SCR is that SCR uses a metal-based catalyst to increase the rate of reaction (EPA, 2002).  A nitrogen based reducing reagent, such as ammonia or urea, is injected into the flue gas. The reagent reacts selectively with the flue gas NOx within a specific temperature range and in the presence of the catalyst and oxygen to reduce the NOx.  
+
+The use of a catalyst results in two advantages of the SCR process over SNCR, the higher NOx reduction efficiency and the lower and broader temperature ranges.  However, the decrease in reaction temperature and increase in efficiency is accompanied by a significant increase in capital and operating costs (EPA, 2002). The cost increase is due to the large amount of catalyst required.
+
+The SCR system can utilize either aqueous or anhydrous ammonia as the reagent.  Anhydrous ammonia is a gas at atmospheric pressure and normal temperatures.  There are safety issues with the use of anhydrous ammonia, as it must be transported and stored under pressure (EPA, 2002).  Aqueous ammonia is generally transported and stored at a concentration of 29.4% ammonia in water.
+
+Today, catalyst formulations include single component, multi-component, or active phase with a support structure.  Most catalyst formulations contain additional compounds or sup-ports, providing thermal and structural stability or to increase surface area (EPA, 2002).  
+
+The rate of reaction determines the amount of NOx removed from the flue gas. The important design and operational factors that affect the rate of reduction include:  reaction temperature range; residence time available in the optimum temperature range; degree of mixing between the injected reagent and the combustion gases; uncontrolled NOx concentration level; molar ratio of injected reagent to uncontrolled NOx; ammonia slip; catalyst activity; catalyst selectivity; pressure drop across the catalyst; catalyst pitch; catalyst deactivation; and catalyst management (EPA, 2001)."
+"Selective Non-Catalytic Reduction - Ammonia; NG-Fired Reformers","NSNCRFRNG","NOX","Selective Non-Catalytic Reduction","Ammonia - NG-Fired Reformers","ptnonipm","Known",20,"107",2006,"74|89|80",,"Application:  This control is the reduction of NOx emission through selective non-catalytic reduction add-on controls.  SNCR controls are post-combustion control technologies based on the chemical reduction of nitrogen oxides (NOx) into molecular nitrogen (N2) and water vapor (H2O).
+
+This control applies to small (<1 ton NOx per OSD) ammonia production natural gas fired reformers (SCC 30100306) with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: SNCR is the reduction of NOx in flue gas to N2 and water vapor.  This reduction is done with a nitrogen based reducing reagent, such as ammonia or urea. The reagent can react with a number of flue gas components. However, the NOx reduction reaction is favored for a specific temperature range and in the presence of oxygen (EPA, 2002).  
+
+Both ammonia and urea are used as reagents. The cost of the reagent represents a large part of the annual costs of an SNCR system.  Ammonia is generally less expensive than urea. However, the choice of reagent is also based on physical properties and operational considerations (EPA, 2002).
+
+Ammonia can be utilized in either aqueous or anhydrous form.  Anhydrous ammonia is a gas at atmospheric pressure and normal temperatures.  There are safety issues with the use of anhydrous ammonia, as it must be transported and stored under pressure (EPA, 2002).  Aqueous ammonia is generally transported and stored at a concentration of 29.4% ammonia in water.
+
+Urea based systems have several advantages, including several safety aspects.  Urea is a nontoxic, less volatile liquid that can be stored and handled more safely than ammonia.  Urea solution droplets can penetrate farther into the flue gas when injected into the boiler, enhancing mixing (EPA, 2002).  Because of these advantages, urea is more commonly used than ammonia in large boiler applications."
+"Selective Non-Catalytic Reduction - Ammonia; Oil-Fired Reformers","NSNCRFROL","NOX","Selective Non-Catalytic Reduction","Ammonia - Oil-Fired Reformers","ptnonipm","Known",20,"107",2006,"6",,"Application:  This control is the reduction of NOx emission through selective non-catalytic reduction add-on controls.  SNCR controls are post-combustion control technologies based on the chemical reduction of nitrogen oxides (NOx) into molecular nitrogen (N2) and water vapor (H2O).
+
+This control applies to ammonia production natural gas fired reformers (SCC 30100306) with uncontrolled NOx emissions greater than 10 tons per year.
+
+Discussion: SNCR is the reduction of NOx in flue gas to N2 and water vapor.  This reduction is done with a nitrogen based reducing reagent, such as ammonia or urea. The reagent can react with a number of flue gas components. However, the NOx reduction reaction is favored for a specific temperature range and in the presence of oxygen (EPA, 2002).  
+
+Both ammonia and urea are used as reagents. The cost of the reagent represents a large part of the annual costs of an SNCR system.  Ammonia is generally less expensive than urea. However, the choice of reagent is also based on physical properties and operational considerations (EPA, 2002).
+
+Ammonia can be utilized in either aqueous or anhydrous form.  Anhydrous ammonia is a gas at atmospheric pressure and normal temperatures.  There are safety issues with the use of anhydrous ammonia, as it must be transported and stored under pressure (EPA, 2002).  Aqueous ammonia is generally transported and stored at a concentration of 29.4% ammonia in water.
+
+Urea based systems have several advantages, including several safety aspects.  Urea is a nontoxic, less volatile liquid that can be stored and handled more safely than ammonia.  Urea solution droplets can penetrate farther into the flue gas when injected into the boiler, enhancing mixing (EPA, 2002).  Because of these advantages, urea is more commonly used than ammonia in large boiler applications."
