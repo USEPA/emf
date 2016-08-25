@@ -93,6 +93,12 @@
 			value="gov.epa.emissions.framework.services.qa.QAServiceImpl"/>
 	</service>
 	
+	<service name="gov.epa.emf.services.module.ModuleService" provider="java:RPC" style="RPC" use="encoded">
+		<parameter name="allowedMethods" value="*"/>
+		<parameter name="scope" value="session"/>
+		<parameter name="className"	value="gov.epa.emissions.framework.services.module.ModuleServiceImpl"/>
+	</service>
+	
 	<service name="gov.epa.emf.services.data.DataService" provider="java:RPC"
 		style="RPC" use="encoded">
 		<parameter name="allowedMethods" value="*"/>
@@ -275,20 +281,12 @@
 		qname="ns1:ModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleDatasetIn"
-		qname="ns1:ModuleDatasetIn" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleDataset"
+		qname="ns1:ModuleDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleDatasetOutNew"
-		qname="ns1:ModuleDatasetOutNew" xmlns:ns1="urn:gov.epa.services.EmfService"/>
-
-	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleDatasetOutReplace"
-		qname="ns1:ModuleDatasetOutReplace" xmlns:ns1="urn:gov.epa.services.EmfService"/>
-
-	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleParameterIn"
-		qname="ns1:ModuleParameterIn" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleParameter"
+		qname="ns1:ModuleParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.commons.data.Module"

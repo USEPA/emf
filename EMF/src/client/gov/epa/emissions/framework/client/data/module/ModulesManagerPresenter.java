@@ -53,28 +53,44 @@ public class ModulesManagerPresenter implements RefreshObserver {
 //        presenter.doDisplay();
 //    }
 
-//    public void displayNewModuleView(NewModuleView view) {
-//        NewModulePresenter presenter = new NewModulePresenter(session, view);
-//        presenter.doDisplay();
-//    }
+    public void displayNewModuleView(NewModuleView view) {
+        NewModulePresenter presenter = new NewModulePresenter(session, view);
+        presenter.doDisplay();
+    }
 
     public void doRemove(Module[] modules) throws EmfException {
 
-        Module[] lockedTypes = getLockedTypes(modules);
+        Module[] lockedModules = getLockedModules(modules);
 
-        if (lockedTypes == null)
+        if (lockedModules == null)
             return;
 
         try {
-            service().deleteModules(session.user(), lockedTypes);
+            service().deleteModules(session.user(), lockedModules);
         } catch (EmfException e) {
             throw new EmfException(e.getMessage());
         } finally {
-            releaseLocked(lockedTypes);
+            releaseLocked(lockedModules);
         }
     }
 
-    private Module[] getLockedTypes(Module[] modules) throws EmfException{
+    public void runModules(Module[] modules) throws EmfException {
+
+        Module[] lockedModules = getLockedModules(modules);
+
+        if (lockedModules == null)
+            return;
+
+        try {
+            session.moduleService().runModules(lockedModules, session.user());
+        } catch (EmfException e) {
+            throw new EmfException(e.getMessage());
+        } finally {
+            releaseLocked(lockedModules);
+        }
+    }
+
+    private Module[] getLockedModules(Module[] modules) throws EmfException{
         List<Module> lockedList = new ArrayList<Module>();
         for (int i=0; i < modules.length; i++){
             Module locked = service().obtainLockedModule(session.user(), modules[i]);
@@ -87,13 +103,13 @@ public class ModulesManagerPresenter implements RefreshObserver {
         return lockedList.toArray(new Module[0]);
     }
 
-    private void releaseLocked(Module[] lockedTypes) {
-        if (lockedTypes.length == 0)
+    private void releaseLocked(Module[] lockedModules) {
+        if (lockedModules.length == 0)
             return;
 
-        for(int i = 0; i < lockedTypes.length; i++) {
+        for(int i = 0; i < lockedModules.length; i++) {
             try {
-                service().releaseLockedModule(session.user(), lockedTypes[i]);
+                service().releaseLockedModule(session.user(), lockedModules[i]);
             } catch (Exception e) { //so that it go release locks continuously
                 e.printStackTrace();
             }

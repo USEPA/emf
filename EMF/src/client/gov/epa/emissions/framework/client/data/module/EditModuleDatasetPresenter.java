@@ -1,20 +1,19 @@
-package gov.epa.emissions.framework.client.data.moduletype;
+package gov.epa.emissions.framework.client.data.module;
 
 import gov.epa.emissions.commons.data.DatasetType;
-import gov.epa.emissions.commons.data.ModuleTypeVersion;
-import gov.epa.emissions.commons.data.ModuleTypeVersionDataset;
+import gov.epa.emissions.commons.data.ModuleDataset;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
 
-public class NewModuleTypeVersionDatasetPresenter {
+public class EditModuleDatasetPresenter {
        
-    private NewModuleTypeVersionDatasetView view;
-    private ModuleTypeDatasetsObserver datasetsObserver;
+    private EditModuleDatasetView view;
+    private ModuleDatasetsObserver datasetsObserver;
 
     private EmfSession session;
 
-    public NewModuleTypeVersionDatasetPresenter(EmfSession session, NewModuleTypeVersionDatasetView view, ModuleTypeDatasetsObserver datasetsObserver) {
+    public EditModuleDatasetPresenter(EmfSession session, EditModuleDatasetView view, ModuleDatasetsObserver datasetsObserver) {
         this.session = session;
         this.view = view;
         this.datasetsObserver = datasetsObserver;
@@ -46,8 +45,7 @@ public class NewModuleTypeVersionDatasetPresenter {
         view.disposeView();
     }
 
-    public void doSave(ModuleTypeVersion moduleTypeVersion, ModuleTypeVersionDataset moduleTypeVersionDataset) throws EmfException {
-        moduleTypeVersion.addModuleTypeVersionDataset(moduleTypeVersionDataset);
+    public void doSave(ModuleDataset moduleDataset) throws EmfException {
         datasetsObserver.refreshDatasets();
         closeView();
     }

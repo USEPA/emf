@@ -16,14 +16,14 @@ import java.util.HashMap;
 public class NewModuleTypeVersionParameterPresenter {
 
     private NewModuleTypeVersionParameterView view;
-    private NewModuleTypeView parentView;
+    private ModuleTypeParametersObserver parametersObserver;
 
     private EmfSession session;
 
-    public NewModuleTypeVersionParameterPresenter(EmfSession session, NewModuleTypeVersionParameterView view, NewModuleTypeView parentView) {
+    public NewModuleTypeVersionParameterPresenter(EmfSession session, NewModuleTypeVersionParameterView view, ModuleTypeParametersObserver parametersObserver) {
         this.session = session;
         this.view = view;
-        this.parentView = parentView;
+        this.parametersObserver = parametersObserver;
     }
 
     public void doDisplay() {
@@ -41,7 +41,7 @@ public class NewModuleTypeVersionParameterPresenter {
 
     public void doSave(ModuleTypeVersion moduleTypeVersion, ModuleTypeVersionParameter moduleTypeVersionParameter) throws EmfException {
         moduleTypeVersion.addModuleTypeVersionParameter(moduleTypeVersionParameter);
-        parentView.refreshParameters();
+        parametersObserver.refreshParameters();
         closeView();
     }
 

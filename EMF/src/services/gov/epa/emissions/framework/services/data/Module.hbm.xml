@@ -24,29 +24,19 @@
         <property name="isFinal" column="is_final" type="boolean" not-null="true"/>
         <property name="lockOwner" column="lock_owner" type="string" not-null="false"/>
         <property name="lockDate" column="lock_date" type="timestamp" not-null="false" length="4"/>
-        <map name="moduleDatasetsIn" cascade="all" inverse="true" lazy="false" fetch="select">
+        <map name="moduleDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_id"/>
             <index column="placeholder_name" type="string"/>
-            <one-to-many class="gov.epa.emissions.commons.data.ModuleDatasetIn"/>
+            <one-to-many class="gov.epa.emissions.commons.data.ModuleDataset"/>
         </map>
-        <map name="moduleDatasetsOutNew" cascade="all" inverse="true" lazy="false" fetch="select">
-            <key column="module_id"/>
-            <index column="placeholder_name" type="string"/>
-            <one-to-many class="gov.epa.emissions.commons.data.ModuleDatasetOutNew"/>
-        </map>
-        <map name="moduleDatasetsOutReplace" cascade="all" inverse="true" lazy="false" fetch="select">
-            <key column="module_id"/>
-            <index column="placeholder_name" type="string"/>
-            <one-to-many class="gov.epa.emissions.commons.data.ModuleDatasetOutReplace"/>
-        </map>
-        <map name="moduleParametersIn" cascade="all" inverse="true" lazy="false" fetch="select">
+        <map name="moduleParameters" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_id"/>
             <index column="parameter_name" type="string"/>
-            <one-to-many class="gov.epa.emissions.commons.data.ModuleParameterIn"/>
+            <one-to-many class="gov.epa.emissions.commons.data.ModuleParameter"/>
         </map>
     </class>
 
-    <class name="gov.epa.emissions.commons.data.ModuleDatasetIn" table="modules_datasets_in" schema="modules">
+    <class name="gov.epa.emissions.commons.data.ModuleDataset" table="modules_datasets" schema="modules">
         <id name="id" type="integer" column="id">
             <generator class="identity"/>
         </id>
@@ -54,34 +44,14 @@
             <column name="module_id" not-null="true" />
         </many-to-one>
         <property name="placeholderName" column="placeholder_name" type="string" not-null="true" length="63"/>
-        <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
-        <property name="version" column="version" type="integer" not-null="true"/>
+        <property name="outputMethod" column="output_method" type="string" not-null="false" length="16"/>
+        <property name="datasetId" column="dataset_id" type="integer" not-null="false"/>
+        <property name="version" column="version" type="integer" not-null="false"/>
+        <property name="datasetNamePattern" column="dataset_name_pattern" type="string" not-null="false"/>
+        <property name="overwriteExisting" column="overwrite_existing" type="boolean" not-null="false"/>
     </class>
 
-    <class name="gov.epa.emissions.commons.data.ModuleDatasetOutNew" table="modules_datasets_out_new" schema="modules">
-        <id name="id" type="integer" column="id">
-            <generator class="identity"/>
-        </id>
-        <many-to-one name="module" class="gov.epa.emissions.commons.data.Module" fetch="select">
-            <column name="module_id" not-null="true" />
-        </many-to-one>
-        <property name="placeholderName" column="placeholder_name" type="string" not-null="true" length="63"/>
-        <property name="datasetNamePattern" column="dataset_name_pattern" type="string" not-null="true"/>
-        <property name="overwriteExisting" column="overwrite_existing" type="boolean" not-null="true"/>
-    </class>
-
-    <class name="gov.epa.emissions.commons.data.ModuleDatasetOutReplace" table="modules_datasets_out_replace" schema="modules">
-        <id name="id" type="integer" column="id">
-            <generator class="identity"/>
-        </id>
-        <many-to-one name="module" class="gov.epa.emissions.commons.data.Module" fetch="select">
-            <column name="module_id" not-null="true" />
-        </many-to-one>
-        <property name="placeholderName" column="placeholder_name" type="string" not-null="true" length="63"/>
-        <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
-    </class>
-
-    <class name="gov.epa.emissions.commons.data.ModuleParameterIn" table="modules_parameters_in" schema="modules">
+    <class name="gov.epa.emissions.commons.data.ModuleParameter" table="modules_parameters" schema="modules">
         <id name="id" type="integer" column="id">
             <generator class="identity"/>
         </id>

@@ -1,11 +1,9 @@
-﻿DROP TABLE modules.modules_parameters_in;
-DROP TABLE modules.modules_datasets_in;
-DROP TABLE modules.modules_datasets_out_new;
-DROP TABLE modules.modules_datasets_out_replace;
+﻿DROP TABLE modules.modules_parameters;
+DROP TABLE modules.modules_datasets;
 DROP TABLE modules.modules;
 
-DROP TABLE modules.module_types_versions_parameters;
 DROP TABLE modules.module_types_versions_revisions;
+DROP TABLE modules.module_types_versions_parameters;
 DROP TABLE modules.module_types_versions_datasets;
 DROP TABLE modules.module_types_versions;
 DROP TABLE modules.module_types;

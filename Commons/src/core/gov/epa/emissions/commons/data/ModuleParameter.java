@@ -2,7 +2,7 @@ package gov.epa.emissions.commons.data;
 
 import java.io.Serializable;
 
-public class ModuleParameterIn implements Serializable {
+public class ModuleParameter implements Serializable {
 
     private int id;
 
@@ -63,10 +63,10 @@ public class ModuleParameterIn implements Serializable {
     }
 
     public boolean equals(Object other) {
-        return (other instanceof ModuleParameterIn && ((ModuleParameterIn) other).getQualifiedName() == getQualifiedName());
+        return (other instanceof ModuleParameter && ((ModuleParameter) other).getQualifiedName() == getQualifiedName());
     }
 
-    public int compareTo(ModuleParameterIn o) {
+    public int compareTo(ModuleParameter o) {
         return getQualifiedName().compareTo(o.getQualifiedName());
     }
 }

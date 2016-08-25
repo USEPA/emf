@@ -23,6 +23,7 @@ import gov.epa.emissions.framework.services.editor.DataEditorService;
 import gov.epa.emissions.framework.services.editor.DataViewService;
 import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
+import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.qa.QAService;
 import gov.epa.emissions.framework.services.sms.SectorScenarioService;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
@@ -141,6 +142,10 @@ public class DefaultEmfSession implements EmfSession {
 
     public QAService qaService() {
         return serviceLocator.qaService();
+    }
+
+    public ModuleService moduleService() {
+        return serviceLocator.moduleService();
     }
 
     public CaseService caseService() {

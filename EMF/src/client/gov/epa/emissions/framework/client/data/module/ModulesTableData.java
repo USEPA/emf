@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.data.module;
 
 import gov.epa.emissions.commons.data.Module;
+import gov.epa.emissions.commons.data.ModuleType;
 import gov.epa.emissions.commons.data.ModuleTypeVersion;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.ui.AbstractTableData;
@@ -18,7 +19,7 @@ public class ModulesTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Module Name", "Module Type", "Version", "Creator", "Date", "Description"};
+        return new String[] { "Module Name", "Module Type", "Version #", "Version Name", "Creator", "Date", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -39,9 +40,11 @@ public class ModulesTableData extends AbstractTableData {
         for (int i = 0; i < modules.length; i++) {
             Module element = modules[i];
             ModuleTypeVersion moduleTypeVersion = element.getModuleTypeVersion();
+            ModuleType moduleType = moduleTypeVersion.getModuleType();
             Object[] values = { element.getName(),
-                                moduleTypeVersion.getName(),
+                                moduleType.getName(),
                                 moduleTypeVersion.getVersion(),
+                                moduleTypeVersion.getName(),
                                 element.getCreator().getName(),
                                 CustomDateFormat.format_YYYY_MM_DD_HH_MM(element.getCreationDate()),
                                 getShortDescription(element)};

@@ -8,10 +8,8 @@ import gov.epa.emissions.commons.data.ModuleTypeVersionDataset;
 import gov.epa.emissions.commons.data.ModuleTypeVersionParameter;
 import gov.epa.emissions.commons.data.ModuleTypeVersionRevision;
 import gov.epa.emissions.commons.data.Module;
-import gov.epa.emissions.commons.data.ModuleDatasetIn;
-import gov.epa.emissions.commons.data.ModuleDatasetOutNew;
-import gov.epa.emissions.commons.data.ModuleDatasetOutReplace;
-import gov.epa.emissions.commons.data.ModuleParameterIn;
+import gov.epa.emissions.commons.data.ModuleDataset;
+import gov.epa.emissions.commons.data.ModuleParameter;
 import gov.epa.emissions.commons.data.ExternalSource;
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.KeyVal;
@@ -125,10 +123,8 @@ public class DataMappings extends Mappings {
         bean(call, ModuleTypeVersionRevision.class,  moduleTypeVersionRevision());
 
         bean(call, Module.class,                  module());
-        bean(call, ModuleDatasetIn.class,         moduleDatasetIn());
-        bean(call, ModuleDatasetOutNew.class,     moduleDatasetOutNew());
-        bean(call, ModuleDatasetOutReplace.class, moduleDatasetOutReplace());
-        bean(call, ModuleParameterIn.class,       moduleParameterIn());
+        bean(call, ModuleDataset.class,           moduleDataset());
+        bean(call, ModuleParameter.class,         moduleParameter());
 
         bean(call, InternalSource.class, "InternalSource");
         bean(call, ExternalSource.class, externalSource());
@@ -468,20 +464,12 @@ public class DataMappings extends Mappings {
         return qname("Module");
     }
 
-    public QName moduleDatasetIn() {
-        return qname("ModuleDatasetIn");
+    public QName moduleDataset() {
+        return qname("ModuleDataset");
     }
 
-    public QName moduleDatasetOutNew() {
-        return qname("ModuleDatasetOutNew");
-    }
-
-    public QName moduleDatasetOutReplace() {
-        return qname("ModuleDatasetOutReplace");
-    }
-
-    public QName moduleParameterIn() {
-        return qname("ModuleParameterIn");
+    public QName moduleParameter() {
+        return qname("ModuleParameter");
     }
 
     public QName dataset() {

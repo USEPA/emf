@@ -13,7 +13,6 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -26,7 +25,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -160,20 +158,30 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                removeModule();
+                removeModules();
             }
         };
         Button removeButton = new RemoveButton(removeAction);
+        
+        Action runAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                runModules();
+            }
+        };
+        Button runButton = new Button("Run", runAction);
+        
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(viewButton);
         crudPanel.add(editButton);
         crudPanel.add(newButton);
         crudPanel.add(removeButton);
+        crudPanel.add(runButton);
         if (!session.user().isAdmin()){
             editButton.setEnabled(false);
             newButton.setEnabled(false);
             removeButton.setEnabled(false);
+            runButton.setEnabled(false);
         }
 
         return crudPanel;
@@ -211,11 +219,11 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     private void createModule() {
-//        NewModuleWindow view = new NewModuleWindow(parentConsole, desktopManager, session);
-//        presenter.displayNewModuleView(view);
+        NewModuleWindow view = new NewModuleWindow(parentConsole, desktopManager, session);
+        presenter.displayNewModuleView(view);
     }
 
-    private void removeModule() {
+    private void removeModules() {
         messagePanel.clear();
         List<?> selected = selected();
         if (selected.isEmpty()) {
@@ -223,7 +231,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             return;
         }   
 
-        String message = "Are you sure you want to remove the selected " + selected.size() + " module module(s)?";
+        String message = "Are you sure you want to remove the selected " + selected.size() + " module(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
@@ -238,6 +246,38 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         }
     }
 
+    private void runModules() {
+        messagePanel.clear();
+        List<?> selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more module modules");
+            return;
+        }   
+
+        Module[] modules = selected.toArray(new Module[0]);
+
+        String message;
+        if (modules.length == 1) {
+            message = "Are you sure you want to run the '" + modules[0].getName() + "' module?";
+        } else {
+            message = "Are you sure you want to run the selected " + selected.size() + " modules?";
+        }
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (selection == JOptionPane.YES_OPTION) {
+            try {
+                presenter.runModules(modules);
+                if (modules.length == 1) {
+                    messagePanel.setMessage("Module " + modules[0].getName() + " has been executed.");
+                } else {
+                    messagePanel.setMessage(modules.length + " modules have been executed.");
+                }
+            } catch (EmfException e) {
+              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+            }
+        }
+    }
 
     private List selected() {
         return table.selected();

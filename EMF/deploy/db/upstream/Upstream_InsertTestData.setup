@@ -15,12 +15,15 @@ VALUES
 (3, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
 (4, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
 (5, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
-(5, 1, 'Second Version',  'Second version',  '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm\r\n-- using the ${emission_factors_dataset} placeholder', FALSE);
+(5, 1, 'Second Version',  'Second version',  '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, E'-- TODO define the algorithm\n-- using the ${emission_factors_dataset} placeholder', FALSE);
 
 INSERT INTO modules.module_types_versions_datasets
 (module_type_version_id, placeholder_name, mode, dataset_type_id, description)
 VALUES
-(6, 'emission_factors_dataset', 'IN', 333, 'Emission factors dataset');
+(6, 'emission_factors_dataset', 'IN', 333, 'Emission factors dataset'),
+(6, 'inout_dataset', 'INOUT', 333, 'INOUT dataset'),
+(6, 'out_new_dataset', 'OUT', 333, 'OUT NEW dataset'),
+(6, 'out_replace_dataset', 'OUT', 333, 'OUT REPLACE dataset');
 
 INSERT INTO modules.module_types_versions_parameters
 (module_type_version_id, parameter_name, mode, sql_parameter_type, description)

@@ -16,6 +16,7 @@ createdb -U emf -E UTF8 EMF
 psql -d EMF -U emf < upstream/Upstream_CreateSchema.setup
 psql -d EMF -U emf < upstream/Upstream_CreateModuleTypesTables.setup
 psql -d EMF -U emf < upstream/Upstream_CreateModulesTables.setup
+psql -d EMF -U emf < upstream/Upstream_InsertModuleKeywords.setup
 
 ## test data
 #psql -d EMF -U emf < upstream/Upstream_InsertTestData.setup

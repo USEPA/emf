@@ -27,80 +27,38 @@ ALTER TABLE modules.modules
 
 -------------------------------------------------------------------------------
 
--- Table: modules.modules_datasets_in
+-- Table: modules.modules_datasets
 
--- DROP TABLE modules.modules_datasets_in;
+-- DROP TABLE modules.modules_datasets;
 
-CREATE TABLE modules.modules_datasets_in
+CREATE TABLE modules.modules_datasets
 (
   id serial NOT NULL PRIMARY KEY,
   module_id integer NOT NULL
       REFERENCES modules.modules(id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE CASCADE,
   placeholder_name character varying(63) NOT NULL,
-  dataset_id integer NOT NULL
+  output_method character varying(16) CHECK (output_method IN ('NEW', 'REPLACE') ),
+  dataset_id integer
       REFERENCES emf.datasets(id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION,
-  version integer NOT NULL DEFAULT 0
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE modules.modules_datasets_in
-  OWNER TO emf;
-
--------------------------------------------------------------------------------
-
--- Table: modules.modules_datasets_out_new
-
--- DROP TABLE modules.modules_datasets_out_new;
-
-CREATE TABLE modules.modules_datasets_out_new
-(
-  id serial NOT NULL PRIMARY KEY,
-  module_id integer NOT NULL
-      REFERENCES modules.modules(id) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE CASCADE,
-  placeholder_name character varying(63) NOT NULL,
+  version integer,
   dataset_name_pattern character varying(255),
-  overwrite_existing boolean NOT NULL DEFAULT FALSE
+  overwrite_existing boolean
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE modules.modules_datasets_out_new
+ALTER TABLE modules.modules_datasets
   OWNER TO emf;
 
 -------------------------------------------------------------------------------
 
--- Table: modules.modules_datasets_out_replace
+-- Table: modules.modules_parameters
 
--- DROP TABLE modules.modules_datasets_out_replace;
+-- DROP TABLE modules.modules_parameters;
 
-CREATE TABLE modules.modules_datasets_out_replace
-(
-  id serial NOT NULL PRIMARY KEY,
-  module_id integer NOT NULL
-      REFERENCES modules.modules(id) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE CASCADE,
-  placeholder_name character varying(63) NOT NULL,
-  dataset_id integer NOT NULL
-      REFERENCES emf.datasets(id) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE modules.modules_datasets_out_replace
-  OWNER TO emf;
-
--------------------------------------------------------------------------------
-
--- Table: modules.modules_parameters_in
-
--- DROP TABLE modules.modules_parameters_in;
-
-CREATE TABLE modules.modules_parameters_in
+CREATE TABLE modules.modules_parameters
 (
   id serial NOT NULL PRIMARY KEY,
   module_id integer NOT NULL
@@ -112,5 +70,5 @@ CREATE TABLE modules.modules_parameters_in
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE modules.module_types_versions_parameters
+ALTER TABLE modules.modules_parameters
   OWNER TO emf;

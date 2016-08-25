@@ -2,17 +2,26 @@ package gov.epa.emissions.commons.data;
 
 import java.io.Serializable;
 
-public class ModuleDatasetIn implements Serializable {
+public class ModuleDataset implements Serializable {
 
+    public static final String NEW = "NEW";
+    public static final String REPLACE = "REPLACE";
+    
     private int id;
 
     private Module module;
 
     private String placeholderName;
 
-    private int datasetId;
+    private String outputMethod; // 'NEW', 'REPLACE'
 
-    private int version;
+    private Integer datasetId;
+
+    private Integer version;
+
+    private String datasetNamePattern;
+
+    private Boolean overwriteExisting;
 
     public int getId() {
         return id;
@@ -42,20 +51,44 @@ public class ModuleDatasetIn implements Serializable {
         return module.getModuleTypeVersion().getModuleTypeVersionDatasets().get(placeholderName);
     }
 
-    public int getDatasetId() {
+    public String getOutputMethod() {
+        return outputMethod;
+    }
+
+    public void setOutputMethod(String outputMethod) {
+        this.outputMethod = outputMethod;
+    }
+
+    public Integer getDatasetId() {
         return datasetId;
     }
 
-    public void setDatasetId(int datasetId) {
+    public void setDatasetId(Integer datasetId) {
         this.datasetId = datasetId;
     }
 
-    public int getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public String getDatasetNamePattern() {
+        return datasetNamePattern;
+    }
+
+    public void setDatasetNamePattern(String datasetNamePattern) {
+        this.datasetNamePattern = datasetNamePattern;
+    }
+
+    public Boolean getOverwriteExisting() {
+        return overwriteExisting;
+    }
+
+    public void setOverwriteExisting(Boolean overwriteExisting) {
+        this.overwriteExisting = overwriteExisting;
     }
 
     public String getQualifiedName() {
@@ -73,10 +106,10 @@ public class ModuleDatasetIn implements Serializable {
     }
 
     public boolean equals(Object other) {
-        return (other instanceof ModuleDatasetIn && ((ModuleDatasetIn) other).getQualifiedName() == getQualifiedName());
+        return (other instanceof ModuleDataset && ((ModuleDataset) other).getQualifiedName() == getQualifiedName());
     }
 
-    public int compareTo(ModuleDatasetIn o) {
+    public int compareTo(ModuleDataset o) {
         return getQualifiedName().compareTo(o.getQualifiedName());
     }
 }

@@ -1,0 +1,1 @@
+INSERT INTO emf.keywords(name) VALUES ('MODULE_NAME'), ('MODULE_ID'), ('MODULE_PLACEHOLDER');

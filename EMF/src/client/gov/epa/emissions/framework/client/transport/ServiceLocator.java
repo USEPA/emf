@@ -18,6 +18,7 @@ import gov.epa.emissions.framework.services.editor.DataEditorService;
 import gov.epa.emissions.framework.services.editor.DataViewService;
 import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
+import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.qa.QAService;
 
 public interface ServiceLocator {
@@ -37,6 +38,8 @@ public interface ServiceLocator {
     DataViewService dataViewService();
 
     QAService qaService();
+
+    ModuleService moduleService();
 
     CaseService caseService();
     

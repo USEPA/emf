@@ -3,11 +3,9 @@ package gov.epa.emissions.commons.data;
 import gov.epa.emissions.commons.security.User;
 
 import java.io.Serializable;
-//import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
-//import java.util.List;
 
 public class Module implements Serializable, Lockable, Comparable<Module> {
 
@@ -29,20 +27,15 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     private Mutex lock;
 
-    private Map<String, ModuleDatasetIn> moduleDatasetsIn;
+    private Map<String, ModuleDataset> moduleDatasets;
 
-    private Map<String, ModuleDatasetOutNew> moduleDatasetsOutNew;
-
-    private Map<String, ModuleDatasetOutReplace> moduleDatasetsOutReplace;
-
-    private Map<String, ModuleParameterIn> moduleParametersIn;
+    private Map<String, ModuleParameter> moduleParameters;
 
 //    private List<ModuleHistoryRecord> moduleHistory;
 
     public Module() {
-        moduleDatasetsOutNew = new HashMap<String, ModuleDatasetOutNew>();
-        moduleDatasetsOutReplace = new HashMap<String, ModuleDatasetOutReplace>();
-        moduleParametersIn = new HashMap<String, ModuleParameterIn>();
+        moduleDatasets = new HashMap<String, ModuleDataset>();
+        moduleParameters = new HashMap<String, ModuleParameter>();
 //        moduleHistory = new ArrayList<ModuleHistoryRecord>();
         lock = new Mutex();
     }
@@ -150,92 +143,56 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         return lock.isLocked();
     }
 
-    // moduleDatasetsIn
+    // moduleDatasets
 
-    public Map<String, ModuleDatasetIn> getModuleDatasetsIn() {
-        return this.moduleDatasetsIn;
+    public Map<String, ModuleDataset> getModuleDatasets() {
+        return this.moduleDatasets;
     }
 
-    public void setModuleDatasetsIn(Map<String, ModuleDatasetIn> moduleDatasetsIn) {
-        this.moduleDatasetsIn = moduleDatasetsIn;
+    public void setModuleDatasets(Map<String, ModuleDataset> moduleDatasets) {
+        this.moduleDatasets = moduleDatasets;
     }
 
-    public void addModuleDatasetIn(ModuleDatasetIn moduleDatasetIn) {
-        this.moduleDatasetsIn.put(moduleDatasetIn.getModuleTypeVersionDataset().getPlaceholderName(), moduleDatasetIn);
+    public void addModuleDataset(ModuleDataset moduleDataset) {
+        this.moduleDatasets.put(moduleDataset.getModuleTypeVersionDataset().getPlaceholderName(), moduleDataset);
     }
 
-    public void removeModuleDatasetIn(ModuleDatasetIn moduleDatasetIn) {
-        removeModuleDatasetIn(moduleDatasetIn.getModuleTypeVersionDataset().getPlaceholderName());
+    public void removeModuleDataset(ModuleDataset moduleDataset) {
+        removeModuleDataset(moduleDataset.getModuleTypeVersionDataset().getPlaceholderName());
     }
 
-    public void removeModuleDatasetIn(String placeholderName) {
-        this.moduleDatasetsIn.remove(placeholderName);
+    public void removeModuleDataset(String placeholderName) {
+        this.moduleDatasets.remove(placeholderName);
     }
 
-    // moduleDatasetsOutNew
-
-    public Map<String, ModuleDatasetOutNew> getModuleDatasetsOutNew() {
-        return this.moduleDatasetsOutNew;
+    public void clearModuleDatasets() {
+        this.moduleDatasets.clear();
     }
 
-    public void setModuleDatasetsOutNew(Map<String, ModuleDatasetOutNew> moduleDatasetsOutNew) {
-        this.moduleDatasetsOutNew = moduleDatasetsOutNew;
+    // moduleParameters
+
+    public Map<String, ModuleParameter> getModuleParameters() {
+        return this.moduleParameters;
     }
 
-    public void addModuleDatasetOutNew(ModuleDatasetOutNew moduleDatasetOutNew) {
-        this.moduleDatasetsOutNew.put(moduleDatasetOutNew.getModuleTypeVersionDataset().getPlaceholderName(), moduleDatasetOutNew);
+    public void setModuleParameters(Map<String, ModuleParameter> moduleParameters) {
+        this.moduleParameters = moduleParameters;
     }
 
-    public void removeModuleDatasetOutNew(ModuleDatasetOutNew moduleDatasetOutNew) {
-        removeModuleDatasetOutNew(moduleDatasetOutNew.getModuleTypeVersionDataset().getPlaceholderName());
+    public void addModuleParameter(ModuleParameter moduleParameter) {
+        this.moduleParameters.put(moduleParameter.getModuleTypeVersionParameter().getParameterName(), moduleParameter);
     }
 
-    public void removeModuleDatasetOutNew(String placeholderName) {
-        this.moduleDatasetsOutNew.remove(placeholderName);
+    public void removeModuleParameter(ModuleParameter moduleParameter) {
+        removeModuleParameter(moduleParameter.getModuleTypeVersionParameter().getParameterName());
     }
 
-    // moduleDatasetsOutReplace
-
-    public Map<String, ModuleDatasetOutReplace> getModuleDatasetsOutReplace() {
-        return this.moduleDatasetsOutReplace;
+    public void removeModuleParameter(String placeholderName) {
+        this.moduleParameters.remove(placeholderName);
     }
 
-    public void setModuleDatasetsOutReplace(Map<String, ModuleDatasetOutReplace> moduleDatasetsOutReplace) {
-        this.moduleDatasetsOutReplace = moduleDatasetsOutReplace;
-    }
-
-    public void addModuleDatasetOutReplace(ModuleDatasetOutReplace moduleDatasetOutReplace) {
-        this.moduleDatasetsOutReplace.put(moduleDatasetOutReplace.getModuleTypeVersionDataset().getPlaceholderName(), moduleDatasetOutReplace);
-    }
-
-    public void removeModuleDatasetOutReplace(ModuleDatasetOutReplace moduleDatasetOutReplace) {
-        removeModuleDatasetOutReplace(moduleDatasetOutReplace.getModuleTypeVersionDataset().getPlaceholderName());
-    }
-
-    public void removeModuleDatasetOutReplace(String placeholderName) {
-        this.moduleDatasetsOutReplace.remove(placeholderName);
-    }
-
-    // moduleParametersIn
-
-    public Map<String, ModuleParameterIn> getModuleParametersIn() {
-        return this.moduleParametersIn;
-    }
-
-    public void setModuleParametersIn(Map<String, ModuleParameterIn> moduleParametersIn) {
-        this.moduleParametersIn = moduleParametersIn;
-    }
-
-    public void addModuleParameterIn(ModuleParameterIn moduleParameterIn) {
-        this.moduleParametersIn.put(moduleParameterIn.getModuleTypeVersionParameter().getParameterName(), moduleParameterIn);
-    }
-
-    public void removeModuleParameterIn(ModuleParameterIn moduleParameterIn) {
-        removeModuleParameterIn(moduleParameterIn.getModuleTypeVersionParameter().getParameterName());
-    }
-
-    public void removeModuleParameterIn(String placeholderName) {
-        this.moduleParametersIn.remove(placeholderName);
+    public void clearModuleParameters() {
+        this.moduleParameters.clear();
     }
 
     // standard methods

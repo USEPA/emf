@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class ModuleTypeVersionParameter implements Serializable {
 
+    public static final String IN    = "IN";
+    public static final String INOUT = "INOUT";
+    public static final String OUT   = "OUT";
+    
     private int id;
 
     private ModuleTypeVersion moduleTypeVersion;
@@ -46,6 +50,18 @@ public class ModuleTypeVersionParameter implements Serializable {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public boolean isModeIN() {
+        return this.mode.equals(IN);
+    }
+
+    public boolean isModeINOUT() {
+        return this.mode.equals(INOUT);
+    }
+
+    public boolean isModeOUT() {
+        return this.mode.equals(OUT);
     }
 
     public String getSqlParameterType() {

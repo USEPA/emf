@@ -81,9 +81,9 @@ public class LoginWindow extends EmfFrame implements LoginView {
     public void display() {
         try {
             System.out.println("Verifying server version is "+EMF_VERSION);
-            if (!presenter.checkEmfVersion(EMF_VERSION) && toUpdate() == JOptionPane.YES_OPTION)
-                disposeView();
-            else
+//            if (!presenter.checkEmfVersion(EMF_VERSION) && toUpdate() == JOptionPane.YES_OPTION)
+//                disposeView();
+//            else
             {
                 System.out.println("Showing Login Window");
                 username.setText(presenter.userName());
