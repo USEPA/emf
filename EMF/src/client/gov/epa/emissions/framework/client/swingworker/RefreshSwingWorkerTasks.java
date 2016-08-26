@@ -29,7 +29,8 @@ public class RefreshSwingWorkerTasks extends SwingWorker<Object[], Void> {
      * don't update gui here
      */
     @Override
-    public Object[] doInBackground() throws EmfException  {          
+    public Object[] doInBackground() throws EmfException  {
+        if (presenter == null) return null; 
         return presenter.refreshProcessData();
     }
 
@@ -39,6 +40,7 @@ public class RefreshSwingWorkerTasks extends SwingWorker<Object[], Void> {
     @Override
     public void done() {
         try {
+            if (presenter == null) return;
             //make sure something didn't happen
             presenter.refreshDisplay(get());
             

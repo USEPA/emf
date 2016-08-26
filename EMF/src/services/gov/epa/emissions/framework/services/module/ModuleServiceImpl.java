@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.services.module;
 
-import gov.epa.emissions.commons.data.Module;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 
@@ -28,6 +27,7 @@ import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +43,9 @@ public class ModuleServiceImpl implements ModuleService {
 
     private DbServerFactory dbServerFactory;
 
-    private ModuleDAO dao;
+    private ModulesDAO modulesDAO;
+    
+    private ModuleTypesDAO moduleTypesDAO;
     
     private StatusDAO statusDAO;
     
@@ -61,7 +63,8 @@ public class ModuleServiceImpl implements ModuleService {
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
         this.threadPool = createThreadPool();
-        dao = new ModuleDAO();
+        modulesDAO = new ModulesDAO();
+        moduleTypesDAO = new ModuleTypesDAO();
         statusDAO = new StatusDAO(sessionFactory);
     }
 
@@ -71,6 +74,190 @@ public class ModuleServiceImpl implements ModuleService {
         threadPool.setKeepAliveTime(1000 * 60 * 3);// terminate after 3 (unused) minutes
 
         return threadPool;
+    }
+
+    public synchronized ModuleType[] getModuleTypes() throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            List<ModuleType> list = moduleTypesDAO.getModuleTypes(session);
+            session.close();
+
+            ModuleType[] moduleTypes = list.toArray(new ModuleType[0]); 
+            return moduleTypes;
+        } catch (RuntimeException e) {
+            LOG.error("Could not get all ModuleTypes", e);
+            throw new EmfException("Could not get all ModuleTypes ");
+        }
+    }
+
+    public void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
+        Session session = this.sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+
+        try {
+            if (owner.isAdmin()){
+                for (int i=0; i<types.length; i++) {
+                    moduleTypesDAO.removeModuleType(types[i], session);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error deleting module types. " , e);
+            throw new EmfException("Error deleting module types. \n" + e.getMessage());
+        } finally {
+            session.close(); 
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
+    }
+
+    public synchronized ModuleType obtainLockedModuleType(User user, ModuleType type) throws EmfException {
+        Session session = sessionFactory.getSession();
+
+        try {
+            ModuleType locked = moduleTypesDAO.obtainLockedModuleType(user, type, session);
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not obtain lock for ModuleType: " + type.getName(), e);
+            throw new EmfException("Could not obtain lock for ModuleType: " + type.getName());
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized ModuleType releaseLockedModuleType(User user, ModuleType type) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            ModuleType locked = moduleTypesDAO.releaseLockedModuleType(user, type, session);
+            session.close();
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not release lock on ModuleType: " + type.getName(), e);
+            throw new EmfException("Could not release lock on ModuleType: " + type.getName());
+        }
+    }
+
+    public synchronized void addModuleType(ModuleType type) throws EmfException {
+        Session session = sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+        try {
+
+            if (moduleTypesDAO.nameUsed(type.getName(), ModuleType.class, session))
+                throw new EmfException("The \"" + type.getName() + "\" name is already in use");
+
+            moduleTypesDAO.add(type, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not add new ModuleType", e);
+            throw new EmfException("Could not add module type " + type.getName() + ": " + e.toString());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
+    }
+
+    public synchronized Module[] getModules() throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            List<Module> list = modulesDAO.getModules(session);
+            session.close();
+
+            Module[] modules = list.toArray(new Module[0]); 
+            return modules;
+        } catch (RuntimeException e) {
+            LOG.error("Could not get all modules", e);
+            throw new EmfException("Could not get all modules ");
+        }
+    }
+
+    public void deleteModules(User owner, Module[] modules) throws EmfException {
+        Session session = this.sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+
+        try {
+            if (owner.isAdmin()){
+                for (int i=0; i<modules.length; i++) {
+                    modulesDAO.removeModule(modules[i], session);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error deleting modules. " , e);
+            throw new EmfException("Error deleting modules. \n" + e.getMessage());
+        } finally {
+            session.close(); 
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
+    }
+
+    public synchronized Module obtainLockedModule(User user, Module module) throws EmfException {
+        Session session = sessionFactory.getSession();
+
+        try {
+            Module locked = modulesDAO.obtainLockedModule(user, module, session);
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not obtain lock for Module: " + module.getName(), e);
+            throw new EmfException("Could not obtain lock for Module: " + module.getName());
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized Module releaseLockedModule(User user, Module module) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            Module locked = modulesDAO.releaseLockedModule(user, module, session);
+            session.close();
+
+            return locked;
+        } catch (RuntimeException e) {
+            LOG.error("Could not release lock on Module: " + module.getName(), e);
+            throw new EmfException("Could not release lock on Module: " + module.getName());
+        }
+    }
+
+    public synchronized void addModule(Module module) throws EmfException {
+        Session session = sessionFactory.getSession();
+        DbServer dbServer = dbServerFactory.getDbServer();
+        try {
+
+            if (modulesDAO.nameUsed(module.getName(), Module.class, session))
+                throw new EmfException("The \"" + module.getName() + "\" name is already in use");
+
+            modulesDAO.add(module, session);
+        } catch (RuntimeException e) {
+            LOG.error("Could not add new Module", e);
+            throw new EmfException("Could not add module " + module.getName() + ": " + e.toString());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            throw new EmfException(e.getMessage());
+        } finally {
+            session.close();
+            try {
+                dbServer.disconnect();
+            } catch (Exception e) {
+                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+            }
+        }
     }
 
     public synchronized void runModules(Module[] modules, User user) throws EmfException {

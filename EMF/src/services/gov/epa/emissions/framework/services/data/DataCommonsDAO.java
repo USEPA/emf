@@ -2,8 +2,6 @@ package gov.epa.emissions.framework.services.data;
 
 import gov.epa.emissions.commons.data.Country;
 import gov.epa.emissions.commons.data.DatasetType;
-import gov.epa.emissions.commons.data.ModuleType;
-import gov.epa.emissions.commons.data.Module;
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.commons.data.Project;
 import gov.epa.emissions.commons.data.Region;
@@ -44,10 +42,6 @@ public class DataCommonsDAO {
 
     private DatasetTypesDAO datasetTypesDAO;
 
-    private ModuleTypesDAO moduleTypesDAO;
-
-    private ModulesDAO modulesDAO;
-
     private PollutantsDAO pollutantsDAO;
 
     private SourceGroupsDAO sourceGroupsDAO;
@@ -62,8 +56,6 @@ public class DataCommonsDAO {
         lockingScheme = new LockingScheme();
         keywordsDAO = new KeywordsDAO();
         datasetTypesDAO = new DatasetTypesDAO();
-        moduleTypesDAO = new ModuleTypesDAO();
-        modulesDAO = new ModulesDAO();
         pollutantsDAO = new PollutantsDAO();
         sourceGroupsDAO = new SourceGroupsDAO();
         datasetDAO = new DatasetDAO();
@@ -163,38 +155,6 @@ public class DataCommonsDAO {
 
     public DatasetType obtainLockedDatasetType(User user, DatasetType type, Session session) {
         return datasetTypesDAO.obtainLocked(user, type, session);
-    }
-
-    public List getModuleTypes(Session session) {
-        return moduleTypesDAO.getAll(session);
-    }
-
-    public void removeModuleType(ModuleType type, Session session) {
-        hibernateFacade.remove(type, session);
-    }
-
-    public ModuleType obtainLockedModuleType(User user, ModuleType type, Session session) {
-        return moduleTypesDAO.obtainLocked(user, type, session);
-    }
-
-    public ModuleType releaseLockedModuleType(User user, ModuleType type, Session session) {
-        return moduleTypesDAO.releaseLocked(user, type, session);
-    }
-
-    public List getModules(Session session) {
-        return modulesDAO.getAll(session);
-    }
-
-    public void removeModule(Module module, Session session) {
-        hibernateFacade.remove(module, session);
-    }
-
-    public Module obtainLockedModule(User user, Module module, Session session) {
-        return modulesDAO.obtainLocked(user, module, session);
-    }
-
-    public Module releaseLockedModule(User user, Module module, Session session) {
-        return modulesDAO.releaseLocked(user, module, session);
     }
 
     public Sector updateSector(Sector sector, Session session) throws EmfException {
@@ -372,14 +332,6 @@ public class DataCommonsDAO {
 
     public void add(DatasetType datasetType, Session session) {
         datasetTypesDAO.add(datasetType, session);
-    }
-
-    public void add(ModuleType moduleType, Session session) {
-        moduleTypesDAO.add(moduleType, session);
-    }
-
-    public void add(Module module, Session session) {
-        modulesDAO.add(module, session);
     }
 
     public void add(XFileFormat format, Session session) {

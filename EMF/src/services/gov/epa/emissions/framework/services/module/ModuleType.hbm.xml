@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleType" table="module_types" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="string" not-null="true" length="255"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+        <property name="lockOwner" column="lock_owner" type="string" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="timestamp" not-null="false" length="4"/>
+        <property name="creationDate" column="creation_date" type="timestamp" not-null="false" length="4"/>
+        <property name="lastModifiedDate" column="last_mod_date" type="timestamp" not-null="false" length="4"/>
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"
+            not-null="false"/>
+        <property name="defaultVersion" column="default_version" type="integer" not-null="false"/>
+        <map name="moduleTypeVersions" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="module_type_id"/>
+            <index column="version" type="integer"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersion"/>
+        </map>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersion" table="module_types_versions" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="moduleType" class="gov.epa.emissions.framework.services.module.ModuleType" fetch="select">
+            <column name="module_type_id" not-null="true" />
+        </many-to-one>
+        <property name="version" column="version" type="integer" not-null="true"/>
+        <property name="name" column="name" type="string" not-null="true" length="255"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+        <property name="creationDate" column="creation_date" type="timestamp" not-null="false" length="4"/>
+        <property name="lastModifiedDate" column="last_mod_date" type="timestamp" not-null="false" length="4"/>
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/>
+        <property name="baseVersion" column="base_version" type="integer" not-null="true"/>
+        <property name="algorithm" column="algorithm" type="text" not-null="false"/>
+        <property name="isFinal" column="is_final" type="boolean" not-null="true"/>
+        <map name="moduleTypeVersionDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="module_type_version_id"/>
+            <index column="placeholder_name" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset"/>
+        </map>
+        <map name="moduleTypeVersionParameters" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="module_type_version_id"/>
+            <index column="parameter_name" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter"/>
+        </map>
+        <list name="moduleTypeVersionRevisions" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="module_type_version_id"/>
+            <list-index column="revision"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision"/>
+        </list>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset" table="module_types_versions_datasets" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="moduleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
+            <column name="module_type_version_id" not-null="true" />
+        </many-to-one>
+        <property name="placeholderName" column="placeholder_name" type="string" not-null="true" length="63"/>
+        <property name="mode" column="mode" type="string" not-null="true" length="5"/>
+        <many-to-one 
+            name="datasetType"
+            class="gov.epa.emissions.commons.data.DatasetType"
+            column="dataset_type_id"
+            not-null="true"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter" table="module_types_versions_parameters" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="moduleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
+            <column name="module_type_version_id" not-null="true" />
+        </many-to-one>
+        <property name="parameterName" column="parameter_name" type="string" not-null="true" length="63"/>
+        <property name="mode" column="mode" type="string" not-null="true" length="5"/>
+        <property name="sqlParameterType" column="sql_parameter_type" type="string" not-null="true" length="255"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision" table="module_types_versions_revisions" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="moduleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
+            <column name="module_type_version_id" not-null="true" />
+        </many-to-one>
+        <property name="revision" column="revision" type="integer" not-null="true"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+        <property name="creationDate" column="creation_date" type="timestamp" not-null="false" length="4"/>
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"/>
+    </class>
+
+</hibernate-mapping>

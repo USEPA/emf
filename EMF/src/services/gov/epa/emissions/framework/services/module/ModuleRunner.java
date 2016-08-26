@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.services.module;
 
-import gov.epa.emissions.commons.data.Module;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+
+    <class name="gov.epa.emissions.framework.services.module.Module" table="modules" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="string" not-null="true" length="255"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+        <many-to-one name="moduleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
+            <column name="module_type_version_id" not-null="true" />
+        </many-to-one>
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"
+            not-null="false"/>
+        <property name="creationDate" column="creation_date" type="timestamp" not-null="false" length="4"/>
+        <property name="lastModifiedDate" column="last_mod_date" type="timestamp" not-null="false" length="4"/>
+        <property name="isFinal" column="is_final" type="boolean" not-null="true"/>
+        <property name="lockOwner" column="lock_owner" type="string" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="timestamp" not-null="false" length="4"/>
+        <map name="moduleDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="module_id"/>
+            <index column="placeholder_name" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleDataset"/>
+        </map>
+        <map name="moduleParameters" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="module_id"/>
+            <index column="parameter_name" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleParameter"/>
+        </map>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleDataset" table="modules_datasets" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="module" class="gov.epa.emissions.framework.services.module.Module" fetch="select">
+            <column name="module_id" not-null="true" />
+        </many-to-one>
+        <property name="placeholderName" column="placeholder_name" type="string" not-null="true" length="63"/>
+        <property name="outputMethod" column="output_method" type="string" not-null="false" length="16"/>
+        <property name="datasetId" column="dataset_id" type="integer" not-null="false"/>
+        <property name="version" column="version" type="integer" not-null="false"/>
+        <property name="datasetNamePattern" column="dataset_name_pattern" type="string" not-null="false"/>
+        <property name="overwriteExisting" column="overwrite_existing" type="boolean" not-null="false"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleParameter" table="modules_parameters" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="module" class="gov.epa.emissions.framework.services.module.Module" fetch="select">
+            <column name="module_id" not-null="true" />
+        </many-to-one>
+        <property name="parameterName" column="parameter_name" type="string" not-null="true" length="63"/>
+        <property name="value" column="value" type="string" not-null="true" length="256"/>
+    </class>
+
+</hibernate-mapping>

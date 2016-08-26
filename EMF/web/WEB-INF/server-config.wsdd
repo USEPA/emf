@@ -261,35 +261,35 @@
 		qname="ns1:DatasetType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersion"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersion"
 		qname="ns1:ModuleTypeVersion" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersionDataset"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset"
 		qname="ns1:ModuleTypeVersionDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersionParameter"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter"
 		qname="ns1:ModuleTypeVersionParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleTypeVersionRevision"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision"
 		qname="ns1:ModuleTypeVersionRevision" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleType"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleType"
 		qname="ns1:ModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleDataset"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleDataset"
 		qname="ns1:ModuleDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleParameter"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleParameter"
 		qname="ns1:ModuleParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.commons.data.Module"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.Module"
 		qname="ns1:Module" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
@@ -940,7 +940,7 @@
 	
 	<arrayMapping qname="ns1:ModuleTypes"
 		xmlns:ns1="urn:gov.epa.services.EmfService"
-		languageSpecificType="java:gov.epa.emissions.commons.data.ModuleType[]"
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleType[]"
 		innerType="ns1:ModuleType"
 		encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 	

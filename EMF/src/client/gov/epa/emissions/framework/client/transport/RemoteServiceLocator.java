@@ -107,7 +107,8 @@ public class RemoteServiceLocator implements ServiceLocator {
 
     public ModuleService moduleService() {
         if (moduleService == null)
-            moduleService = new ModuleServiceTransport(baseUrl + "/gov.epa.emf.services.module.ModuleService");
+            moduleService = new ModuleServiceTransport(baseUrl + "/gov.epa.emf.services.module.ModuleService",
+                                                       emfSession);
         
         return moduleService;
     }
@@ -115,7 +116,7 @@ public class RemoteServiceLocator implements ServiceLocator {
     public DataCommonsService dataCommonsService() {
         if (dataCommonsService == null)
             dataCommonsService = new DataCommonsServiceTransport(baseUrl + "/gov.epa.emf.services.data.DataCommonsService",
-                    emfSession);
+                                                                 emfSession);
         
         return dataCommonsService;
     }
