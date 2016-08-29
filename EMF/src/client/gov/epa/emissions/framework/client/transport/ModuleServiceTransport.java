@@ -54,6 +54,16 @@ public class ModuleServiceTransport implements ModuleService {
         this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
     }
 
+    public synchronized ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("updateModuleType");
+        call.addParam("moduleType", mappings.moduleType());
+        call.setReturnType(mappings.moduleType());
+
+        return (ModuleType) call.requestResponse(new Object[] { moduleType });
+    }
+
     public void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
         EmfCall call = call();
 
@@ -111,6 +121,16 @@ public class ModuleServiceTransport implements ModuleService {
 
         //make sure we refresh the client-side cache
         this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
+    }
+
+    public synchronized Module updateModule(Module module) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("updateModule");
+        call.addParam("module", mappings.module());
+        call.setReturnType(mappings.module());
+
+        return (Module) call.requestResponse(new Object[] { module });
     }
 
     public void deleteModules(User owner, Module[] modules) throws EmfException {

@@ -8,12 +8,14 @@ import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -180,38 +182,49 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     private void viewModuleTypes() {
-//        List selected = selected();
-//        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-//            ModuleType type = (ModuleType) iter.next();
-//            try {
-//                presenter.doView(type, viewableView());
-//            } catch (EmfException e) {
-//                messagePanel.setError("Could not display: " + type.getName() + "." + e.getMessage());
-//                break;
-//            }
-//        }
+        List selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more module types");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleType moduleType = (ModuleType) iter.next();
+            try {
+                moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
+            } catch (EmfException e) {
+                messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
+                break;
+            }
+            ModuleTypeVersion moduleTypeVersion = moduleType.getModuleTypeVersions().get(0); // TODO implement module types versioning
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, moduleType, moduleTypeVersion);
+            presenter.displayNewModuleTypeView(view);
+        }
     }
 
     private void editModuleTypes() {
-//        List selected = selected();
-//        if (selected.isEmpty()) {
-//            messagePanel.setMessage("Please select one or more dataset types");
-//            return;
-//        }   
-//
-//        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-//            ModuleType type = (ModuleType) iter.next();
-//            try {
-//                presenter.doEdit(type, editableView(), viewableView());
-//            } catch (EmfException e) {
-//                messagePanel.setError("Could not display: " + type.getName() + "." + e.getMessage());
-//                break;
-//            }
-//        }
+        List selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more module types");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleType moduleType = (ModuleType) iter.next();
+            try {
+                moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
+            } catch (EmfException e) {
+                messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
+                break;
+            }
+            ModuleTypeVersion moduleTypeVersion = moduleType.getModuleTypeVersions().get(0); // TODO implement module types versioning
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, moduleType, moduleTypeVersion);
+            presenter.displayNewModuleTypeView(view);
+        }
     }
 
     private void createModuleType() {
-        NewModuleTypeWindow view = new NewModuleTypeWindow(parentConsole, desktopManager, session);
+        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, null, null);
         presenter.displayNewModuleTypeView(view);
     }
 
@@ -242,16 +255,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     private List selected() {
         return table.selected();
     }
-
-//    private ViewableModuleTypeWindow viewableView() {
-//        ViewableModuleTypeWindow view = new ViewableModuleTypeWindow(desktopManager);
-//        return view;
-//    }
-//
-//    private EditableModuleTypeView editableView() {
-//        EditableModuleTypeWindow view = new EditableModuleTypeWindow(session,parentConsole, desktopManager);
-//        return view;
-//    }
 
     public EmfConsole getParentConsole() {
         return this.parentConsole;

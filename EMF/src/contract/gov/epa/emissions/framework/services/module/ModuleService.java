@@ -6,9 +6,12 @@ import gov.epa.emissions.framework.services.EmfException;
 public interface ModuleService {
 
     // Module Types
+
     ModuleType[] getModuleTypes() throws EmfException;
 
     void addModuleType(ModuleType moduleType) throws EmfException;
+
+    ModuleType updateModuleType(ModuleType moduleType) throws EmfException;
 
     void deleteModuleTypes(User owner, ModuleType[] moduleTypes) throws EmfException;
 
@@ -17,9 +20,12 @@ public interface ModuleService {
     ModuleType releaseLockedModuleType(User owner, ModuleType type) throws EmfException;
 
     // Modules
+
     Module[] getModules() throws EmfException;
 
     void addModule(Module module) throws EmfException;
+
+    Module updateModule(Module module) throws EmfException;
 
     void deleteModules(User owner, Module[] modules) throws EmfException;
 

@@ -147,6 +147,8 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
         return new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
+                selectedModuleType = null;
+                selectedModuleTypeVersion = null;
                 dispose();
             }
         };

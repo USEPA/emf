@@ -8,11 +8,13 @@ import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.Module;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -25,6 +27,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -39,6 +42,12 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     private ModulesManagerPresenter presenter;
 
     private SelectableSortFilterWrapper table;
+
+    SelectAwareButton viewButton;
+    SelectAwareButton editButton;
+    NewButton newButton;
+    RemoveButton removeButton;
+    Button runButton;
 
     private JPanel layout;
 
@@ -66,6 +75,16 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     public void refresh(Module[] modules) {
+        boolean hasData = (modules != null) && (modules.length > 0);
+        boolean isAdmin = session.user().isAdmin();
+
+        // FIXME these settings are reverted somewhere else
+        viewButton.setEnabled(hasData);
+        editButton.setEnabled(hasData && isAdmin);
+        newButton.setEnabled(hasData && isAdmin);
+        removeButton.setEnabled(hasData && isAdmin);
+        runButton.setEnabled(hasData && isAdmin);
+
         table.refresh(new ModulesTableData(modules));
         panelRefresh();
     }
@@ -140,36 +159,36 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 viewModules();
             }
         };
-        SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
+        viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
 
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 editModules();
             }
         };
-        SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
+        editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
 
         Action createAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 createModule();
             }
         };
-        Button newButton = new NewButton(createAction);
+        newButton = new NewButton(createAction);
 
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 removeModules();
             }
         };
-        Button removeButton = new RemoveButton(removeAction);
-        
+        removeButton = new RemoveButton(removeAction);
+
         Action runAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 runModules();
             }
         };
-        Button runButton = new Button("Run", runAction);
-        
+        runButton = new Button("Run", runAction);
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(viewButton);
@@ -188,46 +207,62 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     private void viewModules() {
-//        List selected = selected();
-//        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-//            Module module = (Module) iter.next();
-//            try {
-//                presenter.doView(module, viewableView());
-//            } catch (EmfException e) {
-//                messagePanel.setError("Could not display: " + module.getName() + "." + e.getMessage());
-//                break;
-//            }
-//        }
+        List selected = selected();
+        if (selected.isEmpty()) {
+            if (table.getTable().getRowCount() > 0) {
+                messagePanel.setMessage("Please select one or more modules");
+            }
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            Module module = (Module) iter.next();
+            try {
+                module = session.moduleService().obtainLockedModule(session.user(), module);
+                ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, module, null);
+                presenter.displayNewModuleView(view);
+            } catch (EmfException e) {
+                messagePanel.setMessage("Failed to lock the \"" + module.getName() + "\" module: " + e.getMessage());
+            }
+        }
     }
 
     private void editModules() {
-//        List selected = selected();
-//        if (selected.isEmpty()) {
-//            messagePanel.setMessage("Please select one or more dataset modules");
-//            return;
-//        }   
-//
-//        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-//            Module module = (Module) iter.next();
-//            try {
-//                presenter.doEdit(module, editableView(), viewableView());
-//            } catch (EmfException e) {
-//                messagePanel.setError("Could not display: " + module.getName() + "." + e.getMessage());
-//                break;
-//            }
-//        }
+        List selected = selected();
+        if (selected.isEmpty()) {
+            if (table.getTable().getRowCount() > 0) {
+                messagePanel.setMessage("Please select one or more modules");
+            }
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            Module module = (Module) iter.next();
+            try {
+                module = session.moduleService().obtainLockedModule(session.user(), module);
+                ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, module, null);
+                presenter.displayNewModuleView(view);
+            } catch (EmfException e) {
+                messagePanel.setMessage("Failed to lock the \"" + module.getName() + "\" module: " + e.getMessage());
+            }
+        }
     }
 
     private void createModule() {
-        NewModuleWindow view = new NewModuleWindow(parentConsole, desktopManager, session);
-        presenter.displayNewModuleView(view);
+        ModuleTypeVersion moduleTypeVersion = ModulePropertiesWindow.selectModuleTypeVersion(parentConsole, session);
+        if (moduleTypeVersion != null) {
+            ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, null, moduleTypeVersion);
+            presenter.displayNewModuleView(view);
+        }
     }
 
     private void removeModules() {
         messagePanel.clear();
         List<?> selected = selected();
         if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more module modules");
+            if (table.getTable().getRowCount() > 0) {
+                messagePanel.setMessage("Please select one or more modules");
+            }
             return;
         }   
 
@@ -250,7 +285,9 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         messagePanel.clear();
         List<?> selected = selected();
         if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more module modules");
+            if (table.getTable().getRowCount() > 0) {
+                messagePanel.setMessage("Please select one or more modules");
+            }
             return;
         }   
 
@@ -282,16 +319,6 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     private List selected() {
         return table.selected();
     }
-
-//    private ViewableModuleWindow viewableView() {
-//        ViewableModuleWindow view = new ViewableModuleWindow(desktopManager);
-//        return view;
-//    }
-//
-//    private EditableModuleView editableView() {
-//        EditableModuleWindow view = new EditableModuleWindow(session,parentConsole, desktopManager);
-//        return view;
-//    }
 
     public EmfConsole getParentConsole() {
         return this.parentConsole;

@@ -7,6 +7,7 @@ import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.PivotConfiguration;
 import gov.epa.emissions.commons.data.ProjectionShapeFile;
 import gov.epa.emissions.commons.data.QAProgram;
+import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.TableCreator;
 import gov.epa.emissions.commons.db.version.Version;
@@ -90,7 +91,25 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
-    public void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
+    public synchronized ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+
+            if (!moduleTypesDAO.canUpdate(moduleType, session))
+                throw new EmfException("The module type is already in use");
+
+            ModuleType released = moduleTypesDAO.update(moduleType, session);
+            session.close();
+
+            return released;
+        } catch (RuntimeException e) {
+            LOG.error("Could not update module type: " + moduleType.getName(), e);
+            throw new EmfException("The module is already in use");
+        }
+        
+    }
+
+    public synchronized void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
         Session session = this.sessionFactory.getSession();
         DbServer dbServer = dbServerFactory.getDbServer();
 
@@ -182,7 +201,25 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
-    public void deleteModules(User owner, Module[] modules) throws EmfException {
+    public synchronized Module updateModule(Module module) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+
+            if (!modulesDAO.canUpdate(module, session))
+                throw new EmfException("The module is already in use");
+
+            Module released = modulesDAO.update(module, session);
+            session.close();
+
+            return released;
+        } catch (RuntimeException e) {
+            LOG.error("Could not update module: " + module.getName(), e);
+            throw new EmfException("The module is already in use");
+        }
+        
+    }
+
+    public synchronized void deleteModules(User owner, Module[] modules) throws EmfException {
         Session session = this.sessionFactory.getSession();
         DbServer dbServer = dbServerFactory.getDbServer();
 

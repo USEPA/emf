@@ -49,8 +49,8 @@ public class ModuleTypesManagerPresenter implements RefreshObserver {
 //        presenter.doDisplay();
 //    }
 
-    public void displayNewModuleTypeView(NewModuleTypeView view) {
-        NewModuleTypePresenter presenter = new NewModuleTypePresenter(session, view);
+    public void displayNewModuleTypeView(ModuleTypeVersionPropertiesView view) {
+        ModuleTypeVersionPropertiesPresenter presenter = new ModuleTypeVersionPropertiesPresenter(session, view);
         presenter.doDisplay();
     }
 

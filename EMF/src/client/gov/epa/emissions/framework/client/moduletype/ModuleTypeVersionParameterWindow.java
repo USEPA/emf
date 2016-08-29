@@ -15,6 +15,7 @@ import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -50,13 +51,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.border.TitledBorder;
 
-public class NewModuleTypeVersionParameterWindow extends DisposableInteralFrame implements NewModuleTypeVersionParameterView {
-    private NewModuleTypeVersionParameterPresenter presenter;
+public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame implements ModuleTypeVersionParameterView {
+    private ModuleTypeVersionParameterPresenter presenter;
 
     private EmfConsole parentConsole;
     private EmfSession session;
     private static int counter = 0;
 
+    private ViewMode viewMode;
     private ModuleTypeVersion moduleTypeVersion;
     private ModuleTypeVersionParameter moduleTypeVersionParameter;
 
@@ -70,11 +72,20 @@ public class NewModuleTypeVersionParameterWindow extends DisposableInteralFrame 
     private TextField sqlType;
     private TextArea description;
 
-    public NewModuleTypeVersionParameterWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleTypeVersion moduleTypeVersion) {
-        super("Create New Module Type Version Parameter", new Dimension(800, 600), desktopManager);
+    public ModuleTypeVersionParameterWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session,
+            ModuleTypeVersion moduleTypeVersion, ViewMode viewMode, ModuleTypeVersionParameter moduleTypeVersionParameter) {
+        super(getWindowTitle(viewMode), new Dimension(800, 600), desktopManager);
+
         this.moduleTypeVersion = moduleTypeVersion;
-        moduleTypeVersionParameter = new ModuleTypeVersionParameter();
-        moduleTypeVersionParameter.setModuleTypeVersion(moduleTypeVersion);
+        
+        this.viewMode = viewMode;
+        if (viewMode == ViewMode.NEW) {
+            this.moduleTypeVersionParameter = new ModuleTypeVersionParameter();
+            this.moduleTypeVersionParameter.setModuleTypeVersion(moduleTypeVersion);
+        } else {
+            this.moduleTypeVersionParameter = moduleTypeVersionParameter;
+        }
+        
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
         this.parentConsole = parentConsole;
@@ -82,22 +93,32 @@ public class NewModuleTypeVersionParameterWindow extends DisposableInteralFrame 
         super.getContentPane().add(layout);
     }
 
+    private static String getWindowTitle(ViewMode viewMode) {
+        switch (viewMode)
+        {
+            case NEW: return "Create New Module Type Version Parameter";
+            case EDIT: return "Edit Module Type Version Parameter";
+            case VIEW: return "View Module Type Version Parameter";
+            default: return "";
+        }
+    }
+    
     private void doLayout(JPanel layout) {
         messagePanel = new SingleLineMessagePanel();
         layout.add(messagePanel, BorderLayout.NORTH);
-        layout.add(detailsPanel(), BorderLayout.NORTH);
+        layout.add(detailsPanel(), BorderLayout.CENTER);
         layout.add(buttonsPanel(), BorderLayout.SOUTH);
     }
 
-    public void observe(NewModuleTypeVersionParameterPresenter presenter) {
+    public void observe(ModuleTypeVersionParameterPresenter presenter) {
         this.presenter = presenter;
     }
 
     public void display() {
-        counter++;
-        String name = "Create New Module Type Version Parameter " + counter;
+        counter++; // TODO use a different counter for each viewMode
+        String name = getWindowTitle(viewMode) + " " + counter;
         super.setTitle(name);
-        super.setName("createNewModuleTypeVersionParameter:" + counter);
+        super.setName(name);
         layout.removeAll();
         doLayout(layout);
 
@@ -105,35 +126,40 @@ public class NewModuleTypeVersionParameterWindow extends DisposableInteralFrame 
     }
 
     private JPanel detailsPanel() {
-        detailsPanel = new JPanel(new SpringLayout());
+        detailsPanel = new JPanel(new BorderLayout());
+        
+        JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        mode = new ComboBox(new String[] {"IN", "INOUT", "OUT"});
-        mode.setSelectedIndex(0);
+        mode = new ComboBox(new String[] {ModuleTypeVersionParameter.IN, ModuleTypeVersionParameter.INOUT, ModuleTypeVersionParameter.OUT});
+        mode.setSelectedItem(moduleTypeVersionParameter.getMode());
         addChangeable(mode);
-        layoutGenerator.addLabelWidgetPair("Mode:", mode, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Mode:", mode, contentPanel);
 
         sqlType = new TextField("sqlType", 60);
+        sqlType.setText(moduleTypeVersionParameter.getSqlParameterType());
         addChangeable(sqlType);
         sqlType.setMaximumSize(new Dimension(575, 20));
-        layoutGenerator.addLabelWidgetPair("SQL Type:", sqlType, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("SQL Type:", sqlType, contentPanel);
 
         name = new TextField("name", 60);
+        name.setText(moduleTypeVersionParameter.getParameterName());
         addChangeable(name);
         name.setMaximumSize(new Dimension(575, 20));
-        layoutGenerator.addLabelWidgetPair("Name:", name, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Name:", name, contentPanel);
 
-        description = new TextArea("description", "", 60, 8);
+        description = new TextArea("description", moduleTypeVersionParameter.getDescription(), 60, 8);
         addChangeable(description);
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
-        layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, contentPanel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(detailsPanel, 4, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(contentPanel, 4, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
+        detailsPanel.add(contentPanel, BorderLayout.NORTH);
         return detailsPanel;
     }
 
@@ -177,15 +203,16 @@ public class NewModuleTypeVersionParameterWindow extends DisposableInteralFrame 
                 if (checkTextFields()) {
                     try {
                         resetChanges();
-                        Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
-                        if (moduleTypeVersionParameters.containsKey(name.getText())) {
-                            throw new EmfException("Parameter " + name.getText() + " already exists!");
-                        }
+//                        Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
+//                        if (moduleTypeVersionParameters.containsKey(name.getText())) {
+//                            throw new EmfException("Parameter " + name.getText() + " already exists!");
+//                        }
                         moduleTypeVersionParameter.setMode(mode.getSelectedItem().toString());
                         moduleTypeVersionParameter.setParameterName(name.getText());
                         moduleTypeVersionParameter.setSqlParameterType(sqlType.getText());
                         moduleTypeVersionParameter.setDescription(description.getText());
                         presenter.doSave(moduleTypeVersion, moduleTypeVersionParameter);
+                        messagePanel.setMessage("Parameter definition saved.");
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }

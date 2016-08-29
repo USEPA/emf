@@ -11,6 +11,7 @@ import gov.epa.emissions.commons.gui.buttons.SaveButton;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -31,13 +32,14 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-public class NewModuleTypeVersionDatasetWindow extends DisposableInteralFrame implements NewModuleTypeVersionDatasetView {
-    private NewModuleTypeVersionDatasetPresenter presenter;
+public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame implements ModuleTypeVersionDatasetView {
+    private ModuleTypeVersionDatasetPresenter presenter;
 
     private EmfConsole parentConsole;
     private EmfSession session;
     private static int counter = 0;
 
+    private ViewMode viewMode;
     private ModuleTypeVersion moduleTypeVersion;
     private ModuleTypeVersionDataset moduleTypeVersionDataset;
 
@@ -56,9 +58,13 @@ public class NewModuleTypeVersionDatasetWindow extends DisposableInteralFrame im
     Map<String, DatasetType> datasetTypeMap;
     String[] datasetTypeNames;
 
-    public NewModuleTypeVersionDatasetWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleTypeVersion moduleTypeVersion, DatasetType[] datasetTypesCache) {
-        super("Create New Module Type Version Dataset", new Dimension(800, 600), desktopManager);
+    public ModuleTypeVersionDatasetWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session,
+            ModuleTypeVersion moduleTypeVersion, DatasetType[] datasetTypesCache,
+            ViewMode viewMode, ModuleTypeVersionDataset moduleTypeVersionDataset) {
+        super(getWindowTitle(viewMode), new Dimension(800, 600), desktopManager);
 
+        this.moduleTypeVersion = moduleTypeVersion;
+        
         this.datasetTypesCache = datasetTypesCache; 
         datasetTypeMap = new HashMap<String, DatasetType>();
         datasetTypeNames = new String[datasetTypesCache.length];
@@ -69,9 +75,14 @@ public class NewModuleTypeVersionDatasetWindow extends DisposableInteralFrame im
         }
         Arrays.sort(datasetTypeNames);
 
-        this.moduleTypeVersion = moduleTypeVersion;
-        moduleTypeVersionDataset = new ModuleTypeVersionDataset();
-        moduleTypeVersionDataset.setModuleTypeVersion(moduleTypeVersion);
+        this.viewMode = viewMode;
+        if (viewMode == ViewMode.NEW) {
+            this.moduleTypeVersionDataset = new ModuleTypeVersionDataset();
+            this.moduleTypeVersionDataset.setModuleTypeVersion(moduleTypeVersion);
+            this.moduleTypeVersionDataset.setMode(ModuleTypeVersionDataset.IN);
+        } else {
+            this.moduleTypeVersionDataset = moduleTypeVersionDataset;
+        }
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
         this.parentConsole = parentConsole;
@@ -79,22 +90,32 @@ public class NewModuleTypeVersionDatasetWindow extends DisposableInteralFrame im
         super.getContentPane().add(layout);
     }
 
+    private static String getWindowTitle(ViewMode viewMode) {
+        switch (viewMode)
+        {
+            case NEW: return "Create New Module Type Version Dataset";
+            case EDIT: return "Edit Module Type Version Dataset";
+            case VIEW: return "View Module Type Version Dataset";
+            default: return "";
+        }
+    }
+    
     private void doLayout(JPanel layout) {
         messagePanel = new SingleLineMessagePanel();
         layout.add(messagePanel, BorderLayout.NORTH);
-        layout.add(detailsPanel(), BorderLayout.NORTH);
+        layout.add(detailsPanel(), BorderLayout.CENTER);
         layout.add(buttonsPanel(), BorderLayout.SOUTH);
     }
 
-    public void observe(NewModuleTypeVersionDatasetPresenter presenter) {
+    public void observe(ModuleTypeVersionDatasetPresenter presenter) {
         this.presenter = presenter;
     }
 
     public void display() {
-        counter++;
-        String name = "Create New Module Type Version Dataset " + counter;
+        counter++; // TODO use a different counter for each viewMode
+        String name = getWindowTitle(viewMode) + " " + counter;
         super.setTitle(name);
-        super.setName("createNewModuleTypeVersionDataset:" + counter);
+        super.setName(name);
         layout.removeAll();
         doLayout(layout);
 
@@ -102,35 +123,44 @@ public class NewModuleTypeVersionDatasetWindow extends DisposableInteralFrame im
     }
 
     private JPanel detailsPanel() {
-        detailsPanel = new JPanel(new SpringLayout());
+        detailsPanel = new JPanel(new BorderLayout());
+        
+        JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        mode = new ComboBox(new String[] {"IN", "INOUT", "OUT"});
-        mode.setSelectedIndex(0);
+        mode = new ComboBox(new String[] {ModuleTypeVersionDataset.IN, ModuleTypeVersionDataset.INOUT, ModuleTypeVersionDataset.OUT});
+        mode.setSelectedItem(moduleTypeVersionDataset.getMode());
         addChangeable(mode);
-        layoutGenerator.addLabelWidgetPair("Mode:", mode, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Mode:", mode, contentPanel);
 
         datasetTypeCB = new ComboBox(datasetTypeNames);
+        if (moduleTypeVersionDataset.getDatasetType() == null) {
+            datasetTypeCB.setSelectedIndex(0);
+        } else {
+            datasetTypeCB.setSelectedItem(moduleTypeVersionDataset.getDatasetType().getName());
+        }
         addChangeable(datasetTypeCB);
         datasetTypeCB.setMaximumSize(new Dimension(575, 20));
-        layoutGenerator.addLabelWidgetPair("Dataset Type:", datasetTypeCB, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Dataset Type:", datasetTypeCB, contentPanel);
 
         name = new TextField("name", 60);
+        name.setText(moduleTypeVersionDataset.getPlaceholderName());
         addChangeable(name);
         name.setMaximumSize(new Dimension(575, 20));
-        layoutGenerator.addLabelWidgetPair("Placeholder:", name, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Placeholder:", name, contentPanel);
 
-        description = new TextArea("description", "", 60, 8);
+        description = new TextArea("description", moduleTypeVersionDataset.getDescription(), 60, 8);
         addChangeable(description);
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
-        layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, contentPanel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(detailsPanel, 4, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(contentPanel, 4, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
+        detailsPanel.add(contentPanel, BorderLayout.NORTH);
         return detailsPanel;
     }
 
@@ -174,15 +204,16 @@ public class NewModuleTypeVersionDatasetWindow extends DisposableInteralFrame im
                 if (checkTextFields()) {
                     try {
                         resetChanges();
-                        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
-                        if (moduleTypeVersionDatasets.containsKey(name.getText())) {
-                            throw new EmfException("Dataset " + name.getText() + " already exists!");
-                        }
+//                        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
+//                        if (moduleTypeVersionDatasets.containsKey(name.getText())) {
+//                            throw new EmfException("Dataset " + name.getText() + " already exists!");
+//                        }
                         moduleTypeVersionDataset.setMode(mode.getSelectedItem().toString());
                         moduleTypeVersionDataset.setPlaceholderName(name.getText());
                         moduleTypeVersionDataset.setDatasetType(datasetTypeMap.get(datasetTypeCB.getSelectedItem()));
                         moduleTypeVersionDataset.setDescription(description.getText());
                         presenter.doSave(moduleTypeVersion, moduleTypeVersionDataset);
+                        messagePanel.setMessage("Dataset definition saved.");
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }

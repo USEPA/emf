@@ -7,14 +7,14 @@ import gov.epa.emissions.framework.services.data.DataCommonsService;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 
-public class NewModuleTypeVersionDatasetPresenter {
+public class ModuleTypeVersionDatasetPresenter {
        
-    private NewModuleTypeVersionDatasetView view;
+    private ModuleTypeVersionDatasetView view;
     private ModuleTypeDatasetsObserver datasetsObserver;
 
     private EmfSession session;
 
-    public NewModuleTypeVersionDatasetPresenter(EmfSession session, NewModuleTypeVersionDatasetView view, ModuleTypeDatasetsObserver datasetsObserver) {
+    public ModuleTypeVersionDatasetPresenter(EmfSession session, ModuleTypeVersionDatasetView view, ModuleTypeDatasetsObserver datasetsObserver) {
         this.session = session;
         this.view = view;
         this.datasetsObserver = datasetsObserver;
@@ -49,7 +49,6 @@ public class NewModuleTypeVersionDatasetPresenter {
     public void doSave(ModuleTypeVersion moduleTypeVersion, ModuleTypeVersionDataset moduleTypeVersionDataset) throws EmfException {
         moduleTypeVersion.addModuleTypeVersionDataset(moduleTypeVersionDataset);
         datasetsObserver.refreshDatasets();
-        closeView();
     }
 
 }

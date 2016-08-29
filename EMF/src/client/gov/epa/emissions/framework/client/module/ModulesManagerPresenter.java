@@ -34,27 +34,8 @@ public class ModulesManagerPresenter implements RefreshObserver {
         view.disposeView();
     }
 
-//    public void doEdit(Module module, EditableModuleView editable, ViewableModuleView viewable)
-//            throws EmfException {
-//        EditableModulePresenter p = new EditableModulePresenterImpl(session, editable, viewable, module);
-//        edit(p);
-//    }
-//
-//    void edit(EditableModulePresenter presenter) throws EmfException {
-//        presenter.doDisplay();
-//    }
-//
-//    public void doView(Module module, ViewableModuleView viewable) throws EmfException {
-//        ViewableModulePresenter p = new ViewableModulePresenterImpl(viewable, module);
-//        view(p);
-//    }
-//
-//    void view(ViewableModulePresenter presenter) throws EmfException {
-//        presenter.doDisplay();
-//    }
-
-    public void displayNewModuleView(NewModuleView view) {
-        NewModulePresenter presenter = new NewModulePresenter(session, view);
+    public void displayNewModuleView(ModulePropertiesView view) {
+        ModulePropertiesPresenter presenter = new ModulePropertiesPresenter(session, view);
         presenter.doDisplay();
     }
 

@@ -6,13 +6,13 @@ import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
 
-public class NewModulePresenter {
+public class ModulePropertiesPresenter {
 
-    private NewModuleView view;
+    private ModulePropertiesView view;
 
     private EmfSession session;
 
-    public NewModulePresenter(EmfSession session, NewModuleView view) {
+    public ModulePropertiesPresenter(EmfSession session, ModulePropertiesView view) {
         this.session = session;
         this.view = view;
     }
@@ -39,20 +39,21 @@ public class NewModulePresenter {
         view.disposeView();
     }
 
-    public void doSave(Module module) throws EmfException {
+    public Module obtainLockedModule(Module module) throws EmfException {
+        return service().obtainLockedModule(session.user(), module);
+    }
+    
+    public Module releaseLockedModule(Module module) throws EmfException {
+        return service().obtainLockedModule(session.user(), module);
+    }
+    
+    public void addModule(Module module) throws EmfException {
         service().addModule(module);
-        closeView();
     }
 
-//    public void displayNewModuleTypeVersionDatasetView(NewModuleTypeVersionDatasetView view) {
-//        NewModuleTypeVersionDatasetPresenter presenter = new NewModuleTypeVersionDatasetPresenter(session, view, this.view);
-//        presenter.doDisplay();
-//    }
-//
-//    public void displayNewModuleTypeVersionParameterView(NewModuleTypeVersionParameterView view) {
-//        NewModuleTypeVersionParameterPresenter presenter = new NewModuleTypeVersionParameterPresenter(session, view, this.view);
-//        presenter.doDisplay();
-//    }
+    public void updateModule(Module module) throws EmfException {
+        service().updateModule(module);
+    }
 
     private ModuleService service() {
         return session.moduleService();
