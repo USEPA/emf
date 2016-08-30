@@ -8,24 +8,13 @@
         
         <!-- Connection -->
         <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
-        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/EMF?autoReconnect=true</property>
-        <property name="hibernate.connection.password">emf</property>
-        <property name="hibernate.connection.username">emf</property>
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.connection.datasource">java:/comp/env/jdbc/EMFDB</property>
         
         <!-- Transactions/Cache -->
         <property name="hibernate.transaction.auto_close_session">false</property>
         <property name="hibernate.transaction.flush_before_completion">false</property>
         <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
-        
-        <!-- c3p0 -->
-        <property name="hibernate.c3p0.acquire_increment">2</property> 
-		<property name="hibernate.c3p0.idle_test_period">300</property> <!-- seconds --> 
-		<property name="hibernate.c3p0.max_size">80</property> 
-		<property name="hibernate.c3p0.max_statements">0</property> 
-		<property name="hibernate.c3p0.min_size">5</property> 
-		<property name="hibernate.c3p0.timeout">3000</property> <!-- seconds -->
 		
 		<!-- Misc -->        
         <property name="show_sql">false</property>
