@@ -1664,3 +1664,262 @@ ALTER TABLE emf.control_measure_sccs ADD COLUMN combustion_efficiency real;
 
 -- 08/04/2016 Increase number of equation type variables
 ALTER TABLE emf.control_measure_equations ADD COLUMN value12 double precision;
+
+-- 08/04/2016 Update Equation Type 2 definition
+UPDATE emf.equation_types
+SET equation = 'Annual Cost = Annual Cost Multiplier x (Boiler Capacity [in MMBtu/hr]) ^ Exponent + Base
+Capital Coat = Capital Cost Multiplier x (Boiler Capacity [in MMBtu/hr]) ^ Exponent + Base'
+WHERE name = 'Type 2';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Capital Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Annual Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2';
+
+-- 08/04/2016 Create Equation Type 2 variants using annual emissions and natural exponent
+INSERT INTO emf.equation_types (name, description, inventory_fields, equation) VALUES
+('Type 2a', 'Non-EGU NOx', 'ann_value',
+'Annual Cost = Annual Cost = Annual Cost Multiplier x (Annual Emissions [in tons/yr]) ^ Exponent + Base
+Capital Coat = Capital Cost Multiplier x (Annual Emissions [in tons/yr]) ^ Exponent + Base');
+
+INSERT INTO emf.equation_types (name, description, inventory_fields, equation) VALUES
+('Type 2b', 'Non-EGU NOx', 'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator',
+'Annual Cost = Annual Cost Multiplier x e ^ (Boiler Capacity [in HP] x Exponent)
+Capital Coat = Capital Cost Multiplier x e ^ (Boiler Capacity [in HP] x Exponent)');
+
+-- 08/04/2016 Create Equation Type 2a variables
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Capital Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Capital Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Annual Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Annual Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Capital Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Annual Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2a';
+
+-- 08/04/2016 Create Equation Type 2b variables
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2b';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2b';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2b';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e 
+WHERE name = 'Type 2b';
