@@ -577,6 +577,12 @@ public class ControlMeasurePDFReportGenerator {
                     case 10:
                         value = this.getDoubleAsString(equation.getValue10(), "");
                         break;
+                    case 11:
+                        value = this.getDoubleAsString(equation.getValue11(), "");
+                        break;
+                    case 12:
+                        value = this.getDoubleAsString(equation.getValue12(), "");
+                        break;
 
                     default:
                         break;

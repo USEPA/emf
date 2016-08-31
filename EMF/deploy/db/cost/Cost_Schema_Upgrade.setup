@@ -1661,3 +1661,6 @@ ALTER TABLE emf.control_measure_efficiencyrecords ADD COLUMN max_capacity double
 
 -- 03/22/2016 Add SCC-specific combustion efficiency
 ALTER TABLE emf.control_measure_sccs ADD COLUMN combustion_efficiency real;
+
+-- 08/04/2016 Increase number of equation type variables
+ALTER TABLE emf.control_measure_equations ADD COLUMN value12 double precision;

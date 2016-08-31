@@ -58,6 +58,8 @@ public class CMEquationsTableData extends AbstractEditableTableData {
                     equationTypeVariable.setValue(equation.getValue10() != null ? equation.getValue10() + "" : "");
                 } else if (equationTypeVariable.getFileColPosition() == 11) {
                     equationTypeVariable.setValue(equation.getValue11() != null ? equation.getValue11() + "" : "");
+                } else if (equationTypeVariable.getFileColPosition() == 12) {
+                    equationTypeVariable.setValue(equation.getValue12() != null ? equation.getValue12() + "" : "");
                 }
                 rows.add(row(equation.getEquationType(), equationTypeVariable));
             }

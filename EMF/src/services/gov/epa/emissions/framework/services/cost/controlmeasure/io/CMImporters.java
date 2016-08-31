@@ -129,10 +129,14 @@ public class CMImporters {
 
     private CMEquationImporter createEquationImporter() throws EmfException {
         CMEquationFileFormat fileFormat = new CMEquationFileFormat();
+        CMEquationFileFormatv2 fileFormatv2 = new CMEquationFileFormatv2();
         String[] cols = fileFormat.cols();
+        String[] colsv2 = fileFormatv2.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
                 return new CMEquationImporter(files[i], fileFormat, user, sessionFactory);
+            } else if (matches(colsv2, records[i].getTokens())) {
+                return new CMEquationImporter(files[i], fileFormatv2, user, sessionFactory);
             }
         }
         return null;

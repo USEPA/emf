@@ -97,6 +97,8 @@ public class CMEquationRecordReader {
                             equation.setValue10(value);
                         } else if (equationTypeVariables[i].getFileColPosition() == 11) { 
                             equation.setValue11(value);
+                        } else if (equationTypeVariables[i].getFileColPosition() == 12) {
+                            equation.setValue12(value);
                         }
                     } catch (NumberFormatException e) {
                         sb.append(format("variable value must be a number, column position = " + (equationTypeVariables[i].getFileColPosition() + 3) + ", value = " + tokens[equationTypeVariables[i].getFileColPosition() + 3]));

@@ -601,6 +601,9 @@ public class ControlMeasuresPDFReport implements Runnable {
                     case 11:
                         value = this.getDoubleAsString(equation.getValue11(), "");
                         break;
+                    case 12:
+                        value = this.getDoubleAsString(equation.getValue12(), "");
+                        break;
 
                     default:
                         break;
