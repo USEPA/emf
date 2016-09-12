@@ -37,6 +37,8 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
     private Map<String, ModuleType> moduleTypeMap;
     String[] moduleTypeNames;
     
+    ModuleTypeVersion initialModuleTypeVersion;
+    
     ModuleType        selectedModuleType;
     ModuleTypeVersion selectedModuleTypeVersion;
 
@@ -44,11 +46,16 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
 
     private ComboBox versionCB;
 
-    public ModuleTypeVersionSelectionDialog(EmfConsole parent) {
+    public ModuleTypeVersionSelectionDialog(EmfConsole parent, ModuleTypeVersion initialModuleTypeVersion) {
         super(parent);
         super.setIconImage(EmfImageTool.createImage("/logo.JPG"));
         this.parent = parent;
         setModal(true);
+        this.initialModuleTypeVersion = initialModuleTypeVersion;
+    }
+
+    public ModuleTypeVersionSelectionDialog(EmfConsole parent) {
+        this(parent, null);
     }
 
     private void loadModuleTypes() {
@@ -128,6 +135,16 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
         });
         layoutGenerator.addLabelWidgetPair("Version:", versionCB, selectionPanel);
 
+        if (moduleTypes.length > 0) {
+            if (initialModuleTypeVersion == null) {
+                moduleTypeCB.setSelectedIndex(0);
+                versionCB.setSelectedIndex(1);
+            } else {
+                moduleTypeCB.setSelectedItem(initialModuleTypeVersion.getModuleType().getName());
+                versionCB.setSelectedIndex(initialModuleTypeVersion.getVersion() + 1);
+            }
+        }
+        
         // Lay out the panel.
         layoutGenerator.makeCompactGrid(selectionPanel, 2, 2, // rows, cols
                 10, 10, // initialX, initialY

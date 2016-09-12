@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.module;
 
+import gov.epa.emissions.framework.services.module.HistoryParameter;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.ui.AbstractTableData;
@@ -10,12 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ModuleParametersTableData extends AbstractTableData {
+public class HistoryParametersTableData extends AbstractTableData {
     private List rows;
-    private boolean includeOutParameters;
-    
-    public ModuleParametersTableData(Map<String, ModuleParameter> moduleParameters, boolean includeOutParameters) {
-        this.rows = createRows(moduleParameters, includeOutParameters);
+
+    public HistoryParametersTableData(Map<String, HistoryParameter> historyParameters) {
+        this.rows = createRows(historyParameters);
     }
 
     public String[] columns() {
@@ -34,13 +34,11 @@ public class ModuleParametersTableData extends AbstractTableData {
         return false;
     }
 
-    private List createRows(Map<String, ModuleParameter> moduleParameters, boolean includeOutParameters) {
+    private List createRows(Map<String, HistoryParameter> historyParameters) {
         List rows = new ArrayList();
 
-        for (ModuleParameter element : moduleParameters.values()) {
+        for (HistoryParameter element : historyParameters.values()) {
             ModuleTypeVersionParameter moduleTypeVersionParameter = element.getModuleTypeVersionParameter();
-            if (!includeOutParameters && moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT))
-                continue; // skip OUT parameters
             Object[] values = { moduleTypeVersionParameter.getMode(),
                                 element.getParameterName(),
                                 moduleTypeVersionParameter.getSqlParameterType(),

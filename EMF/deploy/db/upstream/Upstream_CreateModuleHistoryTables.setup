@@ -1,0 +1,76 @@
+﻿
+-- Table: modules.history
+
+-- DROP TABLE modules.history;
+
+CREATE TABLE modules.history
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  run_id integer NOT NULL,
+  setup_script text,
+  user_script text, -- algorithm
+  teardown_script text,
+  log_messages text,
+  status character varying(16) NOT NULL
+      CHECK (status IN ('STARTED', 'SETUP_SCRIPT', 'USER_SCRIPT', 'TEARDOWN_SCRIPT', 'COMPLETED') ),
+  result character varying(16)
+      CHECK (result IN ('TIMEOUT', 'CANCELLED', 'FAILED', 'SUCCESS') ),
+  error_message text,
+  duration_seconds integer NOT NULL DEFAULT 0,
+  creator integer NOT NULL
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  creation_date timestamp without time zone NOT NULL,
+  comment text
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.history
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- DROP TABLE modules.history_datasets;
+
+CREATE TABLE modules.history_datasets
+(
+  id serial NOT NULL PRIMARY KEY,
+  history_id integer NOT NULL
+      REFERENCES modules.history(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_name character varying(63) NOT NULL,
+  dataset_id integer
+      REFERENCES emf.datasets(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE SET NULL,
+  version integer NOT NULL DEFAULT 0
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.history_datasets
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.history_parameters
+
+-- DROP TABLE modules.history_parameters;
+
+CREATE TABLE modules.history_parameters
+(
+  id serial NOT NULL PRIMARY KEY,
+  history_id integer NOT NULL
+      REFERENCES modules.history(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  parameter_name character varying(63) NOT NULL,
+  value character varying(256)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_parameters
+  OWNER TO emf;

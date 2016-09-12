@@ -6,6 +6,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -57,7 +58,7 @@ public class ModulesDAO {
     }
 
     public Module update(Module module, Session session) throws EmfException {
-        return (Module) lockingScheme.releaseLockOnUpdate(module, current(module, session), session);
+        return (Module) lockingScheme.renewLockOnUpdate(module, current(module, session), session);
     }
 
     public Module get(String name, Session session) {
@@ -66,8 +67,12 @@ public class ModulesDAO {
         return (list == null || list.size() == 0) ? null : (Module) list.get(0);
     }
 
-    public void add(Module module, Session session) {
-        hibernateFacade.add(module, session);
+    public Module add(Module module, Session session) {
+        Serializable serializable = hibernateFacade.add(module, session);
+        String typeName = serializable.getClass().getName(); 
+        Integer id = (Integer)serializable;
+        module.setId(id);
+        return module;
     }
 
     public boolean canUpdate(Module module, Session session) {

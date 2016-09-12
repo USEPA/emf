@@ -293,6 +293,18 @@
 		qname="ns1:Module" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.History"
+		qname="ns1:History" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.HistoryDataset"
+		qname="ns1:HistoryDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.HistoryParameter"
+		qname="ns1:HistoryParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.data.EmfDataset"
 		qname="ns1:EmfDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 

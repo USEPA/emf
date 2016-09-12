@@ -161,7 +161,7 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
-    public synchronized void addModuleType(ModuleType type) throws EmfException {
+    public synchronized ModuleType addModuleType(ModuleType type) throws EmfException {
         Session session = sessionFactory.getSession();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
@@ -170,6 +170,7 @@ public class ModuleServiceImpl implements ModuleService {
                 throw new EmfException("The \"" + type.getName() + "\" name is already in use");
 
             moduleTypesDAO.add(type, session);
+            return type;
         } catch (RuntimeException e) {
             LOG.error("Could not add new ModuleType", e);
             throw new EmfException("Could not add module type " + type.getName() + ": " + e.toString());
@@ -271,7 +272,7 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
-    public synchronized void addModule(Module module) throws EmfException {
+    public synchronized Module addModule(Module module) throws EmfException {
         Session session = sessionFactory.getSession();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
@@ -279,7 +280,7 @@ public class ModuleServiceImpl implements ModuleService {
             if (modulesDAO.nameUsed(module.getName(), Module.class, session))
                 throw new EmfException("The \"" + module.getName() + "\" name is already in use");
 
-            modulesDAO.add(module, session);
+            return modulesDAO.add(module, session);
         } catch (RuntimeException e) {
             LOG.error("Could not add new Module", e);
             throw new EmfException("Could not add module " + module.getName() + ": " + e.toString());

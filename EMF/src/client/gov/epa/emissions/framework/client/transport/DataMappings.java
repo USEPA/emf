@@ -80,6 +80,9 @@ import gov.epa.emissions.framework.services.fast.FastRunInventory;
 import gov.epa.emissions.framework.services.fast.FastRunOutput;
 import gov.epa.emissions.framework.services.fast.FastRunOutputType;
 import gov.epa.emissions.framework.services.fast.Grid;
+import gov.epa.emissions.framework.services.module.History;
+import gov.epa.emissions.framework.services.module.HistoryDataset;
+import gov.epa.emissions.framework.services.module.HistoryParameter;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
@@ -125,6 +128,10 @@ public class DataMappings extends Mappings {
         bean(call, Module.class,                  module());
         bean(call, ModuleDataset.class,           moduleDataset());
         bean(call, ModuleParameter.class,         moduleParameter());
+
+        bean(call, History.class,                 history());
+        bean(call, HistoryDataset.class,          historyDataset());
+        bean(call, HistoryParameter.class,        historyParameter());
 
         bean(call, InternalSource.class, "InternalSource");
         bean(call, ExternalSource.class, externalSource());
@@ -470,6 +477,18 @@ public class DataMappings extends Mappings {
 
     public QName moduleParameter() {
         return qname("ModuleParameter");
+    }
+
+    public QName history() {
+        return qname("History");
+    }
+
+    public QName historyDataset() {
+        return qname("HistoryDataset");
+    }
+
+    public QName historyParameter() {
+        return qname("HistoryParameter");
     }
 
     public QName dataset() {

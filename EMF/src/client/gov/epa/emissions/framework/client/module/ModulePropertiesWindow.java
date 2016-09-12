@@ -16,6 +16,7 @@ import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
@@ -23,6 +24,8 @@ import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
+import gov.epa.emissions.framework.ui.RefreshButton;
+import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
@@ -31,6 +34,7 @@ import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionP
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 
-public class ModulePropertiesWindow extends DisposableInteralFrame implements ModulePropertiesView {
+public class ModulePropertiesWindow extends DisposableInteralFrame implements ModulePropertiesView, RefreshObserver {
     private ModulePropertiesPresenter presenter;
 
     private EmfConsole parentConsole;
@@ -87,6 +91,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private TextArea algorithm;
 
     // history
+    private JPanel historyTablePanel;
+    private SelectableSortFilterWrapper historyTable;
+    private ModuleHistoryTableData historyTableData;
+    private SelectAwareButton viewButton;
     
     public ModulePropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, Module module, ModuleTypeVersion moduleTypeVersion) {
         super(getWindowTitle(viewMode), new Dimension(800, 600), desktopManager);
@@ -112,7 +120,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         } else {
             this.module = module;
             this.moduleTypeVersion = module.getModuleTypeVersion();
-            moduleType = this.moduleTypeVersion.getModuleType();
+            this.moduleType = this.moduleTypeVersion.getModuleType();
         }
     }
 
@@ -126,8 +134,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
     }
     
-    public static ModuleTypeVersion selectModuleTypeVersion(EmfConsole parentConsole, EmfSession session) {
-        ModuleTypeVersionSelectionDialog selectionView = new ModuleTypeVersionSelectionDialog(parentConsole);
+    public static ModuleTypeVersion selectModuleTypeVersion(EmfConsole parentConsole, EmfSession session, ModuleTypeVersion initialModuleTypeVersion) {
+        ModuleTypeVersionSelectionDialog selectionView = new ModuleTypeVersionSelectionDialog(parentConsole, initialModuleTypeVersion);
         ModuleTypeVersionSelectionPresenter selectionPresenter = new ModuleTypeVersionSelectionPresenter(selectionView, session);
         try {
             selectionPresenter.display();
@@ -136,6 +144,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             e.printStackTrace();
         }
         return selectionView.getSelectedModuleTypeVersion();
+    }
+    
+    public static ModuleTypeVersion selectModuleTypeVersion(EmfConsole parentConsole, EmfSession session) {
+        return selectModuleTypeVersion(parentConsole, session, null);
     }
     
     private void setModuleTypeVersion(ModuleTypeVersion moduleTypeVersion) {
@@ -163,7 +175,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         module.clearModuleParameters();
         for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
-            if (moduleTypeVersionParameter.isModeOUT()) continue;
             ModuleParameter moduleParameter = new ModuleParameter();
             moduleParameter.setModule(module);
             moduleParameter.setParameterName(moduleTypeVersionParameter.getParameterName());
@@ -175,11 +186,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private void refreshModuleTypeVersion() {
         moduleTypeName.setText(moduleType.getName());
         moduleTypeVersionNumber.setText(String.valueOf(moduleTypeVersion.getVersion()));
-        datasetsTableData = new ModuleDatasetsTableData(module.getModuleDatasets(), session);
-        datasetsTable.refresh(datasetsTableData);
-        parametersTableData = new ModuleParametersTableData(module.getModuleParameters());
-        parametersTable.refresh(parametersTableData);
+        refreshDatasets();
+        refreshParameters();
         algorithm.setText(moduleTypeVersion.getAlgorithm());
+        refreshHistory();
     }
     
     private Action selectModuleTypeVersionAction() {
@@ -201,14 +211,40 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private void doLayout(JPanel layout) {
+        JPanel topPanel = new JPanel(new BorderLayout());
         messagePanel = new SingleLineMessagePanel();
-        layout.add(messagePanel, BorderLayout.NORTH);
+        topPanel.add(messagePanel, BorderLayout.CENTER);
+        Button button = new RefreshButton(this, "Refresh Module Properties", messagePanel);
+        topPanel.add(button, BorderLayout.EAST);
+        
+        layout.add(topPanel, BorderLayout.NORTH);
         layout.add(tabbedPane(), BorderLayout.CENTER);
         layout.add(createButtonsPanel(), BorderLayout.SOUTH);
     }
 
+
+    @Override
+    public void doRefresh() throws EmfException {
+        refreshDatasets();
+        refreshParameters();
+        refreshHistory();
+    }
+
     public void observe(ModulePropertiesPresenter presenter) {
         this.presenter = presenter;
+
+        if (viewMode != ViewMode.NEW) {
+            try {
+                Module lockedModule = presenter.obtainLockedModule(module);
+                if (lockedModule == null) {
+                    throw new EmfException("Failed to lock module.");
+                }
+                module = lockedModule;
+            } catch (EmfException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     public void display() {
@@ -286,7 +322,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private JPanel parametersPanel() {
         parametersTablePanel = new JPanel(new BorderLayout());
-        parametersTableData = new ModuleParametersTableData(module.getModuleParameters());
+        parametersTableData = new ModuleParametersTableData(module.getModuleParameters(), false); // TODO: include OUT parameters when showing the results
         parametersTable = new SelectableSortFilterWrapper(parentConsole, parametersTableData, null);
         parametersTablePanel.add(parametersTable);
 
@@ -301,6 +337,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         algorithmPanel = new JPanel(new BorderLayout());
         algorithm = new TextArea("algorithm", moduleTypeVersion.getAlgorithm(), 60);
         algorithm.setEditable(false);
+        algorithm.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         ScrollableComponent scrollableAlgorithm = new ScrollableComponent(algorithm);
         scrollableAlgorithm.setMaximumSize(new Dimension(575, 200));
         algorithmPanel.add(scrollableAlgorithm);
@@ -309,7 +346,15 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private JPanel historyPanel() {
+        historyTablePanel = new JPanel(new BorderLayout());
+        historyTableData = new ModuleHistoryTableData(module.getModuleHistory());
+        historyTable = new SelectableSortFilterWrapper(parentConsole, historyTableData, null);
+        historyTablePanel.add(historyTable);
+
         historyPanel = new JPanel(new BorderLayout());
+        historyPanel.add(historyTablePanel, BorderLayout.CENTER);
+        historyPanel.add(historyCrudPanel(), BorderLayout.SOUTH);
+
         return historyPanel;
     }
 
@@ -414,6 +459,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleParameter moduleParameter = (ModuleParameter) iter.next();
+            if (moduleParameter.getModuleTypeVersionParameter().isModeOUT())
+                continue;
             try {
                 EditModuleParameterWindow view = new EditModuleParameterWindow(parentConsole, desktopManager, session, moduleParameter);
                 EditModuleParameterPresenter presenter = new EditModuleParameterPresenter(session, view, this);
@@ -431,8 +478,57 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     public void refreshParameters() {
-        parametersTableData = new ModuleParametersTableData(module.getModuleParameters());
+        parametersTableData = new ModuleParametersTableData(module.getModuleParameters(), false); // TODO: include OUT parameters when showing the results);
         parametersTable.refresh(parametersTableData);
+    }
+
+    private JPanel historyCrudPanel() {
+        String message = "You have asked to open a lot of windows. Do you wish to proceed?";
+        ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
+
+        Action viewAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewHistory();
+            }
+        };
+        viewButton = new SelectAwareButton("View", viewAction, historyTable, confirmDialog);
+        viewButton.setEnabled(!historyTableData.rows().isEmpty());
+
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(viewButton);
+        return crudPanel;
+    }
+
+    private void viewHistory() {
+        List selected = selectedHistory();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more history records");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            History history = (History) iter.next();
+            try {
+                HistoryDetailsWindow view = new HistoryDetailsWindow(parentConsole, desktopManager, session, history);
+                HistoryDetailsPresenter presenter = new HistoryDetailsPresenter(session, view);
+                presenter.doDisplay();
+            }
+            catch (Exception e) {
+                messagePanel.setError("Could not view module history record #" + history.getRunId() + ": " + e.getMessage());
+                break;
+            }
+        }
+    }
+
+    private List selectedHistory() {
+        return historyTable.selected();
+    }
+
+    public void refreshHistory() {
+        historyTableData = new ModuleHistoryTableData(module.getModuleHistory());
+        historyTable.refresh(historyTableData);
+        viewButton.setEnabled(!historyTableData.rows().isEmpty());
     }
 
     private void clear() {
@@ -465,18 +561,18 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                         module.setCreator(session.user());
 
                         if (viewMode == ViewMode.NEW) {
-                            presenter.addModule(module);
+                            module = presenter.addModule(module);
                             viewMode = ViewMode.EDIT;
+                            Module lockedModule = presenter.obtainLockedModule(module);
+                            if (lockedModule == null) {
+                                throw new EmfException("Failed to lock module.");
+                            }
+                            module = lockedModule;
                         } else {
                             presenter.updateModule(module);
                         }
-                        //module = presenter.obtainLockedModule(session.user(), module);
+                        doRefresh();
                         messagePanel.setMessage("Saved module.");
-                        Module lockedModule = presenter.obtainLockedModule(module);
-                        if (lockedModule == null) {
-                            throw new EmfException("Failed to lock module.");
-                        }
-                        module = lockedModule;
                     }
                     catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
@@ -504,12 +600,14 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private void doClose() {
         if (shouldDiscardChanges())
-//            try {
-//                presenter.releaseLockedModule(session.user(), module);
-//            } catch (EmfException e) {
-//                // NOTE Auto-generated catch block
-//                e.printStackTrace();
-//            }
+            if (viewMode != ViewMode.NEW) {
+                try {
+                    module = presenter.releaseLockedModule(module);
+                } catch (EmfException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
             presenter.doClose();
     }
 }

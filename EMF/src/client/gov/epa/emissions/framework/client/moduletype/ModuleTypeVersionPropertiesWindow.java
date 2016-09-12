@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
@@ -31,6 +30,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 import java.util.Iterator;
@@ -126,27 +126,61 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         }
     };
 
-    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, ModuleType moduleType, ModuleTypeVersion moduleTypeVersion) {
-        super(getWindowTitle(viewMode, moduleType), new Dimension(800, 600), desktopManager);
+    // New Module Type
+    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session) {
+        super(getWindowTitle(ViewMode.NEW, null), new Dimension(800, 600), desktopManager);
 
+        this.parentConsole = parentConsole;
+        this.session = session;
+        this.viewMode = ViewMode.NEW;
+        
+        this.moduleType = new ModuleType();
+        this.moduleTypeVersion = new ModuleTypeVersion();
+        this.moduleTypeVersion.setModuleType(this.moduleType);
+        this.moduleTypeVersion.setVersion(0);
+        this.moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" +
+                                            "-- \n" +
+                                            "-- TODO: implement the algorithm\n\n");
+        this.moduleType.addModuleTypeVersion(this.moduleTypeVersion);
+
+        layout = new JPanel();
+        layout.setLayout(new BorderLayout());
+        super.getContentPane().add(layout);
+    }
+
+    // New Module Type Version for existing Module Type
+    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleType moduleType) {
+        super(getWindowTitle(ViewMode.NEW, moduleType), new Dimension(800, 600), desktopManager);
+
+        this.parentConsole = parentConsole;
+        this.session = session;
+        this.viewMode = ViewMode.NEW;
+        
+        this.moduleType = moduleType;
+        this.moduleTypeVersion = new ModuleTypeVersion();
+        this.moduleTypeVersion.setModuleType(this.moduleType);
+        this.moduleTypeVersion.setVersion(0);
+        this.moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" +
+                                            "-- \n" +
+                                            "-- TODO: implement the algorithm\n\n");
+        this.moduleType.addModuleTypeVersion(this.moduleTypeVersion);
+
+        layout = new JPanel();
+        layout.setLayout(new BorderLayout());
+        super.getContentPane().add(layout);
+    }
+
+    // View/Edit existing Module Type Version
+    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, ModuleTypeVersion moduleTypeVersion) {
+        super(getWindowTitle(viewMode, moduleTypeVersion.getModuleType()), new Dimension(800, 600), desktopManager);
+    
         this.parentConsole = parentConsole;
         this.session = session;
         this.viewMode = viewMode;
         
-        if (viewMode == ViewMode.NEW) {
-            this.moduleType = new ModuleType();
-            this.moduleTypeVersion = new ModuleTypeVersion();
-            this.moduleTypeVersion.setModuleType(moduleType);
-            this.moduleTypeVersion.setVersion(0);
-            this.moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" +
-                                                "-- \n" +
-                                                "-- TODO: implement the algorithm\n\n");
-            this.moduleType.addModuleTypeVersion(this.moduleTypeVersion);
-        } else {
-            this.moduleTypeVersion = moduleTypeVersion;
-            this.moduleType = moduleTypeVersion.getModuleType();
-        }
-
+        this.moduleTypeVersion = moduleTypeVersion;
+        this.moduleType = moduleTypeVersion.getModuleType();
+    
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
         super.getContentPane().add(layout);
@@ -178,6 +212,20 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     public void observe(ModuleTypeVersionPropertiesPresenter presenter) {
         this.presenter = presenter;
+
+        if (viewMode != ViewMode.NEW) { // TODO new module type or new module type version?
+            try {
+                ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
+                if (lockedModuleType == null) {
+                    throw new EmfException("Failed to lock module type.");
+                }
+                moduleType = lockedModuleType;
+                moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
+            } catch (EmfException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         populateDatasetTypesCache();
     }
 
@@ -260,6 +308,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         algorithmPanel = new JPanel(new BorderLayout());
         algorithm = new TextArea("algorithm", moduleTypeVersion.getAlgorithm(), 60);
         algorithm.setEditable(viewMode != ViewMode.VIEW);
+        algorithm.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         addChangeable(algorithm);
         ScrollableComponent scrollableAlgorithm = new ScrollableComponent(algorithm);
         scrollableAlgorithm.setMaximumSize(new Dimension(575, 200));
@@ -497,7 +546,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                     try {
                         resetChanges();
                         
-                        if (viewMode == ViewMode.NEW) {
+                        if (viewMode == ViewMode.NEW) { // TODO implement module type versioning: is this New Module Type or New Module Type Version?
                             Date date = new Date();
                             moduleType.setName(name.getText());
                             moduleType.setDescription(description.getText());
@@ -516,8 +565,14 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                             moduleTypeVersion.setAlgorithm(algorithm.getText());
                             moduleTypeVersion.setIsFinal(false);
                             
-                            presenter.addModule(moduleType);
+                            moduleType = presenter.addModule(moduleType);
                             viewMode = ViewMode.EDIT;
+                            ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
+                            if (lockedModuleType == null) {
+                                throw new EmfException("Failed to lock module type.");
+                            }
+                            moduleType = lockedModuleType;
+                            moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
                         } else {
                             Date date = new Date();
                             moduleType.setName(name.getText());
@@ -530,11 +585,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                             moduleType = presenter.updateModuleType(moduleType);
                         }
                         messagePanel.setMessage("Saved module type.");
-                        ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
-                        if (lockedModuleType == null) {
-                            throw new EmfException("Failed to lock module type.");
-                        }
-                        moduleType = lockedModuleType;
                         
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
@@ -561,8 +611,12 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     }
 
     private void doClose() {
-        if (shouldDiscardChanges())
+        if (shouldDiscardChanges()) {
+            if (viewMode != ViewMode.NEW) {
+                moduleType = presenter.releaseLockedModuleType(moduleType);
+            }
             presenter.doClose();
+        }
     }
 
     public void populateDatasetTypesCache() {

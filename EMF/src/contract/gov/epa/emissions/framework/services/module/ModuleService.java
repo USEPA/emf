@@ -9,7 +9,7 @@ public interface ModuleService {
 
     ModuleType[] getModuleTypes() throws EmfException;
 
-    void addModuleType(ModuleType moduleType) throws EmfException;
+    ModuleType addModuleType(ModuleType moduleType) throws EmfException;
 
     ModuleType updateModuleType(ModuleType moduleType) throws EmfException;
 
@@ -23,7 +23,7 @@ public interface ModuleService {
 
     Module[] getModules() throws EmfException;
 
-    void addModule(Module module) throws EmfException;
+    Module addModule(Module module) throws EmfException;
 
     Module updateModule(Module module) throws EmfException;
 

@@ -40,18 +40,15 @@ public class ModuleServiceTransport implements ModuleService {
         return (ModuleType[]) call.requestResponse(new Object[] {});
     }
 
-    public synchronized void addModuleType(ModuleType type) throws EmfException
+    public synchronized ModuleType addModuleType(ModuleType type) throws EmfException
     {
         EmfCall call = call();
 
-        call.addParam("type", mappings.moduleType());
         call.setOperation("addModuleType");
-        call.setVoidReturnType();
+        call.addParam("type", mappings.moduleType());
+        call.setReturnType(mappings.moduleType());
 
-        call.request(new Object[] { type });
-
-        //make sure we refresh the client-side cache
-        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
+        return (ModuleType) call.requestResponse(new Object[] { type });
     }
 
     public synchronized ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
@@ -73,9 +70,6 @@ public class ModuleServiceTransport implements ModuleService {
         call.setVoidReturnType();
 
         call.request(new Object[]{owner, types}); 
-
-        //make sure we refresh the client-side cache
-        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
     }
 
     public synchronized ModuleType obtainLockedModuleType(User owner, ModuleType type) throws EmfException {
@@ -109,18 +103,15 @@ public class ModuleServiceTransport implements ModuleService {
         return (Module[]) call.requestResponse(new Object[] {});
     }
 
-    public synchronized void addModule(Module module) throws EmfException
+    public synchronized Module addModule(Module module) throws EmfException
     {
         EmfCall call = call();
 
-        call.addParam("module", mappings.module());
         call.setOperation("addModule");
-        call.setVoidReturnType();
+        call.addParam("module", mappings.module());
+        call.setReturnType(mappings.module());
 
-        call.request(new Object[] { module });
-
-        //make sure we refresh the client-side cache
-        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
+        return (Module) call.requestResponse(new Object[] { module });
     }
 
     public synchronized Module updateModule(Module module) throws EmfException {

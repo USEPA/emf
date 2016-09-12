@@ -57,7 +57,7 @@ public class ModuleTypesDAO {
     }
 
     public ModuleType update(ModuleType type, Session session) throws EmfException {
-        return (ModuleType) lockingScheme.releaseLockOnUpdate(type, current(type, session), session);
+        return (ModuleType) lockingScheme.renewLockOnUpdate(type, current(type, session), session);
     }
 
     public ModuleType get(String name, Session session) {

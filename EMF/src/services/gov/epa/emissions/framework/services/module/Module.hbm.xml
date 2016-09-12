@@ -34,6 +34,11 @@
             <index column="parameter_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleParameter"/>
         </map>
+        <list name="moduleHistory" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="module_id"/>
+            <list-index column="run_id" base="1"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.History"/>
+        </list>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.ModuleDataset" table="modules_datasets" schema="modules">
@@ -60,6 +65,64 @@
         </many-to-one>
         <property name="parameterName" column="parameter_name" type="string" not-null="true" length="63"/>
         <property name="value" column="value" type="string" not-null="true" length="256"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.History" table="history" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="module" class="gov.epa.emissions.framework.services.module.Module" fetch="select">
+            <column name="module_id" not-null="true" />
+        </many-to-one>
+        <property name="runId" column="run_id" type="integer" not-null="true"/>
+        <property name="setupScript" column="setup_script" type="text" not-null="false"/>
+        <property name="userScript" column="user_script" type="text" not-null="false"/>
+        <property name="teardownScript" column="teardown_script" type="text" not-null="false"/>
+        <property name="logMessages" column="log_messages" type="text" not-null="false"/>
+        <property name="status" column="status" type="string" not-null="true"/>
+        <property name="result" column="result" type="string" not-null="false"/>
+        <property name="errorMessage" column="error_message" type="text" not-null="false"/>
+        <property name="durationSeconds" column="duration_seconds" type="integer" not-null="true"/>
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"
+            not-null="true"/>
+        <property name="creationDate" column="creation_date" type="timestamp" not-null="true" length="4"/>
+        <property name="comment" column="comment" type="text" not-null="false"/>
+        <map name="historyDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="history_id"/>
+            <index column="placeholder_name" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.HistoryDataset"/>
+        </map>
+        <map name="historyParameters" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="history_id"/>
+            <index column="parameter_name" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.HistoryParameter"/>
+        </map>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.HistoryDataset" table="history_datasets" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="history" class="gov.epa.emissions.framework.services.module.History" fetch="select">
+            <column name="history_id" not-null="true" />
+        </many-to-one>
+        <property name="placeholderName" column="placeholder_name" type="string" not-null="true" length="63"/>
+        <property name="datasetId" column="dataset_id" type="integer" not-null="false"/>
+        <property name="version" column="version" type="integer" not-null="true"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.HistoryParameter" table="history_parameters" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="history" class="gov.epa.emissions.framework.services.module.History" fetch="select">
+            <column name="history_id" not-null="true" />
+        </many-to-one>
+        <property name="parameterName" column="parameter_name" type="string" not-null="true" length="63"/>
+        <property name="value" column="value" type="string" not-null="false" length="256"/>
     </class>
 
 </hibernate-mapping>

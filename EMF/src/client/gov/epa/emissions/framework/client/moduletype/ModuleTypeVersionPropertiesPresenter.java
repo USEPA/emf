@@ -59,8 +59,8 @@ public class ModuleTypeVersionPropertiesPresenter {
     }
 
     
-    public void addModule(ModuleType moduleType) throws EmfException {
-        session.moduleService().addModuleType(moduleType);
+    public ModuleType addModule(ModuleType moduleType) throws EmfException {
+        return session.moduleService().addModuleType(moduleType);
     }
 
     public ModuleType updateModuleType(ModuleType moduleType) throws EmfException {

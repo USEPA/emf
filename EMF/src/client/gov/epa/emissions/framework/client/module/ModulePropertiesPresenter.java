@@ -44,11 +44,11 @@ public class ModulePropertiesPresenter {
     }
     
     public Module releaseLockedModule(Module module) throws EmfException {
-        return service().obtainLockedModule(session.user(), module);
+        return service().releaseLockedModule(session.user(), module);
     }
     
-    public void addModule(Module module) throws EmfException {
-        service().addModule(module);
+    public Module addModule(Module module) throws EmfException {
+        return service().addModule(module);
     }
 
     public void updateModule(Module module) throws EmfException {

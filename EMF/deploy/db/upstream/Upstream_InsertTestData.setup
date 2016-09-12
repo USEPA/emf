@@ -1,4 +1,4 @@
-INSERT INTO modules.module_types
+﻿INSERT INTO modules.module_types
 (name, description, lock_owner, lock_date, creation_date, last_mod_date, creator, default_version)
 VALUES
 ('Volumes Module Type', 'Calculate production demand defined as total volume of E0 gasoline, ethanol, biodiesel, B0 diesel blendstocks', NULL, NULL, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0),
@@ -47,3 +47,4 @@ VALUES
 ('Refinery On-Site Emissions January 2016', 'Calculate the volumes of emissions by pollutant and facility for January 2016', 5, 6, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', FALSE, NULL, NULL),
 ('Refinery On-Site Emissions February 2016', 'Calculate the volumes of emissions by pollutant and facility for February 2016', 5, 6, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', FALSE, NULL, NULL),
 ('Refinery On-Site Emissions March 2016', 'Calculate the volumes of emissions by pollutant and facility for March 2016', 5, 6, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', FALSE, NULL, NULL);
+

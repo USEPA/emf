@@ -5,9 +5,11 @@ import gov.epa.emissions.commons.data.Mutex;
 import gov.epa.emissions.commons.security.User;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 public class Module implements Serializable, Lockable, Comparable<Module> {
 
@@ -33,12 +35,12 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     private Map<String, ModuleParameter> moduleParameters;
 
-//    private List<ModuleHistoryRecord> moduleHistory;
+    private List<History> moduleHistory;
 
     public Module() {
         moduleDatasets = new HashMap<String, ModuleDataset>();
         moduleParameters = new HashMap<String, ModuleParameter>();
-//        moduleHistory = new ArrayList<ModuleHistoryRecord>();
+        moduleHistory = new ArrayList<History>();
         lock = new Mutex();
     }
 
@@ -195,6 +197,26 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     public void clearModuleParameters() {
         this.moduleParameters.clear();
+    }
+
+    // moduleHistory
+
+    public List<History> getModuleHistory() {
+        return moduleHistory;
+    }
+
+    public void setModuleHistory(List<History> moduleHistory) {
+        this.moduleHistory = moduleHistory;
+    }
+
+    public void addModuleHistory(History history) {
+        history.setModule(this);
+        history.setRunId(this.moduleHistory.size() + 1);
+        this.moduleHistory.add(history);
+    }
+
+    public void clearModuleHistory() {
+        this.moduleHistory.clear();
     }
 
     // standard methods

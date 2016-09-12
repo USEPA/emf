@@ -197,7 +197,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                 break;
             }
             ModuleTypeVersion moduleTypeVersion = moduleType.getModuleTypeVersions().get(0); // TODO implement module types versioning
-            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, moduleType, moduleTypeVersion);
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, moduleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
     }
@@ -218,13 +218,16 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                 break;
             }
             ModuleTypeVersion moduleTypeVersion = moduleType.getModuleTypeVersions().get(0); // TODO implement module types versioning
-            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, moduleType, moduleTypeVersion);
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, moduleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
     }
 
     private void createModuleType() {
-        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, null, null);
+        // TODO implement module types versioning
+        // If module types are selected, the New button should create new module type versions for them
+        // If no module type is selected, the New button should create an entirely new module type and its first module type version (0)
+        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session);
         presenter.displayNewModuleTypeView(view);
     }
 
