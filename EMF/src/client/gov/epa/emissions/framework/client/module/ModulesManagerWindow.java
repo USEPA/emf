@@ -46,6 +46,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     SelectAwareButton viewButton;
     SelectAwareButton editButton;
     NewButton newButton;
+    SelectAwareButton copyButton;
     RemoveButton removeButton;
     Button runButton;
 
@@ -175,6 +176,13 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         };
         newButton = new NewButton(createAction);
 
+        Action copyAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                copyModules();
+            }
+        };
+        copyButton = new SelectAwareButton("Copy", copyAction, table, confirmDialog);
+
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 removeModules();
@@ -194,11 +202,13 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         crudPanel.add(viewButton);
         crudPanel.add(editButton);
         crudPanel.add(newButton);
+        crudPanel.add(copyButton);
         crudPanel.add(removeButton);
         crudPanel.add(runButton);
         if (!session.user().isAdmin()){
             editButton.setEnabled(false);
             newButton.setEnabled(false);
+            copyButton.setEnabled(false);
             removeButton.setEnabled(false);
             runButton.setEnabled(false);
         }
@@ -252,6 +262,23 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         ModuleTypeVersion moduleTypeVersion = ModulePropertiesWindow.selectModuleTypeVersion(parentConsole, session);
         if (moduleTypeVersion != null) {
             ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, null, moduleTypeVersion);
+            presenter.displayNewModuleView(view);
+        }
+    }
+
+    private void copyModules() {
+        List selected = selected();
+        if (selected.isEmpty()) {
+            if (table.getTable().getRowCount() > 0) {
+                messagePanel.setMessage("Please select one or more modules");
+            }
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            Module module = (Module) iter.next();
+            Module copy = module.deepCopy(session.user());
+            ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, copy, null);
             presenter.displayNewModuleView(view);
         }
     }

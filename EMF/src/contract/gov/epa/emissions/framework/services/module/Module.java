@@ -55,6 +55,25 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         this.name = name;
     }
 
+    public Module deepCopy(User creator) {
+        Module newModule = new Module();
+        newModule.setName(name + " Copy");
+        newModule.setDescription("Copy of " + name + " module.\n" + description);
+        newModule.setModuleTypeVersion(moduleTypeVersion);
+        newModule.setCreator(creator);
+        Date date = new Date();
+        newModule.setCreationDate(date);
+        newModule.setLastModifiedDate(date);
+        newModule.setIsFinal(false);
+        for(ModuleDataset moduleDataset : moduleDatasets.values()) {
+            newModule.addModuleDataset(moduleDataset.deepCopy(newModule));
+        }
+        for(ModuleParameter moduleParameter : moduleParameters.values()) {
+            newModule.addModuleParameter(moduleParameter.deepCopy(newModule));
+        }
+        return newModule;
+    }
+
     public int getId() {
         return id;
     }
@@ -158,6 +177,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
     }
 
     public void addModuleDataset(ModuleDataset moduleDataset) {
+        moduleDataset.setModule(this);
         this.moduleDatasets.put(moduleDataset.getModuleTypeVersionDataset().getPlaceholderName(), moduleDataset);
     }
 
@@ -184,6 +204,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
     }
 
     public void addModuleParameter(ModuleParameter moduleParameter) {
+        moduleParameter.setModule(this);
         this.moduleParameters.put(moduleParameter.getModuleTypeVersionParameter().getParameterName(), moduleParameter);
     }
 

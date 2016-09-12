@@ -108,7 +108,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         this.viewMode = viewMode;
         
         date = new Date();
-        if (viewMode == ViewMode.NEW) {
+        if (module == null) {
+            // assert moduleTypeVersion != null
             this.module = new Module();
             this.module.setName("");
             this.module.setDescription("");

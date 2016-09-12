@@ -23,6 +23,21 @@ public class ModuleDataset implements Serializable {
 
     private Boolean overwriteExisting;
 
+    public ModuleDataset() {
+    }
+    
+    public ModuleDataset deepCopy(Module newModule) {
+        ModuleDataset newModuleDataset = new ModuleDataset();
+        newModuleDataset.setModule(newModule);
+        newModuleDataset.setPlaceholderName(placeholderName);
+        newModuleDataset.setOutputMethod(outputMethod);
+        newModuleDataset.setDatasetId(datasetId);
+        newModuleDataset.setVersion(version);
+        newModuleDataset.setDatasetNamePattern(datasetNamePattern);
+        newModuleDataset.setOverwriteExisting(overwriteExisting);
+        return newModuleDataset;
+    }
+
     public int getId() {
         return id;
     }

@@ -11,7 +11,18 @@ public class ModuleParameter implements Serializable {
     private String parameterName;
 
     private String value;
+
+    public ModuleParameter() {
+    }
     
+    public ModuleParameter deepCopy(Module newModule) {
+        ModuleParameter newModuleParameter = new ModuleParameter();
+        newModuleParameter.setModule(newModule);
+        newModuleParameter.setParameterName(parameterName);
+        newModuleParameter.setValue(value);
+        return newModuleParameter;
+    }
+
     public int getId() {
         return id;
     }
