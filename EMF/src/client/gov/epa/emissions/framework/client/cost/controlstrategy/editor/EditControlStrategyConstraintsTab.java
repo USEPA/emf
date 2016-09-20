@@ -406,13 +406,13 @@ for (ControlStrategyTargetPollutant selectedTargetPollutant : selectedTargetPoll
         costPerTon.setText(constraint != null ? (constraint.getMinCostPerTon() != null ? constraint.getMinCostPerTon() + "" : "") : "");
         costPerTon.setToolTipText("Enter the sources target pollutant maximum cost per ton.  The control measure must be have a cost per ton less than or equal to this cost per ton.");
         changeables.addChangeable(costPerTon);
-        layoutGenerator.addLabelWidgetPair("Maximum " + CostYearTable.REFERENCE_COST_YEAR + " Cost per Ton ($/ton)", costPerTon, panel);
+        layoutGenerator.addLabelWidgetPair("Maximum Cost per Ton ($/ton) [in Strategy Cost Year dollars]", costPerTon, panel);
 
         annCost = new TextField("annual cost", 10);
         annCost.setText(constraint != null ? (constraint.getMinAnnCost() != null ? constraint.getMinAnnCost() + "" : "") : "");
         annCost.setToolTipText("Enter the sources target pollutant maximum annualized cost.  The controlled source must have a annualized cost less than or equal to this cost.");
         changeables.addChangeable(annCost);
-        layoutGenerator.addLabelWidgetPair("Maximum " + CostYearTable.REFERENCE_COST_YEAR + " Annualized Cost ($/yr)", annCost, panel);
+        layoutGenerator.addLabelWidgetPair("Maximum Annualized Cost ($/yr) [in Strategy Cost Year dollars]", annCost, panel);
         
         replacementControlMinEfficiencyDiff = new TextField("replacementControlMinEfficiencyDiff", 10);
         replacementControlMinEfficiencyDiff.setText(constraint != null ? (constraint.getReplacementControlMinEfficiencyDiff() != null ? constraint.getReplacementControlMinEfficiencyDiff() + "" : "10.0") : "10.0");
