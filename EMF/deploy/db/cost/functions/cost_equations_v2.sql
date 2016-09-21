@@ -768,20 +768,20 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (ann_value ^ capital_cost_exponent) + capital_cost_base;
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * ann_value ^ annual_cost_exponent + annual_cost_base;
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
-					((' || emis_sql || '/*ann_value*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
 					)
 
@@ -1303,20 +1303,20 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (ann_value ^ capital_cost_exponent) + capital_cost_base;
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * ann_value ^ annual_cost_exponent + annual_cost_base;
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
-					((' || emis_sql || '/*ann_value*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
 					)
 
@@ -1823,13 +1823,13 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (ann_value ^ capital_cost_exponent) + capital_cost_base;
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * ann_value ^ annual_cost_exponent + annual_cost_base;
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
@@ -1837,13 +1837,13 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
-					((' || emis_sql || '/*ann_value*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
 					)
 					- (
 					  (
 						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
-						((' || emis_sql || '/*ann_value*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)/*capital_cost*/ + 
+						((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)/*capital_cost*/ + 
 						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
 						)
 						* (' || capital_recovery_factor_expression || ')/*annualized_capital_cost*/
@@ -2304,13 +2304,13 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (ann_value ^ capital_cost_exponent) + capital_cost_base;
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * ann_value ^ annual_cost_exponent + annual_cost_base;
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
@@ -2683,13 +2683,13 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (ann_value ^ capital_cost_exponent) + capital_cost_base;
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * ann_value ^ annual_cost_exponent + annual_cost_base;
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
@@ -3079,13 +3079,13 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (ann_value ^ capital_cost_exponent) + capital_cost_base;
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * ann_value ^ annual_cost_exponent + annual_cost_base;
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
@@ -3093,7 +3093,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
-					((' || emis_sql || '/*ann_value*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
 					)
 					* (' || capital_recovery_factor_expression || ')

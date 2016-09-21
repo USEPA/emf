@@ -1721,9 +1721,9 @@ WHERE name = 'Type 2';
 
 -- 08/04/2016 Create Equation Type 2 variants using annual emissions and natural exponent
 INSERT INTO emf.equation_types (name, description, inventory_fields, equation) VALUES
-('Type 2a', 'Non-EGU NOx', 'ann_value',
-'Annual Cost = Annual Cost = Annual Cost Multiplier x (Annual Emissions [in tons/yr]) ^ Exponent + Base
-Capital Coat = Capital Cost Multiplier x (Annual Emissions [in tons/yr]) ^ Exponent + Base');
+('Type 2a', 'Non-EGU NOx', '',
+'Annual Cost = Annual Cost = Annual Cost Multiplier x (Emissions Reduction [in tons/day]) ^ Exponent + Base
+Capital Coat = Capital Cost Multiplier x (Emissions Reduction [in tons/day]) ^ Exponent + Base');
 
 INSERT INTO emf.equation_types (name, description, inventory_fields, equation) VALUES
 ('Type 2b', 'Non-EGU NOx', 'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator',
