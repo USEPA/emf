@@ -3554,10 +3554,10 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 	computed_cost_per_ton_expression := 
 	'case 
-		when coalesce((' || emis_reduction_sql || '), 0) <> 0 then 
+		when coalesce(((' || emis_sql || ') - (' || remaining_emis_sql || ')), 0) <> 0 then 
 			(' || annual_cost_expression || ')
 			/*annual_cost*/
-			/ (' || emis_reduction_sql || ')
+			/ ((' || emis_sql || ') - (' || remaining_emis_sql || '))
 		else null::double precision
 	end';
 
