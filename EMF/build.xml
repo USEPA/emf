@@ -278,7 +278,7 @@
 	</target>
 
 	<!-- Continuous Integration target -->
-	<target name="ci-build" depends="compile, unit-tests, app-dist" description="Continuous Integration build" />
+	<target name="ci-build" depends="compile, app-dist, client-dist, client-installer-dist" description="Continuous Integration Build" />
 
 	<!-- DEFAULT target-->
 	<target name="core" description="Runs ALL (except UAT AND Webservices) tests" depends="clean, init, all-dev-tests" />
