@@ -278,7 +278,7 @@
 	</target>
 
 	<!-- Continuous Integration target -->
-	<target name="ci-build" depends="compile, app-dist, client-dist, client-installer-dist" description="Continuous Integration Build" />
+	<target name="ci-build" depends="compile, app-dist, client-dist(only jar), client-dist, client-installer-dist" description="Continuous Integration Build" />
 
 	<!-- DEFAULT target-->
 	<target name="core" description="Runs ALL (except UAT AND Webservices) tests" depends="clean, init, all-dev-tests" />
@@ -331,9 +331,13 @@
 		<property name="client.dist.dir" value="${build.home}/deploy/client" />
 		<property name="client.jar" value="${client.dist}/${app.name}-client.jar" />
 		<property name="client.dist.ref" value="${client.dist}/config/ref/delimited" />
+		<property name="client.dist.pref" value="${client.dist}/config/preferences" />
 		<property name="scc.ref.dir" value="config/ref/delimited" />
+		<property name="preferences.dir" value="${basedir}/config/preferences" />
 		<property name="linuxscripts.dir" value="${basedir}/deploy/linux_scripts" />
 		<property name="linuxclient.dir" value="${linuxscripts.dir}/client" />
+		<property name="windowsscripts.dir" value="${basedir}/deploy/windows_scripts" />
+		<property name="windowsclient.dir" value="${windowsscripts.dir}/client" />
 		<property name="clientzip.dir" value="${build.home}/EMFClient" />
 	</target>
 
@@ -344,6 +348,7 @@
 		<mkdir dir="${client.dist.dir}" />
 		<mkdir dir="${client.dist.lib}" />
 		<mkdir dir="${client.dist.ref}" />
+		<mkdir dir="${client.dist.pref}" />
 
 		<!--copy files while preserving dates modified -->
 		<copy todir="${client.dist.lib}" preservelastmodified="true">
@@ -356,12 +361,8 @@
 			<include name="**/*" />
 		</jar>
 		<copy todir="${client.dist}" preservelastmodified="true">
-			<fileset dir="${basedir}">
-				<include name="launch-client.bat" />
-				<include name="client.xml" />
-			</fileset>
-			<fileset dir="${build.classes.dir}">
-				<include name="*.properties" />
+			<fileset dir="${windowsclient.dir}">
+				<include name="EMFClient.*" />
 			</fileset>
 			<fileset dir="${linuxclient.dir}">
 				<include name="EMFClient.*" />
@@ -369,6 +370,11 @@
 		</copy>
 		<copy todir="${client.dist.ref}" preservelastmodified="true">
 			<fileset dir="config/ref/delimited">
+				<include name="**" />
+			</fileset>
+		</copy>
+		<copy todir="${client.dist.pref}" preservelastmodified="true">
+			<fileset dir="${preferences.dir}">
 				<include name="**" />
 			</fileset>
 		</copy>
