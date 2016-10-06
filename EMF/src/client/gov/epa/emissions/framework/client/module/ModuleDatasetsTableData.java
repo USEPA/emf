@@ -21,7 +21,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name/Placeholder", "Dataset Name", "Version", "Description"};
+        return new String[] { "Mode", "Name/Placeholder", "Dataset Name", "Version", "Exists?", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -43,12 +43,15 @@ public class ModuleDatasetsTableData extends AbstractTableData {
             String mode = element.getModuleTypeVersionDataset().getMode();
             String outputMethod = element.getOutputMethod();
             String datasetName = "";
+            String datasetExists = "No";
             Integer datasetId = element.getDatasetId();
             if (datasetId != null) {
                 try {
                     EmfDataset dataset = session.dataService().getDataset(datasetId);
-                    if (dataset != null)
+                    if (dataset != null) {
                         datasetName = dataset.getName();
+                        datasetExists = "Yes";
+                    }
                 } catch (EmfException ex) {
                     // ignore exception
                 }
@@ -58,16 +61,29 @@ public class ModuleDatasetsTableData extends AbstractTableData {
                                     element.getPlaceholderName(),
                                     datasetName,
                                     element.getVersion(),
+                                    datasetExists,
                                     getShortDescription(element.getModuleTypeVersionDataset()) };
     
                 Row row = new ViewableRow(element, values);
                 rows.add(row);
             }
             else if (outputMethod.equals(ModuleDataset.NEW)) {
+                datasetName = element.getDatasetNamePattern();
+                if (datasetName != null) {
+                    try {
+                        EmfDataset dataset = session.dataService().getDataset(datasetName);
+                        if (dataset != null) {
+                            datasetExists = "Yes";
+                        }
+                    } catch (EmfException ex) {
+                        // ignore exception
+                    }
+                }
                 Object[] values = { "OUT NEW",
                                     element.getPlaceholderName(),
                                     element.getDatasetNamePattern(),
                                     0,
+                                    datasetExists,
                                     getShortDescription(element.getModuleTypeVersionDataset()) };
 
                 Row row = new ViewableRow(element, values);
@@ -78,6 +94,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
                                     element.getPlaceholderName(),
                                     datasetName,
                                     0,
+                                    datasetExists,
                                     getShortDescription(element.getModuleTypeVersionDataset()) };
     
                 Row row = new ViewableRow(element, values);

@@ -17,6 +17,7 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
@@ -188,14 +189,13 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
     }
 
     private boolean checkTextFields() {
-        if (name.getText().equals(""))
-            messagePanel.setError("Name field should be a non-empty string.");
-        else{
-            messagePanel.clear();
-            return true;
+        StringBuilder error = new StringBuilder();
+        if (!ModuleTypeVersionDataset.isValidPlaceholderName(name.getText(), error)) {
+            messagePanel.setError(error.toString());
+            return false;
         }
-
-        return false;
+        messagePanel.clear();
+        return true;
     }
 
     private Action saveAction() {

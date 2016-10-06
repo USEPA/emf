@@ -38,6 +38,24 @@ public class ModuleDataset implements Serializable {
         return newModuleDataset;
     }
 
+    public boolean isValid(final StringBuilder error) {
+        error.setLength(0);
+        ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
+        if (!moduleTypeVersionDataset.isValid(error)) return false;
+        String mode = moduleTypeVersionDataset.getMode();
+        boolean needsDatasetNamePattern = mode.equals(ModuleTypeVersionDataset.OUT) && outputMethod.equals(NEW);
+        boolean hasDatasetNamePattern = (datasetNamePattern != null) && (datasetNamePattern.trim().length() > 0);
+        if (needsDatasetNamePattern && !hasDatasetNamePattern) {
+            error.append(String.format("The dataset name pattern for placeholder '%s' has not been set.", placeholderName));
+            return false;
+        }
+        if (!needsDatasetNamePattern && (datasetId == null)) {
+            error.append(String.format("The dataset for placeholder '%s' has not been set.", placeholderName));
+            return false;
+        }
+        return true;
+    }
+    
     public int getId() {
         return id;
     }

@@ -166,6 +166,8 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
     }
 
     public void addModuleTypeVersion(ModuleTypeVersion moduleTypeVersion) {
+        moduleTypeVersion.setModuleType(this);
+        moduleTypeVersion.setVersion(this.moduleTypeVersions.size());
         this.moduleTypeVersions.put(moduleTypeVersion.getVersion(), moduleTypeVersion);
     }
 

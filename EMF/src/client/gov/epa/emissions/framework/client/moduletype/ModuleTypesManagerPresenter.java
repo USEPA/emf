@@ -30,24 +30,10 @@ public class ModuleTypesManagerPresenter implements RefreshObserver {
         view.disposeView();
     }
 
-//    public void doEdit(ModuleType type, EditableModuleTypeView editable, ViewableModuleTypeView viewable)
-//            throws EmfException {
-//        EditableModuleTypePresenter p = new EditableModuleTypePresenterImpl(session, editable, viewable, type);
-//        edit(p);
-//    }
-//
-//    void edit(EditableModuleTypePresenter presenter) throws EmfException {
-//        presenter.doDisplay();
-//    }
-//
-//    public void doView(ModuleType type, ViewableModuleTypeView viewable) throws EmfException {
-//        ViewableModuleTypePresenter p = new ViewableModuleTypePresenterImpl(viewable, type);
-//        view(p);
-//    }
-//
-//    void view(ViewableModuleTypePresenter presenter) throws EmfException {
-//        presenter.doDisplay();
-//    }
+    public void displayModuleTypeVersions(ModuleTypeVersionsManagerView view) throws EmfException {
+        ModuleTypeVersionsManagerPresenter presenter = new ModuleTypeVersionsManagerPresenter(session, view);
+        presenter.doDisplay();
+    }
 
     public void displayNewModuleTypeView(ModuleTypeVersionPropertiesView view) {
         ModuleTypeVersionPropertiesPresenter presenter = new ModuleTypeVersionPropertiesPresenter(session, view);

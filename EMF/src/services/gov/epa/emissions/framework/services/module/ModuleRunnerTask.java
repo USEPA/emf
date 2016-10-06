@@ -23,6 +23,7 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hibernate.Session;
@@ -118,6 +119,7 @@ public class ModuleRunnerTask {
             module = modulesDAO.update(module, session);
             
             String algorithm = moduleTypeVersion.getAlgorithm();
+            history.setUserScript(algorithm);
             
             // create output datasets
             // replace all dataset place-holders in the algorithm
@@ -187,6 +189,9 @@ public class ModuleRunnerTask {
             String startPattern = "\\$\\{\\s*";
             String separatorPattern = "\\s*\\.\\s*";
             String endPattern = "\\s*\\}";
+
+            // Important: keep the list of valid placeholders in sync with
+            //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
             
             algorithm = Pattern.compile(startPattern + "user" + separatorPattern + "full_name" + endPattern, Pattern.CASE_INSENSITIVE)
                                .matcher(algorithm).replaceAll(user.getName());
@@ -203,8 +208,17 @@ public class ModuleRunnerTask {
             algorithm = Pattern.compile(startPattern + "module" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
                                .matcher(algorithm).replaceAll(module.getId() + "");
     
-            // TODO verify that the algorithm doesn't have any place-holders left
-    
+            history.setUserScript(algorithm);
+
+            // verify that the algorithm doesn't have any place-holders left
+            Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
+            if (matcher.find()) {
+                int pos = matcher.start();
+                String match = matcher.group();
+                String message = String.format("Unrecognized placeholder %s at location %d.", match, start);
+                throw new EmfException(message); 
+            }
+            
             // create outer block
             // declare all parameters, initialize IN and INOUT parameters
             String parameterDeclarations = "";
@@ -351,6 +365,9 @@ public class ModuleRunnerTask {
             throw new EmfException("Can't handle datasets with multiple internal sources (module '" + moduleDataset.getModule().getName() + "', dataset '" + dataset.getName() + "').");
         }
 
+        // Important: keep the list of valid placeholders in sync with
+        //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
+        
         result = Pattern.compile(startPattern + "dataset_name" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll(dataset.getName());
 

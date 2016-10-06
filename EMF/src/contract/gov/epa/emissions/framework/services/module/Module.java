@@ -74,6 +74,22 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         return newModule;
     }
 
+    public boolean isValid(final StringBuilder error) {
+        error.setLength(0);
+
+        if (!moduleTypeVersion.isValid(error)) return false;
+        
+        for(ModuleDataset moduleDataset : moduleDatasets.values()) {
+            if (!moduleDataset.isValid(error)) return false;
+        }
+
+        for(ModuleParameter moduleParameter : moduleParameters.values()) {
+            if (!moduleParameter.isValid(error)) return false;
+        }
+        
+        return true;
+    }
+
     public int getId() {
         return id;
     }

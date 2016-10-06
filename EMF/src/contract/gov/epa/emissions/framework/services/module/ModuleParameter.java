@@ -23,6 +23,20 @@ public class ModuleParameter implements Serializable {
         return newModuleParameter;
     }
 
+    public boolean isValid(final StringBuilder error) {
+        error.setLength(0);
+        ModuleTypeVersionParameter moduleTypeVersionParameter = getModuleTypeVersionParameter();
+        if (!getModuleTypeVersionParameter().isValid(error)) return false;
+        String mode = moduleTypeVersionParameter.getMode();
+        boolean needsValue = !mode.equals(ModuleTypeVersionParameter.OUT);
+        boolean hasValue = (value != null) && (value.trim().length() > 0); 
+        if (needsValue && !hasValue) {
+            error.append(String.format("Module parameter %s has no value", parameterName));
+            return false;
+        }
+        return true;
+    }
+    
     public int getId() {
         return id;
     }

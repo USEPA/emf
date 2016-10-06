@@ -8,6 +8,7 @@ import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
+import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
@@ -15,8 +16,10 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.History;
+import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
@@ -30,14 +33,18 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionPresenter;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
@@ -45,6 +52,7 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
+import javax.swing.SwingWorker;
 
 public class ModulePropertiesWindow extends DisposableInteralFrame implements ModulePropertiesView, RefreshObserver {
     private ModulePropertiesPresenter presenter;
@@ -71,11 +79,18 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private JPanel historyPanel;
 
     // summary
-    private Label moduleTypeName;
-    private Label moduleTypeVersionNumber;
-    private Button selectModuleTypeVersion;
-    private TextField name;
-    private TextArea  description;
+    private Label     moduleTypeName;
+    private Label     moduleTypeVersionNumber;
+    private Button    selectModuleTypeVersion;
+    
+    private TextField moduleName;
+    private TextArea  moduleDescription;
+    private Label     moduleCreator;
+    private Label     moduleCreationDate;
+    private Label     moduleLastModifiedDate;
+    private Label     moduleLockOwner;
+    private Label     moduleLockDate;
+    private Label     moduleIsFinal;
 
     // datasets
     private JPanel datasetsTablePanel;
@@ -285,22 +300,44 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         selectModuleTypeVersion.setEnabled(viewMode != ViewMode.VIEW);
         layoutGenerator.addLabelWidgetPair("", selectModuleTypeVersion, formPanel);
 
-        name = new TextField("name", 60);
-        name.setText(module.getName());
-        name.setMaximumSize(new Dimension(575, 20));
-        name.setEnabled(viewMode != ViewMode.VIEW);
-        addChangeable(name);
-        layoutGenerator.addLabelWidgetPair("Module Name:", name, formPanel);
+        moduleName = new TextField("name", 60);
+        moduleName.setText(module.getName());
+        moduleName.setMaximumSize(new Dimension(575, 20));
+        moduleName.setEnabled(viewMode != ViewMode.VIEW);
+        addChangeable(moduleName);
+        layoutGenerator.addLabelWidgetPair("Module Name:", moduleName, formPanel);
 
-        description = new TextArea("description", module.getDescription(), 60, 8);
-        description.setEnabled(viewMode != ViewMode.VIEW);
-        addChangeable(description);
-        ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
+        moduleDescription = new TextArea("description", module.getDescription(), 60, 8);
+        moduleDescription.setEnabled(viewMode != ViewMode.VIEW);
+        addChangeable(moduleDescription);
+        ScrollableComponent descScrollableTextArea = new ScrollableComponent(moduleDescription);
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, formPanel);
 
+        moduleCreator = new Label(module.getCreator().getName());
+        layoutGenerator.addLabelWidgetPair("Creator:", moduleCreator, formPanel);
+
+        moduleCreationDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getCreationDate()));
+        layoutGenerator.addLabelWidgetPair("Creation Date:", moduleCreationDate, formPanel);
+
+        moduleLastModifiedDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getLastModifiedDate()));
+        layoutGenerator.addLabelWidgetPair("Last Modified:", moduleLastModifiedDate, formPanel);
+
+        String lockOwner = module.getLockOwner();
+        String safeLockOwner = (lockOwner == null) ? "" : lockOwner;
+        moduleLockOwner = new Label(safeLockOwner);
+        layoutGenerator.addLabelWidgetPair("Lock Owner:", moduleLockOwner, formPanel);
+
+        Date lockDate = module.getLockDate();
+        String safeLockDate = (module.getLockDate() == null) ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
+        moduleLockDate = new Label(safeLockDate);
+        layoutGenerator.addLabelWidgetPair("Lock Date:", moduleLockDate, formPanel);
+
+        moduleIsFinal = new Label(module.getIsFinal() ? "Yes" : "No");
+        layoutGenerator.addLabelWidgetPair("Is Final:", moduleIsFinal, formPanel);
+
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(formPanel, 5, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(formPanel, 11, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -368,10 +405,14 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layout.setVgap(25);
         container.setLayout(layout);
 
+        Button validateButton = new Button("Validate", validateAction());
         Button saveButton = new SaveButton(saveAction());
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
+        Button closeButton = new CloseButton("Close", closeAction());
+        
+        container.add(validateButton);
         container.add(saveButton);
-        container.add(new CloseButton("Close", closeAction()));
+        container.add(closeButton);
         getRootPane().setDefaultButton(saveButton);
 
         panel.add(container, BorderLayout.SOUTH);
@@ -390,9 +431,17 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         };
         SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, datasetsTable, confirmDialog);
 
+        Action viewAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewDatasets();
+            }
+        };
+        SelectAwareButton viewDatasetsButton = new SelectAwareButton("View Dataset", viewAction, datasetsTable, confirmDialog);
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         crudPanel.add(editButton);
+        crudPanel.add(viewDatasetsButton);
         if (!session.user().isAdmin() || (viewMode == ViewMode.VIEW)) {
             editButton.setEnabled(false);
         }
@@ -419,6 +468,74 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 break;
             }
         }
+    }
+
+    private void viewDatasets() {
+        clear();
+        final List<HistoryDataset> datasets = selectedDatasets();
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select one or more Datasets");
+            return;
+        }
+        
+//        for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+//            DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+//            ModuleDataset moduleDataset = (ModuleDataset) iter.next();
+//            // TODO verify that the dataset exists. Search for the dataset by id or name.
+//        }
+        
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusable, so
+        //we create new instances as needed.
+        class ViewDatasetPropertiesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public ViewDatasetPropertiesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                    ModuleDataset moduleDataset = (ModuleDataset) iter.next();
+                    presenter.doDisplayDatasetProperties(view, moduleDataset);
+                }
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    //make sure something didn't happen
+                    get();
+                    
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+//                    this.parentContainer.setCursor(null); //turn off the wait cursor
+//                    this.parentContainer.
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new ViewDatasetPropertiesTask(this).execute();
     }
 
     private List selectedDatasets() {
@@ -537,7 +654,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private boolean checkTextFields() {
-        if (name.getText().equals(""))
+        if (moduleName.getText().equals(""))
             messagePanel.setError("Name field should be a non-empty string.");
         else{
             messagePanel.clear();
@@ -545,6 +662,22 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
 
         return false;
+    }
+
+    private Action validateAction() {
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                StringBuilder error = new StringBuilder();
+                if (module.isValid(error)) {
+                    messagePanel.setMessage("This module is valid.");
+                }
+                else {
+                    messagePanel.setError(error.toString());
+                }
+            }
+        };
+
+        return action;
     }
 
     private Action saveAction() {
@@ -555,8 +688,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                         resetChanges();
                         
                         Date date = new Date();
-                        module.setName(name.getText());
-                        module.setDescription(description.getText());
+                        module.setName(moduleName.getText());
+                        module.setDescription(moduleDescription.getText());
                         module.setCreationDate(date);
                         module.setLastModifiedDate(date);
                         module.setCreator(session.user());

@@ -38,10 +38,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
-public class ModuleTypesManagerWindow extends ReusableInteralFrame implements ModuleTypesManagerView, RefreshObserver {
+public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implements ModuleTypeVersionsManagerView, RefreshObserver {
 
-    private ModuleTypesManagerPresenter presenter;
+    private ModuleTypeVersionsManagerPresenter presenter;
 
+    private ViewMode viewMode;
+    
+    private ModuleType moduleType;
+    
     private SelectableSortFilterWrapper table;
 
     private JPanel layout;
@@ -54,23 +58,30 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
     private EmfSession session;
 
-    public ModuleTypesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Type Manager", new Dimension(700, 350), desktopManager);
-        super.setName("moduleTypeManager");
+    public ModuleTypeVersionsManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager, ViewMode viewMode, ModuleType moduleType) {
+        super("Module Type Version Manager", new Dimension(700, 350), desktopManager);
+        super.setName("moduleTypeVersionManager");
 
         this.session = session;
         this.parentConsole = parentConsole;
-
+        this.viewMode = viewMode;
+        this.moduleType = moduleType;
+        
         layout = new JPanel();
         this.getContentPane().add(layout);
     }
 
-    public void observe(ModuleTypesManagerPresenter presenter) {
+    public void observe(ModuleTypeVersionsManagerPresenter presenter) {
         this.presenter = presenter;
+        try {
+            moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
+        } catch (EmfException e) {
+            messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
+        }
     }
 
-    public void refresh(ModuleType[] types) {
-        table.refresh(new ModuleTypesTableData(types));
+    public void refresh() {
+        table.refresh(new ModuleTypeVersionsTableData(moduleType.getModuleTypeVersions()));
         panelRefresh();
     }
 
@@ -83,7 +94,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     public void display() {
         createLayout();
         super.display();
-        populate();
     }
 
     private void createLayout() {
@@ -101,7 +111,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel, BorderLayout.CENTER);
 
-        Button button = new RefreshButton(this, "Refresh Module Types", messagePanel);
+        Button button = new RefreshButton(this, "Refresh Module Type Versions", messagePanel);
         panel.add(button, BorderLayout.EAST);
 
         return panel;
@@ -109,7 +119,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
-        table = new SelectableSortFilterWrapper(parentConsole, new ModuleTypesTableData(new ModuleType[] {}), null);
+        table = new SelectableSortFilterWrapper(parentConsole, new ModuleTypeVersionsTableData(moduleType.getModuleTypeVersions()), null);
         tablePanel.add(table);
         return tablePanel;
     }
@@ -141,28 +151,28 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
         Action viewAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                viewModuleTypes();
+                viewModuleTypeVersions();
             }
         };
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
 
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                editModuleTypes();
+                editModuleTypeVersions();
             }
         };
         SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
 
         Action createAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                createModuleType();
+                createModuleTypeVersion();
             }
         };
         Button newButton = new NewButton(createAction);
 
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                removeModuleType();
+                removeModuleTypeVersion();
             }
         };
         Button removeButton = new RemoveButton(removeAction);
@@ -172,7 +182,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         crudPanel.add(editButton);
         crudPanel.add(newButton);
         crudPanel.add(removeButton);
-        if (!session.user().isAdmin()){
+        if (!session.user().isAdmin() || (viewMode == ViewMode.VIEW)){
             editButton.setEnabled(false);
             newButton.setEnabled(false);
             removeButton.setEnabled(false);
@@ -181,79 +191,64 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         return crudPanel;
     }
 
-    private void viewModuleTypes() {
+    private void viewModuleTypeVersions() {
         List selected = selected();
         if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more module types");
+            messagePanel.setMessage("Please select one or more module type versions");
             return;
         }   
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            ModuleType moduleType = (ModuleType) iter.next();
-            try {
-                moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
-            } catch (EmfException e) {
-                messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
-                break;
-            }
-            try {
-                ModuleTypeVersionsManagerWindow view = new ModuleTypeVersionsManagerWindow(session, parentConsole, desktopManager, ViewMode.VIEW, moduleType);
-                presenter.displayModuleTypeVersions(view);
-            } catch (EmfException e) {
-                messagePanel.setError("Could not diplay module type versions for: " + moduleType.getName() + "." + e.getMessage());
-                break;
-            }
+            ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, moduleTypeVersion);
+            presenter.displayNewModuleTypeView(view);
         }
     }
 
-    private void editModuleTypes() {
+    private void editModuleTypeVersions() {
         List selected = selected();
         if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more module types");
+            messagePanel.setMessage("Please select one or more module type versions");
             return;
         }   
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            ModuleType moduleType = (ModuleType) iter.next();
-            try {
-                moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
-            } catch (EmfException e) {
-                messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
-                break;
-            }
-            try {
-                ModuleTypeVersionsManagerWindow view = new ModuleTypeVersionsManagerWindow(session, parentConsole, desktopManager, ViewMode.EDIT, moduleType);
-                presenter.displayModuleTypeVersions(view);
-            } catch (EmfException e) {
-                messagePanel.setError("Could not diplay module type versions for: " + moduleType.getName() + "." + e.getMessage());
-                break;
-            }
+            ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, moduleTypeVersion);
+            presenter.displayNewModuleTypeView(view);
         }
     }
 
-    private void createModuleType() {
-        // TODO implement module types versioning
-        // If module types are selected, the New button should create new module type versions for them
-        // If no module type is selected, the New button should create an entirely new module type and its first module type version (0)
-        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session);
-        presenter.displayNewModuleTypeView(view);
+    private void createModuleTypeVersion() {
+        List selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more module type versions to use as base versions");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
+            ModuleTypeVersion newModuleTypeVersion = moduleTypeVersion.deepCopy(session.user());
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, newModuleTypeVersion);
+            presenter.displayNewModuleTypeView(view);
+        }
     }
 
-    private void removeModuleType() {
+    private void removeModuleTypeVersion() {
         messagePanel.clear();
         List<?> selected = selected();
         if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more module types");
+            messagePanel.setMessage("Please select one or more module type versions");
             return;
         }   
 
-        String message = "Are you sure you want to remove the selected " + selected.size() + " module type(s)?";
+        String message = "Are you sure you want to remove the selected " + selected.size() + " module type version(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
-                presenter.doRemove(selected.toArray(new ModuleType[0]));
+                presenter.doRemove(selected.toArray(new ModuleTypeVersion[0]));
                 messagePanel.setMessage(selected.size()
                         + " module types have been removed. Please Refresh to see the revised list of types.");
             } catch (EmfException e) {
@@ -271,57 +266,8 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         return this.parentConsole;
     }
 
-    public void doRefresh() throws EmfException {
-        populate();
-    }
-
     @Override
-    public void populate() {
-        //long running methods.....
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this, false);
-
-        //Instances of javax.swing.SwingWorker are not reusable, so
-        //we create new instances as needed.
-        class GetModuleTypesTask extends SwingWorker<ModuleType[], Void> {
-
-            private Container parentContainer;
-
-            public GetModuleTypesTask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public ModuleType[] doInBackground() throws EmfException  {
-                return presenter.getModuleTypes();
-            }
-
-            /*
-             * Executed in event dispatching thread
-             */
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen
-                    refresh(get());
-                } catch (InterruptedException e1) {
-//                    messagePanel.setError(e1.getMessage());
-//                    setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-//                    messagePanel.setError(e1.getCause().getMessage());
-//                    setErrorMsg(e1.getCause().getMessage());
-                } finally {
-//                    this.parentContainer.setCursor(null); //turn off the wait cursor
-//                    this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
-                }
-            }
-        };
-        new GetModuleTypesTask(this).execute();
+    public void doRefresh() throws EmfException {
+        refresh();
     }
 }

@@ -187,14 +187,13 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
     }
 
     private boolean checkTextFields() {
-        if (name.getText().equals(""))
-            messagePanel.setError("Name field should be a non-empty string.");
-        else{
-            messagePanel.clear();
-            return true;
+        StringBuilder error = new StringBuilder();
+        if (!ModuleTypeVersionParameter.isValidParameterName(name.getText(), error)) {
+            messagePanel.setError(error.toString());
+            return false;
         }
-
-        return false;
+        messagePanel.clear();
+        return true;
     }
 
     private Action saveAction() {

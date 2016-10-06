@@ -11,9 +11,11 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
+import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
@@ -23,6 +25,7 @@ import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
@@ -53,6 +56,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private static int counter = 0;
 
     private ViewMode viewMode;
+    private boolean mustUnlock;
     
     private ModuleType moduleType;
     private ModuleTypeVersion moduleTypeVersion;
@@ -61,15 +65,33 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private JPanel layout;
     private SingleLineMessagePanel messagePanel;
     private JTabbedPane tabbedPane;
-    private JPanel summaryPanel;
+    private JPanel moduleTypePanel;
+    private JPanel versionPanel;
     private JPanel datasetsPanel;
     private JPanel parametersPanel;
     private JPanel algorithmPanel;
+    private JPanel revisionsPanel;
 
-    // summary
-    private TextField name;
-    private TextArea description;
+    // module type
+    private TextField moduleTypeName;
+    private TextArea  moduleTypeDescription;
+    private Label     moduleTypeLockOwner;
+    private Label     moduleTypeLockDate;
+    private Label     moduleTypeCreationDate;
+    private Label     moduleTypeLastModifiedDate;
+    private Label     moduleTypeCreator;
+    private Label     moduleTypeDefaultVersionNumber;
 
+    // version
+    private Label     moduleTypeVersionNumber;
+    private TextField moduleTypeVersionName;
+    private TextArea  moduleTypeVersionDescription;
+    private Label     moduleTypeVersionCreationDate;
+    private Label     moduleTypeVersionLastModifiedDate;
+    private Label     moduleTypeVersionCreator;
+    private Label     moduleTypeVersionBaseVersionNumber;
+    private Label     moduleTypeVersionIsFinal;
+    
     // datasets
     private GetDatasetTypesTask getDatasetTypesTask; 
     private DatasetType[] datasetTypesCache;
@@ -84,6 +106,11 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     // algorithm
     private TextArea algorithm;
+
+    // revisions
+    private JPanel revisionsTablePanel;
+    private SelectableSortFilterWrapper revisionsTable;
+    private ModuleTypeVersionRevisionsTableData revisionsTableData;
 
     // Instances of javax.swing.SwingWorker are not reusable, so we create new instances as needed.
     class GetDatasetTypesTask extends SwingWorker<DatasetType[], Void> {
@@ -133,38 +160,40 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.parentConsole = parentConsole;
         this.session = session;
         this.viewMode = ViewMode.NEW;
+        this.mustUnlock = false;
         
-        this.moduleType = new ModuleType();
-        this.moduleTypeVersion = new ModuleTypeVersion();
-        this.moduleTypeVersion.setModuleType(this.moduleType);
-        this.moduleTypeVersion.setVersion(0);
-        this.moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" +
-                                            "-- \n" +
-                                            "-- TODO: implement the algorithm\n\n");
-        this.moduleType.addModuleTypeVersion(this.moduleTypeVersion);
-
-        layout = new JPanel();
-        layout.setLayout(new BorderLayout());
-        super.getContentPane().add(layout);
-    }
-
-    // New Module Type Version for existing Module Type
-    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleType moduleType) {
-        super(getWindowTitle(ViewMode.NEW, moduleType), new Dimension(800, 600), desktopManager);
-
-        this.parentConsole = parentConsole;
-        this.session = session;
-        this.viewMode = ViewMode.NEW;
+        Date date = new Date();
         
-        this.moduleType = moduleType;
-        this.moduleTypeVersion = new ModuleTypeVersion();
-        this.moduleTypeVersion.setModuleType(this.moduleType);
-        this.moduleTypeVersion.setVersion(0);
-        this.moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" +
-                                            "-- \n" +
-                                            "-- TODO: implement the algorithm\n\n");
-        this.moduleType.addModuleTypeVersion(this.moduleTypeVersion);
+        moduleType = new ModuleType();
+        moduleType.setName("");
+        moduleType.setDescription("");
+        moduleType.setCreationDate(date);
+        moduleType.setLastModifiedDate(date);
+        moduleType.setCreator(session.user());
+        moduleType.setDefaultVersion(0);
 
+        moduleTypeVersion = new ModuleTypeVersion();
+        moduleTypeVersion.setVersion(0);
+        moduleTypeVersion.setName("Initial Version");
+        String versionDescription = "Initial version created on " + CustomDateFormat.format_MM_DD_YYYY_HH_mm(date) + " by " + session.user().getName();
+        moduleTypeVersion.setDescription(versionDescription);
+        moduleTypeVersion.setCreationDate(date);
+        moduleTypeVersion.setLastModifiedDate(date);
+        moduleTypeVersion.setCreator(session.user());
+        moduleTypeVersion.setBaseVersion(0);
+        moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" +
+                                       "-- \n" +
+                                       "-- TODO: implement the algorithm\n\n");
+        moduleTypeVersion.setIsFinal(false);
+        moduleTypeVersion.setModuleType(moduleType);
+        moduleType.addModuleTypeVersion(moduleTypeVersion);
+
+        ModuleTypeVersionRevision moduleTypeVersionRevision = new ModuleTypeVersionRevision();
+        moduleTypeVersionRevision.setDescription(versionDescription);
+        moduleTypeVersionRevision.setCreationDate(date);
+        moduleTypeVersionRevision.setCreator(session.user());
+        moduleTypeVersion.addModuleTypeVersionRevision(moduleTypeVersionRevision);
+        
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
         super.getContentPane().add(layout);
@@ -177,6 +206,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.parentConsole = parentConsole;
         this.session = session;
         this.viewMode = viewMode;
+        this.mustUnlock = false;
         
         this.moduleTypeVersion = moduleTypeVersion;
         this.moduleType = moduleTypeVersion.getModuleType();
@@ -213,25 +243,28 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     public void observe(ModuleTypeVersionPropertiesPresenter presenter) {
         this.presenter = presenter;
 
-        if (viewMode != ViewMode.NEW) { // TODO new module type or new module type version?
-            try {
-                ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
-                if (lockedModuleType == null) {
-                    throw new EmfException("Failed to lock module type.");
-                }
-                moduleType = lockedModuleType;
-                moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
-            } catch (EmfException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        // moduleType should be locked by this point
+        
+//        if (viewMode != ViewMode.NEW) { // TODO new module type or new module type version?
+//            try {
+//                moduleType.isLocked(owner)
+//                ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
+//                if (lockedModuleType == null) {
+//                    throw new EmfException("Failed to lock module type.");
+//                }
+//                moduleType = lockedModuleType;
+//                moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
+//            } catch (EmfException e) {
+//                // NOTE Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//        }
         populateDatasetTypesCache();
     }
 
     public void display() {
         counter++; // TODO use a different counter for each viewMode
-        String name = getWindowTitle(viewMode, moduleType) + " " + counter;
+        String name = getWindowTitle(viewMode, moduleType) + " [" + counter + "]";
         super.setTitle(name);
         super.setName(name);
         layout.removeAll();
@@ -242,40 +275,111 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     private JTabbedPane tabbedPane() {
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Summary", summaryPanel());
+        tabbedPane.addTab("Module Type", moduleTypePanel());
+        tabbedPane.addTab("Version", versionPanel());
         tabbedPane.addTab("Datasets", datasetsPanel());
         tabbedPane.addTab("Parameters", parametersPanel());
         tabbedPane.addTab("Algorithm", algorithmPanel());
+        tabbedPane.addTab("Revisions", revisionsPanel());
         return tabbedPane;
     }
 
-    private JPanel summaryPanel() {
-        summaryPanel = new JPanel(new BorderLayout());
+    private JPanel moduleTypePanel() {
+        moduleTypePanel = new JPanel(new BorderLayout());
 
         JPanel formPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        name = new TextField("name", 60);
-        name.setMaximumSize(new Dimension(575, 20));
-        name.setText(moduleType.getName());
-        name.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(name);
-        layoutGenerator.addLabelWidgetPair("Name:", name, formPanel);
+        moduleTypeName = new TextField("Module Type Name", 60);
+        moduleTypeName.setMaximumSize(new Dimension(575, 20));
+        moduleTypeName.setText(moduleType.getName());
+        moduleTypeName.setEditable(viewMode != ViewMode.VIEW);
+        addChangeable(moduleTypeName);
+        layoutGenerator.addLabelWidgetPair("Name:", moduleTypeName, formPanel);
 
-        description = new TextArea("description", moduleType.getDescription(), 60, 8);
-        description.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(description);
-        ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
+        moduleTypeDescription = new TextArea("Module Type Description", moduleType.getDescription(), 60, 8);
+        moduleTypeDescription.setEditable(viewMode != ViewMode.VIEW);
+        addChangeable(moduleTypeDescription);
+        ScrollableComponent descScrollableTextArea = new ScrollableComponent(moduleTypeDescription);
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, formPanel);
 
+        moduleTypeCreator = new Label(moduleType.getCreator().getName());
+        layoutGenerator.addLabelWidgetPair("Creator:", moduleTypeCreator, formPanel);
+
+        moduleTypeCreationDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleType.getCreationDate()));
+        layoutGenerator.addLabelWidgetPair("Creation Date:", moduleTypeCreationDate, formPanel);
+
+        moduleTypeLastModifiedDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleType.getLastModifiedDate()));
+        layoutGenerator.addLabelWidgetPair("Last Modified:", moduleTypeLastModifiedDate, formPanel);
+
+        String lockOwner = moduleType.getLockOwner();
+        String safeLockOwner = (lockOwner == null) ? "" : lockOwner;
+        moduleTypeLockOwner = new Label(safeLockOwner);
+        layoutGenerator.addLabelWidgetPair("Lock Owner:", moduleTypeLockOwner, formPanel);
+
+        Date lockDate = moduleType.getLockDate();
+        String safeLockDate = (moduleType.getLockDate() == null) ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
+        moduleTypeLockDate = new Label(safeLockDate);
+        layoutGenerator.addLabelWidgetPair("Lock Date:", moduleTypeLockDate, formPanel);
+
+        moduleTypeDefaultVersionNumber = new Label(moduleType.getDefaultVersion() + "");
+        layoutGenerator.addLabelWidgetPair("Default Version:", moduleTypeDefaultVersionNumber, formPanel);
+
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(formPanel, 2, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(formPanel, 8, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
-        summaryPanel.add(formPanel, BorderLayout.PAGE_START);
-        return summaryPanel;
+        moduleTypePanel.add(formPanel, BorderLayout.PAGE_START);
+        return moduleTypePanel;
+    }
+
+    private JPanel versionPanel() {
+        versionPanel = new JPanel(new BorderLayout());
+
+        JPanel formPanel = new JPanel(new SpringLayout());
+        SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
+
+        moduleTypeVersionNumber = new Label(moduleTypeVersion.getVersion() + "");
+        layoutGenerator.addLabelWidgetPair("Version:", moduleTypeVersionNumber, formPanel);
+
+        moduleTypeVersionName = new TextField("Module Type Version Name", 60);
+        moduleTypeVersionName.setMaximumSize(new Dimension(575, 20));
+        moduleTypeVersionName.setText(moduleTypeVersion.getName());
+        moduleTypeVersionName.setEditable(viewMode != ViewMode.VIEW);
+        addChangeable(moduleTypeVersionName);
+        layoutGenerator.addLabelWidgetPair("Name:", moduleTypeVersionName, formPanel);
+
+        moduleTypeVersionDescription = new TextArea("Module Type Version Description", moduleTypeVersion.getDescription(), 60, 8);
+        moduleTypeVersionDescription.setEditable(viewMode != ViewMode.VIEW);
+        addChangeable(moduleTypeVersionDescription);
+        ScrollableComponent mtvDescScrollableTextArea = new ScrollableComponent(moduleTypeVersionDescription);
+        mtvDescScrollableTextArea.setMaximumSize(new Dimension(575, 200));
+        layoutGenerator.addLabelWidgetPair("Description:", mtvDescScrollableTextArea, formPanel);
+
+        moduleTypeVersionCreator = new Label(moduleTypeVersion.getCreator().getName());
+        layoutGenerator.addLabelWidgetPair("Creator:", moduleTypeVersionCreator, formPanel);
+
+        moduleTypeVersionCreationDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleTypeVersion.getCreationDate()));
+        layoutGenerator.addLabelWidgetPair("Creation Date:", moduleTypeVersionCreationDate, formPanel);
+
+        moduleTypeVersionLastModifiedDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleTypeVersion.getLastModifiedDate()));
+        layoutGenerator.addLabelWidgetPair("Last Modified:", moduleTypeVersionLastModifiedDate, formPanel);
+
+        moduleTypeVersionBaseVersionNumber = new Label(moduleTypeVersion.getBaseVersion() + "");
+        layoutGenerator.addLabelWidgetPair("Base Version:", moduleTypeVersionBaseVersionNumber, formPanel);
+
+        moduleTypeVersionIsFinal = new Label(moduleTypeVersion.getIsFinal() ? "Yes" : "No");
+        layoutGenerator.addLabelWidgetPair("Is Final:", moduleTypeVersionIsFinal, formPanel);
+
+        // Lay out the panel.
+        layoutGenerator.makeCompactGrid(formPanel, 8, 2, // rows, cols
+                10, 10, // initialX, initialY
+                10, 10);// xPad, yPad
+
+        versionPanel.add(formPanel, BorderLayout.PAGE_START);
+        return versionPanel;
     }
 
     private JPanel datasetsPanel() {
@@ -317,6 +421,19 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return algorithmPanel;
     }
 
+    private JPanel revisionsPanel() {
+        revisionsTablePanel = new JPanel(new BorderLayout());
+        revisionsTableData = new ModuleTypeVersionRevisionsTableData(moduleTypeVersion.getModuleTypeVersionRevisions());
+        revisionsTable = new SelectableSortFilterWrapper(parentConsole, revisionsTableData, null);
+        revisionsTablePanel.add(revisionsTable);
+
+        revisionsPanel = new JPanel(new BorderLayout());
+        revisionsPanel.add(revisionsTablePanel, BorderLayout.CENTER);
+//        revisionsPanel.add(parametersCrudPanel(), BorderLayout.SOUTH);
+
+        return revisionsPanel;
+    }
+
     private JPanel createButtonsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
@@ -326,10 +443,14 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         layout.setVgap(25);
         container.setLayout(layout);
 
+        Button validateButton = new Button("Validate", validateAction());
         Button saveButton = new SaveButton(saveAction());
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
+        Button closeButton = new CloseButton("Close", closeAction());
+        
+        container.add(validateButton);
         container.add(saveButton);
-        container.add(new CloseButton("Close", closeAction()));
+        container.add(closeButton);
         getRootPane().setDefaultButton(saveButton);
 
         panel.add(container, BorderLayout.SOUTH);
@@ -529,7 +650,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     }
 
     private boolean checkTextFields() {
-        if (name.getText().equals(""))
+        if (moduleTypeName.getText().equals(""))
             messagePanel.setError("Name field should be a non-empty string.");
         else{
             messagePanel.clear();
@@ -539,6 +660,22 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return false;
     }
 
+    private Action validateAction() {
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                StringBuilder error = new StringBuilder();
+                if (moduleTypeVersion.isValid(error)) {
+                    messagePanel.setMessage("This module type version is valid.");
+                }
+                else {
+                    messagePanel.setError(error.toString());
+                }
+            }
+        };
+
+        return action;
+    }
+
     private Action saveAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -546,24 +683,12 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                     try {
                         resetChanges();
                         
-                        if (viewMode == ViewMode.NEW) { // TODO implement module type versioning: is this New Module Type or New Module Type Version?
-                            Date date = new Date();
-                            moduleType.setName(name.getText());
-                            moduleType.setDescription(description.getText());
-                            moduleType.setCreationDate(date);
-                            moduleType.setLastModifiedDate(date);
-                            moduleType.setCreator(session.user());
-                            moduleType.setDefaultVersion(0);
-    
-                            moduleTypeVersion.setName("Initial Version");
-                            String versionDescription = "Initial version created on " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(date) + " by " + session.user().getName();
-                            moduleTypeVersion.setDescription(versionDescription);
-                            moduleTypeVersion.setCreationDate(date);
-                            moduleTypeVersion.setLastModifiedDate(date);
-                            moduleTypeVersion.setCreator(session.user());
-                            moduleTypeVersion.setBaseVersion(0);
+                        if (viewMode == ViewMode.NEW) {
+                            moduleType.setName(moduleTypeName.getText());
+                            moduleType.setDescription(moduleTypeDescription.getText());
+                            moduleTypeVersion.setName(moduleTypeVersionName.getText());
+                            moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
                             moduleTypeVersion.setAlgorithm(algorithm.getText());
-                            moduleTypeVersion.setIsFinal(false);
                             
                             moduleType = presenter.addModule(moduleType);
                             viewMode = ViewMode.EDIT;
@@ -573,12 +698,15 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                             }
                             moduleType = lockedModuleType;
                             moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
+                            mustUnlock = true;
                         } else {
                             Date date = new Date();
-                            moduleType.setName(name.getText());
-                            moduleType.setDescription(description.getText());
+                            moduleType.setName(moduleTypeName.getText());
+                            moduleType.setDescription(moduleTypeDescription.getText());
                             moduleType.setLastModifiedDate(date);
     
+                            moduleTypeVersion.setName(moduleTypeVersionName.getText());
+                            moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
                             moduleTypeVersion.setLastModifiedDate(date);
                             moduleTypeVersion.setAlgorithm(algorithm.getText());
                             
@@ -612,7 +740,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     private void doClose() {
         if (shouldDiscardChanges()) {
-            if (viewMode != ViewMode.NEW) {
+            if (mustUnlock) {
                 moduleType = presenter.releaseLockedModuleType(moduleType);
             }
             presenter.doClose();

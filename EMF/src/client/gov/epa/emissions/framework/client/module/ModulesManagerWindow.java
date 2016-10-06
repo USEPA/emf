@@ -330,15 +330,28 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 JOptionPane.QUESTION_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
-            try {
-                presenter.runModules(modules);
-                if (modules.length == 1) {
-                    messagePanel.setMessage("Module " + modules[0].getName() + " has been executed.");
-                } else {
-                    messagePanel.setMessage(modules.length + " modules have been executed.");
+            
+            boolean allModulesAreValid = true;
+            for (Module module : modules) {
+                StringBuilder error = new StringBuilder();
+                if (!module.isValid(error)) {
+                    messagePanel.setMessage(String.format("Module %s is invalid: %s", module.getName(), error.toString()));
+                    allModulesAreValid = false;
+                    break;
                 }
-            } catch (EmfException e) {
-              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+            }
+            
+            if (allModulesAreValid) {
+                try {
+                    presenter.runModules(modules);
+                    if (modules.length == 1) {
+                        messagePanel.setMessage("Module " + modules[0].getName() + " has been executed.");
+                    } else {
+                        messagePanel.setMessage(modules.length + " modules have been executed.");
+                    }
+                } catch (EmfException e) {
+                  JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+                }
             }
         }
     }

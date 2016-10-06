@@ -103,8 +103,8 @@ public class ModuleServiceImpl implements ModuleService {
 
             return released;
         } catch (RuntimeException e) {
-            LOG.error("Could not update module type: " + moduleType.getName(), e);
-            throw new EmfException("The module is already in use");
+            LOG.error("Failed to update module type: " + moduleType.getName(), e);
+            throw new EmfException("Failed to update module type " + moduleType.getName() + ": " + e.getMessage());
         }
         
     }

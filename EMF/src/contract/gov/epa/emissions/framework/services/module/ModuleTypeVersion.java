@@ -7,7 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ModuleTypeVersion implements Serializable {
 
@@ -44,6 +48,91 @@ public class ModuleTypeVersion implements Serializable {
         moduleTypeVersionDatasets = new HashMap<String, ModuleTypeVersionDataset>();
         moduleTypeVersionParameters = new HashMap<String, ModuleTypeVersionParameter>();
         moduleTypeVersionRevisions = new ArrayList<ModuleTypeVersionRevision>();
+    }
+
+    public ModuleTypeVersion deepCopy(User user) {
+        ModuleTypeVersion newModuleTypeVersion = new ModuleTypeVersion();
+        moduleType.addModuleTypeVersion(newModuleTypeVersion); // sets module type and version
+        newModuleTypeVersion.setName(name + " Copy");
+        newModuleTypeVersion.setDescription("Copy of " + name + ".\n" + description);
+        Date date = new Date();
+        newModuleTypeVersion.setCreationDate(date);
+        newModuleTypeVersion.setLastModifiedDate(date);
+        newModuleTypeVersion.setCreator(user);   
+        newModuleTypeVersion.setBaseVersion(version);
+        newModuleTypeVersion.setAlgorithm(algorithm);
+        newModuleTypeVersion.setIsFinal(false);
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
+            ModuleTypeVersionDataset newModuleTypeVersionDataset = moduleTypeVersionDataset.deepCopy();
+            newModuleTypeVersion.addModuleTypeVersionDataset(newModuleTypeVersionDataset);
+        }
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values()) {
+            ModuleTypeVersionParameter newModuleTypeVersionParameter = moduleTypeVersionParameter.deepCopy();
+            newModuleTypeVersion.addModuleTypeVersionParameter(newModuleTypeVersionParameter);
+        }
+        ModuleTypeVersionRevision moduleTypeVersionRevision = new ModuleTypeVersionRevision();
+        moduleTypeVersionRevision.setDescription("Copy of " + name);
+        moduleTypeVersionRevision.setCreationDate(date);
+        moduleTypeVersionRevision.setCreator(user);
+        newModuleTypeVersion.addModuleTypeVersionRevision(moduleTypeVersionRevision);
+        
+        return newModuleTypeVersion;
+    }
+
+    public boolean isValidAlgorithm(final StringBuilder error) {
+        error.setLength(0);
+        
+        // Important: keep the list of valid placeholders in sync with
+        //            gov.epa.emissions.framework.services.module.ModuleRunnerTask
+        Set<String> validPlaceholders = new HashSet<String>();
+        validPlaceholders.add("${user.full_name}");
+        validPlaceholders.add("${user.id}");
+        validPlaceholders.add("${user.account_name}");
+        validPlaceholders.add("${module.name}");
+        validPlaceholders.add("${module.id}");
+        
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
+            String placeholderName = moduleTypeVersionDataset.getPlaceholderName().toLowerCase();
+            validPlaceholders.add("${" + placeholderName + ".dataset_name}");
+            validPlaceholders.add("${" + placeholderName + ".dataset_id}");
+            validPlaceholders.add("${" + placeholderName + ".version}");
+            validPlaceholders.add("${" + placeholderName + ".table_name}");
+            validPlaceholders.add("${" + placeholderName + ".mode}");
+            if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
+                validPlaceholders.add("${" + placeholderName + ".output_method}");
+            }
+        }
+        
+        // verify that all placeholders in the algorithm are valid
+        String startPattern = "\\$\\{\\s*";
+        String endPattern = "\\s*\\}";
+        Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
+        while (matcher.find()) {
+            int start = matcher.start();
+            String match = matcher.group().replaceAll("\\{\\s*", "{").replaceAll("\\s*\\.\\s*", ".").replaceAll("\\s*\\}", "}").toLowerCase();
+            if (!validPlaceholders.contains(match)) {
+                error.append(String.format("Unrecognized placeholder %s at location %d.", match, start));
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    public boolean isValid(final StringBuilder error) {
+        error.setLength(0);
+
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
+            if (!moduleTypeVersionDataset.isValid(error)) return false;
+        }
+
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values()) {
+            if (!moduleTypeVersionParameter.isValid(error)) return false;
+        }
+        
+        if (!isValidAlgorithm(error)) return false;
+        
+        return true;
     }
 
     public int getId() {
@@ -145,6 +234,7 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public void addModuleTypeVersionDataset(ModuleTypeVersionDataset moduleTypeVersionDataset) {
+        moduleTypeVersionDataset.setModuleTypeVersion(this);
         this.moduleTypeVersionDatasets.put(moduleTypeVersionDataset.getPlaceholderName(), moduleTypeVersionDataset);
     }
 
@@ -167,6 +257,7 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public void addModuleTypeVersionParameter(ModuleTypeVersionParameter moduleTypeVersionParameter) {
+        moduleTypeVersionParameter.setModuleTypeVersion(this);
         this.moduleTypeVersionParameters.put(moduleTypeVersionParameter.getParameterName(), moduleTypeVersionParameter);
     }
 
@@ -189,6 +280,7 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public void addModuleTypeVersionRevision(ModuleTypeVersionRevision moduleTypeVersionRevision) {
+        moduleTypeVersionRevision.setModuleTypeVersion(this);
         moduleTypeVersionRevision.setRevision(this.moduleTypeVersionRevisions.size());
         this.moduleTypeVersionRevisions.add(moduleTypeVersionRevision);
     }

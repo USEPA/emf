@@ -1,10 +1,17 @@
 package gov.epa.emissions.framework.client.module;
 
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.meta.PropertiesView;
+import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.DataService;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
+import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 
 public class ModulePropertiesPresenter {
 
@@ -59,4 +66,38 @@ public class ModulePropertiesPresenter {
         return session.moduleService();
     }
 
+    private DataService dataService() {
+        return session.dataService();
+    }
+    
+    public EmfDataset getDataset(int datasetId) throws EmfException {
+        return dataService().getDataset(datasetId);
+    }
+    
+    public EmfDataset getDataset(String name) throws EmfException {
+        return dataService().getDataset(name);
+    }
+    
+    public void doDisplayDatasetProperties(PropertiesView propertiesView, ModuleDataset moduleDataset) throws EmfException {
+        EmfDataset dataset = null;
+        
+        ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+        if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
+            if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
+                String datasetName = moduleDataset.getDatasetNamePattern(); 
+                if (datasetName != null)
+                    dataset = getDataset(datasetName);
+            }
+            // ModuleDataset.REPLACE output method not implemented yet
+        } else { // IN or INOUT
+            Integer datasetId = moduleDataset.getDatasetId();
+            if (datasetId != null)
+                dataset = getDataset(moduleDataset.getDatasetId());
+        }
+        
+        if (dataset != null) {
+            PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
+            presenter.doDisplay(propertiesView);
+        }
+    }
 }
