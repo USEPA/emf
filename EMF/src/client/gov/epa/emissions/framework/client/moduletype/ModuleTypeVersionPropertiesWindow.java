@@ -65,14 +65,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private JPanel layout;
     private SingleLineMessagePanel messagePanel;
     private JTabbedPane tabbedPane;
-    private JPanel moduleTypePanel;
-    private JPanel versionPanel;
-    private JPanel datasetsPanel;
-    private JPanel parametersPanel;
-    private JPanel algorithmPanel;
-    private JPanel revisionsPanel;
 
     // module type
+    private JPanel    moduleTypePanel;
     private TextField moduleTypeName;
     private TextArea  moduleTypeDescription;
     private Label     moduleTypeLockOwner;
@@ -83,6 +78,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private Label     moduleTypeDefaultVersionNumber;
 
     // version
+    private JPanel    versionPanel;
     private Label     moduleTypeVersionNumber;
     private TextField moduleTypeVersionName;
     private TextArea  moduleTypeVersionDescription;
@@ -93,24 +89,29 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private Label     moduleTypeVersionIsFinal;
     
     // datasets
+    private JPanel datasetsPanel;
+    private JPanel datasetsTablePanel;
     private GetDatasetTypesTask getDatasetTypesTask; 
     private DatasetType[] datasetTypesCache;
-    private JPanel datasetsTablePanel;
     private SelectableSortFilterWrapper datasetsTable;
     private ModuleTypeVersionDatasetsTableData datasetsTableData;
 
     // parameters
+    private JPanel parametersPanel;
     private JPanel parametersTablePanel;
     private SelectableSortFilterWrapper parametersTable;
     private ModuleTypeVersionParametersTableData parametersTableData;
 
     // algorithm
+    private JPanel algorithmPanel;
     private TextArea algorithm;
 
     // revisions
-    private JPanel revisionsTablePanel;
-    private SelectableSortFilterWrapper revisionsTable;
-    private ModuleTypeVersionRevisionsTableData revisionsTableData;
+    private JPanel revisionsPanel;
+    private TextArea revisions;
+//    private JPanel revisionsTablePanel;
+//    private SelectableSortFilterWrapper revisionsTable;
+//    private ModuleTypeVersionRevisionsTableData revisionsTableData;
 
     // Instances of javax.swing.SwingWorker are not reusable, so we create new instances as needed.
     class GetDatasetTypesTask extends SwingWorker<DatasetType[], Void> {
@@ -422,16 +423,32 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     }
 
     private JPanel revisionsPanel() {
-        revisionsTablePanel = new JPanel(new BorderLayout());
-        revisionsTableData = new ModuleTypeVersionRevisionsTableData(moduleTypeVersion.getModuleTypeVersionRevisions());
-        revisionsTable = new SelectableSortFilterWrapper(parentConsole, revisionsTableData, null);
-        revisionsTablePanel.add(revisionsTable);
-
-        revisionsPanel = new JPanel(new BorderLayout());
-        revisionsPanel.add(revisionsTablePanel, BorderLayout.CENTER);
+//        revisionsTablePanel = new JPanel(new BorderLayout());
+//        revisionsTableData = new ModuleTypeVersionRevisionsTableData(moduleTypeVersion.getModuleTypeVersionRevisions());
+//        revisionsTable = new SelectableSortFilterWrapper(parentConsole, revisionsTableData, null);
+//        revisionsTablePanel.add(revisionsTable);
+//
+//        revisionsPanel = new JPanel(new BorderLayout());
+//        revisionsPanel.add(revisionsTablePanel, BorderLayout.CENTER);
 //        revisionsPanel.add(parametersCrudPanel(), BorderLayout.SOUTH);
 
+        revisionsPanel = new JPanel(new BorderLayout());
+        revisions = new TextArea("revisions", moduleTypeVersion.revisionsReport(), 60);
+        revisions.setEditable(false);
+        revisions.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        ScrollableComponent scrollableRevisionsReport = new ScrollableComponent(revisions);
+        scrollableRevisionsReport.setMaximumSize(new Dimension(575, 200));
+        revisionsPanel.add(scrollableRevisionsReport);
+        
+        revisions.setCaretPosition(revisions.getDocument().getLength());
+
         return revisionsPanel;
+    }
+
+    @Override
+    public void refreshRevisions() {
+        revisions.setText(moduleTypeVersion.revisionsReport());
+        revisions.setCaretPosition(revisions.getDocument().getLength());
     }
 
     private JPanel createButtonsPanel() {
@@ -444,11 +461,19 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         container.setLayout(layout);
 
         Button validateButton = new Button("Validate", validateAction());
+        validateButton.setMnemonic('V');
+
+        Button newRevisionButton = new Button("New Revision", newRevisionAction());
+        newRevisionButton.setMnemonic('R');
+        newRevisionButton.setEnabled(viewMode != ViewMode.VIEW);
+        
         Button saveButton = new SaveButton(saveAction());
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
+        
         Button closeButton = new CloseButton("Close", closeAction());
         
         container.add(validateButton);
+        container.add(newRevisionButton);
         container.add(saveButton);
         container.add(closeButton);
         getRootPane().setDefaultButton(saveButton);
@@ -676,7 +701,26 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return action;
     }
 
+    private Action newRevisionAction() {
+        final ModuleTypeVersionPropertiesWindow moduleTypeVersionPropertiesWindow = this;
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                ModuleTypeVersionNewRevisionDialog newRevisionView = new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, moduleTypeVersionPropertiesWindow);
+                ModuleTypeVersionNewRevisionPresenter newRevisionPresenter = new ModuleTypeVersionNewRevisionPresenter(newRevisionView, session);
+                try {
+                    newRevisionPresenter.display();
+                } catch (Exception e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        return action;
+    }
+
     private Action saveAction() {
+        final ModuleTypeVersionPropertiesWindow moduleTypeVersionPropertiesWindow = this;
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (checkTextFields()) {
@@ -700,6 +744,14 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                             moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
                             mustUnlock = true;
                         } else {
+                            ModuleTypeVersionNewRevisionDialog newRevisionView = new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, moduleTypeVersionPropertiesWindow);
+                            ModuleTypeVersionNewRevisionPresenter newRevisionPresenter = new ModuleTypeVersionNewRevisionPresenter(newRevisionView, session);
+                            try {
+                                newRevisionPresenter.display();
+                            } catch (Exception e) {
+                                // NOTE Auto-generated catch block
+                                e.printStackTrace();
+                            }
                             Date date = new Date();
                             moduleType.setName(moduleTypeName.getText());
                             moduleType.setDescription(moduleTypeDescription.getText());

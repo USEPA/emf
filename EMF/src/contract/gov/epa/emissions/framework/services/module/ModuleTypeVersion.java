@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.commons.util.CustomDateFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -167,6 +168,10 @@ public class ModuleTypeVersion implements Serializable {
         this.name = name;
     }
 
+    public String versionAndName() {
+        return version + " - " + name;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -285,6 +290,29 @@ public class ModuleTypeVersion implements Serializable {
         this.moduleTypeVersionRevisions.add(moduleTypeVersionRevision);
     }
 
+    public String revisionsReport() {
+        StringBuilder revisionsReport = new StringBuilder();
+        
+        for (ModuleTypeVersionRevision moduleTypeVersionRevision : moduleTypeVersionRevisions) {
+            String creationDate = (moduleTypeVersionRevision.getCreationDate() == null)
+                                  ? "?"
+                                  : CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleTypeVersionRevision.getCreationDate());
+            
+            String creator = (moduleTypeVersionRevision.getCreator() == null)
+                             ? "?"
+                             : moduleTypeVersionRevision.getCreator().getName();
+            
+            String record = String.format("Revision %d created on %s by %s\n%s\n\n",
+                                          moduleTypeVersionRevision.getRevision(),
+                                          creationDate, creator,
+                                          moduleTypeVersionRevision.getDescription());
+            
+            revisionsReport.append(record);
+        }
+        
+        return revisionsReport.toString();
+    }
+    
     // standard methods
 
     public String toString() {
