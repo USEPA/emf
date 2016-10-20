@@ -29,6 +29,7 @@ import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.editor.Revision;
+import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
@@ -801,22 +802,42 @@ public class DatasetDAO {
             }
 
             try {
-                session.clear();
-                session.flush();
-                hibernateFacade.remove(datasets, session);
+                decoupleDSFromModules(datasetIDs, session);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
                 exception = e;
             }
+        }
 
+        try {
+            dropDataTables(datasets, emissionTableTool, session);
+        } catch (Exception e) {
+            LOG.error(e);
+            e.printStackTrace();
+            exception = e;
+        }
+
+        for(EmfDataset dataset : datasets) {
+            dataset.setKeyVals(new KeyVal[]{});
+            dataset.setInternalSources(new InternalSource[]{});
             try {
-                dropDataTables(datasets, emissionTableTool, session);
+                updateDSPropNoLocking(dataset, session);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
                 exception = e;
             }
+        }
+        
+        try {
+            session.clear();
+            session.flush();
+            hibernateFacade.remove(datasets, session);
+        } catch (Exception e) {
+            LOG.error(e);
+            e.printStackTrace();
+            exception = e;
         }
 
         if (exception != null) {
@@ -1690,6 +1711,33 @@ public class DatasetDAO {
         } finally {
             if (DebugLevels.DEBUG_16())
                 LOG.warn(updatedItems + " items updated from " + CaseInput.class.getName() + " table.");
+        }
+    }
+
+    private void decoupleDSFromModules(int[] dsIDs, Session session) throws EmfException {
+        int updatedItems = 0;
+
+        try {
+            Transaction tx = session.beginTransaction();
+
+            String firstPart = "UPDATE " + ModuleDataset.class.getSimpleName()
+                    + " obj SET obj.datasetId = null, obj.version = null";
+            String secondPart = " WHERE obj.datasetId = " + getAndOrClause(dsIDs, "obj.datasetId");
+            String updateQuery = firstPart + secondPart;
+
+            if (DebugLevels.DEBUG_16())
+                System.out.println("hql update string: " + updateQuery);
+
+            updatedItems = session.createQuery(updateQuery).executeUpdate();
+            tx.commit();
+
+            if (DebugLevels.DEBUG_16())
+                System.out.println(updatedItems + " items updated.");
+        } catch (HibernateException e) {
+            throw new EmfException(e.getMessage());
+        } finally {
+            if (DebugLevels.DEBUG_16())
+                LOG.warn(updatedItems + " items updated from " + ModuleDataset.class.getName() + " table.");
         }
     }
 

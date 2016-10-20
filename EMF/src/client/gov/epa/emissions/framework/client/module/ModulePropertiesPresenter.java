@@ -87,8 +87,11 @@ public class ModulePropertiesPresenter {
                 String datasetName = moduleDataset.getDatasetNamePattern(); 
                 if (datasetName != null)
                     dataset = getDataset(datasetName);
+            } else if (moduleDataset.getOutputMethod().equals(ModuleDataset.REPLACE)) {
+                Integer datasetId = moduleDataset.getDatasetId();
+                if (datasetId != null)
+                    dataset = getDataset(datasetId);
             }
-            // ModuleDataset.REPLACE output method not implemented yet
         } else { // IN or INOUT
             Integer datasetId = moduleDataset.getDatasetId();
             if (datasetId != null)

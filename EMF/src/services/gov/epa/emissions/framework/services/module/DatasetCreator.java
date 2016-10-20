@@ -10,6 +10,7 @@ import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.TableCreator;
 import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.commons.db.version.Versions;
 import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.TableFormat;
 import gov.epa.emissions.commons.io.VersionedQuery;
@@ -24,6 +25,7 @@ import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +45,8 @@ public class DatasetCreator {
     private Keywords keywordMasterList;
     
     private Datasource datasource;
+    
+    private DatasetDAO datasetDAO;
 
     public DatasetCreator() {
     }
@@ -56,6 +60,7 @@ public class DatasetCreator {
         this.moduleDataset = moduleDataset;
         this.datasource = datasource;
         this.keywordMasterList = keywordMasterList;
+        this.datasetDAO = new DatasetDAO(dbServerFactory);
     }
 
     public DatasetCreator(ModuleDataset moduleDataset, User user, 
@@ -82,8 +87,7 @@ public class DatasetCreator {
         //create dataset
         EmfDataset dataset = createDataset(datasetNamePrefix, description, type, inputDataset);
 
-        setDatasetInternalSource(dataset, outputTableName, 
-                tableFormat, inputDataset.getName());
+        setDatasetInternalSource(dataset, outputTableName, tableFormat, inputDataset.getName());
 
         //persist dataset to db
         add(dataset);
@@ -120,6 +124,100 @@ public class DatasetCreator {
         createTable(outputTableName, tableFormat);
 
         return dataset;
+    }
+
+    public void replaceDataset(EmfDataset dataset) throws Exception {
+        Module module = moduleDataset.getModule();
+        ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+
+        String errorMessage;
+        String datasetName = dataset.getName();
+        Session session = sessionFactory.getSession();
+        Date date = new Date();
+
+        Versions versions = new Versions();
+        Version[] datasetVersions = versions.get(dataset.getId(), session);
+        for (Version version : datasetVersions) {
+            if (version.isLocked() && !version.isLocked(user)) {
+                errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset version %d is locked by %s.",
+                                              datasetName, moduleDataset.getPlaceholderName(), version.getVersion(), version.getLockOwner());
+                throw new EmfException(errorMessage);
+            }
+        }
+        
+        // overwrite version 0, delete the other versions
+        for (Version version : datasetVersions) {
+            if (version.getVersion() == 0) {
+                try {
+                    version.setCreator(user);
+                    version.setNumberRecords(0);
+                    version.setLastModifiedDate(date);
+                    version.setFinalVersion(true);
+                    // TODO add new dataset revision record and change the description
+                    String description = String.format("Data replaced by the '%s' module.", module.getName());
+                    version.setDescription(description);
+                    session.clear();
+                    versions.save(version, session);
+                } catch (Exception e) {
+                    errorMessage = String.format("Failed to update dataset '%s' version %d metadata", datasetName, version.getVersion());
+                    throw new EmfException(errorMessage);
+                }
+            } else {
+                try {
+                    session.clear();
+                    versions.delete(version, session);
+                } catch (Exception e) {
+                    errorMessage = String.format("Failed to delete dataset '%s' version %d", datasetName, version.getVersion());
+                    throw new EmfException(errorMessage);
+                }
+            }
+        }
+        
+        String description = "Dataset replaced by the '" + module.getName() + "' module for the '" + moduleTypeVersionDataset.getPlaceholderName() + "' placeholder.";
+        
+        dataset.setDescription(description);
+        dataset.setDefaultVersion(0);
+        dataset.setCreator(user.getUsername());
+        dataset.setCreatorFullName(user.getName());
+        dataset.setCreatedDateTime(date);
+        dataset.setModifiedDateTime(date);
+        dataset.setAccessedDateTime(date);
+        dataset.setStatus("Created by Module Runner");
+        dataset.setKeyVals(new KeyVal[]{});
+        addKeyVals(dataset);
+
+        session.clear();
+        dataset = datasetDAO.update(dataset, session);
+        dataset = datasetDAO.releaseLocked(user, dataset, session);
+        
+        InternalSource[] internalSources = dataset.getInternalSources();
+        if (internalSources.length != 1) {
+            errorMessage = String.format("Internal error: can't handle dataset '%s' with %d internal sources (expected one).",
+                                         dataset.getName(), internalSources.length);
+            throw new EmfException(errorMessage);
+        }
+
+        String query = String.format("TRUNCATE TABLE %s.%s", datasource.getName(), internalSources[0].getTable());
+        Statement statement = null;
+        try {
+            statement = dbServerFactory.getDbServer().getConnection().createStatement();
+            statement.execute(query);
+        } catch (SQLException e) {
+            errorMessage = String.format("Failed to truncate '%s.%s' table for '%s' dataset: %s", datasource.getName(), internalSources[0].getTable(), datasetName, e.getMessage());
+            throw new EmfException(errorMessage);
+        } catch (Exception e) {
+            errorMessage = String.format("Failed to truncate '%s.%s' table for '%s' dataset: %s", datasource.getName(), internalSources[0].getTable(), datasetName, e.getMessage());
+            throw new EmfException(errorMessage);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    // ignore
+                }
+                statement = null;
+            }
+        }
     }
 
     private EmfDataset createDataset(String name, 
@@ -196,7 +294,7 @@ public class DatasetCreator {
         Session session = sessionFactory.getSession();
 
         try {
-            new DatasetDAO().add(defaultZeroVersion, session);
+            datasetDAO.add(defaultZeroVersion, session);
         } catch (Exception e) {
             throw new EmfException("Could not add default zero version: " + e.getMessage());
         } finally {
@@ -210,14 +308,13 @@ public class DatasetCreator {
         Session session = sessionFactory.getSession();
 
         try {
-            DatasetDAO dao = new DatasetDAO(dbServerFactory);
-            Version version = dao.getVersion(session, dataset.getId(), 0);
-            Version lockedVersion = dao.obtainLockOnVersion(user, version.getId(), session);
+            Version version = datasetDAO.getVersion(session, dataset.getId(), 0);
+            Version lockedVersion = datasetDAO.obtainLockOnVersion(user, version.getId(), session);
             
             lockedVersion.setLastModifiedDate(new Date());
             int num = getNumOfRecords(datasource.getName() + "." + dataset.getInternalSources()[0].getTable(), lockedVersion);
             lockedVersion.setNumberRecords(num);
-            dao.updateVersionNReleaseLock(lockedVersion, session);
+            datasetDAO.updateVersionNReleaseLock(lockedVersion, session);
         } catch (Exception e) {
             throw new EmfException("Could not query table: " + e.getMessage());
         } finally {
@@ -315,8 +412,7 @@ public class DatasetCreator {
         boolean nameUsed = false;
         Session session = sessionFactory.getSession();
         try {
-            DatasetDAO dao = new DatasetDAO();
-            nameUsed = dao.datasetNameUsed(name, session);
+            nameUsed = datasetDAO.datasetNameUsed(name, session);
         } catch (Exception e) {
             throw new EmfException("Could not check if name is already used in a dataset: " + name);
         } finally {
@@ -328,11 +424,10 @@ public class DatasetCreator {
     private void add(EmfDataset dataset) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
-            DatasetDAO dao = new DatasetDAO(dbServerFactory);
-            if (dao.datasetNameUsed(dataset.getName(), session))
+            if (datasetDAO.datasetNameUsed(dataset.getName(), session))
                 throw new EmfException("The selected dataset name is already in use.");
 
-            dao.add(dataset, session);
+            datasetDAO.add(dataset, session);
         } catch (Exception e) {
             throw new EmfException("Could not add dataset: " + dataset.getName());
         } finally {

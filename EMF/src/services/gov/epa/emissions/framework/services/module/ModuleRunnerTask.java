@@ -12,11 +12,11 @@ import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
+import gov.epa.emissions.framework.services.basic.UserDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -62,7 +62,6 @@ public class ModuleRunnerTask {
     public ModuleRunnerTask(Module[] modules, User user, 
             DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
         this.modules = modules;
-        this.user = user;
         this.dbServerFactory = dbServerFactory;
         this.datasource = dbServerFactory.getDbServer().getEmissionsDatasource();
         this.sessionFactory = sessionFactory;
@@ -70,6 +69,8 @@ public class ModuleRunnerTask {
         this.statusDAO = new StatusDAO(sessionFactory);
         this.modulesDAO = new ModulesDAO();
         this.threadPool = createThreadPool();
+        UserDAO userDAO = new UserDAO();
+        this.user = userDAO.get(user.getId(), sessionFactory.getSession());
     }
 
     private synchronized PooledExecutor createThreadPool() {
@@ -143,7 +144,7 @@ public class ModuleRunnerTask {
                         }
                         
                         logMessage = String.format("Created %s %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: 0",
-                                                   ModuleDataset.NEW, ModuleTypeVersionDataset.OUT, moduleDataset.getPlaceholderName(),
+                                                   moduleDataset.getOutputMethod(), moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
                                                    internalSources[0].getType(), dataset.getName(), internalSources[0].getTable());
                         history.addLogMessage(History.INFO, logMessage);
                         
@@ -156,7 +157,39 @@ public class ModuleRunnerTask {
                         
                         algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, 0);
                     } else { // REPLACE
-                        throw new EmfException("Not implemented yet."); // TODO
+                        EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
+                        if (dataset == null) {
+                            errorMessage = String.format("Failed to find dataset with ID %d for placeholder '%s'.",
+                                                         moduleDataset.getDatasetId(), moduleDataset.getPlaceholderName());
+                            throw new EmfException(errorMessage);
+                        }
+                        String datasetName = dataset.getName();
+                        
+                        if (!dataset.isLocked()) {
+                            dataset = datasetDAO.obtainLocked(user, dataset, session);
+                        } else if (!dataset.isLocked(user)) {
+                            errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset is locked by %s.",
+                                                          datasetName, moduleDataset.getPlaceholderName(), dataset.getLockOwner());
+                            throw new EmfException(errorMessage);
+                        }
+                        
+                        DatasetCreator datasetCreator = new DatasetCreator(moduleDataset, user, sessionFactory, dbServerFactory, datasource);
+                        datasetCreator.replaceDataset(dataset);
+                        
+                        InternalSource[] internalSources = dataset.getInternalSources();
+                        logMessage = String.format("Replacing %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: 0",
+                                                   moduleDataset.getPlaceholderName(), moduleTypeVersionDataset.getMode(),
+                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable());
+                        history.addLogMessage(History.INFO, logMessage);
+                        
+                        HistoryDataset historyDataset = new HistoryDataset();
+                        historyDataset.setPlaceholderName(moduleDataset.getPlaceholderName());
+                        historyDataset.setDatasetId(dataset.getId());
+                        historyDataset.setVersion(0);
+                        historyDataset.setHistory(history);
+                        historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
+                        
+                        algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, 0);
                     }
                 } else { // IN or INOUT
                     EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
@@ -282,6 +315,7 @@ public class ModuleRunnerTask {
                 
                 statement = dbServerFactory.getDbServer().getConnection().createStatement();
                 statement.execute(algorithm);
+                
                 // get the values of all INOUT and OUT parameters
                 while(statement.getMoreResults()) {
                     ResultSet resultSet = statement.getResultSet();
@@ -291,6 +325,9 @@ public class ModuleRunnerTask {
                         historyParameters.get(name).setValue(value);
                     }
                 }
+                
+                // TODO update the record counts for the output datasets
+                
             } catch (SQLException e) {
                 // e.printStackTrace();
                 // TODO save error to the current execution history record
@@ -306,6 +343,7 @@ public class ModuleRunnerTask {
                     } catch (SQLException e) {
                         // ignore
                     }
+                    statement = null;
                 }
             }
             history.setStatus(History.COMPLETED);
@@ -316,7 +354,7 @@ public class ModuleRunnerTask {
             module = modulesDAO.update(module, session);
             complete(history.getResult(), module);
             
-        } catch (EmfException e) {
+        } catch (Exception e) {
             
             history.setStatus(History.COMPLETED);
             history.setResult(History.FAILED);

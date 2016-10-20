@@ -87,7 +87,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private Label     moduleTypeVersionCreator;
     private Label     moduleTypeVersionBaseVersionNumber;
     private Label     moduleTypeVersionIsFinal;
-    
+
     // datasets
     private JPanel datasetsPanel;
     private JPanel datasetsTablePanel;
@@ -468,13 +468,18 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         newRevisionButton.setEnabled(viewMode != ViewMode.VIEW);
         
         Button saveButton = new SaveButton(saveAction());
-        saveButton.setEnabled(viewMode != ViewMode.VIEW);
+        saveButton.setEnabled((viewMode != ViewMode.VIEW) && !moduleTypeVersion.getIsFinal());
         
+        Button finalizeButton = new Button("Finalize", finalizeAction());
+        finalizeButton.setMnemonic('F');
+        finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !moduleTypeVersion.getIsFinal() && session.user().isAdmin());
+
         Button closeButton = new CloseButton("Close", closeAction());
         
         container.add(validateButton);
         container.add(newRevisionButton);
         container.add(saveButton);
+        container.add(finalizeButton);
         container.add(closeButton);
         getRootPane().setDefaultButton(saveButton);
 
@@ -719,57 +724,97 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return action;
     }
 
+    private boolean doSave() {
+        try {
+            resetChanges();
+            
+            if (viewMode == ViewMode.NEW) {
+                moduleType.setName(moduleTypeName.getText());
+                moduleType.setDescription(moduleTypeDescription.getText());
+                moduleTypeVersion.setName(moduleTypeVersionName.getText());
+                moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
+                moduleTypeVersion.setAlgorithm(algorithm.getText());
+                
+                moduleType = presenter.addModule(moduleType);
+                viewMode = ViewMode.EDIT;
+                ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
+                if (lockedModuleType == null) {
+                    throw new EmfException("Failed to lock module type.");
+                }
+                moduleType = lockedModuleType;
+                moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
+                mustUnlock = true;
+            } else {
+                ModuleTypeVersionNewRevisionDialog newRevisionView = new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, this);
+                ModuleTypeVersionNewRevisionPresenter newRevisionPresenter = new ModuleTypeVersionNewRevisionPresenter(newRevisionView, session);
+                try {
+                    newRevisionPresenter.display();
+                } catch (Exception e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+                Date date = new Date();
+                moduleType.setName(moduleTypeName.getText());
+                moduleType.setDescription(moduleTypeDescription.getText());
+                moduleType.setLastModifiedDate(date);
+
+                moduleTypeVersion.setName(moduleTypeVersionName.getText());
+                moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
+                moduleTypeVersion.setLastModifiedDate(date);
+                moduleTypeVersion.setAlgorithm(algorithm.getText());
+                
+                moduleType = presenter.updateModuleType(moduleType);
+            }
+            messagePanel.setMessage("Saved module type.");
+            
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+            return false;
+        }
+        
+        return true;
+    }
+    
     private Action saveAction() {
         final ModuleTypeVersionPropertiesWindow moduleTypeVersionPropertiesWindow = this;
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (checkTextFields()) {
-                    try {
-                        resetChanges();
-                        
-                        if (viewMode == ViewMode.NEW) {
-                            moduleType.setName(moduleTypeName.getText());
-                            moduleType.setDescription(moduleTypeDescription.getText());
-                            moduleTypeVersion.setName(moduleTypeVersionName.getText());
-                            moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
-                            moduleTypeVersion.setAlgorithm(algorithm.getText());
-                            
-                            moduleType = presenter.addModule(moduleType);
-                            viewMode = ViewMode.EDIT;
-                            ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
-                            if (lockedModuleType == null) {
-                                throw new EmfException("Failed to lock module type.");
-                            }
-                            moduleType = lockedModuleType;
-                            moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
-                            mustUnlock = true;
-                        } else {
-                            ModuleTypeVersionNewRevisionDialog newRevisionView = new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, moduleTypeVersionPropertiesWindow);
-                            ModuleTypeVersionNewRevisionPresenter newRevisionPresenter = new ModuleTypeVersionNewRevisionPresenter(newRevisionView, session);
-                            try {
-                                newRevisionPresenter.display();
-                            } catch (Exception e) {
-                                // NOTE Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            Date date = new Date();
-                            moduleType.setName(moduleTypeName.getText());
-                            moduleType.setDescription(moduleTypeDescription.getText());
-                            moduleType.setLastModifiedDate(date);
-    
-                            moduleTypeVersion.setName(moduleTypeVersionName.getText());
-                            moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
-                            moduleTypeVersion.setLastModifiedDate(date);
-                            moduleTypeVersion.setAlgorithm(algorithm.getText());
-                            
-                            moduleType = presenter.updateModuleType(moduleType);
-                        }
-                        messagePanel.setMessage("Saved module type.");
-                        
-                    } catch (EmfException e) {
-                        messagePanel.setError(e.getMessage());
-                    }
+                    moduleTypeVersionPropertiesWindow.doSave();
                 }
+            }
+        };
+
+        return action;
+    }
+
+    private void doFinalize() {
+        StringBuilder error = new StringBuilder();
+        if (!moduleTypeVersion.isValid(error)) {
+            messagePanel.setError("Can't finalize. This module type version is invalid. " + error.toString());
+            return;
+        }
+
+        String title = moduleTypeVersion.getModuleType().getName() + " - " + moduleTypeVersion.getName() + " (" + moduleTypeVersion.getVersion() + ")";
+        int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to finalize this module type version?",
+                                                      title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (selection == JOptionPane.YES_OPTION) {
+            moduleTypeVersion.setIsFinal(true);
+            moduleTypeVersionIsFinal.setText(moduleTypeVersion.getIsFinal() ? "Yes" : "No");
+            if (doSave()) {
+                JOptionPane.showConfirmDialog(parentConsole, "This module type version has been finalized!",
+                                              title, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                doClose();
+            }
+        }
+    }
+
+    private Action finalizeAction() {
+        final ModuleTypeVersionPropertiesWindow moduleTypeVersionPropertiesWindow = this;
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                moduleTypeVersionPropertiesWindow.doFinalize();
             }
         };
 

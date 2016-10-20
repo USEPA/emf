@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.module;
 
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
@@ -31,6 +32,7 @@ import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionPropertiesWindow;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionPresenter;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
@@ -49,6 +51,7 @@ import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
@@ -249,7 +252,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void observe(ModulePropertiesPresenter presenter) {
         this.presenter = presenter;
 
-        if (viewMode != ViewMode.NEW) {
+        if (viewMode != ViewMode.NEW) { // TODO handle VIEW differently
             try {
                 Module lockedModule = presenter.obtainLockedModule(module);
                 if (lockedModule == null) {
@@ -406,12 +409,17 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         container.setLayout(layout);
 
         Button validateButton = new Button("Validate", validateAction());
+        validateButton.setMnemonic('V');
         Button saveButton = new SaveButton(saveAction());
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
+        Button finalizeButton = new Button("Finalize", finalizeAction());
+        finalizeButton.setMnemonic('F');
+        finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !module.getIsFinal() && session.user().isAdmin());
         Button closeButton = new CloseButton("Close", closeAction());
         
         container.add(validateButton);
         container.add(saveButton);
+        container.add(finalizeButton);
         container.add(closeButton);
         getRootPane().setDefaultButton(saveButton);
 
@@ -505,8 +513,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             @Override
             public Void doInBackground() throws EmfException  {
                 for (Iterator iter = datasets.iterator(); iter.hasNext();) {
-                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
                     ModuleDataset moduleDataset = (ModuleDataset) iter.next();
+                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
                     presenter.doDisplayDatasetProperties(view, moduleDataset);
                 }
                 return null;
@@ -680,37 +688,112 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         return action;
     }
 
+    private void doFinalize() {
+        StringBuilder error = new StringBuilder();
+        if (!module.isValid(error)) {
+            messagePanel.setError("Can't finalize. This module is invalid. " + error.toString());
+            return;
+        }
+
+        if (!moduleTypeVersion.getIsFinal()) {
+            messagePanel.setError("Can't finalize. The module type version is not final.");
+            return;
+        }
+        
+        // check that all input datasets are final
+        for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
+            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+            String mode = moduleTypeVersionDataset.getMode();
+            if (mode.equals(ModuleTypeVersionDataset.OUT))
+                continue;
+            if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) {
+                String errorMessage = String.format("Can't finalize. The module dataset for '%s' placeholder was not.", moduleDataset.getPlaceholderName());
+                messagePanel.setError(errorMessage);
+                return;
+            }
+            Version version = null;
+            try {
+                version = session.dataEditorService().getVersion(moduleDataset.getDatasetId(), moduleDataset.getVersion());
+                if (version == null) {
+                    String errorMessage = String.format("Can't finalize. The module dataset version for '%s' placeholder is invalid.", moduleDataset.getPlaceholderName());
+                    messagePanel.setError(errorMessage);
+                    return;
+                }
+            } catch (Exception e) {
+                String errorMessage = String.format("Can't finalize. The module dataset version for '%s' placeholder is invalid.", moduleDataset.getPlaceholderName());
+                messagePanel.setError(errorMessage);
+                return;
+            }
+            if (!version.isFinalVersion()) {
+                String errorMessage = String.format("Can't finalize. The module dataset for '%s' placeholder is not final.", moduleDataset.getPlaceholderName());
+                messagePanel.setError(errorMessage);
+                return;
+            }
+        }
+        
+        String title = module.getName();
+        int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to finalize this module?",
+                                                      title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (selection == JOptionPane.YES_OPTION) {
+            module.setIsFinal(true);
+            moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
+            if (doSave()) {
+                JOptionPane.showConfirmDialog(parentConsole, "This module has been finalized!",
+                                              title, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                doClose();
+            }
+        }
+    }
+
+    private Action finalizeAction() {
+        final ModulePropertiesWindow modulePropertiesWindow = this;
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                modulePropertiesWindow.doFinalize();
+            }
+        };
+
+        return action;
+    }
+
+    private boolean doSave() {
+        try {
+            resetChanges();
+            
+            Date date = new Date();
+            module.setName(moduleName.getText());
+            module.setDescription(moduleDescription.getText());
+            module.setLastModifiedDate(date);
+
+            if (viewMode == ViewMode.NEW) {
+                module.setCreationDate(date);
+                module.setCreator(session.user());
+                module = presenter.addModule(module);
+                viewMode = ViewMode.EDIT;
+                Module lockedModule = presenter.obtainLockedModule(module);
+                if (lockedModule == null) {
+                    throw new EmfException("Failed to lock module.");
+                }
+                module = lockedModule;
+            } else {
+                presenter.updateModule(module);
+            }
+            doRefresh();
+            messagePanel.setMessage("Saved module.");
+            return true;
+        }
+        catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+        return false;
+    }
+    
     private Action saveAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (checkTextFields()) {
-                    try {
-                        resetChanges();
-                        
-                        Date date = new Date();
-                        module.setName(moduleName.getText());
-                        module.setDescription(moduleDescription.getText());
-                        module.setCreationDate(date);
-                        module.setLastModifiedDate(date);
-                        module.setCreator(session.user());
-
-                        if (viewMode == ViewMode.NEW) {
-                            module = presenter.addModule(module);
-                            viewMode = ViewMode.EDIT;
-                            Module lockedModule = presenter.obtainLockedModule(module);
-                            if (lockedModule == null) {
-                                throw new EmfException("Failed to lock module.");
-                            }
-                            module = lockedModule;
-                        } else {
-                            presenter.updateModule(module);
-                        }
-                        doRefresh();
-                        messagePanel.setMessage("Saved module.");
-                    }
-                    catch (EmfException e) {
-                        messagePanel.setError(e.getMessage());
-                    }
+                    doSave();
                 }
             }
         };

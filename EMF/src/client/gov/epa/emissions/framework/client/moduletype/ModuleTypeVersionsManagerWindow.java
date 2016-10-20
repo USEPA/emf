@@ -214,7 +214,8 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
-            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, moduleTypeVersion);
+            ViewMode viewMode = moduleTypeVersion.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT; 
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, viewMode, moduleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
     }
