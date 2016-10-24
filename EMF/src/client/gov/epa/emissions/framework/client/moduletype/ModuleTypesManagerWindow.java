@@ -13,9 +13,7 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.ModuleType;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -191,12 +189,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleType moduleType = (ModuleType) iter.next();
             try {
-                moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
-            } catch (EmfException e) {
-                messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
-                break;
-            }
-            try {
                 ModuleTypeVersionsManagerWindow view = new ModuleTypeVersionsManagerWindow(session, parentConsole, desktopManager, ViewMode.VIEW, moduleType);
                 presenter.displayModuleTypeVersions(view);
             } catch (EmfException e) {
@@ -218,7 +210,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             try {
                 moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
             } catch (EmfException e) {
-                messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
+                messagePanel.setError("Could not lock: " + moduleType.getName() + ". " + e.getMessage());
                 break;
             }
             try {
@@ -232,9 +224,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     private void createModuleType() {
-        // TODO implement module types versioning
-        // If module types are selected, the New button should create new module type versions for them
-        // If no module type is selected, the New button should create an entirely new module type and its first module type version (0)
         ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session);
         presenter.displayNewModuleTypeView(view);
     }

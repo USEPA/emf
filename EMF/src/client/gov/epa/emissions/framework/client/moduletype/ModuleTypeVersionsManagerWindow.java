@@ -59,8 +59,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
     private EmfSession session;
 
     public ModuleTypeVersionsManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager, ViewMode viewMode, ModuleType moduleType) {
-        super("Module Type Version Manager", new Dimension(700, 350), desktopManager);
-        super.setName("moduleTypeVersionManager");
+        super(getWindowTitle(viewMode, moduleType), new Dimension(700, 350), desktopManager);
 
         this.session = session;
         this.parentConsole = parentConsole;
@@ -71,13 +70,16 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         this.getContentPane().add(layout);
     }
 
+    private static String getWindowTitle(ViewMode viewMode, ModuleType moduleType) {
+        switch(viewMode) {
+            case VIEW: return "View Module Type - " + moduleType.getName();
+            case EDIT: return "Edit Module Type - " + moduleType.getName();
+            default:   return "Module Type - " + moduleType.getName(); // should never happen
+        }
+    }
+
     public void observe(ModuleTypeVersionsManagerPresenter presenter) {
         this.presenter = presenter;
-        try {
-            moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
-        } catch (EmfException e) {
-            messagePanel.setError("Could not lock: " + moduleType.getName() + "." + e.getMessage());
-        }
     }
 
     public void refresh() {
@@ -130,7 +132,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         JPanel closePanel = new JPanel();
         Button closeButton = new CloseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                presenter.doClose();
+                doClose();
             }
         });
         closePanel.add(closeButton);
@@ -145,6 +147,17 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         return controlPanel;
     }
 
+    private void doClose() {
+        if (viewMode == ViewMode.EDIT) {
+            try {
+                moduleType = session.moduleService().releaseLockedModuleType(session.user(), moduleType);
+            } catch (EmfException e) {
+                messagePanel.setError("Could not unlock lock: " + moduleType.getName() + "." + e.getMessage());
+            }
+        }
+        presenter.doClose();
+    }
+    
     private JPanel createCrudPanel() {
         String message = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
@@ -214,7 +227,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
-            ViewMode viewMode = moduleTypeVersion.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT; 
+            ViewMode viewMode = moduleTypeVersion.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT;
             ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, viewMode, moduleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
@@ -230,7 +243,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
             ModuleTypeVersion newModuleTypeVersion = moduleTypeVersion.deepCopy(session.user());
-            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.EDIT, newModuleTypeVersion);
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, newModuleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
     }

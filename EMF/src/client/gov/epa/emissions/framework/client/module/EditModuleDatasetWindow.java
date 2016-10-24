@@ -11,6 +11,7 @@ import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.data.dataset.InputDatasetSelectionDialog;
@@ -62,7 +63,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     String[] existingVersions;
     
     public EditModuleDatasetWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleDataset moduleDataset) {
-        super("Edit Module Dataset", new Dimension(800, 400), desktopManager);
+        super(getWindowTitle(moduleDataset), new Dimension(800, 400), desktopManager);
 
         this.moduleDataset = moduleDataset;
         this.moduleTypeVersionDataset = moduleDataset.getModule().getModuleTypeVersion().getModuleTypeVersionDatasets().get(moduleDataset.getPlaceholderName());
@@ -75,6 +76,10 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         super.getContentPane().add(layout);
     }
 
+    private static String getWindowTitle(ModuleDataset moduleDataset) {
+        return "Edit Module Dataset (ID=" + moduleDataset.getId() + ")";
+    }
+    
     private void doLayout(JPanel layout) {
         messagePanel = new SingleLineMessagePanel();
         layout.add(messagePanel, BorderLayout.NORTH);
@@ -87,13 +92,8 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     }
 
     public void display() {
-        counter++;
-        String name = "Edit Module Dataset " + counter;
-        super.setTitle(name);
-        super.setName("editModuleDataset:" + counter);
         layout.removeAll();
         doLayout(layout);
-
         super.display();
     }
 

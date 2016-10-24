@@ -104,7 +104,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     private TextArea logs;
 
     public HistoryDetailsWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, History history) {
-        super(getWindowTitle(), new Dimension(800, 600), desktopManager);
+        super(getWindowTitle(history), new Dimension(800, 600), desktopManager);
 
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
@@ -118,8 +118,8 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         this.moduleType = this.moduleTypeVersion.getModuleType();
     }
 
-    private static String getWindowTitle() {
-        return "Module History Details";
+    private static String getWindowTitle(History history) {
+        return "Module History Details (ID=" + history.getId() + ")";
     }
     
     public void observe(HistoryDetailsPresenter presenter) {
@@ -127,13 +127,8 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     }
 
     public void display() {
-        counter++;
-        String name = getWindowTitle() + " " + counter;
-        super.setTitle(name);
-        super.setName(name);
         layout.removeAll();
         doLayout(layout);
-
         super.display();
     }
 

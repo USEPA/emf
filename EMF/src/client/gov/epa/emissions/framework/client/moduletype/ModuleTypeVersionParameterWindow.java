@@ -74,7 +74,7 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
 
     public ModuleTypeVersionParameterWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session,
             ModuleTypeVersion moduleTypeVersion, ViewMode viewMode, ModuleTypeVersionParameter moduleTypeVersionParameter) {
-        super(getWindowTitle(viewMode), new Dimension(800, 600), desktopManager);
+        super(getWindowTitle(viewMode, moduleTypeVersionParameter), new Dimension(800, 600), desktopManager);
 
         this.moduleTypeVersion = moduleTypeVersion;
         
@@ -93,12 +93,12 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
         super.getContentPane().add(layout);
     }
 
-    private static String getWindowTitle(ViewMode viewMode) {
+    private static String getWindowTitle(ViewMode viewMode, ModuleTypeVersionParameter moduleTypeVersionParameter) {
         switch (viewMode)
         {
-            case NEW: return "Create New Module Type Version Parameter";
-            case EDIT: return "Edit Module Type Version Parameter";
-            case VIEW: return "View Module Type Version Parameter";
+            case NEW: return "New Module Type Version Parameter";
+            case EDIT: return "Edit Module Type Version Parameter (ID=" + moduleTypeVersionParameter.getId() + ")";
+            case VIEW: return "View Module Type Version Parameter (ID=" + moduleTypeVersionParameter.getId() + ")";
             default: return "";
         }
     }
@@ -115,13 +115,8 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
     }
 
     public void display() {
-        counter++; // TODO use a different counter for each viewMode
-        String name = getWindowTitle(viewMode) + " " + counter;
-        super.setTitle(name);
-        super.setName(name);
         layout.removeAll();
         doLayout(layout);
-
         super.display();
     }
 

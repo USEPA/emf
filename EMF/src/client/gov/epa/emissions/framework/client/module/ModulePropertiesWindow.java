@@ -115,7 +115,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private SelectAwareButton viewButton;
     
     public ModulePropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, Module module, ModuleTypeVersion moduleTypeVersion) {
-        super(getWindowTitle(viewMode), new Dimension(800, 600), desktopManager);
+        super(getWindowTitle(viewMode, module), new Dimension(800, 600), desktopManager);
 
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
@@ -143,14 +143,19 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
     }
 
-    private static String getWindowTitle(ViewMode viewMode) {
+    private static String getWindowTitle(ViewMode viewMode, Module module) {
+        if (module == null)
+            return "New Module";
+        
+        String viewModeText = "";
         switch (viewMode)
         {
-            case NEW: return "Create New Module";
-            case EDIT: return "Edit Module";
-            case VIEW: return "View Module";
-            default: return "";
+            case NEW:  viewModeText = "New"; break;
+            case EDIT: viewModeText = "Edit"; break;
+            case VIEW: viewModeText = "View"; break;
+            default: break;
         }
+        return viewModeText + " Module - " + module.getName();
     }
     
     public static ModuleTypeVersion selectModuleTypeVersion(EmfConsole parentConsole, EmfSession session, ModuleTypeVersion initialModuleTypeVersion) {
@@ -251,29 +256,11 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     public void observe(ModulePropertiesPresenter presenter) {
         this.presenter = presenter;
-
-        if (viewMode != ViewMode.NEW) { // TODO handle VIEW differently
-            try {
-                Module lockedModule = presenter.obtainLockedModule(module);
-                if (lockedModule == null) {
-                    throw new EmfException("Failed to lock module.");
-                }
-                module = lockedModule;
-            } catch (EmfException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
     }
 
     public void display() {
-        counter++; // TODO use a different counter for each viewMode
-        String name = getWindowTitle(viewMode) + " " + counter;
-        super.setTitle(name);
-        super.setName(name);
         layout.removeAll();
         doLayout(layout);
-
         super.display();
     }
 
@@ -485,12 +472,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             messagePanel.setMessage("Please select one or more Datasets");
             return;
         }
-        
-//        for (Iterator iter = datasets.iterator(); iter.hasNext();) {
-//            DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-//            ModuleDataset moduleDataset = (ModuleDataset) iter.next();
-//            // TODO verify that the dataset exists. Search for the dataset by id or name.
-//        }
         
         //long running methods.....
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -725,7 +706,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 return;
             }
             if (!version.isFinalVersion()) {
-                String errorMessage = String.format("Can't finalize. The module dataset for '%s' placeholder is not final.", moduleDataset.getPlaceholderName());
+                String errorMessage = String.format("Can't finalize. The module dataset version for '%s' placeholder is not final.", moduleDataset.getPlaceholderName());
                 messagePanel.setError(errorMessage);
                 return;
             }
@@ -817,7 +798,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private void doClose() {
         if (shouldDiscardChanges())
-            if (viewMode != ViewMode.NEW) {
+            if (viewMode == ViewMode.EDIT) {
                 try {
                     module = presenter.releaseLockedModule(module);
                 } catch (EmfException e) {

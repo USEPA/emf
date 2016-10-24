@@ -11,6 +11,7 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
@@ -46,7 +47,7 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
     private TextField parameterValue;
 
     public EditModuleParameterWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleParameter moduleParameter) {
-        super("Edit Module Dataset", new Dimension(800, 400), desktopManager);
+        super(getWindowTitle(moduleParameter), new Dimension(800, 400), desktopManager);
 
         this.moduleParameter = moduleParameter;
         this.moduleTypeVersionParameter = moduleParameter.getModule().getModuleTypeVersion().getModuleTypeVersionParameters().get(moduleParameter.getParameterName());
@@ -58,6 +59,10 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
         super.getContentPane().add(layout);
     }
 
+    private static String getWindowTitle(ModuleParameter moduleParameter) {
+        return "Edit Module Parameter (ID=" + moduleParameter.getId() + ")";
+    }
+    
     private void doLayout(JPanel layout) {
         messagePanel = new SingleLineMessagePanel();
         layout.add(messagePanel, BorderLayout.NORTH);
@@ -70,13 +75,8 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
     }
 
     public void display() {
-        counter++;
-        String name = "Edit Module Parameter " + counter;
-        super.setTitle(name);
-        super.setName("editModuleParameter:" + counter);
         layout.removeAll();
         doLayout(layout);
-
         super.display();
     }
 

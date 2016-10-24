@@ -62,7 +62,7 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
     public ModuleTypeVersionDatasetWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session,
             ModuleTypeVersion moduleTypeVersion, DatasetType[] datasetTypesCache,
             ViewMode viewMode, ModuleTypeVersionDataset moduleTypeVersionDataset) {
-        super(getWindowTitle(viewMode), new Dimension(800, 600), desktopManager);
+        super(getWindowTitle(viewMode, moduleTypeVersionDataset), new Dimension(800, 600), desktopManager);
 
         this.moduleTypeVersion = moduleTypeVersion;
         
@@ -91,12 +91,12 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
         super.getContentPane().add(layout);
     }
 
-    private static String getWindowTitle(ViewMode viewMode) {
+    private static String getWindowTitle(ViewMode viewMode, ModuleTypeVersionDataset moduleTypeVersionDataset) {
         switch (viewMode)
         {
-            case NEW: return "Create New Module Type Version Dataset";
-            case EDIT: return "Edit Module Type Version Dataset";
-            case VIEW: return "View Module Type Version Dataset";
+            case NEW: return "New Module Type Version Dataset";
+            case EDIT: return "Edit Module Type Version Dataset (ID=" + moduleTypeVersionDataset.getId() + ")";
+            case VIEW: return "View Module Type Version Dataset (ID=" + moduleTypeVersionDataset.getId() + ")";
             default: return "";
         }
     }
@@ -113,13 +113,8 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
     }
 
     public void display() {
-        counter++; // TODO use a different counter for each viewMode
-        String name = getWindowTitle(viewMode) + " " + counter;
-        super.setTitle(name);
-        super.setName(name);
         layout.removeAll();
         doLayout(layout);
-
         super.display();
     }
 

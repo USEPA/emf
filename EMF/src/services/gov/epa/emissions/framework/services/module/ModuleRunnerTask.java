@@ -113,9 +113,9 @@ public class ModuleRunnerTask {
         
         Session session = sessionFactory.getSession();
         
-        module = modulesDAO.obtainLockedModule(user, module, session);
-        
         try {
+            module = modulesDAO.obtainLockedModule(user, module, session);
+            
             module.addModuleHistory(history);
             module = modulesDAO.update(module, session);
             
@@ -367,7 +367,11 @@ public class ModuleRunnerTask {
             module = modulesDAO.update(module, session);
             complete(history.getResult() + ": " + errorMessage, module);
         } finally {
-            module = modulesDAO.releaseLockedModule(user, module, session);
+            try {
+                module = modulesDAO.releaseLockedModule(user, module, session);
+            } catch (Exception e) {
+                // ignore
+            }
         }
     }
 

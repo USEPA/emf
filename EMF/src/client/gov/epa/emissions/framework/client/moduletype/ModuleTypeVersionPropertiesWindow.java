@@ -57,6 +57,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     private ViewMode viewMode;
     private boolean mustUnlock;
+    private boolean isNewModuleType;
     
     private ModuleType moduleType;
     private ModuleTypeVersion moduleTypeVersion;
@@ -162,6 +163,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.session = session;
         this.viewMode = ViewMode.NEW;
         this.mustUnlock = false;
+        this.isNewModuleType = true;
         
         Date date = new Date();
         
@@ -201,37 +203,43 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     }
 
     // View/Edit existing Module Type Version
+    // Edit new Module Type Version
     public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, ModuleTypeVersion moduleTypeVersion) {
-        super(getWindowTitle(viewMode, moduleTypeVersion.getModuleType()), new Dimension(800, 600), desktopManager);
+        super(getWindowTitle(viewMode, moduleTypeVersion), new Dimension(800, 600), desktopManager);
     
         this.parentConsole = parentConsole;
         this.session = session;
         this.viewMode = viewMode;
         this.mustUnlock = false;
-        
+        this.isNewModuleType = false;
+
         this.moduleTypeVersion = moduleTypeVersion;
         this.moduleType = moduleTypeVersion.getModuleType();
     
+        if (this.viewMode == ViewMode.NEW) {
+            // TODO mark module type version as dirty
+            this.viewMode = ViewMode.EDIT;
+        }
+        
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
         super.getContentPane().add(layout);
     }
 
-    private static String getWindowTitle(ViewMode viewMode, ModuleType moduleType) {
+    private static String getWindowTitle(ViewMode viewMode, ModuleTypeVersion moduleTypeVersion) {
+        if (moduleTypeVersion == null)
+            return "New Module Type";
+        
+        String viewModeText = "";
         switch (viewMode)
         {
-            case NEW:
-                if (moduleType == null)
-                    return "Create New Module Type";
-                else
-                    return "Create New Module Type Version";
-
-            case EDIT: return "Edit Module Type Version";
-            
-            case VIEW: return "View Module Type Version";
-            
-            default: return "";
+            case  NEW: viewModeText = "Create"; break;
+            case EDIT: viewModeText = "Edit"; break;
+            case VIEW: viewModeText = "View"; break;
+            default: break; // should never happen
         }
+        
+        return viewModeText + " Module Type Version - " + moduleTypeVersion.getModuleType().getName() + " - version " + moduleTypeVersion.getVersion();
     }
     
     private void doLayout(JPanel layout) {
@@ -243,34 +251,12 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     public void observe(ModuleTypeVersionPropertiesPresenter presenter) {
         this.presenter = presenter;
-
-        // moduleType should be locked by this point
-        
-//        if (viewMode != ViewMode.NEW) { // TODO new module type or new module type version?
-//            try {
-//                moduleType.isLocked(owner)
-//                ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
-//                if (lockedModuleType == null) {
-//                    throw new EmfException("Failed to lock module type.");
-//                }
-//                moduleType = lockedModuleType;
-//                moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
-//            } catch (EmfException e) {
-//                // NOTE Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
         populateDatasetTypesCache();
     }
 
     public void display() {
-        counter++; // TODO use a different counter for each viewMode
-        String name = getWindowTitle(viewMode, moduleType) + " [" + counter + "]";
-        super.setTitle(name);
-        super.setName(name);
         layout.removeAll();
         doLayout(layout);
-
         super.display();
     }
 
@@ -744,6 +730,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleType = lockedModuleType;
                 moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
                 mustUnlock = true;
+                isNewModuleType = false;
             } else {
                 ModuleTypeVersionNewRevisionDialog newRevisionView = new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, this);
                 ModuleTypeVersionNewRevisionPresenter newRevisionPresenter = new ModuleTypeVersionNewRevisionPresenter(newRevisionView, session);
@@ -837,6 +824,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     private void doClose() {
         if (shouldDiscardChanges()) {
+            // TODO if new module type version has never been saved, remove it from the module type object
             if (mustUnlock) {
                 moduleType = presenter.releaseLockedModuleType(moduleType);
             }

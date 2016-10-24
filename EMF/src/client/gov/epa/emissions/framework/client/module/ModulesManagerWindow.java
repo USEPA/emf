@@ -227,13 +227,8 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             Module module = (Module) iter.next();
-            try {
-                module = session.moduleService().obtainLockedModule(session.user(), module);
-                ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, module, null);
-                presenter.displayNewModuleView(view);
-            } catch (EmfException e) {
-                messagePanel.setMessage("Failed to lock the \"" + module.getName() + "\" module: " + e.getMessage());
-            }
+            ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, module, null);
+            presenter.displayNewModuleView(view);
         }
     }
 
@@ -248,14 +243,17 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             Module module = (Module) iter.next();
-            try {
-                module = session.moduleService().obtainLockedModule(session.user(), module);
-                ViewMode viewMode = module.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT; 
-                ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, viewMode, module, null);
-                presenter.displayNewModuleView(view);
-            } catch (EmfException e) {
-                messagePanel.setMessage("Failed to lock the \"" + module.getName() + "\" module: " + e.getMessage());
+            ViewMode viewMode = module.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT;
+            if (viewMode == ViewMode.EDIT) {
+                try {
+                    module = session.moduleService().obtainLockedModule(session.user(), module);
+                } catch (EmfException e) {
+                    messagePanel.setError("Failed to lock module " + module.getName() + ". " + e.getMessage());
+                    continue;
+                }
             }
+            ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, viewMode, module, null);
+            presenter.displayNewModuleView(view);
         }
     }
 
