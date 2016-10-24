@@ -210,7 +210,11 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             try {
                 moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
             } catch (EmfException e) {
-                messagePanel.setError("Could not lock: " + moduleType.getName() + ". " + e.getMessage());
+                messagePanel.setError("Failed to lock " + moduleType.getName() + ": " + e.getMessage());
+                break;
+            }
+            if (!moduleType.isLocked(session.user())) {
+                messagePanel.setError("Failed to lock " + moduleType.getName() + ".");
                 break;
             }
             try {

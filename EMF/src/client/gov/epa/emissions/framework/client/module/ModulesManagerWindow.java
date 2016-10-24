@@ -248,7 +248,11 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 try {
                     module = session.moduleService().obtainLockedModule(session.user(), module);
                 } catch (EmfException e) {
-                    messagePanel.setError("Failed to lock module " + module.getName() + ". " + e.getMessage());
+                    messagePanel.setError("Failed to lock " + module.getName() + ": " + e.getMessage());
+                    continue;
+                }
+                if (!module.isLocked(session.user())) {
+                    messagePanel.setError("Failed to lock " + module.getName() + ".");
                     continue;
                 }
             }

@@ -115,6 +115,9 @@ public class ModuleRunnerTask {
         
         try {
             module = modulesDAO.obtainLockedModule(user, module, session);
+            if (!module.isLocked(user)) {
+                throw new EmfException("Failed to lock module " + module.getName());
+            }
             
             module.addModuleHistory(history);
             module = modulesDAO.update(module, session);
