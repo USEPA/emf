@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.moduletype;
 
+import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.buttons.CancelButton;
@@ -108,8 +109,15 @@ public class ModuleTypeVersionNewRevisionDialog extends JDialog implements Modul
     
     private JPanel buttonPanel() {
         JPanel panel = new JPanel();
-        panel.add(new OKButton(okAction()));
-        panel.add(new CancelButton(cancelAction()));
+        
+        Button addButton = new Button("Add Revision", okAction());
+        addButton.setMnemonic('A');
+        
+        Button skipButton = new Button("Skip Revision", cancelAction());
+        skipButton.setMnemonic('S');
+        
+        panel.add(addButton);
+        panel.add(skipButton);
         return panel;
     }
 
