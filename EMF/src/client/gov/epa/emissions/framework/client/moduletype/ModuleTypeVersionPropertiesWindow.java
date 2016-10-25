@@ -724,7 +724,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleType = presenter.addModule(moduleType);
                 viewMode = ViewMode.EDIT;
                 ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
-                if (lockedModuleType == null) {
+                if (lockedModuleType == null || !lockedModuleType.isLocked(session.user())) {
                     throw new EmfException("Failed to lock module type.");
                 }
                 moduleType = lockedModuleType;

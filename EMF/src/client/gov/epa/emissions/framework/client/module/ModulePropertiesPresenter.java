@@ -103,4 +103,10 @@ public class ModulePropertiesPresenter {
             presenter.doDisplay(propertiesView);
         }
     }
+    
+    public void runModule(Module module) throws EmfException {
+        if (module == null)
+            return;
+        session.moduleService().runModules(new Module[] { module }, session.user());
+    }
 }

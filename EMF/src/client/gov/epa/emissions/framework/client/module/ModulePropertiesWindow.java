@@ -113,6 +113,13 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private SelectableSortFilterWrapper historyTable;
     private ModuleHistoryTableData historyTableData;
     private SelectAwareButton viewButton;
+
+    // buttons
+    Button validateButton;
+    Button saveButton;
+    Button runButton;
+    Button finalizeButton;
+    Button closeButton;
     
     public ModulePropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, Module module, ModuleTypeVersion moduleTypeVersion) {
         super(getWindowTitle(viewMode, module), new Dimension(800, 600), desktopManager);
@@ -395,17 +402,25 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layout.setVgap(25);
         container.setLayout(layout);
 
-        Button validateButton = new Button("Validate", validateAction());
+        validateButton = new Button("Validate", validateAction());
         validateButton.setMnemonic('V');
-        Button saveButton = new SaveButton(saveAction());
+        
+        saveButton = new SaveButton(saveAction());
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
-        Button finalizeButton = new Button("Finalize", finalizeAction());
+        
+        runButton = new Button("Run", runAction());
+        runButton.setMnemonic('R');
+        runButton.setEnabled((viewMode == ViewMode.EDIT) && session.user().isAdmin());
+        
+        finalizeButton = new Button("Finalize", finalizeAction());
         finalizeButton.setMnemonic('F');
         finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !module.getIsFinal() && session.user().isAdmin());
-        Button closeButton = new CloseButton("Close", closeAction());
+        
+        closeButton = new CloseButton("Close", closeAction());
         
         container.add(validateButton);
         container.add(saveButton);
+        container.add(runButton);
         container.add(finalizeButton);
         container.add(closeButton);
         getRootPane().setDefaultButton(saveButton);
@@ -669,6 +684,26 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         return action;
     }
 
+    private void doRun() {
+        String message = "Are you sure you want to run the '" + module.getName() + "' module?";
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (selection != JOptionPane.YES_OPTION)
+            return;
+        
+        StringBuilder error = new StringBuilder();
+        if (!module.isValid(error)) {
+            messagePanel.setError(String.format("Module is invalid: %s", error.toString()));
+            return;
+        }
+        
+        try {
+            presenter.runModule(module);
+            messagePanel.setMessage("The module has been executed.");
+        } catch (EmfException e) {
+            messagePanel.setError("The module failed to run: " + e.getMessage());
+        }
+    }
+    
     private void doFinalize() {
         StringBuilder error = new StringBuilder();
         if (!module.isValid(error)) {
@@ -727,6 +762,16 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
     }
 
+    private Action runAction() {
+        final ModulePropertiesWindow modulePropertiesWindow = this;
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                modulePropertiesWindow.doRun();
+            }
+        };
+        return action;
+    }
+
     private Action finalizeAction() {
         final ModulePropertiesWindow modulePropertiesWindow = this;
         Action action = new AbstractAction() {
@@ -734,7 +779,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 modulePropertiesWindow.doFinalize();
             }
         };
-
         return action;
     }
 
@@ -752,8 +796,9 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 module.setCreator(session.user());
                 module = presenter.addModule(module);
                 viewMode = ViewMode.EDIT;
+                runButton.setEnabled((viewMode == ViewMode.EDIT) && session.user().isAdmin());
                 Module lockedModule = presenter.obtainLockedModule(module);
-                if (lockedModule == null) {
+                if (lockedModule == null || !lockedModule.isLocked(session.user())) {
                     throw new EmfException("Failed to lock module.");
                 }
                 module = lockedModule;
