@@ -187,6 +187,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         Button removeButton = new RemoveButton(removeAction);
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(viewButton);
@@ -198,6 +199,10 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             newButton.setEnabled(false);
             removeButton.setEnabled(false);
         }
+
+        // temporarily disabling the remove button
+        // TODO updated presenter.doRemove() to check if any modules are using the about-to-be-deleted module type versions
+        removeButton.setEnabled(false);
 
         return crudPanel;
     }
