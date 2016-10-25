@@ -13,7 +13,9 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -240,9 +242,43 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             return;
         }   
 
-        String message = "Are you sure you want to remove the selected " + selected.size() + " module type(s)?";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+        ModuleType[] selectedMTs = selected.toArray(new ModuleType[0]);
+        for(ModuleType selectedMT : selectedMTs) {
+            if (selectedMT.isLocked()) {
+                String error = String.format("Can't remove the %s module type: it's locked by %s", selectedMT.getName(), selectedMT.getLockOwner());
+                messagePanel.setError(error);
+                return;
+            }
+        }
+        
+        int count = 0;
+        try {
+            Module[] modules = presenter.getModules();
+            for(Module module : modules) {
+                for(ModuleType selectedMT : selectedMTs) {
+                    if (module.getModuleTypeVersion().getModuleType().getId() == selectedMT.getId()) {
+                        count++;
+                        if (module.isLocked()) {
+                            String error = String.format("Can't remove the %s module type: the %s module is locked by %s", selectedMT.getName(), module.getName(), module.getLockOwner());
+                            messagePanel.setError(error);
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (EmfException e) {
+            messagePanel.setError("Failed to get the list of modules.");
+            return;
+        }
+
+        String message = "";
+        if (count > 0) {
+            message = String.format("Are you sure you want to remove the selected %d module type(s)? The %d module(s) that use this module type(s) will also be removed. There is no undo for this action.", selected.size(), count);
+        } else {
+            message = String.format("Are you sure you want to remove the selected %d module type(s)? There is no undo for this action.", selected.size());
+        }
+        
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {

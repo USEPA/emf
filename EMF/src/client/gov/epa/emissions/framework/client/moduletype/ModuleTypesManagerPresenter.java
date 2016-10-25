@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.moduletype;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
+import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 
@@ -40,6 +41,10 @@ public class ModuleTypesManagerPresenter implements RefreshObserver {
         presenter.doDisplay();
     }
 
+    public Module[] getModules() throws EmfException {
+        return session.moduleService().getModules();
+    }
+    
     public void doRemove(ModuleType[] types) throws EmfException {
 
         ModuleType[] lockedTypes = getLockedTypes(types);

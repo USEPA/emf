@@ -12,6 +12,7 @@ import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -201,7 +202,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         }
 
         // temporarily disabling the remove button
-        // TODO updated presenter.doRemove() to check if any modules are using the about-to-be-deleted module type versions
+        // TODO update presenter.doRemove() to remove all modules that are based on the about-to-be-deleted module type versions
         removeButton.setEnabled(false);
 
         return crudPanel;
@@ -259,21 +260,48 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             return;
         }   
 
-        String message = "Are you sure you want to remove the selected " + selected.size() + " module type version(s)?";
+        ModuleTypeVersion[] selectedMTVs = selected.toArray(new ModuleTypeVersion[0]);
+        
+        int count = 0;
+        try {
+            Module[] modules = presenter.getModules();
+            for(Module module : modules) {
+                for(ModuleTypeVersion selectedMTV : selectedMTVs) {
+                    if (module.getModuleTypeVersion().getId() == selectedMTV.getId()) {
+                        count++;
+                        if (module.isLocked()) {
+                            String error = String.format("Can't remove module type version %d: the %s module is locked by %s", selectedMTV.getVersion(), module.getName(), module.getLockOwner());
+                            messagePanel.setError(error);
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (EmfException e) {
+            messagePanel.setError("Failed to get the list of modules.");
+            return;
+        }
+
+        String message = "";
+        if (count > 0) {
+            message = String.format("Are you sure you want to remove the selected %d module type version(s)? The %d module(s) that use this module type version(s) will also be removed. There is no undo for this action.", selected.size(), count);
+        } else {
+            message = String.format("Are you sure you want to remove the selected %d module type version(s)? There is no undo for this action.", selected.size());
+        }
+        
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
-            try {
-                presenter.doRemove(selected.toArray(new ModuleTypeVersion[0]));
-                messagePanel.setMessage(selected.size()
-                        + " module types have been removed. Please Refresh to see the revised list of types.");
-            } catch (EmfException e) {
-              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
-            }
+            messagePanel.setError("Removing module type versions has not been implemented yet.");
+//            try {
+//                presenter.doRemove(selectedMTVS);
+//                messagePanel.setMessage(selected.size() + " module types have been removed. Please Refresh to see the revised list of types.");
+//            } catch (EmfException e) {
+//                messagePanel.setError("Failed to remove the selected module type(s): " + e.getMessage());
+//            }
         }
     }
-
 
     private List selected() {
         return table.selected();
