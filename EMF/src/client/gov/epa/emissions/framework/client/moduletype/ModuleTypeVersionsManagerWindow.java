@@ -11,9 +11,7 @@ import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -23,20 +21,16 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 
 public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implements ModuleTypeVersionsManagerView, RefreshObserver {
 
@@ -158,6 +152,10 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         presenter.doClose();
     }
     
+    public void windowClosing() {
+        doClose();
+    }
+
     private JPanel createCrudPanel() {
         String message = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);

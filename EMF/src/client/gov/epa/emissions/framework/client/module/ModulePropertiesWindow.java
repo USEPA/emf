@@ -842,7 +842,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private void doClose() {
-        if (shouldDiscardChanges())
+        if (shouldDiscardChanges()) {
             if (viewMode == ViewMode.EDIT) {
                 try {
                     module = presenter.releaseLockedModule(module);
@@ -852,5 +852,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 }
             }
             presenter.doClose();
+        }
     }
 }
