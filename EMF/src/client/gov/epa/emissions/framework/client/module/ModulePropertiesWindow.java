@@ -803,7 +803,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 }
                 module = lockedModule;
             } else {
-                presenter.updateModule(module);
+                module = presenter.updateModule(module);
             }
             doRefresh();
             messagePanel.setMessage("Saved module.");

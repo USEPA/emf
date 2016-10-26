@@ -58,8 +58,8 @@ public class ModulePropertiesPresenter {
         return service().addModule(module);
     }
 
-    public void updateModule(Module module) throws EmfException {
-        service().updateModule(module);
+    public Module updateModule(Module module) throws EmfException {
+        return service().updateModule(module);
     }
 
     private ModuleService service() {

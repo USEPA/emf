@@ -87,6 +87,61 @@ public class ModuleRunnerTask {
         }
     }
 
+    private String getVersionWhereFilter(int datasetId, int version, String table_alias) throws EmfException {
+        try {
+            Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+            String query = String.format("SELECT public.build_version_where_filter(%d, %d, 'ds')", datasetId, version);
+            if (statement.execute(query)) {
+                // get the return value
+                ResultSet resultSet = statement.getResultSet();
+                while(resultSet.next()) {
+                    return resultSet.getString(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new EmfException(String.format("Failed to get the version where filter for dataset_id %d version %d: %s", datasetId, version, e.getMessage()));
+        }
+        throw new EmfException(String.format("Failed to get the version where filter for dataset_id %d version %d", datasetId, version));
+    }
+    
+    private void createView(final StringBuilder viewName, final StringBuilder viewDefinition,
+                            ModuleDataset moduleDataset, EmfDataset emfDataset, int version) throws EmfException {
+        viewName.setLength(0);
+        viewDefinition.setLength(0);
+        
+        ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+        String mode = moduleTypeVersionDataset.getMode().toLowerCase();
+        
+        viewName.append(moduleDataset.getPlaceholderName() + "_" + mode + "_view");
+        
+        int datasetId = emfDataset.getId();
+        
+        InternalSource[] internalSources = emfDataset.getInternalSources();
+        if (internalSources.length == 0) {
+            throw new EmfException("Can't handle datasets with no internal sources (module '" + moduleDataset.getModule().getName() + "', dataset '" + emfDataset.getName() + "').");
+        } else if (internalSources.length > 1) {
+            throw new EmfException("Can't handle datasets with multiple internal sources (module '" + moduleDataset.getModule().getName() + "', dataset '" + emfDataset.getName() + "').");
+        }
+        String schema = "emissions"; // FIXME hard-coded schema name
+        String tableName = internalSources[0].getTable();
+
+        StringBuilder colNames = new StringBuilder();
+        for(String col : internalSources[0].getCols()) {
+            if (col.toLowerCase().equals("record_id"))
+                continue;
+            if (col.toLowerCase().equals("delete_versions"))
+                continue;
+            if (colNames.length() > 0)
+                colNames.append(", ");
+            colNames.append(col);
+        }
+        
+        String versionWhereFilter = getVersionWhereFilter(datasetId, version, "ds");
+        
+        viewDefinition.append(String.format("    CREATE TEMP VIEW %s (%s) AS\n       SELECT %s\n       FROM %s.%s ds\n       WHERE %s;\n\n",
+                viewName.toString(), colNames.toString(), colNames.toString(), schema, tableName, versionWhereFilter));
+    }
+
     public void runModule(Module module) throws EmfException {
         
         prepare("", module);
@@ -95,6 +150,8 @@ public class ModuleRunnerTask {
 
         Date start = new Date();
         
+        String userTimeStamp = user.getUsername() + "_" + CustomDateFormat.format_YYYYMMDDHHMMSSSS(start);
+
         History history = new History();
         history.setModule(module);
         history.setStatus(History.STARTED);
@@ -125,13 +182,15 @@ public class ModuleRunnerTask {
             String algorithm = moduleTypeVersion.getAlgorithm();
             history.setUserScript(algorithm);
             
+            StringBuilder viewDefinitions = new StringBuilder();
+            
             // create output datasets
+            // create views for all datasets
             // replace all dataset place-holders in the algorithm
             for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
                 ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
                 if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                     if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
-                        // create output dataset
                         DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
                         SqlDataTypes types = dbServerFactory.getDbServer().getSqlDataTypes();
                         VersionedTableFormat versionedTableFormat = new VersionedTableFormat(datasetType.getFileFormat(), types);
@@ -146,19 +205,26 @@ public class ModuleRunnerTask {
                             throw new EmfException(errorMessage);
                         }
                         
-                        logMessage = String.format("Created %s %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: 0",
-                                                   moduleDataset.getOutputMethod(), moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
-                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable());
-                        history.addLogMessage(History.INFO, logMessage);
+                        int version = 0;
                         
+                        logMessage = String.format("Created %s %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
+                                                   moduleDataset.getOutputMethod(), moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
+                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), version);
+                        history.addLogMessage(History.INFO, logMessage);
+
+                        StringBuilder viewName = new StringBuilder();
+                        StringBuilder viewDefinition = new StringBuilder();
+                        createView(viewName, viewDefinition, moduleDataset, dataset, version);
+                        viewDefinitions.append(viewDefinition);
+                       
                         HistoryDataset historyDataset = new HistoryDataset();
                         historyDataset.setPlaceholderName(moduleDataset.getPlaceholderName());
                         historyDataset.setDatasetId(dataset.getId());
-                        historyDataset.setVersion(0);
+                        historyDataset.setVersion(version);
                         historyDataset.setHistory(history);
                         historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                         
-                        algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, 0);
+                        algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
                     } else { // REPLACE
                         EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
                         if (dataset == null) {
@@ -180,19 +246,32 @@ public class ModuleRunnerTask {
                         datasetCreator.replaceDataset(dataset);
                         
                         InternalSource[] internalSources = dataset.getInternalSources();
-                        logMessage = String.format("Replacing %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: 0",
+                        if (internalSources.length != 1) {
+                            errorMessage = String.format("Internal error: dataset '%s' has %d internal sources (expected one).",
+                                                         moduleDataset.getDatasetNamePattern(), internalSources.length);
+                            throw new EmfException(errorMessage);
+                        }
+                        
+                        int version = 0;
+                        
+                        logMessage = String.format("Replacing %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
                                                    moduleDataset.getPlaceholderName(), moduleTypeVersionDataset.getMode(),
-                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable());
+                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), version);
                         history.addLogMessage(History.INFO, logMessage);
                         
+                        StringBuilder viewName = new StringBuilder();
+                        StringBuilder viewDefinition = new StringBuilder();
+                        createView(viewName, viewDefinition, moduleDataset, dataset, version);
+                        viewDefinitions.append(viewDefinition);
+                       
                         HistoryDataset historyDataset = new HistoryDataset();
                         historyDataset.setPlaceholderName(moduleDataset.getPlaceholderName());
                         historyDataset.setDatasetId(dataset.getId());
-                        historyDataset.setVersion(0);
+                        historyDataset.setVersion(version);
                         historyDataset.setHistory(history);
                         historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                         
-                        algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, 0);
+                        algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
                     }
                 } else { // IN or INOUT
                     EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
@@ -209,6 +288,11 @@ public class ModuleRunnerTask {
                                                internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), moduleDataset.getVersion());
                     history.addLogMessage(History.INFO, logMessage);
                     
+                    StringBuilder viewName = new StringBuilder();
+                    StringBuilder viewDefinition = new StringBuilder();
+                    createView(viewName, viewDefinition, moduleDataset, dataset, moduleDataset.getVersion());
+                    viewDefinitions.append(viewDefinition);
+                   
                     HistoryDataset historyDataset = new HistoryDataset();
                     historyDataset.setPlaceholderName(moduleDataset.getPlaceholderName());
                     historyDataset.setDatasetId(dataset.getId());
@@ -216,7 +300,7 @@ public class ModuleRunnerTask {
                     historyDataset.setHistory(history);
                     historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                     
-                    algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, moduleDataset.getVersion());
+                    algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, moduleDataset.getVersion(), viewName.toString());
                 }
             }
             history.setHistoryDatasets(historyDatasets);
@@ -285,8 +369,6 @@ public class ModuleRunnerTask {
                 }
             }
             
-            String userTimeStamp = user.getUsername() + "_" + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
-
             String outputParametersTableName = "";
             String selectOutputParameters = "";
             if (!outputParameters.isEmpty()) {
@@ -301,9 +383,9 @@ public class ModuleRunnerTask {
             String userTag = userTimeStamp + "_user_script";
 
             if (parameterDeclarations.isEmpty()) {
-                algorithm = "\nDO $" + userTag + "$\nBEGIN\n" + algorithm + "\nEND $" + userTag + "$;\n";
+                algorithm = "\nDO $" + userTag + "$\nBEGIN\n" + viewDefinitions + algorithm + "\nEND $" + userTag + "$;\n";
             } else {
-                algorithm = "\nDO $" + userTag + "$\nDECLARE\n" + parameterDeclarations + "BEGIN\n" + algorithm + outputParameters + "\nEND $" + userTag + "$;\n" + selectOutputParameters;
+                algorithm = "\nDO $" + userTag + "$\nDECLARE\n" + parameterDeclarations + "BEGIN\n" + viewDefinitions + algorithm + outputParameters + "\nEND $" + userTag + "$;\n" + selectOutputParameters;
             }
     
             // execute algorithm
@@ -396,11 +478,11 @@ public class ModuleRunnerTask {
         return lineNumberedScript.toString();
     }
     
-    private String replacePlaceholders(String algorithm, ModuleDataset moduleDataset, EmfDataset dataset, int version) throws EmfException {
+    private String replacePlaceholders(String algorithm, ModuleDataset moduleDataset, EmfDataset dataset, int version, String viewName) throws EmfException {
         String result = algorithm;
         ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+        String startPattern = "\\$\\{\\s*" + moduleDataset.getPlaceholderName();
         String separatorPattern = "\\s*\\.\\s*";
-        String startPattern = "\\$\\{\\s*" + moduleDataset.getPlaceholderName() + separatorPattern;
         String endPattern = "\\s*\\}";
 
         InternalSource[] internalSources = dataset.getInternalSources();
@@ -412,24 +494,32 @@ public class ModuleRunnerTask {
 
         // Important: keep the list of valid placeholders in sync with
         //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
-        
-        result = Pattern.compile(startPattern + "dataset_name" + endPattern, Pattern.CASE_INSENSITIVE)
+
+        // new simplified syntax
+        result = Pattern.compile(startPattern + endPattern, Pattern.CASE_INSENSITIVE)
+                        .matcher(result).replaceAll(viewName);
+
+        // old syntax
+        result = Pattern.compile(startPattern + separatorPattern + "dataset_name" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll(dataset.getName());
 
-        result = Pattern.compile(startPattern + "dataset_id" + endPattern, Pattern.CASE_INSENSITIVE)
+        result = Pattern.compile(startPattern + separatorPattern + "dataset_id" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll(dataset.getId() + "");
 
-        result = Pattern.compile(startPattern + "version" + endPattern, Pattern.CASE_INSENSITIVE)
+        result = Pattern.compile(startPattern + separatorPattern + "version" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll(version + "");
 
-        result = Pattern.compile(startPattern + "table_name" + endPattern, Pattern.CASE_INSENSITIVE)
+        result = Pattern.compile(startPattern + separatorPattern + "table_name" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll("emissions." + internalSources[0].getTable()); // FIXME hard-coded schema name
 
-        result = Pattern.compile(startPattern + "mode" + endPattern, Pattern.CASE_INSENSITIVE)
+        result = Pattern.compile(startPattern + separatorPattern + "view" + endPattern, Pattern.CASE_INSENSITIVE)
+                        .matcher(result).replaceAll(viewName);
+
+        result = Pattern.compile(startPattern + separatorPattern + "mode" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll(moduleTypeVersionDataset.getMode());
 
         if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
-            result = Pattern.compile(startPattern + "output_method" + endPattern, Pattern.CASE_INSENSITIVE)
+            result = Pattern.compile(startPattern + separatorPattern + "output_method" + endPattern, Pattern.CASE_INSENSITIVE)
                             .matcher(result).replaceAll(moduleDataset.getOutputMethod());
         }
 

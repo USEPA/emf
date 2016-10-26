@@ -94,10 +94,12 @@ public class ModuleTypeVersion implements Serializable {
         
         for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
             String placeholderName = moduleTypeVersionDataset.getPlaceholderName().toLowerCase();
+            validPlaceholders.add("${" + placeholderName + "}"); // new syntax using views
             validPlaceholders.add("${" + placeholderName + ".dataset_name}");
             validPlaceholders.add("${" + placeholderName + ".dataset_id}");
             validPlaceholders.add("${" + placeholderName + ".version}");
             validPlaceholders.add("${" + placeholderName + ".table_name}");
+            validPlaceholders.add("${" + placeholderName + ".view}");
             validPlaceholders.add("${" + placeholderName + ".mode}");
             if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                 validPlaceholders.add("${" + placeholderName + ".output_method}");
