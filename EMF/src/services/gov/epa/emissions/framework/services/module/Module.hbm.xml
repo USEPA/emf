@@ -26,12 +26,12 @@
         <property name="lockDate" column="lock_date" type="timestamp" not-null="false" length="4"/>
         <map name="moduleDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_id"/>
-            <index column="placeholder_name" type="string"/>
+            <map-key column="placeholder_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleDataset"/>
         </map>
         <map name="moduleParameters" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_id"/>
-            <index column="parameter_name" type="string"/>
+            <map-key column="parameter_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleParameter"/>
         </map>
         <list name="moduleHistory" cascade="all" inverse="true" lazy="false" fetch="select">
@@ -92,12 +92,12 @@
         <property name="comment" column="comment" type="text" not-null="false"/>
         <map name="historyDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="history_id"/>
-            <index column="placeholder_name" type="string"/>
+            <map-key column="placeholder_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.HistoryDataset"/>
         </map>
         <map name="historyParameters" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="history_id"/>
-            <index column="parameter_name" type="string"/>
+            <map-key column="parameter_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.HistoryParameter"/>
         </map>
     </class>

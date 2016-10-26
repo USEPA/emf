@@ -23,7 +23,7 @@
         <property name="defaultVersion" column="default_version" type="integer" not-null="false"/>
         <map name="moduleTypeVersions" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_type_id"/>
-            <index column="version" type="integer"/>
+            <map-key column="version" type="integer"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersion"/>
         </map>
     </class>
@@ -49,12 +49,12 @@
         <property name="isFinal" column="is_final" type="boolean" not-null="true"/>
         <map name="moduleTypeVersionDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_type_version_id"/>
-            <index column="placeholder_name" type="string"/>
+            <map-key column="placeholder_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset"/>
         </map>
         <map name="moduleTypeVersionParameters" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_type_version_id"/>
-            <index column="parameter_name" type="string"/>
+            <map-key column="parameter_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter"/>
         </map>
         <list name="moduleTypeVersionRevisions" cascade="all" inverse="true" lazy="false" fetch="select">

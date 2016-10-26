@@ -93,11 +93,11 @@ public class ModuleTypesDAO {
         return hibernateFacade.nameUsed(name, clazz, session);
     }
 
-    public ModuleType current(int id, Class clazz, Session session) {
+    private ModuleType current(int id, Class clazz, Session session) {
         return (ModuleType) hibernateFacade.current(id, clazz, session);
     }
 
-    private ModuleType current(ModuleType moduleType, Session session) {
+    public ModuleType current(ModuleType moduleType, Session session) {
         return current(moduleType.getId(), ModuleType.class, session);
     }
 

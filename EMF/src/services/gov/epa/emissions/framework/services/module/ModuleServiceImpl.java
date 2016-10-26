@@ -26,9 +26,12 @@ import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.*;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,6 +100,41 @@ public class ModuleServiceImpl implements ModuleService {
 
             if (!moduleTypesDAO.canUpdate(moduleType, session))
                 throw new EmfException("The module type is already in use");
+
+            // manually delete the missing module type versions, datasets, and parameters from the database 
+            Map<Integer, ModuleTypeVersion> moduleTypeVersions = moduleType.getModuleTypeVersions();
+            ModuleType currentMT = moduleTypesDAO.current(moduleType, session);
+            for (ModuleTypeVersion currentMTV : currentMT.getModuleTypeVersions().values()) {
+                if (!moduleTypeVersions.containsKey(currentMTV.getVersion())) {
+                    // TODO manually delete the currentMTV from database
+                    continue;
+                }
+                ModuleTypeVersion moduleTypeVersion = moduleTypeVersions.get(currentMTV.getVersion());
+                Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets(); 
+                Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters(); 
+                for (ModuleTypeVersionDataset currentMTVD : currentMTV.getModuleTypeVersionDatasets().values()) {
+                    if (moduleTypeVersionDatasets.containsKey(currentMTVD.getPlaceholderName()))
+                        continue;
+                    // manually delete the currentMTVD
+                    try {
+                        Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                        statement.execute("DELETE FROM modules.module_types_versions_datasets WHERE id=" + currentMTVD.getId());
+                    } catch (Exception e) {
+                        throw new EmfException("Failed to delete module type version dataset: " + e.getMessage());
+                    }
+                }
+                for (ModuleTypeVersionParameter currentMTVP : currentMTV.getModuleTypeVersionParameters().values()) {
+                    if (moduleTypeVersionParameters.containsKey(currentMTVP.getParameterName()))
+                        continue;
+                    // manually delete the currentMTVP 
+                    try {
+                        Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                        statement.execute("DELETE FROM modules.module_types_versions_parameters WHERE id=" + currentMTVP.getId());
+                    } catch (Exception e) {
+                        throw new EmfException("Failed to delete module type version parameter: " + e.getMessage());
+                    }
+                }
+            }
 
             ModuleType released = moduleTypesDAO.update(moduleType, session);
             session.close();
