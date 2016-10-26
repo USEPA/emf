@@ -113,8 +113,11 @@ public class ModuleServiceImpl implements ModuleService {
                 Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets(); 
                 Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters(); 
                 for (ModuleTypeVersionDataset currentMTVD : currentMTV.getModuleTypeVersionDatasets().values()) {
-                    if (moduleTypeVersionDatasets.containsKey(currentMTVD.getPlaceholderName()))
-                        continue;
+                    if (moduleTypeVersionDatasets.containsKey(currentMTVD.getPlaceholderName())) {
+                        ModuleTypeVersionDataset moduleTypeVersionDataset = moduleTypeVersionDatasets.get(currentMTVD.getPlaceholderName());
+                        if (moduleTypeVersionDataset.getId() == currentMTVD.getId())
+                            continue;
+                    }
                     // manually delete the currentMTVD
                     try {
                         Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
@@ -124,8 +127,11 @@ public class ModuleServiceImpl implements ModuleService {
                     }
                 }
                 for (ModuleTypeVersionParameter currentMTVP : currentMTV.getModuleTypeVersionParameters().values()) {
-                    if (moduleTypeVersionParameters.containsKey(currentMTVP.getParameterName()))
-                        continue;
+                    if (moduleTypeVersionParameters.containsKey(currentMTVP.getParameterName())) {
+                        ModuleTypeVersionParameter moduleTypeVersionParameter = moduleTypeVersionParameters.get(currentMTVP.getParameterName());
+                        if (moduleTypeVersionParameter.getId() == currentMTVP.getId())
+                            continue;
+                    }
                     // manually delete the currentMTVP 
                     try {
                         Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
