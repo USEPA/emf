@@ -58,6 +58,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private ViewMode viewMode;
     private boolean mustUnlock;
     private boolean isNewModuleType;
+    private boolean isDirty;
     
     private ModuleType moduleType;
     private ModuleTypeVersion moduleTypeVersion;
@@ -164,6 +165,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.viewMode = ViewMode.NEW;
         this.mustUnlock = false;
         this.isNewModuleType = true;
+        this.isDirty = true;
         
         Date date = new Date();
         
@@ -209,18 +211,20 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     
         this.parentConsole = parentConsole;
         this.session = session;
-        this.viewMode = viewMode;
         this.mustUnlock = false;
         this.isNewModuleType = false;
 
-        this.moduleTypeVersion = moduleTypeVersion;
-        this.moduleType = moduleTypeVersion.getModuleType();
-    
+        this.isDirty = false;
+        this.viewMode = viewMode;
+        
         if (this.viewMode == ViewMode.NEW) {
-            // TODO mark module type version as dirty
+            this.isDirty = true;
             this.viewMode = ViewMode.EDIT;
         }
         
+        this.moduleTypeVersion = moduleTypeVersion;
+        this.moduleType = moduleTypeVersion.getModuleType();
+    
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
         super.getContentPane().add(layout);
@@ -239,7 +243,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
             default: break; // should never happen
         }
         
-        return viewModeText + " Module Type Version - " + moduleTypeVersion.getModuleType().getName() + " - version " + moduleTypeVersion.getVersion();
+        return viewModeText + " Module Type Version - " + moduleTypeVersion.getModuleType().getName() + " - Version " + moduleTypeVersion.getVersion();
     }
     
     private void doLayout(JPanel layout) {
@@ -538,6 +542,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     public void refreshDatasets() {
         datasetsTableData = new ModuleTypeVersionDatasetsTableData(moduleTypeVersion.getModuleTypeVersionDatasets());
         datasetsTable.refresh(datasetsTableData);
+        isDirty = true;
     }
 
     private void removeDatasets() {
@@ -630,6 +635,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     public void refreshParameters() {
         parametersTableData = new ModuleTypeVersionParametersTableData(moduleTypeVersion.getModuleTypeVersionParameters());
         parametersTable.refresh(parametersTableData);
+        isDirty = true;
     }
 
     private void removeParameters() {
@@ -712,8 +718,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     private boolean doSave() {
         try {
-            resetChanges();
-            
             if (viewMode == ViewMode.NEW) {
                 moduleType.setName(moduleTypeName.getText());
                 moduleType.setDescription(moduleTypeDescription.getText());
@@ -753,6 +757,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleType = presenter.updateModuleType(moduleType);
             }
             messagePanel.setMessage("Saved module type.");
+            
+            resetChanges();
+            isDirty = false;
             
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
@@ -823,13 +830,21 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     }
 
     private void doClose() {
-        if (shouldDiscardChanges()) {
-            // TODO if new module type version has never been saved, remove it from the module type object
-            if (mustUnlock) {
-                moduleType = presenter.releaseLockedModuleType(moduleType);
-            }
-            presenter.doClose();
+        
+        if (isDirty) {
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to close without saving?",
+                                                          "Module Type Version Properties", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (selection == JOptionPane.NO_OPTION)
+                return;
+        } else if (!shouldDiscardChanges()) {
+            return;
         }
+        
+        // TODO if new module type version has never been saved, remove it from the module type object
+        if (mustUnlock) {
+            moduleType = presenter.releaseLockedModuleType(moduleType);
+        }
+        presenter.doClose();
     }
 
     public void populateDatasetTypesCache() {
