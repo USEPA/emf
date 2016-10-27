@@ -44,7 +44,7 @@ public class ModuleTypeVersionsTableData extends AbstractTableData {
                                 CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleTypeVersion.getCreationDate()),
                                 CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleTypeVersion.getLastModifiedDate()),
                                 moduleTypeVersion.getBaseVersion(),
-                                moduleTypeVersion.getIsFinal()};
+                                moduleTypeVersion.getIsFinal() ? "Yes" : "No" };
 
             Row row = new ViewableRow(moduleTypeVersion, values);
             rows.add(row);
