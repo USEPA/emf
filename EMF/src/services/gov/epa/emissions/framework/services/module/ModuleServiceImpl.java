@@ -158,10 +158,8 @@ public class ModuleServiceImpl implements ModuleService {
         DbServer dbServer = dbServerFactory.getDbServer();
 
         try {
-            if (owner.isAdmin()){
-                for (int i=0; i<types.length; i++) {
-                    moduleTypesDAO.removeModuleType(types[i], session);
-                }
+            for (int i=0; i<types.length; i++) {
+                moduleTypesDAO.removeModuleType(types[i], session);
             }
         } catch (Exception e) {
             LOG.error("Error deleting module types. " , e);
@@ -269,10 +267,8 @@ public class ModuleServiceImpl implements ModuleService {
         DbServer dbServer = dbServerFactory.getDbServer();
 
         try {
-            if (owner.isAdmin()){
-                for (int i=0; i<modules.length; i++) {
-                    modulesDAO.removeModule(modules[i], session);
-                }
+            for (int i=0; i<modules.length; i++) {
+                modulesDAO.removeModule(modules[i], session);
             }
         } catch (Exception e) {
             LOG.error("Error deleting modules. " , e);

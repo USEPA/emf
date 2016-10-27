@@ -410,11 +410,11 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         runButton = new Button("Run", runAction());
         runButton.setMnemonic('R');
-        runButton.setEnabled((viewMode == ViewMode.EDIT) && session.user().isAdmin());
+        runButton.setEnabled(viewMode == ViewMode.EDIT);
         
         finalizeButton = new Button("Finalize", finalizeAction());
         finalizeButton.setMnemonic('F');
-        finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !module.getIsFinal() && session.user().isAdmin());
+        finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !module.getIsFinal());
         
         closeButton = new CloseButton("Close", closeAction());
         
@@ -452,7 +452,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         crudPanel.add(editButton);
         crudPanel.add(viewDatasetsButton);
-        if (!session.user().isAdmin() || (viewMode == ViewMode.VIEW)) {
+        if (viewMode == ViewMode.VIEW) {
             editButton.setEnabled(false);
         }
 
@@ -565,7 +565,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         crudPanel.add(editButton);
-        if (!session.user().isAdmin() || (viewMode == ViewMode.VIEW)) {
+        if (viewMode == ViewMode.VIEW) {
             editButton.setEnabled(false);
         }
 
@@ -796,7 +796,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 module.setCreator(session.user());
                 module = presenter.addModule(module);
                 viewMode = ViewMode.EDIT;
-                runButton.setEnabled((viewMode == ViewMode.EDIT) && session.user().isAdmin());
+                runButton.setEnabled(viewMode == ViewMode.EDIT);
                 Module lockedModule = presenter.obtainLockedModule(module);
                 if (lockedModule == null || !lockedModule.isLocked(session.user())) {
                     throw new EmfException("Failed to lock module.");

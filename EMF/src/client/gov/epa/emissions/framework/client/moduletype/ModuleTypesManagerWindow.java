@@ -172,12 +172,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         crudPanel.add(editButton);
         crudPanel.add(newButton);
         crudPanel.add(removeButton);
-        if (!session.user().isAdmin()){
-            editButton.setEnabled(false);
-            newButton.setEnabled(false);
-            removeButton.setEnabled(false);
-        }
-
         return crudPanel;
     }
 

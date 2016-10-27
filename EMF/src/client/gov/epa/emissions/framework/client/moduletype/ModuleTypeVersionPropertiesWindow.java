@@ -462,7 +462,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         
         Button finalizeButton = new Button("Finalize", finalizeAction());
         finalizeButton.setMnemonic('F');
-        finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !moduleTypeVersion.getIsFinal() && session.user().isAdmin());
+        finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !moduleTypeVersion.getIsFinal());
 
         Button closeButton = new CloseButton("Close", closeAction());
         
@@ -508,7 +508,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         crudPanel.add(newButton);
         crudPanel.add(editButton);
         crudPanel.add(removeButton);
-        if (!session.user().isAdmin() || (viewMode == ViewMode.VIEW)){
+        if (viewMode == ViewMode.VIEW){
             newButton.setEnabled(false);
             editButton.setEnabled(false);
             removeButton.setEnabled(false);
@@ -604,7 +604,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         crudPanel.add(newButton);
         crudPanel.add(editButton);
         crudPanel.add(removeButton);
-        if (!session.user().isAdmin() || (viewMode == ViewMode.VIEW)){
+        if (viewMode == ViewMode.VIEW) { 
             newButton.setEnabled(false);
             editButton.setEnabled(false);
             removeButton.setEnabled(false);

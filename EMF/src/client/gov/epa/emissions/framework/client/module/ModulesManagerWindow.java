@@ -77,14 +77,13 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
     public void refresh(Module[] modules) {
         boolean hasData = (modules != null) && (modules.length > 0);
-        boolean isAdmin = session.user().isAdmin();
 
         // FIXME these settings are reverted somewhere else
         viewButton.setEnabled(hasData);
-        editButton.setEnabled(hasData && isAdmin);
-        newButton.setEnabled(hasData && isAdmin);
-        removeButton.setEnabled(hasData && isAdmin);
-        runButton.setEnabled(hasData && isAdmin);
+        editButton.setEnabled(hasData);
+        newButton.setEnabled(hasData);
+        removeButton.setEnabled(hasData);
+        runButton.setEnabled(hasData);
 
         table.refresh(new ModulesTableData(modules));
         panelRefresh();
@@ -205,13 +204,6 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         crudPanel.add(copyButton);
         crudPanel.add(removeButton);
         crudPanel.add(runButton);
-        if (!session.user().isAdmin()){
-            editButton.setEnabled(false);
-            newButton.setEnabled(false);
-            copyButton.setEnabled(false);
-            removeButton.setEnabled(false);
-            runButton.setEnabled(false);
-        }
 
         return crudPanel;
     }

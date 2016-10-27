@@ -195,7 +195,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         crudPanel.add(editButton);
         crudPanel.add(newButton);
         crudPanel.add(removeButton);
-        if (!session.user().isAdmin() || (viewMode == ViewMode.VIEW)){
+        if (viewMode == ViewMode.VIEW) {
             editButton.setEnabled(false);
             newButton.setEnabled(false);
             removeButton.setEnabled(false);
