@@ -50,7 +50,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
     private ServiceLocator serviceLocator;
 
-    public final static String EMF_VERSION = "v2.10 - 01/28/2016";
+    public final static String EMF_VERSION = "Build #37 - 10/26/2016";
 
     public LoginWindow(ServiceLocator serviceLocator) {
         super("Login", "Login to the Emissions Modeling Framework [" + EMF_VERSION + "]");
@@ -81,9 +81,9 @@ public class LoginWindow extends EmfFrame implements LoginView {
     public void display() {
         try {
             System.out.println("Verifying server version is "+EMF_VERSION);
-//            if (!presenter.checkEmfVersion(EMF_VERSION) && toUpdate() == JOptionPane.YES_OPTION)
-//                disposeView();
-//            else
+            if (!presenter.checkEmfVersion(EMF_VERSION) && toUpdate() == JOptionPane.YES_OPTION)
+                disposeView();
+            else
             {
                 System.out.println("Showing Login Window");
                 username.setText(presenter.userName());
