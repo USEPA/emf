@@ -751,6 +751,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleTypeVersion.setAlgorithm(algorithm.getText());
                 
                 moduleType = presenter.updateModuleType(moduleType);
+                moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
             }
             messagePanel.setMessage("Saved module type.");
             

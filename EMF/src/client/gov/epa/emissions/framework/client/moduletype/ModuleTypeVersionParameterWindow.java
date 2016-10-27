@@ -82,6 +82,7 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
         if (viewMode == ViewMode.NEW) {
             this.moduleTypeVersionParameter = new ModuleTypeVersionParameter();
             this.moduleTypeVersionParameter.setModuleTypeVersion(moduleTypeVersion);
+            this.moduleTypeVersionParameter.setMode(ModuleTypeVersionParameter.IN);
         } else {
             this.moduleTypeVersionParameter = moduleTypeVersionParameter;
         }
