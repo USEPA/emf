@@ -50,7 +50,7 @@ public class ModuleTypeVersionDataset implements Serializable {
             error.append(String.format("Placeholder name '%s' is longer than %d characters.", name, MAX_NAME_LEN));
             return false;
         }
-        Matcher matcher = Pattern.compile("[^a-zA-Z0-1_]", Pattern.CASE_INSENSITIVE).matcher(name);
+        Matcher matcher = Pattern.compile("[^a-zA-Z0-9_]", Pattern.CASE_INSENSITIVE).matcher(name);
         if (matcher.find()) {
             error.append(String.format("Placeholder name '%s' contains illegal characters.", name));
             return false;
