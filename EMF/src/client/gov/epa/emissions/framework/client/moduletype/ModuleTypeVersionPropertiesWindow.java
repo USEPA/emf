@@ -53,8 +53,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     private EmfConsole parentConsole;
     private EmfSession session;
-    private static int counter = 0;
-
+    
+    ModuleTypeVersionObserver moduleTypeVersionObserver;
+    
     private ViewMode viewMode;
     private boolean mustUnlock;
     private boolean isNewModuleType;
@@ -157,11 +158,13 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     };
 
     // New Module Type
-    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session) {
+    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleTypeVersionObserver moduleTypeVersionObserver) {
         super(getWindowTitle(ViewMode.NEW, null), new Dimension(800, 600), desktopManager);
 
         this.parentConsole = parentConsole;
         this.session = session;
+        this.moduleTypeVersionObserver = moduleTypeVersionObserver;
+        
         this.viewMode = ViewMode.NEW;
         this.mustUnlock = false;
         this.isNewModuleType = true;
@@ -206,11 +209,13 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 
     // View/Edit existing Module Type Version
     // Edit new Module Type Version
-    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, ModuleTypeVersion moduleTypeVersion) {
+    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleTypeVersionObserver moduleTypeVersionObserver, ViewMode viewMode, ModuleTypeVersion moduleTypeVersion) {
         super(getWindowTitle(viewMode, moduleTypeVersion), new Dimension(800, 600), desktopManager);
     
         this.parentConsole = parentConsole;
         this.session = session;
+        this.moduleTypeVersionObserver = moduleTypeVersionObserver;
+        
         this.mustUnlock = false;
         this.isNewModuleType = false;
 
@@ -846,6 +851,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
             moduleType = presenter.releaseLockedModuleType(moduleType);
         }
         presenter.doClose();
+        moduleTypeVersionObserver.closedChildWindow(moduleTypeVersion);
     }
 
     public void populateDatasetTypesCache() {

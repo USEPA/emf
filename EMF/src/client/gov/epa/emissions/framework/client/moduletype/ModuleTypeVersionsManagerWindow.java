@@ -25,8 +25,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -52,6 +54,8 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
     private EmfConsole parentConsole;
 
     private EmfSession session;
+    
+    private Map<Integer, ViewMode> lockedModuleTypeVersions;
 
     public ModuleTypeVersionsManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager, ViewMode viewMode, ModuleType moduleType) {
         super(getWindowTitle(viewMode, moduleType), new Dimension(700, 350), desktopManager);
@@ -60,6 +64,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         this.parentConsole = parentConsole;
         this.viewMode = viewMode;
         this.moduleType = moduleType;
+        this.lockedModuleTypeVersions = new HashMap<Integer, ViewMode>();
         
         layout = new JPanel();
         this.getContentPane().add(layout);
@@ -143,6 +148,12 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
     }
 
     private void doClose() {
+        if (lockedModuleTypeVersions.size() > 0) {
+            String error = String.format("Can't close module type manager window: %d child window(s) still open", lockedModuleTypeVersions.size());
+            messagePanel.setError(error);
+            return;
+        }
+
         if (viewMode == ViewMode.EDIT) {
             try {
                 moduleType = session.moduleService().releaseLockedModuleType(session.user(), moduleType);
@@ -217,7 +228,14 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
-            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, moduleTypeVersion);
+            if (lockedModuleTypeVersions.containsKey(moduleTypeVersion.getId())) {
+                ViewMode lockedViewMode = lockedModuleTypeVersions.get(moduleTypeVersion.getId());
+                String error = String.format("Module type version %d already open for %s", moduleTypeVersion.getVersion(), (lockedViewMode == ViewMode.VIEW) ? "viewing" : "editing");
+                messagePanel.setMessage(error);
+                continue;
+            }
+            lockedModuleTypeVersions.put(moduleTypeVersion.getId(), ViewMode.VIEW);
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, ViewMode.VIEW, moduleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
     }
@@ -232,7 +250,14 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
             ViewMode viewMode = moduleTypeVersion.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT;
-            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, viewMode, moduleTypeVersion);
+            if (lockedModuleTypeVersions.containsKey(moduleTypeVersion.getId())) {
+                ViewMode lockedViewMode = lockedModuleTypeVersions.get(moduleTypeVersion.getId());
+                String error = String.format("Module type version %d already open for %s", moduleTypeVersion.getVersion(), (lockedViewMode == ViewMode.VIEW) ? "viewing" : "editing");
+                messagePanel.setMessage(error);
+                continue;
+            }
+            lockedModuleTypeVersions.put(moduleTypeVersion.getId(), viewMode);
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, viewMode, moduleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
     }
@@ -247,7 +272,8 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
             ModuleTypeVersion newModuleTypeVersion = moduleTypeVersion.deepCopy(session.user());
-            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, newModuleTypeVersion);
+            lockedModuleTypeVersions.put(moduleTypeVersion.getId(), ViewMode.NEW);
+            ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, ViewMode.NEW, newModuleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
     }
@@ -282,6 +308,16 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             return;
         }
 
+        for(ModuleTypeVersion moduleTypeVersion : selectedMTVs) {
+            if (lockedModuleTypeVersions.containsKey(moduleTypeVersion.getId())) {
+                ViewMode lockedViewMode = lockedModuleTypeVersions.get(moduleTypeVersion.getId());
+                String lockedState = (lockedViewMode == ViewMode.VIEW) ? "view" : "edit";
+                String error = String.format("Can't remove module type version %d: the %s window is open", moduleTypeVersion.getVersion(), lockedState);
+                messagePanel.setError(error);
+                return;
+            }
+        }
+        
         String message = "";
         if (count > 0) {
             message = String.format("Are you sure you want to remove the selected %d module type version(s)? The %d module(s) that use this module type version(s) will also be removed. There is no undo for this action.", selected.size(), count);
@@ -314,5 +350,10 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
     @Override
     public void doRefresh() throws EmfException {
         refresh();
+    }
+
+    @Override
+    public void closedChildWindow(ModuleTypeVersion moduleTypeVersion) {
+        lockedModuleTypeVersions.remove(moduleTypeVersion.getId());
     }
 }

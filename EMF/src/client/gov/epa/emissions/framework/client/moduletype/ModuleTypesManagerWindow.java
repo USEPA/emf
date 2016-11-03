@@ -224,7 +224,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     private void createModuleType() {
-        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session);
+        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this);
         presenter.displayNewModuleTypeView(view);
     }
 
@@ -346,5 +346,10 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
         };
         new GetModuleTypesTask(this).execute();
+    }
+
+    @Override
+    public void closedChildWindow(ModuleTypeVersion moduleTypeVersion) {
+        // nothing to do
     }
 }
