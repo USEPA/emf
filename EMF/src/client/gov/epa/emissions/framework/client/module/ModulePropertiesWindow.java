@@ -364,7 +364,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private JPanel parametersPanel() {
         parametersTablePanel = new JPanel(new BorderLayout());
-        parametersTableData = new ModuleParametersTableData(module.getModuleParameters(), false); // TODO: include OUT parameters when showing the results
+        parametersTableData = new ModuleParametersTableData(module.getModuleParameters());
         parametersTable = new SelectableSortFilterWrapper(parentConsole, parametersTableData, null);
         parametersTablePanel.add(parametersTable);
 
@@ -571,7 +571,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 editParameters();
             }
         };
-        SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, parametersTable, confirmDialog);
+        SelectAwareButton editButton = new SelectAwareButton("Set Input Value", editAction, parametersTable, confirmDialog);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -592,8 +592,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleParameter moduleParameter = (ModuleParameter) iter.next();
-            if (moduleParameter.getModuleTypeVersionParameter().isModeOUT())
+            if (moduleParameter.getModuleTypeVersionParameter().isModeOUT()) {
+                messagePanel.setMessage("Can't set input values for output parameters.");
                 continue;
+            }
             try {
                 EditModuleParameterWindow view = new EditModuleParameterWindow(parentConsole, desktopManager, session, moduleParameter);
                 EditModuleParameterPresenter presenter = new EditModuleParameterPresenter(session, view, this);
@@ -611,7 +613,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     public void refreshParameters() {
-        parametersTableData = new ModuleParametersTableData(module.getModuleParameters(), false); // TODO: include OUT parameters when showing the results);
+        parametersTableData = new ModuleParametersTableData(module.getModuleParameters());
         parametersTable.refresh(parametersTableData);
         isDirty = true;
     }

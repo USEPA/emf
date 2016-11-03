@@ -1,5 +1,7 @@
 package gov.epa.emissions.framework.client.module;
 
+import gov.epa.emissions.framework.services.module.History;
+import gov.epa.emissions.framework.services.module.HistoryParameter;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.ui.AbstractTableData;
@@ -12,14 +14,13 @@ import java.util.Map;
 
 public class ModuleParametersTableData extends AbstractTableData {
     private List rows;
-    private boolean includeOutParameters;
     
-    public ModuleParametersTableData(Map<String, ModuleParameter> moduleParameters, boolean includeOutParameters) {
-        this.rows = createRows(moduleParameters, includeOutParameters);
+    public ModuleParametersTableData(Map<String, ModuleParameter> moduleParameters) {
+        this.rows = createRows(moduleParameters);
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name", "SQL Type", "Value", "Description"};
+        return new String[] { "Mode", "Name", "SQL Type", "Input Value", "Output Value", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -34,20 +35,30 @@ public class ModuleParametersTableData extends AbstractTableData {
         return false;
     }
 
-    private List createRows(Map<String, ModuleParameter> moduleParameters, boolean includeOutParameters) {
+    private List createRows(Map<String, ModuleParameter> moduleParameters) {
         List rows = new ArrayList();
 
-        for (ModuleParameter element : moduleParameters.values()) {
-            ModuleTypeVersionParameter moduleTypeVersionParameter = element.getModuleTypeVersionParameter();
-            if (!includeOutParameters && moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT))
-                continue; // skip OUT parameters
+        for (ModuleParameter moduleParameter : moduleParameters.values()) {
+            List<History> history = moduleParameter.getModule().getModuleHistory();
+            HistoryParameter historyParameter = null;
+            if (history.size() > 0) {
+                History lastHistory = history.get(history.size() - 1);
+                if (lastHistory.getResult().equals(History.SUCCESS)) {
+                    historyParameter = lastHistory.getHistoryParameters().get(moduleParameter.getParameterName());
+                }
+            }
+            ModuleTypeVersionParameter moduleTypeVersionParameter = moduleParameter.getModuleTypeVersionParameter();
+            String mode = moduleTypeVersionParameter.getMode();
+            String inValue = mode.equals(ModuleTypeVersionParameter.OUT) ? "N/A" : moduleParameter.getValue();
+            String outValue = mode.equals(ModuleTypeVersionParameter.IN) ? "N/A" : ((historyParameter == null) ? "N/A" : historyParameter.getValue());
             Object[] values = { moduleTypeVersionParameter.getMode(),
-                                element.getParameterName(),
+                                moduleParameter.getParameterName(),
                                 moduleTypeVersionParameter.getSqlParameterType(),
-                                element.getValue(),
+                                inValue,
+                                outValue,
                                 getShortDescription(moduleTypeVersionParameter)};
 
-            Row row = new ViewableRow(element, values);
+            Row row = new ViewableRow(moduleParameter, values);
             rows.add(row);
         }
 
