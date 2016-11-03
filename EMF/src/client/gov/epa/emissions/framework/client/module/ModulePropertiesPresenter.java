@@ -78,28 +78,9 @@ public class ModulePropertiesPresenter {
         return dataService().getDataset(name);
     }
     
-    public void doDisplayDatasetProperties(PropertiesView propertiesView, ModuleDataset moduleDataset) throws EmfException {
-        EmfDataset dataset = null;
-        
-        ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
-        if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
-            if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
-                String datasetName = moduleDataset.getDatasetNamePattern(); 
-                if (datasetName != null)
-                    dataset = getDataset(datasetName);
-            } else if (moduleDataset.getOutputMethod().equals(ModuleDataset.REPLACE)) {
-                Integer datasetId = moduleDataset.getDatasetId();
-                if (datasetId != null)
-                    dataset = getDataset(datasetId);
-            }
-        } else { // IN or INOUT
-            Integer datasetId = moduleDataset.getDatasetId();
-            if (datasetId != null)
-                dataset = getDataset(moduleDataset.getDatasetId());
-        }
-        
-        if (dataset != null) {
-            PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
+    public void doDisplayDatasetProperties(PropertiesView propertiesView, EmfDataset emfDataset) throws EmfException {
+        if (emfDataset != null) {
+            PropertiesViewPresenter presenter = new PropertiesViewPresenter(emfDataset, session);
             presenter.doDisplay(propertiesView);
         }
     }

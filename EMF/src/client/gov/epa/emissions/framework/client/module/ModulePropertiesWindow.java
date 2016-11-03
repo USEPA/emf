@@ -19,6 +19,7 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
@@ -32,7 +33,6 @@ import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
-import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionPropertiesWindow;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionPresenter;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
@@ -62,7 +62,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private EmfConsole parentConsole;
     private EmfSession session;
-    private static int counter = 0;
 
     ViewMode viewMode;
     
@@ -70,6 +69,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private Module module;
     private ModuleType moduleType;
     private ModuleTypeVersion moduleTypeVersion;
+
+    private boolean isDirty;
 
     // layout
     private JPanel layout;
@@ -143,10 +144,12 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             this.module.setCreator(session.user());
             this.module.setIsFinal(false);
             setModuleTypeVersion(moduleTypeVersion);
+            this.isDirty = true;
         } else {
             this.module = module;
             this.moduleTypeVersion = module.getModuleTypeVersion();
             this.moduleType = this.moduleTypeVersion.getModuleType();
+            this.isDirty = false;
         }
     }
 
@@ -182,6 +185,9 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
     
     private void setModuleTypeVersion(ModuleTypeVersion moduleTypeVersion) {
+        if (this.moduleTypeVersion != null && this.moduleTypeVersion.getId() == moduleTypeVersion.getId())
+            return; // nothing to do
+        
         this.moduleTypeVersion = moduleTypeVersion;
         
         moduleType = moduleTypeVersion.getModuleType();
@@ -212,6 +218,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             moduleParameter.setValue("");
             module.addModuleParameter(moduleParameter);
         }
+        
+        isDirty = true;
     }
 
     private void refreshModuleTypeVersion() {
@@ -252,7 +260,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layout.add(tabbedPane(), BorderLayout.CENTER);
         layout.add(createButtonsPanel(), BorderLayout.SOUTH);
     }
-
 
     @Override
     public void doRefresh() throws EmfException {
@@ -474,7 +481,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 presenter.doDisplay();
             }
             catch (Exception e) {
-                messagePanel.setError("Could not edit: " + moduleDataset.getPlaceholderName() + "." + e.getMessage());
+                messagePanel.setError("Could not edit: " + moduleDataset.getPlaceholderName() + ". " + e.getMessage());
                 break;
             }
         }
@@ -510,8 +517,11 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             public Void doInBackground() throws EmfException  {
                 for (Iterator iter = datasets.iterator(); iter.hasNext();) {
                     ModuleDataset moduleDataset = (ModuleDataset) iter.next();
-                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
-                    presenter.doDisplayDatasetProperties(view, moduleDataset);
+                    EmfDataset emfDataset = moduleDataset.getEmfDataset(session.dataService());
+                    if (emfDataset != null) {
+                        DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                        presenter.doDisplayDatasetProperties(view, emfDataset);
+                    }
                 }
                 return null;
             }
@@ -549,6 +559,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshDatasets() {
         datasetsTableData = new ModuleDatasetsTableData(module.getModuleDatasets(), session);
         datasetsTable.refresh(datasetsTableData);
+        isDirty = true;
     }
 
     private JPanel parametersCrudPanel() {
@@ -602,6 +613,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshParameters() {
         parametersTableData = new ModuleParametersTableData(module.getModuleParameters(), false); // TODO: include OUT parameters when showing the results);
         parametersTable.refresh(parametersTableData);
+        isDirty = true;
     }
 
     private JPanel historyCrudPanel() {
@@ -651,6 +663,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         historyTableData = new ModuleHistoryTableData(module.getModuleHistory());
         historyTable.refresh(historyTableData);
         viewButton.setEnabled(!historyTableData.rows().isEmpty());
+        isDirty = true;
     }
 
     private void clear() {
@@ -754,6 +767,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         if (selection == JOptionPane.YES_OPTION) {
             module.setIsFinal(true);
             moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
+            isDirty = true;
             if (doSave()) {
                 JOptionPane.showConfirmDialog(parentConsole, "This module has been finalized!",
                                               title, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -784,8 +798,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private boolean doSave() {
         try {
-            resetChanges();
-            
             Date date = new Date();
             module.setName(moduleName.getText());
             module.setDescription(moduleDescription.getText());
@@ -807,12 +819,15 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
             doRefresh();
             messagePanel.setMessage("Saved module.");
-            return true;
+            resetChanges();
+            isDirty = false;
         }
         catch (EmfException e) {
             messagePanel.setError(e.getMessage());
+            return false;
         }
-        return false;
+
+        return true;
     }
     
     private Action saveAction() {
@@ -842,16 +857,23 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private void doClose() {
-        if (shouldDiscardChanges()) {
-            if (viewMode == ViewMode.EDIT) {
-                try {
-                    module = presenter.releaseLockedModule(module);
-                } catch (EmfException e) {
-                    // NOTE Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-            presenter.doClose();
+        if (isDirty) {
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to close without saving?",
+                                                          "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (selection == JOptionPane.NO_OPTION)
+                return;
+        } else if (!shouldDiscardChanges()) {
+            return;
         }
+        
+        if (viewMode == ViewMode.EDIT) {
+            try {
+                module = presenter.releaseLockedModule(module);
+            } catch (EmfException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        presenter.doClose();
     }
 }

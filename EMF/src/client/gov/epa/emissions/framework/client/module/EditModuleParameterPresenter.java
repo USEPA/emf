@@ -37,7 +37,5 @@ public class EditModuleParameterPresenter {
 
     public void doSave(ModuleParameter moduleParameter) throws EmfException {
         parametersObserver.refreshParameters();
-        closeView();
     }
-
 }

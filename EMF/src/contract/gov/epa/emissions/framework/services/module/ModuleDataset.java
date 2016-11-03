@@ -2,6 +2,10 @@ package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
 
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.DataService;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+
 public class ModuleDataset implements Serializable {
 
     public static final String NEW = "NEW";
@@ -54,6 +58,20 @@ public class ModuleDataset implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public EmfDataset getEmfDataset(DataService dataService) {
+        try {
+            if (datasetId != null) {
+                return dataService.getDataset(datasetId);
+            } else if (datasetNamePattern != null) {
+                return dataService.getDataset(datasetNamePattern);
+            }
+        } catch (EmfException ex) {
+            // ignore exception
+        }
+        
+        return null;
     }
     
     public int getId() {

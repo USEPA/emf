@@ -31,7 +31,6 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
 
     private EmfConsole parentConsole;
     private EmfSession session;
-    private static int counter = 0;
 
     private ModuleParameter moduleParameter;
     private ModuleTypeVersionParameter moduleTypeVersionParameter;
@@ -66,7 +65,7 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
     private void doLayout(JPanel layout) {
         messagePanel = new SingleLineMessagePanel();
         layout.add(messagePanel, BorderLayout.NORTH);
-        layout.add(detailsPanel(), BorderLayout.NORTH);
+        layout.add(detailsPanel(), BorderLayout.CENTER);
         layout.add(buttonsPanel(), BorderLayout.SOUTH);
     }
 
@@ -81,32 +80,35 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
     }
 
     private JPanel detailsPanel() {
-        detailsPanel = new JPanel(new SpringLayout());
+        detailsPanel = new JPanel(new BorderLayout());
+        
+        JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
         int rows = 0;
         
         mode = new Label(moduleTypeVersionParameter.getMode());
-        layoutGenerator.addLabelWidgetPair("Mode:", mode, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Mode:", mode, contentPanel);
         rows++;
 
         parameterName = new Label(moduleTypeVersionParameter.getParameterName());
-        layoutGenerator.addLabelWidgetPair("Parameter Name:", parameterName, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Parameter Name:", parameterName, contentPanel);
         rows++;
 
         sqlParameterType = new Label(moduleTypeVersionParameter.getSqlParameterType());
-        layoutGenerator.addLabelWidgetPair("Parameter SQL Type:", sqlParameterType, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Parameter SQL Type:", sqlParameterType, contentPanel);
         rows++;
 
         parameterValue = new TextField("parameterValue", 30);
         parameterValue.setText(moduleParameter.getValue());
-        layoutGenerator.addLabelWidgetPair("Value:", parameterValue, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Value:", parameterValue, contentPanel);
         rows++;
             
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(detailsPanel, rows, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(contentPanel, rows, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
+        detailsPanel.add(contentPanel, BorderLayout.NORTH);
         return detailsPanel;
     }
 
@@ -143,9 +145,9 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
             public void actionPerformed(ActionEvent event) {
                 if (checkInputFields()) {
                     try {
-                        resetChanges();
                         moduleParameter.setValue(parameterValue.getText());
                         presenter.doSave(moduleParameter);
+                        resetChanges();
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }

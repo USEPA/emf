@@ -42,20 +42,9 @@ public class ModuleDatasetsTableData extends AbstractTableData {
         for (ModuleDataset element : moduleDatasets.values()) {
             String mode = element.getModuleTypeVersionDataset().getMode();
             String outputMethod = element.getOutputMethod();
-            String datasetName = "";
-            String datasetExists = "No";
-            Integer datasetId = element.getDatasetId();
-            if (datasetId != null) {
-                try {
-                    EmfDataset dataset = session.dataService().getDataset(datasetId);
-                    if (dataset != null) {
-                        datasetName = dataset.getName();
-                        datasetExists = "Yes";
-                    }
-                } catch (EmfException ex) {
-                    // ignore exception
-                }
-            }
+            EmfDataset emfDataset = element.getEmfDataset(session.dataService());
+            String datasetName = (emfDataset == null) ? "" : emfDataset.getName();
+            String datasetExists = (emfDataset == null) ? "No" : "Yes"; // TODO check version also
             if (mode.equals("IN") || mode.equals("INOUT")) {
                 Object[] values = { mode,
                                     element.getPlaceholderName(),
@@ -68,17 +57,6 @@ public class ModuleDatasetsTableData extends AbstractTableData {
                 rows.add(row);
             }
             else if (outputMethod.equals(ModuleDataset.NEW)) {
-                datasetName = element.getDatasetNamePattern();
-                if (datasetName != null) {
-                    try {
-                        EmfDataset dataset = session.dataService().getDataset(datasetName);
-                        if (dataset != null) {
-                            datasetExists = "Yes";
-                        }
-                    } catch (EmfException ex) {
-                        // ignore exception
-                    }
-                }
                 Object[] values = { "OUT NEW",
                                     element.getPlaceholderName(),
                                     element.getDatasetNamePattern(),

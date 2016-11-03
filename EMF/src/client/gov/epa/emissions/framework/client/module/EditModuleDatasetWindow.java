@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
@@ -38,11 +39,11 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
 
     private EmfConsole parentConsole;
     private EmfSession session;
-    private static int counter = 0;
 
     private ModuleDataset moduleDataset;
     private ModuleTypeVersionDataset moduleTypeVersionDataset;
     private boolean isOUT;
+    private boolean isDirty;
     
     // layout
     private JPanel layout;
@@ -68,6 +69,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         this.moduleDataset = moduleDataset;
         this.moduleTypeVersionDataset = moduleDataset.getModule().getModuleTypeVersion().getModuleTypeVersionDatasets().get(moduleDataset.getPlaceholderName());
         this.isOUT = moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT);
+        this.isDirty = false;
 
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
@@ -83,7 +85,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     private void doLayout(JPanel layout) {
         messagePanel = new SingleLineMessagePanel();
         layout.add(messagePanel, BorderLayout.NORTH);
-        layout.add(detailsPanel(), BorderLayout.NORTH);
+        layout.add(detailsPanel(), BorderLayout.CENTER);
         layout.add(buttonsPanel(), BorderLayout.SOUTH);
     }
 
@@ -98,20 +100,22 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     }
 
     private JPanel detailsPanel() {
-        detailsPanel = new JPanel(new SpringLayout());
+        detailsPanel = new JPanel(new BorderLayout());
+        
+        JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
         int rows = 0;
         
         mode = new Label(moduleTypeVersionDataset.getMode());
-        layoutGenerator.addLabelWidgetPair("Mode:", mode, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Mode:", mode, contentPanel);
         rows++;
 
         placeholderName = new Label(moduleTypeVersionDataset.getPlaceholderName());
-        layoutGenerator.addLabelWidgetPair("Name/Placeholder:", placeholderName, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Name/Placeholder:", placeholderName, contentPanel);
         rows++;
 
         datasetType = new Label(moduleTypeVersionDataset.getDatasetType().getName());
-        layoutGenerator.addLabelWidgetPair("Dataset Type:", datasetType, detailsPanel);
+        layoutGenerator.addLabelWidgetPair("Dataset Type:", datasetType, contentPanel);
         rows++;
 
         if (moduleDataset.getDatasetId() != null) {
@@ -127,15 +131,16 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             outputMethod = new ComboBox(new String[] {"New Dataset", "Replace Dataset"});
             outputMethod.addActionListener(selectOutputMethodActionListener());
             addChangeable(outputMethod);
-            layoutGenerator.addLabelWidgetPair("Output Mathod:", outputMethod, detailsPanel);
+            layoutGenerator.addLabelWidgetPair("Output Mathod:", outputMethod, contentPanel);
             rows++;
 
             datasetName = new TextField("datasetName", 40);
-            layoutGenerator.addLabelWidgetPair("Dataset Name:", datasetName, detailsPanel);
+            addChangeable(datasetName);
+            layoutGenerator.addLabelWidgetPair("Dataset Name:", datasetName, contentPanel);
             rows++;
             
             selectDataset = new Button("Select Dataset", selectDatasetAction());
-            layoutGenerator.addLabelWidgetPair("", selectDataset, detailsPanel);
+            layoutGenerator.addLabelWidgetPair("", selectDataset, contentPanel);
             rows++;
     
             if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
@@ -157,7 +162,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         } else { // IN or INOUT
             
             selectDataset = new Button("Select Dataset", selectDatasetAction());
-            layoutGenerator.addLabelWidgetPair("", selectDataset, detailsPanel);
+            layoutGenerator.addLabelWidgetPair("", selectDataset, contentPanel);
             rows++;
     
             existingDatasetName = new Label("");
@@ -177,22 +182,24 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                     existingVersions = new String[]{};
                 }
             }
-            layoutGenerator.addLabelWidgetPair("Existing Dataset:", existingDatasetName, detailsPanel);
+            layoutGenerator.addLabelWidgetPair("Existing Dataset:", existingDatasetName, contentPanel);
             rows++;
     
             existingVersion = new ComboBox("Select Version", existingVersions);
             if (moduleDataset.getVersion() != null && existingVersions.length > moduleDataset.getVersion()) {
                 existingVersion.setSelectedItem(existingVersions[moduleDataset.getVersion()]);
             }
-            layoutGenerator.addLabelWidgetPair("Dataset Version:", existingVersion, detailsPanel);
+            addChangeable(existingVersion);
+            layoutGenerator.addLabelWidgetPair("Dataset Version:", existingVersion, contentPanel);
             rows++;
         }
         
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(detailsPanel, rows, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(contentPanel, rows, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
+        detailsPanel.add(contentPanel, BorderLayout.NORTH);
         return detailsPanel;
     }
 
@@ -201,16 +208,17 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             public void actionPerformed(ActionEvent event) {
                 try {
                     DatasetType[] datasetTypes = new DatasetType[] { moduleDataset.getModuleTypeVersionDataset().getDatasetType() };
-                    InputDatasetSelectionDialog view = new InputDatasetSelectionDialog(parentConsole);
-                    InputDatasetSelectionPresenter presenter = new InputDatasetSelectionPresenter(view, session, datasetTypes);
+                    InputDatasetSelectionDialog selectionView = new InputDatasetSelectionDialog(parentConsole);
+                    InputDatasetSelectionPresenter selectionPresenter = new InputDatasetSelectionPresenter(selectionView, session, datasetTypes);
                     if (datasetTypes.length == 1)
-                        presenter.display(datasetTypes[0], true);
+                        selectionPresenter.display(datasetTypes[0], true);
                     else
-                        presenter.display(null, true);
+                        selectionPresenter.display(null, true);
     
-                    EmfDataset[] datasets = presenter.getDatasets();
-                    if (datasets.length > 0) {
+                    EmfDataset[] datasets = selectionPresenter.getDatasets();
+                    if ((datasets.length > 0) && (dataset.getId() != datasets[0].getId())) {
                         dataset = datasets[0];
+                        isDirty = true;
                         if (isOUT) {
                             datasetName.setText(dataset.getName());
                         } else {
@@ -223,8 +231,6 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                             }
                             existingVersion.resetModel(existingVersions);
                         }
-                    } else {
-                        dataset = null;
                     }
                 } catch (Exception ex) {
                     messagePanel.setError(ex.getMessage());
@@ -239,6 +245,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
+                    String oldOutputMethod = moduleDataset.getOutputMethod();
                     if (outputMethod.getSelectedIndex() == 0) { // NEW DATASET
                         moduleDataset.setOutputMethod(ModuleDataset.NEW);
                     } else { // REPLACE DATASET
@@ -256,6 +263,9 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                         }
                         datasetName.setEditable(false);
                         selectDataset.setEnabled(true);
+                    }
+                    if (oldOutputMethod != moduleDataset.getOutputMethod()) {
+                        isDirty = true;
                     }
                 } catch (Exception ex) {
                     messagePanel.setError(ex.getMessage());
@@ -322,7 +332,6 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             public void actionPerformed(ActionEvent event) {
                 if (checkInputFields()) {
                     try {
-                        resetChanges();
                         if (isOUT) {
                             if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
                                 moduleDataset.setDatasetId(null);
@@ -342,6 +351,8 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                             moduleDataset.setOverwriteExisting(null);
                         }
                         presenter.doSave(moduleDataset);
+                        resetChanges();
+                        isDirty = false;
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }
@@ -367,8 +378,16 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     }
 
     private void doClose() {
-        if (shouldDiscardChanges())
-            presenter.doClose();
+        if (isDirty) {
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to close without saving?",
+                                                          "Edit Module Dataset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (selection == JOptionPane.NO_OPTION)
+                return;
+        } else if (!shouldDiscardChanges()) {
+            return;
+        }
+        
+        presenter.doClose();
     }
 
 }

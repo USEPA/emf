@@ -47,7 +47,6 @@ public class EditModuleDatasetPresenter {
 
     public void doSave(ModuleDataset moduleDataset) throws EmfException {
         datasetsObserver.refreshDatasets();
-        closeView();
     }
 
 }
