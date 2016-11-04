@@ -308,12 +308,16 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleName.setText(module.getName());
         moduleName.setMaximumSize(new Dimension(575, 20));
         moduleName.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(moduleName);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(moduleName);
+        }
         layoutGenerator.addLabelWidgetPair("Module Name:", moduleName, formPanel);
 
         moduleDescription = new TextArea("description", module.getDescription(), 60, 8);
         moduleDescription.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(moduleDescription);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(moduleDescription);
+        }
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(moduleDescription);
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, formPanel);

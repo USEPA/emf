@@ -349,7 +349,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     @Override
-    public void closedChildWindow(ModuleTypeVersion moduleTypeVersion) {
+    public void closedChildWindow(ModuleTypeVersion moduleTypeVersion, ViewMode viewMode) {
         // nothing to do
     }
 }

@@ -55,7 +55,8 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private EmfSession session;
     
     ModuleTypeVersionObserver moduleTypeVersionObserver;
-    
+
+    private ViewMode initialViewMode;
     private ViewMode viewMode;
     private boolean mustUnlock;
     private boolean isNewModuleType;
@@ -165,6 +166,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.session = session;
         this.moduleTypeVersionObserver = moduleTypeVersionObserver;
         
+        this.initialViewMode = ViewMode.NEW;
         this.viewMode = ViewMode.NEW;
         this.mustUnlock = false;
         this.isNewModuleType = true;
@@ -220,6 +222,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.isNewModuleType = false;
 
         this.isDirty = false;
+        this.initialViewMode = viewMode;
         this.viewMode = viewMode;
         
         if (this.viewMode == ViewMode.NEW) {
@@ -242,7 +245,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         String viewModeText = "";
         switch (viewMode)
         {
-            case  NEW: viewModeText = "Create"; break;
+            case  NEW: viewModeText = "New"; break;
             case EDIT: viewModeText = "Edit"; break;
             case VIEW: viewModeText = "View"; break;
             default: break; // should never happen
@@ -290,12 +293,16 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         moduleTypeName.setMaximumSize(new Dimension(575, 20));
         moduleTypeName.setText(moduleType.getName());
         moduleTypeName.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(moduleTypeName);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(moduleTypeName);
+        }
         layoutGenerator.addLabelWidgetPair("Name:", moduleTypeName, formPanel);
 
         moduleTypeDescription = new TextArea("Module Type Description", moduleType.getDescription(), 60, 8);
         moduleTypeDescription.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(moduleTypeDescription);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(moduleTypeDescription);
+        }
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(moduleTypeDescription);
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, formPanel);
@@ -344,12 +351,16 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         moduleTypeVersionName.setMaximumSize(new Dimension(575, 20));
         moduleTypeVersionName.setText(moduleTypeVersion.getName());
         moduleTypeVersionName.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(moduleTypeVersionName);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(moduleTypeVersionName);
+        }
         layoutGenerator.addLabelWidgetPair("Name:", moduleTypeVersionName, formPanel);
 
         moduleTypeVersionDescription = new TextArea("Module Type Version Description", moduleTypeVersion.getDescription(), 60, 8);
         moduleTypeVersionDescription.setEditable(viewMode != ViewMode.VIEW);
-        addChangeable(moduleTypeVersionDescription);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(moduleTypeVersionDescription);
+        }
         ScrollableComponent mtvDescScrollableTextArea = new ScrollableComponent(moduleTypeVersionDescription);
         mtvDescScrollableTextArea.setMaximumSize(new Dimension(575, 200));
         layoutGenerator.addLabelWidgetPair("Description:", mtvDescScrollableTextArea, formPanel);
@@ -407,9 +418,11 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private JPanel algorithmPanel() {
         algorithmPanel = new JPanel(new BorderLayout());
         algorithm = new TextArea("algorithm", moduleTypeVersion.getAlgorithm(), 60);
-        algorithm.setEditable(viewMode != ViewMode.VIEW);
         algorithm.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        addChangeable(algorithm);
+        algorithm.setEditable(viewMode != ViewMode.VIEW);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(algorithm);
+        }
         ScrollableComponent scrollableAlgorithm = new ScrollableComponent(algorithm);
         scrollableAlgorithm.setMaximumSize(new Dimension(575, 200));
         algorithmPanel.add(scrollableAlgorithm);
@@ -851,7 +864,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
             moduleType = presenter.releaseLockedModuleType(moduleType);
         }
         presenter.doClose();
-        moduleTypeVersionObserver.closedChildWindow(moduleTypeVersion);
+        moduleTypeVersionObserver.closedChildWindow(moduleTypeVersion, initialViewMode);
     }
 
     public void populateDatasetTypesCache() {
