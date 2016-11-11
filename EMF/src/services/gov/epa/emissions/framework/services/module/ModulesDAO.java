@@ -67,6 +67,12 @@ public class ModulesDAO {
         return (list == null || list.size() == 0) ? null : (Module) list.get(0);
     }
 
+    public Module get(int id, Session session) {
+        Criterion criterion = Restrictions.eq("id", id);
+        List list = hibernateFacade.get(Module.class, criterion, session);
+        return (list == null || list.size() == 0) ? null : (Module) list.get(0);
+    }
+
     public Module add(Module module, Session session) {
         Serializable serializable = hibernateFacade.add(module, session);
         String typeName = serializable.getClass().getName(); 

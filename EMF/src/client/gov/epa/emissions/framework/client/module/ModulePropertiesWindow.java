@@ -231,6 +231,28 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         refreshHistory();
     }
     
+    @Override
+    public void doRefresh() throws EmfException {
+        module = presenter.getModule(module.getId());
+        moduleTypeVersion = module.getModuleTypeVersion();
+        moduleType = moduleTypeVersion.getModuleType();
+        moduleName.setText(module.getName());
+        moduleDescription.setText(module.getDescription());
+        moduleCreator.setText(module.getCreator().getName());
+        moduleCreationDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getCreationDate()));
+        moduleLastModifiedDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getLastModifiedDate()));
+        String lockOwner = module.getLockOwner();
+        String safeLockOwner = (lockOwner == null) ? "" : lockOwner;
+        moduleLockOwner.setText(safeLockOwner);
+        Date lockDate = module.getLockDate();
+        String safeLockDate = (module.getLockDate() == null) ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
+        moduleLockDate.setText(safeLockDate);
+        moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
+        refreshModuleTypeVersion();
+        resetChanges();
+        isDirty = false;
+    }
+
     private Action selectModuleTypeVersionAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -259,13 +281,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layout.add(topPanel, BorderLayout.NORTH);
         layout.add(tabbedPane(), BorderLayout.CENTER);
         layout.add(createButtonsPanel(), BorderLayout.SOUTH);
-    }
-
-    @Override
-    public void doRefresh() throws EmfException {
-        refreshDatasets();
-        refreshParameters();
-        refreshHistory();
     }
 
     public void observe(ModulePropertiesPresenter presenter) {
@@ -823,10 +838,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             } else {
                 module = presenter.updateModule(module);
             }
-            doRefresh();
+            doRefresh(); // resets dirty flags also
             messagePanel.setMessage("Saved module.");
-            resetChanges();
-            isDirty = false;
         }
         catch (EmfException e) {
             messagePanel.setError(e.getMessage());

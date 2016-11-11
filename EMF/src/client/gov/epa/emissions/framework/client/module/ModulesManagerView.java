@@ -7,8 +7,6 @@ import gov.epa.emissions.framework.services.module.Module;
 public interface ModulesManagerView extends ManagedView {
     void observe(ModulesManagerPresenter presenter);
 
-    void refresh(Module[] modules);
-
     EmfConsole getParentConsole();
 
     void display();

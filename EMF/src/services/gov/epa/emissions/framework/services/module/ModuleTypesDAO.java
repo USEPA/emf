@@ -66,6 +66,12 @@ public class ModuleTypesDAO {
         return (list == null || list.size() == 0) ? null : (ModuleType) list.get(0);
     }
 
+    public ModuleType get(int id, Session session) {
+        Criterion criterion = Restrictions.eq("id", id);
+        List list = hibernateFacade.get(ModuleType.class, criterion, session);
+        return (list == null || list.size() == 0) ? null : (ModuleType) list.get(0);
+    }
+
     public void add(ModuleType moduleType, Session session) {
         hibernateFacade.add(moduleType, session);
     }

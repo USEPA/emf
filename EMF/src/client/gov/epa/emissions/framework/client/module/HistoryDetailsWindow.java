@@ -5,35 +5,23 @@ import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.TextArea;
-import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
-import gov.epa.emissions.commons.gui.buttons.SaveButton;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
-import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleDataset;
-import gov.epa.emissions.framework.services.module.ModuleParameter;
-import gov.epa.emissions.framework.services.module.ModuleType;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
-import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
-import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionPresenter;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 
 import java.awt.BorderLayout;
@@ -43,7 +31,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.Iterator;
@@ -60,13 +47,10 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
 
     private EmfConsole parentConsole;
     private EmfSession session;
-    private static int counter = 0;
 
     private History history;
     
     private Module module;
-    private ModuleType moduleType;
-    private ModuleTypeVersion moduleTypeVersion;
 
     // layout
     private JPanel layout;
@@ -114,8 +98,6 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         
         this.history = history;
         this.module = history.getModule();
-        this.moduleTypeVersion = module.getModuleTypeVersion();
-        this.moduleType = this.moduleTypeVersion.getModuleType();
     }
 
     private static String getWindowTitle(History history) {
@@ -258,6 +240,8 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
 
     @Override
     public void doRefresh() throws EmfException {
+        module = presenter.getModule(module.getId());
+        history = module.getModuleHistory().get(history.getRunId()-1);
         refreshSummary();
         refreshDatasets();
         refreshParameters();
@@ -266,7 +250,13 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     }
 
     private void refreshSummary() {
-        // TODO
+        moduleName.setText(module.getName());
+        runId.setText(history.getRunId() + "");
+        runDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(history.getCreationDate()));
+        user.setText(history.getCreator().getName());
+        status.setText((history.getStatus() == null) ? "" : history.getStatus());
+        result.setText((history.getResult() == null) ? "" : history.getResult());
+        comment.setText((history.getComment() == null) ? "" : history.getComment());
     }
     
     public void refreshDatasets() {
@@ -280,11 +270,11 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     }
 
     public void refreshScripts() {
-        // TODO
+        scripts.setText(history.getUserScript());
     }
 
     public void refreshLogs() {
-        // TODO
+        logs.setText(history.getLogMessages());
     }
 
     private JPanel datasetsCrudPanel() {
@@ -307,17 +297,16 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
 
     private void viewDatasets() {
         clear();
-        final List<HistoryDataset> datasets = selectedDatasets();
+        final List<?> datasets = selectedDatasets();
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more Datasets");
             return;
         }
-        //long running methods.....
+        
+        // Long running methods ...
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ComponentUtility.enableComponents(this, false);
 
-        //Instances of javax.swing.SwingWorker are not reusable, so
-        //we create new instances as needed.
         class ViewDatasetPropertiesTask extends SwingWorker<Void, Void> {
             
             private Container parentContainer;
@@ -326,10 +315,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
                 this.parentContainer = parentContainer;
             }
 
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
+            // Main task. Executed in background thread. Don't update GUI here
             @Override
             public Void doInBackground() throws EmfException  {
                 for (Iterator iter = datasets.iterator(); iter.hasNext();) {
@@ -340,15 +326,11 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
                 return null;
             }
 
-            /*
-             * Executed in event dispatching thread
-             */
+            // Executed in event dispatching thread
             @Override
             public void done() {
                 try {
-                    //make sure something didn't happen
                     get();
-                    
                 } catch (InterruptedException e1) {
 //                    messagePanel.setError(e1.getMessage());
 //                    setErrorMsg(e1.getMessage());
@@ -356,8 +338,6 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
 //                    messagePanel.setError(e1.getCause().getMessage());
 //                    setErrorMsg(e1.getCause().getMessage());
                 } finally {
-//                    this.parentContainer.setCursor(null); //turn off the wait cursor
-//                    this.parentContainer.
                     ComponentUtility.enableComponents(parentContainer, true);
                     this.parentContainer.setCursor(null); //turn off the wait cursor
                 }
@@ -366,12 +346,8 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         new ViewDatasetPropertiesTask(this).execute();
     }
 
-    private List selectedDatasets() {
+    private List<?> selectedDatasets() {
         return datasetsTable.selected();
-    }
-
-    private List selectedParameters() {
-        return parametersTable.selected();
     }
 
     private void clear() {

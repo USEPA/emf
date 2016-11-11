@@ -90,7 +90,19 @@ public class ModuleServiceImpl implements ModuleService {
             return moduleTypes;
         } catch (RuntimeException e) {
             LOG.error("Could not get all ModuleTypes", e);
-            throw new EmfException("Could not get all ModuleTypes ");
+            throw new EmfException("Could not get all ModuleTypes: " + e.getMessage());
+        }
+    }
+
+    public synchronized ModuleType getModuleType(int id) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            ModuleType moduleType = moduleTypesDAO.get(id, session);
+            session.close();
+            return moduleType;
+        } catch (RuntimeException e) {
+            LOG.error("Could not get ModuleType (ID=" + id + ")", e);
+            throw new EmfException("Could not get ModuleType (ID=" + id + "): " + e.getMessage());
         }
     }
 
@@ -240,7 +252,20 @@ public class ModuleServiceImpl implements ModuleService {
             return modules;
         } catch (RuntimeException e) {
             LOG.error("Could not get all modules", e);
-            throw new EmfException("Could not get all modules ");
+            throw new EmfException("Could not get all modules: " + e.getMessage());
+        }
+    }
+
+    public synchronized Module getModule(int id) throws EmfException {
+        try {
+            Session session = sessionFactory.getSession();
+            Module module = modulesDAO.get(id, session);
+            session.close();
+
+            return module;
+        } catch (RuntimeException e) {
+            LOG.error("Could not get module (ID=" + id + ")", e);
+            throw new EmfException("Could not get module (ID=" + id + "): " + e.getMessage());
         }
     }
 

@@ -54,6 +54,10 @@ public class ModulePropertiesPresenter {
         return service().releaseLockedModule(session.user(), module);
     }
     
+    public Module getModule(int id) throws EmfException {
+        return service().getModule(id);
+    }
+
     public Module addModule(Module module) throws EmfException {
         return service().addModule(module);
     }

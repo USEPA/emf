@@ -11,7 +11,6 @@ import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
@@ -23,20 +22,16 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 
 public class ModuleTypesManagerWindow extends ReusableInteralFrame implements ModuleTypesManagerView, RefreshObserver {
 
@@ -69,11 +64,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         this.presenter = presenter;
     }
 
-    public void refresh(ModuleType[] types) {
-        table.refresh(new ModuleTypesTableData(types));
-        panelRefresh();
-    }
-
     private void panelRefresh() {
         tablePanel.removeAll();
         tablePanel.add(table);
@@ -83,7 +73,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     public void display() {
         createLayout();
         super.display();
-        populate();
     }
 
     private void createLayout() {
@@ -294,58 +283,20 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         return this.parentConsole;
     }
 
+    @Override
     public void doRefresh() throws EmfException {
         populate();
     }
 
     @Override
     public void populate() {
-        //long running methods.....
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ComponentUtility.enableComponents(this, false);
-
-        //Instances of javax.swing.SwingWorker are not reusable, so
-        //we create new instances as needed.
-        class GetModuleTypesTask extends SwingWorker<ModuleType[], Void> {
-
-            private Container parentContainer;
-
-            public GetModuleTypesTask(Container parentContainer) {
-                this.parentContainer = parentContainer;
-            }
-
-            /*
-             * Main task. Executed in background thread.
-             * don't update gui here
-             */
-            @Override
-            public ModuleType[] doInBackground() throws EmfException  {
-                return presenter.getModuleTypes();
-            }
-
-            /*
-             * Executed in event dispatching thread
-             */
-            @Override
-            public void done() {
-                try {
-                    //make sure something didn't happen
-                    refresh(get());
-                } catch (InterruptedException e1) {
-//                    messagePanel.setError(e1.getMessage());
-//                    setErrorMsg(e1.getMessage());
-                } catch (ExecutionException e1) {
-//                    messagePanel.setError(e1.getCause().getMessage());
-//                    setErrorMsg(e1.getCause().getMessage());
-                } finally {
-//                    this.parentContainer.setCursor(null); //turn off the wait cursor
-//                    this.parentContainer.
-                    ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
-                }
-            }
-        };
-        new GetModuleTypesTask(this).execute();
+        try {
+            ModuleType[] types = presenter.getModuleTypes();
+            table.refresh(new ModuleTypesTableData(types));
+            panelRefresh();
+        } catch (EmfException e) {
+            messagePanel.setError("Refresh failed: " + e.getMessage());
+        }
     }
 
     @Override

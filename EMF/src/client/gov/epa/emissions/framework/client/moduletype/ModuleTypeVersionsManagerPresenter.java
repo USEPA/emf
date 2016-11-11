@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.moduletype;
 
+import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -11,7 +12,7 @@ import gov.epa.emissions.framework.ui.RefreshObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModuleTypeVersionsManagerPresenter implements RefreshObserver {
+public class ModuleTypeVersionsManagerPresenter {
 
     private ModuleTypeVersionsManagerView view;
 
@@ -39,6 +40,18 @@ public class ModuleTypeVersionsManagerPresenter implements RefreshObserver {
     public Module[] getModules() throws EmfException {
         return session.moduleService().getModules();
     }
+
+    public ModuleType obtainLockedModuleType(User owner, ModuleType moduleType) throws EmfException {
+        return session.moduleService().obtainLockedModuleType(owner, moduleType);
+    }
+
+    public ModuleType releaseLockedModuleType(User owner, ModuleType moduleType) throws EmfException {
+        return session.moduleService().releaseLockedModuleType(owner, moduleType);
+    }
+    
+    public ModuleType getModuleType(int id) throws EmfException {
+        return session.moduleService().getModuleType(id);
+    }
     
     public void doRemove(ModuleTypeVersion[] moduleTypeVersions) throws EmfException {
 //        try {
@@ -47,9 +60,5 @@ public class ModuleTypeVersionsManagerPresenter implements RefreshObserver {
 //            throw new EmfException(e.getMessage());
 //        } finally {
 //        }
-    }
-
-    public void doRefresh() throws EmfException {
-        view.refresh();
     }
 }

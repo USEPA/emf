@@ -40,6 +40,16 @@ public class ModuleServiceTransport implements ModuleService {
         return (ModuleType[]) call.requestResponse(new Object[] {});
     }
 
+    public synchronized ModuleType getModuleType(int id) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getModuleType");
+        call.addIntegerParam("id");
+        call.setReturnType(mappings.moduleType());
+
+        return (ModuleType) call.requestResponse(new Object[] { new Integer(id) });
+    }
+
     public synchronized ModuleType addModuleType(ModuleType type) throws EmfException
     {
         EmfCall call = call();
@@ -101,6 +111,17 @@ public class ModuleServiceTransport implements ModuleService {
         call.setReturnType(mappings.modules());
 
         return (Module[]) call.requestResponse(new Object[] {});
+    }
+
+    public synchronized Module getModule(int id) throws EmfException
+    {
+        EmfCall call = call();
+
+        call.setOperation("getModule");
+        call.addIntegerParam("id");
+        call.setReturnType(mappings.module());
+
+        return (Module) call.requestResponse(new Object[] { new Integer(id) });
     }
 
     public synchronized Module addModule(Module module) throws EmfException

@@ -10,7 +10,7 @@ import gov.epa.emissions.framework.ui.RefreshObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModuleTypesManagerPresenter implements RefreshObserver {
+public class ModuleTypesManagerPresenter {
 
     private ModuleTypesManagerView view;
 
@@ -85,10 +85,6 @@ public class ModuleTypesManagerPresenter implements RefreshObserver {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void doRefresh() throws EmfException {
-        view.refresh(session.moduleService().getModuleTypes());
     }
 
     public ModuleType[] getModuleTypes() throws EmfException {

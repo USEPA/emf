@@ -9,6 +9,8 @@ public interface ModuleService {
 
     ModuleType[] getModuleTypes() throws EmfException;
 
+    ModuleType getModuleType(int id) throws EmfException;
+    
     ModuleType addModuleType(ModuleType moduleType) throws EmfException;
 
     ModuleType updateModuleType(ModuleType moduleType) throws EmfException;
@@ -17,12 +19,14 @@ public interface ModuleService {
 
     ModuleType obtainLockedModuleType(User owner, ModuleType moduleType) throws EmfException;
 
-    ModuleType releaseLockedModuleType(User owner, ModuleType type) throws EmfException;
+    ModuleType releaseLockedModuleType(User owner, ModuleType moduleType) throws EmfException;
 
     // Modules
 
     Module[] getModules() throws EmfException;
 
+    Module getModule(int id) throws EmfException;
+    
     Module addModule(Module module) throws EmfException;
 
     Module updateModule(Module module) throws EmfException;

@@ -11,7 +11,6 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
-import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
@@ -113,11 +112,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     // revisions
     private JPanel revisionsPanel;
     private TextArea revisions;
-//    private JPanel revisionsTablePanel;
-//    private SelectableSortFilterWrapper revisionsTable;
-//    private ModuleTypeVersionRevisionsTableData revisionsTableData;
 
-    // Instances of javax.swing.SwingWorker are not reusable, so we create new instances as needed.
     class GetDatasetTypesTask extends SwingWorker<DatasetType[], Void> {
 
         private Container parentContainer;
@@ -126,22 +121,16 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
             this.parentContainer = parentContainer;
         }
 
-        /*
-         * Main task. Executed in background thread.
-         * don't update gui here
-         */
+        // Main task. Executed in background thread. Don't update GUI here.
         @Override
         public DatasetType[] doInBackground() throws EmfException  {
             return presenter.getDatasetTypes();
         }
 
-        /*
-         * Executed in event dispatching thread
-         */
+        // Executed in event dispatching thread.
         @Override
         public void done() {
             try {
-                //make sure something didn't happen
                 datasetTypesCache = get();
             } catch (InterruptedException e1) {
 //                messagePanel.setError(e1.getMessage());
@@ -150,8 +139,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
 //                messagePanel.setError(e1.getCause().getMessage());
 //                setErrorMsg(e1.getCause().getMessage());
             } finally {
-//                this.parentContainer.setCursor(null); //turn off the wait cursor
-//                this.parentContainer.
 //                ComponentUtility.enableComponents(parentContainer, true);
 //                this.parentContainer.setCursor(null); //turn off the wait cursor
             }
@@ -431,15 +418,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     }
 
     private JPanel revisionsPanel() {
-//        revisionsTablePanel = new JPanel(new BorderLayout());
-//        revisionsTableData = new ModuleTypeVersionRevisionsTableData(moduleTypeVersion.getModuleTypeVersionRevisions());
-//        revisionsTable = new SelectableSortFilterWrapper(parentConsole, revisionsTableData, null);
-//        revisionsTablePanel.add(revisionsTable);
-//
-//        revisionsPanel = new JPanel(new BorderLayout());
-//        revisionsPanel.add(revisionsTablePanel, BorderLayout.CENTER);
-//        revisionsPanel.add(parametersCrudPanel(), BorderLayout.SOUTH);
-
         revisionsPanel = new JPanel(new BorderLayout());
         revisions = new TextArea("revisions", moduleTypeVersion.revisionsReport(), 60);
         revisions.setEditable(false);

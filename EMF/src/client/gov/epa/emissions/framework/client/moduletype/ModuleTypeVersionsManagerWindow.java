@@ -84,11 +84,6 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         this.presenter = presenter;
     }
 
-    public void refresh() {
-        table.refresh(new ModuleTypeVersionsTableData(moduleType.getModuleTypeVersions()));
-        panelRefresh();
-    }
-
     private void panelRefresh() {
         tablePanel.removeAll();
         tablePanel.add(table);
@@ -158,7 +153,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
 
         if (viewMode == ViewMode.EDIT) {
             try {
-                moduleType = session.moduleService().releaseLockedModuleType(session.user(), moduleType);
+                moduleType = presenter.releaseLockedModuleType(session.user(), moduleType);
             } catch (EmfException e) {
                 messagePanel.setError("Could not unlock lock: " + moduleType.getName() + "." + e.getMessage());
             }
@@ -352,8 +347,15 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
     }
 
     @Override
-    public void doRefresh() throws EmfException {
-        refresh();
+    public void doRefresh() {
+        try {
+            moduleType = presenter.getModuleType(moduleType.getId());
+        } catch (EmfException e) {
+            messagePanel.setError("Refresh failed: " + e.getMessage());
+            return;
+        }
+        table.refresh(new ModuleTypeVersionsTableData(moduleType.getModuleTypeVersions()));
+        panelRefresh();
     }
 
     @Override
