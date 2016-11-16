@@ -20,6 +20,8 @@ public class EmfDbServer implements DbServer {
 
     public static final String EMF_CASE_SCHEMA = "cases";
     
+    public static final String EMF_MODULES_SCHEMA = "modules";
+    
     private DbServer dbServer;
 
     public EmfDbServer() throws Exception {

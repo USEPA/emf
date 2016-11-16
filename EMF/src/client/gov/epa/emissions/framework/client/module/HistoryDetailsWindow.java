@@ -59,7 +59,9 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     private JPanel summaryPanel;
     private JPanel datasetsPanel;
     private JPanel parametersPanel;
-    private JPanel scriptsPanel;
+    private JPanel setupScriptPanel;
+    private JPanel userScriptPanel;
+    private JPanel teardownScriptPanel;
     private JPanel logsPanel;
 
     // summary
@@ -82,7 +84,9 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     private HistoryParametersTableData parametersTableData;
 
     // scripts
-    private TextArea scripts;
+    private TextArea setupScript;
+    private TextArea userScript;
+    private TextArea teardownScript;
 
     // logs
     private TextArea logs;
@@ -132,7 +136,9 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         tabbedPane.addTab("Summary", summaryPanel());
         tabbedPane.addTab("Datasets", datasetsPanel());
         tabbedPane.addTab("Parameters", parametersPanel());
-        tabbedPane.addTab("Scripts", scriptsPanel());
+        tabbedPane.addTab("Setup Script", setupScriptPanel());
+        tabbedPane.addTab("User Script", userScriptPanel());
+        tabbedPane.addTab("Teardown Script", teardownScriptPanel());
         tabbedPane.addTab("Logs", logsPanel());
         return tabbedPane;
     }
@@ -198,16 +204,40 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         return parametersPanel;
     }
 
-    private JPanel scriptsPanel() {
-        scriptsPanel = new JPanel(new BorderLayout());
-        scripts = new TextArea("scripts", history.getUserScript(), 60);
-        scripts.setEditable(false);
-        scripts.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        ScrollableComponent scrollableScripts = new ScrollableComponent(scripts);
+    private JPanel setupScriptPanel() {
+        setupScriptPanel = new JPanel(new BorderLayout());
+        setupScript = new TextArea("setup script", history.getSetupScript(), 60);
+        setupScript.setEditable(false);
+        setupScript.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        ScrollableComponent scrollableScripts = new ScrollableComponent(setupScript);
         scrollableScripts.setMaximumSize(new Dimension(575, 200));
-        scriptsPanel.add(scrollableScripts);
+        setupScriptPanel.add(scrollableScripts);
 
-        return scriptsPanel;
+        return setupScriptPanel;
+    }
+
+    private JPanel userScriptPanel() {
+        userScriptPanel = new JPanel(new BorderLayout());
+        userScript = new TextArea("userScript", history.getUserScript(), 60);
+        userScript.setEditable(false);
+        userScript.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        ScrollableComponent scrollableScripts = new ScrollableComponent(userScript);
+        scrollableScripts.setMaximumSize(new Dimension(575, 200));
+        userScriptPanel.add(scrollableScripts);
+
+        return userScriptPanel;
+    }
+
+    private JPanel teardownScriptPanel() {
+        teardownScriptPanel = new JPanel(new BorderLayout());
+        teardownScript = new TextArea("teardownScript", history.getTeardownScript(), 60);
+        teardownScript.setEditable(false);
+        teardownScript.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        ScrollableComponent scrollableScripts = new ScrollableComponent(teardownScript);
+        scrollableScripts.setMaximumSize(new Dimension(575, 200));
+        teardownScriptPanel.add(scrollableScripts);
+
+        return teardownScriptPanel;
     }
 
     private JPanel logsPanel() {
@@ -270,7 +300,9 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     }
 
     public void refreshScripts() {
-        scripts.setText(history.getUserScript());
+           setupScript.setText(history.getSetupScript());
+            userScript.setText(history.getUserScript());
+        teardownScript.setText(history.getTeardownScript());
     }
 
     public void refreshLogs() {

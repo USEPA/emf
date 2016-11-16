@@ -9,24 +9,36 @@ import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.DbServerFactory;
+import gov.epa.emissions.framework.services.EmfDbServer;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.InfrastructureException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.basic.UserDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.persistence.DataSourceFactory;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.sql.DataSource;
+
+import java.security.SecureRandom;
+import java.math.BigInteger;
+
+import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.hibernate.Session;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -122,7 +134,7 @@ public class ModuleRunnerTask {
         } else if (internalSources.length > 1) {
             throw new EmfException("Can't handle datasets with multiple internal sources (module '" + moduleDataset.getModule().getName() + "', dataset '" + emfDataset.getName() + "').");
         }
-        String schema = "emissions"; // FIXME hard-coded schema name
+        String schema = EmfDbServer.EMF_EMISSIONS_SCHEMA; // FIXME hard-coded schema name
         String tableName = internalSources[0].getTable();
 
         StringBuilder colNames = new StringBuilder();
@@ -139,12 +151,74 @@ public class ModuleRunnerTask {
         String versionWhereFilter = getVersionWhereFilter(datasetId, version, "ds");
         
         viewDefinition.append(String.format("    CREATE TEMP VIEW %s (%s) AS\n       SELECT %s\n       FROM %s.%s ds\n       WHERE %s;\n\n",
-                viewName.toString(), colNames.toString(), colNames.toString(), schema, tableName, versionWhereFilter));
+                                            viewName.toString(), colNames.toString(), colNames.toString(), schema, tableName, versionWhereFilter));
     }
 
+    public String getSetupScript(String tempUserName, String tempUserPassword, List<String> outputDatasetTables) {
+        String setupScript =
+            // TODO use encrypted password
+            "CREATE USER ${temp_user} WITH CONNECTION LIMIT 1 UNENCRYPTED PASSWORD '${temp_password}';\n\n" +
+                    
+            "GRANT CONNECT, TEMPORARY ON DATABASE \"EMF\" TO ${temp_user};\n\n" +
+
+            "REVOKE CREATE ON SCHEMA public FROM ${temp_user};\n\n" +
+
+            "GRANT USAGE ON SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
+            "GRANT SELECT, REFERENCES ON ALL TABLES IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
+            "GRANT USAGE ON ALL SEQUENCES IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
+            "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n\n";
+
+            // TODO grant USAGE permissions for all procedural languages, domains, and types
+
+        for(String outputDatasetTable : outputDatasetTables)
+            setupScript += "GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE ON TABLE " + outputDatasetTable + " TO ${temp_user};\n";
+        if (!outputDatasetTables.isEmpty())
+            setupScript += "\n";
+        
+        // create new temporary schema with the same name as the temporary user
+        // the default search path will be the new temporary schema followed by public
+        setupScript += "CREATE SCHEMA AUTHORIZATION ${temp_user};\n";
+        
+        setupScript = Pattern.compile("\\$\\{temp_user\\}", Pattern.CASE_INSENSITIVE)
+                             .matcher(setupScript).replaceAll(tempUserName);
+
+        setupScript = Pattern.compile("\\$\\{temp_password\\}", Pattern.CASE_INSENSITIVE)
+                             .matcher(setupScript).replaceAll(tempUserPassword);
+
+        return setupScript;
+    }
+    
+    public String getTeardownScript(String tempUserName, List<String> outputDatasetTables) {
+        String teardownScript =
+            "DROP OWNED BY ${temp_user} CASCADE;\n" +
+            "DROP USER ${temp_user};\n";
+
+        return Pattern.compile("\\$\\{temp_user\\}", Pattern.CASE_INSENSITIVE)
+                      .matcher(teardownScript).replaceAll(tempUserName);
+    }
+
+    public DataSource getDataSource(String username, String password) throws InfrastructureException { 
+        BasicDataSource basicDataSource = (BasicDataSource)new DataSourceFactory().get();
+        String jdbcDriverClassName = basicDataSource.getDriverClassName();
+        String jdbcURL = basicDataSource.getUrl();
+        
+        DriverManagerDataSource ds = new DriverManagerDataSource(); 
+        ds.setDriverClassName(jdbcDriverClassName); 
+        ds.setUsername(username); 
+        ds.setPassword(password); 
+        ds.setUrl(jdbcURL); 
+        return ds;
+    }
+    
     public void runModule(Module module) throws EmfException {
         
         prepare("", module);
+
+        String finalStatusMessage = "";
+        
+        final String    SETUP_SCRIPT_ERROR = "Failed to execute setup script: ";
+        final String     USER_SCRIPT_ERROR = "Failed to execute user script (algorithm): ";
+        final String TEARDOWN_SCRIPT_ERROR = "Failed to execute teardown script: ";
         
         ModuleTypeVersion moduleTypeVersion = module.getModuleTypeVersion();
 
@@ -182,7 +256,11 @@ public class ModuleRunnerTask {
             String algorithm = moduleTypeVersion.getAlgorithm();
             history.setUserScript(algorithm);
             
+            String datasetTablesSchema = EmfDbServer.EMF_EMISSIONS_SCHEMA; // FIXME hard-coded schema name
+            
             StringBuilder viewDefinitions = new StringBuilder();
+            
+            List<String> outputDatasetTables = new ArrayList<String>();
             
             // create output datasets
             // create views for all datasets
@@ -212,6 +290,8 @@ public class ModuleRunnerTask {
                                                    internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), version);
                         history.addLogMessage(History.INFO, logMessage);
 
+                        outputDatasetTables.add(datasetTablesSchema + "." + internalSources[0].getTable());
+                        
                         StringBuilder viewName = new StringBuilder();
                         StringBuilder viewDefinition = new StringBuilder();
                         createView(viewName, viewDefinition, moduleDataset, dataset, version);
@@ -259,6 +339,8 @@ public class ModuleRunnerTask {
                                                    internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), version);
                         history.addLogMessage(History.INFO, logMessage);
                         
+                        outputDatasetTables.add(datasetTablesSchema + "." + internalSources[0].getTable());
+                        
                         StringBuilder viewName = new StringBuilder();
                         StringBuilder viewDefinition = new StringBuilder();
                         createView(viewName, viewDefinition, moduleDataset, dataset, version);
@@ -287,6 +369,10 @@ public class ModuleRunnerTask {
                                                moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
                                                internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), moduleDataset.getVersion());
                     history.addLogMessage(History.INFO, logMessage);
+                    
+                    if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.INOUT)) {
+                        outputDatasetTables.add(datasetTablesSchema + "." + internalSources[0].getTable());
+                    }
                     
                     StringBuilder viewName = new StringBuilder();
                     StringBuilder viewDefinition = new StringBuilder();
@@ -335,7 +421,7 @@ public class ModuleRunnerTask {
             if (matcher.find()) {
                 int pos = matcher.start();
                 String match = matcher.group();
-                String message = String.format("Unrecognized placeholder %s at location %d.", match, start);
+                String message = String.format("Unrecognized placeholder %s at location %d.", match, pos);
                 throw new EmfException(message); 
             }
             
@@ -388,8 +474,49 @@ public class ModuleRunnerTask {
                 algorithm = "\nDO $" + userTag + "$\nDECLARE\n" + parameterDeclarations + "BEGIN\n" + viewDefinitions + algorithm + outputParameters + "\nEND $" + userTag + "$;\n" + selectOutputParameters;
             }
     
-            // execute algorithm
+            // execute setup script
+            
+            // Generate random password by choosing 30 * 5 = 150 bits from a cryptographically
+            // secure random bit generator and encoding them in base-32.
+            // 128 bits is considered to be cryptographically strong.
+            // Each digit in a base 32 number can encode 5 bits, so 150 bits results in 30 characters.
+            // This encoding is compact and efficient, with 5 random bits per character.
+            String tempUserPassword = new BigInteger(32 * 5, new SecureRandom()).toString(32);
+
+            String setupScript = getSetupScript(userTimeStamp, tempUserPassword, outputDatasetTables);
+            
             Statement statement = null;
+            try {
+                history.setSetupScript(setupScript);
+                history.setStatus(History.SETUP_SCRIPT);
+                
+                history.addLogMessage(History.INFO, "Starting setup script.");
+                
+                module = modulesDAO.update(module, session);
+                
+                statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                statement.execute(setupScript);
+                
+            } catch (Exception e) {
+                // e.printStackTrace();
+                // TODO save error to the current execution history record
+                throw new EmfException(SETUP_SCRIPT_ERROR + e.getMessage());
+            } finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                        // ignore
+                    }
+                    statement = null;
+                }
+            }
+            
+            // execute algorithm
+            
+            // TODO create new connection and login as the temporary user
+            
+            statement = null;
             try {
                 history.setUserScript(algorithm);
                 history.setStatus(History.USER_SCRIPT);
@@ -398,7 +525,8 @@ public class ModuleRunnerTask {
                 
                 module = modulesDAO.update(module, session);
                 
-                statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                DataSource dataSource = getDataSource(userTimeStamp, tempUserPassword);
+                statement = dataSource.getConnection().createStatement();
                 statement.execute(algorithm);
                 
                 // get the values of all INOUT and OUT parameters
@@ -413,14 +541,12 @@ public class ModuleRunnerTask {
                 
                 // TODO update the record counts for the output datasets
                 
-            } catch (SQLException e) {
-                // e.printStackTrace();
-                // TODO save error to the current execution history record
-                throw new EmfException("Failed to execute algorithm: " + e.getMessage());
+                history.addLogMessage(History.INFO, "User script (algorithm) completed successfully.");
+                
             } catch (Exception e) {
                 // e.printStackTrace();
                 // TODO save error to the current execution history record
-                throw new EmfException("Failed to execute algorithm: " + e.getMessage());
+                throw new EmfException(USER_SCRIPT_ERROR + e.getMessage());
             } finally {
                 if (statement != null) {
                     try {
@@ -431,26 +557,71 @@ public class ModuleRunnerTask {
                     statement = null;
                 }
             }
+            
+            // execute teardown script
+            
+            String teardownScript = getTeardownScript(userTimeStamp, outputDatasetTables);
+            
+            statement = null;
+            try {
+                history.setTeardownScript(teardownScript);
+                history.setStatus(History.TEARDOWN_SCRIPT);
+                
+                history.addLogMessage(History.INFO, "Starting teardown script.");
+                
+                module = modulesDAO.update(module, session);
+                
+                statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                statement.execute(teardownScript);
+                
+            } catch (Exception e) {
+                // e.printStackTrace();
+                // TODO save error to the current execution history record
+                throw new EmfException(TEARDOWN_SCRIPT_ERROR + e.getMessage());
+            } finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                        // ignore
+                    }
+                    statement = null;
+                }
+            }
+            
             history.setStatus(History.COMPLETED);
             history.setResult(History.SUCCESS);
             
-            history.addLogMessage(History.INFO, "User script completed successfully.");
+            finalStatusMessage = "Completed running module '" + module.getName() + "': " + history.getResult();
+            
+            history.addLogMessage(History.SUCCESS, finalStatusMessage);
             
             module = modulesDAO.update(module, session);
-            complete(history.getResult(), module);
             
         } catch (Exception e) {
             
+            String eMessage = e.getMessage();
+            
             history.setStatus(History.COMPLETED);
             history.setResult(History.FAILED);
-            history.setErrorMessage(e.getMessage());
+            history.setErrorMessage(eMessage);
+
+            if (eMessage.startsWith(SETUP_SCRIPT_ERROR)) {
+                errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getSetupScript()) + "\n";
+            } else if (eMessage.startsWith(USER_SCRIPT_ERROR)) {
+                errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getUserScript()) + "\n";
+            } else if (eMessage.startsWith(TEARDOWN_SCRIPT_ERROR)) {
+                errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
+            } else {
+                errorMessage = eMessage;
+            }
             
-            errorMessage = "User script failed:\n\n" + e.getMessage() + "\n\n" + getLineNumberedScript(history.getUserScript()) + "\n";
+            finalStatusMessage = "Completed running module '" + module.getName() + "': " + history.getResult() + "\n\n" + errorMessage;
             
-            history.addLogMessage(History.ERROR, errorMessage);
+            history.addLogMessage(History.ERROR, finalStatusMessage);
             
             module = modulesDAO.update(module, session);
-            complete(history.getResult() + ": " + errorMessage, module);
+            
         } finally {
             try {
                 module = modulesDAO.releaseLockedModule(user, module, session);
@@ -458,6 +629,8 @@ public class ModuleRunnerTask {
                 // ignore
             }
         }
+
+        complete(finalStatusMessage);
     }
 
     private String getLineNumberedScript(String script) {
@@ -492,6 +665,8 @@ public class ModuleRunnerTask {
             throw new EmfException("Can't handle datasets with multiple internal sources (module '" + moduleDataset.getModule().getName() + "', dataset '" + dataset.getName() + "').");
         }
 
+        String datasetTablesSchema = EmfDbServer.EMF_EMISSIONS_SCHEMA; // FIXME hard-coded schema name
+        
         // Important: keep the list of valid placeholders in sync with
         //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
 
@@ -510,7 +685,7 @@ public class ModuleRunnerTask {
                         .matcher(result).replaceAll(version + "");
 
         result = Pattern.compile(startPattern + separatorPattern + "table_name" + endPattern, Pattern.CASE_INSENSITIVE)
-                        .matcher(result).replaceAll("emissions." + internalSources[0].getTable()); // FIXME hard-coded schema name
+                        .matcher(result).replaceAll(datasetTablesSchema + "." + internalSources[0].getTable());
 
         result = Pattern.compile(startPattern + separatorPattern + "view" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll(viewName);
@@ -540,9 +715,9 @@ public class ModuleRunnerTask {
             setStatus("Started running module '" + module.getName() + "'." + suffixMsg);
     }
 
-    private void complete(String suffixMsg, Module module) {
+    private void complete(String finalStatusMessage) {
         if (verboseStatusLogging)
-            setStatus("Completed running module '" + module.getName() + "'." + suffixMsg);
+            setStatus(finalStatusMessage);
     }
 
     private void setStatus(String message) {
