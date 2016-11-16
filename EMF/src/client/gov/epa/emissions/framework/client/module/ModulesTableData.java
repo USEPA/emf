@@ -19,7 +19,7 @@ public class ModulesTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Module Name", "Final?", "Module Type", "Version", "Creator", "Date"};
+        return new String[] { "Module Name", "Final?", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date"};
     }
 
     public Class getColumnClass(int col) {
@@ -46,7 +46,9 @@ public class ModulesTableData extends AbstractTableData {
                                 moduleType.getName(),
                                 moduleTypeVersion.getVersion() + " - " + moduleTypeVersion.getName(),
                                 element.getCreator().getName(),
-                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(element.getCreationDate()) };
+                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(element.getCreationDate()),
+                                element.getLockOwner(),
+                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(element.getLockDate()) };
 
             Row row = new ViewableRow(element, values);
             rows.add(row);

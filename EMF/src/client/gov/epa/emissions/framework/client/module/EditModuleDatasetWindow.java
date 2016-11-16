@@ -216,20 +216,22 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                         selectionPresenter.display(null, true);
     
                     EmfDataset[] datasets = selectionPresenter.getDatasets();
-                    if ((datasets.length > 0) && (dataset.getId() != datasets[0].getId())) {
-                        dataset = datasets[0];
-                        isDirty = true;
-                        if (isOUT) {
-                            datasetName.setText(dataset.getName());
-                        } else {
-                            existingDatasetName.setText(dataset.getName());
-                            Version[] versions = session.dataEditorService().getVersions(dataset.getId());
-                            existingVersions = new String[versions.length];
-                            int i = 0;
-                            for(Version v : versions) {
-                                existingVersions[i++] = v.getVersion() + " - " + v.getName() + (v.isFinalVersion() ? " - Final" : ""); 
+                    if (datasets.length > 0) {
+                        if ((dataset == null) || (dataset.getId() != datasets[0].getId())) {
+                            dataset = datasets[0];
+                            isDirty = true;
+                            if (isOUT) {
+                                datasetName.setText(dataset.getName());
+                            } else {
+                                existingDatasetName.setText(dataset.getName());
+                                Version[] versions = session.dataEditorService().getVersions(dataset.getId());
+                                existingVersions = new String[versions.length];
+                                int i = 0;
+                                for(Version v : versions) {
+                                    existingVersions[i++] = v.getVersion() + " - " + v.getName() + (v.isFinalVersion() ? " - Final" : ""); 
+                                }
+                                existingVersion.resetModel(existingVersions);
                             }
-                            existingVersion.resetModel(existingVersions);
                         }
                     }
                 } catch (Exception ex) {
