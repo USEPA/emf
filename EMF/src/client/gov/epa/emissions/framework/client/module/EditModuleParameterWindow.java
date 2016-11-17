@@ -100,9 +100,10 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
 
         parameterValue = new TextField("parameterValue", 30);
         parameterValue.setText(moduleParameter.getValue());
+        addChangeable(parameterValue);
         layoutGenerator.addLabelWidgetPair("Value:", parameterValue, contentPanel);
         rows++;
-            
+
         // Lay out the panel.
         layoutGenerator.makeCompactGrid(contentPanel, rows, 2, // rows, cols
                 10, 10, // initialX, initialY
@@ -148,6 +149,7 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
                         moduleParameter.setValue(parameterValue.getText());
                         presenter.doSave(moduleParameter);
                         resetChanges();
+                        messagePanel.setMessage("Saved module parameter");
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }

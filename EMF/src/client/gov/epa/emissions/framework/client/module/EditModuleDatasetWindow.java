@@ -199,6 +199,9 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
+        resetChanges();
+        isDirty = false;
+
         detailsPanel.add(contentPanel, BorderLayout.NORTH);
         return detailsPanel;
     }
@@ -355,6 +358,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                         presenter.doSave(moduleDataset);
                         resetChanges();
                         isDirty = false;
+                        messagePanel.setMessage("Saved module dataset");
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }
