@@ -216,9 +216,9 @@ public class ModuleRunnerTask {
 
         String finalStatusMessage = "";
         
-        final String    SETUP_SCRIPT_ERROR = "Failed to execute setup script: ";
-        final String     USER_SCRIPT_ERROR = "Failed to execute user script (algorithm): ";
-        final String TEARDOWN_SCRIPT_ERROR = "Failed to execute teardown script: ";
+        final String    SETUP_SCRIPT_ERROR = "Failed to execute setup script.\n";
+        final String     USER_SCRIPT_ERROR = "Failed to execute user script (algorithm).\n";
+        final String TEARDOWN_SCRIPT_ERROR = "Failed to execute teardown script.\n";
         
         ModuleTypeVersion moduleTypeVersion = module.getModuleTypeVersion();
 
