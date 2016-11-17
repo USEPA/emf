@@ -884,7 +884,17 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         } else if (!shouldDiscardChanges()) {
             return;
         }
-        
+
+        StringBuilder error = new StringBuilder();
+        if (module.getModuleTypeVersion().isValid(error)) {
+            if (!module.isValid(error)) {
+                int selection = JOptionPane.showConfirmDialog(parentConsole, error + "\n\nAre you sure you want to close incomplete module?\n",
+                                                              "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (selection == JOptionPane.NO_OPTION)
+                    return;
+            }
+        }
+
         if (viewMode == ViewMode.EDIT) {
             try {
                 module = presenter.releaseLockedModule(module);
