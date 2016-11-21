@@ -223,8 +223,8 @@ public class ModuleRunnerTask {
         ModuleTypeVersion moduleTypeVersion = module.getModuleTypeVersion();
 
         Date start = new Date();
-        
-        String userTimeStamp = user.getUsername() + "_" + CustomDateFormat.format_YYYYMMDDHHMMSSSS(start);
+        String timeStamp = CustomDateFormat.format_HHMMSSSS(start);
+        String userTimeStamp = user.getUsername() + "_" + timeStamp;
 
         History history = new History();
         history.setModule(module);
@@ -264,7 +264,7 @@ public class ModuleRunnerTask {
             
             // create output datasets
             // create views for all datasets
-            // replace all dataset place-holders in the algorithm
+            // replace all dataset placeholders in the algorithm
             for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
                 ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
                 if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
@@ -304,7 +304,7 @@ public class ModuleRunnerTask {
                         historyDataset.setHistory(history);
                         historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                         
-                        algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
+                        algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
                     } else { // REPLACE
                         EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
                         if (dataset == null) {
@@ -353,7 +353,7 @@ public class ModuleRunnerTask {
                         historyDataset.setHistory(history);
                         historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                         
-                        algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
+                        algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
                     }
                 } else { // IN or INOUT
                     EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
@@ -386,12 +386,12 @@ public class ModuleRunnerTask {
                     historyDataset.setHistory(history);
                     historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                     
-                    algorithm = replacePlaceholders(algorithm, moduleDataset, dataset, moduleDataset.getVersion(), viewName.toString());
+                    algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, moduleDataset.getVersion(), viewName.toString());
                 }
             }
             history.setHistoryDatasets(historyDatasets);
             
-            // replace global place-holders in the algorithm
+            // replace global placeholders in the algorithm
             String startPattern = "\\$\\{\\s*";
             String separatorPattern = "\\s*\\.\\s*";
             String endPattern = "\\s*\\}";
@@ -416,7 +416,7 @@ public class ModuleRunnerTask {
     
             history.setUserScript(algorithm);
 
-            // verify that the algorithm doesn't have any place-holders left
+            // verify that the algorithm doesn't have any placeholders left
             Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
             if (matcher.find()) {
                 int pos = matcher.start();
@@ -424,18 +424,34 @@ public class ModuleRunnerTask {
                 String message = String.format("Unrecognized placeholder %s at location %d.", match, pos);
                 throw new EmfException(message); 
             }
+
+            // replace all parameter placeholders
+            for(ModuleParameter moduleParameter : module.getModuleParameters().values()) {
+                algorithm = replaceParameterPlaceholders(algorithm, moduleParameter, timeStamp);
+            }
             
+            // verify that the algorithm doesn't have any parameter placeholders left
+            startPattern = "\\#\\{\\s*";
+            matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
+            if (matcher.find()) {
+                int pos = matcher.start();
+                String match = matcher.group();
+                String message = String.format("Unrecognized parameter placeholder %s at location %d.", match, pos);
+                throw new EmfException(message); 
+            }
+
             // create outer block
             // declare all parameters, initialize IN and INOUT parameters
             String parameterDeclarations = "";
             for(ModuleParameter moduleParameter : module.getModuleParameters().values()) {
+                String parameterTimeStamp = moduleParameter.getParameterName() + "_" + timeStamp; 
                 HistoryParameter historyParameter;
                 ModuleTypeVersionParameter moduleTypeVersionParameter = moduleParameter.getModuleTypeVersionParameter();
                 if (moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
-                    parameterDeclarations += "    " + moduleParameter.getParameterName() + " " + moduleTypeVersionParameter.getSqlParameterType() + ";\n";
+                    parameterDeclarations += "    " + parameterTimeStamp + " " + moduleTypeVersionParameter.getSqlParameterType() + ";\n";
                     historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), null);
                 } else { // IN or INOUT
-                    parameterDeclarations += "    " + moduleParameter.getParameterName() + " " + moduleTypeVersionParameter.getSqlParameterType() + " := " + moduleParameter.getValue() + ";\n";
+                    parameterDeclarations += "    " + parameterTimeStamp + " " + moduleTypeVersionParameter.getSqlParameterType() + " := " + moduleParameter.getValue() + ";\n";
                     historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
                 }
                 historyParameters.put(moduleParameter.getParameterName(), historyParameter);
@@ -445,13 +461,13 @@ public class ModuleRunnerTask {
             // return the values of all INOUT and OUT parameters as a result set
             String outputParameters = "";
             for(ModuleParameter moduleParameter : module.getModuleParameters().values()) {
+                String parameterTimeStamp = moduleParameter.getParameterName() + "_" + timeStamp; 
                 ModuleTypeVersionParameter moduleTypeVersionParameter = moduleParameter.getModuleTypeVersionParameter();
-                if (moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.INOUT) ||
-                    moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
+                if (!moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
                     if (!outputParameters.isEmpty()) {
                         outputParameters += "UNION ALL\n";
                     }
-                    outputParameters += "SELECT '" + moduleTypeVersionParameter.getParameterName() + "' AS name, CAST(" + moduleTypeVersionParameter.getParameterName() + " AS text) AS value";
+                    outputParameters += "SELECT '" + moduleTypeVersionParameter.getParameterName() + "' AS name, CAST(" + parameterTimeStamp + " AS text) AS value";
                 }
             }
             
@@ -651,7 +667,7 @@ public class ModuleRunnerTask {
         return lineNumberedScript.toString();
     }
     
-    private String replacePlaceholders(String algorithm, ModuleDataset moduleDataset, EmfDataset dataset, int version, String viewName) throws EmfException {
+    private String replaceDatasetPlaceholders(String algorithm, ModuleDataset moduleDataset, EmfDataset dataset, int version, String viewName) throws EmfException {
         String result = algorithm;
         ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
         String startPattern = "\\$\\{\\s*" + moduleDataset.getPlaceholderName();
@@ -696,6 +712,35 @@ public class ModuleRunnerTask {
         if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
             result = Pattern.compile(startPattern + separatorPattern + "output_method" + endPattern, Pattern.CASE_INSENSITIVE)
                             .matcher(result).replaceAll(moduleDataset.getOutputMethod());
+        }
+
+        return result;
+    }
+
+    private String replaceParameterPlaceholders(String algorithm, ModuleParameter moduleParameter, String timeStamp) throws EmfException {
+        String result = algorithm;
+        ModuleTypeVersionParameter moduleTypeVersionParameter = moduleParameter.getModuleTypeVersionParameter();
+        String parameterName = moduleParameter.getParameterName();
+        String parameterTimeStamp = parameterName + "_" + timeStamp; 
+        String startPattern = "\\#\\{\\s*" + parameterName;
+        String separatorPattern = "\\s*\\.\\s*";
+        String endPattern = "\\s*\\}";
+
+        // Important: keep the list of valid placeholders in sync with
+        //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
+
+        result = Pattern.compile(startPattern + endPattern, Pattern.CASE_INSENSITIVE)
+                        .matcher(result).replaceAll(parameterTimeStamp);
+
+        result = Pattern.compile(startPattern + separatorPattern + "sql_type" + endPattern, Pattern.CASE_INSENSITIVE)
+                        .matcher(result).replaceAll(moduleTypeVersionParameter.getSqlParameterType());
+
+        result = Pattern.compile(startPattern + separatorPattern + "mode" + endPattern, Pattern.CASE_INSENSITIVE)
+                        .matcher(result).replaceAll(moduleTypeVersionParameter.getMode());
+
+        if (!moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionDataset.OUT)) {
+            result = Pattern.compile(startPattern + separatorPattern + "input_value" + endPattern, Pattern.CASE_INSENSITIVE)
+                            .matcher(result).replaceAll(moduleParameter.getValue());
         }
 
         return result;

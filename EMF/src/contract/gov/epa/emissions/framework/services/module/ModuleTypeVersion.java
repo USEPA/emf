@@ -119,6 +119,29 @@ public class ModuleTypeVersion implements Serializable {
             }
         }
         
+        validPlaceholders.clear();
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values()) {
+            String parameter = moduleTypeVersionParameter.getParameterName().toLowerCase();
+            validPlaceholders.add("#{" + parameter + "}");
+            validPlaceholders.add("#{" + parameter + ".sql_type}");
+            validPlaceholders.add("#{" + parameter + ".mode}");
+            if (!moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
+                validPlaceholders.add("#{" + parameter + ".input_value}");
+            }
+        }
+        
+        // verify that all parameters in the algorithm are valid
+        startPattern = "\\#\\{\\s*";
+        matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
+        while (matcher.find()) {
+            int start = matcher.start();
+            String match = matcher.group().replaceAll("\\{\\s*", "{").replaceAll("\\s*\\.\\s*", ".").replaceAll("\\s*\\}", "}").toLowerCase();
+            if (!validPlaceholders.contains(match)) {
+                error.append(String.format("Unrecognized parameter placeholder %s at location %d.", match, start));
+                return false;
+            }
+        }
+        
         return true;
     }
     
