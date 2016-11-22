@@ -11,15 +11,12 @@ import gov.epa.emissions.framework.client.admin.RegisterUserWindow;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.console.EmfConsolePresenter;
 import gov.epa.emissions.framework.client.transport.ServiceLocator;
-import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.gui.ScreenUtils;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -50,7 +47,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
     private ServiceLocator serviceLocator;
 
-    public final static String EMF_VERSION = "Build #43 - 11/16/2016";
+    public final static String EMF_VERSION = "Upstream Build #45 - 11/22/2016";
 
     public LoginWindow(ServiceLocator serviceLocator) {
         super("Login", "Login to the Emissions Modeling Framework [" + EMF_VERSION + "]");
