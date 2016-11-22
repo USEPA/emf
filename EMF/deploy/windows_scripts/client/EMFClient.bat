@@ -4,11 +4,15 @@
 
 set EMF_HOME=C:\Users\Public\EMFClient
 
-set JAVA_EXE=C:\Program Files\Java\jre1.8.0_102\bin\java
+set JAVA_EXE=C:\Program Files\Java\jre1.8.0_112\bin\java
 
-set TOMCAT_SERVER=http://ec2-52-54-42-63.compute-1.amazonaws.com
+@rem Upstream Test Server
+@rem set TOMCAT_SERVER=http://ec2-52-54-42-63.compute-1.amazonaws.com
 
-set USER_PREFERENCES=%EMF_HOME%/EMFPrefs.txt
+@rem Upstream Production Server
+set TOMCAT_SERVER=http://ec2-52-4-236-63.compute-1.amazonaws.com
+
+set USER_PREFERENCES=%EMF_HOME%\EMFPrefs.txt
 
 :: set needed jar files in CLASSPATH
 
