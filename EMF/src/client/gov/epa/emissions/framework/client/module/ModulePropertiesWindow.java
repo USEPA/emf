@@ -436,7 +436,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         runButton = new Button("Run", runAction());
         runButton.setMnemonic('R');
-        runButton.setEnabled(viewMode == ViewMode.EDIT);
         
         finalizeButton = new Button("Finalize", finalizeAction());
         finalizeButton.setMnemonic('F');
