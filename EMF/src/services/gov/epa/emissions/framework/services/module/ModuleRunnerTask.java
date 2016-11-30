@@ -138,20 +138,56 @@ public class ModuleRunnerTask {
         String tableName = internalSources[0].getTable();
 
         StringBuilder colNames = new StringBuilder();
+        StringBuilder newColNames = new StringBuilder();
+        String datasetIdColName = "dataset_id";
+        String versionColName = "version";
         for(String col : internalSources[0].getCols()) {
             if (col.toLowerCase().equals("record_id"))
                 continue;
+            if (col.toLowerCase().equals("dataset_id")) {
+                datasetIdColName = col;
+                continue;
+            }
+            if (col.toLowerCase().equals("version")) {
+                versionColName = col;
+                continue;
+            }
             if (col.toLowerCase().equals("delete_versions"))
                 continue;
             if (colNames.length() > 0)
                 colNames.append(", ");
             colNames.append(col);
+            if (newColNames.length() > 0)
+                newColNames.append(", ");
+            newColNames.append("NEW." + col);
         }
         
         String versionWhereFilter = getVersionWhereFilter(datasetId, version, "ds");
         
-        viewDefinition.append(String.format("    CREATE TEMP VIEW %s (%s) AS\n       SELECT %s\n       FROM %s.%s ds\n       WHERE %s;\n\n",
-                                            viewName.toString(), colNames.toString(), colNames.toString(), schema, tableName, versionWhereFilter));
+        viewDefinition.append(String.format("    CREATE TEMP VIEW %s (%s) AS\n" +
+                                            "       SELECT %s\n" +
+                                            "       FROM %s.%s ds\n" +
+                                            "       WHERE %s;\n\n",
+                                            viewName.toString(), colNames.toString(),
+                                            colNames.toString(),
+                                            schema, tableName,
+                                            versionWhereFilter));
+        
+        if (!mode.equals(ModuleTypeVersionDataset.IN.toLowerCase())) {
+            viewDefinition.append(String.format("    CREATE RULE %s_insert AS ON INSERT TO %s\n" +
+                                                "    DO INSTEAD\n" +
+                                                "    INSERT INTO %s.%s\n" +
+                                                "        (%s, %s, %s)\n" +
+                                                "    VALUES\n" +
+                                                "        (%d, %d, %s)\n" +
+                                                "    RETURNING\n" +
+                                                "        %s;\n\n",
+                                                viewName.toString(), viewName.toString(),
+                                                schema, tableName,
+                                                datasetIdColName, versionColName, colNames.toString(),
+                                                datasetId, version, newColNames.toString(),
+                                                colNames.toString()));
+        }
     }
 
     public String getSetupScript(String tempUserName, String tempUserPassword, List<String> outputDatasetTables) {
