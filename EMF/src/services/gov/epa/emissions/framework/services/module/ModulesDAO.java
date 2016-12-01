@@ -108,7 +108,7 @@ public class ModulesDAO {
         return (Module) hibernateFacade.current(id, clazz, session);
     }
 
-    private Module current(Module module, Session session) {
+    public Module current(Module module, Session session) {
         return current(module.getId(), Module.class, session);
     }
 

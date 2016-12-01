@@ -276,6 +276,40 @@ public class ModuleServiceImpl implements ModuleService {
             if (!modulesDAO.canUpdate(module, session))
                 throw new EmfException("The module is already in use");
 
+            Map<String, ModuleDataset>   newModuleDatasets   = module.getModuleDatasets(); 
+            Map<String, ModuleParameter> newModuleParameters = module.getModuleParameters();
+            
+            // manually delete the missing module datasets and parameters from the database
+            Module currentModule = modulesDAO.current(module, session);
+            for(ModuleDataset currentModuleDataset : currentModule.getModuleDatasets().values()) {
+                if (newModuleDatasets.containsKey(currentModuleDataset.getPlaceholderName())) {
+                    ModuleDataset newModuleDataset = newModuleDatasets.get(currentModuleDataset.getPlaceholderName());
+                    if (newModuleDataset.getId() == currentModuleDataset.getId())
+                        continue;
+                }
+                // manually delete the currentModuleDataset
+                try {
+                    Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                    statement.execute("DELETE FROM modules.modules_datasets WHERE id=" + currentModuleDataset.getId());
+                } catch (Exception e) {
+                    throw new EmfException("Failed to delete module dataset: " + e.getMessage());
+                }
+            }
+            for(ModuleParameter currentModuleParameter : currentModule.getModuleParameters().values()) {
+                if (newModuleParameters.containsKey(currentModuleParameter.getParameterName())) {
+                    ModuleParameter newModuleParameter = newModuleParameters.get(currentModuleParameter.getParameterName());
+                    if (newModuleParameter.getId() == currentModuleParameter.getId())
+                        continue;
+                }
+                // manually delete the currentModuleParameter
+                try {
+                    Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                    statement.execute("DELETE FROM modules.modules_parameters WHERE id=" + currentModuleParameter.getId());
+                } catch (Exception e) {
+                    throw new EmfException("Failed to delete module parameter: " + e.getMessage());
+                }
+            }
+            
             Module released = modulesDAO.update(module, session);
             session.close();
 

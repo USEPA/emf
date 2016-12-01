@@ -316,7 +316,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layoutGenerator.addLabelWidgetPair("Version:", moduleTypeVersionNumber, formPanel);
 
         selectModuleTypeVersion = new Button("Select Module Type Version", selectModuleTypeVersionAction());
-        selectModuleTypeVersion.setEnabled(false); // FIXME temporarily disabled (viewMode != ViewMode.VIEW);
+        selectModuleTypeVersion.setEnabled(viewMode != ViewMode.VIEW);
         layoutGenerator.addLabelWidgetPair("", selectModuleTypeVersion, formPanel);
 
         moduleName = new TextField("name", 60);
