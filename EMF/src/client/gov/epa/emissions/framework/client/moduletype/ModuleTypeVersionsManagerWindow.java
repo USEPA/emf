@@ -366,5 +366,6 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         if (viewMode != ViewMode.VIEW) {
             newEditMTVs--;
         }
+        doRefresh();
     }
 }

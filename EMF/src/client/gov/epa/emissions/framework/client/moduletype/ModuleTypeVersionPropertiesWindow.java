@@ -58,7 +58,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private ViewMode initialViewMode;
     private ViewMode viewMode;
     private boolean mustUnlock;
-    private boolean isNewModuleType;
     private boolean isDirty;
     
     private ModuleType moduleType;
@@ -156,7 +155,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.initialViewMode = ViewMode.NEW;
         this.viewMode = ViewMode.NEW;
         this.mustUnlock = false;
-        this.isNewModuleType = true;
         this.isDirty = true;
         
         Date date = new Date();
@@ -206,7 +204,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         this.moduleTypeVersionObserver = moduleTypeVersionObserver;
         
         this.mustUnlock = false;
-        this.isNewModuleType = false;
 
         this.isDirty = false;
         this.initialViewMode = viewMode;
@@ -721,7 +718,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
                 moduleTypeVersion.setAlgorithm(algorithm.getText());
                 
-                moduleType = presenter.addModule(moduleType);
+                moduleType = presenter.addModuleType(moduleType);
                 viewMode = ViewMode.EDIT;
                 ModuleType lockedModuleType = presenter.obtainLockedModuleType(moduleType);
                 if (lockedModuleType == null || !lockedModuleType.isLocked(session.user())) {
@@ -730,7 +727,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleType = lockedModuleType;
                 moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
                 mustUnlock = true;
-                isNewModuleType = false;
             } else {
                 ModuleTypeVersionNewRevisionDialog newRevisionView = new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, this);
                 ModuleTypeVersionNewRevisionPresenter newRevisionPresenter = new ModuleTypeVersionNewRevisionPresenter(newRevisionView, session);

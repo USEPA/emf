@@ -1,14 +1,8 @@
 package gov.epa.emissions.framework.client.moduletype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.DataCommonsService;
-import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
 
 public class ModuleTypeVersionPropertiesPresenter {
@@ -48,6 +42,10 @@ public class ModuleTypeVersionPropertiesPresenter {
         return session.moduleService().obtainLockedModuleType(session.user(), moduleType);
     }
 
+    public ModuleType getModuleType(int id) throws EmfException{
+        return session.moduleService().getModuleType(id);
+    }
+
     public ModuleType releaseLockedModuleType(ModuleType moduleType) {
         try {
             return session.moduleService().releaseLockedModuleType(session.user(), moduleType);
@@ -59,7 +57,7 @@ public class ModuleTypeVersionPropertiesPresenter {
     }
 
     
-    public ModuleType addModule(ModuleType moduleType) throws EmfException {
+    public ModuleType addModuleType(ModuleType moduleType) throws EmfException {
         return session.moduleService().addModuleType(moduleType);
     }
 
