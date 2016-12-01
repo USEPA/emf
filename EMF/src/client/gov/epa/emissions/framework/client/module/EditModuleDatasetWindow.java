@@ -308,8 +308,11 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         messagePanel.clear();
         if (isOUT) {
             if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
-                if (datasetName.getText().equals("")) {
+                StringBuilder error = new StringBuilder();
+                if (datasetName.getText().trim().equals("")) {
                     messagePanel.setError("You must enter a dataset name pattern.");
+                } else if (!ModuleDataset.isValidDatasetNamePattern(datasetName.getText(), error)) {
+                    messagePanel.setError(error.toString());
                 } else {
                     return true;
                 }

@@ -1,7 +1,13 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -42,6 +48,55 @@ public class ModuleDataset implements Serializable {
         return newModuleDataset;
     }
 
+    public static String replacePatternWithSpaces(String text, String pattern) {
+
+        while (true) {
+            Matcher matcher = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(text);
+            if (matcher.find()) {
+                String part1 = (matcher.start() > 0) ? text.substring(0, matcher.start()) : "";
+                String part2 = matcher.group().replaceAll(".", " ");
+                String part3 = text.substring(matcher.end()); 
+                text = part1 + part2 + part3;
+            }
+            return text;
+        }
+    }
+    
+    public static boolean isValidDatasetNamePattern(String datasetNamePattern, final StringBuilder error) {
+        error.setLength(0);
+
+        // Important: keep the list of valid placeholders in sync with
+        //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
+        
+        String startPattern = "\\$\\{\\s*";
+        String separatorPattern = "\\s*\\.\\s*";
+        String endPattern = "\\s*\\}";
+        
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "user"   + separatorPattern + "full_name"    + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "user"   + separatorPattern + "id"           + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "user"   + separatorPattern + "account_name" + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "module" + separatorPattern + "name"         + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "module" + separatorPattern + "id"           + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "module" + separatorPattern + "final"        + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "run"    + separatorPattern + "id"           + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "run"    + separatorPattern + "date"         + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "run"    + separatorPattern + "time"         + endPattern);
+        
+        Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(datasetNamePattern);
+        if (matcher.find()) {
+            error.append(String.format("Unrecognized placeholder %s at position %d.", matcher.group(), matcher.start()));
+            return false; 
+        }
+        
+        matcher = Pattern.compile("[^A-Za-z0-9 ~!@#$%^&*\\(\\)_\\-+=\\[\\]|:;,.<>?/]", Pattern.CASE_INSENSITIVE).matcher(datasetNamePattern);
+        if (matcher.find()) {
+            error.append(String.format("Invalid character %s at position %d.", matcher.group(), matcher.start()));
+            return false;
+        }
+        
+        return true;
+    }
+    
     public boolean isValid(final StringBuilder error) {
         error.setLength(0);
         ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
@@ -49,23 +104,49 @@ public class ModuleDataset implements Serializable {
         String mode = moduleTypeVersionDataset.getMode();
         boolean needsDatasetNamePattern = mode.equals(ModuleTypeVersionDataset.OUT) && outputMethod.equals(NEW);
         boolean hasDatasetNamePattern = (datasetNamePattern != null) && (datasetNamePattern.trim().length() > 0);
-        if (needsDatasetNamePattern && !hasDatasetNamePattern) {
-            error.append(String.format("The dataset name pattern for placeholder '%s' has not been set.", placeholderName));
-            return false;
+        if (needsDatasetNamePattern) {
+            if (!hasDatasetNamePattern) {
+                error.append(String.format("The dataset name pattern for placeholder '%s' has not been set.", placeholderName));
+                return false;
+            } else if (!isValidDatasetNamePattern(datasetNamePattern, error)) {
+                error.insert(0, String.format("The dataset name pattern for placeholder '%s' is invalid: ", placeholderName));
+                return false;
+            }
         }
-        if (!needsDatasetNamePattern && (datasetId == null)) {
+        else if (datasetId == null) {
             error.append(String.format("The dataset for placeholder '%s' has not been set.", placeholderName));
             return false;
         }
         return true;
     }
 
+    public boolean isSimpleDatasetName() {
+        if (datasetNamePattern == null)
+            return false;
+        String startPattern = "\\$\\{\\s*";
+        String endPattern = "\\s*\\}";
+        Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(datasetNamePattern);
+        return !matcher.find();
+    }
+
     public EmfDataset getEmfDataset(DataService dataService) {
         try {
             if (datasetId != null) {
                 return dataService.getDataset(datasetId);
-            } else if (datasetNamePattern != null) {
+            } else if (isSimpleDatasetName()) {
                 return dataService.getDataset(datasetNamePattern);
+            } else {
+                List<History> history = module.getModuleHistory();
+                HistoryDataset historyDataset = null;
+                if (history.size() > 0) {
+                    History lastHistory = history.get(history.size() - 1);
+                    if (lastHistory.getResult().equals(History.SUCCESS)) {
+                        historyDataset = lastHistory.getHistoryDatasets().get(placeholderName);
+                    }
+                }
+                if ((historyDataset != null) && (historyDataset.getDatasetId() != null)) {
+                    return dataService.getDataset(historyDataset.getDatasetId());
+                }
             }
         } catch (EmfException ex) {
             // ignore exception

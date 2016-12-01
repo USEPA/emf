@@ -3,6 +3,9 @@ package gov.epa.emissions.framework.client.module;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.module.History;
+import gov.epa.emissions.framework.services.module.HistoryDataset;
+import gov.epa.emissions.framework.services.module.HistoryParameter;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.ui.AbstractTableData;
@@ -21,7 +24,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name/Placeholder", "Dataset Name", "Version", "Exists?", "Description"};
+        return new String[] { "Mode", "Name/Placeholder", "Dataset Name Pattern", "Dataset Name", "Version", "Exists?", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -39,43 +42,46 @@ public class ModuleDatasetsTableData extends AbstractTableData {
     private List createRows(Map<String, ModuleDataset> moduleDatasets, EmfSession session) {
         List rows = new ArrayList();
 
-        for (ModuleDataset element : moduleDatasets.values()) {
-            String mode = element.getModuleTypeVersionDataset().getMode();
-            String outputMethod = element.getOutputMethod();
-            EmfDataset emfDataset = element.getEmfDataset(session.dataService());
+        for (ModuleDataset moduleDataset : moduleDatasets.values()) {
+            String mode = moduleDataset.getModuleTypeVersionDataset().getMode();
+            String outputMethod = moduleDataset.getOutputMethod();
+            EmfDataset emfDataset = moduleDataset.getEmfDataset(session.dataService());
             String datasetName = (emfDataset == null) ? "" : emfDataset.getName();
             String datasetExists = (emfDataset == null) ? "No" : "Yes"; // TODO check version also
             if (mode.equals("IN") || mode.equals("INOUT")) {
                 Object[] values = { mode,
-                                    element.getPlaceholderName(),
+                                    moduleDataset.getPlaceholderName(),
+                                    "N/A",
                                     datasetName,
-                                    element.getVersion(),
+                                    moduleDataset.getVersion(),
                                     datasetExists,
-                                    getShortDescription(element.getModuleTypeVersionDataset()) };
+                                    getShortDescription(moduleDataset.getModuleTypeVersionDataset()) };
     
-                Row row = new ViewableRow(element, values);
+                Row row = new ViewableRow(moduleDataset, values);
                 rows.add(row);
             }
             else if (outputMethod.equals(ModuleDataset.NEW)) {
                 Object[] values = { "OUT NEW",
-                                    element.getPlaceholderName(),
-                                    element.getDatasetNamePattern(),
+                                    moduleDataset.getPlaceholderName(),
+                                    moduleDataset.getDatasetNamePattern(),
+                                    datasetName,
                                     0,
                                     datasetExists,
-                                    getShortDescription(element.getModuleTypeVersionDataset()) };
+                                    getShortDescription(moduleDataset.getModuleTypeVersionDataset()) };
 
-                Row row = new ViewableRow(element, values);
+                Row row = new ViewableRow(moduleDataset, values);
                 rows.add(row);
             }
             else if (outputMethod.equals(ModuleDataset.REPLACE)) {
                 Object[] values = { "OUT REPLACE",
-                                    element.getPlaceholderName(),
+                                    moduleDataset.getPlaceholderName(),
+                                    "N/A",
                                     datasetName,
                                     0,
                                     datasetExists,
-                                    getShortDescription(element.getModuleTypeVersionDataset()) };
+                                    getShortDescription(moduleDataset.getModuleTypeVersionDataset()) };
     
-                Row row = new ViewableRow(element, values);
+                Row row = new ViewableRow(moduleDataset, values);
                 rows.add(row);
             }
         }

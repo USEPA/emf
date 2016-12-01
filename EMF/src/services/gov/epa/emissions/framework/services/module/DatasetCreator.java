@@ -110,8 +110,7 @@ public class DatasetCreator {
         //create dataset
         EmfDataset dataset = createDataset(datasetName, description, type, null);
 
-        setDatasetInternalSource(dataset, outputTableName, 
-                tableFormat, datasetName);
+        setDatasetInternalSource(dataset, outputTableName, tableFormat, datasetName);
 
         //persist dataset to db
         add(dataset);

@@ -91,6 +91,10 @@ public class ModuleTypeVersion implements Serializable {
         validPlaceholders.add("${user.account_name}");
         validPlaceholders.add("${module.name}");
         validPlaceholders.add("${module.id}");
+        validPlaceholders.add("${module.final}");
+        validPlaceholders.add("${run.id}");
+        validPlaceholders.add("${run.date}");
+        validPlaceholders.add("${run.time}");
         
         for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
             String placeholderName = moduleTypeVersionDataset.getPlaceholderName().toLowerCase();

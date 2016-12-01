@@ -60,7 +60,7 @@ public class ModuleRunnerTask {
 
     private Datasource datasource;
     
-    private PooledExecutor threadPool;
+    // private PooledExecutor threadPool;
 
     private boolean verboseStatusLogging = true;
 
@@ -80,18 +80,18 @@ public class ModuleRunnerTask {
         this.datasetDAO = new DatasetDAO(dbServerFactory);
         this.statusDAO = new StatusDAO(sessionFactory);
         this.modulesDAO = new ModulesDAO();
-        this.threadPool = createThreadPool();
+        // this.threadPool = createThreadPool();
         UserDAO userDAO = new UserDAO();
         this.user = userDAO.get(user.getId(), sessionFactory.getSession());
     }
 
-    private synchronized PooledExecutor createThreadPool() {
-        PooledExecutor threadPool = new PooledExecutor(20);
-        threadPool.setMinimumPoolSize(1);
-        threadPool.setKeepAliveTime(1000 * 60 * 3); // terminate after 3 (unused) minutes
-
-        return threadPool;
-    }
+//    private synchronized PooledExecutor createThreadPool() {
+//        PooledExecutor threadPool = new PooledExecutor(20);
+//        threadPool.setMinimumPoolSize(1);
+//        threadPool.setKeepAliveTime(1000 * 60 * 3); // terminate after 3 (unused) minutes
+//
+//        return threadPool;
+//    }
 
     public void run() throws EmfException {
         for(Module module : modules) {
@@ -102,7 +102,7 @@ public class ModuleRunnerTask {
     private String getVersionWhereFilter(int datasetId, int version, String table_alias) throws EmfException {
         try {
             Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
-            String query = String.format("SELECT public.build_version_where_filter(%d, %d, 'ds')", datasetId, version);
+            String query = String.format("SELECT public.build_version_where_filter(%d, %d, '%s')", datasetId, version, table_alias);
             if (statement.execute(query)) {
                 // get the return value
                 ResultSet resultSet = statement.getResultSet();
@@ -224,7 +224,7 @@ public class ModuleRunnerTask {
         return setupScript;
     }
     
-    public String getTeardownScript(String tempUserName, List<String> outputDatasetTables) {
+    public String getTeardownScript(String tempUserName) {
         String teardownScript =
             "DROP OWNED BY ${temp_user} CASCADE;\n" +
             "DROP USER ${temp_user};\n";
@@ -310,12 +310,13 @@ public class ModuleRunnerTask {
                         VersionedTableFormat versionedTableFormat = new VersionedTableFormat(datasetType.getFileFormat(), types);
                         String description = "New dataset created by the '" + module.getName() + "' module for the '" + moduleTypeVersionDataset.getPlaceholderName() + "' placeholder.";
                         DatasetCreator datasetCreator = new DatasetCreator(moduleDataset, user, sessionFactory, dbServerFactory, datasource);
-                        EmfDataset dataset = datasetCreator.addDataset("mod", moduleDataset.getDatasetNamePattern(), datasetType, versionedTableFormat, description);
+                        String newDatasetName = getNewDatasetName(moduleDataset, start, history);
+                        EmfDataset dataset = datasetCreator.addDataset("mod", newDatasetName, datasetType, versionedTableFormat, description);
                         
                         InternalSource[] internalSources = dataset.getInternalSources();
                         if (internalSources.length != 1) {
                             errorMessage = String.format("Internal error: new dataset '%s' was created with %d internal sources (expected one).",
-                                                         moduleDataset.getDatasetNamePattern(), internalSources.length);
+                                                         newDatasetName, internalSources.length);
                             throw new EmfException(errorMessage);
                         }
                         
@@ -364,7 +365,7 @@ public class ModuleRunnerTask {
                         InternalSource[] internalSources = dataset.getInternalSources();
                         if (internalSources.length != 1) {
                             errorMessage = String.format("Internal error: dataset '%s' has %d internal sources (expected one).",
-                                                         moduleDataset.getDatasetNamePattern(), internalSources.length);
+                                                         datasetName, internalSources.length);
                             throw new EmfException(errorMessage);
                         }
                         
@@ -428,53 +429,22 @@ public class ModuleRunnerTask {
             history.setHistoryDatasets(historyDatasets);
             
             // replace global placeholders in the algorithm
-            String startPattern = "\\$\\{\\s*";
-            String separatorPattern = "\\s*\\.\\s*";
-            String endPattern = "\\s*\\}";
-
-            // Important: keep the list of valid placeholders in sync with
-            //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
+            algorithm = replaceGlobalPlaceholders(algorithm, module, start, history);
             
-            algorithm = Pattern.compile(startPattern + "user" + separatorPattern + "full_name" + endPattern, Pattern.CASE_INSENSITIVE)
-                               .matcher(algorithm).replaceAll(user.getName());
-    
-            algorithm = Pattern.compile(startPattern + "user" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
-                               .matcher(algorithm).replaceAll(user.getId() + "");
-    
-            algorithm = Pattern.compile(startPattern + "user" + separatorPattern + "account_name" + endPattern, Pattern.CASE_INSENSITIVE)
-                               .matcher(algorithm).replaceAll(user.getUsername());
-    
-            algorithm = Pattern.compile(startPattern + "module" + separatorPattern + "name" + endPattern, Pattern.CASE_INSENSITIVE)
-                               .matcher(algorithm).replaceAll(module.getName());
-    
-            algorithm = Pattern.compile(startPattern + "module" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
-                               .matcher(algorithm).replaceAll(module.getId() + "");
-    
             history.setUserScript(algorithm);
 
-            // verify that the algorithm doesn't have any placeholders left
-            Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
-            if (matcher.find()) {
-                int pos = matcher.start();
-                String match = matcher.group();
-                String message = String.format("Unrecognized placeholder %s at location %d.", match, pos);
-                throw new EmfException(message); 
-            }
+            // verify that the algorithm doesn't have any dataset or global placeholders left
+            assertNoPlaceholders(algorithm, "$");
 
             // replace all parameter placeholders
             for(ModuleParameter moduleParameter : module.getModuleParameters().values()) {
                 algorithm = replaceParameterPlaceholders(algorithm, moduleParameter, timeStamp);
             }
             
+            history.setUserScript(algorithm);
+
             // verify that the algorithm doesn't have any parameter placeholders left
-            startPattern = "\\#\\{\\s*";
-            matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
-            if (matcher.find()) {
-                int pos = matcher.start();
-                String match = matcher.group();
-                String message = String.format("Unrecognized parameter placeholder %s at location %d.", match, pos);
-                throw new EmfException(message); 
-            }
+            assertNoPlaceholders(algorithm, "#");
 
             // create outer block
             // declare all parameters, initialize IN and INOUT parameters
@@ -612,7 +582,7 @@ public class ModuleRunnerTask {
             
             // execute teardown script
             
-            String teardownScript = getTeardownScript(userTimeStamp, outputDatasetTables);
+            String teardownScript = getTeardownScript(userTimeStamp);
             
             statement = null;
             try {
@@ -703,6 +673,52 @@ public class ModuleRunnerTask {
         return lineNumberedScript.toString();
     }
     
+    private String getNewDatasetName(ModuleDataset moduleDataset, Date date, History history) throws EmfException {
+        String datasetName = moduleDataset.getDatasetNamePattern();
+        datasetName = replaceGlobalPlaceholders(datasetName, moduleDataset.getModule(), date, history);
+        assertNoPlaceholders(datasetName, "$");
+        return datasetName;
+    }
+    
+    private String replaceGlobalPlaceholders(String text, Module module, Date date, History history) {
+        // replace global placeholders in the algorithm
+        String startPattern = "\\$\\{\\s*";
+        String separatorPattern = "\\s*\\.\\s*";
+        String endPattern = "\\s*\\}";
+
+        // Important: keep the list of valid placeholders in sync with
+        //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
+        
+        text = Pattern.compile(startPattern + "user" + separatorPattern + "full_name" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(user.getName());
+
+        text = Pattern.compile(startPattern + "user" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(user.getId() + "");
+
+        text = Pattern.compile(startPattern + "user" + separatorPattern + "account_name" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(user.getUsername());
+
+        text = Pattern.compile(startPattern + "module" + separatorPattern + "name" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(module.getName());
+
+        text = Pattern.compile(startPattern + "module" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(module.getId() + "");
+        
+        text = Pattern.compile(startPattern + "module" + separatorPattern + "final" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(module.getIsFinal() ? "Final" : "");
+  
+        text = Pattern.compile(startPattern + "run" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(history.getRunId() + "");
+
+        text = Pattern.compile(startPattern + "run" + separatorPattern + "date" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(CustomDateFormat.format_MM_DD_YYYY(date));
+        
+        text = Pattern.compile(startPattern + "run" + separatorPattern + "time" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll(CustomDateFormat.format_HHmmssSSS(date));
+
+        return text;
+    }
+    
     private String replaceDatasetPlaceholders(String algorithm, ModuleDataset moduleDataset, EmfDataset dataset, int version, String viewName) throws EmfException {
         String result = algorithm;
         ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
@@ -782,6 +798,26 @@ public class ModuleRunnerTask {
         return result;
     }
 
+    private void assertNoPlaceholders(String text, String placeholderMark) throws EmfException {
+        String startPattern = "\\" + placeholderMark + "\\{\\s*";
+        String endPattern = "\\s*\\}";
+
+        Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(text);
+        if (matcher.find()) {
+            int pos = matcher.start();
+            String match = matcher.group();
+            int lineNumber = findLineNumber(text, pos);
+            String message = String.format("Unrecognized placeholder %s at line %d location %d.", match, pos, lineNumber);
+            throw new EmfException(message); 
+        }
+    }
+    
+    // returns line number for character position (first line number is 1)
+    private int findLineNumber(String text, int characterPosition) {
+        String subtext = text.substring(0, characterPosition);
+        return subtext.length() - subtext.replace("\n", "").length() + 1;
+    }
+    
     private void close(DbServer dbServer) throws EmfException {
         try {
             if (dbServer != null && dbServer.isConnected())
