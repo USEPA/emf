@@ -2,16 +2,11 @@ package gov.epa.emissions.framework.client.moduletype;
 
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ComboBox;
-import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
-import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
-import gov.epa.emissions.commons.gui.buttons.NewButton;
-import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
-import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
@@ -19,44 +14,26 @@ import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.EmfFileInfo;
-import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
-import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision;
-import gov.epa.emissions.framework.ui.EmfFileChooser;
-import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
-import javax.swing.border.TitledBorder;
 
 public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame implements ModuleTypeVersionParameterView {
     private ModuleTypeVersionParameterPresenter presenter;
 
     private EmfConsole parentConsole;
     private EmfSession session;
-    private static int counter = 0;
 
     private ViewMode viewMode;
     private ModuleTypeVersion moduleTypeVersion;
@@ -82,7 +59,10 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
         if (viewMode == ViewMode.NEW) {
             this.moduleTypeVersionParameter = new ModuleTypeVersionParameter();
             this.moduleTypeVersionParameter.setModuleTypeVersion(moduleTypeVersion);
+            this.moduleTypeVersionParameter.setParameterName("");
             this.moduleTypeVersionParameter.setMode(ModuleTypeVersionParameter.IN);
+            this.moduleTypeVersionParameter.setSqlParameterType("");
+            this.moduleTypeVersionParameter.setDescription("");
         } else {
             this.moduleTypeVersionParameter = moduleTypeVersionParameter;
         }
@@ -183,9 +163,15 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
     }
 
     private boolean checkTextFields() {
+        String trimName = name.getText().trim();
         StringBuilder error = new StringBuilder();
-        if (!ModuleTypeVersionParameter.isValidParameterName(name.getText(), error)) {
+        if (!ModuleTypeVersionParameter.isValidParameterName(trimName, error)) {
             messagePanel.setError(error.toString());
+            return false;
+        }
+        Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
+        if (!trimName.equals(moduleTypeVersionParameter.getParameterName()) && moduleTypeVersionParameters.containsKey(trimName)) {
+            messagePanel.setError("Parameter " + trimName + " already exists!");
             return false;
         }
         messagePanel.clear();
@@ -197,17 +183,18 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
             public void actionPerformed(ActionEvent event) {
                 if (checkTextFields()) {
                     try {
-                        resetChanges();
-//                        Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
-//                        if (moduleTypeVersionParameters.containsKey(name.getText())) {
-//                            throw new EmfException("Parameter " + name.getText() + " already exists!");
-//                        }
+                        String trimName = name.getText().trim();
+                        if (!trimName.equals(moduleTypeVersionParameter.getParameterName())) {
+                            presenter.doRemove(moduleTypeVersion, moduleTypeVersionParameter);
+                            moduleTypeVersionParameter = moduleTypeVersionParameter.deepCopy();
+                        }
                         moduleTypeVersionParameter.setMode(mode.getSelectedItem().toString());
-                        moduleTypeVersionParameter.setParameterName(name.getText());
+                        moduleTypeVersionParameter.setParameterName(name.getText().trim());
                         moduleTypeVersionParameter.setSqlParameterType(sqlType.getText());
                         moduleTypeVersionParameter.setDescription(description.getText());
                         presenter.doSave(moduleTypeVersion, moduleTypeVersionParameter);
                         messagePanel.setMessage("Parameter definition saved.");
+                        resetChanges();
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }

@@ -38,7 +38,6 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
 
     private EmfConsole parentConsole;
     private EmfSession session;
-    private static int counter = 0;
 
     private ViewMode viewMode;
     private ModuleTypeVersion moduleTypeVersion;
@@ -80,7 +79,10 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
         if (viewMode == ViewMode.NEW) {
             this.moduleTypeVersionDataset = new ModuleTypeVersionDataset();
             this.moduleTypeVersionDataset.setModuleTypeVersion(moduleTypeVersion);
+            this.moduleTypeVersionDataset.setPlaceholderName("");
             this.moduleTypeVersionDataset.setMode(ModuleTypeVersionDataset.IN);
+            this.moduleTypeVersionDataset.setDatasetType(null);
+            this.moduleTypeVersionDataset.setDescription("");
         } else {
             this.moduleTypeVersionDataset = moduleTypeVersionDataset;
         }
@@ -184,9 +186,15 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
     }
 
     private boolean checkTextFields() {
+        String trimName = name.getText().trim();
         StringBuilder error = new StringBuilder();
-        if (!ModuleTypeVersionDataset.isValidPlaceholderName(name.getText(), error)) {
+        if (!ModuleTypeVersionDataset.isValidPlaceholderName(trimName, error)) {
             messagePanel.setError(error.toString());
+            return false;
+        }
+        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
+        if (!trimName.equals(moduleTypeVersionDataset.getPlaceholderName()) && moduleTypeVersionDatasets.containsKey(trimName)) {
+            messagePanel.setError("Placeholder " + trimName + " already exists!");
             return false;
         }
         messagePanel.clear();
@@ -198,17 +206,18 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
             public void actionPerformed(ActionEvent event) {
                 if (checkTextFields()) {
                     try {
-                        resetChanges();
-//                        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
-//                        if (moduleTypeVersionDatasets.containsKey(name.getText())) {
-//                            throw new EmfException("Dataset " + name.getText() + " already exists!");
-//                        }
+                        String trimName = name.getText().trim();
+                        if (!trimName.equals(moduleTypeVersionDataset.getPlaceholderName())) {
+                            presenter.doRemove(moduleTypeVersion, moduleTypeVersionDataset);
+                            moduleTypeVersionDataset = moduleTypeVersionDataset.deepCopy();
+                        }
+                        moduleTypeVersionDataset.setPlaceholderName(name.getText().trim());
                         moduleTypeVersionDataset.setMode(mode.getSelectedItem().toString());
-                        moduleTypeVersionDataset.setPlaceholderName(name.getText());
                         moduleTypeVersionDataset.setDatasetType(datasetTypeMap.get(datasetTypeCB.getSelectedItem()));
                         moduleTypeVersionDataset.setDescription(description.getText());
                         presenter.doSave(moduleTypeVersion, moduleTypeVersionDataset);
                         messagePanel.setMessage("Dataset definition saved.");
+                        resetChanges();
                     } catch (EmfException e) {
                         messagePanel.setError(e.getMessage());
                     }

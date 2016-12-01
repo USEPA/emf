@@ -31,9 +31,13 @@ public class ModuleTypeVersionParameterPresenter {
         view.disposeView();
     }
 
+    public void doRemove(ModuleTypeVersion moduleTypeVersion, ModuleTypeVersionParameter moduleTypeVersionParameter) throws EmfException {
+        moduleTypeVersion.removeModuleTypeVersionParameter(moduleTypeVersionParameter);
+        parametersObserver.refreshParameters();
+    }
+    
     public void doSave(ModuleTypeVersion moduleTypeVersion, ModuleTypeVersionParameter moduleTypeVersionParameter) throws EmfException {
         moduleTypeVersion.addModuleTypeVersionParameter(moduleTypeVersionParameter);
         parametersObserver.refreshParameters();
     }
-
 }

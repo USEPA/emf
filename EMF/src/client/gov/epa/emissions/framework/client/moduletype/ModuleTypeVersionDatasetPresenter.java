@@ -46,9 +46,13 @@ public class ModuleTypeVersionDatasetPresenter {
         view.disposeView();
     }
 
+    public void doRemove(ModuleTypeVersion moduleTypeVersion, ModuleTypeVersionDataset moduleTypeVersionDataset) throws EmfException {
+        moduleTypeVersion.removeModuleTypeVersionDataset(moduleTypeVersionDataset);
+        datasetsObserver.refreshDatasets();
+    }
+
     public void doSave(ModuleTypeVersion moduleTypeVersion, ModuleTypeVersionDataset moduleTypeVersionDataset) throws EmfException {
         moduleTypeVersion.addModuleTypeVersionDataset(moduleTypeVersionDataset);
         datasetsObserver.refreshDatasets();
     }
-
 }
