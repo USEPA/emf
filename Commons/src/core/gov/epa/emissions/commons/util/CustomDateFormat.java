@@ -136,6 +136,11 @@ public class CustomDateFormat {
         return date == null ? "" : dateFormatter.format(date);
     }
     
+    public static String format_HHmmssSSS(Date date) {
+        dateFormatter.applyPattern("HH:mm:ss.SSS");
+        return date == null ? "" : dateFormatter.format(date);
+    }
+    
     public static void main(String[] args) {
         System.out.println(CustomDateFormat.format_h_m_a_MMM_DD(new Date())); 
     }
