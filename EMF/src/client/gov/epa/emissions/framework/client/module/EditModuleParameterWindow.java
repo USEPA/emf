@@ -59,7 +59,11 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
     }
 
     private static String getWindowTitle(ModuleParameter moduleParameter) {
-        return "Edit Module Parameter (ID=" + moduleParameter.getId() + ")";
+        if (moduleParameter.getId() == 0) {
+            return "Edit Module Parameter (" + moduleParameter.getParameterName() + ")";
+        } else {
+            return "Edit Module Parameter (ID=" + moduleParameter.getId() + ")";
+        }
     }
     
     private void doLayout(JPanel layout) {

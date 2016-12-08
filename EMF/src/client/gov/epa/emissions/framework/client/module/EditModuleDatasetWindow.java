@@ -79,7 +79,11 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     }
 
     private static String getWindowTitle(ModuleDataset moduleDataset) {
-        return "Edit Module Dataset (ID=" + moduleDataset.getId() + ")";
+        if (moduleDataset.getId() == 0) {
+            return "Edit Module Dataset (" + moduleDataset.getPlaceholderName() + ")";
+        } else {
+            return "Edit Module Dataset (ID=" + moduleDataset.getId() + ")";
+        }
     }
     
     private void doLayout(JPanel layout) {
