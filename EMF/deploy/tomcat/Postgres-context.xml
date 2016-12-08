@@ -13,6 +13,7 @@
           removeAbandoned="true"
           removeAbandonedTimeout="60"
           logAbandoned="true"
+          validationQuery="select 1"
           />
 
  <Resource name="jdbc/SECTORSANDBOX" auth="Container"
@@ -28,7 +29,7 @@
           removeAbandonedTimeout="40"
           logAbandoned="true"
           validationQuery="select 1"
-          />     
-                
+          />
+
 </Context>
-	
+

@@ -24,6 +24,7 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -125,13 +126,12 @@ public class DatasetCreator {
         return dataset;
     }
 
-    public void replaceDataset(EmfDataset dataset) throws Exception {
+    public void replaceDataset(Session session, Connection connection, EmfDataset dataset) throws Exception {
         Module module = moduleDataset.getModule();
         ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
 
         String errorMessage;
         String datasetName = dataset.getName();
-        Session session = sessionFactory.getSession();
         Date date = new Date();
 
         Versions versions = new Versions();
@@ -199,7 +199,7 @@ public class DatasetCreator {
         String query = String.format("TRUNCATE TABLE %s.%s", datasource.getName(), internalSources[0].getTable());
         Statement statement = null;
         try {
-            statement = dbServerFactory.getDbServer().getConnection().createStatement();
+            statement = connection.createStatement();
             statement.execute(query);
         } catch (SQLException e) {
             errorMessage = String.format("Failed to truncate '%s.%s' table for '%s' dataset: %s", datasource.getName(), internalSources[0].getTable(), datasetName, e.getMessage());
@@ -290,8 +290,8 @@ public class DatasetCreator {
         defaultZeroVersion.setLastModifiedDate(new Date());
         defaultZeroVersion.setFinalVersion(true);
         defaultZeroVersion.setDescription("");
-        Session session = sessionFactory.getSession();
 
+        Session session = sessionFactory.getSession();
         try {
             datasetDAO.add(defaultZeroVersion, session);
         } catch (Exception e) {
@@ -299,13 +299,10 @@ public class DatasetCreator {
         } finally {
             session.close();
         }
-    
     }
 
     public void updateVersionZeroRecordCount(EmfDataset dataset) throws EmfException {
-        DbServer dbServer = dbServerFactory.getDbServer();
         Session session = sessionFactory.getSession();
-
         try {
             Version version = datasetDAO.getVersion(session, dataset.getId(), 0);
             Version lockedVersion = datasetDAO.obtainLockOnVersion(user, version.getId(), session);
@@ -317,13 +314,6 @@ public class DatasetCreator {
         } catch (Exception e) {
             throw new EmfException("Could not query table: " + e.getMessage());
         } finally {
-                try {
-                    if (dbServer != null && dbServer.isConnected())
-                        dbServer.disconnect();
-                } catch (Exception e) {
-                    // NOTE Auto-generated catch block
-                    e.printStackTrace();
-                }
             session.close();
         }
     }

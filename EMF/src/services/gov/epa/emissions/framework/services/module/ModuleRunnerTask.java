@@ -20,6 +20,7 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.DataSourceFactory;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -31,8 +32,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.sql.DataSource;
-
 import java.security.SecureRandom;
 import java.math.BigInteger;
 
@@ -40,7 +39,7 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.hibernate.Session;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
+// import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 public class ModuleRunnerTask {
 
@@ -99,9 +98,10 @@ public class ModuleRunnerTask {
         }
     }
 
-    private String getVersionWhereFilter(int datasetId, int version, String table_alias) throws EmfException {
+    private String getVersionWhereFilter(Connection connection, int datasetId, int version, String table_alias) throws EmfException {
+        Statement statement = null;
         try {
-            Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+            statement = connection.createStatement();
             String query = String.format("SELECT public.build_version_where_filter(%d, %d, '%s')", datasetId, version, table_alias);
             if (statement.execute(query)) {
                 // get the return value
@@ -112,12 +112,21 @@ public class ModuleRunnerTask {
             }
         } catch (SQLException e) {
             throw new EmfException(String.format("Failed to get the version where filter for dataset_id %d version %d: %s", datasetId, version, e.getMessage()));
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    // ignore
+                }
+                statement = null;
+            }
         }
         throw new EmfException(String.format("Failed to get the version where filter for dataset_id %d version %d", datasetId, version));
     }
     
     private void createView(final StringBuilder viewName, final StringBuilder viewDefinition,
-                            ModuleDataset moduleDataset, EmfDataset emfDataset, int version) throws EmfException {
+                            Connection connection, ModuleDataset moduleDataset, EmfDataset emfDataset, int version) throws EmfException {
         viewName.setLength(0);
         viewDefinition.setLength(0);
         
@@ -162,7 +171,7 @@ public class ModuleRunnerTask {
             newColNames.append("NEW." + col);
         }
         
-        String versionWhereFilter = getVersionWhereFilter(datasetId, version, "ds");
+        String versionWhereFilter = getVersionWhereFilter(connection, datasetId, version, "ds");
         
         viewDefinition.append(String.format("    CREATE TEMP VIEW %s (%s) AS\n" +
                                             "       SELECT %s\n" +
@@ -190,7 +199,7 @@ public class ModuleRunnerTask {
         }
     }
 
-    public String getSetupScript(String tempUserName, String tempUserPassword, List<String> outputDatasetTables) {
+    private String getSetupScript(String tempUserName, String tempUserPassword, List<String> outputDatasetTables) {
         String setupScript =
             // TODO use encrypted password
             "CREATE USER ${temp_user} WITH CONNECTION LIMIT 1 UNENCRYPTED PASSWORD '${temp_password}';\n\n" +
@@ -224,7 +233,7 @@ public class ModuleRunnerTask {
         return setupScript;
     }
     
-    public String getTeardownScript(String tempUserName) {
+    private String getTeardownScript(String tempUserName) {
         String teardownScript =
             "DROP OWNED BY ${temp_user} CASCADE;\n" +
             "DROP USER ${temp_user};\n";
@@ -233,20 +242,27 @@ public class ModuleRunnerTask {
                       .matcher(teardownScript).replaceAll(tempUserName);
     }
 
-    public DataSource getDataSource(String username, String password) throws InfrastructureException { 
+    private Connection getUserConnection(String username, String password) throws InfrastructureException, SQLException { 
         BasicDataSource basicDataSource = (BasicDataSource)new DataSourceFactory().get();
         String jdbcDriverClassName = basicDataSource.getDriverClassName();
         String jdbcURL = basicDataSource.getUrl();
+
+//        Properties connectionProperties = new Properties();
+//        connectionProperties.setProperty("ApplicationName", "Module Runner");
+//        connectionProperties.setProperty("logUnclosedConnections", "true");
+//        connectionProperties.setProperty("loglevel", "2"); // org.postgresql.Driver.DEBUG (2)
         
-        DriverManagerDataSource ds = new DriverManagerDataSource(); 
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+//        ds.setConnectionProperties(connectionProperties);
         ds.setDriverClassName(jdbcDriverClassName); 
         ds.setUsername(username); 
-        ds.setPassword(password); 
-        ds.setUrl(jdbcURL); 
-        return ds;
+        ds.setPassword(password);
+        ds.setUrl(jdbcURL + "&ApplicationName=Module%20Runner&logUnclosedConnections=true&loglevel=2");
+        
+        return ds.getConnection();
     }
     
-    public void runModule(Module module) throws EmfException {
+    private void runModule(Module module) throws EmfException {
         
         prepare("", module);
 
@@ -270,17 +286,24 @@ public class ModuleRunnerTask {
 
         Map<String, HistoryDataset>   historyDatasets   = new HashMap<String, HistoryDataset>();
         Map<String, HistoryParameter> historyParameters = new HashMap<String, HistoryParameter>();
-        
+
         String errorMessage;
-        
+
         String logMessage = String.format("Module '%s' started by %s on %s",
                                           module.getName(), user.getName(),
                                           CustomDateFormat.format_yyyy_MM_dd_HHmmssSSS(start));
         history.addLogMessage(History.INFO, logMessage);
-        
+
         Session session = sessionFactory.getSession();
+
+        DbServer dbServer = null;
+        Connection connection = null;
+        Statement statement = null;
         
         try {
+            dbServer = dbServerFactory.getDbServer();
+            connection = dbServer.getConnection();
+            
             module = modulesDAO.obtainLockedModule(user, module, session);
             if (!module.isLocked(user)) {
                 throw new EmfException("Failed to lock module " + module.getName());
@@ -306,7 +329,7 @@ public class ModuleRunnerTask {
                 if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                     if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
                         DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
-                        SqlDataTypes types = dbServerFactory.getDbServer().getSqlDataTypes();
+                        SqlDataTypes types = dbServer.getSqlDataTypes();
                         VersionedTableFormat versionedTableFormat = new VersionedTableFormat(datasetType.getFileFormat(), types);
                         String description = "New dataset created by the '" + module.getName() + "' module for the '" + moduleTypeVersionDataset.getPlaceholderName() + "' placeholder.";
                         DatasetCreator datasetCreator = new DatasetCreator(moduleDataset, user, sessionFactory, dbServerFactory, datasource);
@@ -331,7 +354,7 @@ public class ModuleRunnerTask {
                         
                         StringBuilder viewName = new StringBuilder();
                         StringBuilder viewDefinition = new StringBuilder();
-                        createView(viewName, viewDefinition, moduleDataset, dataset, version);
+                        createView(viewName, viewDefinition, connection, moduleDataset, dataset, version);
                         viewDefinitions.append(viewDefinition);
                        
                         HistoryDataset historyDataset = new HistoryDataset();
@@ -360,7 +383,7 @@ public class ModuleRunnerTask {
                         }
                         
                         DatasetCreator datasetCreator = new DatasetCreator(moduleDataset, user, sessionFactory, dbServerFactory, datasource);
-                        datasetCreator.replaceDataset(dataset);
+                        datasetCreator.replaceDataset(session, connection, dataset);
                         
                         InternalSource[] internalSources = dataset.getInternalSources();
                         if (internalSources.length != 1) {
@@ -380,7 +403,7 @@ public class ModuleRunnerTask {
                         
                         StringBuilder viewName = new StringBuilder();
                         StringBuilder viewDefinition = new StringBuilder();
-                        createView(viewName, viewDefinition, moduleDataset, dataset, version);
+                        createView(viewName, viewDefinition, connection, moduleDataset, dataset, version);
                         viewDefinitions.append(viewDefinition);
                        
                         HistoryDataset historyDataset = new HistoryDataset();
@@ -413,7 +436,7 @@ public class ModuleRunnerTask {
                     
                     StringBuilder viewName = new StringBuilder();
                     StringBuilder viewDefinition = new StringBuilder();
-                    createView(viewName, viewDefinition, moduleDataset, dataset, moduleDataset.getVersion());
+                    createView(viewName, viewDefinition, connection, moduleDataset, dataset, moduleDataset.getVersion());
                     viewDefinitions.append(viewDefinition);
                    
                     HistoryDataset historyDataset = new HistoryDataset();
@@ -507,7 +530,6 @@ public class ModuleRunnerTask {
 
             String setupScript = getSetupScript(userTimeStamp, tempUserPassword, outputDatasetTables);
             
-            Statement statement = null;
             try {
                 history.setSetupScript(setupScript);
                 history.setStatus(History.SETUP_SCRIPT);
@@ -515,8 +537,8 @@ public class ModuleRunnerTask {
                 history.addLogMessage(History.INFO, "Starting setup script.");
                 
                 module = modulesDAO.update(module, session);
-                
-                statement = dbServerFactory.getDbServer().getConnection().createStatement();
+
+                statement = connection.createStatement();
                 statement.execute(setupScript);
                 
             } catch (Exception e) {
@@ -537,8 +559,8 @@ public class ModuleRunnerTask {
             // execute algorithm
             
             // TODO create new connection and login as the temporary user
-            
-            statement = null;
+
+            Connection userConnection = null; 
             try {
                 history.setUserScript(algorithm);
                 history.setStatus(History.USER_SCRIPT);
@@ -547,10 +569,11 @@ public class ModuleRunnerTask {
                 
                 module = modulesDAO.update(module, session);
                 
-                DataSource dataSource = getDataSource(userTimeStamp, tempUserPassword);
-                statement = dataSource.getConnection().createStatement();
+                userConnection = getUserConnection(userTimeStamp, tempUserPassword);
+                userConnection.setAutoCommit(true);
+                statement = userConnection.createStatement();
                 statement.execute(algorithm);
-                
+
                 // get the values of all INOUT and OUT parameters
                 while(statement.getMoreResults()) {
                     ResultSet resultSet = statement.getResultSet();
@@ -578,36 +601,40 @@ public class ModuleRunnerTask {
                     }
                     statement = null;
                 }
-            }
-            
-            // execute teardown script
-            
-            String teardownScript = getTeardownScript(userTimeStamp);
-            
-            statement = null;
-            try {
-                history.setTeardownScript(teardownScript);
-                history.setStatus(History.TEARDOWN_SCRIPT);
-                
-                history.addLogMessage(History.INFO, "Starting teardown script.");
-                
-                module = modulesDAO.update(module, session);
-                
-                statement = dbServerFactory.getDbServer().getConnection().createStatement();
-                statement.execute(teardownScript);
-                
-            } catch (Exception e) {
-                // e.printStackTrace();
-                // TODO save error to the current execution history record
-                throw new EmfException(TEARDOWN_SCRIPT_ERROR + e.getMessage());
-            } finally {
-                if (statement != null) {
-                    try {
-                        statement.close();
-                    } catch (SQLException e) {
-                        // ignore
+
+                if (userConnection != null) {
+                    userConnection.close();
+                    userConnection = null;
+                }
+
+                // execute teardown script
+
+                String teardownScript = getTeardownScript(userTimeStamp);
+
+                try {
+                    history.setTeardownScript(teardownScript);
+                    history.setStatus(History.TEARDOWN_SCRIPT);
+                    
+                    history.addLogMessage(History.INFO, "Starting teardown script.");
+                    
+                    module = modulesDAO.update(module, session);
+                    
+                    statement = connection.createStatement();
+                    statement.execute(teardownScript);
+                    
+                } catch (Exception e) {
+                    // e.printStackTrace();
+                    // TODO save error to the current execution history record
+                    throw new EmfException(TEARDOWN_SCRIPT_ERROR + e.getMessage());
+                } finally {
+                    if (statement != null) {
+                        try {
+                            statement.close();
+                        } catch (SQLException e) {
+                            // ignore
+                        }
+                        statement = null;
                     }
-                    statement = null;
                 }
             }
             
@@ -650,6 +677,29 @@ public class ModuleRunnerTask {
             } catch (Exception e) {
                 // ignore
             }
+            
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    // ignore
+                }
+                statement = null;
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+                connection = null;
+            }
+            
+            close(dbServer);
+            
+            session.close();
         }
 
         complete(finalStatusMessage);
@@ -688,7 +738,7 @@ public class ModuleRunnerTask {
 
         // Important: keep the list of valid placeholders in sync with
         //            gov.epa.emissions.framework.services.module.ModuleTypeVersion
-        
+
         text = Pattern.compile(startPattern + "user" + separatorPattern + "full_name" + endPattern, Pattern.CASE_INSENSITIVE)
                       .matcher(text).replaceAll(user.getName());
 
@@ -703,7 +753,7 @@ public class ModuleRunnerTask {
 
         text = Pattern.compile(startPattern + "module" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
                       .matcher(text).replaceAll(module.getId() + "");
-        
+
         text = Pattern.compile(startPattern + "module" + separatorPattern + "final" + endPattern, Pattern.CASE_INSENSITIVE)
                       .matcher(text).replaceAll(module.getIsFinal() ? "Final" : "");
   
@@ -712,13 +762,13 @@ public class ModuleRunnerTask {
 
         text = Pattern.compile(startPattern + "run" + separatorPattern + "date" + endPattern, Pattern.CASE_INSENSITIVE)
                       .matcher(text).replaceAll(CustomDateFormat.format_MM_DD_YYYY(date));
-        
+
         text = Pattern.compile(startPattern + "run" + separatorPattern + "time" + endPattern, Pattern.CASE_INSENSITIVE)
                       .matcher(text).replaceAll(CustomDateFormat.format_HHmmssSSS(date));
 
         return text;
     }
-    
+
     private String replaceDatasetPlaceholders(String algorithm, ModuleDataset moduleDataset, EmfDataset dataset, int version, String viewName) throws EmfException {
         String result = algorithm;
         ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();

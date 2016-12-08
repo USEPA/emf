@@ -3,33 +3,14 @@ package gov.epa.emissions.framework.services.module;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 
-import gov.epa.emissions.commons.data.InternalSource;
-import gov.epa.emissions.commons.data.PivotConfiguration;
-import gov.epa.emissions.commons.data.ProjectionShapeFile;
-import gov.epa.emissions.commons.data.QAProgram;
-import gov.epa.emissions.commons.data.Sector;
-import gov.epa.emissions.commons.db.DbServer;
-import gov.epa.emissions.commons.db.TableCreator;
-import gov.epa.emissions.commons.db.version.Version;
-import gov.epa.emissions.commons.db.version.Versions;
-import gov.epa.emissions.commons.io.Column;
-import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
-import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.GCEnforcerTask;
-import gov.epa.emissions.framework.services.basic.EmfProperty;
-import gov.epa.emissions.framework.services.basic.RemoteCommand;
-import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.data.*;
-import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
-import java.io.*;
-import java.sql.ResultSet;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -81,35 +62,37 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     public synchronized ModuleType[] getModuleTypes() throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            Session session = sessionFactory.getSession();
             List<ModuleType> list = moduleTypesDAO.getModuleTypes(session);
-            session.close();
 
             ModuleType[] moduleTypes = list.toArray(new ModuleType[0]); 
             return moduleTypes;
         } catch (RuntimeException e) {
             LOG.error("Could not get all ModuleTypes", e);
             throw new EmfException("Could not get all ModuleTypes: " + e.getMessage());
+        } finally {
+            session.close(); 
         }
     }
 
     public synchronized ModuleType getModuleType(int id) throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            Session session = sessionFactory.getSession();
             ModuleType moduleType = moduleTypesDAO.get(id, session);
-            session.close();
             return moduleType;
         } catch (RuntimeException e) {
             LOG.error("Could not get ModuleType (ID=" + id + ")", e);
             throw new EmfException("Could not get ModuleType (ID=" + id + "): " + e.getMessage());
+        } finally {
+            session.close(); 
         }
     }
 
     public synchronized ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
+        Session session = sessionFactory.getSession();
+        Connection connection = null;
         try {
-            Session session = sessionFactory.getSession();
-
             if (!moduleTypesDAO.canUpdate(moduleType, session))
                 throw new EmfException("The module type is already in use");
 
@@ -131,11 +114,24 @@ public class ModuleServiceImpl implements ModuleService {
                             continue;
                     }
                     // manually delete the currentMTVD
+                    Statement statement = null;
                     try {
-                        Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                        if (connection == null) {
+                            connection = dbServerFactory.getDbServer().getConnection();
+                        }
+                        statement = connection.createStatement();
                         statement.execute("DELETE FROM modules.module_types_versions_datasets WHERE id=" + currentMTVD.getId());
                     } catch (Exception e) {
                         throw new EmfException("Failed to delete module type version dataset: " + e.getMessage());
+                    } finally {
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException e) {
+                                // ignore
+                            }
+                            statement = null;
+                        }
                     }
                 }
                 for (ModuleTypeVersionParameter currentMTVP : currentMTV.getModuleTypeVersionParameters().values()) {
@@ -145,30 +141,49 @@ public class ModuleServiceImpl implements ModuleService {
                             continue;
                     }
                     // manually delete the currentMTVP 
+                    Statement statement = null;
                     try {
-                        Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                        if (connection == null) {
+                            connection = dbServerFactory.getDbServer().getConnection();
+                        }
+                        statement = connection.createStatement();
                         statement.execute("DELETE FROM modules.module_types_versions_parameters WHERE id=" + currentMTVP.getId());
                     } catch (Exception e) {
                         throw new EmfException("Failed to delete module type version parameter: " + e.getMessage());
+                    } finally {
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException e) {
+                                // ignore
+                            }
+                            statement = null;
+                        }
                     }
                 }
             }
 
             ModuleType released = moduleTypesDAO.update(moduleType, session);
-            session.close();
-
             return released;
         } catch (RuntimeException e) {
             LOG.error("Failed to update module type: " + moduleType.getName(), e);
             throw new EmfException("Failed to update module type " + moduleType.getName() + ": " + e.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+                connection = null;
+            }
+            session.close(); 
         }
-        
     }
 
     public synchronized void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
         Session session = this.sessionFactory.getSession();
-        DbServer dbServer = dbServerFactory.getDbServer();
-
         try {
             for (int i=0; i<types.length; i++) {
                 moduleTypesDAO.removeModuleType(types[i], session);
@@ -178,21 +193,13 @@ public class ModuleServiceImpl implements ModuleService {
             throw new EmfException("Error deleting module types. \n" + e.getMessage());
         } finally {
             session.close(); 
-            try {
-                dbServer.disconnect();
-            } catch (Exception e) {
-                // NOTE Auto-generated catch block
-//                e.printStackTrace();
-            }
         }
     }
 
     public synchronized ModuleType obtainLockedModuleType(User user, ModuleType type) throws EmfException {
         Session session = sessionFactory.getSession();
-
         try {
             ModuleType locked = moduleTypesDAO.obtainLockedModuleType(user, type, session);
-
             return locked;
         } catch (RuntimeException e) {
             LOG.error("Could not obtain lock for ModuleType: " + type.getName(), e);
@@ -203,23 +210,21 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     public synchronized ModuleType releaseLockedModuleType(User user, ModuleType type) throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            Session session = sessionFactory.getSession();
             ModuleType locked = moduleTypesDAO.releaseLockedModuleType(user, type, session);
-            session.close();
-
             return locked;
         } catch (RuntimeException e) {
             LOG.error("Could not release lock on ModuleType: " + type.getName(), e);
             throw new EmfException("Could not release lock on ModuleType: " + type.getName());
+        } finally {
+            session.close();
         }
     }
 
     public synchronized ModuleType addModuleType(ModuleType type) throws EmfException {
         Session session = sessionFactory.getSession();
-        DbServer dbServer = dbServerFactory.getDbServer();
         try {
-
             if (moduleTypesDAO.nameUsed(type.getName(), ModuleType.class, session))
                 throw new EmfException("The \"" + type.getName() + "\" name is already in use");
 
@@ -233,46 +238,42 @@ public class ModuleServiceImpl implements ModuleService {
             throw new EmfException(e.getMessage());
         } finally {
             session.close();
-            try {
-                dbServer.disconnect();
-            } catch (Exception e) {
-                // NOTE Auto-generated catch block
-//                e.printStackTrace();
-            }
         }
     }
 
     public synchronized Module[] getModules() throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            Session session = sessionFactory.getSession();
             List<Module> list = modulesDAO.getModules(session);
-            session.close();
 
             Module[] modules = list.toArray(new Module[0]); 
             return modules;
         } catch (RuntimeException e) {
             LOG.error("Could not get all modules", e);
             throw new EmfException("Could not get all modules: " + e.getMessage());
+        } finally {
+            session.close();
         }
     }
 
     public synchronized Module getModule(int id) throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            Session session = sessionFactory.getSession();
             Module module = modulesDAO.get(id, session);
-            session.close();
-
             return module;
         } catch (RuntimeException e) {
             LOG.error("Could not get module (ID=" + id + ")", e);
             throw new EmfException("Could not get module (ID=" + id + "): " + e.getMessage());
+        } finally {
+            session.close();
         }
     }
 
     public synchronized Module updateModule(Module module) throws EmfException {
+        Session session = sessionFactory.getSession();
+        Connection connection = null;
+        Statement statement = null;
         try {
-            Session session = sessionFactory.getSession();
-
             if (!modulesDAO.canUpdate(module, session))
                 throw new EmfException("The module is already in use");
 
@@ -289,10 +290,22 @@ public class ModuleServiceImpl implements ModuleService {
                 }
                 // manually delete the currentModuleDataset
                 try {
-                    Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                    if (connection == null) {
+                        connection = dbServerFactory.getDbServer().getConnection();
+                    }
+                    statement = connection.createStatement();
                     statement.execute("DELETE FROM modules.modules_datasets WHERE id=" + currentModuleDataset.getId());
                 } catch (Exception e) {
                     throw new EmfException("Failed to delete module dataset: " + e.getMessage());
+                } finally {
+                    if (statement != null) {
+                        try {
+                            statement.close();
+                        } catch (SQLException e) {
+                            // ignore
+                        }
+                        statement = null;
+                    }
                 }
             }
             for(ModuleParameter currentModuleParameter : currentModule.getModuleParameters().values()) {
@@ -303,28 +316,46 @@ public class ModuleServiceImpl implements ModuleService {
                 }
                 // manually delete the currentModuleParameter
                 try {
-                    Statement statement = dbServerFactory.getDbServer().getConnection().createStatement();
+                    if (connection == null) {
+                        connection = dbServerFactory.getDbServer().getConnection();
+                    }
+                    statement = connection.createStatement();
                     statement.execute("DELETE FROM modules.modules_parameters WHERE id=" + currentModuleParameter.getId());
                 } catch (Exception e) {
                     throw new EmfException("Failed to delete module parameter: " + e.getMessage());
+                } finally {
+                    if (statement != null) {
+                        try {
+                            statement.close();
+                        } catch (SQLException e) {
+                            // ignore
+                        }
+                        statement = null;
+                    }
                 }
             }
             
             Module released = modulesDAO.update(module, session);
-            session.close();
-
             return released;
         } catch (RuntimeException e) {
             LOG.error("Could not update module: " + module.getName(), e);
             throw new EmfException("The module is already in use");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // NOTE Auto-generated catch block
+                    e.printStackTrace();
+                }
+                connection = null;
+            }
+            session.close();
         }
-        
     }
 
     public synchronized void deleteModules(User owner, Module[] modules) throws EmfException {
         Session session = this.sessionFactory.getSession();
-        DbServer dbServer = dbServerFactory.getDbServer();
-
         try {
             for (int i=0; i<modules.length; i++) {
                 modulesDAO.removeModule(modules[i], session);
@@ -334,21 +365,13 @@ public class ModuleServiceImpl implements ModuleService {
             throw new EmfException("Error deleting modules. \n" + e.getMessage());
         } finally {
             session.close(); 
-            try {
-                dbServer.disconnect();
-            } catch (Exception e) {
-                // NOTE Auto-generated catch block
-//                e.printStackTrace();
-            }
         }
     }
 
     public synchronized Module obtainLockedModule(User user, Module module) throws EmfException {
         Session session = sessionFactory.getSession();
-
         try {
             Module locked = modulesDAO.obtainLockedModule(user, module, session);
-
             return locked;
         } catch (RuntimeException e) {
             LOG.error("Could not obtain lock for Module: " + module.getName(), e);
@@ -359,23 +382,21 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     public synchronized Module releaseLockedModule(User user, Module module) throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            Session session = sessionFactory.getSession();
             Module locked = modulesDAO.releaseLockedModule(user, module, session);
-            session.close();
-
             return locked;
         } catch (RuntimeException e) {
             LOG.error("Could not release lock on Module: " + module.getName(), e);
             throw new EmfException("Could not release lock on Module: " + module.getName());
+        } finally {
+            session.close();
         }
     }
 
     public synchronized Module addModule(Module module) throws EmfException {
         Session session = sessionFactory.getSession();
-        DbServer dbServer = dbServerFactory.getDbServer();
         try {
-
             if (modulesDAO.nameUsed(module.getName(), Module.class, session))
                 throw new EmfException("The \"" + module.getName() + "\" name is already in use");
 
@@ -388,38 +409,16 @@ public class ModuleServiceImpl implements ModuleService {
             throw new EmfException(e.getMessage());
         } finally {
             session.close();
-            try {
-                dbServer.disconnect();
-            } catch (Exception e) {
-                // NOTE Auto-generated catch block
-//                e.printStackTrace();
-            }
         }
     }
 
     public synchronized void runModules(Module[] modules, User user) throws EmfException {
-        DbServer dbServer = null;
-        
         try {
-            dbServer = dbServerFactory.getDbServer();
-        } catch (Exception e) {
-            LOG.error("Error pre-processing modules for running.", e);
-            throw new EmfException(e.getMessage());
-        }
-
-        ModuleRunner runner = new ModuleRunner(modules, user, dbServerFactory, sessionFactory);
-
-        try {
+            ModuleRunner runner = new ModuleRunner(modules, user, dbServerFactory, sessionFactory);
             threadPool.execute(new GCEnforcerTask("Module Runner", runner));
         } catch (Exception e) {
             LOG.error("Error running modules", e);
             throw new EmfException("Error running modules:" + e.getMessage());
-        } finally {
-            try {
-                dbServer.disconnect();
-            } catch (Exception e) {
-                LOG.error("Error closing DB server and logging DB connections.", e);
-            }
         }
     }
 }

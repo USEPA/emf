@@ -39,7 +39,5 @@ public class ModuleRunner implements Runnable {
 
     private void logError(String message, Exception e) {
         log.error(message, e);
-
     }
-
 }

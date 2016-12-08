@@ -43,7 +43,7 @@ public class ModuleParametersTableData extends AbstractTableData {
             HistoryParameter historyParameter = null;
             if (history.size() > 0) {
                 History lastHistory = history.get(history.size() - 1);
-                if (lastHistory.getResult().equals(History.SUCCESS)) {
+                if (History.SUCCESS.equals(lastHistory.getResult())) {
                     historyParameter = lastHistory.getHistoryParameters().get(moduleParameter.getParameterName());
                 }
             }
