@@ -169,7 +169,7 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ComponentUtility.enableComponents(this, false);
 
-        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //Instances of javax.swing.SwingWorker are not reusable, so
         //we create new instances as needed.
         class EditDatasetPropertiesTask extends SwingWorker<Void, Void> {
             

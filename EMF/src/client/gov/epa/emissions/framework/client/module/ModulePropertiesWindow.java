@@ -435,7 +435,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
         
         runButton = new Button("Run", runAction());
-        runButton.setMnemonic('R');
+        runButton.setMnemonic('n');
         
         finalizeButton = new Button("Finalize", finalizeAction());
         finalizeButton.setMnemonic('F');
@@ -471,7 +471,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 viewDatasets();
             }
         };
-        SelectAwareButton viewDatasetsButton = new SelectAwareButton("View Dataset", viewAction, datasetsTable, confirmDialog);
+        SelectAwareButton viewDatasetsButton = new SelectAwareButton("View Dataset Properties", viewAction, datasetsTable, confirmDialog);
+        viewDatasetsButton.setMnemonic('D');
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
