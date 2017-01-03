@@ -64,6 +64,7 @@ public class RetrieveSCC {
                 if (desc == null)
                     desc = "The SCC entry is not found in the reference.scc table";
                 Scc scc = new Scc(rs.getString(1), desc);
+                scc.setCombustionEfficiency(rs.getFloat(3));
                 sccs.add(scc);
             }
         } finally {
@@ -73,7 +74,7 @@ public class RetrieveSCC {
     }
 
     private String query(int id) {
-        String query = "SELECT e.name,r.scc_description FROM emf.control_measure_sccs AS e LEFT OUTER JOIN reference.scc AS r "
+        String query = "SELECT e.name,r.scc_description,COALESCE(e.combustion_efficiency,100) FROM emf.control_measure_sccs AS e LEFT OUTER JOIN reference.scc AS r "
                 + "ON (e.name=r.scc) WHERE e.control_measures_id=" + id;
         return query;
     }

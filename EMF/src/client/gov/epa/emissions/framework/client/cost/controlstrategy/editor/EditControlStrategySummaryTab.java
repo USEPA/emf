@@ -76,8 +76,8 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     private Dimension comboSize = new Dimension(200, 20);
 
     private MessagePanel messagePanel;
-
-    private IntTextField costYear;
+    
+    private ComboBox costYear;
 
     private EditableComboBox regionsCombo;
 
@@ -268,7 +268,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         updatePollutantsPanel(controlStrategy.getStrategyType());
 
         // layoutGenerator.addLabelWidgetPair("Discount Rate:", discountRateTextField(), panel);
-        layoutGenerator.addLabelWidgetPair("Cost Year:", costYearTextField(), panel);
+        layoutGenerator.addLabelWidgetPair("Cost Year:", costYears(), panel);
         layoutGenerator.addLabelWidgetPair("Target Year:", inventoryYearTextField(), panel);
         layoutGenerator.addLabelWidgetPair("Region:", regions(), panel);
         layoutGenerator.addLabelWidgetPair("Target Pollutant:", pollutantsPanel, panel);
@@ -336,10 +336,20 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         matchMajorPollutantCheck = new JCheckBox(" ", null, controlStrategy.getMatchMajorPollutant() != null ? controlStrategy.getMatchMajorPollutant() : true);
         return matchMajorPollutantCheck;
     }
-
-    private IntTextField costYearTextField() {
-        costYear = new IntTextField("cost year", 0, Integer.MAX_VALUE, 12);
-        costYear.setValue(controlStrategy.getCostYear() != 0 ? controlStrategy.getCostYear() : CostYearTable.REFERENCE_COST_YEAR);
+    
+    private ComboBox costYears() {
+        ArrayList<Integer> costYears = new ArrayList<Integer>();
+        int year = 2000;
+        while (year <= costYearTable.getEndYear()) {
+            costYears.add(year);
+            year++;
+        }
+        costYear = new ComboBox(costYears.toArray());
+        costYear.setSelectedItem(controlStrategy.getCostYear() != 0 ? controlStrategy.getCostYear() : CostYearTable.REFERENCE_COST_YEAR);
+        costYear.setPreferredSize(comboSize);
+        
+        changeablesList.addChangeable(costYear);
+        
         return costYear;
     }
 
@@ -522,8 +532,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         updateProject();
 
         // isDatasetSelected(controlStrategy);
-        controlStrategy.setCostYear(new YearValidation("Cost Year").value(costYear.getText(), costYearTable
-                .getStartYear(), costYearTable.getEndYear()));
+        controlStrategy.setCostYear((Integer)costYear.getSelectedItem());
         controlStrategy.setInventoryYear(new YearValidation("Target Year").value(inventoryYear.getText()));
         updateRegion();
 

@@ -196,7 +196,17 @@ public class CMEfficiencyRecordReader {
     }
 
     private boolean checkForConstraints(String[] tokens, StringBuffer sb, int lineNo) throws EmfException, CMImporterException {
-        String uniqueCompositeKey = tokens[0] + "_" + pollutants.getPollutant(tokens[1]).getName() + "_" + tokens[2] + "_" + tokens[4] + "_" + validation.existingDevCode(tokens[5]) + "_" + validation.effectiveDate(tokens[3]) + "_" + (this.colCount != 15 ? validation.minEmis(tokens[6]) + "_" + validation.minEmis(tokens[7]) : "_");
+        String uniqueCompositeKey = tokens[0] + "_" +
+                pollutants.getPollutant(tokens[1]).getName() + "_" +
+                tokens[2] + "_" + tokens[4] + "_" +
+                validation.existingDevCode(tokens[5]) + "_" +
+                validation.effectiveDate(tokens[3]) + "_" +
+                (this.colCount != 15 ?
+                    validation.minEmis(tokens[6]) + "_" +
+                    validation.minEmis(tokens[7]) : "") + "_" +
+                (this.colCount > 20 ?
+                    validation.minCapacity(tokens[18]) + "_" +
+                    validation.maxCapacity(tokens[19]) : "");
         if (this.compositeKeyMap.containsKey(uniqueCompositeKey)) {
             sb.append(format("Efficiency record is a duplicate, remove the duplicate, abbrv = " + tokens[0] + ", poll = " + tokens[1]));
             status.addStatus(lineNo, sb);

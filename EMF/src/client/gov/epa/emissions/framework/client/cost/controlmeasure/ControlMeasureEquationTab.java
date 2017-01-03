@@ -351,6 +351,8 @@ public class ControlMeasureEquationTab extends JPanel implements ControlMeasureT
                 equation.setValue10(getValue(variableName, value));
             } else if (equationTypeVariable.getFileColPosition() == 11) {
                 equation.setValue11(getValue(variableName, value));
+            } else if (equationTypeVariable.getFileColPosition() == 12) {
+                equation.setValue12(getValue(variableName, value));
             }
 //            if (indexOfEquation != 0) {
 //                equationList.remove(indexOfEquation);

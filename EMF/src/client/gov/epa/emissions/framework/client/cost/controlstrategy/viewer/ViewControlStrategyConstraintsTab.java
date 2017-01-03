@@ -235,7 +235,7 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
                 .setToolTipText("Enter the sources target pollutant maximum cost per ton.  The control measure must be have a cost per ton less than or equal to this cost per ton.");
         this.costPerTon.setEditable(false);
 
-        layoutGenerator.addLabelWidgetPair("Maximum " + CostYearTable.REFERENCE_COST_YEAR + " Cost per Ton ($/ton)",
+        layoutGenerator.addLabelWidgetPair("Maximum Cost per Ton ($/ton) [in Strategy Cost Year dollars]",
                 this.costPerTon, panel);
 
         this.annCost = new TextField("annual cost", 10);
@@ -245,7 +245,7 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
                 .setToolTipText("Enter the sources target pollutant maximum annualized cost.  The controlled source must have a annualized cost less than or equal to this cost.");
         this.annCost.setEditable(false);
 
-        layoutGenerator.addLabelWidgetPair("Maximum " + CostYearTable.REFERENCE_COST_YEAR + " Annualized Cost ($/yr)",
+        layoutGenerator.addLabelWidgetPair("Maximum Annualized Cost ($/yr) [in Strategy Cost Year dollars]",
                 this.annCost, panel);
 
         this.replacementControlMinEfficiencyDiff = new TextField("replacementControlMinEfficiencyDiff", 10);

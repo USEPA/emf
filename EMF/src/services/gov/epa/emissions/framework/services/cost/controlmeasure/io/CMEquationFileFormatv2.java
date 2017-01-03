@@ -1,12 +1,6 @@
 package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
-public class CMEquationFileFormat implements CMFileFormat {
-
-    private String[] cols;
-
-    public CMEquationFileFormat() {
-        this.cols = createCols();
-    }
+public class CMEquationFileFormatv2 extends CMEquationFileFormat {
 
     protected String[] createCols() {
         String[] cols = { "CMAbbreviation", "CMEqnType", 
@@ -16,17 +10,9 @@ public class CMEquationFileFormat implements CMFileFormat {
                 "Var5", "Var6", 
                 "Var7", "Var8", 
                 "Var9", "Var10", 
-                "Var11"
+                "Var11", "Var12"
                 };
         return cols;
     }
-
-    public String identify() {
-        return "Control Measure Equation";
-    }
-
-    public String[] cols() {
-        return cols;
-    }
-
+    
 }

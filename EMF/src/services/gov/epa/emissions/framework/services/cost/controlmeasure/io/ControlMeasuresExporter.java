@@ -108,7 +108,8 @@ public class ControlMeasuresExporter implements Exporter {
             + "     eq.value8 as Var8, "
             + "     eq.value9 as Var9, "
             + "     eq.value10 as Var10, "
-            + "     eq.value11 as Var11 "
+            + "     eq.value11 as Var11, "
+            + "     eq.value12 as Var12 "
             + " from emf.control_measures m "
             + "     inner join emf.control_measure_equations eq "
             + "     on eq.control_measure_id = m.id "
@@ -116,7 +117,8 @@ public class ControlMeasuresExporter implements Exporter {
             + "     on et.id = eq.equation_type_id "
             + "     inner join emf.pollutants p "
             + "     on p.id = eq.pollutant_id "
-            + " where m.id in (" + idList + ")";
+            + " where m.id in (" + idList + ") "
+            + " order by m.abbreviation";
         
         postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
         
@@ -231,7 +233,8 @@ public class ControlMeasuresExporter implements Exporter {
             + "     on sg.id = m.source_group "
             + "     left outer join emf.control_measure_classes cmc "
             + "     on cmc.id = m.cm_class_id "
-            + " where m.id in (" + idList + ")";
+            + " where m.id in (" + idList + ") "
+            + " order by m.abbreviation";
         postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
         
 /*        PrintWriter summaryWriter = openExportFile("_summary.csv");
@@ -329,7 +332,8 @@ public class ControlMeasuresExporter implements Exporter {
             + "     on er.control_measures_id = m.id "
             + "     inner join emf.pollutants p "
             + "     on p.id = er.pollutant_id "
-            + " where m.id in (" + idList + ")";
+            + " where m.id in (" + idList + ") "
+            + " order by m.abbreviation, p.name";
         
         postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
 //        PrintWriter efficienciesWriter = openExportFile("_efficiencies.csv");
@@ -401,11 +405,13 @@ public class ControlMeasuresExporter implements Exporter {
         String selectQuery = 
             "   select m.abbreviation as CMAbbreviation, "
             + "     scc.name as SCC, "
-            + "     scc.status as Status "
+            + "     scc.status as Status, "
+            + "     scc.combustion_efficiency as CombustionEfficiency "
             + " from emf.control_measures m "
             + "     inner join emf.control_measure_sccs scc "
             + "     on scc.control_measures_id = m.id "
-            + " where m.id in (" + idList + ")";
+            + " where m.id in (" + idList + ") "
+            + " order by m.abbreviation, scc.name";
         
         postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
 //        PrintWriter sccsWriter = openExportFile("_SCCs.csv");
@@ -440,7 +446,7 @@ public class ControlMeasuresExporter implements Exporter {
             + "     inner join emf.control_measure_references mr "
             + "     on mr.reference_id = r.id "
             + " where mr.control_measure_id in (" + idList + ") "
-            + " ";
+            + " order by r.id";
         
         postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
     }
@@ -463,7 +469,8 @@ public class ControlMeasuresExporter implements Exporter {
             + "     on mp.control_measure_id = m.id "
             + "     left outer join emf.control_measure_property_categories mpc "
             + "     on mpc.id = mp.control_measure_property_category_id "
-            + " where m.id in (" + idList + ")";
+            + " where m.id in (" + idList + ") "
+            + " order by m.abbreviation, mp.name";
         
         postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
     }

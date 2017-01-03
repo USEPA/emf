@@ -21,40 +21,23 @@ public class CMImportPresenter {
         this.importRules = new CMImportInputRules();
     }
 
-    public void doImport(boolean purge, int [] sectorIDs, String directory, String[] files) throws EmfException {
+    public boolean doImport(boolean purge, int [] sectorIDs, String directory, String[] files) throws EmfException {
         
-        if ( purge && sectorIDs != null) { // need to purge control measure by sectors
+        if ( purge ) { // need to purge control measure by sectors
             
-            if ( sectorIDs.length == 0) { // TODO: JIZHEN purge all
-                //System.out.println("Purge all");
-                
-            } else { // TODO: JIZHEN purge by sectors
-                //System.out.println("Purge by sectors: ");
-                for ( int i=0; i<sectorIDs.length; i++) {
-                    //System.out.print(sectorIDs[i] + " ");
-                }
-                //System.out.println("");
+            if ( sectorIDs == null || sectorIDs.length == 0) {
+                return false;
             }
-            
-            // TODO: JIZHEN do validation here
             
             ControlMeasure[] oldCMs = session.controlMeasureService().getControlMeasureBySector(sectorIDs);
             int numOldCMs = oldCMs.length;
             int numNewCMs = session.controlMeasureImportService().getControlMeasureCountInSummaryFile(purge, sectorIDs, directory, files, session.user());
             String msg = "Are you sure you want to purge existing control measures?\n\nYou are " + (numOldCMs != numNewCMs ? "only ": "") + "importing " + numNewCMs + " control measures " + (numOldCMs != numNewCMs ? ", BUT ": "AND ") + "purging " + numOldCMs + " existing control measures.\n\nThe existing control measures to be purged will be backed up via the export process.\n\nContinue with the purge?";
-            boolean doPurege = view.confirmToPurge(msg);
-            
-            if ( !doPurege) {
-                return;
-            }
-            
-            importControlMeasures(purge, sectorIDs, directory, files);
-            
-            return;
-
+            if (!view.confirmToPurge(msg)) return false;
         }
         
         importControlMeasures(purge, sectorIDs, directory, files);
+        return true;
     }
 
     void importControlMeasures(boolean purge, int [] sectorIDs, String directory, String[] files) throws EmfException {

@@ -123,7 +123,7 @@ BEGIN
 		plant_name_expression := 'facility_name';
 		control_ids_expression := 'control_ids';
 		design_capacity_units_expression := 'design_capacity_units';
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', 'scc', '');
 	ELSE
 		fips_expression := 'fips';
 		plantid_expression := 'plantid';
@@ -147,7 +147,7 @@ BEGIN
 			control_ids_expression := 'case when coalesce(cpri,0) <> 0 then coalesce(cpri || '''','''') else '''' end || coalesce(PRIMARY_DEVICE_TYPE_CODE,'''')';
 		END IF;
 		design_capacity_units_expression := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', '', '');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression('inv', 'scc', '', '');
 	END If;
 
 	-- get the detailed result dataset info
@@ -550,6 +550,7 @@ BEGIN
 		'gdplev'::varchar, --gdplev_table_alias
 		'inv_ovr'::varchar, --inv_override_table_alias
 		'gdplev_incr'::varchar, --gdplev_incr_table_alias
+		'scc'::character varying, --control_measure_sccs_table_alias
 		discount_rate
 		) as cost_expressions
 	into annual_cost_expression,
@@ -578,6 +579,7 @@ BEGIN
 		'gdplev', --gdplev_table_alias
 		'inv_ovr', --inv_override_table_alias
 		'gdplev_incr', --gdplev_incr_table_alias
+		'scc'::character varying, --control_measure_sccs_table_alias
 		discount_rate_3pct
 		) as cost_expressions
 	into annual_cost_3pct_expression,
@@ -953,13 +955,14 @@ select
 
 			)
 			-- capacity restrictions
-			and ((er.min_capacity IS NULL and er.max_capacity IS NULL)
+			and ((er.min_capacity IS NULL and er.max_capacity IS NULL) '
+			     || case when has_design_capacity_columns then '
 			     or
-			     (' || has_design_capacity_columns || ' and
-			      COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
+			     (COALESCE(' || convert_design_capacity_expression || ', 0) <> 0 and
 			      COALESCE(' || convert_design_capacity_expression || ', 0) BETWEEN
 			        COALESCE(er.min_capacity, -1E+308) and
-			        COALESCE(er.max_capacity, 1E+308)))
+			        COALESCE(er.max_capacity, 1E+308)) '
+			     else '' end || ')
 
 
 			left outer join reference.gdplev gdplev_incr

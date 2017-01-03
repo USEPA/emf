@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS public.get_cost_expressions(integer, integer, boolean, character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), character varying(64), double precision);
 
 CREATE OR REPLACE FUNCTION public.get_cost_expressions(
 	int_control_strategy_id integer,
@@ -12,6 +13,7 @@ CREATE OR REPLACE FUNCTION public.get_cost_expressions(
 	gdplev_table_alias character varying(64), 
 	inv_override_table_alias character varying(64), 
 	gdplev_incr_table_alias character varying(64),
+	control_measure_sccs_table_alias character varying(64),
 	discount_rate double precision,
 	OUT annual_cost_expression text, 
 	OUT capital_cost_expression text, 
@@ -161,8 +163,8 @@ BEGIN
 		inv_ceff_expression := 'ann_pct_red';
 		design_capacity_units_expression  := 'design_capacity_units';
 		is_flat_file_inventory := true;
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, '');
-		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, 'MW');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, '');
+		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, 'MW');
 	ELSE
 		fips_expression := 'fips';
 		plantid_expression := 'plantid';
@@ -171,8 +173,8 @@ BEGIN
 		segment_expression := 'segment';
 		inv_ceff_expression := 'ceff';
 		design_capacity_units_expression := 'design_capacity_unit_numerator,design_capacity_unit_denominator';
-		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, '', '');
-		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, 'MW', '');
+		convert_design_capacity_expression := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, '', '');
+		convert_design_capacity_expression_default_MW_units := public.get_convert_design_capacity_expression(inv_table_alias, control_measure_sccs_table_alias, 'MW', '');
 	END If;
 
 	-- get target pollutant, inv filter, and county dataset info if specified
@@ -722,14 +724,9 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
@@ -737,16 +734,12 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					/*annualized_capital_cost*/ 
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
-					* case 
-						when (' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCW'' or ' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCT'') and ' || convert_design_capacity_expression || ' >= 600.0 then 1.0
-						when ' || convert_design_capacity_expression || ' >= 500.0 then 1.0
-						else ' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/
-					end /*scaling_factor*/
+					* ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/
 					* 1000) /*capital_cost*/
 					* ' || capital_recovery_factor_expression || '
 					+ 
 					/*operation_maintenance_cost*/
-					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/, 0) 
+					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/ * 1000/*fixed_operation_maintenance_cost*/, 0) 
 					+ coalesce(' || control_measure_equation_table_alias || '.value3/*variable_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ' || control_measure_equation_table_alias || '.value6/*capacity_factor*/ * 8760/*variable_operation_maintenance_cost*/, 0)
 					)
 
@@ -754,19 +747,62 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent);
+						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent;
+						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/)
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
+					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					)
+
+				--Equation Type 2a 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					)
+
+				--Equation Type 2b 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * e ^ (design_capacity * annual_cost_exponent);
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					' || control_measure_equation_table_alias || '.value3/*annual_cost_multiplier*/ * 
+					exp((1341.022 * ' || convert_design_capacity_expression || '/*design_capacity*/) * (' || control_measure_equation_table_alias || '.value4)/*annual_cost_exponent*/)
 					)
 
 				' end || '
@@ -1229,25 +1265,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
-					* (case 
-						when (' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCW'' or ' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCT'') and ' || convert_design_capacity_expression || ' >= 600.0 then 1.0
-						when ' || convert_design_capacity_expression || ' >= 500.0 then 1.0
-						else ' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/
-					end) /*scaling_factor*/
+					* ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/
 					* 1000) /*capital_cost*/
 					)
 
@@ -1255,24 +1282,68 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent);
+						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent;
+						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
+					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					)
+
+				--Equation Type 2a 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					)
+
+				--Equation Type 2b 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * e ^ (design_capacity * annual_cost_exponent);
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * 
+					exp((1341.022 * ' || convert_design_capacity_expression || '/*design_capacity*/) * (' || control_measure_equation_table_alias || '.value2)/*capital_cost_exponent*/)
 					)
 
 				' end || '
 
 				' || case when not is_point_table then '' else '
+
 				--Equation Type 3 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 3'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
@@ -1704,21 +1775,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					/*operation_maintenance_cost*/
-					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/, 0) 
+					coalesce(' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/ * 1000/*fixed_operation_maintenance_cost*/, 0) 
 					+ coalesce(' || control_measure_equation_table_alias || '.value3/*variable_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ' || control_measure_equation_table_alias || '.value6/*capacity_factor*/ * 8760/*variable_operation_maintenance_cost*/, 0)
 					)
 
@@ -1726,27 +1792,94 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent);
+						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent;
+						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/)
+					(
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
+					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					)
 					- (
-						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)/*capital_cost*/
+					  (
+						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
+						((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)/*capital_cost*/ + 
+						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+						)
+						* (' || capital_recovery_factor_expression || ')/*annualized_capital_cost*/
+					)
+					)
+
+				--Equation Type 2a 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					(
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					)
+					- (
+					  (
+						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
+						((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)/*capital_cost*/ + 
+						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+						)
+						* (' || capital_recovery_factor_expression || ')/*annualized_capital_cost*/
+					)
+					)
+
+				--Equation Type 2b 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * e ^ (design_capacity * annual_cost_exponent);
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					' || control_measure_equation_table_alias || '.value3/*annual_cost_multiplier*/ * 
+					exp((1341.022 * ' || convert_design_capacity_expression || '/*design_capacity*/) * (' || control_measure_equation_table_alias || '.value4)/*annual_cost_exponent*/) 
+					- (
+					  (
+						' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * 
+						exp((1341.022 * ' || convert_design_capacity_expression || '/*design_capacity*/) * (' || control_measure_equation_table_alias || '.value2)/*capital_cost_exponent*/)/*capital_cost*/ 
+						)
 						* (' || capital_recovery_factor_expression || ')/*annualized_capital_cost*/
 					)
 					)
 					
 				' end || '
 				' || case when not is_point_table then '' else '
+
 				--Equation Type 3 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 3'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
@@ -2139,33 +2272,62 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * 1000/*fixed_operation_maintenance_cost*/
+					' || control_measure_equation_table_alias || '.value2/*fixed_om_cost_multiplier*/ * ' || convert_design_capacity_expression || ' * ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/ * 1000/*fixed_operation_maintenance_cost*/
 					)
 
 				--Equation Type 2 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent);
+						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent;
+						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					null::double precision
+
+				--Equation Type 2a 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					null::double precision
+
+				--Equation Type 2b 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * e ^ (design_capacity * annual_cost_exponent);
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
@@ -2489,14 +2651,9 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
@@ -2509,13 +2666,47 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || inv_table_alias || '.design_capacity, 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent);
+						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent;
+						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					null::double precision
+
+				--Equation Type 2a 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					null::double precision
+
+				--Equation Type 2b 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || inv_table_alias || '.design_capacity, 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * e ^ (design_capacity * annual_cost_exponent);
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
@@ -2524,6 +2715,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					
 				' end || '
 				' || case when not is_point_table then '' else '
+
 				--Equation Type 3 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 3'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
@@ -2845,25 +3037,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					annualized_capital_cost := capital_cost * cap_recovery_factor
 					capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000
 					operation_maintenance_cost := coalesce(fixed_operation_maintenance_cost, 0) + coalesce(variable_operation_maintenance_cost, 0)
-					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+					fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 					variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
-						scaling_factor := 
-							case 
-								when (measure_abbreviation = ''NSCR_UBCW'' or measure_abbreviation = ''NSCR_UBCT'') and design_capacity >= 600.0 then 1.0
-								when design_capacity >= 500.0 then 1.0
-								else scaling_factor_model_size ^ scaling_factor_exponent
-							end;
+						scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 						IF coalesce(' || discount_rate || ', 0) != 0 and coalesce(' || control_measure_table_alias || '.equipment_life, 0) != 0 THEN 
 						     cap_recovery_factor := public.calculate_capital_recovery_factor(' || discount_rate || ', ' || control_measure_table_alias || '.equipment_life);
 						END IF;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
 					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || convert_design_capacity_expression || ' 
-					* (case 
-						when (' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCW'' or ' || control_measure_table_alias || '.abbreviation = ''NSCR_UBCT'') and ' || convert_design_capacity_expression || ' >= 600.0 then 1.0
-						when ' || convert_design_capacity_expression || ' >= 500.0 then 1.0
-						else ' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/
-					end) /*scaling_factor*/
+					* ((' || control_measure_equation_table_alias || '.value4/*scaling_factor_model_size*/ / ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value5/*scaling_factor_exponent*/) /*scaling_factor*/
 					* 1000) /*capital_cost*/
 					* (' || capital_recovery_factor_expression || ')
 					)
@@ -2872,19 +3055,70 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent);
+						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent;
+						annual_cost := annual_cost_multiplier * design_capacity ^ annual_cost_exponent + annual_cost_base;
 
 						-- calculate operation maintenance cost
 						operation_maintenance_cost := annual_cost - annualized_capital_cost;
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * ((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)
+					(
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
+					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					)
+					* (' || capital_recovery_factor_expression || ')
+					)
+					
+				--Equation Type 2a 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * emis_reduction ^ annual_cost_exponent + annual_cost_base;
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					(
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
+					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					)
+					* (' || capital_recovery_factor_expression || ')
+					)
+
+				--Equation Type 2b 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor;
+
+						-- calculate annual cost
+						annual_cost := annual_cost_multiplier * e ^ (design_capacity * annual_cost_exponent);
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := annual_cost - annualized_capital_cost;
+					*/|| deflator_gdp_adjustment_factor_expression || ' * 
+					(
+					(
+					' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * 
+					exp((1341.022 * ' || convert_design_capacity_expression || '/*design_capacity*/) * (' || control_measure_equation_table_alias || '.value2)/*capital_cost_exponent*/)
+					)
 					* (' || capital_recovery_factor_expression || ')
 					)
 				' end || '
@@ -3320,10 +3554,10 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 	computed_cost_per_ton_expression := 
 	'case 
-		when coalesce((' || emis_reduction_sql || '), 0) <> 0 then 
+		when coalesce(((' || emis_sql || ') - (' || remaining_emis_sql || ')), 0) <> 0 then 
 			(' || annual_cost_expression || ')
 			/*annual_cost*/
-			/ (' || emis_reduction_sql || ')
+			/ ((' || emis_sql || ') - (' || remaining_emis_sql || '))
 		else null::double precision
 	end';
 
@@ -3351,6 +3585,24 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 							''Type 2''
 						else
 							''-Type 2''
+					end
+
+				--Equation Type 2a 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' then
+					case 
+						when coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
+							''Type 2a''
+						else
+							''-Type 2a''
+					end
+
+				--Equation Type 2b 
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' then
+					case 
+						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
+							''Type 2b''
+						else
+							''-Type 2b''
 					end
 				' end || '
 				' || case when not is_point_table then '' else '
@@ -3553,6 +3805,7 @@ select (public.get_cost_expressions(
 	'gdplev'::character varying, --gdplev_incr_table_alias
 	'inv_ovr'::character varying, --inv_override_table_alias
 	'gdplev_incr'::character varying, --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).annual_cost_expression, 
 	(public.get_cost_expressions(
@@ -3567,6 +3820,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).capital_cost_expression, 
 	(public.get_cost_expressions(
@@ -3581,6 +3835,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).annualized_capital_cost_expression, 
 	(public.get_cost_expressions(
@@ -3595,6 +3850,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
@@ -3609,6 +3865,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).fixed_operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
@@ -3623,6 +3880,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).variable_operation_maintenance_cost_expression, 
 	(public.get_cost_expressions(
@@ -3637,6 +3895,7 @@ select (public.get_cost_expressions(
 	'csm', --control_strategy_measure_table_alias
 	'inv_ovr', --inv_override_table_alias
 	'gdplev_incr', --gdplev_incr_table_alias
+	'scc'::character varying, --control_measure_sccs_table_alias
 	0.07 -- discount_rate
 	)).computed_cost_per_ton_expression;
 */
