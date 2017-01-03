@@ -77,6 +77,7 @@
 		        <property name="value9" column="value9" type="double"/>
 		        <property name="value10" column="value10" type="double"/>
 		        <property name="value11" column="value11" type="double"/>
+		        <property name="value12" column="value12" type="double"/>
 	    	</composite-element>
 		</array>
 

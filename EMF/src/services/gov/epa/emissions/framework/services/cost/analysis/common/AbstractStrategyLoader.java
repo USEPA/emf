@@ -340,8 +340,11 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     }
 
     protected void setResultTotalCostTotalReductionAndCount(ControlStrategyResult controlStrategyResult) throws EmfException {
-        String pollToMatch = controlStrategy.getTargetPollutant().getName();
-        if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
+        String pollToMatch = null;
+        if (controlStrategy.getTargetPollutant() != null) {
+            pollToMatch = controlStrategy.getTargetPollutant().getName();
+            if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
+        }
         
         String query = "SELECT count(1) as record_count, sum(Annual_Cost) as total_cost, " 
             + (controlStrategy.getTargetPollutant() == null || controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)

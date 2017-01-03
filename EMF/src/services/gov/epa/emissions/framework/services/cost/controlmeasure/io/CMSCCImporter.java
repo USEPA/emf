@@ -21,7 +21,7 @@ public class CMSCCImporter{
 
     private HibernateSessionFactory sessionFactory;
     
-    public CMSCCImporter(File file, CMSCCsFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
+    public CMSCCImporter(File file, CMFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
         this.file = file;
         this.user = user;
         this.sessionFactory = sessionFactory;

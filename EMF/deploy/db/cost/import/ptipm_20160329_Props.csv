@@ -1,0 +1,2038 @@
+CMAbbreviation,Name,Category,Units,Data_Type,DB_FieldName,Value
+"NSNCRUBCT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.05"
+"NSNCRUBCT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8.99"
+"NSCR_UBCW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSCR_UBCW","CE_TEXT","No category","","text","CE_TEXT","90% from uncontrolled"
+"NSCR_UBCW","CHEM_PCT","No category","%","double precision","CHEM_PCT","22"
+"NSCR_UBCW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"NSCR_UBCY","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSCR_UBCY","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NSCR_UBCY","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSCR_UBCY","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSCR_UBCY","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","10.65"
+"NSCR_UBCY","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSCR_UBCY","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSCR_UBCY","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NSCR_UBCY","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSCR_UBCY","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","51"
+"NSCR_UBCY","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSCR_UBCY","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NSCR_UBCY","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSCR_UBCY","CE_TEXT","No category","","text","CE_TEXT","80% from uncontrolled"
+"NSCR_UBCY","CHEM_PCT","No category","%","double precision","CHEM_PCT","22"
+"NSCR_UBCY","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 1998).  In the IPM, model plants applying SCR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $80 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.53 per kW per year
+Variable O&M:  omv = $0.37 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the Chapter 4 costing algorithms in EPA, 2001.  The fixed O&M cost is the sum of the annual maintenance material and labor cost, and is estimated to be 0.66 percent of the capital cost.  This portion of the O&M cost is included in the database as maintenance labor.  The NH3 use cost equation is used to estimate chemicals costs.  The annual replacement cost equation is used to estimate replacement materials costs.  The energy requirement cost equation is used to estimate electricity costs.
+
+Electricity cost = $0.03/kWhr
+Ammonia cost = $225/ton
+
+The above O&M component costs are in 2000 dollars.  The model plant size used to estimate utility boiler O&M cost components is 750 MMBtu/hour.
+
+Note:  All costs are in 1999 dollars."
+"NSCR_UBCY","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"NSCR_UBCY","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $80 per kW; the fixed O&M cost of $0.53 per kW per year; and the variable O&M cost of $0.37 mills per KW-hr (1999$)."
+"NSCR_UBCY","ELEC_PCT","No category","%","double precision","ELEC_PCT","8.54"
+"NSCR_UBCY","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","80"
+"NSCR_UBCY","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSCR_UBCY","HG_CE_T","No category","%","character varying(50)","HG_CE_T","80"
+"NSCR_UBCY","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSCR_UBCY","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8"
+"NSCR_UBCY","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSCR_UBCY","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSCR_UBCY","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NSCR_UBCY","NH3","No category","","character varying(50)","NH3","X"
+"NSCR_UBCY","NOX","No category","","character varying(50)","NOX","Co*"
+"NSCR_UBCY","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSCR_UBCY","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSCR_UBCT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $111.48 per kW; the fixed O&M cost of $0.74 per kW per year; and the variable O&M cost of $0.67 mills per KW-hr (2004$)."
+"NSCR_UBCT","ELEC_PCT","No category","%","double precision","ELEC_PCT","8.54"
+"NSCR_UBCT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSCR_UBCT","CE_TEXT","No category","","text","CE_TEXT","90% from uncontrolled for NOx; 95% from uncontrolled for Hg"
+"NSCR_UBCT","CHEM_PCT","No category","%","double precision","CHEM_PCT","22"
+"NSCR_UBCT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"NSNCRUBCT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSNCRUBCT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSNCRUBCT","NG_RT","No category","$/cf","double precision","NG_RT","1.6"
+"NSCR_UBCW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $111.48 per kW; the fixed O&M cost of $0.74 per kW per year; and the variable O&M cost of $0.67 mills per KW-hr (2004$)."
+"NSCR_UBCW","ELEC_PCT","No category","%","double precision","ELEC_PCT","8.54"
+"NSCR_UBCW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying SCR had capacities of 243 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $111.48 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (243 / MW )^0.27
+
+CC (for netdc < 600)  = TCC * netdc * 1000 * SF
+CC (for netdc > 600) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.74 per kW per year
+Variable O&M:  omv = $0.67 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the Chapter 4 costing algorithms in EPA, 2001.  The fixed O&M cost is the sum of the annual maintenance material and labor cost, and is estimated to be 0.66 percent of the capital cost.  This portion of the O&M cost is included in the database as maintenance labor.  The NH3 use cost equation is used to estimate chemicals costs.  The annual replacement cost equation is used to estimate replacement materials costs.  The energy requirement cost equation is used to estimate electricity costs.
+
+Electricity cost = $0.03/kWhr
+Ammonia cost = $225/ton
+
+The above O&M component costs are in 2000 dollars.  The model plant size used to estimate utility boiler O&M cost components is 750 MMBtu/hour.
+
+Note:  All costs are in 2004 dollars."
+"NSCR_UBCW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","90"
+"NSCR_UBCW","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSCR_UBCW","HG_CE_T","No category","%","character varying(50)","HG_CE_T","90"
+"NSCR_UBCW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSCR_UBCW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8"
+"NSCR_UBCW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSCR_UBCW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSCR_UBCW","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NSCR_UBCW","NH3","No category","","character varying(50)","NH3","X"
+"NSCR_UBCW","NOX","No category","","character varying(50)","NOX","Co*"
+"NSCR_UBCW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSCR_UBCW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSCR_UBCW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSCR_UBCW","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NSCR_UBCW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSCR_UBCW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSCR_UBCW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","10.65"
+"NSCR_UBCW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSCR_UBCW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSCR_UBCW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NSCR_UBCW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSCR_UBCW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","51"
+"NSCR_UBCW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSCR_UBCW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NSCR_UBCT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying SCR had capacities of 243 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $111.48 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (243 / MW )^0.27
+
+CC (for netdc < 600)  = TCC * netdc * 1000 * SF
+CC (for netdc > 600) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.74 per kW per year
+Variable O&M:  omv = $0.67 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the Chapter 4 costing algorithms in EPA, 2001.  The fixed O&M cost is the sum of the annual maintenance material and labor cost, and is estimated to be 0.66 percent of the capital cost.  This portion of the O&M cost is included in the database as maintenance labor.  The NH3 use cost equation is used to estimate chemicals costs.  The annual replacement cost equation is used to estimate replacement materials costs.  The energy requirement cost equation is used to estimate electricity costs.
+
+Electricity cost = $0.03/kWhr
+Ammonia cost = $225/ton
+
+The above O&M component costs are in 2000 dollars.  The model plant size used to estimate utility boiler O&M cost components is 750 MMBtu/hour.
+
+Note:  All costs are in 2004 dollars."
+"NSCR_UBCT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","90"
+"NSCR_UBCT","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSCR_UBCT","HG","No category","","character varying(50)","HG","Co"
+"NSCR_UBCT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSCR_UBCT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8"
+"NSCR_UBCT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSCR_UBCT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSCR_UBCT","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NSCR_UBCT","NH3","No category","","character varying(50)","NH3","X"
+"NSCR_UBCT","NOX","No category","","character varying(50)","NOX","Co*"
+"NSCR_UBCT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSCR_UBCT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSCR_UBCT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSCR_UBCT","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NSCR_UBCT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSCR_UBCT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSCR_UBCT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","10.65"
+"NSCR_UBCT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSCR_UBCT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSCR_UBCT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NSCR_UBCT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSCR_UBCT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","51"
+"NSCR_UBCT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSCR_UBCT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NNGR_UBCY","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NNGR_UBCY","CE_TEXT","No category","","text","CE_TEXT","50% from uncontrolled"
+"NNGR_UBCY","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NNGR_UBCY","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 1998).  In the IPM, model plants applying NGR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu),  a 7% discount rate, and a 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $26.90 per kW
+Scaling Factor:  SF= (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.41 per kW per year
+Variable O&M:  omv = $0 millions per kW-hr
+Capacity Utilization Factor:  capfac = 0.65 
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the economic analysis for a 200 megawatt unit provided in Appendix E:  Cost Analysis of Reburning Systems for conventional gas reburn.  The example calculation with a $1.00 per million Btu difference between the primary fuel cost and the reburn fuel cost was used.  The reference for this information is the 1998 Andover Technology Partners report for NESCAUM/MARAMA.  The fuel cost differential is the dominant operating cost of NGR.
+
+Coal Cost:  $1.50/MMBtu
+Natural Gas Cost:  $2.50/MMBtu
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note:  All costs are in 1990 dollars."
+"NNGR_UBCY","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NNGR_UBCY","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $26.90 per kW, the fixed O&M of $0.41 per kW per year, and the variable O&M of $0 per kW-hr (1990$)."
+"NNGR_UBCY","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NNGR_UBCY","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","50"
+"NNGR_UBCY","FUEL_PCT","No category","%","double precision","FUEL_PCT","97.11"
+"NNGR_UBCY","HG_CE_T","No category","%","character varying(50)","HG_CE_T","50"
+"NNGR_UBCY","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NNGR_UBCY","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NNGR_UBCY","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NNGR_UBCY","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NNGR_UBCY","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NNGR_UBCY","NOX","No category","","character varying(50)","NOX","Co*"
+"NNGR_UBCY","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NNGR_UBCY","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NNGR_UBCY","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NNGR_UBCY","OTHR_PCT","No category","%","double precision","OTHR_PCT","1.82"
+"NNGR_UBCY","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","1.06"
+"NNGR_UBCY","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NNGR_UBCW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NNGR_UBCW","CE_TEXT","No category","","text","CE_TEXT","50% from uncontrolled"
+"NNGR_UBCW","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NNGR_UBCW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 1998).  In the IPM, model plants applying NGR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu),  a 7% discount rate, and a 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $26.90 per kW
+Scaling Factor:  SF= (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.41 per kW per year
+Variable O&M:  omv = $0 millions per kW-hr
+Capacity Utilization Factor:  capfac = 0.65 
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the economic analysis for a 200 megawatt unit provided in Appendix E:  Cost Analysis of Reburning Systems for conventional gas reburn.  The example calculation with a $1.00 per million Btu difference between the primary fuel cost and the reburn fuel cost was used.  The reference for this information is the 1998 Andover Technology Partners report for NESCAUM/MARAMA.  The fuel cost differential is the dominant operating cost of NGR.
+
+Coal Cost:  $1.50/MMBtu
+Natural Gas Cost:  $2.50/MMBtu
+
+Note:  All costs are in 1990 dollars."
+"NNGR_UBCW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NNGR_UBCW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $26.90 per kW, the fixed O&M of $0.41 per kW per year, and the variable O&M of $0 per kW-hr (1990$)."
+"NNGR_UBCW","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NNGR_UBCW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","50"
+"NNGR_UBCW","FUEL_PCT","No category","%","double precision","FUEL_PCT","97.11"
+"NNGR_UBCW","HG_CE_T","No category","%","character varying(50)","HG_CE_T","50"
+"NNGR_UBCW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NNGR_UBCW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NNGR_UBCW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NNGR_UBCW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NNGR_UBCW","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NNGR_UBCW","NOX","No category","","character varying(50)","NOX","Co*"
+"NNGR_UBCW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NNGR_UBCW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NNGR_UBCW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NNGR_UBCW","OTHR_PCT","No category","%","double precision","OTHR_PCT","1.82"
+"NNGR_UBCW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","1.06"
+"NNGR_UBCW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NNGR_UBCW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NNGR_UBCW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NNGR_UBCW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NNGR_UBCW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NNGR_UBCW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NNGR_UBCW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","1.06"
+"NNGR_UBCW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NNGR_UBCW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NNGR_UBCT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NNGR_UBCT","CE_TEXT","No category","","text","CE_TEXT","50% from uncontrolled"
+"NNGR_UBCT","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NNGR_UBCT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 1998).  In the IPM, model plants applying NGR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu),  a 7% discount rate, and a 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $26.90 per kW
+Scaling Factor:  SF= (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.41 per kW per year
+Variable O&M:  omv = $0 millions per kW-hr
+Capacity Utilization Factor:  capfac = 0.65 
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the economic analysis for a 200 megawatt unit provided in Appendix E:  Cost Analysis of Reburning Systems for conventional gas reburn.  The example calculation with a $1.00 per million Btu difference between the primary fuel cost and the reburn fuel cost was used.  The reference for this information is the 1998 Andover Technology Partners report for NESCAUM/MARAMA.  The fuel cost differential is the dominant operating cost of NGR.
+
+Coal Cost:  $1.50/MMBtu
+Natural Gas Cost:  $2.50/MMBtu
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note:  All costs are in 1990 dollars."
+"NNGR_UBCY","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NNGR_UBCY","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NNGR_UBCY","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NNGR_UBCY","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NNGR_UBCY","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NNGR_UBCY","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","1.06"
+"NNGR_UBCY","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NNGR_UBCY","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"SCWSHUBCF","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"SCWSHUBCF","COST_BASIS","No category","","text","COST_BASIS","The costs associated with coal washing are usually included in the price of coal in terms of the added cost of the cleaned product over the original run-of-mine coal.  Disposal of the liquid wastes formed during these processes can be difficult and/or expensive and are reflected in the operating and maintenance costs (ERG, 2000).
+
+The cost of coal washing can vary significantly based on characteristics of the raw coal and the types of processes involved, as well as the plant capacity.  The capital costs for coal washing facilities range form $12 to $16 per ton of coal.  Operating costs range from $3.17 to $4.40 per ton for systems that feature high BTU recovery, high levels of ash rejection (40-50%) and 20 to 50% sulfur removal (SIU, 1997)."
+"SCWSHUBCF","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"SCWSHUBCF","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"SCWSHUBCF","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"SCWSHUBCF","CPTON_L","No category","$/ton","integer","CPTON_L","70"
+"SCWSHUBCF","CPTON_H","No category","$/ton","integer","CPTON_H","563"
+"SCWSHUBCF","CE_TEXT","No category","","text","CE_TEXT","The control efficiency varies by pollutant:  SO2 (35%); PM (45%); Hg (21%)"
+"SCWSHUBCF","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"SCWSHUBCF","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"SCWSHUBCF","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness varies based on the characteristics of the raw coal, washing processes and plant capacity from $70 to $563 per ton SO2 reduced.  The average cost used in AirControlNET is $320 per ton SO2 reduced.  All costs are in 1997 dollars."
+"SCWSHUBCF","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","40"
+"SCWSHUBCF","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"SCWSHUBCF","HG","No category","","character varying(50)","HG","Co"
+"SCWSHUBCF","HG_CE_T","No category","%","character varying(50)","HG_CE_T","40%"
+"SCWSHUBCF","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"SCWSHUBCF","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"SCWSHUBCF","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"SCWSHUBCF","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"SCWSHUBCF","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"SCWSHUBCF","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"SCWSHUBCF","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"SCWSHUBCF","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"SCWSHUBCF","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"SCWSHUBCF","PM10","No category","","character varying(50)","PM10","Co"
+"SCWSHUBCF","PM25","No category","","character varying(50)","PM25","Co"
+"SCWSHUBCF","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"SCWSHUBCF","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NNGR_UBCT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NNGR_UBCT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $26.90 per kW, the fixed O&M of $0.41 per kW per year, and the variable O&M of $0 per kW-hr (1990$)."
+"NNGR_UBCT","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NNGR_UBCT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","50"
+"NNGR_UBCT","FUEL_PCT","No category","%","double precision","FUEL_PCT","97.11"
+"NNGR_UBCT","HG_CE_T","No category","%","character varying(50)","HG_CE_T","50"
+"NNGR_UBCT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NNGR_UBCT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NNGR_UBCT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NNGR_UBCT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NNGR_UBCT","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NNGR_UBCT","NOX","No category","","character varying(50)","NOX","Co*"
+"NNGR_UBCT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NNGR_UBCT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NNGR_UBCT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NNGR_UBCT","OTHR_PCT","No category","%","double precision","OTHR_PCT","1.82"
+"NNGR_UBCT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","1.06"
+"NNGR_UBCT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NNGR_UBCT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NNGR_UBCT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NNGR_UBCT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NNGR_UBCT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NNGR_UBCT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NNGR_UBCT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","1.06"
+"NNGR_UBCT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NNGR_UBCT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNBOUBCW2","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNBOUBCW2","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $26.12 per kW; the fixed O&M costs of $0.40 per kW per year; and variable O&M costs of $0.08 mills per kW per year (1999$)."
+"NLNBOUBCW2","CE_TEXT","No category","","text","CE_TEXT","55.3% from uncontrolled"
+"NLNBOUBCW2","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNBOUBCW2","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","55"
+"NLNBOUBCW2","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $26.12 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.40 per kW per year
+Variable O&M:  omv = $0.08 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+
+Note: O&M cost components are in 1999 dollars, all others are in $2004."
+"NLNBOUBCW2","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNBOUBCW2","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNBOUBCW2","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNBOUBCW2","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNBOUBCW2","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNBOUBCW2","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNBOUBCW2","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNBOUBCW2","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNBOUBCW2","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNBOUBCW2","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNBOUBCW2","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNBOUBCW2","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNBOUBCW2","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNBOUBCW2","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNBOUBCW2","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNBOUBCW2","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNBOUBCW2","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNBOUBCW2","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNBOUBCW2","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNBOUBCW2","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNBOUBCW2","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNBOUBCW2","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNBOUBCW2","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"SCWSHUBCF","SO2","No category","","character varying(50)","SO2","Co*"
+"SCWSHUBCF","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"SCWSHUBCF","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"SCWSHUBCF","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"SCWSHUBCF","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"SCWSHUBCF","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"SCWSHUBCF","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNC1UBCT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $10.14 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.16 per kW per year
+Variable O&M:  omv = $0.0 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Note: All Costs are in 2004 Dollars"
+"NLNC1UBCT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNC1UBCT","CE_TEXT","No category","","text","CE_TEXT","33.1% from uncontrolled"
+"NLNC1UBCT","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNC1UBCT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNC1UBCT","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNC1UBCT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $10.14 per kW; the fixed O&M costs of $0.16 per kW per year; and variable O&M costs of $0.0 mills per kW per year (1999$)."
+"NLNC1UBCT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","33"
+"NLNC1UBCT","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNC1UBCT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNC1UBCT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNC1UBCT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNC1UBCT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNC1UBCT","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNC1UBCT","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNC1UBCT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNC1UBCT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNC1UBCT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNC1UBCT","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNC1UBCT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNC1UBCT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNC1UBCT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNC1UBCT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNC1UBCT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNC1UBCT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNC1UBCT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNC1UBCT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNC1UBCT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNC1UBCT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNC3UBCT2","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNC3UBCT2","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNC3UBCT2","CE_TEXT","No category","","text","CE_TEXT","58.3% from uncontrolled"
+"NLNC3UBCT2","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NSNCRUBCT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSNCRUBCT","CHEM_PCT","No category","%","double precision","CHEM_PCT","82.95"
+"NSNCRUBCT","ELEC_PCT","No category","%","double precision","ELEC_PCT","1.75"
+"NSNCRUBCT","CE_TEXT","No category","","text","CE_TEXT","40% from uncontrolled"
+"NSNCRUBCT","NH3","No category","","character varying(50)","NH3","X"
+"NLNC3UBCT2","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $16.19 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.25 per kW per year
+Variable O&M:  omv = $0.027 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note: All costs are in 2004 dollars"
+"NLNC3UBCT2","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNC3UBCT2","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $16.19 per kW; the fixed O&M costs of $0.25 per kW per year; and variable O&M costs of $0.027 mills per kW per year (1999$)."
+"NLNC3UBCT2","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNC3UBCT2","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","58"
+"NLNC3UBCT2","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNC3UBCT2","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNC3UBCT2","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNC3UBCT2","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNC3UBCT2","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNC3UBCT2","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNC3UBCT2","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNC3UBCT2","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNC3UBCT2","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNC3UBCT2","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNC3UBCT2","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNC3UBCT2","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNC3UBCT2","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNC3UBCT2","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNC3UBCT2","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNC3UBCT2","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNC3UBCT2","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNC3UBCT2","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNC3UBCT2","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNC3UBCT2","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NSNCRUBCT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2006).  In the IPM, model plants applying SNCR had capacities of 100 MW and 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plants.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = ($19.60*(200/MW)^0.577+$21.74*(100/MW)^0.681)/2 per kW
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.28*(200/MW)^.0577+$0.33*(100/MW)^0.681) per kW per year
+Variable O&M:  omv = $0.98 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note:  All costs are in 2004 dollars."
+"NSNCRUBCT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost which is also variable by capacity; the fixed O&M costs which varies by capacity; and variable O&M costs of $0.98 mills per kW per year (2004$)."
+"NSNCRUBCT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","35"
+"NSNCRUBCT","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSNCRUBCT","HG_CE_T","No category","%","character varying(50)","HG_CE_T","35"
+"NSNCRUBCT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSNCRUBCT","NOX","No category","","character varying(50)","NOX","Co*"
+"NSNCRUBCT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSNCRUBCT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSNCRUBCT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSNCRUBCT","OTHR_PCT","No category","%","double precision","OTHR_PCT","6"
+"NSNCRUBCT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSNCRUBCT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSNCRUBCT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NSNCRUBCT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSNCRUBCT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSNCRUBCT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0.18"
+"NSNCRUBCT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSNCRUBCT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NSNCRUBCT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSNCRUBCT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0.13"
+"NSNCRUBCW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSNCRUBCW","CHEM_PCT","No category","%","double precision","CHEM_PCT","82.95"
+"NSNCRUBCW","CE_TEXT","No category","","text","CE_TEXT","40% from uncontrolled"
+"NSNCRUBCW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.05"
+"NSNCRUBCW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2006).  In the IPM, model plants applying SNCR had capacities of 100 MW and 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plants.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = ($19.60*(200/MW)^0.577+$21.74*(100/MW)^0.681)/2 per kW
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.28*(200/MW)^.0577+$0.33*(100/MW)^0.681) per kW per year
+Variable O&M:  omv = $0.98 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note:  All costs are in 2004 dollars."
+"NSNCRUBCW","ELEC_PCT","No category","%","double precision","ELEC_PCT","1.75"
+"NSNCRUBCW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost which is also variable by capacity; the fixed O&M costs which varies by capacity; and variable O&M costs of $0.98 mills per kW per year (2004$)."
+"NSNCRUBCW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","35"
+"NSNCRUBCW","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSNCRUBCW","HG_CE_T","No category","%","character varying(50)","HG_CE_T","35"
+"NSNCRUBCW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSNCRUBCW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8.99"
+"NSNCRUBCW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSNCRUBCW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSNCRUBCW","NG_RT","No category","$/cf","double precision","NG_RT","1.6"
+"NSNCRUBCW","NH3","No category","","character varying(50)","NH3","X"
+"NSNCRUBCW","NOX","No category","","character varying(50)","NOX","Co*"
+"NSNCRUBCW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSNCRUBCW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSNCRUBCW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSNCRUBCW","OTHR_PCT","No category","%","double precision","OTHR_PCT","6"
+"NSNCRUBCW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSNCRUBCW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSNCRUBCW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NSNCRUBCW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSNCRUBCW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSNCRUBCW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0.18"
+"NSNCRUBCW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSNCRUBCW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NSNCRUBCW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSNCRUBCW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0.13"
+"NSNCRUBCY","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSNCRUBCY","CHEM_PCT","No category","%","double precision","CHEM_PCT","82.95"
+"NSNCRUBCY","CE_TEXT","No category","","text","CE_TEXT","35% from uncontrolled"
+"NSNCRUBCY","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.05"
+"NSNCRUBCY","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2006).  In the IPM, model plants applying SNCR had capacities of 100 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high Nox rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Control Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $11.04 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (100 / MW )^0.577
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.16 per kW per year
+Variable O&M:  omv = $1.46 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note:  All costs are in 2004 dollars."
+"NSNCRUBCY","ELEC_PCT","No category","%","double precision","ELEC_PCT","1.75"
+"NSNCRUBCY","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost is $11.04 per kW; the fixed O&M cost is $0.16 per kW per year; and the variable O&M cost is $1.46 mills per kW-hr (2004$)."
+"NSNCRUBCY","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","35"
+"NSNCRUBCY","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSNCRUBCY","HG_CE_T","No category","%","character varying(50)","HG_CE_T","35"
+"NSNCRUBCY","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSNCRUBCY","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8.99"
+"NSNCRUBCY","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSNCRUBCY","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSNCRUBCY","NG_RT","No category","$/cf","double precision","NG_RT","1.6"
+"NSNCRUBCY","NH3","No category","","character varying(50)","NH3","X"
+"NSNCRUBCY","NOX","No category","","character varying(50)","NOX","Co*"
+"NSNCRUBCY","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSNCRUBCY","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSNCRUBCY","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSNCRUBCY","OTHR_PCT","No category","%","double precision","OTHR_PCT","6"
+"NSNCRUBCY","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSNCRUBCY","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSNCRUBCY","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NSNCRUBCY","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSNCRUBCY","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSNCRUBCY","STEAM_PCT","No category","%","double precision","STEAM_PCT","0.18"
+"NSNCRUBCY","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSNCRUBCY","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NSNCRUBCY","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSNCRUBCY","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0.13"
+"NLNBOUBCW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNBOUBCW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $26.12 per kW; the fixed O&M costs of $0.40 per kW per year; and variable O&M costs of $0.08 mills per kW per year (2004$)."
+"NLNBOUBCW","CE_TEXT","No category","","text","CE_TEXT","55.9% from uncontrolled"
+"NLNBOUBCW","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNBOUBCW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","56"
+"NLNBOUBCW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $26.12 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.40 per kW per year
+Variable O&M:  omv = $0.08 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+Note:  O&M costs are in 1999 dollars, all others are in 2004 dollars"
+"NLNBOUBCW","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNBOUBCW","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNBOUBCW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNBOUBCW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNBOUBCW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNBOUBCW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNBOUBCW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNBOUBCW","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNBOUBCW","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNBOUBCW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNBOUBCW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNBOUBCW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNBOUBCW","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNBOUBCW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNBOUBCW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNBOUBCW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNBOUBCW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNBOUBCW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNBOUBCW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNBOUBCW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNBOUBCW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNBOUBCW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNBOUBCW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"PFFPJUBC","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0.91"
+"PFFPJUBC","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"PFFPJUBC","CPTON_H","No category","$/ton","integer","CPTON_H","266"
+"PFFPJUBC","CE_TEXT","No category","","text","CE_TEXT","99% from uncontrolled for both PM10 and PM2.5"
+"PFFPJUBC","ELEC_PCT","No category","%","double precision","ELEC_PCT","15"
+"PFFPJUBC","CPTON_TEXT","No category","","text","CPTON_TEXT","When stack flow is available the cost effectiveness varies from $42 to $266 per ton PM10 removed, depending on stack flow.  The default cost effectiveness value, used when stack flow is not available, is $117 per ton PM10 reduced.  (1998$)"
+"PFFPJUBC","COST_BASIS","No category","","text","COST_BASIS","The costs for pulse-jet cleaned systems are generated using EPAGÇÖs cost-estimating spreadsheet for fabric filters (EPA, 1998a). When stack gas flow rate data was available, the costs and cost effectiveness were calculated using the typical values of capital and O&M costs.  When stack gas flow rate data was not available, default typical capital and O&M cost values based on a tons per year of PM10 removed were used (Pechan,2001).
+
+Total annualized costs were determined by adding the annualized O&M costs, fixed capital recovery charges, and a fixed annual charge for taxes, insurance and administrative costs.  The fixed annual charge for taxes, insurance and administrative costs was estimated as 4 percent of the total capital investment (EPA, 2000). Total installed capital costs were annualized using a capital recovery factor, with is based on a 7 percent discount rate and the expected life of the control equipment (20 years) (Pechan, 2001).
+
+The range of high and low capital costs and O&M costs presented in the fact sheets were calculated based on the OAQPS Control Cost Manual and associated spreadsheets (EPA, 1996).  The low costs in the ranges below are representative of equipment sized based on the maximum flow rate recommended in the cost manual, with no exotic materials.  The high costs in the ranges below are representative of equipment sized based on the minimum flow rate recommended in the cost manual, with not exotic materials.  No optional pre- or post treatment equipment costs are included.  
+
+Capital Costs:
+
+Range from $6 to $26 per scfm
+Typical value is $13 per scfm
+
+O&M Costs:
+
+Range from $5 to $24 per scfm
+Typical value is $11 per scfm
+
+Note:  All costs are in 1998 dollars."
+"PFFPJUBC","CPTON_L","No category","$/ton","integer","CPTON_L","42"
+"PFFPJUBC","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","99"
+"PFFPJUBC","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.07"
+"PFFPJUBC","EC","No category","","character varying(50)","EC","Co"
+"PFFPJUBC","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"PFFPJUBC","HG","No category","","character varying(50)","HG","Co"
+"PFFPJUBC","HG_CE_T","No category","%","character varying(50)","HG_CE_T","99%"
+"PFFPJUBC","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","1.83"
+"PFFPJUBC","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","5"
+"PFFPJUBC","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","17.74"
+"PFFPJUBC","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0.05"
+"PFFPJUBC","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"PFFPJUBC","OC","No category","","character varying(50)","OC","Co"
+"PFFPJUBC","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"PFFPJUBC","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","3.86"
+"PFFPJUBC","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","17.26"
+"PFFPJUBC","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"PFFPJUBC","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","8.45"
+"PFFPJUBC","PM10","No category","","character varying(50)","PM10","Co*"
+"PFFPJUBC","PM25","No category","","character varying(50)","PM25","Co"
+"PFFPJUBC","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0.91"
+"PFFPJUBC","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","3.9"
+"PFFPJUBC","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"PFFPJUBC","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0.01"
+"PFFPJUBC","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"PFFPJUBC","TDIR_PCT","No category","%","double precision","TDIR_PCT","87.9"
+"PFFPJUBC","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","12.1"
+"PFFPJUBC","UTIL_PCT","No category","%","double precision","UTIL_PCT","3.59"
+"PFFPJUBC","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","51.33"
+"NLNBUUBCW2","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNBUUBCW2","CE_TEXT","No category","","text","CE_TEXT","40.3% from uncontrolled"
+"NLNBUUBCW2","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNBUUBCW2","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $19.24 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.29 per kW per year
+Variable O&M:  omv = $0.06 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+Note: O&M cost components are in 1999 dollars, all others are in $2004."
+"NLNBUUBCW2","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNBUUBCW2","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNBUUBCW2","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $19.24 per kW; the fixed O&M costs of $0.29 per kW per year; and variable O&M costs of $0.06 mills per kW per year (2004$)."
+"NLNBUUBCW2","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","40"
+"NLNBUUBCW2","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNBUUBCW2","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNBUUBCW2","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNBUUBCW2","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNBUUBCW2","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNBUUBCW2","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNBUUBCW2","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNBUUBCW2","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNBUUBCW2","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNBUUBCW2","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNBUUBCW2","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNBUUBCW2","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNBUUBCW2","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNBUUBCW2","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNBUUBCW2","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNBUUBCW2","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNBUUBCW2","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNBUUBCW2","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNBUUBCW2","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNBUUBCW2","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNBUUBCW2","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNC3UBCT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNC3UBCT","CE_TEXT","No category","","text","CE_TEXT","53.1% from uncontrolled"
+"NLNC3UBCT","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNC3UBCT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $16.19 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.25 per kW per year
+Variable O&M:  omv = $0.027 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+Note: O&M cost components are in 1999 dollars, all others are in $2004."
+"NLNC3UBCT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNC3UBCT","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNC3UBCT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $16.19 per kW; the fixed O&M costs of $0.25 per kW per year; and variable O&M costs of $0.027 mills per kW per year (1999$)."
+"NLNC3UBCT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","53"
+"NLNC3UBCT","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNC3UBCT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNC3UBCT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNC3UBCT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNC3UBCT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNC3UBCT","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNC3UBCT","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNC3UBCT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNC3UBCT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNC3UBCT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNC3UBCT","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNC3UBCT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNC3UBCT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNC3UBCT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNC3UBCT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNC3UBCT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNC3UBCT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNC3UBCT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNC3UBCT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNC3UBCT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNC3UBCT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNC1UBCT2","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNC1UBCT2","CE_TEXT","No category","","text","CE_TEXT","43.3% from uncontrolled"
+"NLNC1UBCT2","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNC1UBCT2","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $10.14 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.16 per kW per year
+Variable O&M:  omv = $0.0 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+Note: O&M cost components are in 1999 dollars, all others are in $2004."
+"NLNC1UBCT2","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNC1UBCT2","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNC1UBCT2","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $10.14 per kW; the fixed O&M costs of $0.16 per kW per year; and variable O&M costs of $0.0 mills per kW per year (2004$)."
+"NLNC1UBCT2","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","43"
+"NLNC1UBCT2","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNC1UBCT2","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNC1UBCT2","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNC1UBCT2","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNC1UBCT2","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNC1UBCT2","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNC1UBCT2","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNC1UBCT2","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNC1UBCT2","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNC1UBCT2","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNC1UBCT2","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNC1UBCT2","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNC1UBCT2","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNC1UBCT2","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNC1UBCT2","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNC1UBCT2","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNC1UBCT2","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNC1UBCT2","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNC1UBCT2","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNC1UBCT2","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNC1UBCT2","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"PFFMSUBC","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","2.07"
+"PFFMSUBC","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"PFFMSUBC","CPTON_H","No category","$/ton","integer","CPTON_H","303"
+"PFFMSUBC","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.07"
+"PFFMSUBC","CE_TEXT","No category","","text","CE_TEXT","99% from uncontrolled for both PM10 and PM2.5"
+"PFFMSUBC","ELEC_PCT","No category","%","double precision","ELEC_PCT","3.56"
+"PFFMSUBC","CPTON_TEXT","No category","","text","CPTON_TEXT","When stack flow is available the cost effectiveness varies from $37 to $303 per ton PM10 removed, depending on stack flow.  The default cost effectiveness value, used when stack flow is not available, is $126 per ton PM10 reduced.  (1998$)"
+"PFFMSUBC","COST_BASIS","No category","","text","COST_BASIS","The costs for mechanical shaker cleaned systems are generated using EPAGÇÖs cost-estimating spreadsheet for fabric filters (EPA, 1998a). When stack gas flow rate data was available, the costs and cost effectiveness were calculated using the typical values of capital and O&M costs.  When stack gas flow rate data was not available, default typical capital and O&M cost values based on a tons per year of PM10 removed were used (Pechan,2001).
+
+Total annualized costs were determined by adding the annualized O&M costs, fixed capital recovery charges, and a fixed annual charge for taxes, insurance and administrative costs.  The fixed annual charge for taxes, insurance and administrative costs was estimated as 4 percent of the total capital investment (EPA, 2000).  Total installed capital costs were annualized using a capital recovery factor, with is based on a 7 percent discount rate and the expected life of the control equipment (20 years) (Pechan, 2001).
+
+The range of high and low capital costs and O&M costs presented in the fact sheets were calculated based on the OAQPS Control Cost Manual and associated spreadsheets (EPA, 1996).  The low costs in the ranges below are representative of equipment sized based on the maximum flow rate recommended in the cost manual, with no exotic materials.  The high costs in the ranges below are representative of equipment sized based on the minimum flow rate recommended in the cost manual, with not exotic materials.  No optional pre- or post treatment equipment costs are included.  
+
+Capital Costs:
+
+Range from $8 to $71 per scfm
+Typical value is $29 per scfm
+
+O&M Costs:
+
+Range from $4 to $24 per scfm
+Typical value is $11 per scfm
+
+Note:  All costs are in 1998 dollars."
+"PFFMSUBC","CPTON_L","No category","$/ton","integer","CPTON_L","37"
+"PFFMSUBC","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","99.5"
+"PFFMSUBC","EC","No category","","character varying(50)","EC","Co"
+"PFFMSUBC","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"PFFMSUBC","HG","No category","","character varying(50)","HG","Co"
+"PFFMSUBC","HG_CE_T","No category","%","character varying(50)","HG_CE_T","99.5%"
+"PFFMSUBC","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","4.15"
+"PFFMSUBC","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","5.25"
+"PFFMSUBC","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","17.74"
+"PFFMSUBC","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0.05"
+"PFFMSUBC","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"PFFMSUBC","OC","No category","","character varying(50)","OC","Co"
+"PFFMSUBC","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"PFFMSUBC","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","3.86"
+"PFFMSUBC","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","17.26"
+"PFFMSUBC","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"PFFMSUBC","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","8.97"
+"PFFMSUBC","PM10","No category","","character varying(50)","PM10","Co*"
+"PFFMSUBC","PM25","No category","","character varying(50)","PM25","Co"
+"PFFMSUBC","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","2.07"
+"PFFMSUBC","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","9.03"
+"PFFMSUBC","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"PFFMSUBC","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0.05"
+"PFFMSUBC","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"PFFMSUBC","TDIR_PCT","No category","%","double precision","TDIR_PCT","82.74"
+"PFFMSUBC","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","17.26"
+"PFFMSUBC","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"PFFMSUBC","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","55.19"
+"NLNC2UBCT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNC2UBCT","CE_TEXT","No category","","text","CE_TEXT","12.71% from uncontrolled"
+"NLNC2UBCT","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNC2UBCT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $14.17 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.21 per kW per year
+Variable O&M:  omv = $0.027 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+Note: O&M cost components are in 1999 dollars, all others are in $2004."
+"NLNC2UBCT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNC2UBCT","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNC2UBCT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $14.17 per kW; the fixed O&M costs of $0.21 per kW per year; and variable O&M costs of $0.027 mills per kW per year (2004$)."
+"NLNC2UBCT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","38"
+"NLNC2UBCT","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNC2UBCT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"PFFMSUBG","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"PFFMSUBG","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"PFFMSUBG","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.07"
+"PFFMSUBG","CE_TEXT","No category","","text","CE_TEXT","95% from uncontrolled for both PM10 and PM2.5"
+"PFFMSUBG","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"PFFMSUBG","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness will vary depending on stack flow.  The cost effectiveness is based on the calculation of total capital costs and operation and maintenance costs. (All resulting costs are in 1990 dollars.)"
+"PFFMSUBG","COST_BASIS","No category","","text","COST_BASIS","When stack gas flow rate data was available, the costs and cost effectiveness were calculated using the typical values of capital and O&M costs.
+
+Capital Costs (TCC):  
+
+Stackflow:  stkflow (ft^3 / min)
+Total Equipment Cost Factor:  tecs = 5.7019
+Total Equipment Cost Constant:  teci = 77,489
+Equipment to Capital Cost Multiplier:  ec_to_cc
+
+TCC = [(tecs * stkflow) +teci] * ec_to_cc
+
+Operating and Maintenance Costs (O&M) are comprised of electricity, dust disposal and bag replacement (compressed air is not applicable).
+
+
+Electricity Factor:  els = 0.1876
+Electricity Constant:  eli = -19.576
+Dust Disposal Factor:  dds = 0.0007
+Dust Disposal Constant:  ddi = 0.1895
+Bag Replacement Factor:  brs = 0.2411
+Bag Replacement Constant:  bri = 1224.2
+
+O$M = [(els*stkflow) + eli] + [(dds *stkflow) + ddi] + [(brs * stkflow) +bri]
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Costs = (CRF * TCC) + O&M
+
+Note:  All resultant costs are in 1990 dollars."
+"PFFMSUBG","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","95"
+"PFFMSUBG","EC","No category","","character varying(50)","EC","Co"
+"PFFMSUBG","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"PFFMSUBG","HG","No category","","character varying(50)","HG","Co"
+"PFFMSUBG","HG_CE_T","No category","%","character varying(50)","HG_CE_T","95%"
+"PFFMSUBG","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"PFFMSUBG","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"PFFMSUBG","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","17.74"
+"PFFMSUBG","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"PFFMSUBG","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"PFFMSUBG","OC","No category","","character varying(50)","OC","Co"
+"PFFMSUBG","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"PFFMSUBG","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"PFFMSUBG","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","17.26"
+"PFFMSUBG","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"PFFMSUBG","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"PFFMSUBG","PM10","No category","","character varying(50)","PM10","Co*"
+"PFFMSUBG","PM25","No category","","character varying(50)","PM25","Co"
+"PFFMSUBG","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"PFFMSUBG","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"PFFMSUBG","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"PFFMSUBG","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"PFFMSUBG","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"PFFMSUBG","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"PFFMSUBG","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"PFFMSUBG","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"PFFMSUBG","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNC2UBCT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNC2UBCT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNC2UBCT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNC2UBCT","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNC2UBCT","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNC2UBCT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNC2UBCT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNC2UBCT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNC2UBCT","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNC2UBCT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNC2UBCT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNC2UBCT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNC2UBCT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNC2UBCT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNC2UBCT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNC2UBCT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNC2UBCT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNC2UBCT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNC2UBCT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NSCR_UBOW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSCR_UBOW","CE_TEXT","No category","","text","CE_TEXT","80% from uncontrolled"
+"NSCR_UBOW","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NSCR_UBOW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying SCR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $32.20 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.99 per kW per year
+Variable O&M:  omv = $0.11 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note:  All costs are in 2004 dollars."
+"NSCR_UBOW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"NSCR_UBOW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $32.20 per kW; the fixed O&M cost of $0.99 per kW per year; and the variable O&M cost of $0.11 mills per kW-hr (2004$)."
+"NSCR_UBOW","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NSCR_UBOW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","80"
+"NSCR_UBOW","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSCR_UBOW","HG_CE_T","No category","%","character varying(50)","HG_CE_T","80"
+"NSCR_UBOW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSCR_UBOW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NSCR_UBOW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSCR_UBOW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSCR_UBOW","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NSCR_UBOW","NH3","No category","","character varying(50)","NH3","X"
+"NSCR_UBOW","NOX","No category","","character varying(50)","NOX","Co*"
+"NSCR_UBOW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSCR_UBOW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSCR_UBOW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSCR_UBOW","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NSCR_UBOW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSCR_UBOW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSCR_UBOW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NSCR_UBOW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSCR_UBOW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSCR_UBOW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NSCR_UBOW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSCR_UBOW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NSCR_UBOW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSCR_UBOW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NSCR_UBOT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSCR_UBOT","CE_TEXT","No category","","text","CE_TEXT","80% from uncontrolled"
+"NSCR_UBOT","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NSCR_UBOT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying SCR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $32.20 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.99 per kW per year
+Variable O&M:  omv = $0.11 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = I
+Capital Recovery Factor:  CRF = [ I ( 1 + I ) ^ Equiplife ] / [ (( 1 + I )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+Note:  All costs are in 2004 dollars."
+"NSCR_UBOT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"NSCR_UBOT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $32.20 per kW; the fixed O&M cost of $0.99 per kW per year; and the variable O&M cost of $0.11 mills per kW-hr (2004$)."
+"NSCR_UBOT","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NSCR_UBOT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","80"
+"NSCR_UBOT","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSCR_UBOT","HG_CE_T","No category","%","character varying(50)","HG_CE_T","80"
+"NSCR_UBOT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSCR_UBOT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NSCR_UBOT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSCR_UBOT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSCR_UBOT","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NSCR_UBOT","NH3","No category","","character varying(50)","NH3","X"
+"NSCR_UBOT","NOX","No category","","character varying(50)","NOX","Co*"
+"NSCR_UBOT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSCR_UBOT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSCR_UBOT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSCR_UBOT","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NSCR_UBOT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSCR_UBOT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSCR_UBOT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NSCR_UBOT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSCR_UBOT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSCR_UBOT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NSCR_UBOT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSCR_UBOT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NSCR_UBOT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSCR_UBOT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"SFGDWUBHS","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","9.94"
+"SFGDWUBHS","CHEM_PCT","No category","%","double precision","CHEM_PCT","16.56"
+"SFGDWUBHS","CE_TEXT","No category","","text","CE_TEXT","90% from uncontrolled for SO2; 64% from uncontrolled for Hg"
+"SFGDWUBHS","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"SFGDWUBHS","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","90"
+"SFGDWUBHS","COST_BASIS","No category","","text","COST_BASIS","Control cost equations used for estimating the costs of applying scrubbers were developed for electric utility boilers.  The cost equations used in this analysis are based on cost equations developed to scale costs to smaller or larger boilers than the model plant (EPA, 1998)).  Model plants were considered to have boiler design capacities of 500 MW.  Several simplifying assumptions were made in developing the costing parameters used for this analysis.  A capacity utilization factor of 65 percent was assumed, as well as a 7-percent discount rate and 15-year lifetime for the scrubber. A control efficiency of 90 percent was assumed for scrubbers on all utility boiler fuel types.
+
+The fuel sulfur content level for these equations is 3% sulfur.  
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $166 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (500 / MW )^0.6
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $6.00 per kW per year
+Variable O&M:  omv = $6.30 mills per kW-hr
+Capacity Factor:  capfac = 0.65 
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  The percentages of each O&M cost component were developed using EPAGÇÖs CUE Cost (EPA, 2000) program. O&M costs were calculated for the model plant and the percentage of the total O&M cost was then calculated for each O&M cost component. A credit for the sale of by-product was subtracted from the disposal costs.  A capacity factor of 65% was assumed.  The following assumptions apply to the cost of utilities and disposal:
+
+Calcium Carbonate                  15       $/ton
+Dibasic acid                           430      $/ton
+Disposal by gypsum stacking    6       $/ton
+Disposal by landfill                  30       $/ton
+Credit for by-product                2        $/ton
+Steam                                  3.5       $/1000 lb
+Electrical energy                    25       mills/kWh
+
+Note:  All costs are in 1990 dollars."
+"SFGDWUBHS","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness varies depending on the nameplate capacity (in MW).   The cost effectiveness depends on the following factors:  total capital costs of $166 per kW; fixed O&M costs of $6.00 per kW per year; and variable O&M costs of $6.30 mills per kW-hr (1990$)."
+"SFGDWUBHS","ELEC_PCT","No category","%","double precision","ELEC_PCT","13.35"
+"SFGDWUBHS","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"SFGDWUBHS","HG","No category","","character varying(50)","HG","Co"
+"SFGDWUBHS","HG_CE_H","No category","%","character varying(50)","HG_CE_H","
+(Hg 98%)"
+"SFGDWUBHS","HG_CE_L","No category","%","character varying(50)","HG_CE_L","
+(Hg 29%)"
+"SFGDWUBHS","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","4.97"
+"SFGDWUBHS","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","5.43"
+"SFGDWUBHS","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"SFGDWUBHS","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","5.43"
+"SFGDWUBHS","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"SFGDWUBHS","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"SFGDWUBHS","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","8.46"
+"SFGDWUBHS","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","15.63"
+"SFGDWUBHS","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"SFGDWUBHS","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","13.9"
+"SFGDWUBHS","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","4.97"
+"SFGDWUBHS","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"SFGDWUBHS","SO2","No category","","character varying(50)","SO2","Co*"
+"SFGDWUBHS","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"SFGDWUBHS","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","3.84"
+"SFGDWUBHS","STEAM_PCT","No category","%","double precision","STEAM_PCT","13.9"
+"SFGDWUBHS","TDIR_PCT","No category","%","double precision","TDIR_PCT","66.22"
+"SFGDWUBHS","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","33.78"
+"SFGDWUBHS","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"SFGDWUBHS","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","6.9"
+"NSNCRUBOW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSNCRUBOW","CHEM_PCT","No category","%","double precision","CHEM_PCT","82.95"
+"NSNCRUBOW","CE_TEXT","No category","","text","CE_TEXT","50% from uncontrolled"
+"NSNCRUBOW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.05"
+"NSNCRUBOW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2006).  In the IPM, model plants applying SNCR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime.
+
+Control Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $10.80 per kW
+SNCR Cost Scaling Factor: :
+SNCR Capital Cost and fixed O&M: (200/MW)^0.577
+Scaling factor applies up to 500 MW
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.17 per kW per year
+Variable O&M:  omv = $0.50 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * TCC) + O&M
+
+Note:  All costs are in 2004 dollars."
+"NSNCRUBOW","ELEC_PCT","No category","%","double precision","ELEC_PCT","1.75"
+"NSNCRUBOW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital costs of $10.80 per kW; the fixed O&M cost of $0.17 per kW per year; and the variable O&M cost of $0.50 mills per kW-hr (2004$)."
+"NSNCRUBOW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","50"
+"NSNCRUBOW","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSNCRUBOW","HG_CE_T","No category","%","character varying(50)","HG_CE_T","50"
+"NSNCRUBOW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSNCRUBOW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8.99"
+"NSNCRUBOW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSNCRUBOW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSNCRUBOW","NG_RT","No category","$/cf","double precision","NG_RT","1.6"
+"NSNCRUBOW","NH3","No category","","character varying(50)","NH3","X"
+"NSNCRUBOW","NOX","No category","","character varying(50)","NOX","Co*"
+"NSNCRUBOW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSNCRUBOW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSNCRUBOW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSNCRUBOW","OTHR_PCT","No category","%","double precision","OTHR_PCT","6"
+"NSNCRUBOW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSNCRUBOW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSNCRUBOW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NSNCRUBOW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSNCRUBOW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSNCRUBOW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0.18"
+"NSNCRUBOW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSNCRUBOW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NSNCRUBOW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSNCRUBOW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0.13"
+"NSNCRUBOT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSNCRUBOT","CHEM_PCT","No category","%","double precision","CHEM_PCT","82.95"
+"NSNCRUBOT","CE_TEXT","No category","","text","CE_TEXT","50% from uncontrolled"
+"NSNCRUBOT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.05"
+"NSNCRUBOT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2006).  In the IPM, model plants applying SNCR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime.
+
+Control Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $10.80 per kW
+SNCR Cost Scaling Factor: :
+SNCR Capital Cost and fixed O&M: (200/MW)^0.577
+Scaling factor applies up to 500 MW
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.17 per kW per year
+Variable O&M:  omv = $0.50 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * TCC) + O&M
+
+Note:  All costs are in 2004 dollars."
+"NSNCRUBOT","ELEC_PCT","No category","%","double precision","ELEC_PCT","1.75"
+"NSNCRUBOT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital costs of $7.80 per kW; the fixed O&M cost of $0.12 per kW per year; and the variable O&M cost of $0.37 mills per kW-hr (1990$)."
+"NSNCRUBOT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","50"
+"NSNCRUBOT","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSNCRUBOT","HG_CE_T","No category","%","character varying(50)","HG_CE_T","50"
+"NSNCRUBOT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSNCRUBOT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","8.99"
+"NSNCRUBOT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NSNCRUBOT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSNCRUBOT","NG_RT","No category","$/cf","double precision","NG_RT","1.6"
+"NSNCRUBOT","NH3","No category","","character varying(50)","NH3","X"
+"NSNCRUBOT","NOX","No category","","character varying(50)","NOX","Co*"
+"NSNCRUBOT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSNCRUBOT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSNCRUBOT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NSNCRUBOT","OTHR_PCT","No category","%","double precision","OTHR_PCT","6"
+"NSNCRUBOT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSNCRUBOT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSNCRUBOT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NSNCRUBOT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSNCRUBOT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSNCRUBOT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0.18"
+"NSNCRUBOT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSNCRUBOT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NSNCRUBOT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSNCRUBOT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0.13"
+"SFGDWUBVHS","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","10.07"
+"SFGDWUBVHS","CHEM_PCT","No category","%","double precision","CHEM_PCT","18.73"
+"SFGDWUBVHS","CE_TEXT","No category","","text","CE_TEXT","90% from uncontrolled"
+"SFGDWUBVHS","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"SFGDWUBVHS","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","90"
+"SFGDWUBVHS","COST_BASIS","No category","","text","COST_BASIS","Control cost equations used for estimating the costs of applying scrubbers were developed for electric utility boilers.  The cost equations used in this analysis are based on cost equations developed to scale costs to smaller or larger boilers than the model plant (EPA, 1998).  Model plants were considered to have boiler design capacities of 500 MW.  Several simplifying assumptions were made in developing the costing parameters used for this analysis.  A capacity utilization factor of 65 percent was assumed, as well as a 7-percent discount rate and 15-year lifetime for the scrubber. A control efficiency of 90 percent was assumed for scrubbers on all utility boiler fuel types.
+
+The fuel sulfur content level for these equations is 4% sulfur.  
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $174 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (500 / MW )^0.6
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $6.30 per kW per year
+Variable O&M:  omv = $1.80 millions per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  The percentages of each O&M cost component were developed using EPAGÇÖs CUE Cost (EPA, 2000) program. O&M costs were calculated for the model plant and the percentage of the total O&M cost was then calculated for each O&M cost component. A credit for the sale of by-product was subtracted from the disposal costs.  A capacity factor of 65% was assumed.  The following assumptions apply to the cost of utilities and disposal:
+
+Calcium Carbonate                  15       $/ton
+Dibasic acid                           430      $/ton
+Disposal by gypsum stacking    6       $/ton
+Disposal by landfill                  30       $/ton
+Credit for by-product                2        $/ton
+Steam                                  3.5       $/1000 lb
+Electrical energy                    25       mills/kWh
+
+Note:  All costs are in 1990 dollars."
+"SFGDWUBVHS","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness varies depending on the nameplate capacity (in MW).   The cost effectiveness depends on the following factors:  total capital costs of $174 per kW; fixed O&M costs of $6.30 per kW per year; and variable O&M costs of $1.80 mills per kW-hr (1990$)."
+"SFGDWUBVHS","ELEC_PCT","No category","%","double precision","ELEC_PCT","10.51"
+"SFGDWUBVHS","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"SFGDWUBVHS","HG","No category","","character varying(50)","HG","Co"
+"SFGDWUBVHS","HG_CE_T","No category","%","character varying(50)","HG_CE_T","90"
+"SFGDWUBVHS","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","5.03"
+"SFGDWUBVHS","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","5.51"
+"SFGDWUBVHS","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"SFGDWUBVHS","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","5.51"
+"SFGDWUBVHS","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"SFGDWUBVHS","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"SFGDWUBVHS","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","8.2"
+"SFGDWUBVHS","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","15.63"
+"SFGDWUBVHS","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"SFGDWUBVHS","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","13.79"
+"SFGDWUBVHS","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","5.03"
+"SFGDWUBVHS","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"SFGDWUBVHS","SO2","No category","","character varying(50)","SO2","Co*"
+"SFGDWUBVHS","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"SFGDWUBVHS","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","3.78"
+"SFGDWUBVHS","STEAM_PCT","No category","%","double precision","STEAM_PCT","6.03"
+"SFGDWUBVHS","TDIR_PCT","No category","%","double precision","TDIR_PCT","66.07"
+"SFGDWUBVHS","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","33.93"
+"SFGDWUBVHS","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"SFGDWUBVHS","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","7.81"
+"PFFRAUBC","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","1.46"
+"PFFRAUBC","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"PFFRAUBC","CPTON_L","No category","$/ton","integer","CPTON_L","53"
+"PFFRAUBC","CPTON_H","No category","$/ton","integer","CPTON_H","337"
+"PFFRAUBC","CE_TEXT","No category","","text","CE_TEXT","99% from uncontrolled for both PM10 and PM2.5"
+"PFFRAUBC","ELEC_PCT","No category","%","double precision","ELEC_PCT","30.54"
+"NNGR_UBOT","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NNGR_UBOT","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","1.06"
+"NNGR_UBOT","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NNGR_UBOT","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"PFFRAUBC","COST_BASIS","No category","","text","COST_BASIS","The costs for reverse-air cleaned systems are generated using EPAGÇÖs cost-estimating spreadsheet for fabric filters (EPA, 1998a). When stack gas flow rate data was available, the costs and cost effectiveness were calculated using the typical values of capital and O&M costs.  When stack gas flow rate data was not available, default typical capital and O&M cost values based on a tons per year of PM10 removed were used (Pechan,2001).
+
+Total annualized costs were determined by adding the annualized O&M costs, fixed capital recovery charges, and a fixed annual charge for taxes, insurance and administrative costs.  The fixed annual charge for taxes, insurance and administrative costs was estimated as 4 percent of the total capital investment (EPA, 2000).  Total installed capital costs were annualized using a capital recovery factor, with is based on a 7 percent discount rate and the expected life of the control equipment (20 years) (Pechan, 2001).
+
+The range of high and low capital costs and O&M costs presented in the fact sheets were calculated based on the OAQPS Control Cost Manual and associated spreadsheets (EPA, 1996).  The low costs in the ranges below are representative of equipment sized based on the maximum flow rate recommended in the cost manual, with no exotic materials.  The high costs in the ranges below are representative of equipment sized based on the minimum flow rate recommended in the cost manual, with not exotic materials.  No optional pre- or post treatment equipment costs are included.  
+
+Capital Costs:
+
+Range from $9 to $84 per scfm
+Typical value is $34 per scfm
+
+O&M Costs:
+
+Range from $6 to $27 per scfm
+Typical value is $13 per scfm
+
+Note:  All costs are in 1998 dollars."
+"PFFRAUBC","CPTON_TEXT","No category","","text","CPTON_TEXT","When stack flow is available the cost effectiveness varies from $53 to $337 per ton PM10 removed, depending on stack flow.  The default cost effectiveness value, used when stack flow is not available, is $148 per ton PM10 reduced.  (1998$)"
+"PFFRAUBC","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","99"
+"PFFRAUBC","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.07"
+"PFFRAUBC","EC","No category","","character varying(50)","EC","Co"
+"PFFRAUBC","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"PFFRAUBC","HG","No category","","character varying(50)","HG","Co"
+"PFFRAUBC","HG_CE_T","No category","%","character varying(50)","HG_CE_T","99%"
+"PFFRAUBC","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","2.91"
+"PFFRAUBC","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","4.02"
+"PFFRAUBC","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","17.74"
+"PFFRAUBC","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0.04"
+"PFFRAUBC","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"PFFRAUBC","OC","No category","","character varying(50)","OC","Co"
+"PFFRAUBC","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"PFFRAUBC","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","2.89"
+"PFFRAUBC","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","17.26"
+"PFFRAUBC","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"PFFRAUBC","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","6.82"
+"PFFRAUBC","PM10","No category","","character varying(50)","PM10","Co*"
+"PFFRAUBC","PM25","No category","","character varying(50)","PM25","Co"
+"PFFRAUBC","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","1.46"
+"PFFRAUBC","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","3.92"
+"PFFRAUBC","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"PFFRAUBC","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"PFFRAUBC","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"PFFRAUBC","TDIR_PCT","No category","%","double precision","TDIR_PCT","87.36"
+"PFFRAUBC","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","12.64"
+"PFFRAUBC","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"PFFRAUBC","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","41.53"
+"NNGR_UBOT","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NNGR_UBOT","CE_TEXT","No category","","text","CE_TEXT","50% from uncontrolled"
+"NNGR_UBOT","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NNGR_UBOT","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 1998).  In the IPM, model plants applying NGR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $16.40 per kW
+Scaling Factor:  SF= (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC* netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.25 per kW per year
+Variable O&M:  omv = $0.02 mills per kW-hr
+Capacity Factor:  capfac = 0.65 
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the economic analysis for a 200 megawatt unit provided in Appendix E:  Cost Analysis of Reburning Systems for conventional gas reburn.  The example calculation with a $1.00 per million Btu difference between the primary fuel cost and the reburn fuel cost was used.  The reference for this information is the 1998 Andover Technology Partners report for NESCAUM/MARAMA.  The fuel cost differential is the dominant operating cost of NGR.
+
+Coal Cost:  $1.50/MMBtu
+Natural Gas Cost:  $2.50/MMBtu
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF *CC) + O&M"
+"NNGR_UBOT","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NNGR_UBOT","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $16.40 per kW, the fixed O&M of $0.25 per kW per year, and the variable O&M of $0.02 mills per kW-hr (1990$)."
+"NNGR_UBOT","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NNGR_UBOT","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","50"
+"NNGR_UBOT","FUEL_PCT","No category","%","double precision","FUEL_PCT","97.11"
+"NNGR_UBOT","HG_CE_T","No category","%","character varying(50)","HG_CE_T","50"
+"NNGR_UBOT","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NNGR_UBOT","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NNGR_UBOT","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NNGR_UBOT","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NNGR_UBOT","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NNGR_UBOT","NOX","No category","","character varying(50)","NOX","Co*"
+"NNGR_UBOT","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NNGR_UBOW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NNGR_UBOW","CE_TEXT","No category","","text","CE_TEXT","50% from uncontrolled"
+"NNGR_UBOW","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NNGR_UBOT","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NNGR_UBOT","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NNGR_UBOT","OTHR_PCT","No category","%","double precision","OTHR_PCT","1.82"
+"NNGR_UBOT","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","1.06"
+"NNGR_UBOT","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NNGR_UBOT","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NNGR_UBOT","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NNGR_UBOT","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NNGR_UBOT","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NNGR_UBOW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 1998).  In the IPM, model plants applying NGR had capacities of 200 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a high NOx rate (>=0.5 pounds per MMBtu) and a capacity utilization factor of 65% were assumed for the utility boilers, as well as a 7% discount rate and 20-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $16.40 per kW
+Scaling Factor:  SF= (sfn / netdc)^sfe = (200 / MW )^0.35
+
+CC (for netdc < 500)  = TCC* netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.25 per kW per year
+Variable O&M:  omv = $0.02 mills per kW-hr
+Capacity Factor:  capfac = 0.65 
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the economic analysis for a 200 megawatt unit provided in Appendix E:  Cost Analysis of Reburning Systems for conventional gas reburn.  The example calculation with a $1.00 per million Btu difference between the primary fuel cost and the reburn fuel cost was used.  The reference for this information is the 1998 Andover Technology Partners report for NESCAUM/MARAMA.  The fuel cost differential is the dominant operating cost of NGR.
+
+Coal Cost:  $1.50/MMBtu
+Natural Gas Cost:  $2.50/MMBtu
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF *CC) + O&M"
+"NNGR_UBOW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NNGR_UBOW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $16.40 per kW, the fixed O&M of $0.25 per kW per year, and the variable O&M of $0.02 mills per kW-hr (1990$)."
+"NNGR_UBOW","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NNGR_UBOW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","50"
+"NNGR_UBOW","FUEL_PCT","No category","%","double precision","FUEL_PCT","97.11"
+"NNGR_UBOW","HG_CE_T","No category","%","character varying(50)","HG_CE_T","50"
+"NNGR_UBOW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NNGR_UBOW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NNGR_UBOW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NNGR_UBOW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NNGR_UBOW","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NNGR_UBOW","NOX","No category","","character varying(50)","NOX","Co*"
+"NNGR_UBOW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NNGR_UBOW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NNGR_UBOW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NNGR_UBOW","OTHR_PCT","No category","%","double precision","OTHR_PCT","1.82"
+"NNGR_UBOW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","1.06"
+"NNGR_UBOW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NNGR_UBOW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NNGR_UBOW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NNGR_UBOW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NNGR_UBOW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NNGR_UBOW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NNGR_UBOW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","1.06"
+"NNGR_UBOW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NNGR_UBOW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNC2UBCT2","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNC2UBCT2","CE_TEXT","No category","","text","CE_TEXT","48.3% from uncontrolled"
+"NLNC2UBCT2","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"PFFMSUBC2","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"PFFMSUBC2","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"PFFMSUBC2","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.07"
+"PFFMSUBC2","CE_TEXT","No category","","text","CE_TEXT","95% from uncontrolled for both PM10 and PM2.5; 80% from uncontrolled for Hg"
+"PFFMSUBC2","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"PFFMSUBC2","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness will vary depending on stack flow.  The cost effectiveness is based on the calculation of total capital costs and operation and maintenance costs. (All resulting costs are in 1990 dollars.)"
+"PFFMSUBC2","COST_BASIS","No category","","text","COST_BASIS","When stack gas flow rate data was available, the costs and cost effectiveness were calculated using the typical values of capital and O&M costs.
+
+Capital Costs (TCC):  
+
+Stackflow:  stkflow (ft^3 / min)
+Total Equipment Cost Factor:  tecs = 5.7019
+Total Equipment Cost Constant:  teci = 77,489
+Equipment to Capital Cost Multiplier:  ec_to_cc
+
+TCC = [(tecs * stkflow) +teci] * ec_to_cc
+
+Operating and Maintenance Costs (O&M) are comprised of electricity, dust disposal and bag replacement (compressed air is not applicable).
+
+Electricity Factor:  els = 0.1941
+Electricity Constant:  eli = -15.956
+Dust Disposal Factor:  dds = 0.7406
+Dust Disposal Constant:  ddi = 1.1461
+Bag Replacement Factor:  brs = 0.2497
+Bag Replacement Constant:  bri = 1220.7
+
+O&M = [(els*stkflow) + eli] + [(dds *stkflow) + ddi] + [(brs * stkflow) +bri]
+
+Equipment Life in Years = Equiplife
+Interest Rate = I = 7 percent
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Costs = (CRF * TCC) + O&M
+
+Note:  All resulting costs are in 1990 dollars."
+"PFFMSUBC2","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","95"
+"PFFMSUBC2","EC","No category","","character varying(50)","EC","Co"
+"PFFMSUBC2","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"PFFMSUBC2","HG","No category","","character varying(50)","HG","Co"
+"PFFMSUBC2","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"PFFMSUBC2","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"PFFMSUBC2","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","17.74"
+"PFFMSUBC2","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"PFFMSUBC2","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"PFFMSUBC2","OC","No category","","character varying(50)","OC","Co"
+"PFFMSUBC2","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"PFFMSUBC2","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"PFFMSUBC2","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","17.26"
+"PFFMSUBC2","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"PFFMSUBC2","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"PFFMSUBC2","PM10","No category","","character varying(50)","PM10","Co*"
+"PFFMSUBC2","PM25","No category","","character varying(50)","PM25","Co"
+"PFFMSUBC2","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"PFFMSUBC2","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"PFFMSUBC2","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"PFFMSUBC2","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"PFFMSUBC2","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"PFFMSUBC2","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"PFFMSUBC2","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"PFFMSUBC2","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"PFFMSUBC2","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNC2UBCT2","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $14.17 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.21 per kW per year
+Variable O&M:  omv = $0.027 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+Note: O&M cost components are in 1999 dollars, all others are in $2004."
+"NLNC2UBCT2","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNC2UBCT2","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNC2UBCT2","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $14.17 per kW; the fixed O&M costs of $0.21 per kW per year; and variable O&M costs of $0.027 mills per kW per year (2004$)."
+"NLNC2UBCT2","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","48"
+"NLNC2UBCT2","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNC2UBCT2","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNC2UBCT2","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNC2UBCT2","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNC2UBCT2","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNC2UBCT2","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNC2UBCT2","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNC2UBCT2","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNC2UBCT2","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNC2UBCT2","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNC2UBCT2","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNC2UBCT2","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNC2UBCT2","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNC2UBCT2","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNC2UBCT2","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNC2UBCT2","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNC2UBCT2","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNC2UBCT2","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNC2UBCT2","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"NLNC2UBCT2","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNC2UBCT2","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNBUUBCW","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NLNBUUBCW","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"
+"NLNBUUBCW","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NLNBUUBCW","CE_TEXT","No category","","text","CE_TEXT","41% from uncontrolled"
+"NLNBUUBCW","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NLNBUUBCW","COST_BASIS","No category","","text","COST_BASIS","The cost equations used in this analysis are based on cost equations from EPA's IPM (EPA, 2004).  In the IPM, model plants applying LNB had capacities of 300 MW.  The equations were scaled to develop costs for smaller or larger boilers than the model plant.  The cost equations also assume a capacity utilization factor of 85% for the utility boilers, as well as a 7% discount rate and 15-year lifetime of the controls.
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $19.24 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (300 / MW )^0.359
+
+CC (for netdc < 500)  = TCC  * netdc * 1000 * SF
+CC (for netdc > 500) = TCC  * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $0.29 per kW per year
+Variable O&M:  omv = $0.06 mills per kW-hr
+Capacity Factor:  capfac = 0.85
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  With the retrofit of combustion controls, the boiler unburned carbon may increase. This increase results in a reduction in boiler efficiency, requiring more coal to be burned to maintain the boiler output.  As the coal firing rate increases, there are corresponding increases in the solid waste generation and auxiliary power usage. The O&M costs were evaluated for tangential-fired boilers only.  With no changes in the capital cost for wall-fired boilers, the fixed O&M costs, generally taken as a function of the capital cost, are not expected to vary. Also, no changes in the variable O&M costs are expected, since unburned carbon assumptions are unchanged.  
+
+For tangential-fired boilers, the general maintenance cost was conservatively taken as 1.5 percent of the total project cost for each technology.  Also, a plant capacity factor of 85 percent was assumed.     
+
+Coal Cost:  $1.20/MMBtu
+Solid waste disposal: $12/ton
+Auxiliary power: 25 mills/KWh
+
+Note:  All costs are in 1999 dollars."
+"NLNBUUBCW","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"NLNBUUBCW","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NLNBUUBCW","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness is variable and based on plant size (nameplate capacity in MW) and the following factors:  the total capital cost of $19.24 per kW; the fixed O&M costs of $0.29 per kW per year; and variable O&M costs of $0.06 mills per kW per year (2004$)."
+"NLNBUUBCW","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","41"
+"NLNBUUBCW","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NLNBUUBCW","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NLNBUUBCW","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"NLNBUUBCW","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"NLNBUUBCW","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NLNBUUBCW","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"NLNBUUBCW","NOX","No category","","character varying(50)","NOX","Co*"
+"NLNBUUBCW","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NLNBUUBCW","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NLNBUUBCW","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"NLNBUUBCW","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"NLNBUUBCW","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NLNBUUBCW","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NLNBUUBCW","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"NLNBUUBCW","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NLNBUUBCW","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NLNBUUBCW","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NLNBUUBCW","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NLNBUUBCW","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"SFGDWUBMS","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","11.58"
+"SFGDWUBMS","CHEM_PCT","No category","%","double precision","CHEM_PCT","6.49"
+"SFGDWUBMS","CE_TEXT","No category","","text","CE_TEXT","90% from uncontrolled for SO2; 64% from uncontrolled for Hg"
+"SFGDWUBMS","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.03"
+"SFGDWUBMS","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","90"
+"SFGDWUBMS","COST_BASIS","No category","","text","COST_BASIS","Control cost equations used for estimating the costs of applying scrubbers were developed for electric utility boilers.  The cost equations used in this analysis are based on cost equations developed to scale costs to smaller or larger boilers than the model plant (EPA, 1998).  Model plants were considered to have boiler design capacities of 500 MW.  Several simplifying assumptions were made in developing the costing parameters used for this analysis.  A capacity utilization factor of 65 percent was assumed, as well as a 7-percent discount rate and 15-year lifetime for the scrubber.  A control efficiency of 90 percent was assumed for scrubbers on all utility boiler fuel types.
+
+The fuel sulfur content level for these equations is 2% sulfur.  
+
+Capital Costs (CC): 
+
+Nameplate Capacity:  netdc [=] MW
+Total Capital Costs:  TCC = $149 per kW
+Scaling Factor:  SF = (sfn / netdc)^sfe = (500 / MW )^0.6
+
+CC (for netdc < 500)  = TCC * netdc * 1000 * SF
+CC (for netdc > 500) = TCC * netdc * 1000 
+
+Operating & Maintenance (O&M):
+
+Fixed O&M:  omf = $5.40 per kW per year
+Variable O&M:  omv = $0.83 mills per kW-hr
+Capacity Factor:  capfac = 0.65
+
+O&M = ( omf * netdc * 1000) + ( omv * netdc * 1000 * capfac * 8760 / 1000)
+
+Equipment Life in Years = Equiplife
+Interest Rate = i
+Capital Recovery Factor:  CRF = [ i ( 1 + i ) ^ Equiplife ] / [ (( 1 + i )^ Equiplife) - 1] 
+
+Total Cost = (CRF * CC) + O&M
+
+O&M Cost Components:  The percentages of each O&M cost component were developed using EPAGÇÖs CUE Cost (EPA, 2000) program. O&M costs were calculated for the model plant and the percentage of the total O&M cost was then calculated for each O&M cost component. A credit for the sale of by-product was subtracted from the disposal costs.  A capacity factor of 65% was assumed. The following assumptions apply to the cost of utilities and disposal:
+
+Calcium Carbonate                  15       $/ton
+Dibasic acid                           430      $/ton
+Disposal by gypsum stacking    6       $/ton
+Disposal by landfill                  30       $/ton
+Credit for by-product                2        $/ton
+Steam                                  3.5       $/1000 lb
+Electrical energy                    25       mills/kWh
+
+Note:  All costs are in 1990 dollars."
+"SFGDWUBMS","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness varies depending on the nameplate capacity (in MW).   The cost effectiveness depends on the following factors:  total capital costs of $149 per kW; fixed O&M costs of $5.40 per kW per year; and variable O&M costs of $0.83 mills per kW-hr (1990$)."
+"SFGDWUBMS","ELEC_PCT","No category","%","double precision","ELEC_PCT","14.06"
+"SFGDWUBMS","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"SFGDWUBMS","HG","No category","","character varying(50)","HG","Co"
+"SFGDWUBMS","HG_CE_H","No category","%","character varying(50)","HG_CE_H","
+(Hg 98%)"
+"SFGDWUBMS","HG_CE_L","No category","%","character varying(50)","HG_CE_L","
+(Hg 29%)"
+"SFGDWUBMS","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","5.79"
+"SFGDWUBMS","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","6.33"
+"SFGDWUBMS","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"SFGDWUBMS","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","6.33"
+"SFGDWUBMS","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"SFGDWUBMS","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"SFGDWUBMS","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","10.97"
+"SFGDWUBMS","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","15.63"
+"SFGDWUBMS","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"SFGDWUBMS","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","17.07"
+"SFGDWUBMS","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","5.79"
+"SFGDWUBMS","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"SFGDWUBMS","SO2","No category","","character varying(50)","SO2","Co*"
+"SFGDWUBMS","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"SFGDWUBMS","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","4.81"
+"SFGDWUBMS","STEAM_PCT","No category","%","double precision","STEAM_PCT","17.07"
+"SFGDWUBMS","TDIR_PCT","No category","%","double precision","TDIR_PCT","59.77"
+"SFGDWUBMS","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","40.23"
+"SFGDWUBMS","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"SFGDWUBMS","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","2.7"
+"SFWHLUBHS","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"SFWHLUBHS","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"SFWHLUBHS","HG_CE_T","No category","%","character varying(50)","HG_CE_T","60"
+"SFWHLUBHS","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"SFWHLUBHS","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0"
+"SFWHLUBHS","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","0"
+"SFWHLUBHS","COST_BASIS","No category","","text","COST_BASIS","The costs associated with switching from high-sulfur coal to low sulfur coal vary widely depending on the original and replacement coal types.  Capital costs may include new storage and distribution systems as well as modifications to the combustion operations.  Switching from bituminous to a subbituminous coal can also lead to an increase in the particulate matter emissions, requiring further investments on controls.
+
+The costs detailed here are based on fuel switching and blending from high-sulfur content bituminous to low-sulfur bituminus and to subbituminous coal."
+"SFWHLUBHS","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"SFWHLUBHS","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"SFWHLUBHS","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"SFWHLUBHS","CPTON_L","No category","$/ton","integer","CPTON_L","113"
+"SFWHLUBHS","CPTON_H","No category","$/ton","integer","CPTON_H","167"
+"SFWHLUBHS","CE_TEXT","No category","","text","CE_TEXT","The control efficiency varies by pollutant:  SO2 (60%.); PM10 (21.4%); PM2.5 (21.4%)"
+"SFWHLUBHS","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0"
+"SFWHLUBHS","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","60"
+"SFWHLUBHS","CPTON_TEXT","No category","","text","CPTON_TEXT","Cost effectiveness varies depending on the ranks of the old and new fuels and is estimated based on the emission factors.  The cost effectiveness ranged from $113 to $167 per ton SO2 reduced.  The cost effectiveness value used in AirControlNET is $140 per ton SO2 reduced.  All costs are in 1995 dollars."
+"SFWHLUBHS","NG_RT","No category","$/cf","double precision","NG_RT","0"
+"SFWHLUBHS","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"SFWHLUBHS","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"SFWHLUBHS","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","0"
+"SFWHLUBHS","OTHR_PCT","No category","%","double precision","OTHR_PCT","0"
+"SFWHLUBHS","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"SFWHLUBHS","PM10","No category","","character varying(50)","PM10","Co"
+"SFWHLUBHS","PM25","No category","","character varying(50)","PM25","Co"
+"SFWHLUBHS","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"SFWHLUBHS","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"SFWHLUBHS","SO2","No category","","character varying(50)","SO2","Co*"
+"SFWHLUBHS","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","0"
+"SFWHLUBHS","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"SFWHLUBHS","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"SFWHLUBHS","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"SFWHLUBHS","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","0"
+"SFWHLUBHS","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"SFWHLUBHS","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","0"

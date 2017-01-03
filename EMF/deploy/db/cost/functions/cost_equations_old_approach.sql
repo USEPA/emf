@@ -88,19 +88,14 @@ BEGIN
         END IF;
 
 	-- calculate scaling factor
-	scaling_factor := 
-		case 
-			when (measure_abbreviation = 'NSCR_UBCW' or measure_abbreviation = 'NSCR_UBCT') and design_capacity >= 600.0 then 1.0
-			when design_capacity >= 500.0 then 1.0
-			else scaling_factor_model_size ^ scaling_factor_exponent
-		end;
+	scaling_factor := (scaling_factor_model_size / design_capacity) ^ scaling_factor_exponent;
 
 	-- calculate capital cost
 	capital_cost := capital_cost_multiplier * design_capacity * scaling_factor * 1000;
 
 	-- calculate operation maintenance cost
 	-- calculate fixed operation maintenance cost
-	fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * 1000;
+	fixed_operation_maintenance_cost := fixed_om_cost_multiplier * design_capacity * scaling_factor * 1000;
 	-- calculate variable operation maintenance cost
 	variable_operation_maintenance_cost := variable_om_cost_multiplier * design_capacity * capacity_factor * 8760;
 	-- calculate total operation maintenance cost
@@ -829,7 +824,7 @@ BEGIN
 			-- Type 1
 			IF equation_type = 'Type 1' THEN
 
-				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator);
+				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, null);
 
 				IF coalesce(design_capacity, 0) <> 0 THEN
 					select costs.annual_cost,
@@ -877,7 +872,7 @@ BEGIN
 			-- Type 2
 			IF equation_type = 'Type 2' THEN
 
-				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator);
+				converted_design_capacity := public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, null);
 				-- convert design capacity to mmBtu/hr
 				converted_design_capacity := 3.412 * converted_design_capacity;
 				IF coalesce(converted_design_capacity, 0) <> 0 THEN
@@ -1059,7 +1054,7 @@ BEGIN
 			IF equation_type = 'Type 11' THEN
 
 				-- convert design capacity to mmBTU/hr
-				converted_design_capacity := 3.412 * public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator);
+				converted_design_capacity := 3.412 * public.convert_design_capacity_to_mw(design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator, null);
 
 				IF coalesce(converted_design_capacity, 0) <> 0 THEN
 					select costs.annual_cost,
@@ -1378,7 +1373,7 @@ BEGIN
 						else
 							design_capacity_unit_numerator
 					end
-					, design_capacity_unit_denominator);
+					, design_capacity_unit_denominator, null);
 --					case 
 --						when len(coalesce(design_capacity_unit_numerator, '')) = 0 then 
 --							public.convert_design_capacity_to_mw(design_capacity, 'MW'::character varying, design_capacity_unit_denominator)

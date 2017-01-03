@@ -106,29 +106,37 @@ public class CMImporters {
                 return new CMEfficiencyImporter(files[i], fileFormatv4, user, sessionFactory, dbServer);
             }
         }
-        throw new EmfException("Failed to import control measures: Control Measure Efficiency file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv3));
+        throw new EmfException("Failed to import control measures: Control Measure Efficiency file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv4));
 
     }
 
     private CMSCCImporter createSCCImporter() throws EmfException {
         CMSCCsFileFormat fileFormat = new CMSCCsFileFormat();
+        CMSCCsFileFormatv2 fileFormatv2 = new CMSCCsFileFormatv2();
         String[] cols = fileFormat.cols();
+        String[] colsv2 = fileFormatv2.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
                 return new CMSCCImporter(files[i], fileFormat, user, sessionFactory);
+            } else if (matches(colsv2, records[i].getTokens())) {
+                return new CMSCCImporter(files[i], fileFormatv2, user, sessionFactory);
             }
         }
 
-        throw new EmfException("Failed to import control measures: Control Measure SCC file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(cols));
+        throw new EmfException("Failed to import control measures: Control Measure SCC file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv2));
 
     }
 
     private CMEquationImporter createEquationImporter() throws EmfException {
         CMEquationFileFormat fileFormat = new CMEquationFileFormat();
+        CMEquationFileFormatv2 fileFormatv2 = new CMEquationFileFormatv2();
         String[] cols = fileFormat.cols();
+        String[] colsv2 = fileFormatv2.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
                 return new CMEquationImporter(files[i], fileFormat, user, sessionFactory);
+            } else if (matches(colsv2, records[i].getTokens())) {
+                return new CMEquationImporter(files[i], fileFormatv2, user, sessionFactory);
             }
         }
         return null;

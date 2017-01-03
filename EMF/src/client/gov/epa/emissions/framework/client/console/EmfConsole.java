@@ -104,6 +104,11 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
         ToolTipManager.sharedInstance().setDismissDelay(10000);  //set to ten seconds for now...
         super.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         super.setResizable(true);
+
+        // make main window resizeable and movable on OS X
+        if (System.getProperty("os.name").toUpperCase().indexOf("OS X") >= 0) {
+            setUndecorated(false);
+        }
     }
 
     protected void windowClosing() {// overriden

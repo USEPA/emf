@@ -75,6 +75,9 @@ public class EfficiencyRecordGenerator {
         //8/8/07 - DCD - added new columns cap ann ratio and incremental cost per ton
         tokens.add("" + (efficiencyRecord.getCapitalAnnualizedRatio() != null ? efficiencyRecord.getCapitalAnnualizedRatio() : ""));
         tokens.add("" + (efficiencyRecord.getIncrementalCostPerTon() != null ?  efficiencyRecord.getIncrementalCostPerTon(): ""));
+        
+        tokens.add("" + (efficiencyRecord.getMinCapacity() != null ? efficiencyRecord.getMinCapacity() : ""));
+        tokens.add("" + (efficiencyRecord.getMaxCapacity() != null ? efficiencyRecord.getMaxCapacity() : ""));
 
         return tokens;
     }
