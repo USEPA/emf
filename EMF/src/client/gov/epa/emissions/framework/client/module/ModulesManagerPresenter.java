@@ -100,4 +100,7 @@ public class ModulesManagerPresenter {
         return service().getModules();
     }
 
+    public Module getModule(int id) throws EmfException {
+        return service().getModule(id);
+    }
 }

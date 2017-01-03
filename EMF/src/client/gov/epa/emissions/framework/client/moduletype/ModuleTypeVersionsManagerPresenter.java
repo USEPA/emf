@@ -53,12 +53,31 @@ public class ModuleTypeVersionsManagerPresenter {
         return session.moduleService().getModuleType(id);
     }
     
-    public void doRemove(ModuleTypeVersion[] moduleTypeVersions) throws EmfException {
-//        try {
-//            session.moduleService().deleteModuleTypeVersions(session.user(), moduleTypeVersions);
-//        } catch (EmfException e) {
-//            throw new EmfException(e.getMessage());
-//        } finally {
-//        }
+    public Module[] getModules(ModuleTypeVersion moduleTypeVersion) {
+        try {
+            return session.moduleService().getModules();
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        } // TODO get only the modules for this moduleTypeVersion
+        return new Module[] {};
+    }
+
+    public ModuleType obtainLockedModuleType(ModuleType moduleType) throws EmfException{
+        return session.moduleService().obtainLockedModuleType(session.user(), moduleType);
+    }
+
+    public ModuleType releaseLockedModuleType(ModuleType moduleType) {
+        try {
+            return session.moduleService().releaseLockedModuleType(session.user(), moduleType);
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
+        return session.moduleService().updateModuleType(moduleType);
     }
 }

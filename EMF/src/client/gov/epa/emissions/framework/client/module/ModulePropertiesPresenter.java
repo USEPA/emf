@@ -54,6 +54,10 @@ public class ModulePropertiesPresenter {
         return service().releaseLockedModule(session.user(), module);
     }
     
+    public Module[] getModules() throws EmfException {
+        return service().getModules();
+    }
+
     public Module getModule(int id) throws EmfException {
         return service().getModule(id);
     }
@@ -87,6 +91,11 @@ public class ModulePropertiesPresenter {
             PropertiesViewPresenter presenter = new PropertiesViewPresenter(emfDataset, session);
             presenter.doDisplay(propertiesView);
         }
+    }
+    
+    public void doDisplayRelatedModules(RelatedModulesView view) throws EmfException {
+        RelatedModulesPresenter presenter = new RelatedModulesPresenter(session, view);
+        presenter.doDisplay();
     }
     
     public void runModule(Module module) throws EmfException {

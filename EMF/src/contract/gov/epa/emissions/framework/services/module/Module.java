@@ -57,7 +57,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     public Module deepCopy(User creator) {
         Module newModule = new Module();
-        newModule.setName(name + " Copy");
+        newModule.setName(name + " Copy"); // TODO search for unique new name
         newModule.setDescription("Copy of " + name + " module.\n" + description);
         newModule.setModuleTypeVersion(moduleTypeVersion);
         newModule.setCreator(creator);
@@ -90,6 +90,154 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         return true;
     }
 
+    // checks if this module is up-to-date with respect to its module type version
+    public boolean isUpToDate() {
+        return lastModifiedDate.after(moduleTypeVersion.getLastModifiedDate());
+    }
+
+    // synchronize this module with its module type version
+    // using the old module type version in order to detect what has changed
+    public boolean update(ModuleTypeVersion oldMTV) {
+        boolean updated = false;
+        
+        if (isUpToDate())
+            return updated;
+        
+        // handle new or modified datasets
+        Map<String, ModuleTypeVersionDataset> oldMTVDatasets = oldMTV.getModuleTypeVersionDatasets();
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
+            if (oldMTVDatasets.containsKey(moduleTypeVersionDataset.getPlaceholderName())) {
+                ModuleTypeVersionDataset oldMTVDataset = oldMTVDatasets.get(moduleTypeVersionDataset.getPlaceholderName());
+                if (oldMTVDataset.getMode().equals(moduleTypeVersionDataset.getMode()))
+                    continue;
+                ModuleDataset moduleDataset = moduleDatasets.get(oldMTVDataset.getPlaceholderName()); // must exist
+                moduleDataset.initSettings();
+                updated = true;
+            } else {
+                ModuleDataset moduleDataset = new ModuleDataset();
+                moduleDataset.setModule(this);
+                moduleDataset.setPlaceholderName(moduleTypeVersionDataset.getPlaceholderName());
+                moduleDataset.initSettings();
+                addModuleDataset(moduleDataset);
+                updated = true;
+            }
+        }
+        
+        // handle removed datasets
+        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
+        for(ModuleTypeVersionDataset oldMTVDataset : oldMTVDatasets.values()) {
+            if (moduleTypeVersionDatasets.containsKey(oldMTVDataset.getPlaceholderName()))
+                continue;
+            moduleDatasets.remove(oldMTVDataset.getPlaceholderName()); // must exist
+            updated = true;
+        }
+        
+        // handle new or modified parameters
+        Map<String, ModuleTypeVersionParameter> oldMTVParameters = oldMTV.getModuleTypeVersionParameters();
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
+            if (oldMTVParameters.containsKey(moduleTypeVersionParameter.getParameterName())) {
+                ModuleTypeVersionParameter oldMTVParameter = oldMTVParameters.get(moduleTypeVersionParameter.getParameterName());
+                if (oldMTVParameter.getMode().equals(moduleTypeVersionParameter.getMode()))
+                    continue;
+                ModuleParameter moduleParameter = moduleParameters.get(oldMTVParameter.getParameterName()); // must exist
+                moduleParameter.initSettings();
+                updated = true;
+            } else {
+                ModuleParameter moduleParameter = new ModuleParameter();
+                moduleParameter.setModule(this);
+                moduleParameter.setParameterName(moduleTypeVersionParameter.getParameterName());
+                moduleParameter.initSettings();
+                addModuleParameter(moduleParameter);
+                updated = true;
+            }
+        }
+        
+        // handle removed parameters
+        Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
+        for(ModuleTypeVersionParameter oldMTVParameter : oldMTVParameters.values()) {
+            if (moduleTypeVersionParameters.containsKey(oldMTVParameter.getParameterName()))
+                continue;
+            moduleParameters.remove(oldMTVParameter.getParameterName()); // must exist
+            updated = true;
+        }
+        
+        if (updated) {
+            setLastModifiedDate(new Date());
+        }
+        
+        return updated;
+    }
+    
+    // synchronize this module with its module type version
+    public boolean refresh(Date date) {
+        boolean updated = false;
+        
+        if (isUpToDate())
+            return updated;
+        
+        // handle new or modified datasets
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
+            if (moduleDatasets.containsKey(moduleTypeVersionDataset.getPlaceholderName())) {
+                ModuleDataset moduleDataset = moduleDatasets.get(moduleTypeVersionDataset.getPlaceholderName());
+                if (moduleDataset.updateSettings())
+                    updated = true;
+            } else {
+                ModuleDataset moduleDataset = new ModuleDataset();
+                moduleDataset.setModule(this);
+                moduleDataset.setPlaceholderName(moduleTypeVersionDataset.getPlaceholderName());
+                moduleDataset.initSettings();
+                addModuleDataset(moduleDataset);
+                updated = true;
+            }
+        }
+        
+        // handle removed datasets
+        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
+        List<String> removedPlaceholders = new ArrayList<String>();
+        for(ModuleDataset moduleDataset : moduleDatasets.values()) {
+            if (!moduleTypeVersionDatasets.containsKey(moduleDataset.getPlaceholderName()))
+                removedPlaceholders.add(moduleDataset.getPlaceholderName());
+        }
+        for(String removedPlaceholder : removedPlaceholders) {
+            moduleDatasets.remove(removedPlaceholder);
+            updated = true;
+        }
+        
+        // handle new or modified parameters
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
+            if (moduleParameters.containsKey(moduleTypeVersionParameter.getParameterName())) {
+                ModuleParameter moduleParameter = moduleParameters.get(moduleTypeVersionParameter.getParameterName());
+                if (moduleParameter.updateSettings())
+                    updated = true;
+            } else {
+                ModuleParameter moduleParameter = new ModuleParameter();
+                moduleParameter.setModule(this);
+                moduleParameter.setParameterName(moduleTypeVersionParameter.getParameterName());
+                moduleParameter.initSettings();
+                addModuleParameter(moduleParameter);
+                updated = true;
+            }
+        }
+        
+        // handle removed parameters
+        Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
+        List<String> removedParameters = new ArrayList<String>();
+        for(ModuleParameter moduleParameter : moduleParameters.values()) {
+            if (!moduleTypeVersionParameters.containsKey(moduleParameter.getParameterName()))
+                removedParameters.add(moduleParameter.getParameterName());
+        }
+        for(String removedParameter : removedParameters) {
+            moduleParameters.remove(removedParameter);
+            updated = true;
+        }
+        
+        if (updated) {
+            setLastModifiedDate(date);
+        }
+        
+        return updated;
+    }
+    
     public int getId() {
         return id;
     }

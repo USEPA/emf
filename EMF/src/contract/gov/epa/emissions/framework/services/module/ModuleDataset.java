@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,6 +118,58 @@ public class ModuleDataset implements Serializable {
         return true;
     }
 
+    // compares the settings against the moduleTypeVersionDataset
+    // if the settings don't match, initialize this object
+    // returns true if this object was modified in any way
+    public boolean updateSettings() {
+        // TODO add mode and datasetType to ModuleDataset class and modules.modules_datasets table also
+        //      in order to detect moduleTypeVersion changes more reliably
+        ModuleDataset copy = deepCopy(module);
+        ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
+        if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
+            if (outputMethod != null)
+                return false;
+        } else { // IN and INOUT
+            // TODO check that the dataset with datasetId has the same DatasetType as specified in the ModuleTypeVerswionDataset
+            if (outputMethod == null && datasetId != null && version != null && datasetNamePattern == null && overwriteExisting == null)
+                return false;
+        }
+        
+        initSettings();
+
+        return getOutputMethod() != copy.getOutputMethod() ||
+               getDatasetId() != copy.getDatasetId() ||
+               getVersion() != copy.getVersion() ||
+               getDatasetNamePattern() != copy.getDatasetNamePattern() ||
+               getOverwriteExisting() != copy.getOverwriteExisting();
+    }
+    
+    public void initSettings() {
+        ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
+        setOutputMethod(moduleTypeVersionDataset.isModeOUT() ? ModuleDataset.NEW : null);
+        setDatasetNamePattern(null);
+        setOverwriteExisting(null);
+        setDatasetId(null);
+        setVersion(null);
+    }
+    
+    public boolean transferSettings(Module otherModule) {
+        Map<String, ModuleDataset> otherModuleDatasets = otherModule.getModuleDatasets();
+        if (otherModuleDatasets.containsKey(placeholderName)) {
+            ModuleDataset otherModuleDataset = otherModuleDatasets.get(placeholderName);
+            ModuleTypeVersionDataset otherModuleTypeVersionDataset = otherModuleDataset.getModuleTypeVersionDataset();
+            if (otherModuleTypeVersionDataset.getMode().equals(getModuleTypeVersionDataset().getMode())) {
+                setOutputMethod(otherModuleDataset.getOutputMethod());
+                setDatasetNamePattern(otherModuleDataset.getDatasetNamePattern());
+                setOverwriteExisting(otherModuleDataset.getOverwriteExisting());
+                setDatasetId(otherModuleDataset.getDatasetId());
+                setVersion(otherModuleDataset.getVersion());
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public boolean isSimpleDatasetName() {
         if (datasetNamePattern == null)
             return false;

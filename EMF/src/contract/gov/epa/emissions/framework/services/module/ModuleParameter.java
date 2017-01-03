@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class ModuleParameter implements Serializable {
 
@@ -37,6 +38,32 @@ public class ModuleParameter implements Serializable {
         return true;
     }
     
+    // compares the settings against the moduleTypeVersionParameter
+    // if the settings don't match, initialize this object
+    // returns true if this object was modified in any way
+    public boolean updateSettings() {
+        // TODO add mode and sqlDataType to ModuleParameter class and modules.modules_parameters table also
+        //      in order to detect moduleTypeVersion changes more reliably
+        return false;
+    }
+
+    public void initSettings() {
+        setValue("");
+    }
+
+    public boolean transferSettings(Module otherModule) {
+        Map<String, ModuleParameter> otherModuleParameters = otherModule.getModuleParameters();
+        if (otherModuleParameters.containsKey(parameterName)) {
+            ModuleParameter otherModuleParameter = otherModuleParameters.get(parameterName);
+            ModuleTypeVersionParameter otherModuleTypeVersionParameter = otherModuleParameter.getModuleTypeVersionParameter();
+            if (otherModuleTypeVersionParameter.getMode().equals(getModuleTypeVersionParameter().getMode())) {
+                setValue(otherModuleParameter.getValue());
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int getId() {
         return id;
     }

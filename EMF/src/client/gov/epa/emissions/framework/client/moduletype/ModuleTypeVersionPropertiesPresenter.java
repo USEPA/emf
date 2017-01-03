@@ -3,7 +3,9 @@ package gov.epa.emissions.framework.client.moduletype;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 
 public class ModuleTypeVersionPropertiesPresenter {
 
@@ -73,5 +75,27 @@ public class ModuleTypeVersionPropertiesPresenter {
     public void displayNewModuleTypeVersionParameterView(ModuleTypeVersionParameterView view) {
         ModuleTypeVersionParameterPresenter presenter = new ModuleTypeVersionParameterPresenter(session, view, this.view);
         presenter.doDisplay();
+    }
+    
+    public Module[] getModules(ModuleTypeVersion moduleTypeVersion) {
+        try {
+            return session.moduleService().getModules();
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        } // TODO get only the modules for this moduleTypeVersion
+        return new Module[] {};
+    }
+
+    public Module obtainLockedModule(Module module) throws EmfException {
+        return session.moduleService().obtainLockedModule(session.user(), module);
+    }
+    
+    public Module releaseLockedModule(Module module) throws EmfException {
+        return session.moduleService().releaseLockedModule(session.user(), module);
+    }
+
+    public Module updateModule(Module module) throws EmfException {
+        return session.moduleService().updateModule(module);
     }
 }

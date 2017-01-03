@@ -209,10 +209,6 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             removeButton.setEnabled(false);
         }
 
-        // temporarily disabling the remove button
-        // TODO update presenter.doRemove() to remove all modules that are based on the about-to-be-deleted module type versions
-        removeButton.setEnabled(false);
-
         return crudPanel;
     }
 
@@ -271,6 +267,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
             ModuleTypeVersion newModuleTypeVersion = moduleTypeVersion.deepCopy(session.user());
+            moduleTypeVersion.getModuleType().addModuleTypeVersion(newModuleTypeVersion);
             newEditMTVs++;
             ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, ViewMode.NEW, newModuleTypeVersion);
             presenter.displayNewModuleTypeView(view);
@@ -281,60 +278,61 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         messagePanel.clear();
         List<?> selected = selected();
         if (selected.isEmpty()) {
-            messagePanel.setMessage("Please select one or more module type versions");
+            messagePanel.setMessage("Please select a module type version");
             return;
-        }   
+        } else if (selected.size() > 1) {
+            messagePanel.setMessage("Please select only one module type version");
+            return;
+        } else {
+            messagePanel.setMessage("");
+        }
 
         ModuleTypeVersion[] selectedMTVs = selected.toArray(new ModuleTypeVersion[0]);
-        
-        int count = 0;
-        try {
-            Module[] modules = presenter.getModules();
-            for(Module module : modules) {
-                for(ModuleTypeVersion selectedMTV : selectedMTVs) {
-                    if (module.getModuleTypeVersion().getId() == selectedMTV.getId()) {
-                        count++;
-                        if (module.isLocked()) {
-                            String error = String.format("Can't remove module type version %d: the %s module is locked by %s", selectedMTV.getVersion(), module.getName(), module.getLockOwner());
-                            messagePanel.setError(error);
-                            return;
-                        }
-                    }
-                }
-            }
-        } catch (EmfException e) {
-            messagePanel.setError("Failed to get the list of modules.");
+        ModuleTypeVersion selectedMTV = selectedMTVs[0];
+
+        // check if the selected MTV is used by any module
+        Module[] modules = presenter.getModules(selectedMTV);
+        StringBuilder list = new StringBuilder();
+        for(Module module : modules) {
+            if (selectedMTV.getId() == module.getModuleTypeVersion().getId())
+                list.append(module.getName() + "\n");
+        }
+        if (!list.toString().isEmpty()) {
+            messagePanel.setError("Can't remove module type version because it's being used by " + modules.length + " module(s).");
+            String message = "Can't remove module type version because the following module(s) depend on it:\n" + list.toString();
+            JOptionPane.showConfirmDialog(parentConsole, message,
+                                          title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        for(ModuleTypeVersion moduleTypeVersion : selectedMTVs) {
-            if (viewEditMTVs.containsKey(moduleTypeVersion.getId())) {
-                ViewMode lockedViewMode = viewEditMTVs.get(moduleTypeVersion.getId());
-                String lockedState = (lockedViewMode == ViewMode.VIEW) ? "View" : "Edit";
-                String error = String.format("Can't remove module type version %d: the %s Module Type Version window is open", moduleTypeVersion.getVersion(), lockedState);
-                messagePanel.setError(error);
-                return;
-            }
+        // check if the selected MTV is currently being viewed on edited
+        if (viewEditMTVs.containsKey(selectedMTV.getId())) {
+            ViewMode lockedViewMode = viewEditMTVs.get(selectedMTV.getId());
+            String lockedState = (lockedViewMode == ViewMode.VIEW) ? "View" : "Edit";
+            String error = String.format("Can't remove module type version %d: the %s Module Type Version window is open", selectedMTV.getVersion(), lockedState);
+            messagePanel.setError(error);
+            return;
         }
         
-        String message = "";
-        if (count > 0) {
-            message = String.format("Are you sure you want to remove the selected %d module type version(s)? The %d module(s) that use this module type version(s) will also be removed. There is no undo for this action.", selected.size(), count);
-        } else {
-            message = String.format("Are you sure you want to remove the selected %d module type version(s)? There is no undo for this action.", selected.size());
+        if (selectedMTV.getModuleType().isLocked() && !selectedMTV.getModuleType().isLocked(session.user())) {
+            String error = String.format("Can't remove module type version %d: the Module Type is locked by %s", selectedMTV.getVersion(), selectedMTV.getModuleType().getLockOwner());
+            messagePanel.setError(error);
+            return;
         }
         
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
+        String message = String.format("Are you sure you want to remove the selected %d module type version(s)? There is no undo for this action.", selected.size());
+        
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
-            messagePanel.setError("Removing module type versions has not been implemented yet.");
-//            try {
-//                presenter.doRemove(selectedMTVS);
-//                messagePanel.setMessage(selected.size() + " module types have been removed. Please Refresh to see the revised list of types.");
-//            } catch (EmfException e) {
-//                messagePanel.setError("Failed to remove the selected module type(s): " + e.getMessage());
-//            }
+            try {
+                ModuleType moduleType = selectedMTV.getModuleType();
+                moduleType.removeModuleTypeVersion(selectedMTV);
+                moduleType = presenter.updateModuleType(moduleType);
+                messagePanel.setMessage("The module type has been removed.");
+                doRefresh();
+            } catch (EmfException e) {
+                messagePanel.setError("Failed to remove the selected module type: " + e.getMessage());
+            }
         }
     }
 

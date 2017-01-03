@@ -24,11 +24,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -40,6 +42,8 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
     SelectAwareButton viewButton;
     SelectAwareButton editButton;
+    Button lockButton;
+    Button unlockButton;
     NewButton newButton;
     SelectAwareButton copyButton;
     RemoveButton removeButton;
@@ -149,6 +153,22 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         };
         editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
 
+        Action lockAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                lockModules();
+            }
+        };
+        lockButton = new Button("Lock", lockAction);
+        lockButton.setMnemonic(KeyEvent.VK_L);
+
+        Action unlockAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                unlockModules();
+            }
+        };
+        unlockButton = new Button("Unlock", unlockAction);
+        unlockButton.setMnemonic(KeyEvent.VK_O);
+
         Action createAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 createModule();
@@ -176,6 +196,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         runButton = new Button("Run", runAction);
+        unlockButton.setMnemonic(KeyEvent.VK_U);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
@@ -184,6 +205,10 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         crudPanel.add(newButton);
         crudPanel.add(copyButton);
         crudPanel.add(removeButton);
+        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        crudPanel.add(lockButton);
+        crudPanel.add(unlockButton);
+        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
         crudPanel.add(runButton);
 
         return crudPanel;
@@ -200,6 +225,12 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             Module module = (Module) iter.next();
+            try {
+                module = presenter.getModule(module.getId());
+            } catch (EmfException e) {
+                messagePanel.setError("Failed to get module: " + e.getMessage());
+                continue;
+            }
             ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, module, null);
             presenter.displayNewModuleView(view);
         }
@@ -228,10 +259,71 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                     messagePanel.setError("Failed to lock " + module.getName() + ".");
                     continue;
                 }
+            } else {
+                try {
+                    module = presenter.getModule(module.getId());
+                } catch (EmfException e) {
+                    messagePanel.setError("Failed to get module: " + e.getMessage());
+                    continue;
+                }
             }
             ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, viewMode, module, null);
             presenter.displayNewModuleView(view);
         }
+    }
+
+    private void lockModules() {
+        List selected = selected();
+        if (selected.isEmpty()) {
+            if (table.getTable().getRowCount() > 0) {
+                messagePanel.setMessage("Please select one or more modules");
+            }
+            return;
+        }   
+
+        boolean mustRefresh = false;
+        
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            Module module = (Module) iter.next();
+            if (module.isLocked())
+                continue;
+            try {
+                module = session.moduleService().obtainLockedModule(session.user(), module);
+                mustRefresh = true;
+            } catch (EmfException e) {
+                messagePanel.setError("Failed to lock " + module.getName() + ": " + e.getMessage());
+            }
+        }
+
+        if (mustRefresh)
+            doRefresh();
+    }
+
+    private void unlockModules() {
+        List selected = selected();
+        if (selected.isEmpty()) {
+            if (table.getTable().getRowCount() > 0) {
+                messagePanel.setMessage("Please select one or more modules");
+            }
+            return;
+        }   
+
+        boolean mustRefresh = false;
+        
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            Module module = (Module) iter.next();
+            if (module.isLocked(session.user())) {
+                try {
+                    module = session.moduleService().releaseLockedModule(session.user(), module);
+                    mustRefresh = true;
+                } catch (EmfException e) {
+                    messagePanel.setError("Failed to unlock " + module.getName() + ": " + e.getMessage());
+                }
+            }
+        }
+
+        if (mustRefresh)
+            doRefresh();
     }
 
     private void createModule() {
@@ -253,6 +345,12 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             Module module = (Module) iter.next();
+            try {
+                module = presenter.getModule(module.getId());
+            } catch (EmfException e) {
+                messagePanel.setError("Failed to get module: " + e.getMessage());
+                continue;
+            }
             Module copy = module.deepCopy(session.user());
             ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, copy, null);
             presenter.displayNewModuleView(view);
@@ -319,6 +417,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             
             if (allModulesAreValid) {
                 try {
+                    // TODO send only the list of module IDs
                     presenter.runModules(modules);
                     if (modules.length == 1) {
                         messagePanel.setMessage("Module " + modules[0].getName() + " has been executed.");
@@ -354,6 +453,8 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         // FIXME these settings are reverted somewhere else
         viewButton.setEnabled(hasData);
         editButton.setEnabled(hasData);
+        lockButton.setEnabled(hasData);
+        unlockButton.setEnabled(hasData);
         newButton.setEnabled(hasData);
         removeButton.setEnabled(hasData);
         runButton.setEnabled(hasData);

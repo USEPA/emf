@@ -53,8 +53,9 @@ public class ModuleTypeVersion implements Serializable {
 
     public ModuleTypeVersion deepCopy(User user) {
         ModuleTypeVersion newModuleTypeVersion = new ModuleTypeVersion();
-        moduleType.addModuleTypeVersion(newModuleTypeVersion); // sets module type and version
-        newModuleTypeVersion.setName(name + " Copy");
+        newModuleTypeVersion.setModuleType(moduleType);
+        newModuleTypeVersion.setVersion(version); // same version for now
+        newModuleTypeVersion.setName(name + " Copy"); // TODO search for unique new name
         newModuleTypeVersion.setDescription("Copy of " + name + ".\n" + description);
         Date date = new Date();
         newModuleTypeVersion.setCreationDate(date);

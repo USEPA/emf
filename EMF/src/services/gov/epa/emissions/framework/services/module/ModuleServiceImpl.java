@@ -102,6 +102,25 @@ public class ModuleServiceImpl implements ModuleService {
             for (ModuleTypeVersion currentMTV : currentMT.getModuleTypeVersions().values()) {
                 if (!moduleTypeVersions.containsKey(currentMTV.getVersion())) {
                     // TODO manually delete the currentMTV from database
+                    Statement statement = null;
+                    try {
+                        if (connection == null) {
+                            connection = dbServerFactory.getDbServer().getConnection();
+                        }
+                        statement = connection.createStatement();
+                        statement.execute("DELETE FROM modules.module_types_versions WHERE id=" + currentMTV.getId());
+                    } catch (Exception e) {
+                        throw new EmfException("Failed to delete module type version: " + e.getMessage());
+                    } finally {
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException e) {
+                                // ignore
+                            }
+                            statement = null;
+                        }
+                    }
                     continue;
                 }
                 ModuleTypeVersion moduleTypeVersion = moduleTypeVersions.get(currentMTV.getVersion());

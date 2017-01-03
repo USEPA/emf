@@ -20,6 +20,7 @@ import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
@@ -749,7 +750,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleType = presenter.updateModuleType(moduleType);
                 moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
             }
-            messagePanel.setMessage("Saved module type.");
+            messagePanel.setMessage("Saved module type version.");
             
             resetChanges();
             isDirty = false;
@@ -762,13 +763,87 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return true;
     }
     
+    private void doCascadeSave() {
+        if (checkTextFields()) {
+            // TODO save only if it's dirty
+            
+            Module[] modules = presenter.getModules(moduleTypeVersion);
+            
+            StringBuilder list = new StringBuilder();
+            for(Module module : modules) {
+                if (module.getModuleTypeVersion().getId() != moduleTypeVersion.getId())
+                    continue;
+                if (module.isLocked()) {
+                    list.append(module.getName() + " locked by " + module.getLockOwner() + " at " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(module.getLockDate()) + "\n");
+                }
+            }
+            if (!list.toString().isEmpty()) {
+                messagePanel.setError("Can't save module type version because dependent modules are locked.");
+                String message = "Can't save module type version because the following dependent modules are locked:\n" + list.toString();
+                JOptionPane.showConfirmDialog(parentConsole, message,
+                                              title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            try {
+                for(int i = 0; i < modules.length; i++) {
+                    if (modules[i].getModuleTypeVersion().getId() != moduleTypeVersion.getId())
+                        continue;
+                    modules[i] = presenter.obtainLockedModule(modules[i]);
+                }
+            } catch (EmfException ex) {
+                for(int i = 0; i < modules.length; i++) {
+                    if (modules[i].getModuleTypeVersion().getId() != moduleTypeVersion.getId())
+                        continue;
+                    if (modules[i].isLocked()) {
+                        try {
+                            modules[i] = presenter.releaseLockedModule(modules[i]);
+                        } catch (EmfException e) {
+                            // NOTE Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                messagePanel.setError("Can't save module type version: failed to lock module. " + ex.getMessage());
+            }
+
+            ModuleTypeVersion oldMTV = moduleTypeVersion.deepCopy(session.user());
+            
+            doSave();
+
+            // get fresh modules with updated moduleTypeVersion
+            modules = presenter.getModules(moduleTypeVersion);
+            
+            try {
+                for(int i = 0; i < modules.length; i++) {
+                    if (modules[i].getModuleTypeVersion().getId() != moduleTypeVersion.getId())
+                        continue;
+                    modules[i].update(oldMTV);
+                    modules[i] = presenter.updateModule(modules[i]);
+                }
+            } catch (EmfException ex) {
+                messagePanel.setError("Saved module type version but failed to update dependent module. " + ex.getMessage());
+            } finally {
+                for(int i = 0; i < modules.length; i++) {
+                    if (modules[i].getModuleTypeVersion().getId() != moduleTypeVersion.getId())
+                        continue;
+                    if (modules[i].isLocked()) {
+                        try {
+                            modules[i] = presenter.releaseLockedModule(modules[i]);
+                        } catch (EmfException e) {
+                            // NOTE Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     private Action saveAction() {
-        final ModuleTypeVersionPropertiesWindow moduleTypeVersionPropertiesWindow = this;
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (checkTextFields()) {
-                    moduleTypeVersionPropertiesWindow.doSave();
-                }
+                doCascadeSave();
             }
         };
 

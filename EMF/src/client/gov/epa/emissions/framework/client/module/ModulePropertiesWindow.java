@@ -71,6 +71,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private ModuleTypeVersion moduleTypeVersion;
 
     private boolean isDirty;
+    private String initialStatus;
 
     // layout
     private JPanel layout;
@@ -133,23 +134,29 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         this.viewMode = viewMode;
         
-        date = new Date();
+        this.initialStatus = new String();
+        
+        this.date = new Date();
         if (module == null) {
             // assert moduleTypeVersion != null
             this.module = new Module();
             this.module.setName("");
             this.module.setDescription("");
-            this.module.setCreationDate(date);
-            this.module.setLastModifiedDate(date);
+            this.module.setCreationDate(this.date);
+            this.module.setLastModifiedDate(this.date);
             this.module.setCreator(session.user());
             this.module.setIsFinal(false);
             setModuleTypeVersion(moduleTypeVersion);
             this.isDirty = true;
+            this.initialStatus = "New module.";
         } else {
             this.module = module;
             this.moduleTypeVersion = module.getModuleTypeVersion();
             this.moduleType = this.moduleTypeVersion.getModuleType();
-            this.isDirty = false;
+            this.isDirty = this.module.refresh(this.date);
+            if (this.isDirty) {
+                this.initialStatus = "The module has been updated to match the module type version.";
+            }
         }
     }
 
@@ -188,10 +195,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         if (this.moduleTypeVersion != null && this.moduleTypeVersion.getId() == moduleTypeVersion.getId())
             return; // nothing to do
         
+        Module oldModuleCopy = module.deepCopy(session.user());
+        
         this.moduleTypeVersion = moduleTypeVersion;
-        
         moduleType = moduleTypeVersion.getModuleType();
-        
         module.setModuleTypeVersion(moduleTypeVersion);
 
         module.clearModuleDatasets();
@@ -199,14 +206,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             ModuleDataset moduleDataset = new ModuleDataset();
             moduleDataset.setModule(module);
             moduleDataset.setPlaceholderName(moduleTypeVersionDataset.getPlaceholderName());
-            if (moduleTypeVersionDataset.isModeOUT()) {
-                moduleDataset.setOutputMethod(ModuleDataset.NEW);
-                moduleDataset.setDatasetNamePattern(null);
-                moduleDataset.setOverwriteExisting(null);
-            } else {
-                moduleDataset.setDatasetId(null);
-                moduleDataset.setVersion(null);
-            }
+            if (!moduleDataset.transferSettings(oldModuleCopy))
+                moduleDataset.initSettings();
             module.addModuleDataset(moduleDataset);
         }
         
@@ -215,9 +216,12 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             ModuleParameter moduleParameter = new ModuleParameter();
             moduleParameter.setModule(module);
             moduleParameter.setParameterName(moduleTypeVersionParameter.getParameterName());
-            moduleParameter.setValue("");
+            if (!moduleParameter.transferSettings(oldModuleCopy))
+                moduleParameter.initSettings();
             module.addModuleParameter(moduleParameter);
         }
+        
+        // TODO should we clear the module history too?
         
         isDirty = true;
     }
@@ -274,6 +278,12 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private void doLayout(JPanel layout) {
         JPanel topPanel = new JPanel(new BorderLayout());
         messagePanel = new SingleLineMessagePanel();
+        if (!initialStatus.isEmpty()) {
+            if (viewMode == ViewMode.VIEW)
+                messagePanel.setError(initialStatus + " Please edit the module to save the changes.");
+            else
+                messagePanel.setMessage(initialStatus);
+        }
         topPanel.add(messagePanel, BorderLayout.CENTER);
         Button button = new RefreshButton(this, "Refresh Module Properties", messagePanel);
         topPanel.add(button, BorderLayout.EAST);
@@ -435,7 +445,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
         
         runButton = new Button("Run", runAction());
-        runButton.setMnemonic('n');
+        runButton.setMnemonic('u');
         
         finalizeButton = new Button("Finalize", finalizeAction());
         finalizeButton.setMnemonic('F');
@@ -474,10 +484,19 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         SelectAwareButton viewDatasetsButton = new SelectAwareButton("View Dataset Properties", viewAction, datasetsTable, confirmDialog);
         viewDatasetsButton.setMnemonic('D');
 
+        Action viewRelatedModulesAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewRelatedModules();
+            }
+        };
+        Button viewRelatedModulesButton = new Button("View Related Modules", viewRelatedModulesAction);
+        viewRelatedModulesButton.setMnemonic('M');
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         crudPanel.add(editButton);
         crudPanel.add(viewDatasetsButton);
+        crudPanel.add(viewRelatedModulesButton);
         if (viewMode == ViewMode.VIEW) {
             editButton.setEnabled(false);
         }
@@ -508,7 +527,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private void viewDatasets() {
         clear();
-        final List<HistoryDataset> datasets = selectedDatasets();
+        final List datasets = selectedDatasets();
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more Datasets");
             return;
@@ -569,6 +588,43 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         new ViewDatasetPropertiesTask(this).execute();
+    }
+
+    private void viewRelatedModules() {
+        clear();
+        final List datasets = selectedDatasets();
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select a dataset");
+            return;
+        } else if (datasets.size() > 1) {
+            messagePanel.setMessage("Please select only one dataset");
+            return;
+        }
+        
+        ModuleDataset moduleDataset = (ModuleDataset) datasets.get(0);
+        String mode = moduleDataset.getModuleTypeVersionDataset().getMode();
+        String outputMethod = moduleDataset.getOutputMethod();
+        EmfDataset emfDataset = moduleDataset.getEmfDataset(session.dataService());
+        if (emfDataset == null) {
+            messagePanel.setMessage("The dataset does not exist");
+            return;
+        }
+
+        Module[] modules = null;
+        try {
+            modules = presenter.getModules();
+        } catch (EmfException e) {
+            messagePanel.setError("Failed to get the modules: " + e.getMessage());
+        }
+        
+        // TODO bring up new window with all related modules
+        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset, modules);
+        try {
+            presenter.doDisplayRelatedModules(view);
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private List selectedDatasets() {
@@ -853,6 +909,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (checkTextFields()) {
+                    // TODO save only if it's dirty
                     doSave();
                 }
             }
@@ -895,14 +952,15 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         }
 
-        if (viewMode == ViewMode.EDIT) {
-            try {
+        try {
+            if (viewMode == ViewMode.EDIT) {
                 module = presenter.releaseLockedModule(module);
-            } catch (EmfException e) {
-                // NOTE Auto-generated catch block
-                e.printStackTrace();
             }
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
         }
+
         presenter.doClose();
     }
 }
