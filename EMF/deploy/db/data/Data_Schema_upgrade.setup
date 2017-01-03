@@ -2050,3 +2050,5 @@ ALTER TABLE emf.properties
 insert into emf.properties (name, value)
 values ('postgres-backup-dir-for-emissions-schema', '/backups/EMF/emissions_schema/');
 
+-- 01/03/2017 - add modules to user feature list
+INSERT INTO emf.user_features values (DEFAULT, 'Modules');

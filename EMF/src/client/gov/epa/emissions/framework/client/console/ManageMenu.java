@@ -67,6 +67,8 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private static final String SHOW_SECTOR_SCENARIO_MENU = "SHOW_SECTOR_SCENARIO_MENU";
 
     private static final String SHOW_CASES_MENU = "SHOW_CASES_MENU";
+    
+    private static final String SHOW_MODULES_MENU = "SHOW_MODULES_MENU";
 
     // FIXME: where's the associated Presenter ?
     public ManageMenu(EmfSession session, EmfConsole parent, MessagePanel messagePanel) {
@@ -402,6 +404,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         String showMPSDTMenu = null;
         String showSectorScenarioMenu = null;
         String showCasesMenu = null;
+        String showModulesMenu = null;
 
         exUserFeatures = session.user().getExcludedUserFeatures();
 
@@ -409,13 +412,17 @@ public class ManageMenu extends JMenu implements ManageMenuView {
             showMPSDTMenu = presenter.getPropertyValue(SHOW_MP_SDT_MENU);
             showSectorScenarioMenu = presenter.getPropertyValue(SHOW_SECTOR_SCENARIO_MENU);
             showCasesMenu = presenter.getPropertyValue(SHOW_CASES_MENU);
+            showModulesMenu = presenter.getPropertyValue(SHOW_MODULES_MENU);
         } catch (EmfException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
         }
 
         super.add(createDatasets(parent, messagePanel));
-        super.add(createModules(parent, messagePanel));
+        if ((showModulesMenu == null) || (!showModulesMenu.equalsIgnoreCase("false"))) {
+            if (!excludeItem("Modules"))
+                super.add(createModules(parent, messagePanel));
+        }
 
         if ((showCasesMenu == null) || (!showCasesMenu.equalsIgnoreCase("false"))) {
             if (!excludeItem("Cases"))
@@ -423,7 +430,10 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         }
         super.addSeparator();
         super.add(createDatasetTypes(parent, messagePanel));
-        super.add(createModuleTypes(parent, messagePanel));
+        if ((showModulesMenu == null) || (!showModulesMenu.equalsIgnoreCase("false"))) {
+            if (!excludeItem("Modules"))
+                super.add(createModuleTypes(parent, messagePanel));
+        }
         super.add(createSectors(parent, messagePanel));
         super.addSeparator();
         if (!excludeItem("Control Measures"))
