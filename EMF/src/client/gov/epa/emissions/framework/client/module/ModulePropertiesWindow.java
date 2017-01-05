@@ -617,7 +617,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             messagePanel.setError("Failed to get the modules: " + e.getMessage());
         }
         
-        // TODO bring up new window with all related modules
+        // bring up the window with all related modules
         RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset, modules);
         try {
             presenter.doDisplayRelatedModules(view);

@@ -15,9 +15,11 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
+import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -318,11 +320,21 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
                 viewDatasets();
             }
         };
-        SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, datasetsTable, confirmDialog);
+        SelectAwareButton viewButton = new SelectAwareButton("View Dataset Properties", viewAction, datasetsTable, confirmDialog);
+        viewButton.setMnemonic('D');
+
+        Action viewRelatedModulesAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewRelatedModules();
+            }
+        };
+        Button viewRelatedModulesButton = new Button("View Related Modules", viewRelatedModulesAction);
+        viewRelatedModulesButton.setMnemonic('M');
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         crudPanel.add(viewButton);
+        crudPanel.add(viewRelatedModulesButton);
 
         return crudPanel;
     }
@@ -376,6 +388,49 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
             }
         };
         new ViewDatasetPropertiesTask(this).execute();
+    }
+
+    private void viewRelatedModules() {
+        clear();
+        final List datasets = selectedDatasets();
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select a dataset");
+            return;
+        } else if (datasets.size() > 1) {
+            messagePanel.setMessage("Please select only one dataset");
+            return;
+        }
+        
+        HistoryDataset historyDataset = (HistoryDataset) datasets.get(0);
+        String mode = historyDataset.getModuleTypeVersionDataset().getMode();
+        EmfDataset emfDataset = null;
+        if (historyDataset.getDatasetId() != null) {
+            try {
+                emfDataset = session.dataService().getDataset(historyDataset.getDatasetId());
+            } catch (EmfException ex) {
+                // ignore exception
+            }
+        }
+        if (emfDataset == null) {
+            messagePanel.setMessage("The dataset does not exist");
+            return;
+        }
+
+        Module[] modules = null;
+        try {
+            modules = presenter.getModules();
+        } catch (EmfException e) {
+            messagePanel.setError("Failed to get the modules: " + e.getMessage());
+        }
+        
+        // bring up the window with all related modules
+        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset, modules);
+        try {
+            presenter.doDisplayRelatedModules(view);
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private List<?> selectedDatasets() {

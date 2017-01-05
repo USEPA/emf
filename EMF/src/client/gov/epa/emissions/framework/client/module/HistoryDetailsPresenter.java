@@ -46,7 +46,16 @@ public class HistoryDetailsPresenter {
         view.disposeView();
     }
 
+    public Module[] getModules() throws EmfException {
+        return session.moduleService().getModules();
+    }
+
     public Module getModule(int id) throws EmfException {
         return session.moduleService().getModule(id);
+    }
+    
+    public void doDisplayRelatedModules(RelatedModulesView view) throws EmfException {
+        RelatedModulesPresenter presenter = new RelatedModulesPresenter(session, view);
+        presenter.doDisplay();
     }
 }
