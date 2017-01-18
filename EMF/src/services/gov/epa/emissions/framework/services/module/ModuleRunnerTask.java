@@ -5,6 +5,8 @@ import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.SqlDataTypes;
+import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.commons.db.version.Versions;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
@@ -262,6 +264,38 @@ public class ModuleRunnerTask {
         return ds.getConnection();
     }
     
+    private void checkDatasetReplacementRules(User user, EmfDataset dataset, Session session) throws EmfException {
+        Versions versions = new Versions();
+        Version[] datasetVersions = versions.get(dataset.getId(), session);
+        for (Version version : datasetVersions) {
+            if (version.isFinalVersion()) {
+                String errorMessage = String.format("Could not replace dataset '%s': the dataset version %d is final.",
+                                                    dataset.getName(), version.getVersion());
+                throw new EmfException(errorMessage);
+            }
+        }
+        
+    }
+    
+    private Version getVersion(EmfDataset dataset, int versionNumber) {
+        Session session = sessionFactory.getSession();
+        try {
+            Versions versions = new Versions();
+            return versions.get(dataset.getId(), versionNumber, session);
+        } finally {
+            session.close();
+        }
+    }
+
+    private int updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session, User user) throws Exception {
+        version = datasetDAO.obtainLockOnVersion(user, version.getId(), session);
+        int recordCount = (int)datasetDAO.getDatasetRecordsNumber(dbServer, session, dataset, version);
+        version.setNumberRecords(recordCount);
+        version.setCreator(user);
+        datasetDAO.updateVersionNReleaseLock(version, session);
+        return recordCount;
+    }
+    
     private void runModule(Module module) throws EmfException {
         
         prepare("", module);
@@ -300,13 +334,22 @@ public class ModuleRunnerTask {
         Connection connection = null;
         Statement statement = null;
         
+        boolean must_unlock_module = false;
+        
         try {
             dbServer = dbServerFactory.getDbServer();
             connection = dbServer.getConnection();
             
-            module = modulesDAO.obtainLockedModule(user, module, session);
-            if (!module.isLocked(user)) {
-                throw new EmfException("Failed to lock module " + module.getName());
+            if (module.isLocked()) {
+                if (!module.isLocked(user)) {
+                    throw new EmfException("Module " + module.getName() + " locked by " + module.getLockOwner());
+                }
+            } else {
+                module = modulesDAO.obtainLockedModule(user, module, session);
+                if (!module.isLocked(user)) {
+                    throw new EmfException("Failed to lock module " + module.getName());
+                }
+                must_unlock_module = true;
             }
             
             module.addModuleHistory(history);
@@ -319,6 +362,7 @@ public class ModuleRunnerTask {
             
             StringBuilder viewDefinitions = new StringBuilder();
             
+            List<Version> outputDatasetVersions = new ArrayList<Version>();
             List<String> outputDatasetTables = new ArrayList<String>();
             
             // create output datasets
@@ -343,28 +387,30 @@ public class ModuleRunnerTask {
                             throw new EmfException(errorMessage);
                         }
                         
-                        int version = 0;
+                        int versionNumber = 0;
                         
                         logMessage = String.format("Created %s %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
                                                    moduleDataset.getOutputMethod(), moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
-                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), version);
+                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), versionNumber);
                         history.addLogMessage(History.INFO, logMessage);
 
+                        Version version = getVersion(dataset, versionNumber);
+                        outputDatasetVersions.add(version);
                         outputDatasetTables.add(datasetTablesSchema + "." + internalSources[0].getTable());
                         
                         StringBuilder viewName = new StringBuilder();
                         StringBuilder viewDefinition = new StringBuilder();
-                        createView(viewName, viewDefinition, connection, moduleDataset, dataset, version);
+                        createView(viewName, viewDefinition, connection, moduleDataset, dataset, versionNumber);
                         viewDefinitions.append(viewDefinition);
                        
                         HistoryDataset historyDataset = new HistoryDataset();
                         historyDataset.setPlaceholderName(moduleDataset.getPlaceholderName());
                         historyDataset.setDatasetId(dataset.getId());
-                        historyDataset.setVersion(version);
+                        historyDataset.setVersion(versionNumber);
                         historyDataset.setHistory(history);
                         historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                         
-                        algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
+                        algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, versionNumber, viewName.toString());
                     } else { // REPLACE
                         EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
                         if (dataset == null) {
@@ -374,16 +420,25 @@ public class ModuleRunnerTask {
                         }
                         String datasetName = dataset.getName();
                         
+                        checkDatasetReplacementRules(user, dataset, session);
+
+                        boolean must_unlock = false;
                         if (!dataset.isLocked()) {
                             dataset = datasetDAO.obtainLocked(user, dataset, session);
+                            must_unlock = true;
                         } else if (!dataset.isLocked(user)) {
                             errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset is locked by %s.",
                                                           datasetName, moduleDataset.getPlaceholderName(), dataset.getLockOwner());
                             throw new EmfException(errorMessage);
                         }
                         
-                        DatasetCreator datasetCreator = new DatasetCreator(moduleDataset, user, sessionFactory, dbServerFactory, datasource);
-                        datasetCreator.replaceDataset(session, connection, dataset);
+                        try {
+                            DatasetCreator datasetCreator = new DatasetCreator(moduleDataset, user, sessionFactory, dbServerFactory, datasource);
+                            datasetCreator.replaceDataset(session, connection, dataset);
+                        } finally {
+                            if (must_unlock)
+                                dataset = datasetDAO.releaseLocked(user, dataset, session);
+                        }
                         
                         InternalSource[] internalSources = dataset.getInternalSources();
                         if (internalSources.length != 1) {
@@ -392,28 +447,30 @@ public class ModuleRunnerTask {
                             throw new EmfException(errorMessage);
                         }
                         
-                        int version = 0;
+                        int versionNumber = 0;
                         
                         logMessage = String.format("Replacing %s dataset for '%s' placeholder:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
                                                    moduleDataset.getPlaceholderName(), moduleTypeVersionDataset.getMode(),
-                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), version);
+                                                   internalSources[0].getType(), dataset.getName(), internalSources[0].getTable(), versionNumber);
                         history.addLogMessage(History.INFO, logMessage);
                         
+                        Version version = getVersion(dataset, versionNumber);
+                        outputDatasetVersions.add(version);
                         outputDatasetTables.add(datasetTablesSchema + "." + internalSources[0].getTable());
                         
                         StringBuilder viewName = new StringBuilder();
                         StringBuilder viewDefinition = new StringBuilder();
-                        createView(viewName, viewDefinition, connection, moduleDataset, dataset, version);
+                        createView(viewName, viewDefinition, connection, moduleDataset, dataset, versionNumber);
                         viewDefinitions.append(viewDefinition);
                        
                         HistoryDataset historyDataset = new HistoryDataset();
                         historyDataset.setPlaceholderName(moduleDataset.getPlaceholderName());
                         historyDataset.setDatasetId(dataset.getId());
-                        historyDataset.setVersion(version);
+                        historyDataset.setVersion(versionNumber);
                         historyDataset.setHistory(history);
                         historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
                         
-                        algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, version, viewName.toString());
+                        algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, versionNumber, viewName.toString());
                     }
                 } else { // IN or INOUT
                     EmfDataset dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
@@ -431,6 +488,8 @@ public class ModuleRunnerTask {
                     history.addLogMessage(History.INFO, logMessage);
                     
                     if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.INOUT)) {
+                        Version version = getVersion(dataset, moduleDataset.getVersion());
+                        outputDatasetVersions.add(version);
                         outputDatasetTables.add(datasetTablesSchema + "." + internalSources[0].getTable());
                     }
                     
@@ -558,7 +617,7 @@ public class ModuleRunnerTask {
             
             // execute algorithm
             
-            // TODO create new connection and login as the temporary user
+            // create new connection and login as the temporary user
 
             Connection userConnection = null; 
             try {
@@ -584,7 +643,16 @@ public class ModuleRunnerTask {
                     }
                 }
                 
-                // TODO update the record counts for the output datasets
+                // update the record counts for the output datasets
+                if (outputDatasetVersions.size() > 0) {
+                    history.addLogMessage(History.INFO, "Updating the number of records for the OUT and INOUT datasets:");
+                    for(Version version : outputDatasetVersions) {
+                        EmfDataset dataset = datasetDAO.getDataset(session, version.getDatasetId());
+                        int recordCount = updateVersion(dataset, version, dbServer, session, user);
+                        String message = String.format("Dataset \"%s\" version %d has %d records.", dataset.getName(), version.getVersion(), recordCount);
+                        history.addLogMessage(History.INFO, message);
+                    }
+                }
                 
                 history.addLogMessage(History.INFO, "User script (algorithm) completed successfully.");
                 
@@ -672,10 +740,13 @@ public class ModuleRunnerTask {
             module = modulesDAO.update(module, session);
             
         } finally {
-            try {
-                module = modulesDAO.releaseLockedModule(user, module, session);
-            } catch (Exception e) {
-                // ignore
+            if (must_unlock_module) {
+                try {
+                    module = modulesDAO.releaseLockedModule(user, module, session);
+                    must_unlock_module = false;
+                } catch (Exception e) {
+                    // ignore
+                }
             }
             
             if (statement != null) {

@@ -187,7 +187,6 @@ public class DatasetCreator {
 
         session.clear();
         dataset = datasetDAO.update(dataset, session);
-        dataset = datasetDAO.releaseLocked(user, dataset, session);
         
         InternalSource[] internalSources = dataset.getInternalSources();
         if (internalSources.length != 1) {
@@ -414,11 +413,11 @@ public class DatasetCreator {
         Session session = sessionFactory.getSession();
         try {
             if (datasetDAO.datasetNameUsed(dataset.getName(), session))
-                throw new EmfException("The selected dataset name is already in use.");
+                throw new EmfException("The dataset name is already in use.");
 
             datasetDAO.add(dataset, session);
         } catch (Exception e) {
-            throw new EmfException("Could not add dataset: " + dataset.getName());
+            throw new EmfException("Could not add dataset: " + dataset.getName() + ". " + e.getMessage());
         } finally {
             session.close();
         }
