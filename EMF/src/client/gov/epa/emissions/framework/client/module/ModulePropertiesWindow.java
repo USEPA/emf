@@ -775,6 +775,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private void doRun() {
+        if ((viewMode == ViewMode.NEW) || isDirty || hasChanges()) {
+            if (!doSave())
+                return;
+        }
         String message = "Are you sure you want to run the '" + module.getName() + "' module?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
@@ -875,6 +879,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private boolean doSave() {
         try {
+            // TODO save only if it's dirty
             Date date = new Date();
             module.setName(moduleName.getText());
             module.setDescription(moduleDescription.getText());
