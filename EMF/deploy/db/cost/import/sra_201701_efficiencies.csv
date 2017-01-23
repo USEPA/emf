@@ -1,0 +1,32 @@
+"cmabbreviation","pollutant","locale","Effective Date","existingmeasureabbr","neiexistingdevcode","minemissions","maxemissions","controlefficiency","costyear","costperton","ruleeff","rulepen","equationtype","caprecfactor","discountrate","capannratio","incrementalcpt","mincapacity","maxcapacity","details","refyrcostperton"
+"NSCRSGTNG","NOx",,,,0,0,365,95,1999,2570,100,100,"cpton",0.1098,,3.3,5550,,26,"Applied to small source types (3 to 26 MW), uncontrolled emissions <365 tpy.",3418.1
+"NSCRSGTNG","NOx",,,,0,365,,95,1999,1380,100,100,"cpton",0.1098,,3.1,2870,,26,"Applied to small source types (3 to 26.3 MW), uncontrolled emissions >365 tpy. ",1835.4
+"NSCRSGTNG","NOx",,,,0,,,95,1999,570,100,100,"cpton",0.1098,,2.7,1810,26,,"Applied to large source types (~80 to 160 MW)",758.1
+"NSCRWGTNG","NOx",,,,0,0,365,94,1999,2790,100,100,"cpton",0.1098,,3,5840,,26,"Applied to small source types (3 to 26 MW), uncontrolled emissions <365 tpy.",3710.7
+"NSCRWGTNG","NOx",,,,0,365,,94,1999,1370,100,100,"cpton",0.1098,,2.9,3130,,26,"Applied to small source types (3 to 26 MW), uncontrolled emissions >365 tpy.",1822.1
+"NSCRWGTNG","NOx",,,,0,,,94,1999,1070,100,100,"cpton",0.1098,,1.5,1690,26,,"Applied to large source types (~80 to 160 MW)",1423.1
+"NSTINGTNG","NOX",,,,0,0,365,80,1999,1690,100,100,"cpton",0.1098,,3.5,,,26,"Applied to small source types (3 to 26.3 MW), uncontrolled emissions <365 tpy, 1999 costs for SI assumed to be the same as 1990 costs in the 1993 ACT based on data in ref CT-2 that showed WI costs were essentially the same for NG-fired units (assumed same pattern holds for steam injection).",2247.7
+"NSTINGTNG","NOX",,,,0,365,,80,1999,820,100,100,"cpton",0.1098,,3.5,,,26,"Applied to small source types (3 to 26.3 MW), uncontrolled emissions >365 tpy, 1999 costs for SI assumed to be the same as 1990 costs in the 1993 ACT based on data in ref CT-2 that showed WI costs were essentially the same for NG-fired units (assumed same pattern holds for steam injection).",1090.6
+"NSTINGTNG","NOX",,,,0,,,80,1999,500,100,100,"cpton",0.1098,,3,,26,,"Applied to large source types (~80 to 160 MW), 1999 costs for SI assumed to be the same as 1990 costs in the 1993 ACT based on data in ref CT-2 that showed WI costs were essentially the same for NG-fired units (assumed same pattern holds for steam injection).",665
+"NWTINGTNG","NOX",,,,0,0,365,72,1999,1790,100,100,"cpton",0.1098,,3.1,,,34.4,"Applied to small source types (<34.4 MW), uncontrolled emissions <365 tpy",2380.7
+"NWTINGTNG","NOX",,,,0,365,,72,1999,1000,100,100,"cpton",0.1098,,2.4,,,34.4,"Applied to small source types (<34.4 MW), uncontrolled emissions >365 tpy",1330
+"NWTINGTNG","NOX",,,,0,,,72,1999,730,100,100,"cpton",0.1098,,1.6,,34.4,,"Applied to large source types",970.9
+"NSNCRCMWT","NOX",,,,0,365,,50,1990,770,100,100,"cpton",0.100000001,,2.1,,,,"Applied to large source types",1233.06323
+"NSNCRCMWT","NOX",,,,0,,365,50,1990,770,100,100,"cpton",0.100000001,,2.1,,,,"Applied to small source types",1233.06323
+"NSCRDGTNG","NOx",,,,0,0,365,94,1999,1800,100,100,"cpton",0.1098,,2.9,11900,,26,"Applied to small source types (3 to 26.3 MW), uncontrolled emissions <365 tpy.",2394
+"NSCRDGTNG","NOx",,,,0,365,,94,1999,990,100,100,"cpton",0.1098,,3.6,6320,,26,"Applied to small source types (3 to 26.3 MW), uncontrolled emissions >365 tpy. ",1316.7
+"NSCRDGTNG","NOx",,,,0,,,94,1999,390,100,100,"cpton",0.1098,,4.2,3340,26,,"Applied to large source types (~160 MW)",518.7
+"NOEASGMGN","NOX",,,,0,0,365,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to small source types",735.58
+"NOEASGMCN","NOX",,,,0,0,365,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to small source types",735.58
+"NOEASGMFT","NOX",,,,0,0,365,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to small source types",735.58
+"NOEASGMPD","NOX",,,,0,0,365,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to small source types",735.58
+"NOEASGMGN","NOX",,,,0,365,,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to large source types",735.58
+"NOEASGMCN","NOX",,,,0,365,,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to large source types",735.58
+"NOEASGMFT","NOX",,,,0,365,,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to large source types",735.58
+"NOEASGMPD","NOX",,,,0,365,,65,2002,585,100,100,"cpton",0.140000001,,2.7,,,,"Applied to large source types",735.58
+"NNSCRLCNGNS","NOX",,,,0,,,95.95,2013,4538,100,100,"cpton",,,,,,,,4538
+"NNSCRLECNGNS","NOX",,,,,,,87.45,2013,615,100,100,"cpton",,,,,,,,615
+"NNSCRAFRIINGNS","NOX",,,,,0,365,39,2013,2045,100,100,"cpton",,,,,,,"Applied to small source types",2045
+"NNSCRAFRIINGNS","NOX",,,,,365,,39,2013,711,100,100,"cpton",,,,,,,"Applied to large source types",711
+"NLNSCRIBRO","NOX",,,,0,25,,91,2008,3480,100,100,,0.129999995,10,,,,,,3749.39966
+"NSCRIBRO","NOX",,,,0,25,,80,2008,2250,100,100,,0.129999995,10,,,,,,2424.18066

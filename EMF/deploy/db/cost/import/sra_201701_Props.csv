@@ -1,0 +1,168 @@
+CMAbbreviation,Name,Category,Units,Data_Type,DB_FieldName,Value
+"NSCRSGTNG","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSCRSGTNG","CE_TEXT","No category","","text","CE_TEXT","95% from uncontrolled"
+"NSCRSGTNG","CHEM_PCT","No category","%","double precision","CHEM_PCT","2.91"
+"NSCRSGTNG","COST_BASIS","No category","","text","COST_BASIS","Sources are distinguished by NOx emission levels (Pechan, 1998).
+
+Small source = emission levels less than 1 ton per ozone season day
+
+Costs for stationary source NOx control are based on an analysis of EPA's NOx State Implementation Plan (SIP) Call (Pechan, 1998).  From this analysis, default cost per ton values are assigned.  A discount rate of 7 percent and a capacity factor of 65 percent are assumed, along with an equipment life of 15 years (EPA, 1993).
+
+In general, the incremental default cost is used for sources where there are existing controls (RACT baseline), with efficiencies less than or equal to 76% (Pechan, 2001).
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the information for an example small turbine in Table 6-9 of the ACT document for stationary gas turbines.  The model plant is a 26.8 megawatt MS5001P turbine.  Continuous operation 8,000 hours per year is used to estimate operating costs.
+
+Electricity cost:  0.06 $/kW-hr
+Natural gas cost:  $4.13/MMBtu"
+"NSCRSGTNG","CPTON_H","No category","$/ton","integer","CPTON_H","8960"
+"NSCRSGTNG","CPTON_L","No category","$/ton","integer","CPTON_L","2010"
+"NSCRSGTNG","CPTON_TEXT","No category","","text","CPTON_TEXT","The cost effectiveness values used in AirControlNET are $2,010 per ton NOx reduced from uncontrolled and $8,960 per ton NOx reduced from RACT baseline (1990$)."
+"NSCRSGTNG","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","95"
+"NSCRSGTNG","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NSCRSGTNG","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.06"
+"NSCRSGTNG","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSCRSGTNG","HG_CE_T","No category","%","character varying(50)","HG_CE_T","95"
+"NSCRSGTNG","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSCRSGTNG","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0.46"
+"NSCRSGTNG","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","31.2"
+"NSCRSGTNG","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","15.4"
+"NSCRSGTNG","NG_RT","No category","$/cf","double precision","NG_RT","4.13"
+"NSCRSGTNG","NH3","No category","","character varying(50)","NH3","X"
+"NSCRSGTNG","NOX","No category","","character varying(50)","NOX","Co*"
+"NSCRSGTNG","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSCRSGTNG","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","3.03"
+"NSCRSGTNG","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","25.6"
+"NSCRSGTNG","OTHR_PCT","No category","%","double precision","OTHR_PCT","23.7"
+"NSCRSGTNG","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSCRSGTNG","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSCRSGTNG","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","13.4"
+"NSCRSGTNG","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSCRSGTNG","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSCRSGTNG","STEAM_PCT","No category","%","double precision","STEAM_PCT","2.09"
+"NSCRSGTNG","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSCRSGTNG","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","33.14"
+"NSCRSGTNG","UTIL_PCT","No category","%","double precision","UTIL_PCT","2.37"
+"NSCRSGTNG","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","2.91"
+"NSCRWGTNG","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSCRWGTNG","CE_TEXT","No category","","text","CE_TEXT","95% from uncontrolled"
+"NSCRWGTNG","CHEM_PCT","No category","%","double precision","CHEM_PCT","2.91"
+"NSCRWGTNG","COST_BASIS","No category","","text","COST_BASIS","Sources are distinguished by the following (Pechan, 1998).
+
+Small source = 3.3 MW to 34.4 MW
+
+The basis of the costs are model plant data contained in the Alternative Control Techniques (ACT) document (EPA, 1993).  Capital and annual cost information was obtained  from control-specific cost data based on tons of glass produced.  O&M costs were back calculated from annual costs.   From these determinations, default cost per ton values were assigned along with a capital to annual cost ratio of 2.8 (Pechan, 1998).  A discount rate of 7 percent and a capacity factor of 65 percent are assumed, along with an equipment lifetime of 15 years (EPA, 1993).
+
+In general, the incremental default cost is used for sources where there are existing controls (RACT baseline), with efficiencies less than or equal to 76% (Pechan, 2001).
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the information for an example small turbine in Table 6-9 of the ACT document for stationary gas turbines.  The model plant is a 26.8 megawatt MS5001P turbine.  Continuous operation 8,000 hours per year is used to estimate operating costs.
+
+Electricity cost:  0.06 $/kW-hr
+Natural gas cost:  $4.13/MMBtu"
+"NSCRWGTNG","CPTON_TEXT","No category","","text","CPTON_TEXT","The default cost effectiveness value is $2,730 per ton NOx reduced from both uncontrolled and RACT baselines (1990$)."
+"NSCRWGTNG","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","95"
+"NSCRWGTNG","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NSCRWGTNG","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.06"
+"NSCRWGTNG","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSCRWGTNG","HG_CE_T","No category","%","character varying(50)","HG_CE_T","95"
+"NSCRWGTNG","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSCRWGTNG","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","0.46"
+"NSCRWGTNG","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","31.2"
+"NSCRWGTNG","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","15.4"
+"NSCRWGTNG","NG_RT","No category","$/cf","double precision","NG_RT","4.13"
+"NSCRWGTNG","NOX","No category","","character varying(50)","NOX","Co*"
+"NSCRWGTNG","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSCRWGTNG","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","3.03"
+"NSCRWGTNG","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","25.6"
+"NSCRWGTNG","OTHR_PCT","No category","%","double precision","OTHR_PCT","23.7"
+"NSCRWGTNG","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSCRWGTNG","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSCRWGTNG","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","13.4"
+"NSCRWGTNG","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSCRWGTNG","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSCRWGTNG","STEAM_PCT","No category","%","double precision","STEAM_PCT","2.09"
+"NSCRWGTNG","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSCRWGTNG","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","33.14"
+"NSCRWGTNG","UTIL_PCT","No category","%","double precision","UTIL_PCT","2.37"
+"NSCRWGTNG","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","2.91"
+"NSTINGTNG","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NSTINGTNG","CE_TEXT","No category","","text","CE_TEXT","80% from uncontrolled"
+"NSTINGTNG","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NSTINGTNG","COST_BASIS","No category","","text","COST_BASIS","Sources are distinguished by the following (Pechan, 1998).
+
+Small source = 3.3 MW to 34.4 MW
+
+The basis of the costs are model plant data contained in the Alternative Control Techniques (ACT) document (EPA, 1993).  Capital and annual cost information was obtained  from control-specific cost data based on tons of glass produced.  O&M costs were back calculated from annual costs.   From these determinations, default cost per ton values were assigned along with a capital to annual cost ratio of 3.7 (Pechan, 1998).  A discount rate of 10 percent and a capacity factor of 65 percent are assumed, along with an equipment lifetime of 15 years (EPA, 1993).
+
+In general, the incremental default cost is used for sources where there are existing controls (RACT baseline), with efficiencies less than or equal to 76% (Pechan, 2001).
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the information for an example small turbine in Table 6-5 of the ACT document for stationary gas turbines.  The model plant is a 26.8 megawatt MS5001P turbine.  Continuous operation 8,000 hours per year is used to estimate operating costs.
+
+Electricity cost:  0.06 $/kW-hr
+Natural gas cost:  $4.13/MMBtu"
+"NSTINGTNG","CPTON_TEXT","No category","","text","CPTON_TEXT","The default cost effectiveness value is $1,040 per ton NOx reduced from both uncontrolled and RACT baselines (1990$)."
+"NSTINGTNG","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","80"
+"NSTINGTNG","ELEC_PCT","No category","%","double precision","ELEC_PCT","0"
+"NSTINGTNG","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.06"
+"NSTINGTNG","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NSTINGTNG","HG_CE_T","No category","%","character varying(50)","HG_CE_T","80"
+"NSTINGTNG","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NSTINGTNG","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","3.2"
+"NSTINGTNG","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","31.2"
+"NSTINGTNG","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NSTINGTNG","NG_RT","No category","$/cf","double precision","NG_RT","4.13"
+"NSTINGTNG","NOX","No category","","character varying(50)","NOX","Co*"
+"NSTINGTNG","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NSTINGTNG","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NSTINGTNG","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","25.6"
+"NSTINGTNG","OTHR_PCT","No category","%","double precision","OTHR_PCT","50.9"
+"NSTINGTNG","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NSTINGTNG","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NSTINGTNG","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","21.53"
+"NSTINGTNG","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NSTINGTNG","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NSTINGTNG","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NSTINGTNG","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NSTINGTNG","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","15.37"
+"NSTINGTNG","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NSTINGTNG","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","7.86"
+"NWTINGTNG","ADMIN_PCT","No category","%","double precision","ADMIN_PCT","0"
+"NWTINGTNG","CE_TEXT","No category","","text","CE_TEXT","76% from uncontrolled"
+"NWTINGTNG","CHEM_PCT","No category","%","double precision","CHEM_PCT","0"
+"NWTINGTNG","COST_BASIS","No category","","text","COST_BASIS","Sources are distinguished by the following (Pechan, 1998).
+
+Small source = 3.3 MW to 34.4 MW
+
+The basis of the costs are model plant data contained in the Alternative Control Techniques (ACT) document (EPA, 1993).  Capital and annual cost information was obtained  from control-specific cost data based on tons of glass produced.  O&M costs were back calculated from annual costs.   From these determinations, default cost per ton values were assigned along with a capital to annual cost ratio of 3. (Pechan, 1998).  A discount rate of 10 percent and a capacity factor of 65 percent are assumed, along with an equipment lifetime of 15 years (EPA, 1993).
+
+In general, the incremental default cost is used for sources where there are existing controls (RACT baseline), with efficiencies less than or equal to 76% (Pechan, 2001).
+
+O&M Cost Components:  The O&M cost breakdown is estimated using the information for an example small turbine in Table 6-5 of the ACT document for stationary gas turbines.  The model plant is a 26.8 megawatt MS5001P turbine.  Continuous operation 8,000 hours per year is used to estimate operating costs.
+
+Electricity cost:  0.06 $/kW-hr
+Natural gas cost:  $4.13/MMBtu"
+"NWTINGTNG","CPTON_TEXT","No category","","text","CPTON_TEXT","The default cost effectiveness value is $1,510 per ton NOx reduced from both uncontrolled and RACT baselines (1990$)."
+"NWTINGTNG","CTRL_EFF_T","No category","%","double precision","CTRL_EFF_T","76"
+"NWTINGTNG","ELEC_PCT","No category","%","double precision","ELEC_PCT","0.5"
+"NWTINGTNG","ELEC_RT","No category","$/kWh","double precision","ELEC_RT","0.06"
+"NWTINGTNG","FUEL_PCT","No category","%","double precision","FUEL_PCT","0"
+"NWTINGTNG","HG_CE_T","No category","%","character varying(50)","HG_CE_T","76"
+"NWTINGTNG","INSRNC_PCT","No category","%","double precision","INSRNC_PCT","0"
+"NWTINGTNG","MNTLBR_PCT","No category","%","double precision","MNTLBR_PCT","2.78"
+"NWTINGTNG","MNTLBR_RT","No category","$/hr","double precision","MNTLBR_RT","31.2"
+"NWTINGTNG","MNTMTL_PCT","No category","%","double precision","MNTMTL_PCT","0"
+"NWTINGTNG","NG_RT","No category","$/cf","double precision","NG_RT","4.13"
+"NWTINGTNG","NOX","No category","","character varying(50)","NOX","Co*"
+"NWTINGTNG","OMATL_PCT","No category","%","double precision","OMATL_PCT","0"
+"NWTINGTNG","OPLBR_PCT","No category","%","double precision","OPLBR_PCT","0"
+"NWTINGTNG","OPLBR_RT","No category","$/hr","double precision","OPLBR_RT","25.6"
+"NWTINGTNG","OTHR_PCT","No category","%","double precision","OTHR_PCT","77.33"
+"NWTINGTNG","OVRHD_PCT","No category","%","double precision","OVRHD_PCT","0"
+"NWTINGTNG","PROPTX_PCT","No category","%","double precision","PROPTX_PCT","0"
+"NWTINGTNG","RPLMTL_PCT","No category","%","double precision","RPLMTL_PCT","9.38"
+"NWTINGTNG","RULE","No category","","character varying(254)","RULE","Not Applicable"
+"NWTINGTNG","SPVLBR_PCT","No category","%","double precision","SPVLBR_PCT","0"
+"NWTINGTNG","STEAM_PCT","No category","%","double precision","STEAM_PCT","0"
+"NWTINGTNG","TDIR_PCT","No category","%","double precision","TDIR_PCT","0"
+"NWTINGTNG","TINDIR_PCT","No category","%","double precision","TINDIR_PCT","6.6"
+"NWTINGTNG","UTIL_PCT","No category","%","double precision","UTIL_PCT","0"
+"NWTINGTNG","WSTDSP_PCT","No category","%","double precision","WSTDSP_PCT","3.42"
