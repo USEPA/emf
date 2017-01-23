@@ -496,7 +496,7 @@ public class ModuleRunnerTask {
                     if (!outputParameters.isEmpty()) {
                         outputParameters += "UNION ALL\n";
                     }
-                    outputParameters += "SELECT '" + moduleTypeVersionParameter.getParameterName() + "' AS name, CAST(" + parameterTimeStamp + " AS text) AS value";
+                    outputParameters += "SELECT '" + moduleTypeVersionParameter.getParameterName() + "' AS name, CAST(" + parameterTimeStamp + " AS text) AS value\n";
                 }
             }
             
