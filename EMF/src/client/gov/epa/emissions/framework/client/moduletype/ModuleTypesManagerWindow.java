@@ -213,7 +213,8 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     private void createModuleType() {
-        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, "Create a composite module type?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, selection == JOptionPane.YES_OPTION);
         presenter.displayNewModuleTypeView(view);
     }
 

@@ -277,6 +277,26 @@
 		qname="ns1:ModuleTypeVersionRevision" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule"
+		qname="ns1:ModuleTypeVersionSubmodule" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection"
+		qname="ns1:ModuleTypeVersionDatasetConnection" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection"
+		qname="ns1:ModuleTypeVersionParameterConnection" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnectionEndpoint"
+		qname="ns1:ModuleTypeVersionDatasetConnectionEndpoint" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnectionEndpoint"
+		qname="ns1:ModuleTypeVersionParameterConnectionEndpoint" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleType"
 		qname="ns1:ModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 

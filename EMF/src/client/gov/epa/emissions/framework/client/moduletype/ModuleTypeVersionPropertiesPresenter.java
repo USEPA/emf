@@ -67,13 +67,28 @@ public class ModuleTypeVersionPropertiesPresenter {
         return session.moduleService().updateModuleType(moduleType);
     }
 
-    public void displayNewModuleTypeVersionDatasetView(ModuleTypeVersionDatasetView view) {
+    public void displayModuleTypeVersionDatasetView(ModuleTypeVersionDatasetView view) {
         ModuleTypeVersionDatasetPresenter presenter = new ModuleTypeVersionDatasetPresenter(session, view, this.view);
         presenter.doDisplay();
     }
 
-    public void displayNewModuleTypeVersionParameterView(ModuleTypeVersionParameterView view) {
+    public void displayModuleTypeVersionParameterView(ModuleTypeVersionParameterView view) {
         ModuleTypeVersionParameterPresenter presenter = new ModuleTypeVersionParameterPresenter(session, view, this.view);
+        presenter.doDisplay();
+    }
+    
+    public void displayModuleTypeVersionSubmoduleView(ModuleTypeVersionSubmoduleView view) {
+        ModuleTypeVersionSubmodulePresenter presenter = new ModuleTypeVersionSubmodulePresenter(session, view, this.view);
+        presenter.doDisplay();
+    }
+    
+    public void displayModuleTypeVersionDatasetConnectionView(ModuleTypeVersionDatasetConnectionView view) {
+        ModuleTypeVersionDatasetConnectionPresenter presenter = new ModuleTypeVersionDatasetConnectionPresenter(session, view, this.view);
+        presenter.doDisplay();
+    }
+    
+    public void displayModuleTypeVersionParameterConnectionView(ModuleTypeVersionParameterConnectionView view) {
+        ModuleTypeVersionParameterConnectionPresenter presenter = new ModuleTypeVersionParameterConnectionPresenter(session, view, this.view);
         presenter.doDisplay();
     }
     

@@ -1,0 +1,164 @@
+package gov.epa.emissions.framework.services.module;
+
+import java.io.Serializable;
+import java.util.Map;
+
+import gov.epa.emissions.commons.data.DatasetType;
+
+public class ModuleTypeVersionParameterConnection implements Serializable {
+
+    private int id;
+
+    private ModuleTypeVersion compositeModuleTypeVersion;
+
+    // cannot be null
+    private String connectionName = "";
+    
+    // can be null when disconnected or when connected to external sources (composite module IN/INOUT parameters)
+    private ModuleTypeVersionSubmodule sourceSubmodule;
+    
+    // can be null when disconnected
+    private String sourceParameterName;
+    
+    // can be null for external targets (composite module OUT/INOUT parameters)
+    private ModuleTypeVersionSubmodule targetSubmodule;
+
+    // cannot be null
+    private String targetParameterName;
+    
+    private String description;
+
+    public ModuleTypeVersionParameterConnection deepCopy() {
+        ModuleTypeVersionParameterConnection newModuleTypeVersionParameterConnection = new ModuleTypeVersionParameterConnection();
+        newModuleTypeVersionParameterConnection.setCompositeModuleTypeVersion(compositeModuleTypeVersion);
+        newModuleTypeVersionParameterConnection.setConnectionName(connectionName);
+        newModuleTypeVersionParameterConnection.setSourceSubmodule(sourceSubmodule);
+        newModuleTypeVersionParameterConnection.setSourceParameterName(sourceParameterName);
+        newModuleTypeVersionParameterConnection.setTargetSubmodule(targetSubmodule);
+        newModuleTypeVersionParameterConnection.setTargetParameterName(targetParameterName);
+        newModuleTypeVersionParameterConnection.setDescription(description);
+        return newModuleTypeVersionParameterConnection;
+    }
+    
+    public boolean isValid(final StringBuilder error) {
+        error.setLength(0);
+        // TODO implement
+        return true;
+    }
+    
+    public String getSqlType() {
+        if (targetSubmodule != null) {
+            // internal target
+            return targetSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().get(targetParameterName).getSqlParameterType();
+        }
+        // external target
+        return compositeModuleTypeVersion.getModuleTypeVersionParameters().get(targetParameterName).getSqlParameterType();
+    }
+    
+    public String getSourceName() {
+        return ((sourceSubmodule == null) ? "" : (sourceSubmodule.getName() + " / ")) + ((sourceParameterName == null) ? "" : sourceParameterName);
+    }
+    
+    public String getTargetName() {
+        return ((targetSubmodule == null) ? "" : (targetSubmodule.getName() + " / ")) + ((targetParameterName == null) ? "" : targetParameterName);
+    }
+    
+    public Map<String, ModuleTypeVersionParameterConnectionEndpoint> getSourceParameterEndpoints() {
+        return compositeModuleTypeVersion.getSourceParameterEndpoints(this);
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public ModuleTypeVersion getCompositeModuleTypeVersion() {
+        return compositeModuleTypeVersion;
+    }
+
+    public void setCompositeModuleTypeVersion(ModuleTypeVersion compositeModuleTypeVersion) {
+        this.compositeModuleTypeVersion = compositeModuleTypeVersion;
+    }
+
+    public String getConnectionName() {
+        return connectionName;
+    }
+
+    public void setConnectionName(String connectionName) {
+        this.connectionName = connectionName;
+    }
+
+    public ModuleTypeVersionSubmodule getSourceSubmodule() {
+        return sourceSubmodule;
+    }
+
+    public void setSourceSubmodule(ModuleTypeVersionSubmodule sourceSubmodule) {
+        this.sourceSubmodule = sourceSubmodule;
+    }
+
+    public String getSourceParameterName() {
+        return sourceParameterName;
+    }
+
+    public void setSourceParameterName(String sourceParameterName) {
+        this.sourceParameterName = sourceParameterName;
+    }
+
+    public ModuleTypeVersionSubmodule getTargetSubmodule() {
+        return targetSubmodule;
+    }
+
+    public void setTargetSubmodule(ModuleTypeVersionSubmodule targetSubmodule) {
+        this.targetSubmodule = targetSubmodule;
+        this.connectionName = getTargetName(); 
+    }
+
+    public String getTargetParameterName() {
+        return targetParameterName;
+    }
+
+    public void setTargetParameterName(String targetParameterName) {
+        this.targetParameterName = targetParameterName;
+        this.connectionName = getTargetName(); 
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof ModuleTypeVersionParameterConnection)) return false;
+        ModuleTypeVersionParameterConnection otherConnection = (ModuleTypeVersionParameterConnection) other;
+        return compositeModuleTypeVersion.equals(otherConnection.getCompositeModuleTypeVersion()) &&
+               ((connectionName == null) == (otherConnection.getConnectionName() == null)) &&
+               ((connectionName == null) || connectionName.equals(otherConnection.getConnectionName()));
+    }
+
+     public int hashCode() {
+         int result = 23; // seed
+         result = 37 * result + ((compositeModuleTypeVersion == null) ? 0 : compositeModuleTypeVersion.hashCode());
+         result = 37 * result + ((connectionName == null) ? 0 : connectionName.hashCode());
+         return result;
+     }
+
+    public int compareTo(ModuleTypeVersionParameterConnection otherConnection) {
+        if (this == otherConnection) return 0;
+        int comp = compositeModuleTypeVersion.compareTo(otherConnection.getCompositeModuleTypeVersion());
+        if (comp != 0) return comp;
+        comp = new Boolean(connectionName == null).compareTo(otherConnection.getConnectionName() == null);
+        if (comp != 0) return comp;
+        if (connectionName != null) {
+            comp = connectionName.compareTo(otherConnection.getConnectionName());
+            if (comp != 0) return comp;
+        }
+        return 0;
+    }
+}

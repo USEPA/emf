@@ -6,6 +6,9 @@ DROP TABLE modules.modules_parameters;
 DROP TABLE modules.modules_datasets;
 DROP TABLE modules.modules;
 
+DROP TABLE modules.module_types_versions_connections_parameters;
+DROP TABLE modules.module_types_versions_connections_datasets;
+DROP TABLE modules.module_types_versions_submodules;
 DROP TABLE modules.module_types_versions_revisions;
 DROP TABLE modules.module_types_versions_parameters;
 DROP TABLE modules.module_types_versions_datasets;

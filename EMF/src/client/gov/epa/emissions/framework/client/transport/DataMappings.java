@@ -88,9 +88,14 @@ import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnectionEndpoint;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnectionEndpoint;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.services.sms.SectorScenario;
 import gov.epa.emissions.framework.services.sms.SectorScenarioInventory;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;
@@ -124,6 +129,11 @@ public class DataMappings extends Mappings {
         bean(call, ModuleTypeVersionDataset.class,   moduleTypeVersionDataset());
         bean(call, ModuleTypeVersionParameter.class, moduleTypeVersionParameter());
         bean(call, ModuleTypeVersionRevision.class,  moduleTypeVersionRevision());
+        bean(call, ModuleTypeVersionSubmodule.class,            moduleTypeVersionSubmodule());
+        bean(call, ModuleTypeVersionDatasetConnection.class,    moduleTypeVersionDatasetConnection());
+        bean(call, ModuleTypeVersionParameterConnection.class,  moduleTypeVersionParameterConnection());
+        bean(call, ModuleTypeVersionDatasetConnectionEndpoint.class,    moduleTypeVersionDatasetConnectionEndpoint());
+        bean(call, ModuleTypeVersionParameterConnectionEndpoint.class,  moduleTypeVersionParameterConnectionEndpoint());
 
         bean(call, Module.class,                  module());
         bean(call, ModuleDataset.class,           moduleDataset());
@@ -465,6 +475,26 @@ public class DataMappings extends Mappings {
 
     public QName moduleTypeVersionRevision() {
         return qname("ModuleTypeVersionRevision");
+    }
+
+    public QName moduleTypeVersionSubmodule() {
+        return qname("ModuleTypeVersionSubmodule");
+    }
+
+    public QName moduleTypeVersionDatasetConnection() {
+        return qname("ModuleTypeVersionDatasetConnection");
+    }
+
+    public QName moduleTypeVersionParameterConnection() {
+        return qname("ModuleTypeVersionParameterConnection");
+    }
+
+    public QName moduleTypeVersionDatasetConnectionEndpoint() {
+        return qname("ModuleTypeVersionDatasetConnectionEndpoint");
+    }
+
+    public QName moduleTypeVersionParameterConnectionEndpoint() {
+        return qname("ModuleTypeVersionParameterConnectionEndpoint");
     }
 
     public QName module() {

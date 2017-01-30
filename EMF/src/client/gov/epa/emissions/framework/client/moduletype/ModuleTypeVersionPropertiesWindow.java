@@ -24,8 +24,11 @@ import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
@@ -109,6 +112,18 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     private JPanel algorithmPanel;
     private TextArea algorithm;
 
+    // submodules
+    private JPanel submodulesPanel;
+    private JPanel submodulesTablePanel;
+    private SelectableSortFilterWrapper submodulesTable;
+    private ModuleTypeVersionSubmodulesTableData submodulesTableData;
+
+    // connections
+    private JPanel connectionsPanel;
+    private JPanel connectionsTablePanel;
+    private SelectableSortFilterWrapper connectionsTable;
+    private ModuleTypeVersionConnectionsTableData connectionsTableData;
+
     // revisions
     private JPanel revisionsPanel;
     private TextArea revisions;
@@ -146,7 +161,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     };
 
     // New Module Type
-    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleTypeVersionObserver moduleTypeVersionObserver) {
+    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ModuleTypeVersionObserver moduleTypeVersionObserver, boolean composite) {
         super(getWindowTitle(ViewMode.NEW, null), new Dimension(800, 600), desktopManager);
 
         this.parentConsole = parentConsole;
@@ -167,6 +182,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         moduleType.setLastModifiedDate(date);
         moduleType.setCreator(session.user());
         moduleType.setDefaultVersion(0);
+        moduleType.setIsComposite(composite);
 
         moduleTypeVersion = new ModuleTypeVersion();
         moduleTypeVersion.setVersion(0);
@@ -263,7 +279,13 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         tabbedPane.addTab("Version", versionPanel());
         tabbedPane.addTab("Datasets", datasetsPanel());
         tabbedPane.addTab("Parameters", parametersPanel());
-        tabbedPane.addTab("Algorithm", algorithmPanel());
+        if (moduleTypeVersion.isComposite()) {
+            tabbedPane.addTab("Submodules", submodulesPanel());
+            tabbedPane.addTab("Connections", connectionsPanel());
+            // tabbedPane.addTab("Flowchart", flowchartPanel());
+        } else {
+            tabbedPane.addTab("Algorithm", algorithmPanel());
+        }
         tabbedPane.addTab("Revisions", revisionsPanel());
         return tabbedPane;
     }
@@ -415,6 +437,32 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return algorithmPanel;
     }
 
+    private JPanel submodulesPanel() {
+        submodulesTablePanel = new JPanel(new BorderLayout());
+        submodulesTableData = new ModuleTypeVersionSubmodulesTableData(moduleTypeVersion.getModuleTypeVersionSubmodules());
+        submodulesTable = new SelectableSortFilterWrapper(parentConsole, submodulesTableData, null);
+        submodulesTablePanel.add(submodulesTable);
+
+        submodulesPanel = new JPanel(new BorderLayout());
+        submodulesPanel.add(submodulesTablePanel, BorderLayout.CENTER);
+        submodulesPanel.add(submodulesCrudPanel(), BorderLayout.SOUTH);
+
+        return submodulesPanel;
+    }
+
+    private JPanel connectionsPanel() {
+        connectionsTablePanel = new JPanel(new BorderLayout());
+        connectionsTableData = new ModuleTypeVersionConnectionsTableData(moduleTypeVersion);
+        connectionsTable = new SelectableSortFilterWrapper(parentConsole, connectionsTableData, null);
+        connectionsTablePanel.add(connectionsTable);
+
+        connectionsPanel = new JPanel(new BorderLayout());
+        connectionsPanel.add(connectionsTablePanel, BorderLayout.CENTER);
+        connectionsPanel.add(connectionsCrudPanel(), BorderLayout.SOUTH);
+
+        return connectionsPanel;
+    }
+
     private JPanel revisionsPanel() {
         revisionsPanel = new JPanel(new BorderLayout());
         revisions = new TextArea("revisions", moduleTypeVersion.revisionsReport(), 60);
@@ -523,19 +571,20 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersionDataset moduleTypeVersionDataset = (ModuleTypeVersionDataset) iter.next();
             ModuleTypeVersionDatasetWindow view = new ModuleTypeVersionDatasetWindow(parentConsole, desktopManager, session, moduleTypeVersion, datasetTypesCache, ViewMode.EDIT, moduleTypeVersionDataset);
-            presenter.displayNewModuleTypeVersionDatasetView(view);
+            presenter.displayModuleTypeVersionDatasetView(view);
         }
     }
 
     private void createDataset() {
         getDatasetTypesTask.done(); // wait if necessary
         ModuleTypeVersionDatasetWindow view = new ModuleTypeVersionDatasetWindow(parentConsole, desktopManager, session, moduleTypeVersion, datasetTypesCache, ViewMode.NEW, null);
-        presenter.displayNewModuleTypeVersionDatasetView(view);
+        presenter.displayModuleTypeVersionDatasetView(view);
     }
 
     public void refreshDatasets() {
         datasetsTableData = new ModuleTypeVersionDatasetsTableData(moduleTypeVersion.getModuleTypeVersionDatasets());
         datasetsTable.refresh(datasetsTableData);
+        refreshConnections();
         isDirty = true;
     }
 
@@ -617,18 +666,19 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleTypeVersionParameter moduleTypeVersionParameter = (ModuleTypeVersionParameter) iter.next();
             ModuleTypeVersionParameterWindow view = new ModuleTypeVersionParameterWindow(parentConsole, desktopManager, session, moduleTypeVersion, ViewMode.EDIT, moduleTypeVersionParameter);
-            presenter.displayNewModuleTypeVersionParameterView(view);
+            presenter.displayModuleTypeVersionParameterView(view);
         }
     }
 
     private void createParameter() {
         ModuleTypeVersionParameterWindow view = new ModuleTypeVersionParameterWindow(parentConsole, desktopManager, session, moduleTypeVersion, ViewMode.NEW, null);
-        presenter.displayNewModuleTypeVersionParameterView(view);
+        presenter.displayModuleTypeVersionParameterView(view);
     }
 
     public void refreshParameters() {
         parametersTableData = new ModuleTypeVersionParametersTableData(moduleTypeVersion.getModuleTypeVersionParameters());
         parametersTable.refresh(parametersTableData);
+        refreshConnections();
         isDirty = true;
     }
 
@@ -661,6 +711,158 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return parametersTable.selected();
     }
 
+    //-------------------------------------------------------------------------
+    
+    private JPanel submodulesCrudPanel() {
+        String message = "You have asked to open a lot of windows. Do you wish to proceed?";
+        ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
+
+        Action editAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                editSubmodules();
+            }
+        };
+        SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, submodulesTable, confirmDialog);
+
+        Action createAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                createSubmodule();
+            }
+        };
+        Button newButton = new NewButton(createAction);
+
+        Action removeAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                removeSubmodules();
+            }
+        };
+        Button removeButton = new RemoveButton(removeAction);
+        
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(newButton);
+        crudPanel.add(editButton);
+        crudPanel.add(removeButton);
+        if (viewMode == ViewMode.VIEW){
+            newButton.setEnabled(false);
+            editButton.setEnabled(false);
+            removeButton.setEnabled(false);
+        }
+
+        return crudPanel;
+    }
+
+    private void editSubmodules() {
+        List selected = selectedSubmodules();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more submodules");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleTypeVersionSubmodule moduleTypeVersionSubmodule = (ModuleTypeVersionSubmodule) iter.next();
+            ModuleTypeVersionSubmoduleWindow view = new ModuleTypeVersionSubmoduleWindow(parentConsole, desktopManager, session, moduleTypeVersion, ViewMode.EDIT, moduleTypeVersionSubmodule);
+            presenter.displayModuleTypeVersionSubmoduleView(view);
+        }
+    }
+
+    private void createSubmodule() {
+        ModuleTypeVersionSubmoduleWindow view = new ModuleTypeVersionSubmoduleWindow(parentConsole, desktopManager, session, moduleTypeVersion, ViewMode.NEW, null);
+        presenter.displayModuleTypeVersionSubmoduleView(view);
+    }
+
+    public void refreshSubmodules() {
+        submodulesTableData = new ModuleTypeVersionSubmodulesTableData(moduleTypeVersion.getModuleTypeVersionSubmodules());
+        submodulesTable.refresh(submodulesTableData);
+        refreshConnections();
+        isDirty = true;
+    }
+
+    private void removeSubmodules() {
+        messagePanel.clear();
+        List<?> selected = selectedSubmodules();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more submodules");
+            return;
+        }   
+
+        String message = "Are you sure you want to remove the selected " + selected.size() + " submodule(s)?";
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (selection == JOptionPane.YES_OPTION) {
+            try {
+                for(ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : selected.toArray(new ModuleTypeVersionSubmodule[0])) {
+                    moduleTypeVersion.removeModuleTypeVersionSubmodule(moduleTypeVersionSubmodule);
+                }
+                messagePanel.setMessage("Removed " + selected.size() + " submodule(s)");
+                refreshSubmodules();
+            } catch (Exception e) {
+                JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+            }
+        }
+    }
+
+    private List selectedSubmodules() {
+        return submodulesTable.selected();
+    }
+
+    //-------------------------------------------------------------------------
+    
+    private JPanel connectionsCrudPanel() {
+        String message = "You have asked to open a lot of windows. Do you wish to proceed?";
+        ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
+
+        Action editAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                editConnections();
+            }
+        };
+        SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, connectionsTable, confirmDialog);
+
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(editButton);
+        if (viewMode == ViewMode.VIEW){
+            editButton.setEnabled(false);
+        }
+
+        return crudPanel;
+    }
+
+    private void editConnections() {
+        List selected = selectedConnections();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more connections");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            Object item = iter.next();
+            if (item instanceof ModuleTypeVersionDatasetConnection) {
+                ModuleTypeVersionDatasetConnection datasetConnection = (ModuleTypeVersionDatasetConnection) item;
+                ModuleTypeVersionDatasetConnectionWindow view = new ModuleTypeVersionDatasetConnectionWindow(parentConsole, desktopManager, session, ViewMode.EDIT, datasetConnection);
+                presenter.displayModuleTypeVersionDatasetConnectionView(view);
+            } else if (item instanceof ModuleTypeVersionParameterConnection) {
+                ModuleTypeVersionParameterConnection parameterConnection = (ModuleTypeVersionParameterConnection) item;
+                ModuleTypeVersionParameterConnectionWindow view = new ModuleTypeVersionParameterConnectionWindow(parentConsole, desktopManager, session, ViewMode.EDIT, parameterConnection);
+                presenter.displayModuleTypeVersionParameterConnectionView(view);
+            }
+        }
+    }
+
+    public void refreshConnections() {
+        if (moduleTypeVersion.isComposite()) {
+            connectionsTableData = new ModuleTypeVersionConnectionsTableData(moduleTypeVersion);
+            connectionsTable.refresh(connectionsTableData);
+            isDirty = true;
+        }
+    }
+
+    private List selectedConnections() {
+        return connectionsTable.selected();
+    }
+
+    //-------------------------------------------------------------------------
+    
     private void clear() {
         messagePanel.clear();
     }
@@ -717,7 +919,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleType.setDescription(moduleTypeDescription.getText());
                 moduleTypeVersion.setName(moduleTypeVersionName.getText());
                 moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
-                moduleTypeVersion.setAlgorithm(algorithm.getText());
+                if (!moduleTypeVersion.isComposite()) {
+                    moduleTypeVersion.setAlgorithm(algorithm.getText());
+                }
                 
                 moduleType = presenter.addModuleType(moduleType);
                 viewMode = ViewMode.EDIT;
@@ -745,7 +949,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
                 moduleTypeVersion.setName(moduleTypeVersionName.getText());
                 moduleTypeVersion.setDescription(moduleTypeVersionDescription.getText());
                 moduleTypeVersion.setLastModifiedDate(date);
-                moduleTypeVersion.setAlgorithm(algorithm.getText());
+                if (!moduleTypeVersion.isComposite()) {
+                    moduleTypeVersion.setAlgorithm(algorithm.getText());
+                }
                 
                 moduleType = presenter.updateModuleType(moduleType);
                 moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());

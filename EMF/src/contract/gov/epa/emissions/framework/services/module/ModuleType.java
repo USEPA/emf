@@ -25,14 +25,15 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
 
     private User creator;
 
-//    private String[] tags;
-
     private int defaultVersion;
+
+    private boolean isComposite;
 
     private Map<Integer, ModuleTypeVersion> moduleTypeVersions;
 
     public ModuleType() {
         lock = new Mutex();
+        isComposite = false;
         moduleTypeVersions = new HashMap<Integer, ModuleTypeVersion>();
     }
 
@@ -131,22 +132,6 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         this.creator = creator;
     }
 
-//    public String[] getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(String[] tags) {
-//        this.tags = tags;
-//    }
-//
-//    public void addTag(String tag) {
-//        List<String> newTags = new ArrayList<String>();
-//        newTags.addAll(Arrays.asList(this.tags));
-//        newTags.add(tag);
-//
-//        this.tags = newTags.toArray(new String[0]);
-//    }
-//
     public int getDefaultVersion() {
         return defaultVersion;
     }
@@ -155,6 +140,22 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         this.defaultVersion = defaultVersion;
     }
 
+    public boolean getIsComposite() {
+        return isComposite;
+    }
+
+    public void setIsComposite(boolean isComposite) {
+        this.isComposite = isComposite;
+    }
+
+    public boolean isComposite() {
+        return getIsComposite();
+    }
+    
+    public void setComposite(boolean isComposite) {
+        setIsComposite(isComposite);
+    }
+    
     // moduleTypeVersions
 
     public Map<Integer, ModuleTypeVersion> getModuleTypeVersions() {

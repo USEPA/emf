@@ -21,7 +21,6 @@ import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.History;
-import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleParameter;

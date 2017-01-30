@@ -44,11 +44,20 @@ public class ModuleTypeVersion implements Serializable {
 
     private List<ModuleTypeVersionRevision> moduleTypeVersionRevisions;
 
+    private Map<String, ModuleTypeVersionSubmodule> moduleTypeVersionSubmodules;
+
+    private Map<String, ModuleTypeVersionDatasetConnection> moduleTypeVersionDatasetConnections;
+    
+    private Map<String, ModuleTypeVersionParameterConnection> moduleTypeVersionParameterConnections;
+    
     public ModuleTypeVersion()
     {
         moduleTypeVersionDatasets = new HashMap<String, ModuleTypeVersionDataset>();
         moduleTypeVersionParameters = new HashMap<String, ModuleTypeVersionParameter>();
         moduleTypeVersionRevisions = new ArrayList<ModuleTypeVersionRevision>();
+        moduleTypeVersionSubmodules = new HashMap<String, ModuleTypeVersionSubmodule>();
+        moduleTypeVersionDatasetConnections = new HashMap<String, ModuleTypeVersionDatasetConnection>();
+        moduleTypeVersionParameterConnections = new HashMap<String, ModuleTypeVersionParameterConnection>();
     }
 
     public ModuleTypeVersion deepCopy(User user) {
@@ -77,6 +86,10 @@ public class ModuleTypeVersion implements Serializable {
         moduleTypeVersionRevision.setCreationDate(date);
         moduleTypeVersionRevision.setCreator(user);
         newModuleTypeVersion.addModuleTypeVersionRevision(moduleTypeVersionRevision);
+        for(ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : moduleTypeVersionSubmodules.values()) {
+            ModuleTypeVersionSubmodule newModuleTypeVersionSubmodule = moduleTypeVersionSubmodule.deepCopy();
+            newModuleTypeVersion.addModuleTypeVersionSubmodule(newModuleTypeVersionSubmodule);
+        }
         
         return newModuleTypeVersion;
     }
@@ -166,6 +179,54 @@ public class ModuleTypeVersion implements Serializable {
         return true;
     }
 
+    public boolean isComposite() {
+        return moduleType.isComposite();
+    }
+    
+    public Map<String, ModuleTypeVersionDatasetConnectionEndpoint> getSourceDatasetEndpoints(ModuleTypeVersionDatasetConnection datasetConnection) {
+        String datasetTypeName = datasetConnection.getDatasetTypeName();
+        Map<String, ModuleTypeVersionDatasetConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionDatasetConnectionEndpoint>();
+        for (ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
+            if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
+                ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, null, dataset.getPlaceholderName());
+                endpoints.put(endpoint.getEndpointName(), endpoint);
+            }
+        }
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            if (submodule.equals(datasetConnection.getTargetSubmodule())) continue;
+            for (ModuleTypeVersionDataset dataset : submodule.getModuleTypeVersion().getModuleTypeVersionDatasets().values()) {
+                if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
+                    ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, submodule, dataset.getPlaceholderName());
+                    endpoints.put(endpoint.getEndpointName(), endpoint);
+                }
+            }
+        }
+        
+        return endpoints;
+    }
+    
+    public Map<String, ModuleTypeVersionParameterConnectionEndpoint> getSourceParameterEndpoints(ModuleTypeVersionParameterConnection parameterConnection) {
+        String sqlType = parameterConnection.getSqlType();
+        Map<String, ModuleTypeVersionParameterConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionParameterConnectionEndpoint>();
+        for (ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
+            if (parameter.getSqlParameterType().equals(sqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
+                ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, null, parameter.getParameterName());
+                endpoints.put(endpoint.getEndpointName(), endpoint);
+            }
+        }
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            if (submodule.equals(parameterConnection.getTargetSubmodule())) continue;
+            for (ModuleTypeVersionParameter parameter : submodule.getModuleTypeVersion().getModuleTypeVersionParameters().values()) {
+                if (parameter.getSqlParameterType().equals(sqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
+                    ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, submodule, parameter.getParameterName());
+                    endpoints.put(endpoint.getEndpointName(), endpoint);
+                }
+            }
+        }
+        
+        return endpoints;
+    }
+    
     public int getId() {
         return id;
     }
@@ -269,8 +330,19 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public void addModuleTypeVersionDataset(ModuleTypeVersionDataset moduleTypeVersionDataset) {
+        if (this.moduleTypeVersionDatasets.containsKey(moduleTypeVersionDataset.getPlaceholderName())) {
+            removeModuleTypeVersionDataset(moduleTypeVersionDataset.getPlaceholderName());
+        }
         moduleTypeVersionDataset.setModuleTypeVersion(this);
         this.moduleTypeVersionDatasets.put(moduleTypeVersionDataset.getPlaceholderName(), moduleTypeVersionDataset);
+        
+        // add connections to the new targets (OUT/INOUT datasets)
+        if (isComposite() && !moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionParameter.IN)) {
+            ModuleTypeVersionDatasetConnection datasetConnection = new ModuleTypeVersionDatasetConnection();
+            datasetConnection.setTargetSubmodule(null);
+            datasetConnection.setTargetPlaceholderName(moduleTypeVersionDataset.getPlaceholderName());
+            addModuleTypeVersionDatasetConnection(datasetConnection);
+        }
     }
 
     public void removeModuleTypeVersionDataset(ModuleTypeVersionDataset moduleTypeVersionDataset) {
@@ -279,6 +351,17 @@ public class ModuleTypeVersion implements Serializable {
 
     public void removeModuleTypeVersionDataset(String placeholderName) {
         this.moduleTypeVersionDatasets.remove(placeholderName);
+        
+        if (isComposite()) {
+            // if the removed placeholder is the target of a connection, remove the connection
+            removeModuleTypeVersionDatasetConnection(placeholderName); 
+            // if the removed placeholder is the source of a connection, set the connection source to null
+            for (ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersionDatasetConnections.values()) {
+                if ((datasetConnection.getSourceSubmodule() == null) && placeholderName.equals(datasetConnection.getSourcePlaceholderName())) {
+                    datasetConnection.setSourcePlaceholderName(null);
+                }
+            }
+        }
     }
 
     // moduleTypeVersionParameters
@@ -292,8 +375,19 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public void addModuleTypeVersionParameter(ModuleTypeVersionParameter moduleTypeVersionParameter) {
+        if (this.moduleTypeVersionParameters.containsKey(moduleTypeVersionParameter.getParameterName())) {
+            removeModuleTypeVersionParameter(moduleTypeVersionParameter.getParameterName());
+        }
         moduleTypeVersionParameter.setModuleTypeVersion(this);
         this.moduleTypeVersionParameters.put(moduleTypeVersionParameter.getParameterName(), moduleTypeVersionParameter);
+        
+        // add connections to the new targets (OUT/INOUT parameters)
+        if (isComposite() && !moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
+            ModuleTypeVersionParameterConnection parameterConnection = new ModuleTypeVersionParameterConnection();
+            parameterConnection.setTargetSubmodule(null);
+            parameterConnection.setTargetParameterName(moduleTypeVersionParameter.getParameterName());
+            addModuleTypeVersionParameterConnection(parameterConnection);
+        }
     }
 
     public void removeModuleTypeVersionParameter(ModuleTypeVersionParameter moduleTypeVersionParameter) {
@@ -302,6 +396,17 @@ public class ModuleTypeVersion implements Serializable {
 
     public void removeModuleTypeVersionParameter(String parameterName) {
         this.moduleTypeVersionParameters.remove(parameterName);
+        
+        if (isComposite()) {
+            // if the removed parameter is the target of a connection, remove the connection
+            removeModuleTypeVersionParameterConnection(parameterName);
+            // if the removed parameter is the source of a connection, set the connection source to null
+            for (ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersionParameterConnections.values()) {
+                if ((parameterConnection.getSourceSubmodule() == null) && parameterName.equals(parameterConnection.getSourceParameterName())) {
+                    parameterConnection.setSourceParameterName(null);
+                }
+            }
+        }
     }
 
     // moduleTypeVersionRevisions
@@ -343,6 +448,119 @@ public class ModuleTypeVersion implements Serializable {
         return revisionsReport.toString();
     }
     
+    // moduleTypeVersionSubmodules
+
+    public Map<String, ModuleTypeVersionSubmodule> getModuleTypeVersionSubmodules() {
+        return this.moduleTypeVersionSubmodules;
+    }
+
+    public void setModuleTypeVersionSubmodules(Map<String, ModuleTypeVersionSubmodule> moduleTypeVersionSubmodules) {
+        this.moduleTypeVersionSubmodules = moduleTypeVersionSubmodules;
+    }
+
+    public void addModuleTypeVersionSubmodule(ModuleTypeVersionSubmodule moduleTypeVersionSubmodule) {
+        if (this.moduleTypeVersionSubmodules.containsKey(moduleTypeVersionSubmodule.getName())) {
+            removeModuleTypeVersionSubmodule(moduleTypeVersionSubmodule.getName());
+        }
+        moduleTypeVersionSubmodule.setCompositeModuleTypeVersion(this);
+        this.moduleTypeVersionSubmodules.put(moduleTypeVersionSubmodule.getName(), moduleTypeVersionSubmodule);
+        
+        // add connections for the new internal targets (IN/INOUT datasets and parameters)
+        ModuleTypeVersion submoduleTypeVersion = moduleTypeVersionSubmodule.getModuleTypeVersion();
+        for (ModuleTypeVersionDataset dataset : submoduleTypeVersion.getModuleTypeVersionDatasets().values()) {
+            if (dataset.getMode().equals(ModuleTypeVersionDataset.OUT))
+                continue;
+            ModuleTypeVersionDatasetConnection datasetConnection = new ModuleTypeVersionDatasetConnection();
+            datasetConnection.setTargetSubmodule(moduleTypeVersionSubmodule);
+            datasetConnection.setTargetPlaceholderName(dataset.getPlaceholderName());
+            addModuleTypeVersionDatasetConnection(datasetConnection);
+        }
+        for (ModuleTypeVersionParameter parameter : submoduleTypeVersion.getModuleTypeVersionParameters().values()) {
+            if (parameter.getMode().equals(ModuleTypeVersionParameter.OUT))
+                continue;
+            ModuleTypeVersionParameterConnection parameterConnection = new ModuleTypeVersionParameterConnection();
+            parameterConnection.setTargetSubmodule(moduleTypeVersionSubmodule);
+            parameterConnection.setTargetParameterName(parameter.getParameterName());
+            addModuleTypeVersionParameterConnection(parameterConnection);
+        }
+    }
+
+    public void removeModuleTypeVersionSubmodule(ModuleTypeVersionSubmodule moduleTypeVersionSubmodule) {
+        removeModuleTypeVersionSubmodule(moduleTypeVersionSubmodule.getName());
+    }
+
+    public void removeModuleTypeVersionSubmodule(String name) {
+        this.moduleTypeVersionSubmodules.remove(name);
+        
+        // if the removed submodule is the target of a connection, remove the connection
+        // if the removed submodule is the source of a connection, set the connection source to null
+        List<String> deletedTargetNames = new ArrayList<String>();
+        for (ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersionDatasetConnections.values()) {
+            if ((datasetConnection.getTargetSubmodule() != null) && datasetConnection.getTargetSubmodule().getName().equals(name)) {
+                deletedTargetNames.add(datasetConnection.getTargetName());
+            } else if ((datasetConnection.getSourceSubmodule() != null) && datasetConnection.getSourceSubmodule().getName().equals(name)) {
+                datasetConnection.setSourceSubmodule(null);
+                datasetConnection.setSourcePlaceholderName(null);
+            }
+        }
+        for (String targetName : deletedTargetNames) {
+            moduleTypeVersionDatasetConnections.remove(targetName);
+        }
+        
+        // if the removed submodule is the target of a connection, remove the connection
+        // if the removed submodule is the source of a connection, set the connection source to null
+        deletedTargetNames.clear();
+        for (ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersionParameterConnections.values()) {
+            if ((parameterConnection.getTargetSubmodule() != null) && parameterConnection.getTargetSubmodule().getName().equals(name)) {
+                deletedTargetNames.add(parameterConnection.getTargetName());
+            } else if ((parameterConnection.getSourceSubmodule() != null) && parameterConnection.getSourceSubmodule().getName().equals(name)) {
+                parameterConnection.setSourceSubmodule(null);
+                parameterConnection.setSourceParameterName(null);
+            }
+        }
+        for (String targetName : deletedTargetNames) {
+            moduleTypeVersionParameterConnections.remove(targetName);
+        }
+    }
+
+    // moduleTypeVersionDatasetConnections
+
+    public Map<String, ModuleTypeVersionDatasetConnection> getModuleTypeVersionDatasetConnections() {
+        return this.moduleTypeVersionDatasetConnections;
+    }
+
+    public void setModuleTypeVersionDatasetConnections(Map<String, ModuleTypeVersionDatasetConnection> moduleTypeVersionDatasetConnections) {
+        this.moduleTypeVersionDatasetConnections = moduleTypeVersionDatasetConnections;
+    }
+
+    private void addModuleTypeVersionDatasetConnection(ModuleTypeVersionDatasetConnection moduleTypeVersionDatasetConnection) {
+        moduleTypeVersionDatasetConnection.setCompositeModuleTypeVersion(this);
+        this.moduleTypeVersionDatasetConnections.put(moduleTypeVersionDatasetConnection.getTargetName(), moduleTypeVersionDatasetConnection);
+    }
+
+    public void removeModuleTypeVersionDatasetConnection(String targetName) {
+        this.moduleTypeVersionDatasetConnections.remove(targetName);
+    }
+    
+    // moduleTypeVersionParameterConnections
+
+    public Map<String, ModuleTypeVersionParameterConnection> getModuleTypeVersionParameterConnections() {
+        return this.moduleTypeVersionParameterConnections;
+    }
+
+    public void setModuleTypeVersionParameterConnections(Map<String, ModuleTypeVersionParameterConnection> moduleTypeVersionParameterConnections) {
+        this.moduleTypeVersionParameterConnections = moduleTypeVersionParameterConnections;
+    }
+
+    private void addModuleTypeVersionParameterConnection(ModuleTypeVersionParameterConnection moduleTypeVersionParameterConnection) {
+        moduleTypeVersionParameterConnection.setCompositeModuleTypeVersion(this);
+        this.moduleTypeVersionParameterConnections.put(moduleTypeVersionParameterConnection.getTargetName(), moduleTypeVersionParameterConnection);
+    }
+
+    public void removeModuleTypeVersionParameterConnection(String targetName) {
+        this.moduleTypeVersionParameterConnections.remove(targetName);
+    }
+    
     // standard methods
 
     public String toString() {
@@ -354,10 +572,13 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public boolean equals(Object other) {
-        return (other instanceof ModuleTypeVersion && ((ModuleTypeVersion) other).getId() == id);
+        if (this == other) return true;
+        if (!(other instanceof ModuleTypeVersion)) return false;
+        return ((ModuleTypeVersion) other).getId() == id;
     }
 
     public int compareTo(ModuleTypeVersion o) {
-        return name.compareTo(o.getName());
+        if (this == o) return 0;
+        return new Integer(id).compareTo(o.getId());
     }
 }

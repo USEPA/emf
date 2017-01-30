@@ -21,6 +21,7 @@
             column="creator"
             not-null="false"/>
         <property name="defaultVersion" column="default_version" type="integer" not-null="false"/>
+        <property name="isComposite" column="is_composite" type="boolean" not-null="true"/>
         <map name="moduleTypeVersions" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_type_id"/>
             <map-key column="version" type="integer"/>
@@ -62,6 +63,21 @@
             <list-index column="revision"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision"/>
         </list>
+        <map name="moduleTypeVersionSubmodules" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="composite_module_type_version_id"/>
+            <map-key column="name" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule"/>
+        </map>
+		<map name="moduleTypeVersionDatasetConnections" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="composite_module_type_version_id"/>
+            <map-key column="connection_name" type="string"/>
+		    <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection"/>
+		</map>
+		<map name="moduleTypeVersionParameterConnections" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="composite_module_type_version_id"/>
+            <map-key column="connection_name" type="string"/>
+		    <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection"/>
+		</map>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset" table="module_types_versions_datasets" schema="modules">
@@ -108,6 +124,60 @@
             name="creator" 
             class="gov.epa.emissions.commons.security.User"
             column="creator"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule" table="module_types_versions_submodules" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="compositeModuleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
+            <column name="composite_module_type_version_id" not-null="true" />
+        </many-to-one>
+        <property name="name" column="name" type="string" not-null="true" length="63"/>
+        <many-to-one 
+            name="moduleTypeVersion"
+            class="gov.epa.emissions.framework.services.module.ModuleTypeVersion"
+            column="module_type_version_id"
+            not-null="true"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection" table="module_types_versions_connections_datasets" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="compositeModuleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
+            <column name="composite_module_type_version_id" not-null="true" />
+        </many-to-one>
+        <property name="connectionName" column="connection_name" type="string" not-null="true" length="130"/>
+        <many-to-one name="sourceSubmodule" class="gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule" fetch="select">
+            <column name="source_submodule_id" not-null="false" />
+        </many-to-one>
+        <property name="sourcePlaceholderName" column="source_placeholder_name" type="string" not-null="false" length="63"/>
+        <many-to-one name="targetSubmodule" class="gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule" fetch="select">
+            <column name="target_submodule_id" not-null="false" />
+        </many-to-one>
+        <property name="targetPlaceholderName" column="target_placeholder_name" type="string" not-null="true" length="63"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection" table="module_types_versions_connections_parameters" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="compositeModuleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
+            <column name="composite_module_type_version_id" not-null="true" />
+        </many-to-one>
+        <property name="connectionName" column="connection_name" type="string" not-null="true" length="130"/>
+        <many-to-one name="sourceSubmodule" class="gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule" fetch="select">
+            <column name="source_submodule_id" not-null="false" />
+        </many-to-one>
+        <property name="sourceParameterName" column="source_parameter_name" type="string" not-null="false" length="63"/>
+        <many-to-one name="targetSubmodule" class="gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule" fetch="select">
+            <column name="target_submodule_id" not-null="false" />
+        </many-to-one>
+        <property name="targetParameterName" column="target_parameter_name" type="string" not-null="true" length="63"/>
+        <property name="description" column="description" type="text" not-null="false"/>
     </class>
 
 </hibernate-mapping>
