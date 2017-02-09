@@ -42,7 +42,45 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
     
     public boolean isValid(final StringBuilder error) {
         error.setLength(0);
-        // TODO implement
+        if (targetParameterName == null) {
+            error.append("Target parameter name is missing.");
+            return false;
+        }
+        if (targetSubmodule != null) {
+            // internal target
+            if (!targetSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().containsKey(targetParameterName)) {
+                error.append(String.format("Target parameter name %s is invalid.", getTargetName()));
+                return false;
+            }
+        } else if (!compositeModuleTypeVersion.getModuleTypeVersionParameters().containsKey(targetParameterName)) {
+            error.append(String.format("Target parameter name %s is invalid.", targetParameterName));
+            return false;
+        }
+ 
+        if (sourceParameterName == null) {
+            error.append("Source parameter name is missing.");
+            return false;
+        }
+        if (sourceSubmodule != null) {
+            // internal source
+            if (!sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().containsKey(sourceParameterName)) {
+                error.append(String.format("Source parameter name %s is invalid.", getSourceName()));
+                return false;
+            }
+        } else if (!compositeModuleTypeVersion.getModuleTypeVersionParameters().containsKey(sourceParameterName)) {
+            error.append(String.format("Source parameter name %s is invalid.", sourceParameterName));
+            return false;
+        }
+        
+        if (connectionName == null) {
+            error.append("Connection name is missing.");
+            return false;
+        }
+        if (!connectionName.equals(getTargetName())) {
+            error.append(String.format("Invalid parameter connection name (%s instead of %s).", connectionName, getTargetName()));
+            return false;
+        }
+ 
         return true;
     }
     

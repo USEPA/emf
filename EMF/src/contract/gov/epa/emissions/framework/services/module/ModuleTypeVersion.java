@@ -5,7 +5,9 @@ import gov.epa.emissions.commons.util.CustomDateFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Deque;
 import java.util.List;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class ModuleTypeVersion implements Serializable {
 
@@ -90,6 +93,30 @@ public class ModuleTypeVersion implements Serializable {
             ModuleTypeVersionSubmodule newModuleTypeVersionSubmodule = moduleTypeVersionSubmodule.deepCopy();
             newModuleTypeVersion.addModuleTypeVersionSubmodule(newModuleTypeVersionSubmodule);
         }
+        for(ModuleTypeVersionDatasetConnection moduleTypeVersionDatasetConnection : moduleTypeVersionDatasetConnections.values()) {
+            ModuleTypeVersionDatasetConnection newModuleTypeVersionDatasetConnection = moduleTypeVersionDatasetConnection.deepCopy();
+            ModuleTypeVersionSubmodule targetSubmodule = newModuleTypeVersionDatasetConnection.getTargetSubmodule();
+            if (targetSubmodule != null) {
+                newModuleTypeVersionDatasetConnection.setTargetSubmodule(newModuleTypeVersion.getModuleTypeVersionSubmodules().get(targetSubmodule.getName()));
+            }
+            ModuleTypeVersionSubmodule sourceSubmodule = newModuleTypeVersionDatasetConnection.getSourceSubmodule();
+            if (sourceSubmodule != null) {
+                newModuleTypeVersionDatasetConnection.setSourceSubmodule(newModuleTypeVersion.getModuleTypeVersionSubmodules().get(sourceSubmodule.getName()));
+            }
+            newModuleTypeVersion.addModuleTypeVersionDatasetConnection(newModuleTypeVersionDatasetConnection);
+        }
+        for(ModuleTypeVersionParameterConnection moduleTypeVersionParameterConnection : moduleTypeVersionParameterConnections.values()) {
+            ModuleTypeVersionParameterConnection newModuleTypeVersionParameterConnection = moduleTypeVersionParameterConnection.deepCopy();
+            ModuleTypeVersionSubmodule targetSubmodule = newModuleTypeVersionParameterConnection.getTargetSubmodule();
+            if (targetSubmodule != null) {
+                newModuleTypeVersionParameterConnection.setTargetSubmodule(newModuleTypeVersion.getModuleTypeVersionSubmodules().get(targetSubmodule.getName()));
+            }
+            ModuleTypeVersionSubmodule sourceSubmodule = newModuleTypeVersionParameterConnection.getSourceSubmodule();
+            if (sourceSubmodule != null) {
+                newModuleTypeVersionParameterConnection.setSourceSubmodule(newModuleTypeVersion.getModuleTypeVersionSubmodules().get(sourceSubmodule.getName()));
+            }
+            newModuleTypeVersion.addModuleTypeVersionParameterConnection(newModuleTypeVersionParameterConnection);
+        }
         
         return newModuleTypeVersion;
     }
@@ -163,18 +190,99 @@ public class ModuleTypeVersion implements Serializable {
         return true;
     }
     
+    private boolean hasCircularConnections(final StringBuilder error, Deque<ModuleTypeVersionSubmodule> submodules, Deque<String> connections) {
+        error.setLength(0);
+        ModuleTypeVersionSubmodule submodule = submodules.peek();
+        for(ModuleTypeVersionDatasetConnection nextConnection : moduleTypeVersionDatasetConnections.values()) {
+            if (!submodule.equals(nextConnection.getSourceSubmodule()))
+                continue;
+            ModuleTypeVersionSubmodule nextSubmodule = nextConnection.getTargetSubmodule();
+            if (nextSubmodule == null)
+                continue;
+            String nextConnectionText = String.format("[dataset] %s -> %s" , nextConnection.getSourceName(), nextConnection.getTargetName());
+            if (submodules.contains(nextSubmodule)) {
+                error.append("Circular connections detected: ");
+                Iterator<String> iterator = connections.descendingIterator();
+                while (iterator.hasNext())
+                    error.append(iterator.next() + ", ");
+                error.append(nextConnectionText + ".");
+                return true;
+            }
+            submodules.push(nextSubmodule);
+            connections.push(nextConnectionText);
+            if (hasCircularConnections(error, submodules, connections))
+                return true;
+            submodules.pop();
+            connections.pop();
+        }
+        for(ModuleTypeVersionParameterConnection nextConnection : moduleTypeVersionParameterConnections.values()) {
+            if (!submodule.equals(nextConnection.getSourceSubmodule()))
+                continue;
+            ModuleTypeVersionSubmodule nextSubmodule = nextConnection.getTargetSubmodule();
+            if (nextSubmodule == null)
+                continue;
+            String nextConnectionText = String.format("[parameter] %s -> %s" , nextConnection.getSourceName(), nextConnection.getTargetName());
+            if (submodules.contains(nextSubmodule)) {
+                error.append("Circular connections detected: ");
+                Iterator<String> iterator = connections.descendingIterator();
+                while (iterator.hasNext())
+                    error.append(iterator.next() + ", ");
+                error.append(nextConnectionText + ".");
+                return true;
+            }
+            submodules.push(nextSubmodule);
+            connections.push(nextConnectionText);
+            if (hasCircularConnections(error, submodules, connections))
+                return true;
+            submodules.pop();
+            connections.pop();
+        }
+        return false;
+    }
+
+    private boolean hasCircularConnections(final StringBuilder error) {
+        error.setLength(0);
+        Deque<ModuleTypeVersionSubmodule> submodules = new ArrayDeque<ModuleTypeVersionSubmodule>();
+        Deque<String> connections = new ArrayDeque<String>();
+        for(ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            submodules.push(submodule);
+            if (hasCircularConnections(error, submodules, connections))
+                return true;
+            submodules.pop();
+        }
+        return false;
+    }
+
     public boolean isValid(final StringBuilder error) {
         error.setLength(0);
 
-        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
-            if (!moduleTypeVersionDataset.isValid(error)) return false;
-        }
-
-        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values()) {
-            if (!moduleTypeVersionParameter.isValid(error)) return false;
-        }
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values())
+            if (!moduleTypeVersionDataset.isValid(error))
+                return false;
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values())
+            if (!moduleTypeVersionParameter.isValid(error))
+                return false;
         
-        if (!isValidAlgorithm(error)) return false;
+        if (isComposite()) {
+            for(ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : moduleTypeVersionSubmodules.values())
+                if (!moduleTypeVersionSubmodule.isValid(error))
+                    return false;
+            for(ModuleTypeVersionDatasetConnection moduleTypeVersionDatasetConnection : moduleTypeVersionDatasetConnections.values())
+                if (!moduleTypeVersionDatasetConnection.isValid(error))
+                    return false;
+            for(ModuleTypeVersionParameterConnection moduleTypeVersionParameterConnection : moduleTypeVersionParameterConnections.values())
+                if (!moduleTypeVersionParameterConnection.isValid(error))
+                    return false;
+            // TODO check that the list of connections matches the list of all internal and external targets
+            // TODO check that no connection target matches a composite module type input
+            // TODO check that no connection source matches a composite module type output
+            if (hasCircularConnections(error))
+                return false;
+            
+        } else {
+            if (!isValidAlgorithm(error))
+                return false;
+        }
         
         return true;
     }

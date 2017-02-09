@@ -53,10 +53,10 @@ public class ModuleTypeVersionSubmodule implements Serializable {
     
     public boolean isValid(final StringBuilder error) {
         error.setLength(0);
-        if (!isValidName(name, error)) return false;
-        if (!moduleTypeVersion.isValid(error)) {
+        if (!isValidName(name, error))
             return false;
-        }
+        if (!moduleTypeVersion.isValid(error))
+            return false;
         return true;
     }
     

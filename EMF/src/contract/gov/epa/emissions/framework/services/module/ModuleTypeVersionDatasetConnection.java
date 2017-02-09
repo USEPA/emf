@@ -41,7 +41,45 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
     
     public boolean isValid(final StringBuilder error) {
         error.setLength(0);
-        // TODO implement
+        if (targetPlaceholderName == null) {
+            error.append("Target placeholder name is missing.");
+            return false;
+        }
+        if (targetSubmodule != null) {
+            // internal target
+            if (!targetSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().containsKey(targetPlaceholderName)) {
+                error.append(String.format("Target placeholder name %s is invalid.", getTargetName()));
+                return false;
+            }
+        } else if (!compositeModuleTypeVersion.getModuleTypeVersionDatasets().containsKey(targetPlaceholderName)) {
+            error.append(String.format("Target placeholder name %s is invalid.", targetPlaceholderName));
+            return false;
+        }
+ 
+        if (sourcePlaceholderName == null) {
+            error.append("Source placeholder name is missing.");
+            return false;
+        }
+        if (sourceSubmodule != null) {
+            // internal source
+            if (!sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().containsKey(sourcePlaceholderName)) {
+                error.append(String.format("Source placeholder name %s is invalid.", getSourceName()));
+                return false;
+            }
+        } else if (!compositeModuleTypeVersion.getModuleTypeVersionDatasets().containsKey(sourcePlaceholderName)) {
+            error.append(String.format("Source placeholder name %s is invalid.", sourcePlaceholderName));
+            return false;
+        }
+ 
+        if (connectionName == null) {
+            error.append("Connection name is missing.");
+            return false;
+        }
+        if (!connectionName.equals(getTargetName())) {
+            error.append(String.format("Invalid dataset connection name (%s instead of %s).", connectionName, getTargetName()));
+            return false;
+        }
+        
         return true;
     }
     
