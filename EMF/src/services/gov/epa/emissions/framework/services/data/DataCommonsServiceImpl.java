@@ -34,6 +34,7 @@ import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.cost.controlStrategy.FileFormatFactory;
 import gov.epa.emissions.framework.services.editor.Revision;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
@@ -397,39 +398,39 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         List list = null;
 
         // check if dataset is an input dataset for some cases (via the cases.cases_caseinputs table)
-        list = session.createQuery(
-                "select DS.id from EmfDataset as DS " + "where (DS.datasetType.id = "
-                        + type.getId()+ ")").list();
+        list = session.createQuery("select DS.name from EmfDataset as DS where (DS.datasetType.id = " + type.getId() + ")").list();
 
         if (list != null && list.size() > 0) {
-            throw new EmfException("Dataset type \" " + type.getName()+ "\" is used by dataset " + list.get(0) );
+            StringBuilder message = new StringBuilder();
+            message.append("Dataset type \"" + type.getName()+ "\" is used by:\n");
+            int count = (list.size() <= 6) ? list.size() : 5;
+            for(int i = 0; i < count; i++) {
+                message.append("- dataset \"" + list.get(i) + "\"\n");
+            }
+            if (list.size() > count) message.append(String.format("(and %d more)\n", list.size() - count));
+            throw new EmfException(message.toString());
         }
     }
 
     private void checkIfUsedByModuleTypes(DatasetType type, Session session) throws EmfException {
         List list = null;
 
-        // check if dataset is an input dataset for some modules
-        list = session.createQuery("SELECT DISTINCT mt.name " +
-                                   "FROM emf.module_types_versions_datasets AS mtvd " +
-                                   "INNER JOIN emf.module_types_versions AS mtv ON mtvd.module_type_version_id = mtv.id " +
-                                   "INNER JOIN emf.module_types AS mt ON mtv.module_type_id = mt.id " +
-                                   "WHERE (mtvd.module_type_version_id = " + type.getId()+ ")").list();
+        // check if dataset type is is used by any module type
+        list = session.createQuery("FROM ModuleTypeVersionDataset AS mtvd WHERE (mtvd.datasetType.id = " + type.getId() + ")").list();
 
         if (list != null && list.size() > 0) {
             StringBuilder message = new StringBuilder();
-            message.append("Dataset type \"" + type.getName()+ "\" is used by ");
-            if (list.size() == 1) {
-                message.append("one module type (");
-            } else {
-                message.append(list.size() + " module types (");
+            message.append("Dataset type \"" + type.getName() + "\" is used by:\n");
+            int count = (list.size() <= 6) ? list.size() : 5;
+            for(int i = 0; i < count; i++) {
+                ModuleTypeVersionDataset mtvt = (ModuleTypeVersionDataset) list.get(i);
+                message.append(String.format("- module type \"%s\" version %d \"%s\" placeholder \"%s\"\n",
+                                             mtvt.getModuleTypeVersion().getModuleType().getName(),
+                                             mtvt.getModuleTypeVersion().getVersion(),
+                                             mtvt.getModuleTypeVersion().getName(),
+                                             mtvt.getPlaceholderName()));
             }
-            for(int i = 0; i < Math.min(list.size(), 3); i++) {
-                if (i > 0) message.append(", ");
-                message.append("\"" + list.get(i) + "\"");
-            }
-            if (list.size() > 3) message.append(", ...");
-            message.append(")");
+            if (list.size() > count) message.append(String.format("(and %d more)\n", list.size() - count));
             throw new EmfException(message.toString());
         }
     }
