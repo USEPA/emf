@@ -255,6 +255,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         // TODO should we clear the module history too?
         
+        if (oldModuleCopy.isComposite() != module.isComposite()) {
+            refreshTabbedPane();
+        }
+        
         isDirty = true;
     }
 
@@ -344,20 +348,35 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private JTabbedPane tabbedPane() {
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Summary", summaryPanel());
-        tabbedPane.addTab("Datasets", datasetsPanel());
-        tabbedPane.addTab("Parameters", parametersPanel());
-        if (moduleTypeVersion.isComposite()) {
-            tabbedPane.addTab("Submodules", submodulesPanel());
-            tabbedPane.addTab("Connections", connectionsPanel());
-            // tabbedPane.addTab("Flowchart", flowchartPanel());
-            tabbedPane.addTab("Internal Datasets", internalDatasetsPanel());
-            tabbedPane.addTab("Internal Parameters", internalParametersPanel());
-        } else {
-            tabbedPane.addTab("Algorithm", algorithmPanel());
-        }
-        tabbedPane.addTab("History", historyPanel());
+        summaryPanel = summaryPanel();
+        datasetsPanel = datasetsPanel();
+        parametersPanel = parametersPanel();
+        submodulesPanel = submodulesPanel();
+        connectionsPanel = connectionsPanel();
+        // flowchartPanel = flowchartPanel();
+        internalDatasetsPanel = internalDatasetsPanel();
+        internalParametersPanel = internalParametersPanel();
+        algorithmPanel = algorithmPanel();
+        historyPanel = historyPanel();
+        refreshTabbedPane();
         return tabbedPane;
+    }
+
+    private void refreshTabbedPane() {
+        tabbedPane.removeAll();
+        tabbedPane.addTab("Summary", summaryPanel);
+        tabbedPane.addTab("Datasets", datasetsPanel);
+        tabbedPane.addTab("Parameters", parametersPanel);
+        if (moduleTypeVersion.isComposite()) {
+            tabbedPane.addTab("Submodules", submodulesPanel);
+            tabbedPane.addTab("Connections", connectionsPanel);
+            // tabbedPane.addTab("Flowchart", flowchartPanel);
+            tabbedPane.addTab("Internal Datasets", internalDatasetsPanel);
+            tabbedPane.addTab("Internal Parameters", internalParametersPanel);
+        } else {
+            tabbedPane.addTab("Algorithm", algorithmPanel);
+        }
+        tabbedPane.addTab("History", historyPanel);
     }
 
     private JPanel summaryPanel() {
@@ -479,7 +498,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private JPanel algorithmPanel() {
         algorithmPanel = new JPanel(new BorderLayout());
-        algorithm = new TextArea("algorithm", moduleTypeVersion.getAlgorithm(), 60);
+        algorithm = new TextArea("algorithm", ((moduleTypeVersion.getAlgorithm() == null) ? "" : moduleTypeVersion.getAlgorithm()), 60);
         algorithm.setEditable(false);
         algorithm.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         ScrollableComponent scrollableAlgorithm = new ScrollableComponent(algorithm);
