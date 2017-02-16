@@ -31,9 +31,6 @@ public class ModuleDataset implements Serializable {
 
     private Boolean overwriteExisting;
 
-    public ModuleDataset() {
-    }
-    
     public ModuleDataset deepCopy(Module newModule) {
         ModuleDataset newModuleDataset = new ModuleDataset();
         newModuleDataset.setModule(newModule);
@@ -170,13 +167,17 @@ public class ModuleDataset implements Serializable {
         return false;
     }
     
-    public boolean isSimpleDatasetName() {
+    public static boolean isSimpleDatasetName(String datasetNamePattern) {
         if (datasetNamePattern == null)
             return false;
         String startPattern = "\\$\\{\\s*";
         String endPattern = "\\s*\\}";
         Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(datasetNamePattern);
         return !matcher.find();
+    }
+
+    public boolean isSimpleDatasetName() {
+        return isSimpleDatasetName(datasetNamePattern);
     }
 
     public EmfDataset getEmfDataset(DataService dataService) {
@@ -288,7 +289,7 @@ public class ModuleDataset implements Serializable {
     }
 
     public boolean equals(Object other) {
-        return (other instanceof ModuleDataset && ((ModuleDataset) other).getQualifiedName() == getQualifiedName());
+        return (other instanceof ModuleDataset && ((ModuleDataset) other).getQualifiedName().equals(getQualifiedName()));
     }
 
     public int compareTo(ModuleDataset o) {

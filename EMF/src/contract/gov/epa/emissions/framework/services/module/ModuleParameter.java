@@ -13,9 +13,6 @@ public class ModuleParameter implements Serializable {
 
     private String value;
 
-    public ModuleParameter() {
-    }
-    
     public ModuleParameter deepCopy(Module newModule) {
         ModuleParameter newModuleParameter = new ModuleParameter();
         newModuleParameter.setModule(newModule);
@@ -115,7 +112,7 @@ public class ModuleParameter implements Serializable {
     }
 
     public boolean equals(Object other) {
-        return (other instanceof ModuleParameter && ((ModuleParameter) other).getQualifiedName() == getQualifiedName());
+        return (other instanceof ModuleParameter && ((ModuleParameter) other).getQualifiedName().equals(getQualifiedName()));
     }
 
     public int compareTo(ModuleParameter o) {

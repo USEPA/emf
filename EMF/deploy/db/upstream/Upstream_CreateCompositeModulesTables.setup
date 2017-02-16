@@ -1,0 +1,55 @@
+﻿
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_internal_datasets
+
+-- DROP TABLE modules.modules_internal_datasets;
+
+CREATE TABLE modules.modules_internal_datasets
+(
+  id serial NOT NULL PRIMARY KEY,
+  composite_module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_path varchar, -- slash delimited list of submodule ids (at least one) and the placeholder name
+  placeholder_path_names varchar, -- slash delimited list of submodule names (at least one) and the placeholder name
+  module_type_version_dataset_id integer NOT NULL
+      REFERENCES modules.module_types_versions_datasets(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  keep boolean NOT NULL DEFAULT FALSE,
+  dataset_name_pattern character varying(255),
+  CONSTRAINT modules_internal_datasets_ukey UNIQUE (composite_module_id, placeholder_path)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_internal_datasets
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_internal_parameters
+
+-- DROP TABLE modules.modules_internal_parameters;
+
+CREATE TABLE modules.modules_internal_parameters
+(
+  id serial NOT NULL PRIMARY KEY,
+  composite_module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  parameter_path varchar, -- slash delimited list of submodule ids (at least one) and the parameter name
+  parameter_path_names varchar, -- slash delimited list of submodule names (at least one) and the parameter name
+  module_type_version_parameter_id integer NOT NULL
+      REFERENCES modules.module_types_versions_parameters(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  keep boolean NOT NULL DEFAULT FALSE,
+  CONSTRAINT modules_internal_parameters_ukey UNIQUE (composite_module_id, parameter_path)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_internal_parameters
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------

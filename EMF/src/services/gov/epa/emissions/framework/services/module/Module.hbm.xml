@@ -34,6 +34,16 @@
             <map-key column="parameter_name" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleParameter"/>
         </map>
+        <map name="moduleInternalDatasets" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="composite_module_id"/>
+            <map-key column="placeholder_path" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleInternalDataset"/>
+        </map>
+        <map name="moduleInternalParameters" cascade="all" inverse="true" lazy="false" fetch="select">
+            <key column="composite_module_id"/>
+            <map-key column="parameter_path" type="string"/>
+            <one-to-many class="gov.epa.emissions.framework.services.module.ModuleInternalParameter"/>
+        </map>
         <list name="moduleHistory" cascade="all" inverse="true" lazy="false" fetch="select">
             <key column="module_id"/>
             <list-index column="run_id" base="1"/>
@@ -65,6 +75,37 @@
         </many-to-one>
         <property name="parameterName" column="parameter_name" type="string" not-null="true" length="63"/>
         <property name="value" column="value" type="string" not-null="true" length="256"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleInternalDataset" table="modules_internal_datasets" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="compositeModule" class="gov.epa.emissions.framework.services.module.Module" fetch="select">
+            <column name="composite_module_id" not-null="true" />
+        </many-to-one>
+        <property name="placeholderPath" column="placeholder_path" type="string" not-null="true"/>
+        <property name="placeholderPathNames" column="placeholder_path_names" type="string" not-null="true"/>
+        <many-to-one name="moduleTypeVersionDataset" class="gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset" fetch="select">
+            <column name="module_type_version_dataset_id" not-null="true" />
+        </many-to-one>
+        <property name="keep" column="keep" type="boolean" not-null="true"/>
+        <property name="datasetNamePattern" column="dataset_name_pattern" type="string" not-null="false"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.ModuleInternalParameter" table="modules_internal_parameters" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="compositeModule" class="gov.epa.emissions.framework.services.module.Module" fetch="select">
+            <column name="composite_module_id" not-null="true" />
+        </many-to-one>
+        <property name="parameterPath" column="parameter_path" type="string" not-null="true"/>
+        <property name="parameterPathNames" column="parameter_path_names" type="string" not-null="true"/>
+        <many-to-one name="moduleTypeVersionParameter" class="gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter" fetch="select">
+            <column name="module_type_version_parameter_id" not-null="true" />
+        </many-to-one>
+        <property name="keep" column="keep" type="boolean" not-null="true"/>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.History" table="history" schema="modules">

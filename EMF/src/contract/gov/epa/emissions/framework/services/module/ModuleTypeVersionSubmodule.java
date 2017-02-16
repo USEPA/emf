@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,6 +61,14 @@ public class ModuleTypeVersionSubmodule implements Serializable {
         return true;
     }
     
+    public void computeInternalDatasets(Map<String, ModuleInternalDataset> internalDatasets, String placeholderPath, String placeholderPathNames, Module compositeModule) {
+        moduleTypeVersion.computeInternalDatasets(internalDatasets, placeholderPath, placeholderPathNames, compositeModule);        
+    }
+
+    public void computeInternalParameters(Map<String, ModuleInternalParameter> internalParameters, String parameterPath, String parameterPathNames, Module compositeModule) {
+        moduleTypeVersion.computeInternalParameters(internalParameters, parameterPath, parameterPathNames, compositeModule);        
+    }
+
     public int getId() {
         return id;
     }

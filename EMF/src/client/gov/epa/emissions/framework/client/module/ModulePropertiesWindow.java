@@ -23,17 +23,22 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
+import gov.epa.emissions.framework.services.module.ModuleInternalDataset;
+import gov.epa.emissions.framework.services.module.ModuleInternalParameter;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionConnectionsTableData;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionPresenter;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSubmodulesTableData;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 
 import java.awt.BorderLayout;
@@ -76,13 +81,9 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private JPanel layout;
     private SingleLineMessagePanel messagePanel;
     private JTabbedPane tabbedPane;
-    private JPanel summaryPanel;
-    private JPanel datasetsPanel;
-    private JPanel parametersPanel;
-    private JPanel algorithmPanel;
-    private JPanel historyPanel;
 
     // summary
+    private JPanel    summaryPanel;
     private Label     moduleTypeName;
     private Label     moduleTypeVersionNumber;
     private Button    selectModuleTypeVersion;
@@ -97,19 +98,47 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private Label     moduleIsFinal;
 
     // datasets
+    private JPanel datasetsPanel;
     private JPanel datasetsTablePanel;
     private SelectableSortFilterWrapper datasetsTable;
     private ModuleDatasetsTableData datasetsTableData;
 
     // parameters
+    private JPanel parametersPanel;
     private JPanel parametersTablePanel;
     private SelectableSortFilterWrapper parametersTable;
     private ModuleParametersTableData parametersTableData;
 
     // algorithm
+    private JPanel   algorithmPanel;
     private TextArea algorithm;
 
+    // submodules
+    private JPanel submodulesPanel;
+    private JPanel submodulesTablePanel;
+    private SelectableSortFilterWrapper submodulesTable;
+    private ModuleTypeVersionSubmodulesTableData submodulesTableData;
+
+    // connections
+    private JPanel connectionsPanel;
+    private JPanel connectionsTablePanel;
+    private SelectableSortFilterWrapper connectionsTable;
+    private ModuleTypeVersionConnectionsTableData connectionsTableData;
+
+    // internal datasets
+    private JPanel internalDatasetsPanel;
+    private JPanel internalDatasetsTablePanel;
+    private SelectableSortFilterWrapper internalDatasetsTable;
+    private ModuleInternalDatasetsTableData internalDatasetsTableData;
+
+    // internal parameters
+    private JPanel internalParametersPanel;
+    private JPanel internalParametersTablePanel;
+    private SelectableSortFilterWrapper internalParametersTable;
+    private ModuleInternalParametersTableData internalParametersTableData;
+
     // history
+    private JPanel historyPanel;
     private JPanel historyTablePanel;
     private SelectableSortFilterWrapper historyTable;
     private ModuleHistoryTableData historyTableData;
@@ -220,6 +249,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             module.addModuleParameter(moduleParameter);
         }
         
+        module.setModuleInternalDatasets(module.computeInternalDatasets());
+        
+        module.setModuleInternalParameters(module.computeInternalParameters());
+        
         // TODO should we clear the module history too?
         
         isDirty = true;
@@ -230,7 +263,15 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleTypeVersionNumber.setText(String.valueOf(moduleTypeVersion.getVersion()));
         refreshDatasets();
         refreshParameters();
-        algorithm.setText(moduleTypeVersion.getAlgorithm());
+        if (moduleTypeVersion.isComposite()) {
+            refreshSubmodules();
+            refreshConnections();
+            refreshInternalDatasets();
+            refreshInternalParameters();
+        } else {
+            algorithm.setText(moduleTypeVersion.getAlgorithm());
+        }
+        
         refreshHistory();
     }
     
@@ -253,7 +294,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
         refreshModuleTypeVersion();
         resetChanges();
-        isDirty = false;
     }
 
     private Action selectModuleTypeVersionAction() {
@@ -307,7 +347,15 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         tabbedPane.addTab("Summary", summaryPanel());
         tabbedPane.addTab("Datasets", datasetsPanel());
         tabbedPane.addTab("Parameters", parametersPanel());
-        tabbedPane.addTab("Algorithm", algorithmPanel());
+        if (moduleTypeVersion.isComposite()) {
+            tabbedPane.addTab("Submodules", submodulesPanel());
+            tabbedPane.addTab("Connections", connectionsPanel());
+            // tabbedPane.addTab("Flowchart", flowchartPanel());
+            tabbedPane.addTab("Internal Datasets", internalDatasetsPanel());
+            tabbedPane.addTab("Internal Parameters", internalParametersPanel());
+        } else {
+            tabbedPane.addTab("Algorithm", algorithmPanel());
+        }
         tabbedPane.addTab("History", historyPanel());
         return tabbedPane;
     }
@@ -403,6 +451,32 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         return parametersPanel;
     }
 
+    private JPanel internalDatasetsPanel() {
+        internalDatasetsTablePanel = new JPanel(new BorderLayout());
+        internalDatasetsTableData = new ModuleInternalDatasetsTableData(module.getModuleInternalDatasets(), session);
+        internalDatasetsTable = new SelectableSortFilterWrapper(parentConsole, internalDatasetsTableData, null);
+        internalDatasetsTablePanel.add(internalDatasetsTable);
+
+        internalDatasetsPanel = new JPanel(new BorderLayout());
+        internalDatasetsPanel.add(internalDatasetsTablePanel, BorderLayout.CENTER);
+        internalDatasetsPanel.add(internalDatasetsCrudPanel(), BorderLayout.SOUTH);
+
+        return internalDatasetsPanel;
+    }
+
+    private JPanel internalParametersPanel() {
+        internalParametersTablePanel = new JPanel(new BorderLayout());
+        internalParametersTableData = new ModuleInternalParametersTableData(module.getModuleInternalParameters());
+        internalParametersTable = new SelectableSortFilterWrapper(parentConsole, internalParametersTableData, null);
+        internalParametersTablePanel.add(internalParametersTable);
+
+        internalParametersPanel = new JPanel(new BorderLayout());
+        internalParametersPanel.add(internalParametersTablePanel, BorderLayout.CENTER);
+        internalParametersPanel.add(internalParametersCrudPanel(), BorderLayout.SOUTH);
+
+        return internalParametersPanel;
+    }
+
     private JPanel algorithmPanel() {
         algorithmPanel = new JPanel(new BorderLayout());
         algorithm = new TextArea("algorithm", moduleTypeVersion.getAlgorithm(), 60);
@@ -413,6 +487,30 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         algorithmPanel.add(scrollableAlgorithm);
 
         return algorithmPanel;
+    }
+
+    private JPanel submodulesPanel() {
+        submodulesTablePanel = new JPanel(new BorderLayout());
+        submodulesTableData = new ModuleTypeVersionSubmodulesTableData(moduleTypeVersion.getModuleTypeVersionSubmodules());
+        submodulesTable = new SelectableSortFilterWrapper(parentConsole, submodulesTableData, null);
+        submodulesTablePanel.add(submodulesTable);
+
+        submodulesPanel = new JPanel(new BorderLayout());
+        submodulesPanel.add(submodulesTablePanel, BorderLayout.CENTER);
+
+        return submodulesPanel;
+    }
+
+    private JPanel connectionsPanel() {
+        connectionsTablePanel = new JPanel(new BorderLayout());
+        connectionsTableData = new ModuleTypeVersionConnectionsTableData(moduleTypeVersion);
+        connectionsTable = new SelectableSortFilterWrapper(parentConsole, connectionsTableData, null);
+        connectionsTablePanel.add(connectionsTable);
+
+        connectionsPanel = new JPanel(new BorderLayout());
+        connectionsPanel.add(connectionsTablePanel, BorderLayout.CENTER);
+
+        return connectionsPanel;
     }
 
     private JPanel historyPanel() {
@@ -464,6 +562,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         return panel;
     }
 
+    //-----------------------------------------------------------------
+    
     private JPanel datasetsCrudPanel() {
         String message = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
@@ -633,9 +733,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshDatasets() {
         datasetsTableData = new ModuleDatasetsTableData(module.getModuleDatasets(), session);
         datasetsTable.refresh(datasetsTableData);
-        isDirty = true;
     }
 
+    //-----------------------------------------------------------------
+    
     private JPanel parametersCrudPanel() {
         String message = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
@@ -689,9 +790,237 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshParameters() {
         parametersTableData = new ModuleParametersTableData(module.getModuleParameters());
         parametersTable.refresh(parametersTableData);
-        isDirty = true;
     }
 
+    //-----------------------------------------------------------------
+    
+    private void refreshSubmodules() {
+        submodulesTableData = new ModuleTypeVersionSubmodulesTableData(moduleTypeVersion.getModuleTypeVersionSubmodules());
+        submodulesTable.refresh(submodulesTableData);
+    }
+
+    private void refreshConnections() {
+        connectionsTableData = new ModuleTypeVersionConnectionsTableData(moduleTypeVersion);
+        connectionsTable.refresh(connectionsTableData);
+    }
+    
+    //-----------------------------------------------------------------
+    
+    private JPanel internalDatasetsCrudPanel() {
+
+        Action keepAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                keepInternalDatasets();
+            }
+        };
+        Button keepButton = new Button("Keep", keepAction);
+        keepButton.setMnemonic('K');
+
+        Action dontKeepAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                dontKeepInternalDatasets();
+            }
+        };
+        Button dontKeepButton = new Button("Don't Keep", dontKeepAction);
+        dontKeepButton.setMnemonic('D');
+
+        Action setInternalDatasetNameAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                setInternalDatasetName();
+            }
+        };
+        Button setInternalDatasetNameButton = new Button("Set Dataset Name", setInternalDatasetNameAction);
+        setInternalDatasetNameButton.setMnemonic('N');
+
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(keepButton);
+        crudPanel.add(dontKeepButton);
+        crudPanel.add(setInternalDatasetNameButton);
+        if (viewMode == ViewMode.VIEW) {
+            keepButton.setEnabled(false);
+            dontKeepButton.setEnabled(false);
+            setInternalDatasetNameButton.setEnabled(false);
+        }
+
+        return crudPanel;
+    }
+
+    private List selectedInternalDatasets() {
+        return internalDatasetsTable.selected();
+    }
+
+    public void refreshInternalDatasets() {
+        internalDatasetsTableData = new ModuleInternalDatasetsTableData(module.getModuleInternalDatasets(), session);
+        internalDatasetsTable.refresh(internalDatasetsTableData);
+    }
+
+    private void keepInternalDatasets() {
+        List selected = selectedInternalDatasets();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more internal datasets");
+            return;
+        }   
+
+        boolean mustRefresh = false;
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleInternalDataset moduleInternalDataset = (ModuleInternalDataset) iter.next();
+            if (moduleInternalDataset.getKeep() == false) {
+                moduleInternalDataset.setKeep(true);
+                mustRefresh = true;
+            }
+        }
+        
+        if (mustRefresh) {
+            refreshInternalDatasets();
+        }
+    }
+
+    private void dontKeepInternalDatasets() {
+        List selected = selectedInternalDatasets();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more internal datasets");
+            return;
+        }   
+
+        boolean mustRefresh = false;
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleInternalDataset moduleInternalDataset = (ModuleInternalDataset) iter.next();
+            if (moduleInternalDataset.getKeep() == true) {
+                moduleInternalDataset.setKeep(false);
+                mustRefresh = true;
+            }
+        }
+        
+        if (mustRefresh) {
+            refreshInternalDatasets();
+        }
+    }
+
+    public String getDatasetNamePattern(String initialNamePattern) {
+        ModuleDatasetNamePatternDialog selectionView = new ModuleDatasetNamePatternDialog(parentConsole, initialNamePattern);
+        ModuleDatasetNamePatternPresenter selectionPresenter = new ModuleDatasetNamePatternPresenter(selectionView, session);
+        try {
+            selectionPresenter.display();
+        } catch (Exception e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
+        if (selectionView.isOK()) {
+            return selectionView.getDatasetNamePattern();
+        }
+        return null;
+    }
+    
+    private void setInternalDatasetName() {
+        List selected = selectedInternalDatasets();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more internal datasets");
+            return;
+        }   
+
+        boolean mustRefresh = false;
+        ModuleInternalDataset moduleInternalDataset = (ModuleInternalDataset)selected.get(0);
+        String datasetNamePattern = getDatasetNamePattern(moduleInternalDataset.getDatasetNamePattern());
+        if (datasetNamePattern == null) return;
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            moduleInternalDataset = (ModuleInternalDataset) iter.next();
+            if (!moduleInternalDataset.getDatasetNamePattern().equals(datasetNamePattern)) {
+                moduleInternalDataset.setDatasetNamePattern(datasetNamePattern);
+                mustRefresh = true;
+            }
+        }
+        
+        if (mustRefresh) {
+            refreshInternalDatasets();
+        }
+    }
+
+    //-----------------------------------------------------------------
+    
+    private JPanel internalParametersCrudPanel() {
+
+        Action keepAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                keepInternalParameters();
+            }
+        };
+        Button keepButton = new Button("Keep", keepAction);
+        keepButton.setMnemonic('K');
+
+        Action dontKeepAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                dontKeepInternalParameters();
+            }
+        };
+        Button dontKeepButton = new Button("Don't Keep", dontKeepAction);
+        dontKeepButton.setMnemonic('D');
+
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(keepButton);
+        crudPanel.add(dontKeepButton);
+        if (viewMode == ViewMode.VIEW) {
+            keepButton.setEnabled(false);
+            dontKeepButton.setEnabled(false);
+        }
+
+        return crudPanel;
+    }
+
+    private List selectedInternalParameters() {
+        return internalParametersTable.selected();
+    }
+
+    public void refreshInternalParameters() {
+        internalParametersTableData = new ModuleInternalParametersTableData(module.getModuleInternalParameters());
+        internalParametersTable.refresh(internalParametersTableData);
+    }
+
+    private void keepInternalParameters() {
+        List selected = selectedInternalParameters();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more internal datasets");
+            return;
+        }   
+
+        boolean mustRefresh = false;
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleInternalParameter moduleInternalParameter = (ModuleInternalParameter) iter.next();
+            if (moduleInternalParameter.getKeep() == false) {
+                moduleInternalParameter.setKeep(true);
+                mustRefresh = true;
+            }
+        }
+        
+        if (mustRefresh) {
+            refreshInternalParameters();
+        }
+    }
+
+    private void dontKeepInternalParameters() {
+        List selected = selectedInternalParameters();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more internal datasets");
+            return;
+        }   
+
+        boolean mustRefresh = false;
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleInternalParameter moduleInternalParameter = (ModuleInternalParameter) iter.next();
+            if (moduleInternalParameter.getKeep() == true) {
+                moduleInternalParameter.setKeep(false);
+                mustRefresh = true;
+            }
+        }
+        
+        if (mustRefresh) {
+            refreshInternalParameters();
+        }
+    }
+
+    //-----------------------------------------------------------------
+    
     private JPanel historyCrudPanel() {
         String message = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
@@ -739,7 +1068,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         historyTableData = new ModuleHistoryTableData(module.getModuleHistory());
         historyTable.refresh(historyTableData);
         viewButton.setEnabled(!historyTableData.rows().isEmpty());
-        isDirty = true;
     }
 
     private void clear() {

@@ -35,11 +35,17 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     private Map<String, ModuleParameter> moduleParameters;
 
+    private Map<String, ModuleInternalDataset> moduleInternalDatasets;
+
+    private Map<String, ModuleInternalParameter> moduleInternalParameters;
+
     private List<History> moduleHistory;
 
     public Module() {
         moduleDatasets = new HashMap<String, ModuleDataset>();
         moduleParameters = new HashMap<String, ModuleParameter>();
+        moduleInternalDatasets = new HashMap<String, ModuleInternalDataset>();
+        moduleInternalParameters = new HashMap<String, ModuleInternalParameter>();
         moduleHistory = new ArrayList<History>();
         lock = new Mutex();
     }
@@ -71,6 +77,12 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         for(ModuleParameter moduleParameter : moduleParameters.values()) {
             newModule.addModuleParameter(moduleParameter.deepCopy(newModule));
         }
+        for(ModuleInternalDataset moduleInternalDataset : moduleInternalDatasets.values()) {
+            newModule.addModuleInternalDataset(moduleInternalDataset.deepCopy(newModule));
+        }
+        for(ModuleInternalParameter moduleInternalParameter : moduleInternalParameters.values()) {
+            newModule.addModuleInternalParameter(moduleInternalParameter.deepCopy(newModule));
+        }
         return newModule;
     }
 
@@ -85,6 +97,14 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
         for(ModuleParameter moduleParameter : moduleParameters.values()) {
             if (!moduleParameter.isValid(error)) return false;
+        }
+        
+        for(ModuleInternalDataset moduleInternalDataset : moduleInternalDatasets.values()) {
+            if (!moduleInternalDataset.isValid(error)) return false;
+        }
+
+        for(ModuleInternalParameter moduleInternalParameter : moduleInternalParameters.values()) {
+            if (!moduleInternalParameter.isValid(error)) return false;
         }
         
         return true;
@@ -161,6 +181,11 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
             updated = true;
         }
         
+        // TODO handle new or modified internal datasets
+        // TODO handle removed internal datasets
+        // TODO handle new or modified internal parameters
+        // TODO handle removed internal parameters
+        
         if (updated) {
             setLastModifiedDate(new Date());
         }
@@ -236,6 +261,10 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         }
         
         return updated;
+    }
+    
+    public boolean isComposite() {
+        return moduleTypeVersion.isComposite();
     }
     
     public int getId() {
@@ -382,6 +411,68 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     public void clearModuleParameters() {
         this.moduleParameters.clear();
+    }
+
+    // moduleInternalDatasets
+
+    public Map<String, ModuleInternalDataset> computeInternalDatasets() {
+        return moduleTypeVersion.computeInternalDatasets(this);
+    }
+
+    public Map<String, ModuleInternalDataset> getModuleInternalDatasets() {
+        return this.moduleInternalDatasets;
+    }
+
+    public void setModuleInternalDatasets(Map<String, ModuleInternalDataset> moduleInternalDatasets) {
+        this.moduleInternalDatasets = moduleInternalDatasets;
+    }
+
+    public void addModuleInternalDataset(ModuleInternalDataset moduleInternalDataset) {
+        moduleInternalDataset.setCompositeModule(this);
+        this.moduleInternalDatasets.put(moduleInternalDataset.getPlaceholderPath(), moduleInternalDataset);
+    }
+
+    public void removeModuleInternalDataset(ModuleInternalDataset moduleInternalDataset) {
+        removeModuleInternalDataset(moduleInternalDataset.getPlaceholderPath());
+    }
+
+    public void removeModuleInternalDataset(String placeholderPath) {
+        this.moduleInternalDatasets.remove(placeholderPath);
+    }
+
+    public void clearModuleInternalDatasets() {
+        this.moduleInternalDatasets.clear();
+    }
+
+    // moduleInternalParameters
+
+    public Map<String, ModuleInternalParameter> computeInternalParameters() {
+        return moduleTypeVersion.computeInternalParameters(this);
+    }
+
+    public Map<String, ModuleInternalParameter> getModuleInternalParameters() {
+        return this.moduleInternalParameters;
+    }
+
+    public void setModuleInternalParameters(Map<String, ModuleInternalParameter> moduleInternalParameters) {
+        this.moduleInternalParameters = moduleInternalParameters;
+    }
+
+    public void addModuleInternalParameter(ModuleInternalParameter moduleInternalParameter) {
+        moduleInternalParameter.setCompositeModule(this);
+        this.moduleInternalParameters.put(moduleInternalParameter.getParameterPath(), moduleInternalParameter);
+    }
+
+    public void removeModuleInternalParameter(ModuleInternalParameter moduleInternalParameter) {
+        removeModuleInternalParameter(moduleInternalParameter.getParameterPath());
+    }
+
+    public void removeModuleInternalParameter(String placeholderPath) {
+        this.moduleInternalParameters.remove(placeholderPath);
+    }
+
+    public void clearModuleInternalParameters() {
+        this.moduleInternalParameters.clear();
     }
 
     // moduleHistory

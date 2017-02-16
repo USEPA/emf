@@ -335,6 +335,57 @@ public class ModuleTypeVersion implements Serializable {
         return endpoints;
     }
     
+    public Map<String, ModuleInternalDataset> computeInternalDatasets(Module compositeModule) {
+        Map<String, ModuleInternalDataset> internalDatasets = new HashMap<String, ModuleInternalDataset>();
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            submodule.computeInternalDatasets(internalDatasets, "" + submodule.getId(), submodule.getName(), compositeModule);
+        }
+        return internalDatasets;
+    }
+
+    public void computeInternalDatasets(Map<String, ModuleInternalDataset> internalDatasets, String placeholderPath, String placeholderPathNames, Module compositeModule) {
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
+            if (moduleTypeVersionDataset.isModeIN())
+                continue;
+            ModuleInternalDataset internalDataset = new ModuleInternalDataset();
+            internalDataset.setCompositeModule(compositeModule);
+            internalDataset.setPlaceholderPath(placeholderPath + "/" + moduleTypeVersionDataset.getPlaceholderName());
+            internalDataset.setPlaceholderPathNames(placeholderPathNames + " / " + moduleTypeVersionDataset.getPlaceholderName());
+            internalDataset.setModuleTypeVersionDataset(moduleTypeVersionDataset);
+            internalDataset.setKeep(false);
+            internalDataset.setDatasetNamePattern("");
+            internalDatasets.put(internalDataset.getPlaceholderPath(), internalDataset);
+        }
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            submodule.computeInternalDatasets(internalDatasets, placeholderPath + "/" + submodule.getId(), placeholderPathNames + " / " + submodule.getName(), compositeModule);
+        }
+    }
+
+    public Map<String, ModuleInternalParameter> computeInternalParameters(Module compositeModule) {
+        Map<String, ModuleInternalParameter> internalParameters = new HashMap<String, ModuleInternalParameter>();
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            submodule.computeInternalParameters(internalParameters, "" + submodule.getId(), submodule.getName(), compositeModule);
+        }
+        return internalParameters;
+    }
+
+    public void computeInternalParameters(Map<String, ModuleInternalParameter> internalParameters, String parameterPath, String parameterPathNames, Module compositeModule) {
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values()) {
+            if (moduleTypeVersionParameter.isModeIN())
+                continue;
+            ModuleInternalParameter internalParameter = new ModuleInternalParameter();
+            internalParameter.setCompositeModule(compositeModule);
+            internalParameter.setParameterPath(parameterPath + "/" + moduleTypeVersionParameter.getParameterName());
+            internalParameter.setParameterPathNames(parameterPathNames + " / " + moduleTypeVersionParameter.getParameterName());
+            internalParameter.setModuleTypeVersionParameter(moduleTypeVersionParameter);
+            internalParameter.setKeep(false);
+            internalParameters.put(internalParameter.getParameterPath(), internalParameter);
+        }
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            submodule.computeInternalParameters(internalParameters, parameterPath + "/" + submodule.getId(), parameterPathNames + " / " + submodule.getName(), compositeModule);
+        }
+    }
+
     public int getId() {
         return id;
     }

@@ -2,6 +2,8 @@
 DROP TABLE modules.history_datasets;
 DROP TABLE modules.history;
 
+DROP TABLE modules.modules_internal_datasets;
+DROP TABLE modules.modules_internal_parameters;
 DROP TABLE modules.modules_parameters;
 DROP TABLE modules.modules_datasets;
 DROP TABLE modules.modules;

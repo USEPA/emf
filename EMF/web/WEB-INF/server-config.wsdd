@@ -309,6 +309,14 @@
 		qname="ns1:ModuleParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleInternalDataset"
+		qname="ns1:ModuleInternalDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleInternalParameter"
+		qname="ns1:ModuleInternalParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.Module"
 		qname="ns1:Module" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
