@@ -57,13 +57,13 @@ public class DatasetVersion {
 
         DatasetVersion otherDataset = (DatasetVersion) other;
 
-        return (this.getDataset().getId() == otherDataset.getDataset().getId()
+        return (this.getDataset() != null && otherDataset != null && this.getDataset().getId() == otherDataset.getDataset().getId()
 //                && this.getVersion().getId() == otherDataset.getVersion().getId()
                 );
     }
 
     public String toString() {
-        return this.getDataset().getName() + " [" + this.getVersion().getVersion() + " (" + this.getVersion().getName() + ")" + "]";
+        return (this.getDataset() != null ? this.getDataset().getName() : datasetName) + " [" + (this.getVersion() != null ? this.getVersion().getVersion() + " (" + this.getVersion().getName() + ")" : datasetVersion) + "]";
     }
     
 }

@@ -30,14 +30,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 public class EditableDatasetTypeWindow extends DisposableInteralFrame implements EditableDatasetTypeView {
@@ -115,9 +108,13 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
         descScrollableTextArea.setMinimumSize(new Dimension(80, 50));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, uPanel);
-        
+
+        sortOrder = new TextField("sortOrder", type.getDefaultSortOrder(), 40);
+        addChangeable(sortOrder);
+        layoutGenerator.addLabelWidgetPair("Default Sort Order:", sortOrder, uPanel);
+
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(uPanel, 2, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(uPanel, 3, 2, // rows, cols
                 5, 0, // initialX, initialY
                 10, 10);// xPad, yPad
         
@@ -131,35 +128,28 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         creator.add(new JLabel("Creation Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(cDate) + spaces));
         creator.add(new JLabel("Last Modified Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(mDate)));
         //layoutGenerator.addLabelWidgetPair("", creator, uPanel);
-        
-        JPanel lPanel = new JPanel(new SpringLayout());
-        SpringLayoutGenerator layoutGenerator2 = new SpringLayoutGenerator();
 
         fileFormat = getFileFormat(type);
-        if (fileFormat == null){
+
+        JPanel fileFormatPanel = new JPanel(new BorderLayout());
+        fileFormatPanel.setBorder(BorderFactory.createTitledBorder("File Format"));
+
+        //add file format table, if applicable
+        if (fileFormat !=null) {
+            fileFormat.setRowHeight(16);
+            fileFormatPanel.add(new JScrollPane(fileFormat), BorderLayout.CENTER);
+        }else {
             TextField fileFomatTextArea =new TextField(""," No file format for view.  ",40);
             fileFomatTextArea.setEditable(false);
-            layoutGenerator2.addLabelWidgetPair("File Format:", fileFomatTextArea, lPanel);
-        }else{   
-            ScrollableComponent fileFomatTextArea = new ScrollableComponent(fileFormat);
-            fileFomatTextArea.setMinimumSize(new Dimension(80, 50));
-            layoutGenerator2.addLabelWidgetPair("File Format:", fileFomatTextArea, lPanel);
+            fileFormatPanel.add(new JScrollPane(fileFomatTextArea), BorderLayout.CENTER);
         }
-        sortOrder = new TextField("sortOrder", type.getDefaultSortOrder(), 40);
-        addChangeable(sortOrder);
-        layoutGenerator2.addLabelWidgetPair("Default Sort Order:", sortOrder, lPanel);
-
-        // Lay out the panel.
-        layoutGenerator2.makeCompactGrid(lPanel, 2, 2, // rows, cols
-                5, 0, // initialX, initialY
-                10, 10);// xPad, yPad
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(uPanel);
         panel.add(creator);
         panel.add(new JLabel("  "));
-        panel.add(lPanel);
+        panel.add(fileFormatPanel);
         
         return panel;
     }
@@ -197,7 +187,7 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
     private JPanel createKeywordsPanel(DatasetType type, Keyword[] keywords) {
         keywordsTableData = new EditableKeyValueTableData(type.getKeyVals(), new Keywords(keywords));
         keywordsPanel = new DatasetTypeKeywordsPanel(keywordsTableData, keywords, this, parent);
-        keywordsPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        keywordsPanel.setBorder(BorderFactory.createTitledBorder("Keywords"));
         keywordsPanel.setMinimumSize(new Dimension(80, 100));
         return keywordsPanel;
     }

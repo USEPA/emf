@@ -10,6 +10,7 @@ import gov.epa.emissions.commons.data.SourceGroup;
 import gov.epa.emissions.commons.data.UserFeature;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.intendeduse.IntendedUse;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
@@ -184,6 +185,10 @@ public class DataCommonsDAO {
 
     public Revision updateRevision(Revision revision, Session session) throws EmfException {
         return datasetDAO.update(revision, session);
+    }
+
+    public Version getVersion(int datasetId, int version, Session session) throws EmfException {
+        return datasetDAO.getVersion(session, datasetId, version);
     }
 
     public DatasetType updateDatasetType(DatasetType type, Session session) throws EmfException {
@@ -379,15 +384,15 @@ public class DataCommonsDAO {
         return hibernateFacade.getAll(RegionType.class, Order.asc("name"), session);
     }
     
-    public List getRevisions(int datasetId, Session session) {
+    public List<Revision> getRevisions(int datasetId, Session session) {
         return session.createCriteria(Revision.class).add(Restrictions.eq("datasetId", new Integer(datasetId))).list();
     }
 
-    public List getDatasetNotes(int datasetId, Session session) {
+    public List<DatasetNote> getDatasetNotes(int datasetId, Session session) {
         return session.createCriteria(DatasetNote.class).add(Restrictions.eq("datasetId", new Integer(datasetId))).list();
     }
     
-    public List getNotes(Session session, String nameContains) {
+    public List<Note> getNotes(Session session, String nameContains) {
         if (nameContains.trim().equals(""))
             return session
             .createQuery(
