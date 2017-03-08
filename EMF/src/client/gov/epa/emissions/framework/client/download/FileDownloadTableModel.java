@@ -24,11 +24,15 @@ public class FileDownloadTableModel extends AbstractTableModel {
     private List rows;
 
     public FileDownloadTableModel() {
-        this.header = new TableHeader(new String[] { "Downloads" });
+        setHeader(new String[] { "Downloads" });
         this.fileDownloadList = new ArrayList();
 
         this.rows = new ArrayList();
      }
+
+    public void setHeader(String[] headerLabels ) {
+        this.header = new TableHeader(headerLabels);
+    }
 
     public int getRowCount() {
         return rows.size();
@@ -40,6 +44,10 @@ public class FileDownloadTableModel extends AbstractTableModel {
 
     public String getColumnName(int i) {
         return header.columnName(i);
+    }
+
+    public List<FileDownload> getFileDownloads() {
+        return fileDownloadList;
     }
 
     public Object getSource(int row) {

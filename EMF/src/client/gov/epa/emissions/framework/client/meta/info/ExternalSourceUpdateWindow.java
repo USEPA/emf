@@ -179,7 +179,7 @@ public class ExternalSourceUpdateWindow extends JDialog {
     private void selectFolder() {
         EmfFileInfo initDir = new EmfFileInfo(folder.getText(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(service));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(service));
         chooser.setTitle("Select a folder containing the external files for the dataset");
         int option = chooser.showDialog(parentConsole, "Select a folder");
 

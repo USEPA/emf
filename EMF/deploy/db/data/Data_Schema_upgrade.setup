@@ -2050,3 +2050,7 @@ ALTER TABLE emf.properties
 insert into emf.properties (name, value)
 values ('postgres-backup-dir-for-emissions-schema', '/backups/EMF/emissions_schema/');
 
+-- 03/07/2017 - adding new upload file capability
+insert into emf.properties (name, value)
+values ('MAX_FILE_UPLOAD_SIZE', '100');	-- stored as MB not bytes
+

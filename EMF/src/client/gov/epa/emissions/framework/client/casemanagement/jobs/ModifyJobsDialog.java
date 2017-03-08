@@ -186,7 +186,7 @@ public class ModifyJobsDialog extends Dialog implements ManageChangeables {
     private void selectFolder(JTextField dir, String title) {
         EmfFileInfo initDir = new EmfFileInfo(dir.getText(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
+        EmfFileChooser chooser = new EmfFileChooser(parent.getSession(), initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle(title);
         chooser.setDirectoryAndFileMode();
         int option = chooser.showDialog(parent, "Select an executable file");

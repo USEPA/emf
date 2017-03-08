@@ -156,7 +156,7 @@ public class ImportCasePanel extends JPanel {
     private EmfFileInfo[] getSelectedFiles() {
         EmfFileInfo initDir = new EmfFileInfo(folder.getText(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(service));
+        EmfFileChooser chooser = new EmfFileChooser(parent.getSession(), initDir, new EmfFileSystemView(service));
         chooser.setTitle("Select case files to import");
         chooser.setDirectoryAndFileMode();
 

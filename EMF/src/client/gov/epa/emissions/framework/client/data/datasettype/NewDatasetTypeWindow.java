@@ -245,7 +245,7 @@ public class NewDatasetTypeWindow extends DisposableInteralFrame implements NewD
     private void selectFile() {
         EmfFileInfo initDir = new EmfFileInfo(formatFile.getText(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle("Select Format File");
         chooser.setDirectoryAndFileMode();
 

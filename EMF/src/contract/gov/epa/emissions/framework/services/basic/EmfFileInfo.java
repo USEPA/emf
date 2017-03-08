@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.services.basic;
 import java.io.Serializable;
 
 public class EmfFileInfo implements Serializable, Comparable<EmfFileInfo> {
-    
+
     private String absolutePath; 
 
     private String canonicalPath; 
