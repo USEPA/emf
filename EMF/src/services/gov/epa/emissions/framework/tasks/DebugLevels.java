@@ -4,6 +4,7 @@ import java.util.Date;
 
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import org.hibernate.HibernateException;
 
 public class DebugLevels {
     
@@ -12,10 +13,28 @@ public class DebugLevels {
     private static final HibernateSessionFactory sessionFactory  = HibernateSessionFactory.get();
     private static final EmfPropertiesDAO propDAO = new EmfPropertiesDAO(sessionFactory);
     private static boolean getProperty(String name) {
-        return propDAO.getProperty(name).getValue().trim().equalsIgnoreCase("true");
+        boolean debugLevel = false;
+        try {
+            debugLevel = propDAO.getProperty(name).getValue().trim().equalsIgnoreCase("true");
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return debugLevel;
     }
-    
-    private static int refreshRate = Integer.parseInt(propDAO.getProperty("DEBUG_LEVEL_REFRESH_RATE").getValue().trim());
+
+    private static int getDebugLevelRefreshRate() {
+        int debugLevelRefreshRate = 100;
+        try {
+            debugLevelRefreshRate = Integer.parseInt(propDAO.getProperty("DEBUG_LEVEL_REFRESH_RATE").getValue().trim());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return debugLevelRefreshRate;
+    }
+
+    private static int refreshRate = getDebugLevelRefreshRate();
     
     private static boolean debug_0 = getProperty("DEBUG_0");
     private static boolean debug_1 = getProperty("DEBUG_1");
@@ -78,7 +97,7 @@ public class DebugLevels {
             debug_24 = getProperty("DEBUG_24");
             debug_25 = getProperty("DEBUG_25");
             debug_26 = getProperty("DEBUG_26");
-            refreshRate = Integer.parseInt(propDAO.getProperty("DEBUG_LEVEL_REFRESH_RATE").getValue().trim());
+            refreshRate = getDebugLevelRefreshRate();
         }
     }
 
