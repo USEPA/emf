@@ -48,7 +48,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
 
 public class CompareCaseWindow extends DisposableInteralFrame implements CompareCaseView {
-    
+
     private CompareCasePresenter presenter;
 
     private JPanel layout;
@@ -512,7 +512,7 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
         
         EmfFileInfo initDir = new EmfFileInfo(folder.getText(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(service));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(service));
         chooser.setTitle("Select a folder for exported case settings");
         int option = chooser.showDialog(parentConsole, "Select a folder");
 

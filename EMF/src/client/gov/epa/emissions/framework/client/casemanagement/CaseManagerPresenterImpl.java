@@ -191,8 +191,30 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
         
         view.displayCaseComparisonResult("Case Comparison", localFile.getAbsolutePath());
     }
-    
-    public String viewCaseQaReports(User user, int[] caseIds, String gridName, Sector[] sectors, 
+
+    public void viewCaseComparisonDatasetRevisionResult(int[] caseIds, String exportDir) throws EmfException {
+        if (caseIds == null || caseIds.length == 0)
+            throw new EmfException("No cases to compare.");
+
+        File localFile = new File(tempQAStepFilePath());
+        try {
+            if (!localFile.exists()) {
+                Writer output = new BufferedWriter(new FileWriter(localFile));
+                try {
+                    output.write(getCaseComparisonDatasetRevisionResult(caseIds));
+                }
+                finally {
+                    output.close();
+                }
+            }
+        } catch (Exception e) {
+            throw new EmfException(e.getMessage());
+        }
+
+        view.displayCaseComparisonResult("Case Comparison Dataset Revisions", localFile.getAbsolutePath());
+    }
+
+    public String viewCaseQaReports(User user, int[] caseIds, String gridName, Sector[] sectors,
             String[] repDims, String whereClause, String serverDir) throws EmfException {
         String message = "";
         if (caseIds == null || caseIds.length == 0)
@@ -231,8 +253,12 @@ public class CaseManagerPresenterImpl implements CaseManagerPresenter {
     private String getCaseComparisonResult(int[] caseIds) throws EmfException {
         return service().getCaseComparisonResult(caseIds);
     }
-    
-    private String runCaseQaReports(User user, int[] caseIds, String gridName, Sector[] sectors, 
+
+    private String getCaseComparisonDatasetRevisionResult(int[] caseIds) throws EmfException {
+        return service().getCaseComparisonDatasetRevisionResult(caseIds);
+    }
+
+    private String runCaseQaReports(User user, int[] caseIds, String gridName, Sector[] sectors,
             String[] repDims, String whereClause, String serverDir) throws EmfException {
         return service().getCaseQaReports(user, caseIds, gridName, sectors, repDims, 
                 whereClause, serverDir);

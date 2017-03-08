@@ -27,6 +27,8 @@ public interface CaseManagerView extends ManagedView {
     void setMessage(String message);
 
     void displayCaseComparisonResult(String string, String absolutePath);
+
+    void displayCaseComparisonDatasetRevisionResult(String qaStepName, String exportedFileName);
     
     Case[] getSCases();
     CaseViewer getCViewer();

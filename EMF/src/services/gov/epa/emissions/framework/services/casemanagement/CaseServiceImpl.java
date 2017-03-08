@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.services.casemanagement;
 import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.io.ExporterException;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
@@ -19,7 +20,11 @@ import gov.epa.emissions.framework.services.casemanagement.parameters.ParameterE
 import gov.epa.emissions.framework.services.casemanagement.parameters.ParameterName;
 import gov.epa.emissions.framework.services.casemanagement.parameters.ValueType;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInventoryOutputTask;
+import gov.epa.emissions.framework.services.data.DataCommonsDAO;
+import gov.epa.emissions.framework.services.data.DatasetVersion;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
+import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.qa.QAProgramRunner;
 import gov.epa.emissions.framework.services.qa.QueryToString;
@@ -27,14 +32,13 @@ import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
@@ -47,6 +51,8 @@ public class CaseServiceImpl implements CaseService {
     private String svcLabel = null;
 
     private CaseDAO dao;
+
+    private DataCommonsDAO dataCommonsDao;
 
     private PooledExecutor threadPool;
 
@@ -75,6 +81,7 @@ public class CaseServiceImpl implements CaseService {
         this.sessionFactory = sessionFactory;
         this.dbFactory = dbFactory;
         this.dao = new CaseDAO();
+        this.dataCommonsDao = new DataCommonsDAO();
         
         if (DebugLevels.DEBUG_0())
             System.out.println("CaseServiceImpl::getCaseService  Is sessionFactory null? " + (sessionFactory == null));
@@ -99,7 +106,8 @@ public class CaseServiceImpl implements CaseService {
         this.sessionFactory = null;
         this.dbFactory = null;
         this.dao = null;
-        
+        this.dataCommonsDao = null;
+
         threadPool.shutdownAfterProcessingCurrentlyQueuedTasks();
         threadPool.awaitTerminationAfterShutdown();
         super.finalize();
@@ -787,6 +795,105 @@ public class CaseServiceImpl implements CaseService {
     
     public String isGeoRegionInSummary(int caseId, GeoRegion[] grids) throws EmfException{
         return getCaseService().isGeoRegionInSummary(caseId, grids);
+    }
+
+    public String getCaseComparisonDatasetRevisionResult(int[] caseIds) throws EmfException {
+
+        DbServer dbServer = dbFactory.getDbServer();
+        Session session = sessionFactory.getSession();
+        try {
+            StringBuffer stringBuffer = new StringBuffer();
+            ResultSet rs = dbServer.getEmfDatasource().query().executeQuery("SELECT * FROM (" + new SQLCompareCasesQuery(sessionFactory).createCompareQuery(caseIds) + " ) AS foo WHERE tab = 'Inputs' and match = 'false' ");
+            int columnCount = rs.getMetaData().getColumnCount();
+
+            String colTypes = "#COLUMN_TYPES=varchar(255)|varchar(2147483647)|int|int|timestamp|text(2147483647)|text(2147483647)";
+            String colNames = "dataset_name,sector,dataset_version,base_version,when,what,why";
+
+            String lineFeeder = System.getProperty("line.separator");
+            stringBuffer.append(colTypes + lineFeeder + colNames + lineFeeder);
+
+            while ( rs.next() ) {
+                List<DatasetVersion> datasetVersions = new ArrayList<DatasetVersion>();
+                List<Integer> versions = new ArrayList<Integer>();
+                String sector = rs.getString("sector");
+                for (int i = columnCount - 1; i >= columnCount - caseIds.length; i--) {
+                    DatasetVersion datasetVersion = parseDatasetVersion(rs.getString(i + 1));
+                    if (datasetVersion != null) {
+                        datasetVersions.add(datasetVersion);
+                        versions.add(datasetVersion.getDatasetVersion());
+                    }
+                }
+                //look up revisions, only if
+                // 1.  all dataset names are the same
+                // 2.  AND if one of the versions is different
+                String datasetName = null;
+                boolean sameDatasetName = false;
+                for (DatasetVersion datasetVersion : datasetVersions) {
+                    if (datasetName != null) {
+                        if (datasetName.equals(datasetVersion.getDatasetName())) {
+                            sameDatasetName = true;
+                        } else {
+                            sameDatasetName = false;
+                            break;
+                        }
+                    }
+                    datasetName = datasetVersion.getDatasetName();
+                }
+                if (sameDatasetName) {
+                    //get max and min versions. this will determine the range of revisions to get.
+                    int minVersion = Collections.min(versions);
+                    int maxVersion = Collections.max(versions);
+                    if (minVersion != maxVersion) {
+                        //let's look up revisions, we are also assuming the different versions are based on the
+                        //same revision branch
+                        EmfDataset dataset = (EmfDataset) dataCommonsDao.get(EmfDataset.class, Restrictions.eq("name", datasetName), session).get(0);
+                        List<Revision> revisions = dataCommonsDao.getRevisions(dataset.getId(), session);
+                        Version version = dataCommonsDao.getVersion(dataset.getId(), maxVersion, session);
+                        for (Revision revision : revisions) {
+                            int versionNumber = revision.getVersion();
+                            if (versionNumber <= maxVersion && versionNumber > minVersion) {
+                                stringBuffer.append("\"" + datasetName.replaceAll("\"", "\"\"").replaceAll("\n", " ") + "\"");
+                                stringBuffer.append(",\"" + sector.replaceAll("\"", "\"\"").replaceAll("\n", " ") + "\"");
+                                stringBuffer.append("," + versionNumber);
+                                stringBuffer.append("," + version.getBase());
+                                stringBuffer.append(",\"" + revision.getDate() + "\"");
+                                stringBuffer.append(",\"" + revision.getWhat().replaceAll("\"", "\"\"").replaceAll("\n", " ") + "\"");
+                                stringBuffer.append(",\"" + revision.getWhy().replaceAll("\"", "\"\"").replaceAll("\n", " ") + "\"");
+                                stringBuffer.append(lineFeeder);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            return stringBuffer.toString();
+        } catch (RuntimeException e) {
+            throw new EmfException("Could not retrieve case comparison result: " + e.getMessage(), e);
+        } catch (SQLException e) {
+            throw new EmfException("Could not retrieve case comparison result: " + e.getMessage(), e);
+        } finally {
+            try {
+                if (dbServer != null && dbServer.isConnected())
+                    dbServer.disconnect();
+                if (session != null)
+                    session.close();
+
+            } catch (Exception e) {
+                throw new EmfException("ManagedCaseService: error closing db server. " + e.getMessage());
+            }
+        }
+    }
+
+    private DatasetVersion parseDatasetVersion(final String datasetVersionString) {
+        if (datasetVersionString == null || datasetVersionString.length() == 0)
+            return null;
+
+        String name = datasetVersionString.substring(0, datasetVersionString.lastIndexOf("[") - 1);
+        int version =  Integer.parseInt(datasetVersionString.substring(datasetVersionString.lastIndexOf("[v") + 2, datasetVersionString.lastIndexOf("]")));
+
+        DatasetVersion datasetVersion = new DatasetVersion(name, version);
+        return datasetVersion;
     }
 
     public String getCaseComparisonResult(int[] caseIds) throws EmfException {
