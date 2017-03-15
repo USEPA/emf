@@ -255,16 +255,13 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         // TODO should we clear the module history too?
         
-        if (oldModuleCopy.isComposite() != module.isComposite()) {
-            refreshTabbedPane();
-        }
-        
         isDirty = true;
     }
 
     private void refreshModuleTypeVersion() {
         moduleTypeName.setText(moduleType.getName());
         moduleTypeVersionNumber.setText(String.valueOf(moduleTypeVersion.getVersion()));
+        refreshTabbedPane();
         refreshDatasets();
         refreshParameters();
         if (moduleTypeVersion.isComposite()) {

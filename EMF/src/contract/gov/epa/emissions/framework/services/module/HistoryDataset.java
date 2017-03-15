@@ -14,9 +14,6 @@ public class HistoryDataset implements Serializable {
 
     private int version;
 
-    public HistoryDataset() {
-    }
-    
     public int getId() {
         return id;
     }

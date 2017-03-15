@@ -82,7 +82,10 @@ import gov.epa.emissions.framework.services.fast.FastRunOutputType;
 import gov.epa.emissions.framework.services.fast.Grid;
 import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.HistoryDataset;
+import gov.epa.emissions.framework.services.module.HistoryInternalDataset;
+import gov.epa.emissions.framework.services.module.HistoryInternalParameter;
 import gov.epa.emissions.framework.services.module.HistoryParameter;
+import gov.epa.emissions.framework.services.module.HistorySubmodule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleInternalDataset;
@@ -143,9 +146,12 @@ public class DataMappings extends Mappings {
         bean(call, ModuleInternalDataset.class,   moduleInternalDataset());
         bean(call, ModuleInternalParameter.class, moduleInternalParameter());
 
-        bean(call, History.class,                 history());
-        bean(call, HistoryDataset.class,          historyDataset());
-        bean(call, HistoryParameter.class,        historyParameter());
+        bean(call, History.class,                  history());
+        bean(call, HistoryDataset.class,           historyDataset());
+        bean(call, HistoryParameter.class,         historyParameter());
+        bean(call, HistorySubmodule.class,         historySubmodule());
+        bean(call, HistoryInternalDataset.class,   historyInternalDataset());
+        bean(call, HistoryInternalParameter.class, historyInternalParameter());
 
         bean(call, InternalSource.class, "InternalSource");
         bean(call, ExternalSource.class, externalSource());
@@ -531,6 +537,18 @@ public class DataMappings extends Mappings {
 
     public QName historyParameter() {
         return qname("HistoryParameter");
+    }
+
+    public QName historySubmodule() {
+        return qname("HistorySubmodule");
+    }
+
+    public QName historyInternalDataset() {
+        return qname("HistoryInternalDataset");
+    }
+
+    public QName historyInternalParameter() {
+        return qname("HistoryInternalParameter");
     }
 
     public QName dataset() {

@@ -14,7 +14,7 @@ public class HistoryParameter implements Serializable {
     
     public HistoryParameter() {
     }
-
+    
     public HistoryParameter(History history, String parameterName, String value) {
         this.history = history;
         this.parameterName = parameterName;

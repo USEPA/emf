@@ -62,11 +62,11 @@ public class ModuleTypeVersionSubmodule implements Serializable {
     }
     
     public void computeInternalDatasets(Map<String, ModuleInternalDataset> internalDatasets, String placeholderPath, String placeholderPathNames, Module compositeModule) {
-        moduleTypeVersion.computeInternalDatasets(internalDatasets, placeholderPath, placeholderPathNames, compositeModule);        
+        moduleTypeVersion.computeInternalDatasets(internalDatasets, placeholderPath, placeholderPathNames, this, compositeModule);        
     }
 
     public void computeInternalParameters(Map<String, ModuleInternalParameter> internalParameters, String parameterPath, String parameterPathNames, Module compositeModule) {
-        moduleTypeVersion.computeInternalParameters(internalParameters, parameterPath, parameterPathNames, compositeModule);        
+        moduleTypeVersion.computeInternalParameters(internalParameters, parameterPath, parameterPathNames, this, compositeModule);        
     }
 
     public int getId() {

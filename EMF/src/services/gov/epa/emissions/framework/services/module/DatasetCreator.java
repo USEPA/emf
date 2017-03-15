@@ -41,7 +41,9 @@ public class DatasetCreator {
 
     private DbServerFactory dbServerFactory;
 
-    private ModuleDataset moduleDataset;
+    private Module module;
+    
+    private String placeholderPathNames;
 
     private Keywords keywordMasterList;
     
@@ -52,22 +54,23 @@ public class DatasetCreator {
     public DatasetCreator() {
     }
 
-    public DatasetCreator(ModuleDataset moduleDataset, User user, 
+    public DatasetCreator(Module module, String placeholderPathNames, User user, 
             HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory,
             Datasource datasource, Keywords keywordMasterList) {
         this.user = user;
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
-        this.moduleDataset = moduleDataset;
+        this.module = module;
+        this.placeholderPathNames = placeholderPathNames;
         this.datasource = datasource;
         this.keywordMasterList = keywordMasterList;
         this.datasetDAO = new DatasetDAO(dbServerFactory);
     }
 
-    public DatasetCreator(ModuleDataset moduleDataset, User user, 
+    public DatasetCreator(Module module, String placeholderPathNames, User user, 
             HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory,
             Datasource datasource) {
-        this(moduleDataset, user, sessionFactory, dbServerFactory, datasource, getKeywords(sessionFactory));
+        this(module, placeholderPathNames, user, sessionFactory, dbServerFactory, datasource, getKeywords(sessionFactory));
     }
 
     private static Keywords getKeywords(HibernateSessionFactory sessionFactory) {
@@ -127,9 +130,6 @@ public class DatasetCreator {
     }
 
     public void replaceDataset(Session session, Connection connection, EmfDataset dataset) throws Exception {
-        Module module = moduleDataset.getModule();
-        ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
-
         String errorMessage;
         String datasetName = dataset.getName();
         Date date = new Date();
@@ -139,7 +139,7 @@ public class DatasetCreator {
         for (Version version : datasetVersions) {
             if (version.isLocked() && !version.isLocked(user)) {
                 errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset version %d is locked by %s.",
-                                              datasetName, moduleDataset.getPlaceholderName(), version.getVersion(), version.getLockOwner());
+                                              datasetName, placeholderPathNames, version.getVersion(), version.getLockOwner());
                 throw new EmfException(errorMessage);
             }
         }
@@ -172,7 +172,7 @@ public class DatasetCreator {
             }
         }
         
-        String description = "Dataset replaced by the '" + module.getName() + "' module for the '" + moduleTypeVersionDataset.getPlaceholderName() + "' placeholder.";
+        String description = "Dataset replaced by the '" + module.getName() + "' module for the '" + placeholderPathNames + "' placeholder.";
         
         dataset.setDescription(description);
         dataset.setDefaultVersion(0);
@@ -259,18 +259,17 @@ public class DatasetCreator {
     }
     
     protected void addKeyVals(EmfDataset newDataset) {
-        if (moduleDataset == null) return;
         //Add keywords to the dataset
-        addKeyVal(newDataset, "MODULE_NAME", moduleDataset.getModule().getName());
-        addKeyVal(newDataset, "MODULE_ID", moduleDataset.getModule().getId() + "");
-        addKeyVal(newDataset, "MODULE_PLACEHOLDER", moduleDataset.getPlaceholderName());
+        addKeyVal(newDataset, "MODULE_NAME", module.getName());
+        addKeyVal(newDataset, "MODULE_ID", module.getId() + "");
+        addKeyVal(newDataset, "MODULE_PLACEHOLDER", placeholderPathNames);
     }
     
     protected String getKeyValsAsHeaderString(EmfDataset inventory) {
         String header = "";
-        header = "#MODULE_NAME=" + moduleDataset.getModule().getName();
-        header += "\n#MODULE_ID=" + moduleDataset.getModule().getId() + "";
-        header += "\n#MODULE_PLACEHOLDER=" + moduleDataset.getPlaceholderName();
+        header = "#MODULE_NAME=" + module.getName();
+        header += "\n#MODULE_ID=" + module.getId() + "";
+        header += "\n#MODULE_PLACEHOLDER=" + placeholderPathNames;
         return header;
     }
     

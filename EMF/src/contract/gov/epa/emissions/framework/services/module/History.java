@@ -1,7 +1,6 @@
 package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.commons.util.CustomDateFormat;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -60,10 +59,16 @@ public class History implements Serializable, Comparable<History> {
     
     private Map<String, HistoryDataset> historyDatasets;
     private Map<String, HistoryParameter> historyParameters;
+    private Map<String, HistorySubmodule> historySubmodules;
+    private Map<String, HistoryInternalDataset> historyInternalDatasets;
+    private Map<String, HistoryInternalParameter> historyInternalParameters;
 
     public History() {
         setHistoryDatasets(new HashMap<String, HistoryDataset>());
         setHistoryParameters(new HashMap<String, HistoryParameter>());
+        setHistorySubmodules(new HashMap<String, HistorySubmodule>());
+        setHistoryInternalDatasets(new HashMap<String, HistoryInternalDataset>());
+        setHistoryInternalParameters(new HashMap<String, HistoryInternalParameter>());
     }
 
     public History(int id) {
@@ -211,6 +216,35 @@ public class History implements Serializable, Comparable<History> {
 
     public void setHistoryParameters(Map<String, HistoryParameter> historyParameters) {
         this.historyParameters = historyParameters;
+    }
+
+    public Map<String, HistorySubmodule> getHistorySubmodules() {
+        return historySubmodules;
+    }
+
+    public void setHistorySubmodules(Map<String, HistorySubmodule> historySubmodules) {
+        this.historySubmodules = historySubmodules;
+    }
+
+    public void addHistorySubmodule(HistorySubmodule historySubmodule) {
+        historySubmodule.setHistory(this);
+        this.historySubmodules.put(historySubmodule.getSubmodulePath(), historySubmodule);
+    }
+
+    public Map<String, HistoryInternalDataset> getHistoryInternalDatasets() {
+        return historyInternalDatasets;
+    }
+
+    public void setHistoryInternalDatasets(Map<String, HistoryInternalDataset> historyInternalDatasets) {
+        this.historyInternalDatasets = historyInternalDatasets;
+    }
+
+    public Map<String, HistoryInternalParameter> getHistoryInternalParameters() {
+        return historyInternalParameters;
+    }
+
+    public void setHistoryInternalParameters(Map<String, HistoryInternalParameter> historyInternalParameters) {
+        this.historyInternalParameters = historyInternalParameters;
     }
 
     @Override

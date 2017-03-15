@@ -32,10 +32,10 @@ public class HistoryDetailsPresenter {
         return session.dataService().getDataset(datasetId);
     }
     
-    public void doDisplayPropertiesView(PropertiesView propertiesView, HistoryDataset historyDataset) throws EmfException {
-        if (historyDataset.getDatasetId() == null)
+    public void doDisplayPropertiesView(PropertiesView propertiesView, Integer datasetId) throws EmfException {
+        if (datasetId == null)
             return;
-        EmfDataset dataset = getDataset(historyDataset.getDatasetId());
+        EmfDataset dataset = getDataset(datasetId);
         if (dataset == null)
             return;
         PropertiesViewPresenter presenter = new PropertiesViewPresenter(dataset, session);
@@ -54,8 +54,13 @@ public class HistoryDetailsPresenter {
         return session.moduleService().getModule(id);
     }
     
-    public void doDisplayRelatedModules(RelatedModulesView view) throws EmfException {
+    public void doDisplayRelatedModules(RelatedModulesView view) {
         RelatedModulesPresenter presenter = new RelatedModulesPresenter(session, view);
+        presenter.doDisplay();
+    }
+    
+    public void doDisplayHistorySubmoduleDetails(HistorySubmoduleDetailsView view) {
+        HistorySubmoduleDetailsPresenter presenter = new HistorySubmoduleDetailsPresenter(session, view);
         presenter.doDisplay();
     }
 }

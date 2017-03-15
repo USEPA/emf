@@ -264,7 +264,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
     }
     
     public boolean isComposite() {
-        return moduleTypeVersion.isComposite();
+        return (moduleTypeVersion != null) && moduleTypeVersion.isComposite();
     }
     
     public int getId() {

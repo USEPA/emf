@@ -300,7 +300,7 @@ public class ModuleServiceImpl implements ModuleService {
             Map<String, ModuleParameter> newModuleParameters = module.getModuleParameters();
             
             // manually delete the missing module datasets and parameters from the database
-            Module currentModule = modulesDAO.current(module, session);
+            Module currentModule = modulesDAO.currentModule(module, session);
             for(ModuleDataset currentModuleDataset : currentModule.getModuleDatasets().values()) {
                 if (newModuleDatasets.containsKey(currentModuleDataset.getPlaceholderName())) {
                     ModuleDataset newModuleDataset = newModuleDatasets.get(currentModuleDataset.getPlaceholderName());
@@ -433,7 +433,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     public synchronized void runModules(Module[] modules, User user) throws EmfException {
         try {
-            ModuleRunner runner = new ModuleRunner(modules, user, dbServerFactory, sessionFactory);
+            ModuleRunnerThread runner = new ModuleRunnerThread(modules, user, dbServerFactory, sessionFactory);
             threadPool.execute(new GCEnforcerTask("Module Runner", runner));
         } catch (Exception e) {
             LOG.error("Error running modules", e);

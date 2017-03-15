@@ -6,20 +6,29 @@ import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
+import gov.epa.emissions.commons.gui.buttons.NewButton;
+import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionConnectionsTableData;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSubmoduleWindow;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSubmodulesTableData;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.HistoryDataset;
+import gov.epa.emissions.framework.services.module.HistoryInternalDataset;
+import gov.epa.emissions.framework.services.module.HistorySubmodule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -39,6 +48,7 @@ import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
@@ -90,6 +100,24 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     private TextArea userScript;
     private TextArea teardownScript;
 
+    // submodules
+    private JPanel submodulesPanel;
+    private JPanel submodulesTablePanel;
+    private SelectableSortFilterWrapper submodulesTable;
+    private HistorySubmodulesTableData submodulesTableData;
+
+    // internal datasets
+    private JPanel internalDatasetsPanel;
+    private JPanel internalDatasetsTablePanel;
+    private SelectableSortFilterWrapper internalDatasetsTable;
+    private HistoryInternalDatasetsTableData internalDatasetsTableData;
+
+    // internal parameters
+    private JPanel internalParametersPanel;
+    private JPanel internalParametersTablePanel;
+    private SelectableSortFilterWrapper internalParametersTable;
+    private HistoryInternalParametersTableData internalParametersTableData;
+
     // logs
     private TextArea logs;
 
@@ -139,7 +167,13 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         tabbedPane.addTab("Datasets", datasetsPanel());
         tabbedPane.addTab("Parameters", parametersPanel());
         tabbedPane.addTab("Setup Script", setupScriptPanel());
-        tabbedPane.addTab("User Script", userScriptPanel());
+        if (module.isComposite()) {
+            tabbedPane.addTab("Submodules", submodulesPanel());
+            tabbedPane.addTab("Internal Datasets", internalDatasetsPanel());
+            tabbedPane.addTab("Internal Parameters", internalParametersPanel());
+        } else {
+            tabbedPane.addTab("User Script", userScriptPanel());
+        }
         tabbedPane.addTab("Teardown Script", teardownScriptPanel());
         tabbedPane.addTab("Logs", logsPanel());
         return tabbedPane;
@@ -230,6 +264,45 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         return userScriptPanel;
     }
 
+    private JPanel submodulesPanel() {
+        submodulesTablePanel = new JPanel(new BorderLayout());
+        submodulesTableData = new HistorySubmodulesTableData(history.getHistorySubmodules());
+        submodulesTable = new SelectableSortFilterWrapper(parentConsole, submodulesTableData, null);
+        submodulesTablePanel.add(submodulesTable);
+
+        submodulesPanel = new JPanel(new BorderLayout());
+        submodulesPanel.add(submodulesTablePanel, BorderLayout.CENTER);
+        submodulesPanel.add(submodulesCrudPanel(), BorderLayout.SOUTH);
+
+        return submodulesPanel;
+    }
+
+    private JPanel internalDatasetsPanel() {
+        internalDatasetsTablePanel = new JPanel(new BorderLayout());
+        internalDatasetsTableData = new HistoryInternalDatasetsTableData(history.getHistoryInternalDatasets(), session);
+        internalDatasetsTable = new SelectableSortFilterWrapper(parentConsole, internalDatasetsTableData, null);
+        internalDatasetsTablePanel.add(internalDatasetsTable);
+
+        internalDatasetsPanel = new JPanel(new BorderLayout());
+        internalDatasetsPanel.add(internalDatasetsTablePanel, BorderLayout.CENTER);
+        internalDatasetsPanel.add(internalDatasetsCrudPanel(), BorderLayout.SOUTH);
+
+        return internalDatasetsPanel;
+    }
+
+    private JPanel internalParametersPanel() {
+        internalParametersTablePanel = new JPanel(new BorderLayout());
+        internalParametersTableData = new HistoryInternalParametersTableData(history.getHistoryInternalParameters());
+        internalParametersTable = new SelectableSortFilterWrapper(parentConsole, internalParametersTableData, null);
+        internalParametersTablePanel.add(internalParametersTable);
+
+        internalParametersPanel = new JPanel(new BorderLayout());
+        internalParametersPanel.add(internalParametersTablePanel, BorderLayout.CENTER);
+        // internalParametersPanel.add(internalParametersCrudPanel(), BorderLayout.SOUTH);
+
+        return internalParametersPanel;
+    }
+
     private JPanel teardownScriptPanel() {
         teardownScriptPanel = new JPanel(new BorderLayout());
         teardownScript = new TextArea("teardownScript", history.getTeardownScript(), 60);
@@ -302,8 +375,17 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     }
 
     public void refreshScripts() {
-           setupScript.setText(history.getSetupScript());
+        setupScript.setText(history.getSetupScript());
+        if (module.isComposite()) { // TODO handle the case when module changed from composite/simple to simple/composite
+            submodulesTableData = new HistorySubmodulesTableData(history.getHistorySubmodules());
+            internalDatasetsTableData = new HistoryInternalDatasetsTableData(history.getHistoryInternalDatasets(), session);
+            internalParametersTableData = new HistoryInternalParametersTableData(history.getHistoryInternalParameters());
+            submodulesTable.refresh(submodulesTableData);
+            internalDatasetsTable.refresh(internalDatasetsTableData);
+            internalParametersTable.refresh(internalParametersTableData);
+        } else {
             userScript.setText(history.getUserScript());
+        }
         teardownScript.setText(history.getTeardownScript());
     }
 
@@ -365,7 +447,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
                 for (Iterator iter = datasets.iterator(); iter.hasNext();) {
                     DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
                     HistoryDataset historyDataset = (HistoryDataset) iter.next();
-                    presenter.doDisplayPropertiesView(view, historyDataset);
+                    presenter.doDisplayPropertiesView(view, historyDataset.getDatasetId());
                 }
                 return null;
             }
@@ -425,18 +507,129 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         
         // bring up the window with all related modules
         RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset, modules);
-        try {
-            presenter.doDisplayRelatedModules(view);
-        } catch (EmfException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
+        presenter.doDisplayRelatedModules(view);
     }
 
     private List<?> selectedDatasets() {
         return datasetsTable.selected();
     }
 
+    //-------------------------------------------------------------------------
+    
+    private JPanel submodulesCrudPanel() {
+        String message = "You have asked to open a lot of windows. Do you wish to proceed?";
+        ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
+
+        Action editAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewSubmodules();
+            }
+        };
+        SelectAwareButton viewButton = new SelectAwareButton("View", editAction, submodulesTable, confirmDialog);
+        
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(viewButton);
+
+        return crudPanel;
+    }
+
+    private void viewSubmodules() {
+        List selected = selectedSubmodules();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more submodules");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            HistorySubmodule historySubmodule = (HistorySubmodule) iter.next();
+            HistorySubmoduleDetailsWindow view = new HistorySubmoduleDetailsWindow(parentConsole, desktopManager, session, historySubmodule);
+            presenter.doDisplayHistorySubmoduleDetails(view);
+        }
+    }
+
+    private List selectedSubmodules() {
+        return submodulesTable.selected();
+    }
+
+    //-------------------------------------------------------------------------
+    
+    private JPanel internalDatasetsCrudPanel() {
+        String message = "You have asked to open a lot of windows. Do you wish to proceed?";
+        ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
+
+        Action viewAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewInternalDatasets();
+            }
+        };
+        SelectAwareButton viewButton = new SelectAwareButton("View Dataset Properties", viewAction, internalDatasetsTable, confirmDialog);
+        viewButton.setMnemonic('D');
+
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(viewButton);
+
+        return crudPanel;
+    }
+
+    private void viewInternalDatasets() {
+        clear();
+        final List<?> datasets = selectedInternalDatasets();
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select one or more internal datasets");
+            return;
+        }
+        
+        // Long running methods ...
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        class ViewDatasetPropertiesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public ViewDatasetPropertiesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            // Main task. Executed in background thread. Don't update GUI here
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (Iterator iter = datasets.iterator(); iter.hasNext();) {
+                    DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                    HistoryInternalDataset historyInternalDataset = (HistoryInternalDataset) iter.next();
+                    presenter.doDisplayPropertiesView(view, historyInternalDataset.getDatasetId());
+                }
+                return null;
+            }
+
+            // Executed in event dispatching thread
+            @Override
+            public void done() {
+                try {
+                    get();
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new ViewDatasetPropertiesTask(this).execute();
+    }
+
+    private List<?> selectedInternalDatasets() {
+        return internalDatasetsTable.selected();
+    }
+
+    //-------------------------------------------------------------------------
+    
     private void clear() {
         messagePanel.clear();
     }

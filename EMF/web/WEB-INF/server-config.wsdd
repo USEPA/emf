@@ -333,6 +333,18 @@
 		qname="ns1:HistoryParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.HistorySubmodule"
+		qname="ns1:HistorySubmodule" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.HistoryInternalDataset"
+		qname="ns1:HistoryInternalDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.HistoryInternalParameter"
+		qname="ns1:HistoryInternalParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.data.EmfDataset"
 		qname="ns1:EmfDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 

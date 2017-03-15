@@ -191,7 +191,8 @@ public class ModuleDataset implements Serializable {
                 HistoryDataset historyDataset = null;
                 if (history.size() > 0) {
                     History lastHistory = history.get(history.size() - 1);
-                    if (lastHistory.getResult().equals(History.SUCCESS)) {
+                    String result = lastHistory.getResult();
+                    if (result != null && result.equals(History.SUCCESS)) {
                         historyDataset = lastHistory.getHistoryDatasets().get(placeholderName);
                     }
                 }

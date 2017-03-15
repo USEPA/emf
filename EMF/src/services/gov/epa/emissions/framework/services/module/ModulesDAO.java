@@ -7,9 +7,12 @@ import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -50,15 +53,41 @@ public class ModulesDAO {
     }
 
     public Module obtainLocked(User user, Module module, Session session) {
-        return (Module) lockingScheme.getLocked(user, current(module, session), session);
+        return (Module) lockingScheme.getLocked(user, currentModule(module, session), session);
     }
 
     public Module releaseLocked(User user, Module module, Session session) {
-        return (Module) lockingScheme.releaseLock(user, current(module, session), session);
+        return (Module) lockingScheme.releaseLock(user, currentModule(module, session), session);
     }
 
     public Module update(Module module, Session session) throws EmfException {
-        return (Module) lockingScheme.renewLockOnUpdate(module, current(module, session), session);
+        return (Module) lockingScheme.renewLockOnUpdate(module, currentModule(module, session), session);
+    }
+
+    public History update(History history, Session session) {
+        session.clear();
+        Transaction tx = session.beginTransaction();
+        try {
+            session.update(history);
+            tx.commit();
+        } catch (HibernateException e) {
+            tx.rollback();
+            throw e;
+        }
+        return history;
+    }
+
+    public HistorySubmodule update(HistorySubmodule historySubmodule, Session session) {
+        session.clear();
+        Transaction tx = session.beginTransaction();
+        try {
+            session.update(historySubmodule);
+            tx.commit();
+        } catch (HibernateException e) {
+            tx.rollback();
+            throw e;
+        }
+        return historySubmodule;
     }
 
     public Module get(String name, Session session) {
@@ -86,9 +115,8 @@ public class ModulesDAO {
             return false;
         }
 
-        Module current = current(module.getId(), Module.class, session);
-        // The current object is saved in the session. Hibernate cannot persist our
-        // object with the same id.
+        Module current = currentModule(module.getId(), Module.class, session);
+        // The current object is saved in the session. Hibernate cannot persist our object with the same id.
         session.clear();
         if (current.getName().equals(module.getName()))
             return true;
@@ -104,12 +132,16 @@ public class ModulesDAO {
         return hibernateFacade.nameUsed(name, clazz, session);
     }
 
-    public Module current(int id, Class clazz, Session session) {
+    public Module currentModule(int id, Class clazz, Session session) {
         return (Module) hibernateFacade.current(id, clazz, session);
     }
 
-    public Module current(Module module, Session session) {
-        return current(module.getId(), Module.class, session);
+    public Module currentModule(Module module, Session session) {
+        return currentModule(module.getId(), Module.class, session);
+    }
+
+    public History currentHistory(int id, Class clazz, Session session) {
+        return (History) hibernateFacade.current(id, clazz, session);
     }
 
     private boolean hasColName(Column[] cols, String colName) {

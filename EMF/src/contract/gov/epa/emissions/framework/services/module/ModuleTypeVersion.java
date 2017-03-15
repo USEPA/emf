@@ -343,10 +343,24 @@ public class ModuleTypeVersion implements Serializable {
         return internalDatasets;
     }
 
-    public void computeInternalDatasets(Map<String, ModuleInternalDataset> internalDatasets, String placeholderPath, String placeholderPathNames, Module compositeModule) {
+    public void computeInternalDatasets(Map<String, ModuleInternalDataset> internalDatasets, String placeholderPath, String placeholderPathNames,
+                                        ModuleTypeVersionSubmodule parentSubmodule, Module compositeModule) {
         for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
             if (moduleTypeVersionDataset.isModeIN())
                 continue;
+            // if this output dataset is connected to an output dataset for the parent composite module then it's not internal
+            boolean isExternal = false;
+            for(ModuleTypeVersionDatasetConnection datasetConnection : parentSubmodule.getCompositeModuleTypeVersion().getModuleTypeVersionDatasetConnections().values()) {
+                if ((datasetConnection.getTargetSubmodule() == null) &&
+                    (parentSubmodule == datasetConnection.getSourceSubmodule()) &&
+                    moduleTypeVersionDataset.getPlaceholderName().equals(datasetConnection.getSourcePlaceholderName())) {
+                    isExternal = true;
+                    break;
+                }
+            }
+            if (isExternal)
+                continue;
+            // TODO revisit this logic for INOUT datasets (maybe take snapshots of the data and expose them as internal datasets)
             ModuleInternalDataset internalDataset = new ModuleInternalDataset();
             internalDataset.setCompositeModule(compositeModule);
             internalDataset.setPlaceholderPath(placeholderPath + "/" + moduleTypeVersionDataset.getPlaceholderName());
@@ -369,10 +383,24 @@ public class ModuleTypeVersion implements Serializable {
         return internalParameters;
     }
 
-    public void computeInternalParameters(Map<String, ModuleInternalParameter> internalParameters, String parameterPath, String parameterPathNames, Module compositeModule) {
+    public void computeInternalParameters(Map<String, ModuleInternalParameter> internalParameters, String parameterPath, String parameterPathNames,
+                                          ModuleTypeVersionSubmodule parentSubmodule, Module compositeModule) {
         for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values()) {
             if (moduleTypeVersionParameter.isModeIN())
                 continue;
+            // if this output parameter is connected to an output parameter for the parent composite module then it's not internal 
+            boolean isExternal = false;
+            for(ModuleTypeVersionParameterConnection datasetConnection : parentSubmodule.getCompositeModuleTypeVersion().getModuleTypeVersionParameterConnections().values()) {
+                if ((datasetConnection.getTargetSubmodule() == null) &&
+                    (parentSubmodule == datasetConnection.getSourceSubmodule()) &&
+                    moduleTypeVersionParameter.getParameterName().equals(datasetConnection.getSourceParameterName())) {
+                    isExternal = true;
+                    break;
+                }
+            }
+            if (isExternal)
+                continue;
+            // TODO revisit this logic for INOUT parameters (maybe take snapshots of the data and expose them as internal parameters)
             ModuleInternalParameter internalParameter = new ModuleInternalParameter();
             internalParameter.setCompositeModule(compositeModule);
             internalParameter.setParameterPath(parameterPath + "/" + moduleTypeVersionParameter.getParameterName());
