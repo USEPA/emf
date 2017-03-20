@@ -92,5 +92,6 @@
 	<classpathentry kind="lib" path="lib/spring-orm-3.2.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-tx-3.2.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-aspects-3.2.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/commons-fileupload-1.3.2.jar"/>
 	<classpathentry kind="output" path="build/eclipse"/>
 </classpath>
