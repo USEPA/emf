@@ -1923,3 +1923,9 @@ SELECT e.id,
 	    WHERE equation_type_id = e.id) AS list_index
 FROM emf.equation_types as e 
 WHERE name = 'Type 2b';
+
+-- 02/22/2017 Fix typos in cost equation text versions
+UPDATE equation_types
+   SET equation = REPLACE(equation, 'Capital Coat', 'Capital Cost');
+UPDATE equation_types
+   SET equation = REPLACE(equation, 'Annual Cost = Annual Cost = ', 'Annual Cost = ');
