@@ -7,6 +7,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.ParameterType;
 
 public class ModuleServiceTransport implements ModuleService {
 
@@ -190,5 +191,14 @@ public class ModuleServiceTransport implements ModuleService {
         call.setVoidReturnType();
 
         call.request(new Object[] { modules, user });
+    }
+
+    public synchronized ParameterType[] getParameterTypes() throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getParameterTypes");
+        call.setReturnType(mappings.parameterTypes());
+
+        return (ParameterType[]) call.requestResponse(new Object[] {});
     }
 }

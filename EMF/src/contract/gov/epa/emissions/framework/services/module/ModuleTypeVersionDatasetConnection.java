@@ -83,7 +83,21 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
         return true;
     }
     
-    public DatasetType getDatasetType() {
+    public DatasetType getSourceDatasetType() {
+        if (sourceSubmodule != null) {
+            // internal source
+            return sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().get(sourcePlaceholderName).getDatasetType();
+        }
+        // external source
+        return compositeModuleTypeVersion.getModuleTypeVersionDatasets().get(sourcePlaceholderName).getDatasetType();
+    }
+    
+    public String getSourceDatasetTypeName() {
+        DatasetType datasetType = getSourceDatasetType();
+        return (datasetType == null) ? "" : datasetType.getName();
+    }
+    
+    public DatasetType getTargetDatasetType() {
         if (targetSubmodule != null) {
             // internal target
             return targetSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().get(targetPlaceholderName).getDatasetType();
@@ -92,8 +106,8 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
         return compositeModuleTypeVersion.getModuleTypeVersionDatasets().get(targetPlaceholderName).getDatasetType();
     }
     
-    public String getDatasetTypeName() {
-        DatasetType datasetType = getDatasetType();
+    public String getTargetDatasetTypeName() {
+        DatasetType datasetType = getTargetDatasetType();
         return (datasetType == null) ? "" : datasetType.getName();
     }
     

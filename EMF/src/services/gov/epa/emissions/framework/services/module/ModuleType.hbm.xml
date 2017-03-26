@@ -180,4 +180,12 @@
         <property name="description" column="description" type="text" not-null="false"/>
     </class>
 
+    <class name="gov.epa.emissions.framework.services.module.ParameterType" table="parameter_types" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="sqlType" column="sql_type" type="string" not-null="true" length="256"/>
+        <property name="isTextType" column="is_text_type" type="boolean" not-null="true"/>
+    </class>
+
 </hibernate-mapping>

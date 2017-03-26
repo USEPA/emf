@@ -122,26 +122,25 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 String parameterPath = getPath(parameterName);
                 String parameterPathNames = getPathNames(parameterName);
                 String parameterTimeStamp = parameterName + "_" + timeStamp;
+                String sqlParameterType = moduleTypeVersionParameter.getSqlParameterType();
                 String parameterValue = null;
                 if (moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
                     parameterValue = null;
-                    parameterDeclarations += "    " + parameterTimeStamp + " " + moduleTypeVersionParameter.getSqlParameterType() + ";\n";
+                    parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + ";\n";
                 } else { // IN or INOUT
                     parameterValue = getInputParameter(parameterName);
-                    parameterDeclarations += "    " + parameterTimeStamp + " " + moduleTypeVersionParameter.getSqlParameterType() + " := " + parameterValue + ";\n";
+                    parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := CAST('" + parameterValue + "' AS " + sqlParameterType + ");\n";
                 }
-                boolean keepInternalParameter = false;
                 if (moduleInternalParameters.containsKey(parameterPath)) {
                     ModuleInternalParameter moduleInternalParameter = moduleInternalParameters.get(parameterPath);
-                    keepInternalParameter = moduleInternalParameter.getKeep();
-                }
-                if (keepInternalParameter) {
-                    HistoryInternalParameter historyInternalParameter = new HistoryInternalParameter();
-                    historyInternalParameter.setHistory(history);
-                    historyInternalParameter.setParameterPath(parameterPath);
-                    historyInternalParameter.setParameterPathNames(parameterPathNames);
-                    historyInternalParameter.setValue(parameterValue);
-                    historyInternalParameters.put(parameterPath, historyInternalParameter);
+                    if (moduleInternalParameter.getKeep()) {
+                        HistoryInternalParameter historyInternalParameter = new HistoryInternalParameter();
+                        historyInternalParameter.setHistory(history);
+                        historyInternalParameter.setParameterPath(parameterPath);
+                        historyInternalParameter.setParameterPathNames(parameterPathNames);
+                        historyInternalParameter.setValue(parameterValue);
+                        historyInternalParameters.put(parameterPath, historyInternalParameter);
+                    }
                 }
             }
             history = modulesDAO.update(history, session);

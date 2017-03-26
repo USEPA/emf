@@ -89,6 +89,21 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
+    public synchronized ParameterType[] getParameterTypes() throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<ParameterType> list = moduleTypesDAO.getParameterTypes(session);
+
+            ParameterType[] moduleTypes = list.toArray(new ParameterType[0]); 
+            return moduleTypes;
+        } catch (RuntimeException e) {
+            LOG.error("Could not get all ParameterTypes", e);
+            throw new EmfException("Could not get all ParameterTypes: " + e.getMessage());
+        } finally {
+            session.close(); 
+        }
+    }
+
     public synchronized ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
         Session session = sessionFactory.getSession();
         Connection connection = null;

@@ -275,14 +275,6 @@ abstract class SubmoduleRunner extends ModuleRunner {
         return pathNames;
     }
 
-    public String getPath(String parameterOrPlaceholderName) {
-        return getPath() + "/" + parameterOrPlaceholderName;
-    }
-
-    public String getPathNames(String parameterOrPlaceholderName) {
-        return getPathNames() + " / " + parameterOrPlaceholderName;
-    }
-
     public HistorySubmodule getHistorySubmodule() {
         return historySubmodule;
     }

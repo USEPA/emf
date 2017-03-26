@@ -1,0 +1,18 @@
+INSERT INTO modules.parameter_types(sql_type, is_text_type)
+VALUES ('integer', FALSE),
+       ('bigint', FALSE),
+       ('double precision', FALSE),
+       ('decimal', FALSE),
+       ('numeric', FALSE),
+       ('money', FALSE),
+       ('varchar', TRUE),
+       ('text', TRUE),
+       ('boolean', FALSE);
+
+ALTER TABLE modules.module_types_versions_parameters
+ADD CONSTRAINT module_types_versions_parameters_sql_parameter_type_fkey
+    FOREIGN KEY (sql_parameter_type) REFERENCES modules.parameter_types (sql_type) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE modules.module_types_versions_parameters
+VALIDATE CONSTRAINT module_types_versions_parameters_sql_parameter_type_fkey;

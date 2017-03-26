@@ -115,4 +115,10 @@ public class ModuleTypesDAO {
         return hasIt;
     }
 
+    //---------------------------------------------
+    
+    public List getParameterTypes(Session session) {
+        return hibernateFacade.getAll(ParameterType.class, Order.asc("sqlType").ignoreCase(), session);
+    }
+
 }

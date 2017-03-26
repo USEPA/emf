@@ -345,6 +345,10 @@
 		qname="ns1:HistoryInternalParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ParameterType"
+		qname="ns1:ParameterType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.data.EmfDataset"
 		qname="ns1:EmfDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 

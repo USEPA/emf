@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import org.hibernate.Session;
 
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 
 class CompositeSubmoduleRunner extends SubmoduleRunner {
     private Map<Integer, SubmoduleRunner> submoduleRunners; // the key is the submodule id 
@@ -270,6 +271,13 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
                 }
                 statement = null;
             }
+        }
+    }
+    
+    protected void collectTemporaryDatasets(Map<String, EmfDataset> datasets) {
+        super.collectTemporaryDatasets(datasets);
+        for(SubmoduleRunner submoduleRunner : submoduleRunners.values()) {
+            submoduleRunner.collectTemporaryDatasets(datasets);
         }
     }
     

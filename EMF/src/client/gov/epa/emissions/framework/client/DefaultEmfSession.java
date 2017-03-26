@@ -24,6 +24,7 @@ import gov.epa.emissions.framework.services.editor.DataViewService;
 import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
 import gov.epa.emissions.framework.services.module.ModuleService;
+import gov.epa.emissions.framework.services.module.ParameterType;
 import gov.epa.emissions.framework.services.qa.QAService;
 import gov.epa.emissions.framework.services.sms.SectorScenarioService;
 import gov.epa.emissions.framework.services.tempalloc.TemporalAllocationService;
@@ -34,6 +35,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -68,7 +71,7 @@ public class DefaultEmfSession implements EmfSession {
     }
 
     public enum ObjectCacheType {
-        LIGHT_DATASET_TYPES_LIST, PROJECTS_LIST
+        LIGHT_DATASET_TYPES_LIST, PROJECTS_LIST, PARAMETER_TYPES_LIST
     }
     
     public DefaultEmfSession(final User user, ServiceLocator locator) throws EmfException {
@@ -86,6 +89,15 @@ public class DefaultEmfSession implements EmfSession {
                         } else if (key.equals(ObjectCacheType.PROJECTS_LIST)) {
                             System.out.println("loading client-side object cache -- PROJECTS_LIST");
                             return serviceLocator.dataCommonsService().getProjects();
+                        } else if (key.equals(ObjectCacheType.PARAMETER_TYPES_LIST)) {
+                            // TODO use a different object cache for this list (5 minutes is to short)
+                            System.out.println("loading client-side object cache -- PARAMETER_TYPES_LIST");
+                            ParameterType[] parameterTypes = serviceLocator.moduleService().getParameterTypes();
+                            TreeMap<String, ParameterType> parameterTypesMap = new TreeMap<String, ParameterType>();
+                            for (ParameterType parameterType : parameterTypes) {
+                                parameterTypesMap.put(parameterType.getSqlType(), parameterType);
+                            }
+                            return parameterTypesMap;
                         }
                         return null;
                     }
@@ -256,9 +268,19 @@ public class DefaultEmfSession implements EmfSession {
         try {
             return (Project[]) objectCache.get(ObjectCacheType.PROJECTS_LIST);
         } catch (ExecutionException e) {
-            // NOTE Auto-generated catch block
             e.printStackTrace();
         }
         return new Project[] {};
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public TreeMap<String, ParameterType> getParameterTypes() {
+        try {
+            return (TreeMap<String, ParameterType>) objectCache.get(ObjectCacheType.PARAMETER_TYPES_LIST);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new TreeMap<String, ParameterType>();
     }
 }

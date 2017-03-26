@@ -16,6 +16,7 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
+import gov.epa.emissions.framework.services.module.ParameterType;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
@@ -23,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -46,8 +48,11 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
 
     private ComboBox mode;
     private TextField name;
-    private TextField sqlType;
+    private ComboBox sqlType;
     private TextArea description;
+    
+    private TreeMap<String, ParameterType> parameterTypesMap;
+    private String[] parameterTypes;
 
     public ModuleTypeVersionParameterWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session,
             ModuleTypeVersion moduleTypeVersion, ViewMode viewMode, ModuleTypeVersionParameter moduleTypeVersionParameter) {
@@ -55,13 +60,16 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
 
         this.moduleTypeVersion = moduleTypeVersion;
         
+        this.parameterTypesMap = session.getParameterTypes();
+        this.parameterTypes = parameterTypesMap.keySet().toArray(new String[]{});
+        
         this.viewMode = viewMode;
         if (viewMode == ViewMode.NEW) {
             this.moduleTypeVersionParameter = new ModuleTypeVersionParameter();
             this.moduleTypeVersionParameter.setModuleTypeVersion(moduleTypeVersion);
             this.moduleTypeVersionParameter.setParameterName("");
             this.moduleTypeVersionParameter.setMode(ModuleTypeVersionParameter.IN);
-            this.moduleTypeVersionParameter.setSqlParameterType("");
+            this.moduleTypeVersionParameter.setSqlParameterType(parameterTypes[0]);
             this.moduleTypeVersionParameter.setDescription("");
         } else {
             this.moduleTypeVersionParameter = moduleTypeVersionParameter;
@@ -112,10 +120,9 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
         addChangeable(mode);
         layoutGenerator.addLabelWidgetPair("Mode:", mode, contentPanel);
 
-        sqlType = new TextField("sqlType", 60);
-        sqlType.setText(moduleTypeVersionParameter.getSqlParameterType());
+        sqlType = new ComboBox(parameterTypes);
+        sqlType.setSelectedItem(moduleTypeVersionParameter.getSqlParameterType());
         addChangeable(sqlType);
-        sqlType.setMaximumSize(new Dimension(575, 20));
         layoutGenerator.addLabelWidgetPair("SQL Type:", sqlType, contentPanel);
 
         name = new TextField("name", 60);
@@ -190,7 +197,7 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
                         }
                         moduleTypeVersionParameter.setMode(mode.getSelectedItem().toString());
                         moduleTypeVersionParameter.setParameterName(name.getText().trim());
-                        moduleTypeVersionParameter.setSqlParameterType(sqlType.getText());
+                        moduleTypeVersionParameter.setSqlParameterType(sqlType.getSelectedItem().toString());
                         moduleTypeVersionParameter.setDescription(description.getText());
                         presenter.doSave(moduleTypeVersion, moduleTypeVersionParameter);
                         messagePanel.setMessage("Parameter definition saved.");

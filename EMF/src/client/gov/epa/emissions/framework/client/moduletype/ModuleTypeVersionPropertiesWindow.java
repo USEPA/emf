@@ -35,9 +35,12 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -45,11 +48,22 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.Document;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame implements ModuleTypeVersionPropertiesView {
     private ModuleTypeVersionPropertiesPresenter presenter;
@@ -111,6 +125,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
     // algorithm
     private JPanel algorithmPanel;
     private TextArea algorithm;
+    private UndoManager algorithmUndoManager;
 
     // submodules
     private JPanel submodulesPanel;
@@ -434,6 +449,45 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         scrollableAlgorithm.setMaximumSize(new Dimension(575, 200));
         algorithmPanel.add(scrollableAlgorithm);
 
+        algorithmUndoManager = new UndoManager();
+        
+        algorithm.getDocument().addUndoableEditListener(new UndoableEditListener() {
+            @Override
+            public void undoableEditHappened(UndoableEditEvent e) {
+                algorithmUndoManager.addEdit(e.getEdit());
+            }
+        });
+
+        InputMap im = algorithm.getInputMap(JComponent.WHEN_FOCUSED);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Event.CTRL_MASK), "Undo");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, Event.CTRL_MASK), "Redo");
+
+        ActionMap am = algorithm.getActionMap();
+        am.put("Undo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (algorithmUndoManager.canUndo()) {
+                        algorithmUndoManager.undo();
+                    }
+                } catch (CannotUndoException exp) {
+                    exp.printStackTrace();
+                }
+            }
+        });
+        am.put("Redo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (algorithmUndoManager.canRedo()) {
+                        algorithmUndoManager.redo();
+                    }
+                } catch (CannotUndoException exp) {
+                    exp.printStackTrace();
+                }
+            }
+        });
+        
         return algorithmPanel;
     }
 
@@ -878,15 +932,35 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame im
         return false;
     }
 
+    public static void showLargeErrorMessage(SingleLineMessagePanel messagePanel, String title, String error) {
+        // TODO add this code to SingleLineMessagePanel.setMessage() instead
+        if (error.length() > 80) {
+            messagePanel.setError(title);
+            JTextArea errorTextArea = new JTextArea(error.toString());
+            errorTextArea.setEditable(false);
+            errorTextArea.setLineWrap(true);
+            errorTextArea.setWrapStyleWord(true);
+            JScrollPane errorScrollPane = new JScrollPane(errorTextArea) {
+                @Override
+                public Dimension getPreferredSize() {
+                    return new Dimension(600, 400);
+                }
+            };
+            JOptionPane.showMessageDialog(null, errorScrollPane, title, JOptionPane.ERROR_MESSAGE);
+        }
+        else {
+            messagePanel.setError(error.toString());
+        }
+    }
+
     private Action validateAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 StringBuilder error = new StringBuilder();
                 if (moduleTypeVersion.isValid(error)) {
                     messagePanel.setMessage("This module type version is valid.");
-                }
-                else {
-                    messagePanel.setError(error.toString());
+                } else {
+                    showLargeErrorMessage(messagePanel, "Validation failed!", error.toString());
                 }
             }
         };

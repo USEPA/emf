@@ -36,6 +36,7 @@ import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionConnectionsTableData;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionPropertiesWindow;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionPresenter;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSubmodulesTableData;
@@ -57,7 +58,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
 
@@ -1101,15 +1104,19 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         return false;
     }
 
+    private void showLargeErrorMessage(String title, String error) {
+        // reusing implementation from ModuleTypeVersionPropertiesWindow
+        ModuleTypeVersionPropertiesWindow.showLargeErrorMessage(messagePanel, title, error);
+    }
+
     private Action validateAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 StringBuilder error = new StringBuilder();
                 if (module.isValid(error)) {
                     messagePanel.setMessage("This module is valid.");
-                }
-                else {
-                    messagePanel.setError(error.toString());
+                } else {
+                    showLargeErrorMessage("This module is invalid!", error.toString());
                 }
             }
         };
@@ -1129,7 +1136,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         StringBuilder error = new StringBuilder();
         if (!module.isValid(error)) {
-            messagePanel.setError(String.format("Module is invalid: %s", error.toString()));
+            showLargeErrorMessage("Can't run! This module is invalid!", error.toString());
             return;
         }
         

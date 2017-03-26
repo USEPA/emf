@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client;
 
 import java.security.PublicKey;
+import java.util.TreeMap;
 
 import com.google.common.cache.Cache;
 
@@ -28,6 +29,7 @@ import gov.epa.emissions.framework.services.editor.DataViewService;
 import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
 import gov.epa.emissions.framework.services.module.ModuleService;
+import gov.epa.emissions.framework.services.module.ParameterType;
 import gov.epa.emissions.framework.services.qa.QAService;
 
 public interface EmfSession {
@@ -91,6 +93,7 @@ public interface EmfSession {
     //cache for things that are used all the time
     DatasetType[] getLightDatasetTypes();
     Project[] getProjects();
+    TreeMap<String, ParameterType> getParameterTypes();
     
     DatasetType getLightDatasetType(String name);
 

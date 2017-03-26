@@ -113,14 +113,15 @@ class SimpleModuleRunner extends ModuleRunner {
             // declare all parameters, initialize IN and INOUT parameters
             String parameterDeclarations = "";
             for(ModuleParameter moduleParameter : module.getModuleParameters().values()) {
-                String parameterTimeStamp = moduleParameter.getParameterName() + "_" + timeStamp; 
+                String parameterTimeStamp = moduleParameter.getParameterName() + "_" + timeStamp;
                 HistoryParameter historyParameter;
                 ModuleTypeVersionParameter moduleTypeVersionParameter = moduleParameter.getModuleTypeVersionParameter();
+                String sqlParameterType = moduleTypeVersionParameter.getSqlParameterType();
                 if (moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
-                    parameterDeclarations += "    " + parameterTimeStamp + " " + moduleTypeVersionParameter.getSqlParameterType() + ";\n";
+                    parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + ";\n";
                     historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), null);
                 } else { // IN or INOUT
-                    parameterDeclarations += "    " + parameterTimeStamp + " " + moduleTypeVersionParameter.getSqlParameterType() + " := " + moduleParameter.getValue() + ";\n";
+                    parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := CAST('" + moduleParameter.getValue() + "' AS " + sqlParameterType + ");\n";
                     historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
                 }
                 historyParameters.put(moduleParameter.getParameterName(), historyParameter);

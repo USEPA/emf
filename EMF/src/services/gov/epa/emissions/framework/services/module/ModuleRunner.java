@@ -371,6 +371,20 @@ abstract class ModuleRunner {
         return "";
     }
 
+    public final String getPath(String parameterOrPlaceholderName) {
+        String path = getPath();
+        if (path.isEmpty())
+            return parameterOrPlaceholderName;
+        return path + "/" + parameterOrPlaceholderName;
+    }
+
+    public final String getPathNames(String parameterOrPlaceholderName) {
+        String pathNames = getPathNames();
+        if (pathNames.isEmpty())
+            return parameterOrPlaceholderName;
+        return pathNames + " / " + parameterOrPlaceholderName;
+    }
+    
     //-----------------------------------------------------------------
     
     protected static Version getVersion(EmfDataset dataset, int versionNumber, Session session) {
@@ -862,6 +876,22 @@ abstract class ModuleRunner {
                     // ignore
                 }
                 statement = null;
+            }
+        }
+    }
+    
+    protected final void deleteDatasets(EmfDataset[] datasets) throws EmfException {
+        DbServer dbServer = getDbServer();
+        DatasetDAO datasetDAO = getDatasetDAO();
+        Session session = getSession();
+        datasetDAO.deleteDatasets(datasets, dbServer, session);
+    }
+    
+    protected void collectTemporaryDatasets(Map<String, EmfDataset> datasets) {
+        for(String placeholderName : outputDatasets.keySet()) {
+            DatasetVersion datasetVersion = outputDatasets.get(placeholderName); 
+            if (!datasetVersion.isKeep() && datasetVersion.getDataset() != null) {
+                datasets.put(getPathNames(placeholderName), datasetVersion.getDataset());
             }
         }
     }

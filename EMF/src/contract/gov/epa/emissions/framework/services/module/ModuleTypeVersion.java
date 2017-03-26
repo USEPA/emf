@@ -292,7 +292,7 @@ public class ModuleTypeVersion implements Serializable {
     }
     
     public Map<String, ModuleTypeVersionDatasetConnectionEndpoint> getSourceDatasetEndpoints(ModuleTypeVersionDatasetConnection datasetConnection) {
-        String datasetTypeName = datasetConnection.getDatasetTypeName();
+        String datasetTypeName = datasetConnection.getTargetDatasetTypeName();
         Map<String, ModuleTypeVersionDatasetConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionDatasetConnectionEndpoint>();
         for (ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
             if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
@@ -313,11 +313,15 @@ public class ModuleTypeVersion implements Serializable {
         return endpoints;
     }
     
+    private static boolean compatibleParameterTypes(String sourceSqlType, String targetSqlType) {
+        return true; // for now
+    }
+
     public Map<String, ModuleTypeVersionParameterConnectionEndpoint> getSourceParameterEndpoints(ModuleTypeVersionParameterConnection parameterConnection) {
-        String sqlType = parameterConnection.getSqlType();
+        String targetSqlType = parameterConnection.getTargetSqlType();
         Map<String, ModuleTypeVersionParameterConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionParameterConnectionEndpoint>();
         for (ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
-            if (parameter.getSqlParameterType().equals(sqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
+            if (compatibleParameterTypes(parameter.getSqlParameterType(), targetSqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
                 ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, null, parameter.getParameterName());
                 endpoints.put(endpoint.getEndpointName(), endpoint);
             }
@@ -325,7 +329,7 @@ public class ModuleTypeVersion implements Serializable {
         for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
             if (submodule.equals(parameterConnection.getTargetSubmodule())) continue;
             for (ModuleTypeVersionParameter parameter : submodule.getModuleTypeVersion().getModuleTypeVersionParameters().values()) {
-                if (parameter.getSqlParameterType().equals(sqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
+                if (compatibleParameterTypes(parameter.getSqlParameterType(), targetSqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
                     ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, submodule, parameter.getParameterName());
                     endpoints.put(endpoint.getEndpointName(), endpoint);
                 }

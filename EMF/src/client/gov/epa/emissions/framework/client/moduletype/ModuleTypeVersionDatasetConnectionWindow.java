@@ -103,7 +103,7 @@ public class ModuleTypeVersionDatasetConnectionWindow extends DisposableInteralF
         JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        Label datasetTypeName = new Label(moduleTypeVersionDatasetConnection.getDatasetTypeName());
+        Label datasetTypeName = new Label(moduleTypeVersionDatasetConnection.getTargetDatasetTypeName());
         layoutGenerator.addLabelWidgetPair("Dataset Type:", datasetTypeName, contentPanel);
         
         sourcesCB = new ComboBox(sourceEndpointNames);

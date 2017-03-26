@@ -21,7 +21,7 @@ public class ModuleTypeVersionConnectionsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Category", "Type", "Source", "Target", "Description"};
+        return new String[] { "Category", "Source Type", "Source", "Target Type", "Target", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -41,8 +41,9 @@ public class ModuleTypeVersionConnectionsTableData extends AbstractTableData {
         
         for (ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersion.getModuleTypeVersionDatasetConnections().values()) {
             Object[] values = { "dataset",
-                                datasetConnection.getDatasetTypeName(),
+                                datasetConnection.getSourceDatasetTypeName(), // source and target types must be the same
                                 datasetConnection.getSourceName(),
+                                datasetConnection.getTargetDatasetTypeName(),
                                 datasetConnection.getTargetName(),
                                 getShortDescription(datasetConnection.getDescription()) };
             Row row = new ViewableRow(datasetConnection, values);
@@ -51,8 +52,9 @@ public class ModuleTypeVersionConnectionsTableData extends AbstractTableData {
 
         for (ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersion.getModuleTypeVersionParameterConnections().values()) {
             Object[] values = { "parameter",
-                                parameterConnection.getSqlType(),
+                                parameterConnection.getSourceSqlType(), // source and target types can be different
                                 parameterConnection.getSourceName(),
+                                parameterConnection.getTargetSqlType(),
                                 parameterConnection.getTargetName(),
                                 getShortDescription(parameterConnection.getDescription()) };
             Row row = new ViewableRow(parameterConnection, values);

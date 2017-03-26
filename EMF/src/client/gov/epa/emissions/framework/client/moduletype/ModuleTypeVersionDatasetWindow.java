@@ -17,7 +17,6 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
@@ -126,7 +125,9 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
         JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        mode = new ComboBox(new String[] {ModuleTypeVersionDataset.IN, ModuleTypeVersionDataset.INOUT, ModuleTypeVersionDataset.OUT});
+        // temporarily disable INOUT datasets (see UP-460)
+        // mode = new ComboBox(new String[] {ModuleTypeVersionDataset.IN, ModuleTypeVersionDataset.INOUT, ModuleTypeVersionDataset.OUT});
+        mode = new ComboBox(new String[] {ModuleTypeVersionDataset.IN, ModuleTypeVersionDataset.OUT});
         mode.setSelectedItem(moduleTypeVersionDataset.getMode());
         addChangeable(mode);
         layoutGenerator.addLabelWidgetPair("Mode:", mode, contentPanel);

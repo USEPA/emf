@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import org.hibernate.Session;
 
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 
 class CompositeModuleRunner extends ModuleRunner {
     private Map<Integer, SubmoduleRunner> submoduleRunners; // the key is the submodule id 
@@ -292,9 +293,40 @@ class CompositeModuleRunner extends ModuleRunner {
                 }
                 statement = null;
             }
+            
+            Map<String, EmfDataset> datasets = new HashMap<String, EmfDataset>();
+            collectTemporaryDatasets(datasets);
+            
+            if (!datasets.isEmpty()) {
+                StringBuilder message = new StringBuilder();
+                for(String placeholderPathNames : datasets.keySet()) {
+                    EmfDataset dataset = datasets.get(placeholderPathNames);
+                    message.append(String.format("Deleting temporary dataset \"%s\"\nfor placeholder \"%s\"\n\n", dataset.getName(), placeholderPathNames));
+                }
+                
+                history.addLogMessage(History.INFO, message.toString());
+                history = modulesDAO.update(history, session);
+                
+                try {
+                    EmfDataset[] datasetsArray = datasets.values().toArray(new EmfDataset[]{});
+                    deleteDatasets(datasetsArray);
+                    history.addLogMessage(History.INFO, "Successfully deleted all temporary datasets.");
+                    history = modulesDAO.update(history, session);
+                } catch (EmfException e) {
+                    history.addLogMessage(History.INFO, "Failed to delete a temporary dataset:\n" + e.getMessage());
+                    history = modulesDAO.update(history, session);
+                }
+            }
         }
     }
 
+    protected void collectTemporaryDatasets(Map<String, EmfDataset> datasets) {
+        super.collectTemporaryDatasets(datasets);
+        for(SubmoduleRunner submoduleRunner : submoduleRunners.values()) {
+            submoduleRunner.collectTemporaryDatasets(datasets);
+        }
+    }
+    
     public Map<Integer, SubmoduleRunner> getSubmoduleRunners() {
         return submoduleRunners;
     }

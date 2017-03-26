@@ -101,6 +101,7 @@ import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
+import gov.epa.emissions.framework.services.module.ParameterType;
 import gov.epa.emissions.framework.services.sms.SectorScenario;
 import gov.epa.emissions.framework.services.sms.SectorScenarioInventory;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;
@@ -153,6 +154,8 @@ public class DataMappings extends Mappings {
         bean(call, HistoryInternalDataset.class,   historyInternalDataset());
         bean(call, HistoryInternalParameter.class, historyInternalParameter());
 
+        bean(call, ParameterType.class,            parameterType());
+        
         bean(call, InternalSource.class, "InternalSource");
         bean(call, ExternalSource.class, externalSource());
 
@@ -269,6 +272,7 @@ public class DataMappings extends Mappings {
         array(call, DatasetType[].class, datasetTypes());
 
         array(call, ModuleType[].class, moduleTypes());
+        array(call, ParameterType[].class, parameterTypes());
 
         array(call, Module[].class, modules());
 
@@ -385,6 +389,10 @@ public class DataMappings extends Mappings {
 
     public QName moduleTypes() {
         return qname("ModuleTypes");
+    }
+
+    public QName parameterTypes() {
+        return qname("ParameterTypes");
     }
 
     public QName modules() {
@@ -549,6 +557,10 @@ public class DataMappings extends Mappings {
 
     public QName historyInternalParameter() {
         return qname("HistoryInternalParameter");
+    }
+
+    public QName parameterType() {
+        return qname("ParameterType");
     }
 
     public QName dataset() {

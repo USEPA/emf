@@ -11,6 +11,8 @@ public interface ModuleService {
 
     ModuleType getModuleType(int id) throws EmfException;
     
+    ParameterType[] getParameterTypes() throws EmfException;
+
     ModuleType addModuleType(ModuleType moduleType) throws EmfException;
 
     ModuleType updateModuleType(ModuleType moduleType) throws EmfException;
