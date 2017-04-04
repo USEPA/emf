@@ -92,7 +92,6 @@ class SimpleModuleRunner extends ModuleRunner {
             }
             
             // replace global placeholders in the algorithm
-            // TODO ignore SQL comments
             algorithm = replaceGlobalPlaceholders(algorithm, user, startDate, history);
             
             history.setUserScript(algorithm);
@@ -108,7 +107,6 @@ class SimpleModuleRunner extends ModuleRunner {
             history.setUserScript(algorithm);
 
             // verify that the algorithm doesn't have any parameter placeholders left
-            // TODO ignore SQL comments
             assertNoPlaceholders(algorithm, "#");
 
             // create outer block
