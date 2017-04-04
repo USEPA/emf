@@ -177,112 +177,116 @@ public class ModuleServiceImpl implements ModuleService {
             statement = connection.createStatement();
             
             session.clear();
-            moduleTypeVersion = moduleTypesDAO.updateModuleTypeVersion(moduleTypeVersion, session);
+            if (oldMTV == null) {
+                moduleTypeVersion = moduleTypesDAO.addModuleTypeVersion(moduleTypeVersion, session);
+            } else {
+                moduleTypeVersion = moduleTypesDAO.updateModuleTypeVersion(moduleTypeVersion, session);
             
-            // manually delete the missing datasets, parameters, submodules, and connections from the database
-            // this is necessary to compensate for an old Hibernate bug
-            
-            StringBuilder errors = new StringBuilder();
-            
-            StringBuilder ids = new StringBuilder();
-            for (ModuleTypeVersionDataset oldMTVD : oldMTV.getModuleTypeVersionDatasets().values()) {
-                if (moduleTypeVersion.containsDatasetId(oldMTVD.getId()))
-                    continue;
-                if (ids.length() > 0)
-                    ids.append(",");
-                ids.append(oldMTVD.getId());
-            }
-            if (ids.length() > 0) {
-                try {
-                    statement.execute("DELETE FROM modules.module_types_versions_datasets WHERE id IN (" + ids.toString() + ")");
-                } catch (Exception e) {
-                    errors.append("Failed to delete module type version dataset(s): " + e.getMessage() + "\n");
+                // manually delete the missing datasets, parameters, submodules, and connections from the database
+                // this is necessary to compensate for an old Hibernate bug
+                
+                StringBuilder errors = new StringBuilder();
+                
+                StringBuilder ids = new StringBuilder();
+                for (ModuleTypeVersionDataset oldMTVD : oldMTV.getModuleTypeVersionDatasets().values()) {
+                    if (moduleTypeVersion.containsDatasetId(oldMTVD.getId()))
+                        continue;
+                    if (ids.length() > 0)
+                        ids.append(",");
+                    ids.append(oldMTVD.getId());
                 }
-            }
-
-            ids.setLength(0);
-            for (ModuleTypeVersionParameter oldMTVP : oldMTV.getModuleTypeVersionParameters().values()) {
-                if (moduleTypeVersion.containsParameterId(oldMTVP.getId()))
-                    continue;
-                if (ids.length() > 0)
-                    ids.append(",");
-                ids.append(oldMTVP.getId());
-            }
-            if (ids.length() > 0) {
-                try {
-                    statement.execute("DELETE FROM modules.module_types_versions_parameters WHERE id IN (" + ids.toString() + ")");
-                } catch (Exception e) {
-                    errors.append("Failed to delete module type version parameter(s): " + e.getMessage() + "\n");
+                if (ids.length() > 0) {
+                    try {
+                        statement.execute("DELETE FROM modules.module_types_versions_datasets WHERE id IN (" + ids.toString() + ")");
+                    } catch (Exception e) {
+                        errors.append("Failed to delete module type version dataset(s): " + e.getMessage() + "\n");
+                    }
                 }
-            }
-
-            ids.setLength(0);
-            for (ModuleTypeVersionSubmodule oldMTVS : oldMTV.getModuleTypeVersionSubmodules().values()) {
-                if (moduleTypeVersion.containsSubmoduleId(oldMTVS.getId()))
-                    continue;
-                if (ids.length() > 0)
-                    ids.append(",");
-                ids.append(oldMTVS.getId());
-            }
-            if (ids.length() > 0) {
-                try {
-                    statement.execute("DELETE FROM modules.module_types_versions_submodules WHERE id IN (" + ids.toString() + ")");
-                } catch (Exception e) {
-                    errors.append("Failed to delete module type version submodule(s): " + e.getMessage() + "\n");
+    
+                ids.setLength(0);
+                for (ModuleTypeVersionParameter oldMTVP : oldMTV.getModuleTypeVersionParameters().values()) {
+                    if (moduleTypeVersion.containsParameterId(oldMTVP.getId()))
+                        continue;
+                    if (ids.length() > 0)
+                        ids.append(",");
+                    ids.append(oldMTVP.getId());
                 }
-            }
-            
-            ids.setLength(0);
-            for (ModuleTypeVersionDatasetConnection oldMTVDC : oldMTV.getModuleTypeVersionDatasetConnections().values()) {
-                if (moduleTypeVersion.containsDatasetConnectionId(oldMTVDC.getId()))
-                    continue;
-                if (ids.length() > 0)
-                    ids.append(",");
-                ids.append(oldMTVDC.getId());
-            }
-            if (ids.length() > 0) {
-                try {
-                    statement.execute("DELETE FROM modules.module_types_versions_connections_datasets WHERE id IN (" + ids.toString() + ")");
-                } catch (Exception e) {
-                    errors.append("Failed to delete module type version dataset connection(s): " + e.getMessage() + "\n");
+                if (ids.length() > 0) {
+                    try {
+                        statement.execute("DELETE FROM modules.module_types_versions_parameters WHERE id IN (" + ids.toString() + ")");
+                    } catch (Exception e) {
+                        errors.append("Failed to delete module type version parameter(s): " + e.getMessage() + "\n");
+                    }
                 }
-            }
-            
-            ids.setLength(0);
-            for (ModuleTypeVersionParameterConnection oldMTVPC : oldMTV.getModuleTypeVersionParameterConnections().values()) {
-                if (moduleTypeVersion.containsParameterConnectionId(oldMTVPC.getId()))
-                    continue;
-                if (ids.length() > 0)
-                    ids.append(",");
-                ids.append(oldMTVPC.getId());
-            }
-            if (ids.length() > 0) {
-                try {
-                    statement.execute("DELETE FROM modules.module_types_versions_connections_parameters WHERE id IN (" + ids.toString() + ")");
-                } catch (Exception e) {
-                    errors.append("Failed to delete module type version parameter connection(s): " + e.getMessage() + "\n");
+    
+                ids.setLength(0);
+                for (ModuleTypeVersionSubmodule oldMTVS : oldMTV.getModuleTypeVersionSubmodules().values()) {
+                    if (moduleTypeVersion.containsSubmoduleId(oldMTVS.getId()))
+                        continue;
+                    if (ids.length() > 0)
+                        ids.append(",");
+                    ids.append(oldMTVS.getId());
                 }
-            }
-            
-            if (errors.length() > 0)
-                throw new EmfException(errors.toString());
-
-            // get fresh modules with updated moduleTypeVersion
-            modules = getModulesForModuleTypeVersion(moduleTypeVersion.getId());
-
-            StringBuilder errorMessage = new StringBuilder();
-            for (nextModule = 0; nextModule < modules.length; nextModule++) {
-                try {
-                    modules[nextModule].update(oldMTV);
-                    modules[nextModule] = modulesDAO.updateModule(modules[nextModule], session);
-                    modules[nextModule] = modulesDAO.releaseLockedModule(user, modules[nextModule].getId(), session);
-                } catch (Exception e) {
-                    errorMessage.append("Failed to update or unlock the \"" + modules[nextModule].getName() + "\" module. " + e.getMessage());
-                    e.printStackTrace();
+                if (ids.length() > 0) {
+                    try {
+                        statement.execute("DELETE FROM modules.module_types_versions_submodules WHERE id IN (" + ids.toString() + ")");
+                    } catch (Exception e) {
+                        errors.append("Failed to delete module type version submodule(s): " + e.getMessage() + "\n");
+                    }
                 }
-            }
-            if (errorMessage.length() > 0) {
-                throw new EmfException(errorMessage.toString());
+                
+                ids.setLength(0);
+                for (ModuleTypeVersionDatasetConnection oldMTVDC : oldMTV.getModuleTypeVersionDatasetConnections().values()) {
+                    if (moduleTypeVersion.containsDatasetConnectionId(oldMTVDC.getId()))
+                        continue;
+                    if (ids.length() > 0)
+                        ids.append(",");
+                    ids.append(oldMTVDC.getId());
+                }
+                if (ids.length() > 0) {
+                    try {
+                        statement.execute("DELETE FROM modules.module_types_versions_connections_datasets WHERE id IN (" + ids.toString() + ")");
+                    } catch (Exception e) {
+                        errors.append("Failed to delete module type version dataset connection(s): " + e.getMessage() + "\n");
+                    }
+                }
+                
+                ids.setLength(0);
+                for (ModuleTypeVersionParameterConnection oldMTVPC : oldMTV.getModuleTypeVersionParameterConnections().values()) {
+                    if (moduleTypeVersion.containsParameterConnectionId(oldMTVPC.getId()))
+                        continue;
+                    if (ids.length() > 0)
+                        ids.append(",");
+                    ids.append(oldMTVPC.getId());
+                }
+                if (ids.length() > 0) {
+                    try {
+                        statement.execute("DELETE FROM modules.module_types_versions_connections_parameters WHERE id IN (" + ids.toString() + ")");
+                    } catch (Exception e) {
+                        errors.append("Failed to delete module type version parameter connection(s): " + e.getMessage() + "\n");
+                    }
+                }
+                
+                if (errors.length() > 0)
+                    throw new EmfException(errors.toString());
+    
+                // get fresh modules with updated moduleTypeVersion
+                modules = getModulesForModuleTypeVersion(moduleTypeVersion.getId());
+    
+                StringBuilder errorMessage = new StringBuilder();
+                for (nextModule = 0; nextModule < modules.length; nextModule++) {
+                    try {
+                        modules[nextModule].update(oldMTV);
+                        modules[nextModule] = modulesDAO.updateModule(modules[nextModule], session);
+                        modules[nextModule] = modulesDAO.releaseLockedModule(user, modules[nextModule].getId(), session);
+                    } catch (Exception e) {
+                        errorMessage.append("Failed to update or unlock the \"" + modules[nextModule].getName() + "\" module. " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+                if (errorMessage.length() > 0) {
+                    throw new EmfException(errorMessage.toString());
+                }
             }
         } catch (Exception e) {
             LOG.error("Failed to update module type \"" + moduleType.getName() + "\" version \"" + moduleTypeVersion.versionName() + "\"", e);

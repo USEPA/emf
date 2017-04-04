@@ -108,8 +108,13 @@ public class ModuleTypesDAO {
         hibernateFacade.remove(moduleTypeVersion, session);
     }
 
+    public ModuleTypeVersion addModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, Session session) {
+        hibernateFacade.add(moduleTypeVersion, session);
+        return currentModuleTypeVersion(moduleTypeVersion.getId(), session);
+    }
+
     public ModuleTypeVersion updateModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, Session session) {
-        hibernateFacade.saveOrUpdate(moduleTypeVersion, session);
+        hibernateFacade.updateOnly(moduleTypeVersion, session);
         return currentModuleTypeVersion(moduleTypeVersion.getId(), session);
     }
 
