@@ -1,12 +1,17 @@
 package gov.epa.emissions.framework.client.transport;
 
+import java.util.concurrent.ConcurrentSkipListMap;
+
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ParameterType;
 
 public class ModuleServiceTransport implements ModuleService {
@@ -32,6 +37,17 @@ public class ModuleServiceTransport implements ModuleService {
         return call;
     }
 
+    @Override
+    public synchronized ParameterType[] getParameterTypes() throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getParameterTypes");
+        call.setReturnType(mappings.parameterTypes());
+
+        return (ParameterType[]) call.requestResponse(new Object[] {});
+    }
+
+    @Override
     public synchronized ModuleType[] getModuleTypes() throws EmfException {
         EmfCall call = call();
 
@@ -41,6 +57,7 @@ public class ModuleServiceTransport implements ModuleService {
         return (ModuleType[]) call.requestResponse(new Object[] {});
     }
 
+    @Override
     public synchronized ModuleType getModuleType(int id) throws EmfException {
         EmfCall call = call();
 
@@ -51,6 +68,7 @@ public class ModuleServiceTransport implements ModuleService {
         return (ModuleType) call.requestResponse(new Object[] { new Integer(id) });
     }
 
+    @Override
     public synchronized ModuleType addModuleType(ModuleType type) throws EmfException
     {
         EmfCall call = call();
@@ -62,16 +80,41 @@ public class ModuleServiceTransport implements ModuleService {
         return (ModuleType) call.requestResponse(new Object[] { type });
     }
 
-    public synchronized ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
+    @Override
+    public ModuleType updateModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, User user) throws EmfException {
         EmfCall call = call();
 
-        call.setOperation("updateModuleType");
-        call.addParam("moduleType", mappings.moduleType());
+        call.setOperation("updateModuleTypeVersion");
+        call.addParam("moduleTypeVersion", mappings.moduleTypeVersion());
+        call.addParam("user", mappings.user());
         call.setReturnType(mappings.moduleType());
 
-        return (ModuleType) call.requestResponse(new Object[] { moduleType });
+        return (ModuleType) call.requestResponse(new Object[] { moduleTypeVersion, user });
     }
 
+    @Override
+    public ModuleType removeModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("removeModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.moduleType());
+
+        return (ModuleType) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+
+//    @Override
+//    public synchronized ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
+//        EmfCall call = call();
+//
+//        call.setOperation("updateModuleType");
+//        call.addParam("moduleType", mappings.moduleType());
+//        call.setReturnType(mappings.moduleType());
+//
+//        return (ModuleType) call.requestResponse(new Object[] { moduleType });
+//    }
+
+    @Override
     public void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
         EmfCall call = call();
 
@@ -83,48 +126,64 @@ public class ModuleServiceTransport implements ModuleService {
         call.request(new Object[]{owner, types}); 
     }
 
-    public synchronized ModuleType obtainLockedModuleType(User owner, ModuleType type) throws EmfException {
+    @Override
+    public synchronized ModuleType obtainLockedModuleType(User owner, int moduleTypeId) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("obtainLockedModuleType");
         call.addParam("owner", mappings.user());
-        call.addParam("type", mappings.moduleType());
+        call.addIntegerParam("moduleTypeId");
         call.setReturnType(mappings.moduleType());
 
-        return (ModuleType) call.requestResponse(new Object[] { owner, type });
+        return (ModuleType) call.requestResponse(new Object[] { owner, moduleTypeId });
     }
 
-    public synchronized ModuleType releaseLockedModuleType(User owner, ModuleType type) throws EmfException {
+    @Override
+    public synchronized ModuleType releaseLockedModuleType(User owner, int moduleTypeId) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("releaseLockedModuleType");
         call.addParam("owner", mappings.user());
-        call.addParam("type", mappings.moduleType());
+        call.addIntegerParam("moduleTypeId");
         call.setReturnType(mappings.moduleType());
 
-        return (ModuleType) call.requestResponse(new Object[] { owner, type });
+        return (ModuleType) call.requestResponse(new Object[] { owner, moduleTypeId });
     }
 
-    public synchronized Module[] getModules() throws EmfException {
+    @Override
+    public LiteModule[] getLiteModules() throws EmfException {
         EmfCall call = call();
 
-        call.setOperation("getModules");
-        call.setReturnType(mappings.modules());
+        call.setOperation("getLiteModules");
+        call.setReturnType(mappings.liteModules());
 
-        return (Module[]) call.requestResponse(new Object[] {});
+        return (LiteModule[]) call.requestResponse(new Object[] {});
     }
 
-    public synchronized Module getModule(int id) throws EmfException
+//    @Override
+//    public synchronized Module[] getModules() throws EmfException {
+//        EmfCall call = call();
+//
+//        call.setOperation("getModules");
+//        call.setReturnType(mappings.modules());
+//
+//        return (Module[]) call.requestResponse(new Object[] {});
+//    }
+
+    @Override
+    public synchronized Module getModule(int moduleId) throws EmfException
     {
         EmfCall call = call();
 
         call.setOperation("getModule");
-        call.addIntegerParam("id");
+        call.addIntegerParam("moduleId");
         call.setReturnType(mappings.module());
 
-        return (Module) call.requestResponse(new Object[] { new Integer(id) });
+        Module module = (Module) call.requestResponse(new Object[] { new Integer(moduleId) });
+        return module;
     }
 
+    @Override
     public synchronized Module addModule(Module module) throws EmfException
     {
         EmfCall call = call();
@@ -133,9 +192,14 @@ public class ModuleServiceTransport implements ModuleService {
         call.addParam("module", mappings.module());
         call.setReturnType(mappings.module());
 
-        return (Module) call.requestResponse(new Object[] { module });
+        module = (Module) call.requestResponse(new Object[] { module });
+        
+        emfSession.getObjectCache().invalidate(ObjectCacheType.LITE_MODULES_LIST);
+        
+        return module;
     }
 
+    @Override
     public synchronized Module updateModule(Module module) throws EmfException {
         EmfCall call = call();
 
@@ -143,62 +207,159 @@ public class ModuleServiceTransport implements ModuleService {
         call.addParam("module", mappings.module());
         call.setReturnType(mappings.module());
 
-        return (Module) call.requestResponse(new Object[] { module });
+        module = (Module) call.requestResponse(new Object[] { module });
+
+        emfSession.getObjectCache().invalidate(ObjectCacheType.LITE_MODULES_LIST);
+        
+        return module;
     }
 
-    public void deleteModules(User owner, Module[] modules) throws EmfException {
+    @Override
+    public synchronized int[] deleteModules(User owner, int[] moduleIds) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("deleteModules");
         call.addParam("owner", mappings.user());
-        call.addParam("modules", mappings.modules());
-        call.setVoidReturnType();
+        call.addParam("moduleIds", mappings.integers());
+        call.setReturnType(mappings.integers());
 
-        call.request(new Object[]{owner, modules}); 
+        int[] deletedModuleIds = (int[]) call.requestResponse(new Object[] {owner, moduleIds} ); 
 
-        //make sure we refresh the client-side cache
-        this.emfSession.getObjectCache().invalidate(ObjectCacheType.LIGHT_DATASET_TYPES_LIST);
+        // refresh the lite modules cache
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();
+        for (int deletedModuleId : deletedModuleIds) {
+            liteModules.remove(deletedModuleId);
+        }
+        
+        return deletedModuleIds;
     }
 
-    public synchronized Module obtainLockedModule(User owner, Module module) throws EmfException {
+    @Override
+    public synchronized Module obtainLockedModule(User owner, int moduleId) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("obtainLockedModule");
         call.addParam("owner", mappings.user());
-        call.addParam("module", mappings.module());
+        call.addIntegerParam("moduleId");
         call.setReturnType(mappings.module());
 
-        return (Module) call.requestResponse(new Object[] { owner, module });
+        Module module = (Module) call.requestResponse(new Object[] { owner, new Integer(moduleId) });
+
+        // refresh the lite modules cache
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();
+        LiteModule liteModule = liteModules.get(moduleId);
+        liteModule.setLockDate(module.getLockDate());
+        liteModule.setLockOwner(module.getLockOwner());
+        
+        return module;
     }
 
-    public synchronized Module releaseLockedModule(User owner, Module module) throws EmfException {
+    @Override
+    public synchronized Module releaseLockedModule(User owner, int moduleId) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("releaseLockedModule");
         call.addParam("owner", mappings.user());
-        call.addParam("module", mappings.module());
+        call.addIntegerParam("moduleId");
         call.setReturnType(mappings.module());
 
-        return (Module) call.requestResponse(new Object[] { owner, module });
+        Module module = (Module) call.requestResponse(new Object[] { owner, new Integer(moduleId) });
+
+        // refresh the lite modules cache
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();
+        LiteModule liteModule = liteModules.get(moduleId);
+        liteModule.setLockDate(module.getLockDate());
+        liteModule.setLockOwner(module.getLockOwner());
+        
+        return module;
     }
 
-    public synchronized void runModules(Module[] modules, User user) throws EmfException {
+    @Override
+    public synchronized int[] lockModules(User owner, int[] moduleIds) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("lockModules");
+        call.addParam("owner", mappings.user());
+        call.addParam("moduleIds", mappings.integers());
+        call.setReturnType(mappings.integers());
+
+        int[] lockedModuleIds = (int[]) call.requestResponse(new Object[] { owner, moduleIds });
+
+        emfSession.getObjectCache().invalidate(ObjectCacheType.LITE_MODULES_LIST);
+        
+        return lockedModuleIds;
+    }
+
+    @Override
+    public synchronized int[] unlockModules(User owner, int[] moduleIds) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("unlockModules");
+        call.addParam("owner", mappings.user());
+        call.addParam("moduleIds", mappings.integers());
+        call.setReturnType(mappings.integers());
+
+        int[] unlockedModuleIds = (int[]) call.requestResponse(new Object[] { owner, moduleIds });
+
+        emfSession.getObjectCache().invalidate(ObjectCacheType.LITE_MODULES_LIST);
+        
+        return unlockedModuleIds;
+    }
+
+    @Override
+    public synchronized void runModules(int[] moduleIds, User user) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("runModules");
-        call.addParam("modules", mappings.modules());
+        call.addParam("moduleIds", mappings.integers());
         call.addParam("user", mappings.user());
         call.setVoidReturnType();
 
-        call.request(new Object[] { modules, user });
+        call.request(new Object[] { moduleIds, user });
+
+        // NOTE modules are still running
+        
+        emfSession.getObjectCache().invalidate(ObjectCacheType.LITE_MODULES_LIST);
     }
 
-    public synchronized ParameterType[] getParameterTypes() throws EmfException {
+    @Override
+    public synchronized EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId) throws EmfException {
         EmfCall call = call();
 
-        call.setOperation("getParameterTypes");
-        call.setReturnType(mappings.parameterTypes());
+        call.setOperation("getEmfDatasetForModuleDataset");
+        call.addIntegerParam("moduleId");
+        call.setReturnType(mappings.dataset());
 
-        return (ParameterType[]) call.requestResponse(new Object[] {});
+        return (EmfDataset) call.requestResponse(new Object[] { new Integer(moduleDatasetId) });
+    }
+
+    @Override
+    public synchronized LiteModule[] getRelatedLiteModules(int datasetId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getRelatedLiteModules");
+        call.addIntegerParam("datasetId");
+        call.setReturnType(mappings.liteModules());
+
+        LiteModule[] relatedLiteModules = (LiteModule[]) call.requestResponse(new Object[] { new Integer(datasetId) });
+        
+        // refresh the lite modules cache
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();
+        for (LiteModule liteModule : relatedLiteModules) {
+            liteModules.put(liteModule.getId(), liteModule);
+        }
+        
+        return relatedLiteModules;
+    }
+
+    @Override
+    public Module[] getModulesForModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getModulesForModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.modules());
+
+        return (Module[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
     }
 }

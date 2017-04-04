@@ -22,7 +22,7 @@ public class HistoryDatasetsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name/Placeholder", "Dataset Name", "Version", "Description"};
+        return new String[] { "Mode", "Name/Placeholder", "Dataset Name", "Version", "Exists?", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -42,11 +42,12 @@ public class HistoryDatasetsTableData extends AbstractTableData {
 
         for (HistoryDataset element : historyDatasets.values()) {
             String mode = element.getModuleTypeVersionDataset().getMode();
+            EmfDataset dataset = null;
             String datasetName = "";
             Integer datasetId = element.getDatasetId();
             if (datasetId != null) {
                 try {
-                    EmfDataset dataset = session.dataService().getDataset(datasetId);
+                    dataset = session.dataService().getDataset(datasetId);
                     if (dataset != null)
                         datasetName = dataset.getName();
                 } catch (EmfException ex) {
@@ -57,6 +58,7 @@ public class HistoryDatasetsTableData extends AbstractTableData {
                                 element.getPlaceholderName(),
                                 datasetName,
                                 element.getVersion(),
+                                (dataset == null) ? "No" : "Yes",
                                 getShortDescription(element.getModuleTypeVersionDataset()) };
 
             Row row = new ViewableRow(element, values);

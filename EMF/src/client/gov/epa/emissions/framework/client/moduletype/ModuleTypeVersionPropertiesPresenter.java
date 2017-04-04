@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.moduletype;
 
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.Module;
@@ -40,17 +41,17 @@ public class ModuleTypeVersionPropertiesPresenter {
         view.disposeView();
     }
 
-    public ModuleType obtainLockedModuleType(ModuleType moduleType) throws EmfException{
-        return session.moduleService().obtainLockedModuleType(session.user(), moduleType);
+    public ModuleType obtainLockedModuleType(int moduleTypeId) throws EmfException{
+        return session.moduleService().obtainLockedModuleType(session.user(), moduleTypeId);
     }
 
     public ModuleType getModuleType(int id) throws EmfException{
         return session.moduleService().getModuleType(id);
     }
 
-    public ModuleType releaseLockedModuleType(ModuleType moduleType) {
+    public ModuleType releaseLockedModuleType(int moduleTypeId) {
         try {
-            return session.moduleService().releaseLockedModuleType(session.user(), moduleType);
+            return session.moduleService().releaseLockedModuleType(session.user(), moduleTypeId);
         } catch (EmfException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
@@ -63,8 +64,8 @@ public class ModuleTypeVersionPropertiesPresenter {
         return session.moduleService().addModuleType(moduleType);
     }
 
-    public ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
-        return session.moduleService().updateModuleType(moduleType);
+    public ModuleType updateModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, User user) throws EmfException {
+        return session.moduleService().updateModuleTypeVersion(moduleTypeVersion, user);
     }
 
     public void displayModuleTypeVersionDatasetView(ModuleTypeVersionDatasetView view) {
@@ -92,22 +93,12 @@ public class ModuleTypeVersionPropertiesPresenter {
         presenter.doDisplay();
     }
     
-    public Module[] getModules(ModuleTypeVersion moduleTypeVersion) {
-        try {
-            return session.moduleService().getModules();
-        } catch (EmfException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        } // TODO get only the modules for this moduleTypeVersion
-        return new Module[] {};
-    }
-
     public Module obtainLockedModule(Module module) throws EmfException {
-        return session.moduleService().obtainLockedModule(session.user(), module);
+        return session.moduleService().obtainLockedModule(session.user(), module.getId());
     }
     
     public Module releaseLockedModule(Module module) throws EmfException {
-        return session.moduleService().releaseLockedModule(session.user(), module);
+        return session.moduleService().releaseLockedModule(session.user(), module.getId());
     }
 
     public Module updateModule(Module module) throws EmfException {

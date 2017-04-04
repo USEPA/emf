@@ -41,13 +41,9 @@ public class ModuleTypesManagerPresenter {
         presenter.doDisplay();
     }
 
-    public Module[] getModules() throws EmfException {
-        return session.moduleService().getModules();
-    }
-    
     public void doRemove(ModuleType[] types) throws EmfException {
 
-        ModuleType[] lockedTypes = getLockedTypes(types);
+        ModuleType[] lockedTypes = getLockedModuleTypes(types);
 
         if (lockedTypes == null)
             return;
@@ -57,16 +53,16 @@ public class ModuleTypesManagerPresenter {
         } catch (EmfException e) {
             throw new EmfException(e.getMessage());
         } finally {
-            releaseLocked(lockedTypes);
+            releaseLockedModuleTypes(lockedTypes);
         }
     }
 
-    private ModuleType[] getLockedTypes(ModuleType[] types) throws EmfException{
+    private ModuleType[] getLockedModuleTypes(ModuleType[] moduleTypes) throws EmfException{
         List<ModuleType> lockedList = new ArrayList<ModuleType>();
-        for (int i=0; i < types.length; i++){
-            ModuleType locked = session.moduleService().obtainLockedModuleType(session.user(), types[i]);
+        for (int i=0; i < moduleTypes.length; i++){
+            ModuleType locked = session.moduleService().obtainLockedModuleType(session.user(), moduleTypes[i].getId());
             if (locked == null) {
-                releaseLocked(lockedList.toArray(new ModuleType[0]));
+                releaseLockedModuleTypes(lockedList.toArray(new ModuleType[0]));
                 return null;
             }
             lockedList.add(locked);
@@ -74,13 +70,13 @@ public class ModuleTypesManagerPresenter {
         return lockedList.toArray(new ModuleType[0]);
     }
 
-    private void releaseLocked(ModuleType[] lockedTypes) {
-        if (lockedTypes.length == 0)
+    private void releaseLockedModuleTypes(ModuleType[] moduleTypes) {
+        if (moduleTypes.length == 0)
             return;
 
-        for(int i = 0; i < lockedTypes.length; i++) {
+        for(int i = 0; i < moduleTypes.length; i++) {
             try {
-                session.moduleService().releaseLockedModuleType(session.user(), lockedTypes[i]);
+                session.moduleService().releaseLockedModuleType(session.user(), moduleTypes[i].getId());
             } catch (Exception e) { //so that it go release locks continuously
                 e.printStackTrace();
             }

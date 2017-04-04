@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class ModuleRunnerThread implements Runnable {
 
-    private Module[] modules;
+    private int[] moduleIds;
 
     private User user;
 
@@ -20,9 +20,9 @@ public class ModuleRunnerThread implements Runnable {
 
     private Log log = LogFactory.getLog(ModuleRunnerThread.class);
 
-    public ModuleRunnerThread(Module[] modules, User user, 
+    public ModuleRunnerThread(int[] moduleIds, User user, 
             DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
-        this.modules = modules;
+        this.moduleIds = moduleIds;
         this.user = user;
         this.dbServerFactory = dbServerFactory;
         this.sessionFactory = sessionFactory;
@@ -30,7 +30,7 @@ public class ModuleRunnerThread implements Runnable {
 
     public void run() {
         try {
-            ModuleRunnerTask task = new ModuleRunnerTask(modules, user, dbServerFactory, sessionFactory);
+            ModuleRunnerTask task = new ModuleRunnerTask(moduleIds, user, dbServerFactory, sessionFactory);
             task.run();
         } catch (EmfException e) {
             logError("Could not run all modules", e);

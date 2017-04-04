@@ -1,6 +1,12 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.DataService;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 
 public class HistoryInternalDataset implements Serializable {
 
@@ -16,6 +22,18 @@ public class HistoryInternalDataset implements Serializable {
 
     private int version;
 
+    public EmfDataset getEmfDataset(DataService dataService) {
+        try {
+            if (datasetId != null) {
+                return dataService.getDataset(datasetId);
+            }
+        } catch (EmfException ex) {
+            // ignore exception
+        }
+        
+        return null;
+    }
+    
     public int getId() {
         return id;
     }

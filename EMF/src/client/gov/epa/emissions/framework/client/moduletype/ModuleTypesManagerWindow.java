@@ -12,7 +12,8 @@ import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.module.Module;
+import gov.epa.emissions.framework.services.module.LiteModule;
+import gov.epa.emissions.framework.services.module.LiteModuleType;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
@@ -27,6 +28,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -193,7 +196,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             ModuleType moduleType = (ModuleType) iter.next();
             try {
-                moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType);
+                moduleType = session.moduleService().obtainLockedModuleType(session.user(), moduleType.getId());
             } catch (EmfException e) {
                 messagePanel.setError("Failed to lock " + moduleType.getName() + ": " + e.getMessage());
                 break;
@@ -226,49 +229,47 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             return;
         }   
 
-        ModuleType[] selectedMTs = selected.toArray(new ModuleType[0]);
-        for(ModuleType selectedMT : selectedMTs) {
-            if (selectedMT.isLocked()) {
-                String error = String.format("Can't remove the %s module type: it's locked by %s", selectedMT.getName(), selectedMT.getLockOwner());
+        ModuleType[] selectedModuleTypes = selected.toArray(new ModuleType[0]);
+        int[] selectedModuleTypeIds = new int[selectedModuleTypes.length];
+        for (int i = 0; i < selectedModuleTypes.length; i++) {
+            ModuleType selectedModuleType = selectedModuleTypes[i]; 
+            selectedModuleTypeIds[i] = selectedModuleType.getId(); 
+            if (selectedModuleType.isLocked()) {
+                String error = String.format("Can't remove the %s module type: it's locked by %s", selectedModuleType.getName(), selectedModuleType.getLockOwner());
                 messagePanel.setError(error);
                 return;
             }
         }
         
         int count = 0;
-        try {
-            Module[] modules = presenter.getModules();
-            for(Module module : modules) {
-                for(ModuleType selectedMT : selectedMTs) {
-                    if (module.getModuleTypeVersion().getModuleType().getId() == selectedMT.getId()) {
-                        count++;
-                        if (module.isLocked()) {
-                            String error = String.format("Can't remove the %s module type: the %s module is locked by %s", selectedMT.getName(), module.getName(), module.getLockOwner());
-                            messagePanel.setError(error);
-                            return;
-                        }
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = session.getLiteModules();
+        for(LiteModule liteModule : liteModules.values()) {
+            LiteModuleType liteModuleType = liteModule.getLiteModuleTypeVersion().getLiteModuleType(); 
+            for(ModuleType selectedModuleType : selectedModuleTypes) {
+                if (liteModuleType.getId() == selectedModuleType.getId()) {
+                    count++;
+                    if (liteModule.isLocked()) {
+                        String error = String.format("Can't remove the %s module type: the %s module is locked by %s", selectedModuleType.getName(), liteModule.getName(), liteModule.getLockOwner());
+                        messagePanel.setError(error);
+                        return;
                     }
                 }
             }
-        } catch (EmfException e) {
-            messagePanel.setError("Failed to get the list of modules.");
-            return;
         }
 
         String message = "";
         if (count > 0) {
-            message = String.format("Are you sure you want to remove the selected %d module type(s)? The %d module(s) that use this module type(s) will also be removed. There is no undo for this action.", selected.size(), count);
+            message = String.format("Are you sure you want to remove the selected %d module type(s)? The %d module(s) that use this module type(s) will also be removed. There is no undo for this action.", selectedModuleTypes.length, count);
         } else {
-            message = String.format("Are you sure you want to remove the selected %d module type(s)? There is no undo for this action.", selected.size());
+            message = String.format("Are you sure you want to remove the selected %d module type(s)? There is no undo for this action.", selectedModuleTypes.length);
         }
         
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
-                presenter.doRemove(selected.toArray(new ModuleType[0]));
-                messagePanel.setMessage(selected.size()
-                        + " module types have been removed. Please Refresh to see the revised list of types.");
+                presenter.doRemove(selectedModuleTypes);
+                messagePanel.setMessage(selectedModuleTypes.length + " module types have been removed. Please Refresh to see the revised list of types.");
             } catch (EmfException e) {
               JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
             }

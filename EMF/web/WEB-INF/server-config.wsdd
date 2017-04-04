@@ -261,6 +261,22 @@
 		qname="ns1:DatasetType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ParameterType"
+		qname="ns1:ParameterType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.LiteModuleType"
+		qname="ns1:LiteModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.LiteModuleTypeVersion"
+		qname="ns1:LiteModuleTypeVersion" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleType"
+		qname="ns1:ModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleTypeVersion"
 		qname="ns1:ModuleTypeVersion" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
@@ -297,8 +313,12 @@
 		qname="ns1:ModuleTypeVersionParameterConnectionEndpoint" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleType"
-		qname="ns1:ModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.LiteModule"
+		qname="ns1:LiteModule" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.Module"
+		qname="ns1:Module" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleDataset"
@@ -315,10 +335,6 @@
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleInternalParameter"
 		qname="ns1:ModuleInternalParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
-
-	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.framework.services.module.Module"
-		qname="ns1:Module" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.History"
@@ -343,10 +359,6 @@
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.HistoryInternalParameter"
 		qname="ns1:HistoryInternalParameter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
-
-	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.framework.services.module.ParameterType"
-		qname="ns1:ParameterType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.data.EmfDataset"

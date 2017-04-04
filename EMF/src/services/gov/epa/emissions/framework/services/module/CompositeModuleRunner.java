@@ -50,7 +50,7 @@ class CompositeModuleRunner extends ModuleRunner {
         
         Statement statement = null;
         
-        String finalStatusMessage = "";
+        setFinalStatusMessage("");
         
         try {
             createDatasets();
@@ -91,7 +91,7 @@ class CompositeModuleRunner extends ModuleRunner {
                 
                 history.addLogMessage(History.INFO, "Starting setup script.");
                 
-                history = modulesDAO.update(history, session);
+                history = modulesDAO.updateHistory(history, session);
 
                 statement = connection.createStatement();
                 statement.execute(setupScript);
@@ -254,11 +254,11 @@ class CompositeModuleRunner extends ModuleRunner {
             history.setStatus(History.COMPLETED);
             history.setResult(History.SUCCESS);
             
-            finalStatusMessage = "Completed running module '" + module.getName() + "': " + history.getResult();
+            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getResult());
             
-            history.addLogMessage(History.SUCCESS, finalStatusMessage);
+            history.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
-            history = modulesDAO.update(history, session);
+            history = modulesDAO.updateHistory(history, session);
             
         } catch (Exception e) {
             
@@ -278,11 +278,11 @@ class CompositeModuleRunner extends ModuleRunner {
                 errorMessage = eMessage + "\n";
             }
             
-            finalStatusMessage = "Completed running module '" + module.getName() + "': " + history.getResult() + "\n\n" + errorMessage;
+            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getResult() + "\n\n" + errorMessage);
             
-            history.addLogMessage(History.ERROR, finalStatusMessage);
+            history.addLogMessage(History.ERROR, getFinalStatusMessage());
             
-            history = modulesDAO.update(history, session);
+            history = modulesDAO.updateHistory(history, session);
             
         } finally {
             if (statement != null) {
@@ -305,16 +305,16 @@ class CompositeModuleRunner extends ModuleRunner {
                 }
                 
                 history.addLogMessage(History.INFO, message.toString());
-                history = modulesDAO.update(history, session);
+                history = modulesDAO.updateHistory(history, session);
                 
                 try {
                     EmfDataset[] datasetsArray = datasets.values().toArray(new EmfDataset[]{});
                     deleteDatasets(datasetsArray);
                     history.addLogMessage(History.INFO, "Successfully deleted all temporary datasets.");
-                    history = modulesDAO.update(history, session);
+                    history = modulesDAO.updateHistory(history, session);
                 } catch (EmfException e) {
                     history.addLogMessage(History.INFO, "Failed to delete a temporary dataset:\n" + e.getMessage());
-                    history = modulesDAO.update(history, session);
+                    history = modulesDAO.updateHistory(history, session);
                 }
             }
         }

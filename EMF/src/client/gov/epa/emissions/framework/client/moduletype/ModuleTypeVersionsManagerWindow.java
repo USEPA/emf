@@ -12,6 +12,7 @@ import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -153,7 +155,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
 
         if (viewMode == ViewMode.EDIT) {
             try {
-                moduleType = presenter.releaseLockedModuleType(session.user(), moduleType);
+                moduleType = presenter.releaseLockedModuleType(moduleType.getId());
             } catch (EmfException e) {
                 messagePanel.setError("Could not unlock lock: " + moduleType.getName() + "." + e.getMessage());
             }
@@ -291,17 +293,19 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         ModuleTypeVersion selectedMTV = selectedMTVs[0];
 
         // check if the selected MTV is used by any module
-        Module[] modules = presenter.getModules(selectedMTV);
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = session.getLiteModules();
         StringBuilder list = new StringBuilder();
-        for(Module module : modules) {
-            if (selectedMTV.getId() == module.getModuleTypeVersion().getId())
-                list.append(module.getName() + "\n");
+        int count = 0;
+        for(LiteModule liteModule : liteModules.values()) {
+            if (selectedMTV.getId() == liteModule.getLiteModuleTypeVersion().getId()) {
+                list.append(liteModule.getName() + "\n");
+                count++;
+            }
         }
-        if (!list.toString().isEmpty()) {
-            messagePanel.setError("Can't remove module type version because it's being used by " + modules.length + " module(s).");
+        if (count > 0) {
+            messagePanel.setError("Can't remove module type version because it's being used by " + count + " module(s).");
             String message = "Can't remove module type version because the following module(s) depend on it:\n" + list.toString();
-            JOptionPane.showConfirmDialog(parentConsole, message,
-                                          title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -320,16 +324,14 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             return;
         }
         
-        String message = String.format("Are you sure you want to remove the selected %d module type version(s)? There is no undo for this action.", selected.size());
-        
+        String message = "Are you sure you want to remove the selected module type version? There is no undo for this action.";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
             try {
-                ModuleType moduleType = selectedMTV.getModuleType();
-                moduleType.removeModuleTypeVersion(selectedMTV);
-                moduleType = presenter.updateModuleType(moduleType);
+                ModuleType moduleType = presenter.removeModuleTypeVersion(selectedMTV.getId());
                 messagePanel.setMessage("The module type has been removed.");
-                doRefresh();
+                table.refresh(new ModuleTypeVersionsTableData(moduleType.getModuleTypeVersions()));
+                panelRefresh();
             } catch (EmfException e) {
                 messagePanel.setError("Failed to remove the selected module type: " + e.getMessage());
             }

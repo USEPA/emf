@@ -157,9 +157,11 @@ public class ModuleTypeVersion implements Serializable {
         Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
         while (matcher.find()) {
             int start = matcher.start();
+            if (isSqlComment(algorithm, start))
+                continue;
             String match = matcher.group().replaceAll("\\{\\s*", "{").replaceAll("\\s*\\.\\s*", ".").replaceAll("\\s*\\}", "}").toLowerCase();
             if (!validPlaceholders.contains(match)) {
-                error.append(String.format("Unrecognized placeholder %s at location %d.", match, start));
+                error.append(String.format("Unrecognized placeholder %s at location %d.", matcher.group(), start));
                 return false;
             }
         }
@@ -180,9 +182,11 @@ public class ModuleTypeVersion implements Serializable {
         matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(algorithm);
         while (matcher.find()) {
             int start = matcher.start();
+            if (isSqlComment(algorithm, start))
+                continue;
             String match = matcher.group().replaceAll("\\{\\s*", "{").replaceAll("\\s*\\.\\s*", ".").replaceAll("\\s*\\}", "}").toLowerCase();
             if (!validPlaceholders.contains(match)) {
-                error.append(String.format("Unrecognized parameter placeholder %s at location %d.", match, start));
+                error.append(String.format("Unrecognized parameter placeholder %s at location %d.", matcher.group(), start));
                 return false;
             }
         }
@@ -190,6 +194,23 @@ public class ModuleTypeVersion implements Serializable {
         return true;
     }
     
+    public static boolean isSqlComment(String text, int position) {
+        if (text.length() < 2)
+            return false;
+        if (position >= text.length())
+            position = text.length() - 1;
+        char prev_ch = ' ';
+        while(position >= 0) {
+            char ch = text.charAt(position--);
+            if (ch == '\r' || ch == '\n')
+                return false;
+            if (ch == '-' && prev_ch == '-')
+                return true;
+            prev_ch = ch;
+        }
+        return false;
+    }
+
     private boolean hasCircularConnections(final StringBuilder error, Deque<ModuleTypeVersionSubmodule> submodules, Deque<String> connections) {
         error.setLength(0);
         ModuleTypeVersionSubmodule submodule = submodules.peek();
@@ -450,7 +471,7 @@ public class ModuleTypeVersion implements Serializable {
         this.name = name;
     }
 
-    public String versionAndName() {
+    public String versionName() {
         return version + " - " + name;
     }
 
@@ -516,6 +537,15 @@ public class ModuleTypeVersion implements Serializable {
         return this.moduleTypeVersionDatasets;
     }
 
+    public boolean containsDatasetId(int datasetId) {
+        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
+            if (moduleTypeVersionDataset.getId() == datasetId) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void setModuleTypeVersionDatasets(Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets) {
         this.moduleTypeVersionDatasets = moduleTypeVersionDatasets;
     }
@@ -561,6 +591,15 @@ public class ModuleTypeVersion implements Serializable {
         return this.moduleTypeVersionParameters;
     }
 
+    public boolean containsParameterId(int parameterId) {
+        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersionParameters.values()) {
+            if (moduleTypeVersionParameter.getId() == parameterId) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void setModuleTypeVersionParameters(Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters) {
         this.moduleTypeVersionParameters = moduleTypeVersionParameters;
     }
@@ -645,6 +684,15 @@ public class ModuleTypeVersion implements Serializable {
         return this.moduleTypeVersionSubmodules;
     }
 
+    public boolean containsSubmoduleId(int submoduleId) {
+        for(ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : moduleTypeVersionSubmodules.values()) {
+            if (moduleTypeVersionSubmodule.getId() == submoduleId) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void setModuleTypeVersionSubmodules(Map<String, ModuleTypeVersionSubmodule> moduleTypeVersionSubmodules) {
         this.moduleTypeVersionSubmodules = moduleTypeVersionSubmodules;
     }
@@ -720,6 +768,15 @@ public class ModuleTypeVersion implements Serializable {
         return this.moduleTypeVersionDatasetConnections;
     }
 
+    public boolean containsDatasetConnectionId(int datasetConnectionId) {
+        for(ModuleTypeVersionDatasetConnection moduleTypeVersionDatasetConnection : moduleTypeVersionDatasetConnections.values()) {
+            if (moduleTypeVersionDatasetConnection.getId() == datasetConnectionId) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void setModuleTypeVersionDatasetConnections(Map<String, ModuleTypeVersionDatasetConnection> moduleTypeVersionDatasetConnections) {
         this.moduleTypeVersionDatasetConnections = moduleTypeVersionDatasetConnections;
     }
@@ -737,6 +794,15 @@ public class ModuleTypeVersion implements Serializable {
 
     public Map<String, ModuleTypeVersionParameterConnection> getModuleTypeVersionParameterConnections() {
         return this.moduleTypeVersionParameterConnections;
+    }
+
+    public boolean containsParameterConnectionId(int parameterConnectionId) {
+        for(ModuleTypeVersionParameterConnection moduleTypeVersionParameterConnection : moduleTypeVersionParameterConnections.values()) {
+            if (moduleTypeVersionParameterConnection.getId() == parameterConnectionId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setModuleTypeVersionParameterConnections(Map<String, ModuleTypeVersionParameterConnection> moduleTypeVersionParameterConnections) {

@@ -68,14 +68,14 @@ abstract class SubmoduleRunner extends ModuleRunner {
                                           CustomDateFormat.format_yyyy_MM_dd_HHmmssSSS(getStartDate()));
         historySubmodule.addLogMessage(History.INFO, logMessage);
         getHistory().addHistorySubmodule(historySubmodule);
-        getModulesDAO().update(getHistory(), getSession());
+        getModulesDAO().updateHistory(getHistory(), getSession());
     }
 
     protected void stop() {
         Date submoduleStopDate = new Date();
         long durationSeconds = (submoduleStopDate.getTime() - submoduleStartDate.getTime()) / 1000;
         historySubmodule.setDurationSeconds((int)durationSeconds);
-        historySubmodule = getModulesDAO().update(historySubmodule, getSession());
+        historySubmodule = getModulesDAO().updateSubmodule(historySubmodule, getSession());
     }
 
     public void run() throws EmfException {
@@ -109,17 +109,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
     }
 
     private void checkInternalDatasetReplacementRules(EmfDataset dataset, Module module, String placeholderPathNames) throws EmfException {
-        KeyVal[] keyVals = dataset.getKeyVals();
-        int checkCount = 0;
-        for(KeyVal keyVal : keyVals) {
-            if (keyVal.getKwname().equals("MODULE_NAME") && keyVal.getValue().equals(module.getName()))
-                checkCount++;
-            if (keyVal.getKwname().equals("MODULE_ID") && keyVal.getValue().equals(module.getId() + ""))
-                checkCount++;
-            if (keyVal.getKwname().equals("MODULE_PLACEHOLDER") && keyVal.getValue().equals(placeholderPathNames))
-                checkCount++;
-        }
-        if (checkCount != 3) {
+        if (!wasDatasetCreatedByModule(dataset, module, placeholderPathNames)) {
             throw new EmfException("Can't replace internal dataset \"" + dataset.getName() +
                                    "\" because it was not created by module \"" + module.getName() +
                                    "\" for the \"" + placeholderPathNames + "\" placeholder");
@@ -179,7 +169,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 VersionedTableFormat versionedTableFormat = new VersionedTableFormat(datasetType.getFileFormat(), types);
                 String description = "New internal dataset created by the '" + module.getName() + "' module for the '" + placeholderPathNames + "' placeholder.";
                 DatasetCreator datasetCreator = new DatasetCreator(module, placeholderPathNames, user, sessionFactory, dbServerFactory, datasource);
-                dataset = datasetCreator.addDataset("mod", internalDatasetName, datasetType, versionedTableFormat, description);
+                dataset = datasetCreator.addDataset("mod", internalDatasetName, datasetType, module.getIsFinal(), versionedTableFormat, description);
                
                 InternalSource internalSource = getInternalSource(dataset);
                 
@@ -206,7 +196,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 
                 try {
                     DatasetCreator datasetCreator = new DatasetCreator(module, placeholderPathNames, user, sessionFactory, dbServerFactory, datasource);
-                    datasetCreator.replaceDataset(session, connection, dataset);
+                    datasetCreator.replaceDataset(session, connection, dataset, module.getIsFinal());
                 } finally {
                     if (must_unlock)
                         dataset = datasetDAO.releaseLocked(user, dataset, session);
@@ -232,7 +222,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 historyInternalDatasets.put(placeholderPath, historyInternalDataset);
             }
         }
-        getModulesDAO().update(getHistory(), getSession());
+        getModulesDAO().updateHistory(getHistory(), getSession());
     }
 
     public ModuleRunner getParentModuleRunner() {
@@ -331,7 +321,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
             
             historySubmodule.addLogMessage(History.INFO, "Starting teardown script.");
             
-            historySubmodule = modulesDAO.update(historySubmodule, session);
+            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
             
             statement = connection.createStatement();
             statement.execute(teardownScript);

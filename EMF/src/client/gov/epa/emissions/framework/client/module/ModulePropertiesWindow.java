@@ -253,8 +253,23 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         module.setModuleInternalDatasets(module.computeInternalDatasets());
+        for(String placeholderPath : module.getModuleInternalDatasets().keySet()) {
+            if (!oldModuleCopy.getModuleInternalDatasets().containsKey(placeholderPath))
+                continue;
+            ModuleInternalDataset newModuleInternalDataset = module.getModuleInternalDatasets().get(placeholderPath);
+            ModuleInternalDataset oldModuleInternalDataset = oldModuleCopy.getModuleInternalDatasets().get(placeholderPath);
+            newModuleInternalDataset.setKeep(oldModuleInternalDataset.getKeep());
+            newModuleInternalDataset.setDatasetNamePattern(oldModuleInternalDataset.getDatasetNamePattern());
+        }
         
         module.setModuleInternalParameters(module.computeInternalParameters());
+        for(String parameterPath : module.getModuleInternalParameters().keySet()) {
+            if (!oldModuleCopy.getModuleInternalParameters().containsKey(parameterPath))
+                continue;
+            ModuleInternalParameter newModuleInternalParameter = module.getModuleInternalParameters().get(parameterPath);
+            ModuleInternalParameter oldModuleInternalParameter = oldModuleCopy.getModuleInternalParameters().get(parameterPath);
+            newModuleInternalParameter.setKeep(oldModuleInternalParameter.getKeep());
+        }
         
         // TODO should we clear the module history too?
         
@@ -645,6 +660,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private void viewDatasets() {
         clear();
+        @SuppressWarnings("rawtypes")
         final List datasets = selectedDatasets();
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select one or more Datasets");
@@ -673,7 +689,12 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             public Void doInBackground() throws EmfException  {
                 for (Iterator iter = datasets.iterator(); iter.hasNext();) {
                     ModuleDataset moduleDataset = (ModuleDataset) iter.next();
-                    EmfDataset emfDataset = moduleDataset.getEmfDataset(session.dataService());
+                    EmfDataset emfDataset = null;
+                    try {
+                        emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId());
+                    } catch (EmfException e) {
+                        // ignore;
+                    }
                     if (emfDataset != null) {
                         DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
                         presenter.doDisplayDatasetProperties(view, emfDataset);
@@ -688,28 +709,23 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             @Override
             public void done() {
                 try {
-                    //make sure something didn't happen
                     get();
-                    
                 } catch (InterruptedException e1) {
-//                    messagePanel.setError(e1.getMessage());
-//                    setErrorMsg(e1.getMessage());
+                    // ignore
                 } catch (ExecutionException e1) {
-//                    messagePanel.setError(e1.getCause().getMessage());
-//                    setErrorMsg(e1.getCause().getMessage());
+                    // ignore
                 } finally {
-//                    this.parentContainer.setCursor(null); //turn off the wait cursor
-//                    this.parentContainer.
                     ComponentUtility.enableComponents(parentContainer, true);
                     this.parentContainer.setCursor(null); //turn off the wait cursor
                 }
             }
-        };
+        }
         new ViewDatasetPropertiesTask(this).execute();
     }
 
     private void viewRelatedModules() {
         clear();
+        @SuppressWarnings("rawtypes")
         final List datasets = selectedDatasets();
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select a dataset");
@@ -722,21 +738,19 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         ModuleDataset moduleDataset = (ModuleDataset) datasets.get(0);
         String mode = moduleDataset.getModuleTypeVersionDataset().getMode();
         String outputMethod = moduleDataset.getOutputMethod();
-        EmfDataset emfDataset = moduleDataset.getEmfDataset(session.dataService());
+        EmfDataset emfDataset = null;
+        try {
+            emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId());
+        } catch (EmfException e) {
+            // ignore;
+        }
         if (emfDataset == null) {
             messagePanel.setMessage("The dataset does not exist");
             return;
         }
 
-        Module[] modules = null;
-        try {
-            modules = presenter.getModules();
-        } catch (EmfException e) {
-            messagePanel.setError("Failed to get the modules: " + e.getMessage());
-        }
-        
         // bring up the window with all related modules
-        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset, modules);
+        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset);
         try {
             presenter.doDisplayRelatedModules(view);
         } catch (EmfException e) {
@@ -827,6 +841,9 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     
     private JPanel internalDatasetsCrudPanel() {
 
+        String message = "You have asked to open a lot of windows. Do you wish to proceed?";
+        ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
+
         Action keepAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 keepInternalDatasets();
@@ -841,7 +858,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button dontKeepButton = new Button("Don't Keep", dontKeepAction);
-        dontKeepButton.setMnemonic('D');
+        dontKeepButton.setMnemonic('o');
 
         Action setInternalDatasetNameAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -851,11 +868,29 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         Button setInternalDatasetNameButton = new Button("Set Dataset Name", setInternalDatasetNameAction);
         setInternalDatasetNameButton.setMnemonic('N');
 
+        Action viewInternalDatasetsAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewInternalDatasets();
+            }
+        };
+        SelectAwareButton viewInternalDatasetsButton = new SelectAwareButton("View Dataset Properties", viewInternalDatasetsAction, internalDatasetsTable, confirmDialog);
+        viewInternalDatasetsButton.setMnemonic('D');
+
+        Action viewInternalRelatedModulesAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewInternalRelatedModules();
+            }
+        };
+        Button viewRelatedModulesButton = new Button("View Related Modules", viewInternalRelatedModulesAction);
+        viewRelatedModulesButton.setMnemonic('M');
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         crudPanel.add(keepButton);
         crudPanel.add(dontKeepButton);
         crudPanel.add(setInternalDatasetNameButton);
+        crudPanel.add(viewInternalDatasetsButton);
+        crudPanel.add(viewRelatedModulesButton);
         if (viewMode == ViewMode.VIEW) {
             keepButton.setEnabled(false);
             dontKeepButton.setEnabled(false);
@@ -865,6 +900,96 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         return crudPanel;
     }
 
+    private void viewInternalDatasets() {
+        clear();
+        @SuppressWarnings("rawtypes")
+        final List datasets = selectedInternalDatasets();
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select one or more internal datasets");
+            return;
+        }
+        
+        //long running methods.....
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusable, so
+        //we create new instances as needed.
+        class ViewDatasetPropertiesTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public ViewDatasetPropertiesTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException  {
+                for (@SuppressWarnings("rawtypes") Iterator iter = datasets.iterator(); iter.hasNext();) {
+                    ModuleInternalDataset moduleInternalDataset = (ModuleInternalDataset) iter.next();
+                    EmfDataset emfDataset = moduleInternalDataset.getEmfDataset(session.dataService());
+                    if (emfDataset != null) {
+                        DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
+                        presenter.doDisplayDatasetProperties(view, emfDataset);
+                    }
+                }
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    get();
+                } catch (InterruptedException e1) {
+                    // ignore
+                } catch (ExecutionException e1) {
+                    // ignore
+                } finally {
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        }
+        new ViewDatasetPropertiesTask(this).execute();
+    }
+
+    private void viewInternalRelatedModules() {
+        clear();
+        @SuppressWarnings("rawtypes")
+        final List datasets = selectedInternalDatasets();
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select an internal dataset");
+            return;
+        } else if (datasets.size() > 1) {
+            messagePanel.setMessage("Please select only one internal dataset");
+            return;
+        }
+        
+        ModuleInternalDataset moduleInternalDataset = (ModuleInternalDataset) datasets.get(0);
+        EmfDataset emfDataset = moduleInternalDataset.getEmfDataset(session.dataService());
+        if (emfDataset == null) {
+            messagePanel.setMessage("The internal dataset does not exist");
+            return;
+        }
+
+        // bring up the window with all related modules
+        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset);
+        try {
+            presenter.doDisplayRelatedModules(view);
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
     private List selectedInternalDatasets() {
         return internalDatasetsTable.selected();
     }
@@ -875,6 +1000,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private void keepInternalDatasets() {
+        @SuppressWarnings("rawtypes")
         List selected = selectedInternalDatasets();
         if (selected.isEmpty()) {
             messagePanel.setMessage("Please select one or more internal datasets");
@@ -973,7 +1099,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button dontKeepButton = new Button("Don't Keep", dontKeepAction);
-        dontKeepButton.setMnemonic('D');
+        dontKeepButton.setMnemonic('o');
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));

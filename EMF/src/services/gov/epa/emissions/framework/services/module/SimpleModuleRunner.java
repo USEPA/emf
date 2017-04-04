@@ -51,7 +51,7 @@ class SimpleModuleRunner extends ModuleRunner {
         
         Statement statement = null;
         
-        String finalStatusMessage = "";
+        setFinalStatusMessage("");
         
         try {
             String algorithm = moduleTypeVersion.getAlgorithm();
@@ -92,6 +92,7 @@ class SimpleModuleRunner extends ModuleRunner {
             }
             
             // replace global placeholders in the algorithm
+            // TODO ignore SQL comments
             algorithm = replaceGlobalPlaceholders(algorithm, user, startDate, history);
             
             history.setUserScript(algorithm);
@@ -107,6 +108,7 @@ class SimpleModuleRunner extends ModuleRunner {
             history.setUserScript(algorithm);
 
             // verify that the algorithm doesn't have any parameter placeholders left
+            // TODO ignore SQL comments
             assertNoPlaceholders(algorithm, "#");
 
             // create outer block
@@ -171,7 +173,7 @@ class SimpleModuleRunner extends ModuleRunner {
                 
                 history.addLogMessage(History.INFO, "Starting setup script.");
                 
-                history = modulesDAO.update(history, session);
+                history = modulesDAO.updateHistory(history, session);
 
                 statement = connection.createStatement();
                 statement.execute(setupScript);
@@ -202,7 +204,7 @@ class SimpleModuleRunner extends ModuleRunner {
                 
                 history.addLogMessage(History.INFO, "Starting user script (algorithm).");
                 
-                history = modulesDAO.update(history, session);
+                history = modulesDAO.updateHistory(history, session);
                 
                 userConnection = getUserConnection(userTimeStamp, tempUserPassword);
                 userConnection.setAutoCommit(true);
@@ -262,9 +264,9 @@ class SimpleModuleRunner extends ModuleRunner {
             history.setStatus(History.COMPLETED);
             history.setResult(History.SUCCESS);
             
-            finalStatusMessage = "Completed running module '" + module.getName() + "': " + history.getResult();
+            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getResult());
             
-            history.addLogMessage(History.SUCCESS, finalStatusMessage);
+            history.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
         } catch (Exception e) {
             
@@ -284,12 +286,12 @@ class SimpleModuleRunner extends ModuleRunner {
                 errorMessage = eMessage;
             }
             
-            finalStatusMessage = "Completed running module '" + module.getName() + "': " + history.getResult() + "\n\n" + errorMessage;
+            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getResult() + "\n\n" + errorMessage);
             
-            history.addLogMessage(History.ERROR, finalStatusMessage);
+            history.addLogMessage(History.ERROR, getFinalStatusMessage());
             
         } finally {
-            history = modulesDAO.update(history, session);
+            history = modulesDAO.updateHistory(history, session);
             if (statement != null) {
                 try {
                     statement.close();

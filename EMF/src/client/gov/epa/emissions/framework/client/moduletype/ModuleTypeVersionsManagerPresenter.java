@@ -23,7 +23,7 @@ public class ModuleTypeVersionsManagerPresenter {
         this.view = view;
     }
 
-    public void doDisplay() throws EmfException {
+    public void doDisplay() {
         view.observe(this);
         view.display();
     }
@@ -37,47 +37,24 @@ public class ModuleTypeVersionsManagerPresenter {
         presenter.doDisplay();
     }
 
-    public Module[] getModules() throws EmfException {
-        return session.moduleService().getModules();
+    public ModuleType obtainLockedModuleType(int moduleTypeId) throws EmfException {
+        return session.moduleService().obtainLockedModuleType(session.user(), moduleTypeId);
     }
 
-    public ModuleType obtainLockedModuleType(User owner, ModuleType moduleType) throws EmfException {
-        return session.moduleService().obtainLockedModuleType(owner, moduleType);
-    }
-
-    public ModuleType releaseLockedModuleType(User owner, ModuleType moduleType) throws EmfException {
-        return session.moduleService().releaseLockedModuleType(owner, moduleType);
+    public ModuleType releaseLockedModuleType(int moduleTypeId) throws EmfException {
+        return session.moduleService().releaseLockedModuleType(session.user(), moduleTypeId);
     }
     
     public ModuleType getModuleType(int id) throws EmfException {
         return session.moduleService().getModuleType(id);
     }
-    
-    public Module[] getModules(ModuleTypeVersion moduleTypeVersion) {
-        try {
-            return session.moduleService().getModules();
-        } catch (EmfException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        } // TODO get only the modules for this moduleTypeVersion
-        return new Module[] {};
-    }
 
-    public ModuleType obtainLockedModuleType(ModuleType moduleType) throws EmfException{
-        return session.moduleService().obtainLockedModuleType(session.user(), moduleType);
+    public ModuleType removeModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        return session.moduleService().removeModuleTypeVersion(moduleTypeVersionId);
     }
-
-    public ModuleType releaseLockedModuleType(ModuleType moduleType) {
-        try {
-            return session.moduleService().releaseLockedModuleType(session.user(), moduleType);
-        } catch (EmfException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
-        return session.moduleService().updateModuleType(moduleType);
-    }
+        
+    // TODO add removeModuleTypeVersion instead
+//    public ModuleType updateModuleType(ModuleType moduleType) throws EmfException {
+//        return session.moduleService().updateModuleType(moduleType);
+//    }
 }

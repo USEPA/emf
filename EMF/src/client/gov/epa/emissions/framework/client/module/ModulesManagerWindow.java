@@ -13,6 +13,7 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.Module;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
@@ -27,6 +28,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -109,7 +112,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
-        table = new SelectableSortFilterWrapper(parentConsole, new ModulesTableData(new Module[] {}), null);
+        table = new SelectableSortFilterWrapper(parentConsole, new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>()), null);
         tablePanel.add(table);
         return tablePanel;
     }
@@ -215,42 +218,52 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     private void viewModules() {
-        List selected = selected();
-        if (selected.isEmpty()) {
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
             if (table.getTable().getRowCount() > 0) {
                 messagePanel.setMessage("Please select one or more modules");
             }
             return;
         }   
 
-        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            Module module = (Module) iter.next();
+        for (int moduleId : selectedModuleIds) {
+            Module module = null;
             try {
-                module = presenter.getModule(module.getId());
+                module = presenter.getModule(moduleId);
             } catch (EmfException e) {
-                messagePanel.setError("Failed to get module: " + e.getMessage());
+                messagePanel.setError("Failed to get module (ID = " + moduleId + "): " + e.getMessage());
                 continue;
             }
+            if (module == null)
+                continue;
             ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, module, null);
             presenter.displayNewModuleView(view);
         }
     }
 
     private void editModules() {
-        List selected = selected();
-        if (selected.isEmpty()) {
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
             if (table.getTable().getRowCount() > 0) {
                 messagePanel.setMessage("Please select one or more modules");
             }
             return;
         }   
 
-        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            Module module = (Module) iter.next();
+        for (int moduleId : selectedModuleIds) {
+            Module module = null;
+            try {
+                module = presenter.getModule(moduleId);
+            } catch (EmfException e) {
+                messagePanel.setError("Failed to get module (ID = " + moduleId + "): " + e.getMessage());
+                continue;
+            }
+            if (module == null)
+                continue;
             ViewMode viewMode = module.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT;
             if (viewMode == ViewMode.EDIT) {
                 try {
-                    module = session.moduleService().obtainLockedModule(session.user(), module);
+                    module = session.moduleService().obtainLockedModule(session.user(), module.getId());
                 } catch (EmfException e) {
                     messagePanel.setError("Failed to lock " + module.getName() + ": " + e.getMessage());
                     continue;
@@ -273,8 +286,8 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     private void lockModules() {
-        List selected = selected();
-        if (selected.isEmpty()) {
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
             if (table.getTable().getRowCount() > 0) {
                 messagePanel.setMessage("Please select one or more modules");
             }
@@ -283,16 +296,11 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         boolean mustRefresh = false;
         
-        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            Module module = (Module) iter.next();
-            if (module.isLocked())
-                continue;
-            try {
-                module = session.moduleService().obtainLockedModule(session.user(), module);
-                mustRefresh = true;
-            } catch (EmfException e) {
-                messagePanel.setError("Failed to lock " + module.getName() + ": " + e.getMessage());
-            }
+        try {
+            session.moduleService().lockModules(session.user(), selectedModuleIds);
+            mustRefresh = true;
+        } catch (EmfException e) {
+            messagePanel.setError("Failed to lock module(s): " + e.getMessage());
         }
 
         if (mustRefresh)
@@ -300,26 +308,21 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     private void unlockModules() {
-        List selected = selected();
-        if (selected.isEmpty()) {
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
             if (table.getTable().getRowCount() > 0) {
                 messagePanel.setMessage("Please select one or more modules");
             }
             return;
-        }   
-
+        }
+        
         boolean mustRefresh = false;
         
-        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            Module module = (Module) iter.next();
-            if (module.isLocked(session.user())) {
-                try {
-                    module = session.moduleService().releaseLockedModule(session.user(), module);
-                    mustRefresh = true;
-                } catch (EmfException e) {
-                    messagePanel.setError("Failed to unlock " + module.getName() + ": " + e.getMessage());
-                }
-            }
+        try {
+            session.moduleService().unlockModules(session.user(), selectedModuleIds);
+            mustRefresh = true;
+        } catch (EmfException e) {
+            messagePanel.setError("Failed to lock module(s): " + e.getMessage());
         }
 
         if (mustRefresh)
@@ -335,22 +338,24 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     private void copyModules() {
-        List selected = selected();
-        if (selected.isEmpty()) {
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
             if (table.getTable().getRowCount() > 0) {
                 messagePanel.setMessage("Please select one or more modules");
             }
             return;
-        }   
-
-        for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            Module module = (Module) iter.next();
+        }
+        
+        for (int moduleId : selectedModuleIds) {
+            Module module = null;
             try {
-                module = presenter.getModule(module.getId());
+                module = presenter.getModule(moduleId);
             } catch (EmfException e) {
-                messagePanel.setError("Failed to get module: " + e.getMessage());
+                messagePanel.setError("Failed to get module (ID = " + moduleId + "): " + e.getMessage());
                 continue;
             }
+            if (module == null)
+                continue;
             Module copy = module.deepCopy(session.user());
             ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.NEW, copy, null);
             presenter.displayNewModuleView(view);
@@ -359,80 +364,75 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
     private void removeModules() {
         messagePanel.clear();
-        List<?> selected = selected();
-        if (selected.isEmpty()) {
+        
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
             if (table.getTable().getRowCount() > 0) {
                 messagePanel.setMessage("Please select one or more modules");
             }
             return;
-        }   
-
-        String message = "Are you sure you want to remove the selected " + selected.size() + " module(s)?";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
-        if (selection == JOptionPane.YES_OPTION) {
-            try {
-                presenter.doRemove(selected.toArray(new Module[0]));
-                messagePanel.setMessage(selected.size()
-                        + " module modules have been removed. Please Refresh to see the revised list of modules.");
-            } catch (EmfException e) {
-              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
-            }
+        }
+        
+        String message = "Are you sure you want to remove the selected " + selectedModuleIds.length + " module(s)?";
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (selection != JOptionPane.YES_OPTION)
+            return;
+        
+        try {
+            int[] removedModuleIds = presenter.doRemove(selectedModuleIds);
+            if (removedModuleIds.length == 0)
+                messagePanel.setError("No module has been removed.");
+            else if (removedModuleIds.length == 1)
+                messagePanel.setMessage("One module has been removed. Please Refresh to see the revised list of modules.");
+            else
+                messagePanel.setMessage(removedModuleIds.length + " modules have been removed. Please Refresh to see the revised list of modules.");
+        } catch (EmfException e) {
+          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
         }
     }
 
     private void runModules() {
         messagePanel.clear();
-        List<?> selected = selected();
-        if (selected.isEmpty()) {
+        
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
             if (table.getTable().getRowCount() > 0) {
                 messagePanel.setMessage("Please select one or more modules");
             }
             return;
-        }   
-
-        Module[] modules = selected.toArray(new Module[0]);
+        }
 
         String message;
-        if (modules.length == 1) {
-            message = "Are you sure you want to run the '" + modules[0].getName() + "' module?";
+        if (selectedModuleIds.length == 1) {
+            message = "Are you sure you want to run this module?";
         } else {
-            message = "Are you sure you want to run the selected " + selected.size() + " modules?";
+            message = "Are you sure you want to run the selected " + selectedModuleIds.length + " modules?";
         }
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
-        if (selection == JOptionPane.YES_OPTION) {
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (selection != JOptionPane.YES_OPTION)
+            return;
             
-            boolean allModulesAreValid = true;
-            for (Module module : modules) {
-                StringBuilder error = new StringBuilder();
-                if (!module.isValid(error)) {
-                    messagePanel.setMessage(String.format("Module %s is invalid: %s", module.getName(), error.toString()));
-                    allModulesAreValid = false;
-                    break;
-                }
+        try {
+            presenter.runModules(selectedModuleIds);
+            if (selectedModuleIds.length == 1) {
+                messagePanel.setMessage("The module has been executed.");
+            } else {
+                messagePanel.setMessage("The " + selectedModuleIds.length + " modules have been executed.");
             }
-            
-            if (allModulesAreValid) {
-                try {
-                    // TODO send only the list of module IDs
-                    presenter.runModules(modules);
-                    if (modules.length == 1) {
-                        messagePanel.setMessage("Module " + modules[0].getName() + " has been executed.");
-                    } else {
-                        messagePanel.setMessage(modules.length + " modules have been executed.");
-                    }
-                } catch (EmfException e) {
-                  JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
-                }
-            }
+        } catch (EmfException e) {
+          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
         }
     }
 
-    private List selected() {
-        return table.selected();
+    private int[] selectedModuleIds() {
+        List selected = table.selected();
+        int[] moduleIds = new int[selected.size()];
+        int i = 0;
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            LiteModule liteModule = (LiteModule) iter.next();
+            moduleIds[i++] = liteModule.getId();
+        }
+        return moduleIds;
     }
 
     public EmfConsole getParentConsole() {
@@ -441,14 +441,8 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
     @Override
     public void doRefresh() {
-        Module[] modules = null;
-        try {
-            modules = presenter.getModules();
-        } catch (EmfException e) {
-            messagePanel.setError("Refresh failed: " + e.getMessage());
-        }
-        
-        boolean hasData = (modules != null) && (modules.length > 0);
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = presenter.getLiteModules();
+        boolean hasData = (liteModules != null) && !liteModules.isEmpty();
 
         // FIXME these settings are reverted somewhere else
         viewButton.setEnabled(hasData);
@@ -459,7 +453,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         removeButton.setEnabled(hasData);
         runButton.setEnabled(hasData);
 
-        table.refresh(new ModulesTableData(modules));
+        table.refresh(new ModulesTableData(liteModules));
         panelRefresh();
     }
 

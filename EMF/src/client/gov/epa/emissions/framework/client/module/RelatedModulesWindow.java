@@ -13,8 +13,8 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -25,14 +25,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class RelatedModulesWindow extends ReusableInteralFrame implements RelatedModulesView, RefreshObserver {
@@ -43,7 +40,7 @@ public class RelatedModulesWindow extends ReusableInteralFrame implements Relate
 
     EmfDataset dataset;
     
-    Module[] modules;
+    LiteModule[] liteModules;
     
     private RelatedModulesPresenter presenter;
 
@@ -64,7 +61,7 @@ public class RelatedModulesWindow extends ReusableInteralFrame implements Relate
 
     private MessagePanel messagePanel;
 
-    public RelatedModulesWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager, EmfDataset dataset, Module[] modules) {
+    public RelatedModulesWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager, EmfDataset dataset) {
         super("View Related Modules - " + dataset.getName(), new Dimension(700, 350), desktopManager);
         super.setName("View Related Modules - " + dataset.getName());
 
@@ -72,7 +69,7 @@ public class RelatedModulesWindow extends ReusableInteralFrame implements Relate
         this.parentConsole = parentConsole;
 
         this.dataset = dataset;
-        this.modules = modules;
+        this.liteModules = new LiteModule[]{};
         
         layout = new JPanel();
         this.getContentPane().add(layout);
@@ -118,7 +115,16 @@ public class RelatedModulesWindow extends ReusableInteralFrame implements Relate
 
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
-        table = new SelectableSortFilterWrapper(parentConsole, new RelatedModulesTableData(dataset, modules, session), null);
+        if (liteModules == null || liteModules.length == 0) {
+            try {
+                liteModules = presenter.getRelatedLiteModules(dataset.getId());
+            } catch (EmfException e) {
+                // NOTE Auto-generated catch block
+                e.printStackTrace();
+                messagePanel.setError("Failed to get the related modules: " + e.getMessage());
+            }
+        }
+        table = new SelectableSortFilterWrapper(parentConsole, new RelatedModulesTableData(liteModules), null);
         tablePanel.add(table);
         return tablePanel;
     }
@@ -172,15 +178,15 @@ public class RelatedModulesWindow extends ReusableInteralFrame implements Relate
         }   
 
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
-            Module module = (Module) iter.next();
+            LiteModule liteModule = (LiteModule) iter.next();
             try {
-                module = presenter.getModule(module.getId());
+                Module module = presenter.getModule(liteModule.getId());
+                ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, module, null);
+                presenter.displayModuleProperties(view);
             } catch (EmfException e) {
                 messagePanel.setError("Failed to get module: " + e.getMessage());
                 continue;
             }
-            ModulePropertiesWindow view = new ModulePropertiesWindow(parentConsole, desktopManager, session, ViewMode.VIEW, module, null);
-            presenter.displayModuleProperties(view);
         }
     }
     private List selected() {
@@ -194,17 +200,19 @@ public class RelatedModulesWindow extends ReusableInteralFrame implements Relate
     @Override
     public void doRefresh() {
         try {
-            modules = presenter.getModules();
+            liteModules = presenter.getRelatedLiteModules(dataset.getId());
         } catch (EmfException e) {
-            messagePanel.setError("Refresh failed: " + e.getMessage());
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+            messagePanel.setError("Failed to get the related modules: " + e.getMessage());
         }
         
-        boolean hasData = (modules != null) && (modules.length > 0);
+        boolean hasData = (liteModules != null) && (liteModules.length > 0);
 
         // FIXME these settings are reverted somewhere else
         viewButton.setEnabled(hasData);
 
-        table.refresh(new RelatedModulesTableData(dataset, modules, session));
+        table.refresh(new RelatedModulesTableData(liteModules));
         panelRefresh();
     }
 

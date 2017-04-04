@@ -23,6 +23,7 @@ import gov.epa.emissions.framework.services.editor.DataEditorService;
 import gov.epa.emissions.framework.services.editor.DataViewService;
 import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ParameterType;
 import gov.epa.emissions.framework.services.qa.QAService;
@@ -37,6 +38,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -71,7 +73,7 @@ public class DefaultEmfSession implements EmfSession {
     }
 
     public enum ObjectCacheType {
-        LIGHT_DATASET_TYPES_LIST, PROJECTS_LIST, PARAMETER_TYPES_LIST
+        LIGHT_DATASET_TYPES_LIST, PROJECTS_LIST, PARAMETER_TYPES_LIST, LITE_MODULES_LIST
     }
     
     public DefaultEmfSession(final User user, ServiceLocator locator) throws EmfException {
@@ -98,6 +100,14 @@ public class DefaultEmfSession implements EmfSession {
                                 parameterTypesMap.put(parameterType.getSqlType(), parameterType);
                             }
                             return parameterTypesMap;
+                        } else if (key.equals(ObjectCacheType.LITE_MODULES_LIST)) {
+                            System.out.println("loading client-side object cache -- LITE_MODULES_LIST");
+                            LiteModule[] liteModules = serviceLocator.moduleService().getLiteModules();
+                            ConcurrentSkipListMap<Integer, LiteModule> liteModulesMap = new ConcurrentSkipListMap<Integer, LiteModule>();
+                            for (LiteModule liteModule : liteModules) {
+                                liteModulesMap.put(liteModule.getId(), liteModule);
+                            }
+                            return liteModulesMap;
                         }
                         return null;
                     }
@@ -282,5 +292,23 @@ public class DefaultEmfSession implements EmfSession {
             e.printStackTrace();
         }
         return new TreeMap<String, ParameterType>();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public ConcurrentSkipListMap<Integer, LiteModule> getLiteModules() {
+        try {
+            return (ConcurrentSkipListMap<Integer, LiteModule>) objectCache.get(ObjectCacheType.LITE_MODULES_LIST);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new ConcurrentSkipListMap<Integer, LiteModule>();
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public ConcurrentSkipListMap<Integer, LiteModule> getFreshLiteModules() {
+        objectCache.invalidate(ObjectCacheType.LITE_MODULES_LIST);
+        return getLiteModules();
     }
 }

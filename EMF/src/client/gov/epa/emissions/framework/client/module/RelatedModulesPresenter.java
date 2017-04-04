@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.module;
 
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
 
@@ -30,8 +31,8 @@ public class RelatedModulesPresenter {
         view.disposeView();
     }
 
-    public Module[] getModules() throws EmfException {
-        return service().getModules();
+    public LiteModule[] getRelatedLiteModules(int datasetId) throws EmfException {
+        return service().getRelatedLiteModules(datasetId);
     }
 
     public Module getModule(int id) throws EmfException {

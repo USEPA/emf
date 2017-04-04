@@ -2,42 +2,63 @@ package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 
 public interface ModuleService {
 
-    // Module Types
-
-    ModuleType[] getModuleTypes() throws EmfException;
-
-    ModuleType getModuleType(int id) throws EmfException;
+    // Parameter Types
     
     ParameterType[] getParameterTypes() throws EmfException;
 
+    // Module Types
+
+    ModuleType[] getModuleTypes() throws EmfException; // TODO add LiteModuleType class (and maybe LiteModuleTypeVersion too) and use the session object cache
+
+    ModuleType getModuleType(int id) throws EmfException;
+    
     ModuleType addModuleType(ModuleType moduleType) throws EmfException;
 
-    ModuleType updateModuleType(ModuleType moduleType) throws EmfException;
+    // ModuleType updateModuleType(ModuleType moduleType) throws EmfException;
 
-    void deleteModuleTypes(User owner, ModuleType[] moduleTypes) throws EmfException;
+    void deleteModuleTypes(User owner, ModuleType[] moduleTypes) throws EmfException; // TODO send module type ids only
 
-    ModuleType obtainLockedModuleType(User owner, ModuleType moduleType) throws EmfException;
+    ModuleType obtainLockedModuleType(User owner, int moduleTypeId) throws EmfException; // TODO send module type id only
 
-    ModuleType releaseLockedModuleType(User owner, ModuleType moduleType) throws EmfException;
+    ModuleType releaseLockedModuleType(User owner, int moduleTypeId) throws EmfException; // TODO send module type id only
 
+    // Module Type Versions
+    
+    ModuleType updateModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, User user) throws EmfException;
+
+    ModuleType removeModuleTypeVersion(int moduleTypeVersionId) throws EmfException;
+
+    // Lite Modules
+
+    LiteModule[] getLiteModules() throws EmfException;
+
+    LiteModule[] getRelatedLiteModules(int datasetId) throws EmfException;
+    
     // Modules
 
-    Module[] getModules() throws EmfException;
-
-    Module getModule(int id) throws EmfException;
+    Module getModule(int moduleId) throws EmfException;
     
     Module addModule(Module module) throws EmfException;
 
     Module updateModule(Module module) throws EmfException;
 
-    void deleteModules(User owner, Module[] modules) throws EmfException;
+    int[] deleteModules(User owner, int[] moduleIds) throws EmfException;
 
-    Module obtainLockedModule(User owner, Module module) throws EmfException;
+    Module obtainLockedModule(User owner, int moduleId) throws EmfException;
 
-    Module releaseLockedModule(User owner, Module module) throws EmfException;
+    Module releaseLockedModule(User owner, int moduleId) throws EmfException;
 
-    void runModules(Module[] modules, User user) throws EmfException;
+    int[] lockModules(User owner, int[] moduleIds) throws EmfException;
+
+    int[] unlockModules(User owner, int[] moduleIds) throws EmfException;
+    
+    void runModules(int[] moduleIds, User user) throws EmfException;
+
+    EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId) throws EmfException;
+    
+    Module[] getModulesForModuleTypeVersion(int moduleTypeVersionId) throws EmfException;
 }

@@ -28,6 +28,7 @@ import gov.epa.emissions.framework.services.module.HistoryInternalDataset;
 import gov.epa.emissions.framework.services.module.HistorySubmodule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
+import gov.epa.emissions.framework.services.module.ModuleInternalDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -474,6 +475,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
 
     private void viewRelatedModules() {
         clear();
+        @SuppressWarnings("rawtypes")
         final List datasets = selectedDatasets();
         if (datasets.isEmpty()) {
             messagePanel.setMessage("Please select a dataset");
@@ -484,7 +486,6 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         }
         
         HistoryDataset historyDataset = (HistoryDataset) datasets.get(0);
-        String mode = historyDataset.getModuleTypeVersionDataset().getMode();
         EmfDataset emfDataset = null;
         if (historyDataset.getDatasetId() != null) {
             try {
@@ -498,15 +499,8 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
             return;
         }
 
-        Module[] modules = null;
-        try {
-            modules = presenter.getModules();
-        } catch (EmfException e) {
-            messagePanel.setError("Failed to get the modules: " + e.getMessage());
-        }
-        
         // bring up the window with all related modules
-        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset, modules);
+        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset);
         presenter.doDisplayRelatedModules(view);
     }
 
@@ -558,17 +552,26 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         String message = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog = new ConfirmDialog(message, "Warning", this);
 
-        Action viewAction = new AbstractAction() {
+        Action viewInternalDatasetsAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 viewInternalDatasets();
             }
         };
-        SelectAwareButton viewButton = new SelectAwareButton("View Dataset Properties", viewAction, internalDatasetsTable, confirmDialog);
-        viewButton.setMnemonic('D');
+        SelectAwareButton viewInternalDatasetsButton = new SelectAwareButton("View Dataset Properties", viewInternalDatasetsAction, internalDatasetsTable, confirmDialog);
+        viewInternalDatasetsButton.setMnemonic('D');
+
+        Action viewInternalRelatedModulesAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                viewInternalRelatedModules();
+            }
+        };
+        Button viewInternalRelatedModulesButton = new Button("View Related Modules", viewInternalRelatedModulesAction);
+        viewInternalRelatedModulesButton.setMnemonic('M');
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        crudPanel.add(viewButton);
+        crudPanel.add(viewInternalDatasetsButton);
+        crudPanel.add(viewInternalRelatedModulesButton);
 
         return crudPanel;
     }
@@ -610,18 +613,40 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
                 try {
                     get();
                 } catch (InterruptedException e1) {
-//                    messagePanel.setError(e1.getMessage());
-//                    setErrorMsg(e1.getMessage());
+                    // ignore
                 } catch (ExecutionException e1) {
-//                    messagePanel.setError(e1.getCause().getMessage());
-//                    setErrorMsg(e1.getCause().getMessage());
+                    // ignore
                 } finally {
                     ComponentUtility.enableComponents(parentContainer, true);
-                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                    this.parentContainer.setCursor(null); // turn off the wait cursor
                 }
             }
         };
         new ViewDatasetPropertiesTask(this).execute();
+    }
+
+    private void viewInternalRelatedModules() {
+        clear();
+        @SuppressWarnings("rawtypes")
+        final List datasets = selectedInternalDatasets();
+        if (datasets.isEmpty()) {
+            messagePanel.setMessage("Please select an internal dataset");
+            return;
+        } else if (datasets.size() > 1) {
+            messagePanel.setMessage("Please select only one internal dataset");
+            return;
+        }
+        
+        HistoryInternalDataset historyInternalDataset = (HistoryInternalDataset) datasets.get(0);
+        EmfDataset emfDataset = historyInternalDataset.getEmfDataset(session.dataService());
+        if (emfDataset == null) {
+            messagePanel.setMessage("The internal dataset does not exist");
+            return;
+        }
+
+        // bring up the window with all related modules
+        RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset);
+        presenter.doDisplayRelatedModules(view);
     }
 
     private List<?> selectedInternalDatasets() {

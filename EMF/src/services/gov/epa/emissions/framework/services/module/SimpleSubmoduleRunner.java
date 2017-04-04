@@ -52,7 +52,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
         
         Statement statement = null;
         
-        String finalStatusMessage = "";
+        setFinalStatusMessage("");
         
         try {
             String algorithm = moduleTypeVersion.getAlgorithm();
@@ -143,7 +143,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                     }
                 }
             }
-            history = modulesDAO.update(history, session);
+            history = modulesDAO.updateHistory(history, session);
             
             // return the values of all INOUT and OUT parameters as a result set
             String outputParameters = "";
@@ -187,7 +187,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 
                 historySubmodule.addLogMessage(History.INFO, "Starting setup script.");
                 
-                historySubmodule = modulesDAO.update(historySubmodule, session);
+                historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
 
                 statement = connection.createStatement();
                 statement.execute(setupScript);
@@ -218,7 +218,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 
                 historySubmodule.addLogMessage(History.INFO, "Starting user script (algorithm).");
                 
-                historySubmodule = modulesDAO.update(historySubmodule, session);
+                historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
                 
                 userConnection = getUserConnection(userTimeStamp, getTempUserPassword());
                 userConnection.setAutoCommit(true);
@@ -281,11 +281,11 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
             historySubmodule.setStatus(History.COMPLETED);
             historySubmodule.setResult(History.SUCCESS);
             
-            finalStatusMessage = "Completed running submodule '" + getPathNames() + "': " + historySubmodule.getResult();
+            setFinalStatusMessage("Completed running submodule '" + getPathNames() + "': " + historySubmodule.getResult());
             
-            historySubmodule.addLogMessage(History.SUCCESS, finalStatusMessage);
+            historySubmodule.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.update(historySubmodule, session);
+            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
             
         } catch (Exception e) {
             
@@ -305,14 +305,14 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 errorMessage = eMessage;
             }
             
-            finalStatusMessage = "Completed running submodule '" + getPathNames() + "': " + historySubmodule.getResult() + "\n\n" + errorMessage;
+            setFinalStatusMessage("Completed running submodule '" + getPathNames() + "': " + historySubmodule.getResult() + "\n\n" + errorMessage);
             
-            historySubmodule.addLogMessage(History.ERROR, finalStatusMessage);
+            historySubmodule.addLogMessage(History.ERROR, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.update(historySubmodule, session);
+            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
             
         } finally {
-            history = modulesDAO.update(history, session);
+            history = modulesDAO.updateHistory(history, session);
             if (statement != null) {
                 try {
                     statement.close();

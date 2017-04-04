@@ -17,6 +17,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.InternalSource;
+import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.SqlDataTypes;
@@ -50,6 +51,8 @@ abstract class ModuleRunner {
     private Map<String, String> inputParameters;  // the keys are the parameter names
     private Map<String, String> outputParameters; // inout parameters are added to both
     
+    private String finalStatusMessage;
+    
     public ModuleRunner(ModuleRunnerContext moduleRunnerContext) {
         this.moduleRunnerContext = moduleRunnerContext;
         
@@ -58,6 +61,8 @@ abstract class ModuleRunner {
         
         inputParameters = new HashMap<String, String>();
         outputParameters = new HashMap<String, String>();
+        
+        finalStatusMessage = "";
     }
     
     protected void createDatasets() throws Exception {
@@ -81,6 +86,7 @@ abstract class ModuleRunner {
         
         for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
             ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+            String placeholderName = moduleTypeVersionDataset.getPlaceholderName();
             EmfDataset dataset = null;
             int versionNumber = 0;
             if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
@@ -88,24 +94,51 @@ abstract class ModuleRunner {
                     DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
                     SqlDataTypes types = dbServer.getSqlDataTypes();
                     VersionedTableFormat versionedTableFormat = new VersionedTableFormat(datasetType.getFileFormat(), types);
-                    String description = "New dataset created by the '" + module.getName() + "' module for the '" + moduleTypeVersionDataset.getPlaceholderName() + "' placeholder.";
-                    DatasetCreator datasetCreator = new DatasetCreator(module, moduleTypeVersionDataset.getPlaceholderName(), user, sessionFactory, dbServerFactory, datasource);
+                    String description = "New dataset created by the '" + module.getName() + "' module for the '" + placeholderName + "' placeholder.";
+                    DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, sessionFactory, dbServerFactory, datasource);
                     String newDatasetName = getNewDatasetName(moduleDataset.getDatasetNamePattern(), user, startDate, history);
-                    dataset = datasetCreator.addDataset("mod", newDatasetName, datasetType, versionedTableFormat, description);
-                   
+                    boolean newDataset = true;
+                    dataset = datasetDAO.getDataset(session, newDatasetName);
+                    if (dataset == null) { // dataset doesn't exists, create NEW
+                        dataset = datasetCreator.addDataset("mod", newDatasetName, datasetType, module.getIsFinal(), versionedTableFormat, description);
+                        newDataset = true;
+                    } else if (wasDatasetCreatedByModule(dataset, module, placeholderName)) { // dataset exists already, REPLACE if possible
+                        checkDatasetReplacementRules(user, dataset, session);
+                        boolean must_unlock = false;
+                        if (!dataset.isLocked()) {
+                            dataset = datasetDAO.obtainLocked(user, dataset, session);
+                            must_unlock = true;
+                        } else if (!dataset.isLocked(user)) {
+                            errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset is locked by %s.",
+                                                         newDatasetName, placeholderName, dataset.getLockOwner());
+                            throw new EmfException(errorMessage);
+                        }
+                        
+                        try {
+                            datasetCreator.replaceDataset(session, connection, dataset, module.getIsFinal());
+                            newDataset = false;
+                        } finally {
+                            if (must_unlock)
+                                dataset = datasetDAO.releaseLocked(user, dataset, session);
+                        }
+                    } else { // dataset exists already and we can't replace it
+                        throw new EmfException("Dataset \"" + dataset.getName() +
+                                "\" already exists and can't be replaced because it was not created by module \"" + module.getName() +
+                                "\" for the \"" + placeholderName + "\" placeholder");
+                    }
                     InternalSource internalSource = getInternalSource(dataset);
                     
-                    logMessage = String.format("Created new dataset for %s placeholder %s:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
-                                               moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
+                    logMessage = String.format("%s dataset for %s %s placeholder %s:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
+                                               newDataset ? "Created new" : "Replacing", moduleTypeVersionDataset.getMode(), moduleDataset.getOutputMethod(), placeholderName,
                                                internalSource.getType(), dataset.getName(), internalSource.getTable(), versionNumber);
                     history.addLogMessage(History.INFO, logMessage);
 
-                    setOutputDataset(moduleDataset.getPlaceholderName(), new DatasetVersion(dataset, versionNumber));
+                    setOutputDataset(placeholderName, new DatasetVersion(dataset, versionNumber));
                 } else { // REPLACE
                     dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
                     if (dataset == null) {
                         errorMessage = String.format("Failed to find dataset with ID %d for placeholder '%s'.",
-                                                     moduleDataset.getDatasetId(), moduleDataset.getPlaceholderName());
+                                                     moduleDataset.getDatasetId(), placeholderName);
                         throw new EmfException(errorMessage);
                     }
                     String datasetName = dataset.getName();
@@ -118,13 +151,13 @@ abstract class ModuleRunner {
                         must_unlock = true;
                     } else if (!dataset.isLocked(user)) {
                         errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset is locked by %s.",
-                                                      datasetName, moduleDataset.getPlaceholderName(), dataset.getLockOwner());
+                                                      datasetName, placeholderName, dataset.getLockOwner());
                         throw new EmfException(errorMessage);
                     }
                     
                     try {
-                        DatasetCreator datasetCreator = new DatasetCreator(module, moduleDataset.getPlaceholderName(), user, sessionFactory, dbServerFactory, datasource);
-                        datasetCreator.replaceDataset(session, connection, dataset);
+                        DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, sessionFactory, dbServerFactory, datasource);
+                        datasetCreator.replaceDataset(session, connection, dataset, module.getIsFinal());
                     } finally {
                         if (must_unlock)
                             dataset = datasetDAO.releaseLocked(user, dataset, session);
@@ -132,12 +165,12 @@ abstract class ModuleRunner {
                     
                     InternalSource internalSource = getInternalSource(dataset);
                     
-                    logMessage = String.format("Replacing dataset for %s placeholder %s:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
-                                               moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
+                    logMessage = String.format("Replacing dataset for %s %s placeholder %s:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
+                                               moduleTypeVersionDataset.getMode(), moduleDataset.getOutputMethod(), placeholderName,
                                                internalSource.getType(), dataset.getName(), internalSource.getTable(), versionNumber);
                     history.addLogMessage(History.INFO, logMessage);
                     
-                    setOutputDataset(moduleDataset.getPlaceholderName(), new DatasetVersion(dataset, versionNumber));
+                    setOutputDataset(placeholderName, new DatasetVersion(dataset, versionNumber));
                 }
             } else { // IN or INOUT
                 dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
@@ -146,22 +179,22 @@ abstract class ModuleRunner {
                 InternalSource internalSource = getInternalSource(dataset);
 
                 logMessage = String.format("%s dataset placeholder %s:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
-                                           moduleTypeVersionDataset.getMode(), moduleDataset.getPlaceholderName(),
+                                           moduleTypeVersionDataset.getMode(), placeholderName,
                                            internalSource.getType(), dataset.getName(), internalSource.getTable(), versionNumber);
                 history.addLogMessage(History.INFO, logMessage);
                 
-                setInputDataset(moduleDataset.getPlaceholderName(), new DatasetVersion(dataset, versionNumber));
+                setInputDataset(placeholderName, new DatasetVersion(dataset, versionNumber));
                 if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.INOUT)) {
-                    setOutputDataset(moduleDataset.getPlaceholderName(), new DatasetVersion(dataset, versionNumber));
+                    setOutputDataset(placeholderName, new DatasetVersion(dataset, versionNumber));
                 }
             }
             
             HistoryDataset historyDataset = new HistoryDataset();
-            historyDataset.setPlaceholderName(moduleDataset.getPlaceholderName());
+            historyDataset.setPlaceholderName(placeholderName);
             historyDataset.setDatasetId(dataset.getId());
             historyDataset.setVersion(versionNumber);
             historyDataset.setHistory(history);
-            historyDatasets.put(moduleDataset.getPlaceholderName(), historyDataset);
+            historyDatasets.put(placeholderName, historyDataset);
         }
         history.setHistoryDatasets(historyDatasets);
     }
@@ -188,7 +221,11 @@ abstract class ModuleRunner {
     }
 
     public String getFinalStatusMessage() {
-        return ""; // TODO
+        return finalStatusMessage;
+    }
+
+    public String setFinalStatusMessage(String finalStatusMessage) {
+        return this.finalStatusMessage = finalStatusMessage;
     }
 
     ModuleRunnerContext getModuleRunnerContext() {
@@ -560,8 +597,10 @@ abstract class ModuleRunner {
         String endPattern = "\\s*\\}";
 
         Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(text);
-        if (matcher.find()) {
+        while (matcher.find()) {
             int pos = matcher.start();
+            if (isSqlComment(text, pos))
+                continue;
             String match = matcher.group();
             int lineNumber = findLineNumber(text, pos);
             String message = String.format("Unrecognized placeholder %s at line %d location %d.", match, pos, lineNumber);
@@ -569,6 +608,10 @@ abstract class ModuleRunner {
         }
     }
     
+    protected static boolean isSqlComment(String text, int position) {
+        return ModuleTypeVersion.isSqlComment(text, position);
+    }
+
     // returns line number for character position (first line number is 1)
     protected static int findLineNumber(String text, int characterPosition) {
         String subtext = text.substring(0, characterPosition);
@@ -785,7 +828,7 @@ abstract class ModuleRunner {
             
             history.addLogMessage(History.INFO, "Starting teardown script.");
             
-            history = modulesDAO.update(history, session);
+            history = modulesDAO.updateHistory(history, session);
             
             statement = connection.createStatement();
             statement.execute(teardownScript);
@@ -894,5 +937,19 @@ abstract class ModuleRunner {
                 datasets.put(getPathNames(placeholderName), datasetVersion.getDataset());
             }
         }
+    }
+
+    protected boolean wasDatasetCreatedByModule(EmfDataset dataset, Module module, String placeholderPathNames) throws EmfException {
+        KeyVal[] keyVals = dataset.getKeyVals();
+        int checkCount = 0;
+        for(KeyVal keyVal : keyVals) {
+//            if (keyVal.getKwname().equals("MODULE_NAME") && keyVal.getValue().equals(module.getName()))
+//                checkCount++;
+            if (keyVal.getKwname().equals("MODULE_ID") && keyVal.getValue().equals(module.getId() + ""))
+                checkCount++;
+            if (keyVal.getKwname().equals("MODULE_PLACEHOLDER") && keyVal.getValue().equals(placeholderPathNames))
+                checkCount++;
+        }
+        return (checkCount == 2);
     }
 }

@@ -1,7 +1,10 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
+import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 
@@ -58,27 +61,29 @@ public class ModuleInternalDataset implements Serializable {
     }
 
     public EmfDataset getEmfDataset(DataService dataService) {
-//        try {
-//            if (datasetId != null) {
-//                return dataService.getDataset(datasetId);
-//            } else if (isSimpleDatasetName()) {
-//                return dataService.getDataset(datasetNamePattern);
-//            } else {
-//                List<History> history = module.getModuleHistory();
-//                HistoryDataset historyDataset = null;
-//                if (history.size() > 0) {
-//                    History lastHistory = history.get(history.size() - 1);
-//                    if (lastHistory.getResult().equals(History.SUCCESS)) {
-//                        historyDataset = lastHistory.getHistoryDatasets().get(placeholderPath);
-//                    }
-//                }
-//                if ((historyDataset != null) && (historyDataset.getDatasetId() != null)) {
-//                    return dataService.getDataset(historyDataset.getDatasetId());
-//                }
-//            }
-//        } catch (EmfException ex) {
-//            // ignore exception
-//        }
+        try {
+            List<History> history = compositeModule.getModuleHistory();
+            HistoryInternalDataset historyInternalDataset = null;
+            if (history.size() > 0) {
+                History lastHistory = history.get(history.size() - 1);
+                if (lastHistory.getResult().equals(History.SUCCESS)) {
+                    Map<String, HistoryInternalDataset> historyInternalDatasets = lastHistory.getHistoryInternalDatasets();
+                    if (historyInternalDatasets.containsKey(placeholderPath)) {
+                        historyInternalDataset = historyInternalDatasets.get(placeholderPath);
+                    }
+                }
+            }
+            if ((historyInternalDataset != null) && (historyInternalDataset.getDatasetId() != null)) {
+                return dataService.getDataset(historyInternalDataset.getDatasetId());
+            }
+            if (isSimpleDatasetName()) {
+                EmfDataset emfDataset = dataService.getDataset(datasetNamePattern);
+                if (emfDataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType()))
+                    return emfDataset;
+            }
+        } catch (EmfException ex) {
+            // ignore exception
+        }
         
         return null;
     }

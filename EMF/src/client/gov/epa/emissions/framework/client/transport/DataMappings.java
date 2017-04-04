@@ -86,11 +86,14 @@ import gov.epa.emissions.framework.services.module.HistoryInternalDataset;
 import gov.epa.emissions.framework.services.module.HistoryInternalParameter;
 import gov.epa.emissions.framework.services.module.HistoryParameter;
 import gov.epa.emissions.framework.services.module.HistorySubmodule;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleInternalDataset;
 import gov.epa.emissions.framework.services.module.ModuleInternalParameter;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
+import gov.epa.emissions.framework.services.module.LiteModuleType;
+import gov.epa.emissions.framework.services.module.LiteModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection;
@@ -130,6 +133,9 @@ public class DataMappings extends Mappings {
         bean(call, EmfDataset.class, dataset());
         bean(call, DatasetType.class, datasetType());
 
+        bean(call, LiteModuleType.class,             liteModule());
+        bean(call, LiteModuleTypeVersion.class,      liteModule());
+        
         bean(call, ModuleType.class,                 moduleType());
         bean(call, ModuleTypeVersion.class,          moduleTypeVersion());
         bean(call, ModuleTypeVersionDataset.class,   moduleTypeVersionDataset());
@@ -141,6 +147,8 @@ public class DataMappings extends Mappings {
         bean(call, ModuleTypeVersionDatasetConnectionEndpoint.class,    moduleTypeVersionDatasetConnectionEndpoint());
         bean(call, ModuleTypeVersionParameterConnectionEndpoint.class,  moduleTypeVersionParameterConnectionEndpoint());
 
+        bean(call, LiteModule.class,              liteModule());
+        
         bean(call, Module.class,                  module());
         bean(call, ModuleDataset.class,           moduleDataset());
         bean(call, ModuleParameter.class,         moduleParameter());
@@ -276,6 +284,8 @@ public class DataMappings extends Mappings {
 
         array(call, Module[].class, modules());
 
+        array(call, LiteModule[].class, liteModules());
+        
         array(call, ExternalSource[].class, externalSources());
         array(call, InternalSource[].class, "InternalSources");
 
@@ -399,6 +409,10 @@ public class DataMappings extends Mappings {
         return qname("Modules");
     }
 
+    public QName liteModules() {
+        return qname("LiteModules");
+    }
+
     public QName sector() {
         return qname("Sector");
     }
@@ -475,6 +489,14 @@ public class DataMappings extends Mappings {
         return qname("DatasetType");
     }
 
+    public QName liteModuleType() {
+        return qname("LiteModuleType");
+    }
+
+    public QName liteModuleTypeVersion() {
+        return qname("LiteModuleTypeVersion");
+    }
+
     public QName moduleType() {
         return qname("ModuleType");
     }
@@ -513,6 +535,10 @@ public class DataMappings extends Mappings {
 
     public QName moduleTypeVersionParameterConnectionEndpoint() {
         return qname("ModuleTypeVersionParameterConnectionEndpoint");
+    }
+
+    public QName liteModule() {
+        return qname("LiteModule");
     }
 
     public QName module() {

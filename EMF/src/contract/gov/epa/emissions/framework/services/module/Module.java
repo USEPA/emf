@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Module implements Serializable, Lockable, Comparable<Module> {
@@ -128,9 +130,10 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
             if (oldMTVDatasets.containsKey(moduleTypeVersionDataset.getPlaceholderName())) {
                 ModuleTypeVersionDataset oldMTVDataset = oldMTVDatasets.get(moduleTypeVersionDataset.getPlaceholderName());
-                if (oldMTVDataset.getMode().equals(moduleTypeVersionDataset.getMode()))
+                if (oldMTVDataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType()) &&
+                    oldMTVDataset.getMode().equals(moduleTypeVersionDataset.getMode()))
                     continue;
-                ModuleDataset moduleDataset = moduleDatasets.get(oldMTVDataset.getPlaceholderName()); // must exist
+                ModuleDataset moduleDataset = moduleDatasets.get(moduleTypeVersionDataset.getPlaceholderName()); // must exist
                 moduleDataset.initSettings();
                 updated = true;
             } else {
@@ -157,9 +160,10 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
             if (oldMTVParameters.containsKey(moduleTypeVersionParameter.getParameterName())) {
                 ModuleTypeVersionParameter oldMTVParameter = oldMTVParameters.get(moduleTypeVersionParameter.getParameterName());
-                if (oldMTVParameter.getMode().equals(moduleTypeVersionParameter.getMode()))
+                if (oldMTVParameter.getSqlParameterType().equals(moduleTypeVersionParameter.getSqlParameterType()) &&
+                    oldMTVParameter.getMode().equals(moduleTypeVersionParameter.getMode()))
                     continue;
-                ModuleParameter moduleParameter = moduleParameters.get(oldMTVParameter.getParameterName()); // must exist
+                ModuleParameter moduleParameter = moduleParameters.get(moduleTypeVersionParameter.getParameterName()); // must exist
                 moduleParameter.initSettings();
                 updated = true;
             } else {
@@ -181,10 +185,31 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
             updated = true;
         }
         
-        // TODO handle new or modified internal datasets
-        // TODO handle removed internal datasets
-        // TODO handle new or modified internal parameters
-        // TODO handle removed internal parameters
+        // update internal datasets
+        Map<String, ModuleInternalDataset> newModuleInternalDatasets = computeInternalDatasets();
+        Set<String> addedPlaceholderPaths = diff(newModuleInternalDatasets.keySet(), moduleInternalDatasets.keySet());
+        for(String placeholderPath : addedPlaceholderPaths) {
+            addModuleInternalDataset(newModuleInternalDatasets.get(placeholderPath));
+            updated = true;
+        }
+        Set<String> removedPlaceholderPaths = diff(moduleInternalDatasets.keySet(), newModuleInternalDatasets.keySet());
+        for(String placeholderPath : removedPlaceholderPaths) {
+            removeModuleInternalDataset(placeholderPath);
+            updated = true;
+        }
+        
+        // update internal parameters
+        Map<String, ModuleInternalParameter> newModuleInternalParameters = computeInternalParameters();
+        Set<String> addedParameterPaths = diff(newModuleInternalParameters.keySet(), moduleInternalParameters.keySet());
+        for(String parameterPath : addedParameterPaths) {
+            addModuleInternalParameter(newModuleInternalParameters.get(parameterPath));
+            updated = true;
+        }
+        Set<String> removedParameterPaths = diff(moduleInternalParameters.keySet(), newModuleInternalParameters.keySet());
+        for(String parameterPath : removedParameterPaths) {
+            removeModuleInternalParameter(parameterPath);
+            updated = true;
+        }
         
         if (updated) {
             setLastModifiedDate(new Date());
@@ -193,6 +218,16 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         return updated;
     }
     
+    // computes (left - right)
+    private Set<String> diff(final Set<String> left, final Set<String> right) {
+        Set<String> result = new HashSet<String>();
+        for(String item : left) {
+            if (!right.contains(item))
+                result.add(item);
+        }
+        return result;
+    }
+
     // synchronize this module with its module type version
     public boolean refresh(Date date) {
         boolean updated = false;
@@ -329,6 +364,10 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     public void setIsFinal(boolean isFinal) {
         this.isFinal = isFinal;
+    }
+
+    public Mutex getLock() {
+        return lock;
     }
 
     public String getLockOwner() {

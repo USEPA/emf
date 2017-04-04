@@ -21,7 +21,7 @@ import org.hibernate.Session;
 
 public class ModuleRunnerTask {
 
-    private Module[] modules;
+    private int[] moduleIds;
 
     private User user;
 
@@ -46,16 +46,16 @@ public class ModuleRunnerTask {
 
     private boolean verboseStatusLogging = true;
 
-    public ModuleRunnerTask(Module[] modules, User user, 
+    public ModuleRunnerTask(int[] moduleIds, User user, 
             DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory,
             boolean verboseStatusLogging) {
-        this(modules, user, dbServerFactory, sessionFactory);
+        this(moduleIds, user, dbServerFactory, sessionFactory);
         this.verboseStatusLogging = verboseStatusLogging;
     }
 
-    public ModuleRunnerTask(Module[] modules, User user, 
+    public ModuleRunnerTask(int[] moduleIds, User user, 
             DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
-        this.modules = modules;
+        this.moduleIds = moduleIds;
         this.dbServerFactory = dbServerFactory;
         this.datasource = dbServerFactory.getDbServer().getEmissionsDatasource();
         this.sessionFactory = sessionFactory;
@@ -76,11 +76,29 @@ public class ModuleRunnerTask {
 //    }
 
     public void run() throws EmfException {
-        for(Module module : modules) {
-            runModule(module);
+        for(int moduleId : moduleIds) {
+            runModule(moduleId);
         }
     }
 
+    private void runModule(int moduleId) {
+        try {
+            session = sessionFactory.getSession();
+
+            Module module = modulesDAO.getModule(moduleId, session);
+            if (module == null) {
+                throw new EmfException("Module not found.");
+            }
+            runModule(module);
+            
+        } catch (Exception e) {
+            setStatus("Failed to run module (ID = " + moduleId + "). " + e.getMessage());
+            
+        } finally {
+            session.close();
+        }
+    }
+    
     private void runModule(Module module) throws EmfException {
         
         prepare("", module);
@@ -90,7 +108,6 @@ public class ModuleRunnerTask {
         boolean must_unlock_module = false;
         
         try {
-            session = sessionFactory.getSession();
             dbServer = dbServerFactory.getDbServer();
             connection = dbServer.getConnection();
             
@@ -99,7 +116,7 @@ public class ModuleRunnerTask {
                     throw new EmfException("Module " + module.getName() + " locked by " + module.getLockOwner());
                 }
             } else {
-                module = modulesDAO.obtainLockedModule(user, module, session);
+                module = modulesDAO.obtainLockedModule(user, module.getId(), session);
                 if (!module.isLocked(user)) {
                     throw new EmfException("Failed to lock module " + module.getName());
                 }
@@ -126,7 +143,7 @@ public class ModuleRunnerTask {
         } finally {
             if (must_unlock_module) {
                 try {
-                    module = modulesDAO.releaseLockedModule(user, module, session);
+                    module = modulesDAO.releaseLockedModule(user, module.getId(), session);
                     must_unlock_module = false;
                 } catch (Exception e) {
                     // ignore
@@ -144,8 +161,6 @@ public class ModuleRunnerTask {
             }
             
             close(dbServer);
-            
-            session.close();
         }
 
         complete(finalStatusMessage);

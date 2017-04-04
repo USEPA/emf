@@ -47,17 +47,13 @@ public class ModulePropertiesPresenter {
     }
 
     public Module obtainLockedModule(Module module) throws EmfException {
-        return service().obtainLockedModule(session.user(), module);
+        return service().obtainLockedModule(session.user(), module.getId());
     }
     
     public Module releaseLockedModule(Module module) throws EmfException {
-        return service().releaseLockedModule(session.user(), module);
+        return service().releaseLockedModule(session.user(), module.getId());
     }
     
-    public Module[] getModules() throws EmfException {
-        return service().getModules();
-    }
-
     public Module getModule(int id) throws EmfException {
         return service().getModule(id);
     }
@@ -101,6 +97,6 @@ public class ModulePropertiesPresenter {
     public void runModule(Module module) throws EmfException {
         if (module == null)
             return;
-        session.moduleService().runModules(new Module[] { module }, session.user());
+        session.moduleService().runModules(new int[] { module.getId() }, session.user());
     }
 }

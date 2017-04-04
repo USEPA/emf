@@ -7,7 +7,6 @@ import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -30,41 +29,61 @@ public class ModulesDAO {
 
     //----------------------------------------------------------------
     
-    public List getModules(Session session) {
-        return getAll(session);
+    @SuppressWarnings("rawtypes")
+    public List getLiteModules(Session session) {
+        return hibernateFacade.getAll(LiteModule.class, Order.asc("name").ignoreCase(), session);
     }
 
+    public LiteModule getLiteModule(int id, Session session) {
+        Criterion criterion = Restrictions.eq("id", id);
+        @SuppressWarnings("rawtypes")
+        List list = hibernateFacade.get(LiteModule.class, criterion, session);
+        return (list == null || list.size() == 0) ? null : (LiteModule) list.get(0);
+    }
+
+    public List getModules(Session session) {
+        return hibernateFacade.getAll(Module.class, Order.asc("name").ignoreCase(), session);
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public List<Module> getModulesForModuleTypeVersion(Session session, int moduleTypeVersionId) {
+        List<?> modules = session.createCriteria(Module.class)
+                                 .createCriteria("moduleTypeVersion").add(Restrictions.eq("id", moduleTypeVersionId))
+                                 .list();
+        return (List<Module>) modules;
+    }
+    
     public void removeModule(Module module, Session session) {
         hibernateFacade.remove(module, session);
     }
 
-    public Module obtainLockedModule(User user, Module module, Session session) {
-        return obtainLocked(user, module, session);
+    public void removeModule(int moduleId, Session session) {
+        Module module = getModule(moduleId, session);
+        removeModule(module, session);
     }
 
-    public Module releaseLockedModule(User user, Module module, Session session) {
-        return releaseLocked(user, module, session);
+    public Module obtainLockedModule(User user, int moduleId, Session session) {
+        return (Module) lockingScheme.getLocked(user, currentModule(moduleId, session), session);
+    }
+
+    public Module releaseLockedModule(User user, int moduleId, Session session) {
+        return (Module) lockingScheme.releaseLock(user, currentModule(moduleId, session), session);
+    }
+
+    public ModuleDataset getModuleDataset(int moduleDatasetId, Session session) {
+        Criterion criterion = Restrictions.eq("id", moduleDatasetId);
+        @SuppressWarnings("rawtypes")
+        List list = hibernateFacade.get(ModuleDataset.class, criterion, session);
+        return (list == null || list.size() == 0) ? null : (ModuleDataset) list.get(0);
     }
 
     //----------------------------------------------------------------
     
-    public List getAll(Session session) {
-        return hibernateFacade.getAll(Module.class, Order.asc("name").ignoreCase(), session);
+    public Module updateModule(Module module, Session session) throws EmfException {
+        return (Module) lockingScheme.renewLockOnUpdate(module, currentModule(module.getId(), session), session);
     }
 
-    public Module obtainLocked(User user, Module module, Session session) {
-        return (Module) lockingScheme.getLocked(user, currentModule(module, session), session);
-    }
-
-    public Module releaseLocked(User user, Module module, Session session) {
-        return (Module) lockingScheme.releaseLock(user, currentModule(module, session), session);
-    }
-
-    public Module update(Module module, Session session) throws EmfException {
-        return (Module) lockingScheme.renewLockOnUpdate(module, currentModule(module, session), session);
-    }
-
-    public History update(History history, Session session) {
+    public History updateHistory(History history, Session session) {
         session.clear();
         Transaction tx = session.beginTransaction();
         try {
@@ -77,7 +96,7 @@ public class ModulesDAO {
         return history;
     }
 
-    public HistorySubmodule update(HistorySubmodule historySubmodule, Session session) {
+    public HistorySubmodule updateSubmodule(HistorySubmodule historySubmodule, Session session) {
         session.clear();
         Transaction tx = session.beginTransaction();
         try {
@@ -90,21 +109,22 @@ public class ModulesDAO {
         return historySubmodule;
     }
 
-    public Module get(String name, Session session) {
+    public Module getModule(String name, Session session) {
         Criterion criterion = Restrictions.eq("name", name);
+        @SuppressWarnings("rawtypes")
         List list = hibernateFacade.get(Module.class, criterion, session);
         return (list == null || list.size() == 0) ? null : (Module) list.get(0);
     }
 
-    public Module get(int id, Session session) {
+    public Module getModule(int id, Session session) {
         Criterion criterion = Restrictions.eq("id", id);
+        @SuppressWarnings("rawtypes")
         List list = hibernateFacade.get(Module.class, criterion, session);
         return (list == null || list.size() == 0) ? null : (Module) list.get(0);
     }
 
     public Module add(Module module, Session session) {
         Serializable serializable = hibernateFacade.add(module, session);
-        String typeName = serializable.getClass().getName(); 
         Integer id = (Integer)serializable;
         module.setId(id);
         return module;
@@ -115,41 +135,28 @@ public class ModulesDAO {
             return false;
         }
 
-        Module current = currentModule(module.getId(), Module.class, session);
+        Module current = currentModule(module.getId(), session);
         // The current object is saved in the session. Hibernate cannot persist our object with the same id.
         session.clear();
         if (current.getName().equals(module.getName()))
             return true;
 
-        return !nameUsed(module.getName(), Module.class, session);
+        return !moduleNameUsed(module.getName(), session);
     }
 
     private boolean exists(int id, Class clazz, Session session) {
         return hibernateFacade.exists(id, clazz, session);
     }
 
-    public boolean nameUsed(String name, Class clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    public boolean moduleNameUsed(String name, Session session) {
+        return hibernateFacade.nameUsed(name, Module.class, session);
     }
 
-    public Module currentModule(int id, Class clazz, Session session) {
-        return (Module) hibernateFacade.current(id, clazz, session);
+    public Module currentModule(int moduleId, Session session) {
+        return (Module) hibernateFacade.current(moduleId, Module.class, session);
     }
 
-    public Module currentModule(Module module, Session session) {
-        return currentModule(module.getId(), Module.class, session);
+    public History currentHistory(int historyId, Session session) {
+        return (History) hibernateFacade.current(historyId, History.class, session);
     }
-
-    public History currentHistory(int id, Class clazz, Session session) {
-        return (History) hibernateFacade.current(id, clazz, session);
-    }
-
-    private boolean hasColName(Column[] cols, String colName) {
-        boolean hasIt = false;
-        for (int i = 0; i < cols.length; i++)
-            if (colName.equalsIgnoreCase(cols[i].name())) hasIt = true;
-
-        return hasIt;
-    }
-
 }

@@ -83,7 +83,7 @@ public class ModuleTypeVersionNewRevisionDialog extends JDialog implements Modul
         moduleTypeName = new Label(moduleTypeVersion.getModuleType().getName());
         layoutGenerator.addLabelWidgetPair("Module Type:", moduleTypeName, formPanel);
         
-        moduleTypeVersionName = new Label(moduleTypeVersion.versionAndName());
+        moduleTypeVersionName = new Label(moduleTypeVersion.versionName());
         layoutGenerator.addLabelWidgetPair("Version:", moduleTypeVersionName, formPanel);
         
         oldRevisionsReport = new TextArea("Old Revisions", moduleTypeVersion.revisionsReport(), 60, 8);

@@ -5,6 +5,27 @@
 
 <hibernate-mapping default-lazy="false">
 
+    <class name="gov.epa.emissions.framework.services.module.LiteModule" table="modules" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="string" not-null="true" length="255"/>
+        <property name="description" column="description" type="text" not-null="false"/>
+        <many-to-one name="liteModuleTypeVersion" class="gov.epa.emissions.framework.services.module.LiteModuleTypeVersion" fetch="select">
+            <column name="module_type_version_id" not-null="true" />
+        </many-to-one>
+        <many-to-one 
+            name="creator" 
+            class="gov.epa.emissions.commons.security.User"
+            column="creator"
+            not-null="false"/>
+        <property name="creationDate" column="creation_date" type="timestamp" not-null="false" length="4"/>
+        <property name="lastModifiedDate" column="last_mod_date" type="timestamp" not-null="false" length="4"/>
+        <property name="isFinal" column="is_final" type="boolean" not-null="true"/>
+        <property name="lockOwner" column="lock_owner" type="string" not-null="false"/>
+        <property name="lockDate" column="lock_date" type="timestamp" not-null="false" length="4"/>
+    </class>
+
     <class name="gov.epa.emissions.framework.services.module.Module" table="modules" schema="modules">
         <id name="id" type="integer" column="id">
             <generator class="identity"/>

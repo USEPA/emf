@@ -45,7 +45,12 @@ public class ModuleDatasetsTableData extends AbstractTableData {
         for (ModuleDataset moduleDataset : moduleDatasets.values()) {
             String mode = moduleDataset.getModuleTypeVersionDataset().getMode();
             String outputMethod = moduleDataset.getOutputMethod();
-            EmfDataset emfDataset = moduleDataset.getEmfDataset(session.dataService());
+            EmfDataset emfDataset = null;
+            try {
+                emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId());
+            } catch (EmfException e) {
+                e.printStackTrace();
+            }
             String datasetName = (emfDataset == null) ? "" : emfDataset.getName();
             String datasetExists = (emfDataset == null) ? "No" : "Yes"; // TODO check version also
             if (mode.equals("IN") || mode.equals("INOUT")) {

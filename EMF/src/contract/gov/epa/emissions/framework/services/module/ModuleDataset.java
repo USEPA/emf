@@ -1,14 +1,9 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.DataService;
-import gov.epa.emissions.framework.services.data.EmfDataset;
 
 public class ModuleDataset implements Serializable {
 
@@ -180,33 +175,6 @@ public class ModuleDataset implements Serializable {
         return isSimpleDatasetName(datasetNamePattern);
     }
 
-    public EmfDataset getEmfDataset(DataService dataService) {
-        try {
-            if (datasetId != null) {
-                return dataService.getDataset(datasetId);
-            } else if (isSimpleDatasetName()) {
-                return dataService.getDataset(datasetNamePattern);
-            } else {
-                List<History> history = module.getModuleHistory();
-                HistoryDataset historyDataset = null;
-                if (history.size() > 0) {
-                    History lastHistory = history.get(history.size() - 1);
-                    String result = lastHistory.getResult();
-                    if (result != null && result.equals(History.SUCCESS)) {
-                        historyDataset = lastHistory.getHistoryDatasets().get(placeholderName);
-                    }
-                }
-                if ((historyDataset != null) && (historyDataset.getDatasetId() != null)) {
-                    return dataService.getDataset(historyDataset.getDatasetId());
-                }
-            }
-        } catch (EmfException ex) {
-            // ignore exception
-        }
-        
-        return null;
-    }
-    
     public int getId() {
         return id;
     }

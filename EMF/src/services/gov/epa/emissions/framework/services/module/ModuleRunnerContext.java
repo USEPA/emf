@@ -52,7 +52,7 @@ class ModuleRunnerContext {
         Date stopDate = new Date();
         long durationSeconds = (stopDate.getTime() - startDate.getTime()) / 1000;
         history.setDurationSeconds((int)durationSeconds);
-        history = getModulesDAO().update(history, getSession());
+        history = getModulesDAO().updateHistory(history, getSession());
     }
     
     protected void createHistory() throws EmfException {
@@ -63,7 +63,7 @@ class ModuleRunnerContext {
         history.setCreationDate(startDate);
         
         module.addModuleHistory(history);
-        module = getModulesDAO().update(module, getSession());
+        module = getModulesDAO().updateModule(module, getSession());
     }
     
     // public accessors

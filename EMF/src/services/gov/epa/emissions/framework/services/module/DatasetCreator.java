@@ -73,7 +73,7 @@ public class DatasetCreator {
         this(module, placeholderPathNames, user, sessionFactory, dbServerFactory, datasource, getKeywords(sessionFactory));
     }
 
-    private static Keywords getKeywords(HibernateSessionFactory sessionFactory) {
+    public static Keywords getKeywords(HibernateSessionFactory sessionFactory) {
         Keywords keywords = null;
         try {
             keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
@@ -84,7 +84,7 @@ public class DatasetCreator {
     }
     
     public EmfDataset addDataset(String datasetNamePrefix, String tablePrefix, 
-            EmfDataset inputDataset, DatasetType type, 
+            EmfDataset inputDataset, DatasetType type, boolean makeFinal,
             TableFormat tableFormat, String description) throws EmfException {
         String outputTableName = createTableName(tablePrefix, datasetNamePrefix);
         
@@ -96,7 +96,7 @@ public class DatasetCreator {
         //persist dataset to db
         add(dataset);
         try {
-            addVersionZeroEntryToVersionsTable(dataset);
+            addVersionZeroEntryToVersionsTable(dataset, makeFinal);
         } catch (Exception e) {
             throw new EmfException("Cannot add version zero entry to versions table for dataset: " + dataset.getName());
         }
@@ -107,7 +107,7 @@ public class DatasetCreator {
     }
 
     public EmfDataset addDataset(String tablePrefix, 
-            String datasetName, DatasetType type, 
+            String datasetName, DatasetType type, boolean makeFinal,
             TableFormat tableFormat, String description) throws EmfException {
         String outputTableName = createTableName(tablePrefix, datasetName);
         
@@ -119,7 +119,7 @@ public class DatasetCreator {
         //persist dataset to db
         add(dataset);
         try {
-            addVersionZeroEntryToVersionsTable(dataset);
+            addVersionZeroEntryToVersionsTable(dataset, makeFinal);
         } catch (Exception e) {
             throw new EmfException("Cannot add version zero entry to versions table for dataset: " + dataset.getName());
         }
@@ -129,7 +129,7 @@ public class DatasetCreator {
         return dataset;
     }
 
-    public void replaceDataset(Session session, Connection connection, EmfDataset dataset) throws Exception {
+    public void replaceDataset(Session session, Connection connection, EmfDataset dataset, boolean makeFinal) throws Exception {
         String errorMessage;
         String datasetName = dataset.getName();
         Date date = new Date();
@@ -151,7 +151,7 @@ public class DatasetCreator {
                     version.setCreator(user);
                     version.setNumberRecords(0);
                     version.setLastModifiedDate(date);
-                    version.setFinalVersion(true);
+                    version.setFinalVersion(makeFinal);
                     // TODO add new dataset revision record and change the description
                     String description = String.format("Data replaced by the '%s' module.", module.getName());
                     version.setDescription(description);
@@ -279,14 +279,14 @@ public class DatasetCreator {
         dataset.addKeyVal(keyval);
     }
     
-    private void addVersionZeroEntryToVersionsTable(Dataset dataset) throws Exception {
+    private void addVersionZeroEntryToVersionsTable(Dataset dataset, boolean makeFinal) throws Exception {
         Version defaultZeroVersion = new Version(0);
         defaultZeroVersion.setName("Initial Version");
         defaultZeroVersion.setPath("");
         defaultZeroVersion.setCreator(user);
         defaultZeroVersion.setDatasetId(dataset.getId());
         defaultZeroVersion.setLastModifiedDate(new Date());
-        defaultZeroVersion.setFinalVersion(true);
+        defaultZeroVersion.setFinalVersion(makeFinal);
         defaultZeroVersion.setDescription("");
 
         Session session = sessionFactory.getSession();
