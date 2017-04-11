@@ -85,6 +85,8 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
     }
     
     public String getSourceSqlType() {
+        if (sourceParameterName == null)
+            return ""; // no source
         if (sourceSubmodule != null) {
             // internal target
             return sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().get(sourceParameterName).getSqlParameterType();

@@ -84,6 +84,8 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
     }
     
     public DatasetType getSourceDatasetType() {
+        if (sourcePlaceholderName == null)
+            return null; // no source
         if (sourceSubmodule != null) {
             // internal source
             return sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().get(sourcePlaceholderName).getDatasetType();
