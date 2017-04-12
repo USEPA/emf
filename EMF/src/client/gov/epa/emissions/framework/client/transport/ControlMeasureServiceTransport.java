@@ -416,4 +416,12 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
 
         call.requestResponse(new Object[] { user, controlMeasureIds });
     }
+
+    public Pollutant[] getMeasurePollutants() throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getMeasurePollutants");
+        call.setReturnType(mappings.pollutants());
+        return (Pollutant[]) call.requestResponse(new Object[] {});
+    }
 }
