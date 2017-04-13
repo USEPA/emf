@@ -78,7 +78,7 @@ public class ModuleInternalDataset implements Serializable {
             }
             if (isSimpleDatasetName()) {
                 EmfDataset emfDataset = dataService.getDataset(datasetNamePattern);
-                if (emfDataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType()))
+                if (emfDataset != null && emfDataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType()))
                     return emfDataset;
             }
         } catch (EmfException ex) {

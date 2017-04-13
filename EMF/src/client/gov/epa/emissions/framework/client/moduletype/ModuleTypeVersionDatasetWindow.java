@@ -24,8 +24,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
+import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -54,7 +53,7 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
 
     // data
     DatasetType[] datasetTypesCache;
-    Map<String, DatasetType> datasetTypeMap;
+    TreeMap<String, DatasetType> datasetTypeMap;
     String[] datasetTypeNames;
 
     public ModuleTypeVersionDatasetWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session,
@@ -65,14 +64,13 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
         this.moduleTypeVersion = moduleTypeVersion;
         
         this.datasetTypesCache = datasetTypesCache; 
-        datasetTypeMap = new HashMap<String, DatasetType>();
-        datasetTypeNames = new String[datasetTypesCache.length];
-        int i = 0;
+        datasetTypeMap = new TreeMap<String, DatasetType>();
         for(DatasetType datasetType : datasetTypesCache) {
+            if (!ModuleTypeVersionDataset.isValidDatasetType(datasetType))
+                continue;
             datasetTypeMap.put(datasetType.getName(), datasetType);
-            datasetTypeNames[i++] = datasetType.getName();
         }
-        Arrays.sort(datasetTypeNames);
+        datasetTypeNames = datasetTypeMap.keySet().toArray(new String[0]);
 
         this.viewMode = viewMode;
         if (viewMode == ViewMode.NEW) {

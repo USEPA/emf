@@ -5,6 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.io.FileFormat;
+import gov.epa.emissions.framework.services.EmfException;
 
 public class ModuleTypeVersionDataset implements Serializable {
 
@@ -67,6 +69,74 @@ public class ModuleTypeVersionDataset implements Serializable {
         if (!isValidPlaceholderName(placeholderName, error)) return false;
         if (datasetType == null) {
             error.append(String.format("Dataset type for placeholder '%s' has not been set.", placeholderName));
+            return false;
+        }
+        StringBuilder datasetTypeError = new StringBuilder();
+        if (!isValidDatasetType(datasetTypeError, datasetType)) {
+            error.append("[Placeholder '" + placeholderName + "'] ");
+            error.append(datasetTypeError);
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean isValidDatasetType(DatasetType datasetType) {
+        if (datasetType == null) {
+            return false;
+        }
+        FileFormat fileFormat = datasetType.getFileFormat();
+        if (fileFormat == null) {
+            return false;
+        }
+        if (datasetType.isExternal()) {
+            return false;
+        }
+//        if (datasetType.getMinFiles() != 1 || datasetType.getMaxFiles() != 1) {
+//            return false;
+//        }
+        if (datasetType.getTablePerDataset() != 1) {
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean isValidDatasetType(final StringBuilder error, DatasetType datasetType) {
+        if (error != null) {
+            error.setLength(0);
+        }
+        if (datasetType == null) {
+            if (error != null) {
+                error.append("Internal error: null dataset type.");
+            }
+            return false;
+        }
+        FileFormat fileFormat = datasetType.getFileFormat();
+        if (fileFormat == null) {
+            if (error != null) {
+                error.append(String.format("The '%s' dataset type is not supported by the modules subsystem because it doesn't have a file format.",
+                                           datasetType.getName()));
+            }
+            return false;
+        }
+        if (datasetType.isExternal()) {
+            if (error != null) {
+                error.append(String.format("The '%s' dataset type is not supported by the modules subsystem because it's an external dataset type.",
+                                           datasetType.getName()));
+            }
+            return false;
+        }
+//        if (datasetType.getMinFiles() != 1 || datasetType.getMaxFiles() != 1) {
+//            if (error != null) {
+//                error.append(String.format("The '%s' dataset type is not supported by the modules subsystem because it doesn't use exactly one file (min files = %d, max files = %d).",
+//                                           datasetType.getName(), datasetType.getMinFiles(), datasetType.getMaxFiles()));
+//            }
+//            return false;
+//        }
+        if (datasetType.getTablePerDataset() != 1) {
+            if (error != null) {
+                error.append(String.format("The '%s' dataset type is not supported by the modules subsystem because it doesn't use exactly one table (tables per dataset = %d).",
+                                           datasetType.getName(), datasetType.getTablePerDataset()));
+            }
             return false;
         }
         return true;
