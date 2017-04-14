@@ -108,14 +108,6 @@ abstract class SubmoduleRunner extends ModuleRunner {
         return name;
     }
 
-    private void checkInternalDatasetReplacementRules(EmfDataset dataset, Module module, String placeholderPathNames) throws EmfException {
-        if (!wasDatasetCreatedByModule(dataset, module, placeholderPathNames)) {
-            throw new EmfException("Can't replace internal dataset \"" + dataset.getName() +
-                                   "\" because it was not created by module \"" + module.getName() +
-                                   "\" for the \"" + placeholderPathNames + "\" placeholder");
-        }
-    }
-    
     protected void createDatasets() throws Exception {
         
         DbServer dbServer = getDbServer();
@@ -138,6 +130,8 @@ abstract class SubmoduleRunner extends ModuleRunner {
         
         String logMessage = "";
         String errorMessage = "";
+        
+        StringBuilder warnings = new StringBuilder();
         
         for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
             if (!moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT))
@@ -179,10 +173,22 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 historySubmodule.addLogMessage(History.INFO, logMessage);
 
                 setOutputDataset(placeholderName, new DatasetVersion(dataset, versionNumber, keepInternalDataset));
+            } else if (!dataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType())) { // different dataset type
+                throw new EmfException("Dataset \"" + dataset.getName() +
+                                       "\" already exists and can't be replaced because it has a different dataset type (\"" +
+                                       dataset.getDatasetType().getName() + "\" instead of \"" +
+                                       moduleTypeVersionDataset.getDatasetType().getName() + "\")");
+            } else if (!wasDatasetCreatedByModule(dataset, module, placeholderPathNames)) { // dataset was not created by this module
+                throw new EmfException("Can't replace internal dataset \"" + dataset.getName() +
+                                       "\" because it was not created by module \"" + module.getName() +
+                                       "\" for the \"" + placeholderPathNames + "\" placeholder");
             } else { // REPLACE
                 String datasetName = dataset.getName();
                 
-                checkInternalDatasetReplacementRules(dataset, module, placeholderPathNames);
+                checkDatasetReplacementRules(warnings, getModuleRunnerContext(), dataset, module);
+                historySubmodule.addLogMessage(History.INFO, String.format("Dataset '%s' will be replaced.", datasetName));
+                if (warnings.length() > 0)
+                    historySubmodule.addLogMessage(History.WARNING, warnings.toString());
 
                 boolean must_unlock = false;
                 if (!dataset.isLocked()) {

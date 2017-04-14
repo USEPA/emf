@@ -23,6 +23,7 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.SqlDataTypes;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.db.version.Versions;
+import gov.epa.emissions.commons.io.FileFormat;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
@@ -84,6 +85,8 @@ abstract class ModuleRunner {
         String logMessage = "";
         String errorMessage = "";
         
+        StringBuilder warnings = new StringBuilder();
+        
         for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
             ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
             String placeholderName = moduleTypeVersionDataset.getPlaceholderName();
@@ -92,8 +95,9 @@ abstract class ModuleRunner {
             if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                 if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
                     DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
+                    FileFormat fileFormat = datasetType.getFileFormat();
                     SqlDataTypes types = dbServer.getSqlDataTypes();
-                    VersionedTableFormat versionedTableFormat = new VersionedTableFormat(datasetType.getFileFormat(), types);
+                    VersionedTableFormat versionedTableFormat = new VersionedTableFormat(fileFormat, types);
                     String description = "New dataset created by the '" + module.getName() + "' module for the '" + placeholderName + "' placeholder.";
                     DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, sessionFactory, dbServerFactory, datasource);
                     String newDatasetName = getNewDatasetName(moduleDataset.getDatasetNamePattern(), user, startDate, history);
@@ -102,8 +106,20 @@ abstract class ModuleRunner {
                     if (dataset == null) { // dataset doesn't exists, create NEW
                         dataset = datasetCreator.addDataset("mod", newDatasetName, datasetType, module.getIsFinal(), versionedTableFormat, description);
                         newDataset = true;
-                    } else if (wasDatasetCreatedByModule(dataset, module, placeholderName)) { // dataset exists already, REPLACE if possible
-                        checkDatasetReplacementRules(user, dataset, session);
+                    } else if (!dataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType())) { // different dataset type
+                        throw new EmfException("Dataset \"" + dataset.getName() +
+                                               "\" already exists and can't be replaced because it has a different dataset type (\"" +
+                                               dataset.getDatasetType().getName() + "\" instead of \"" +
+                                               moduleTypeVersionDataset.getDatasetType().getName() + "\")");
+                    } else if (!wasDatasetCreatedByModule(dataset, module, placeholderName)) { // dataset was not created by this module
+                        throw new EmfException("Dataset \"" + dataset.getName() +
+                                               "\" already exists and can't be replaced because it was not created by module \"" + module.getName() +
+                                               "\" for the \"" + placeholderName + "\" placeholder");
+                    } else {
+                        checkDatasetReplacementRules(warnings, moduleRunnerContext, dataset, module);
+                        history.addLogMessage(History.INFO, String.format("Dataset '%s' will be replaced.", dataset.getName()));
+                        if (warnings.length() > 0)
+                            history.addLogMessage(History.WARNING, warnings.toString());
                         boolean must_unlock = false;
                         if (!dataset.isLocked()) {
                             dataset = datasetDAO.obtainLocked(user, dataset, session);
@@ -121,11 +137,8 @@ abstract class ModuleRunner {
                             if (must_unlock)
                                 dataset = datasetDAO.releaseLocked(user, dataset, session);
                         }
-                    } else { // dataset exists already and we can't replace it
-                        throw new EmfException("Dataset \"" + dataset.getName() +
-                                "\" already exists and can't be replaced because it was not created by module \"" + module.getName() +
-                                "\" for the \"" + placeholderName + "\" placeholder");
                     }
+                    
                     InternalSource internalSource = getInternalSource(dataset);
                     
                     logMessage = String.format("%s dataset for %s %s placeholder %s:\n  * dataset type: '%s'\n  * dataset name: '%s'\n  * table name: '%s'\n  * version: %d",
@@ -143,7 +156,10 @@ abstract class ModuleRunner {
                     }
                     String datasetName = dataset.getName();
                     
-                    checkDatasetReplacementRules(user, dataset, session);
+                    checkDatasetReplacementRules(warnings, moduleRunnerContext, dataset, module);
+                    history.addLogMessage(History.INFO, String.format("Dataset '%s' will be replaced.", dataset.getName()));
+                    if (warnings.length() > 0)
+                        history.addLogMessage(History.WARNING, warnings.toString());
 
                     boolean must_unlock = false;
                     if (!dataset.isLocked()) {
@@ -444,15 +460,113 @@ abstract class ModuleRunner {
         return datasetName;
     }
 
-    protected static void checkDatasetReplacementRules(@SuppressWarnings("unused") User user, EmfDataset dataset, Session session) throws EmfException {
+    // throws error if dataset cannot be replaced
+    // returns if the dataset can be replaced
+    // warnings may contain warning message(s) on return 
+    protected static void checkDatasetReplacementRules(final StringBuilder warnings, ModuleRunnerContext moduleRunnerContext, EmfDataset dataset, Module module) throws EmfException {
+        warnings.setLength(0);
+        
+        DatasetDAO datasetDAO = moduleRunnerContext.getDatasetDAO();
+        ModulesDAO modulesDAO = moduleRunnerContext.getModulesDAO();
+        DbServer dbServer = moduleRunnerContext.getDbServer();
+        User user = moduleRunnerContext.getUser();
+        Session session = moduleRunnerContext.getSession();
+        
+        // 5. if any dataset version is final
+        // ==> error: cannot delete or replace
         Versions versions = new Versions();
         Version[] datasetVersions = versions.get(dataset.getId(), session);
         for (Version version : datasetVersions) {
             if (version.isFinalVersion()) {
-                String errorMessage = String.format("Could not replace dataset '%s': the dataset version %d is final.",
+                String errorMessage = String.format("Cannot delete or replace dataset '%s': the dataset version %d is final.",
                                                     dataset.getName(), version.getVersion());
                 throw new EmfException(errorMessage);
             }
+        }
+
+        // 1.d. if the current user doesn't own the dataset and he is not an admin user
+        // ==> error: cannot delete or replace
+        if (dataset.getCreator() != user.getUsername() && !user.isAdmin()) {
+            String errorMessage = String.format("Cannot delete or replace dataset '%s': the dataset was created by %s (%s) and the current user %s (%s) is not an administrator.",
+                                                dataset.getName(), dataset.getCreator(), dataset.getCreatorFullName(), user.getUsername(), user.getName());
+            throw new EmfException(errorMessage);
+        }
+        
+        // check if dataset is used
+        boolean isUsedByCases = datasetDAO.isUsedByCases(session, dataset);
+        boolean isUsedByControlStrategies = datasetDAO.isUsedByControlStrategies(session, dataset);
+        boolean isUsedByControlPrograms = datasetDAO.isUsedByControlPrograms(dataset.getId(), session);
+        boolean isUsedByFast;
+        try {
+            isUsedByFast = datasetDAO.isUsedByFast(dataset.getId(), user, dbServer, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new EmfException("Error checking if dataset '" + dataset.getName() + "' is used by FAST: " + e.getMessage());
+        }
+        boolean isUsedByTemporalAllocations;
+        try {
+            isUsedByTemporalAllocations = datasetDAO.isUsedByTemporalAllocations(dataset.getId(), user, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new EmfException("Error checking if dataset '" + dataset.getName() + "' is used by Temporal Allocations: " + e.getMessage());
+        }
+        boolean isUsedByNonModuleComponents = isUsedByCases || isUsedByControlStrategies || isUsedByControlPrograms || isUsedByFast || isUsedByTemporalAllocations;
+        List<Integer> consumerModuleIds;
+        try {
+            consumerModuleIds = datasetDAO.getModulesUsingDataset(dataset.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new EmfException("Error checking if dataset '" + dataset.getName() + "' is used by modules: " + e.getMessage());
+        }
+        consumerModuleIds.remove(new Integer(module.getId()));
+        boolean isUsedByOtherModules = (consumerModuleIds.size() > 0);
+        
+        // 2. dataset is used by non-module components
+        // ==> error: cannot delete or replace
+        if (isUsedByNonModuleComponents) {
+            StringBuilder list = new StringBuilder(); 
+            if (isUsedByCases) list.append("Cases");
+            if (isUsedByControlStrategies) {
+                if (list.length() > 0) list.append(", ");
+                list.append("Control Strategies");
+            }
+            if (isUsedByControlPrograms) {
+                if (list.length() > 0) list.append(", and ");
+                list.append("Control Programs");
+            }
+            if (isUsedByFast) {
+                if (list.length() > 0) list.append(", and ");
+                list.append("Fast");
+            }
+            if (isUsedByTemporalAllocations) {
+                if (list.length() > 0) list.append(", and ");
+                list.append("Temporal Allocations");
+            }
+            String errorMessage = String.format("Cannot delete or replace dataset '%s': the dataset is used by %s.", dataset.getName(), list.toString());
+            throw new EmfException(errorMessage);
+        }
+        
+        // 3. if dataset is used only by Modules
+        // ==> can delete and replace, warning listing all modules that use that dataset
+        if (isUsedByOtherModules) {
+            StringBuilder consumerModuleNames = new StringBuilder(); 
+            for(int consumerModuleId : consumerModuleIds) {
+                Module consumerModule = modulesDAO.getModule(consumerModuleId, session);
+                if (consumerModuleNames.length() > 0) {
+                    consumerModuleNames.append("\n");
+                }
+                consumerModuleNames.append(consumerModule.getName());
+            }
+            warnings.append(String.format("Dataset '%s' is used by the following module(s):%s\n",
+                                          dataset.getName(), consumerModuleNames.toString()));
+        }
+
+        // 1. if all dataset versions are non-final and
+        //    if dataset is not used by any component of the EMF (Cases, CoST, Modules, etc)
+        // ==> can delete and replace, warn if the dataset has more then one version
+        if (datasetVersions.length > 1) {
+            warnings.append(String.format("Dataset '%s' has %d versions. Version 1 will be replaced and all other versions will be deleted.\n",
+                                          dataset.getName(), datasetVersions.length));
         }
     }
     
@@ -939,7 +1053,7 @@ abstract class ModuleRunner {
         }
     }
 
-    protected boolean wasDatasetCreatedByModule(EmfDataset dataset, Module module, String placeholderPathNames) throws EmfException {
+    protected static boolean wasDatasetCreatedByModule(EmfDataset dataset, Module module, String placeholderPathNames) throws EmfException {
         KeyVal[] keyVals = dataset.getKeyVals();
         int checkCount = 0;
         for(KeyVal keyVal : keyVals) {

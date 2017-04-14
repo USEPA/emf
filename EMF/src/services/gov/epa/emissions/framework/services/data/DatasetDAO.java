@@ -989,6 +989,40 @@ public class DatasetDAO {
         return ids;
     }
 
+    public List<Integer> getModulesUsingDataset(int datasetId) throws Exception {
+        DbServer dbServer = dbServerFactory.getDbServer();
+        Datasource emfDatasource = dbServer.getEmfDatasource();
+        DataQuery dataQuery = emfDatasource.query();
+        // check if dataset is an input dataset for a module different than moduleId
+        String query = "SELECT DISTINCT m.id FROM modules.modules_datasets md " +
+                       "LEFT JOIN modules.modules m " +
+                       "  ON m.id = md.module_id " +
+                       "LEFT JOIN modules.module_types_versions mtv " +
+                       "  ON mtv.id = m.module_type_version_id " +
+                       "LEFT JOIN modules.module_types_versions_datasets mtvd " +
+                       "  ON mtvd.module_type_version_id = mtv.id AND mtvd.placeholder_name = md.placeholder_name " +
+                       "WHERE mtvd.mode IN ('IN', 'INOUT') AND md.dataset_id = " + datasetId + ";";
+
+        List<Integer> moduleIds = new ArrayList<Integer>();
+        ResultSet resultSet = null;
+        try {
+            resultSet = dataQuery.executeQuery(query);
+            while (resultSet.next()) {
+                moduleIds.add(resultSet.getInt(0));
+            }
+        } finally {
+            if (resultSet != null)
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    LOG.error(e);
+                    e.printStackTrace();
+                }
+        }
+        return moduleIds;
+    }
+    
+    
     public void checkIfUsedByControlPrograms(int[] datasetIDs, Session session) throws EmfException {
         // check if dataset is an input inventory for some control program (via the control_programs table)
         controlProgList = session.createQuery(
@@ -998,6 +1032,14 @@ public class DatasetDAO {
         if (controlProgList != null && controlProgList.size() > 0)
             throw new EmfException("Error: dataset used by control program " + controlProgList.get(0) + ".");
 
+    }
+    
+    public boolean isUsedByControlPrograms(int datasetID, Session session) throws EmfException {
+        // check if dataset is an input inventory for some control program (via the control_programs table)
+        controlProgList = session.createQuery(
+                "select cP.name from ControlProgram as cP inner join cP.dataset as d with (d.id = " + datasetID + ")").list();
+
+        return (controlProgList != null && controlProgList.size() > 0);
     }
     
     public List<Integer> notUsedByControlPrograms(int[] datasetIDs, User user, Session session) throws Exception {
@@ -1271,7 +1313,13 @@ public class DatasetDAO {
         
         return all;
     }
-    
+
+    public boolean isUsedByFast(int datasetId, User user, DbServer dbServer, Session session) throws Exception {
+        int[] datasetIDs = new int[] { datasetId };
+        List<Integer> list = notUsedByFast(datasetIDs, user, dbServer, session);
+        return (list.size() == 0);
+    }
+        
     @SuppressWarnings("unchecked")
     public List<Integer> notUsedByTemporalAllocations(int[] datasetIDs, User user, Session session) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
@@ -1348,6 +1396,12 @@ public class DatasetDAO {
         return all;
     }
 
+    public boolean isUsedByTemporalAllocations(int datasetId, User user, Session session) throws Exception {
+        int[] datasetIDs = new int[] { datasetId };
+        List<Integer> list = notUsedByTemporalAllocations(datasetIDs, user, session);
+        return (list.size() == 0);
+    }
+        
     private List<Integer> getRefdDatasetIds(User user, int[] idArray, DataQuery dataQuery, String query, String dsId, Session session)
             throws SQLException {
         ResultSet resultSet = null;
