@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project name="KML" default="exec-dist" basedir=".">
+<project name="KML" default="exec-dist" basedir="."
+		 xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<!--  =================== Properties ====================================== -->
 	<property file="build.properties" />
@@ -16,12 +17,45 @@
 	<property name="dist.file" value="kmlGen" />
 	<property name="zip.home" value="build/zip" />
 
-	<path id="classpath">
-		<pathelement location="${build.home}" />
-		<fileset dir="${lib.dir}">
-			<include name="**/*.jar" />
-		</fileset>
-	</path>
+	<!-- begin Ivy properties -->
+	<property name="common.dir" value="${ivy.default.ivy.user.dir}"/>
+	<property name="ivy.default.ivy.user.dir" value="${ivy.default.ivy.user.dir}"/>
+	<property name="repo.downloader.dir" value="${user.home}/.ivy2/download" />
+	<ivy:settings file="${basedir}/../ivysettings.xml" id="ivy.instance" />
+	<property environment="env"/>
+	<property name="ivy.home" value="${env_IVY_HOME}"/>
+	<!-- end Ivy properties -->
+
+	<target name="retrieve">
+		<ivy:resolve/>
+		<!--<ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" />-->
+		<ivy:cachepath pathid="build.path" conf="kml_generator"/>
+		<ivy:cachepath pathid="runtime.path" conf="runtime"/>
+	</target>
+
+	<target name="resolve" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" />
+	</target>
+
+
+	<target name="resolve-clean-cache" description="Cleans Ivy cache">
+		<ivy:cleancache />
+	</target>
+
+	<target name="publish" description="Publish this build into repository">
+		<ivy:resolve />
+		<tstamp>
+			<format property="now" pattern="yyyyMMddHHmmss"/>
+		</tstamp>
+		<ivy:publish artifactspattern="${dist.home}/[artifact].gui.[ext]"
+					 resolver="local"
+					 pubrevision="${app.version}"
+					 pubdate="${now}"
+					 status="integration"
+					 forcedeliver="true"
+					 overwrite="true"
+				/>
+	</target>
 
 	<target name="init">
 		<mkdir dir="${build.home}" />
@@ -37,8 +71,8 @@
 		</delete>
 	</target>
 
-	<target name="compile-src" depends="clean, init">
-		<javac srcdir="${src.dir}" destdir="${build.home}" classpathref="classpath" debug="on" />
+	<target name="compile-src" depends="retrieve, clean, init">
+		<javac srcdir="${src.dir}" destdir="${build.home}" classpathref="build.path" debug="on" includeantruntime="false" />
 		<copy todir="${build.home}">
 			<fileset dir="${src.dir}">
 				<exclude name="**/*.java" />
@@ -46,8 +80,9 @@
 		</copy>
 	</target>
 
-	<target name="build-version" depends="compile-src" description="Build kml generator version">
-		<java classname="gov.epa.emissions.googleearth.kml.version.VersionBuilder" fork="true" failonerror="true" classpathref="classpath">
+	<target name="build-version" depends="compile-src" description="Build kml generator version" >
+		<java classname="gov.epa.emissions.googleearth.kml.version.VersionBuilder" fork="true" failonerror="true">
+			<classpath location="${build.home}" />
 		</java>
 	</target>
 
@@ -56,6 +91,10 @@
 	<target name="exec-dist">
 		<antcall target="compile">
 		</antcall>
+
+
+		<ivy:retrieve pattern="${dist.lib}/[artifact].[ext]"  conf="kml_generator" />
+
 
 		<!-- create a property containing all .jar files, prefix lib/, and seperated with a space -->
 		<pathconvert property="libs.mapper" pathsep=" ">
@@ -71,49 +110,51 @@
 			</mapper>
 
 			<path>
-				<fileset dir="${lib.dir}">
-					<include name="**/gt2-brewer-2.3.0.jar" />
+				<fileset dir="${dist.lib}">
+					<include name="**/gt2-brewer.jar" />
 				</fileset>
 			</path>
 		</pathconvert>
 
-		<copy todir="${dist.lib}">
-			<fileset dir="${lib.dir}">
-				<exclude name="**/junit.jar" />
-			</fileset>
-		</copy>
+		<!--<copy todir="${dist.lib}">-->
+			<!--<fileset dir="${lib.dir}">-->
+				<!--<exclude name="**/junit.jar" />-->
+			<!--</fileset>-->
+		<!--</copy>-->
 
 		<mkdir dir="${dist.home}/extract" />
 
-		<copy todir="${dist.home}/extract">
-			<fileset dir="${lib.dir}">
-				<include name="**/gt2-brewer-2.3.0.jar" />
-			</fileset>
-		</copy>
+		<ivy:retrieve pattern="${dist.home}/extract/[artifact].[ext]" conf="kml_generator" />
 
-		<unzip src="${dist.home}/extract/gt2-brewer-2.3.0.jar" dest="${dist.home}/extract" />
+		<!--<copy todir="${dist.home}/extract">-->
+			<!--<fileset dir="${lib.dir}">-->
+				<!--<include name="**/gt2-brewer.jar" />-->
+			<!--</fileset>-->
+		<!--</copy>-->
+
+		<unzip src="${dist.home}/extract/gt2-brewer.jar" dest="${dist.home}/extract" />
 
 		<copy todir="${build.home}">
 			<fileset dir="${dist.home}/extract">
-				<exclude name="**/gt2-brewer-2.3.0.jar" />
+				<exclude name="**/gt2-brewer.jar" />
 				<exclude name="**/META-INF/**" />
 			</fileset>
 		</copy>
 
-		<jar jarfile="${dist.home}/${app.name}.gui.jar" basedir="${build.home}">
+		<jar jarfile="${dist.home}/${app.name}.gui.jar" basedir="${build.home}" excludes="**/*.jar">
 			<manifest>
 				<attribute name="Main-Class" value="gov.epa.emissions.googleearth.kml.gui.PointSourceGeneratorFrame" />
 			</manifest>
 		</jar>
 
-		<jar jarfile="${dist.home}/${cssi.app.name}.cmd.jar" basedir="${build.home}">
+		<jar jarfile="${dist.home}/${cssi.app.name}.cmd.jar" basedir="${build.home}" excludes="**/*.jar">
 			<manifest>
 				<attribute name="Main-Class" value="gov.epa.emissions.googleearth.CSSIRecordReader" />
 			</manifest>
 		</jar>
 
 
-		<jar jarfile="${dist.home}/${app.name}.cmd.jar" basedir="${build.home}">
+		<jar jarfile="${dist.home}/${app.name}.cmd.jar" basedir="${build.home}" excludes="**/*.jar">
 			<manifest>
 				<attribute name="Main-Class" value="gov.epa.emissions.googleearth.kml.generator.BinnedPointSourceGenerator" />
 			</manifest>

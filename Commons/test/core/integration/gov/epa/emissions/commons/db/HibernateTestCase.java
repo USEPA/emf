@@ -33,6 +33,23 @@ public abstract class HibernateTestCase extends PersistenceTestCase {
         return config.factory();
     }
 
+    private SessionFactory createSessionFactory() {
+//        AnnotationConfiguration configuration = new AnnotationConfiguration();
+//        configuration.addAnnotatedClass(SuperHero.class)
+//                .addAnnotatedClass(SuperPower.class)
+//                .addAnnotatedClass(SuperPowerType.class);
+//        configuration.setProperty("hibernate.dialect",
+//                "org.hibernate.dialect.H2Dialect");
+//        configuration.setProperty("hibernate.connection.driver_class",
+//                "org.h2.Driver");
+//        configuration.setProperty("hibernate.connection.url", "jdbc:h2:mem");
+//        configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+//        SessionFactory sessionFactory = configuration.buildSessionFactory();
+//        return sessionFactory;
+        return null;
+    }
+
+
     protected void remove(Object object) {
         Transaction tx = session.beginTransaction();
         session.delete(object);

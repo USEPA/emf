@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project name="EPA-Commons" default="core" basedir=".">
+<project name="EPA-Commons" default="core" basedir="."
+         xmlns:ivy="antlib:org.apache.ivy.ant">
 
     <!--  =================== Properties ====================================== -->
     <property file="build.properties" />
@@ -36,13 +37,62 @@
 
     <property name="test.database" value="Postgres" />
 
+    <!-- begin Ivy properties -->
+    <property name="common.dir" value="${ivy.default.ivy.user.dir}"/>
+    <property name="ivy.default.ivy.user.dir" value="${ivy.default.ivy.user.dir}"/>
+    <property name="repo.downloader.dir" value="${user.home}/.ivy2/download" />
+    <ivy:settings file="${basedir}/../ivysettings.xml" id="ivy.instance" />
+    <!-- end Ivy properties -->
+
 
     <path id="classpath">
         <pathelement location="${build.classes.dir}" />
-        <fileset dir="${lib.dir}">
+        <fileset dir="lib">
             <include name="**/*.jar" />
         </fileset>
     </path>
+
+
+    <target name="retrieve">
+        <ivy:resolve/>
+        <ivy:cachepath pathid="build.path" conf="commons"/>
+        <ivy:cachepath pathid="test.build.path" conf="test"/>
+        <ivy:cachepath pathid="runtime.path" conf="runtime"/>
+    </target>
+
+    <target name="resolve" description="--> retrieve dependencies with ivy">
+        <ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" sync="true" />
+    </target>
+
+    <target name="resolve-clean-cache" description="Cleans Ivy cache">
+        <ivy:cleancache />
+    </target>
+
+    <target name="report" depends="init">
+        <mkdir dir="report" />
+        <!--
+         The type attribute is optional, we're using it to exlude other dependcy types we're not interested in.
+         Note that each resolve uses that list (via a property) in our build.
+        -->
+        <ivy:resolve type="jar,ejb,tld,bundle" />
+        <ivy:report todir="report" />
+    </target>
+
+    <target name="publish" description="Publish this build into repository">
+        <ivy:resolve />
+        <tstamp>
+            <format property="now" pattern="yyyyMMddHHmmss"/>
+        </tstamp>
+        <ivy:publish artifactspattern="${build.home}/[artifact].[ext]"
+                     resolver="local"
+                     pubrevision="${app.version}"
+                     pubdate="${now}"
+                     status="integration"
+                     forcedeliver="true"
+                     overwrite="true"
+                />
+    </target>
+
 
     <!--  ===================START Basic Targets ====================================== -->
     <target name="init">
@@ -70,14 +120,17 @@
         </antcall>
     </target>
 
-    <target name="do-compile-src">
+    <target name="do-compile-src" depends="retrieve">
         <javac srcdir="${src.dir}"
                destdir="${build.classes.dir}"
-               classpathref="classpath"
                debug="on"
                target="1.6"
                source="1.6"
-        />
+        >
+            <classpath>
+                <path refid="build.path" />
+            </classpath>
+        </javac>
         <copy todir="${build.classes.dir}">
             <fileset dir="${src.dir}" includes="**/*.*" />
         </copy>
@@ -93,9 +146,9 @@
     </target>
 
     <target name="compile-postgres-tests"
-            depends="clean, init, compile-core-src, compile-postgres-src, compile-core-tests"
+            depends="clean, init, retrieve, compile-core-src, compile-postgres-src, compile-core-tests"
     >
-        <antcall target="do-compile-tests">
+        <antcall target="do-compile-tests" inheritall="true" inheritrefs="true">
             <param name="test.unit.dir" value="${postgres.test.unit.dir}" />
             <param name="test.integration.dir"
                    value="${postgres.test.integration.dir}"
@@ -103,17 +156,25 @@
         </antcall>
     </target>
 
-    <target name="do-compile-tests">
+    <target name="do-compile-tests" depends="retrieve">
         <javac srcdir="${test.unit.dir}"
                destdir="${build.classes.dir}"
-               classpathref="classpath"
                debug="on"
-        />
+        >
+            <classpath>
+                <path refid="build.path" />
+                <path refid="test.build.path" />
+            </classpath>
+        </javac>
         <javac srcdir="${test.integration.dir}"
                destdir="${build.classes.dir}"
-               classpathref="classpath"
                debug="on"
-        />
+                >
+            <classpath>
+                <path refid="build.path" />
+                <path refid="test.build.path" />
+            </classpath>
+        </javac>
     </target>
 
     <target name="compile-core"
@@ -144,7 +205,11 @@
 
     <target name="do-tests">
         <junit printsummary="yes" haltonfailure="yes">
-            <classpath refid="classpath" />
+            <classpath>
+                <path refid="build.path" />
+                <path refid="test.build.path" />
+                <!--<pathelement location="${build.classes.dir}" />-->
+            </classpath>
             <jvmarg value="-DDatabase=${test.database}" />
             <formatter type="xml" />
 
@@ -211,13 +276,13 @@
 
     <!--  ===============START  Coverage Targets =============================== -->
     <path id="cobertura.classpath">
-        <fileset dir="${lib.dir}/dev/cobertura">
+        <fileset dir="lib/dev/cobertura">
             <include name="**/*.jar" />
         </fileset>
         <path refid="classpath" />
     </path>
 
-    <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+    <!--<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />-->
     <property name="coverage.dir" value="${reports.dir}/coverage" />
     <property name="instrumented.dir" value="${coverage.dir}/instrumented" />
     <property name="reports.xml.dir" value="${coverage.dir}/tests/xml" />
@@ -302,6 +367,7 @@
         <jar jarfile="${build.home}/${app.name}.jar"
              basedir="${build.classes.dir}"
         />
+        <antcall target="publish"/>
     </target>
     <!-- ================END Distribution Targets ========================= -->
 
@@ -320,7 +386,7 @@
 
 	<target name="analysisengine-dist" depends="analysisengine.basedir.check, analysisengine-dist-warning" if="analysisengine.basedir.present">
 		<ant dir="${analysisengine.basedir}" target="do-dist" inheritall="false" />
-		<copy todir="${lib.dir}">
+		<copy todir="lib">
 			<fileset dir="${analysisengine.basedir}/build/sandbox" includes="*.jar" />
 		</copy>
 	</target>

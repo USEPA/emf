@@ -14,7 +14,7 @@ public class DefaultVersionedRecordsWriterTest extends VersionedRecordsTestCase 
     protected void setUp() throws Exception {
         super.setUp();
 
-        setupVersionZero(datasource, versionsTable);
+        setupVersionZero(emfDatasource, versionsTable);
         setupVersionZeroData(datasource, dataTable);
 
         writer = new DefaultVersionedRecordsWriter(datasource, dataTable);
@@ -31,11 +31,11 @@ public class DefaultVersionedRecordsWriterTest extends VersionedRecordsTestCase 
     }
 
     private void setupVersionZeroData(Datasource datasource, String table) throws SQLException {
-        addRecord(datasource, table, new String[] { null, "1", "0", null, "p1", "p2" });// 1
-        addRecord(datasource, table, new String[] { null, "1", "0", null, "p21", "p22" });// 2
-        addRecord(datasource, table, new String[] { null, "1", "0", null, "p31", "p32" });// 3
-        addRecord(datasource, table, new String[] { null, "1", "0", null, "p41", "p42" });// 4
-        addRecord(datasource, table, new String[] { null, "1", "0", null, "p51", "p52" });// 5
+        addRecord(datasource, table, new String[] { null, "1", "0", "", "p1", "p2" });// 1
+        addRecord(datasource, table, new String[] { null, "1", "0", "", "p21", "p22" });// 2
+        addRecord(datasource, table, new String[] { null, "1", "0", "", "p31", "p32" });// 3
+        addRecord(datasource, table, new String[] { null, "1", "0", "", "p41", "p42" });// 4
+        addRecord(datasource, table, new String[] { null, "1", "0", "", "p51", "p52" });// 5
     }
 
     public void testChangeSetWithTwoUpdatesInGivenVersion() throws Exception {

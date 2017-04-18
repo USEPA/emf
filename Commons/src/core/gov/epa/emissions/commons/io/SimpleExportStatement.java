@@ -14,7 +14,8 @@ public class SimpleExportStatement implements ExportStatement {
 
     public String generate(Datasource datasource, String table, String rowFilters, Dataset filterDataset, Version filterDatasetVersion,
             String filterDatasetJoinCondition) {
-        // TODO Auto-generated method stub
-        return null;
+        if (rowFilters.trim().length()>0)
+            return "SELECT * FROM " + table + " WHERE " + rowFilters;
+        return "SELECT * FROM " + table;
     }
 }

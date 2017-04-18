@@ -11,7 +11,7 @@ public class DefaultVersionedRecordsReaderTest extends VersionedRecordsTestCase 
     protected void setUp() throws Exception {
         super.setUp();
 
-        setupVersionZero(datasource, versionsTable);
+        setupVersionZero(emfDatasource, versionsTable);
         setupVersionZeroData(datasource, dataTable);
 
         reader = new DefaultVersionedRecordsFactory(datasource);
@@ -22,11 +22,11 @@ public class DefaultVersionedRecordsReaderTest extends VersionedRecordsTestCase 
     }
 
     private void setupVersionZeroData(Datasource datasource, String table) throws SQLException {
-        addRecord(datasource, table, new String[] { "1", "1", "0", null, "p1", "p2" });
+        addRecord(datasource, table, new String[] { "1", "1", "0", "", "p1", "p2" });
         addRecord(datasource, table, new String[] { "2", "1", "0", "6", "p21", "p22" });
         addRecord(datasource, table, new String[] { "3", "1", "0", "2", "p31", "p32" });
-        addRecord(datasource, table, new String[] { "4", "1", "0", null, "p41", "p42" });
-        addRecord(datasource, table, new String[] { "5", "1", "0", null, "p51", "p52" });
+        addRecord(datasource, table, new String[] { "4", "1", "0", "", "p41", "p42" });
+        addRecord(datasource, table, new String[] { "5", "1", "0", "", "p51", "p52" });
     }
 
     public void testFetchVersionZero() throws Exception {
@@ -54,10 +54,10 @@ public class DefaultVersionedRecordsReaderTest extends VersionedRecordsTestCase 
     public void testFetchVersionTwoThatHasARecordDeleteFromVersionOne() throws Exception {
         // mark record 6 deleted from version 2
         addRecord(datasource, dataTable, new String[] { "6", "1", "1", "2", "p61", "p62" });
-        addRecord(datasource, dataTable, new String[] { "7", "1", "1", null, "p71", "p72" });
+        addRecord(datasource, dataTable, new String[] { "7", "1", "1", "", "p71", "p72" });
         // setup version sequence
-        addRecord(datasource, versionsTable, new String[] { null, "1", "1", "v1", "0" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "2", "v2", "0,1" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "1", "v1", "0" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "2", "v2", "0,1" });
 
         Version versionTwo = new Version();
         versionTwo.setDatasetId(1);
@@ -77,8 +77,8 @@ public class DefaultVersionedRecordsReaderTest extends VersionedRecordsTestCase 
     public void testFetchWhenARecordIsRemovedFromMultipleVersionsInDifferentNonLinearSequences() throws Exception {
         // add records
         addRecord(datasource, dataTable, new String[] { "6", "1", "0", "3", "p61", "p62" });
-        addRecord(datasource, dataTable, new String[] { "7", "1", "1", null, "p1", "p2" });
-        addRecord(datasource, dataTable, new String[] { "8", "1", "4", null, "p1", "p2" });
+        addRecord(datasource, dataTable, new String[] { "7", "1", "1", "", "p1", "p2" });
+        addRecord(datasource, dataTable, new String[] { "8", "1", "4", "", "p1", "p2" });
         addRecord(datasource, dataTable, new String[] { "9", "1", "2", "4", "p1", "p2" });
         addRecord(datasource, dataTable, new String[] { "10", "1", "2", "5", "p1", "p2" });
         addRecord(datasource, dataTable, new String[] { "11", "1", "1", "3,4", "p1", "p2" });
@@ -87,13 +87,13 @@ public class DefaultVersionedRecordsReaderTest extends VersionedRecordsTestCase 
         addRecord(datasource, dataTable, new String[] { "14", "1", "0", "2,3,7", "p1", "p2" });
 
         // setup version sequence
-        addRecord(datasource, versionsTable, new String[] { null, "1", "1", "v1", "0" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "2", "v2", "0,1" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "3", "v3", "0,1" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "4", "v4", "0,1,2" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "5", "v5", "0,1,2" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "6", "v6", "0,1,2,5" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "7", "v7", "0" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "1", "v1", "0" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "2", "v2", "0,1" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "3", "v3", "0,1" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "4", "v4", "0,1,2" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "5", "v5", "0,1,2" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "6", "v6", "0,1,2,5" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "7", "v7", "0" });
 
         verifyVersionThreeForRemoveMultipleVersionsInNonLinearSequence();
         verifyVersionTwoForRemoveMultipleVersionsInNonLinearSequence();
@@ -160,22 +160,22 @@ public class DefaultVersionedRecordsReaderTest extends VersionedRecordsTestCase 
     public void testFetchWithDeletesAcrossMultipleVersions() throws Exception {
         // mark record 6 as deleted from version 2
         addRecord(datasource, dataTable, new String[] { "6", "1", "1", "2", "p61", "p62" });
-        addRecord(datasource, dataTable, new String[] { "7", "1", "1", null, "p71", "p72" });
+        addRecord(datasource, dataTable, new String[] { "7", "1", "1", "", "p71", "p72" });
         addRecord(datasource, dataTable, new String[] { "8", "1", "2", "3", "p81", "p82" });
-        addRecord(datasource, dataTable, new String[] { "9", "1", "3", null, "p1", "p2" });
-        addRecord(datasource, dataTable, new String[] { "10", "1", "4", null, "p", "p2" });
+        addRecord(datasource, dataTable, new String[] { "9", "1", "3", "", "p1", "p2" });
+        addRecord(datasource, dataTable, new String[] { "10", "1", "4", "", "p", "p2" });
         addRecord(datasource, dataTable, new String[] { "11", "1", "4", "5", "p", "p2" });
-        addRecord(datasource, dataTable, new String[] { "12", "1", "5", null, "p", "p2" });
-        addRecord(datasource, dataTable, new String[] { "13", "1", "5", null, "p", "p2" });
-        addRecord(datasource, dataTable, new String[] { "14", "1", "6", null, "p", "p2" });
+        addRecord(datasource, dataTable, new String[] { "12", "1", "5", "", "p", "p2" });
+        addRecord(datasource, dataTable, new String[] { "13", "1", "5", "", "p", "p2" });
+        addRecord(datasource, dataTable, new String[] { "14", "1", "6", "", "p", "p2" });
 
         // setup version sequence
-        addRecord(datasource, versionsTable, new String[] { null, "1", "1", "v1", "0" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "2", "v2", "0,1" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "3", "v3", "0,1,2" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "4", "v4", "0,1" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "5", "v5", "0,1,4" });
-        addRecord(datasource, versionsTable, new String[] { null, "1", "6", "v6", "0,1" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "1", "v1", "0" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "2", "v2", "0,1" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "3", "v3", "0,1,2" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "4", "v4", "0,1" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "5", "v5", "0,1,4" });
+        addRecord(emfDatasource, versionsTable, new String[] { null, "1", "6", "v6", "0,1" });
 
         verifyVersionThreeForDeletesAcrossMultipleVersions();
         verifyVersionFiveForDeletesAcrossMultipleVersions();

@@ -5,8 +5,6 @@ import gov.epa.emissions.commons.db.TableReader;
 
 import java.sql.Connection;
 
-import junit.framework.Assert;
-
 import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableIterator;
@@ -32,7 +30,6 @@ public class MySqlTableReader extends DbOperation implements TableReader {
             ds.addTable(table);
 
             ITableIterator iterator = ds.iterator();
-            Assert.assertTrue("table '" + table + "' does not exist", iterator.next());
 
             return iterator.getTable();
         } catch (Exception e) {
@@ -46,7 +43,6 @@ public class MySqlTableReader extends DbOperation implements TableReader {
             ds.addTable(qualified(schema, table));
 
             ITableIterator iterator = ds.iterator();
-            Assert.assertTrue(iterator.next());
             return iterator.getTable() != null;
         } catch (Exception e) {
             return false;

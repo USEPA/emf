@@ -12,14 +12,14 @@ public class ScrollableResultSetIndexTest extends TestCase {
 
     public void testStartShouldBeZeroAndEndShouldBeFetchSizeOnInit() {
         assertEquals(0, index.start());
-        assertEquals(10000, index.end());
+        assertEquals(10300, index.end());
     }
 
-    public void testIndexShouldBeInRangeIfGreaterOrEqualToStartAndLessThanEqualToEnd() {
+    public void testIndexShouldBeInRangeIfGreaterOrEqualToStartAndLessThanEqualToEndPlusPageSize() {
         assertTrue(index.inRange(5));
         assertFalse(index.inRange(-1));
         assertTrue(index.inRange(9999));
-        assertFalse(index.inRange(10000));
+        assertFalse(index.inRange(10300));
     }
 
     public void testRelativeIndex() {

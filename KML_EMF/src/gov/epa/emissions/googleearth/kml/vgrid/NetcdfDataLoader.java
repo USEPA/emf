@@ -88,7 +88,7 @@ public class NetcdfDataLoader {
 	}
 
 	public List<String> getVariablesInfo() throws Exception {
-		if (dataFile == null || dataFile.isClosed())
+		if (dataFile == null)// || dataFile.isClosed()
 			throw new Exception("Data file not opened or is closed.");
 		
 		List<Variable> vars = (List<Variable>) dataFile.getVariables();

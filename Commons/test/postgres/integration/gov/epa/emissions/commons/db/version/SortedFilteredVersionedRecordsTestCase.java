@@ -18,6 +18,7 @@ import java.util.List;
 public abstract class SortedFilteredVersionedRecordsTestCase extends HibernateTestCase {
 
     protected Datasource datasource;
+    protected Datasource emfDatasource;
 
     protected SqlDataTypes types;
 
@@ -32,6 +33,7 @@ public abstract class SortedFilteredVersionedRecordsTestCase extends HibernateTe
         types = dbServer.getSqlDataTypes();
 
         datasource = dbServer.getEmissionsDatasource();
+        emfDatasource = dbServer.getEmfDatasource();
         versionsTable = "versions";
         dataTable = "sortfilter";
         createTable(dataTable, datasource);
@@ -39,7 +41,7 @@ public abstract class SortedFilteredVersionedRecordsTestCase extends HibernateTe
     }
 
     protected void doTearDown() throws Exception {
-        DataModifier modifier = datasource.dataModifier();
+        DataModifier modifier = emfDatasource.dataModifier();
         modifier.dropAllData(versionsTable);
 
         TableDefinition def = datasource.tableDefinition();

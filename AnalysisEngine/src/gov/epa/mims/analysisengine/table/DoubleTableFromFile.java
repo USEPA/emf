@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import org.iscmem.cosu.DoubleTable;
-import org.iscmem.cosu.TableException;
-
 /**
  * A DoubleTable that stores it's data in a file
  * 
@@ -199,12 +196,12 @@ public class DoubleTableFromFile implements DoubleTable {
 	/**
 	 * Indicate that access to a table is no longer required. Each call to
 	 * <code>close</close> balances a call to <code>open</code>.
-	 * If the table is not open then a <code>TableException</code> will be thrown.
+	 * If the table is not open then a <code>Exception</code> will be thrown.
 	 * @throws Exception if there are problems accessing the table's contents
 	 */
 	public void close() throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 
 		// save table data to persistent storage
@@ -222,7 +219,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 */
 	public void save() throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 
 		// if data has changed, write table to file
@@ -274,7 +271,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	/**
 	 * return the number of columns in the table
 	 * 
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -282,7 +279,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 */
 	public int getColumnCount() throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 		return columnHeaders.size();
 	}
@@ -293,7 +290,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * @return the name of a column
 	 * @param columnIndex
 	 *            0-based column index
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -303,7 +300,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 */
 	public String getColumnName(int columnIndex) throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 
 		if (columnIndex < 0 || columnIndex >= columnHeaders.size()) {
@@ -323,7 +320,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -343,14 +340,14 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * return the number of rows in the table
 	 * 
 	 * @return the number of rows in the table
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
 	 */
 	public int getRowCount() throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 		return tableRows.size();
 	}
@@ -366,7 +363,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -395,7 +392,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 *             if an index is out of range
 	 * @throws java.lang.InterruptedException
 	 *             if the thread is interrupted while waiting
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -418,7 +415,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open or if the column does not contain a <code>double</code> (for derived table
 	 *             classes)
 	 * @throws Exception
@@ -444,7 +441,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open or if all columns do not contain a <code>double</code> (for derived table
 	 *             classes)
 	 * @throws Exception
@@ -473,7 +470,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -517,7 +514,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -537,14 +534,14 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * Return the 0-based index of the row with the given name or a negative number if the name was not found. Name
 	 * comparisons will respect case.
 	 * 
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
 	 */
 	public int findRowByName(String rowName) throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 
 		return rowHeaders.indexOf(rowName);
@@ -554,14 +551,14 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * Return the 0-based index of the column with the given name or a negative number if the name was not found. Name
 	 * comparisons will respect case.
 	 * 
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
 	 */
 	public int findColumnByName(String colName) throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 
 		return columnHeaders.indexOf(colName);
@@ -581,7 +578,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -592,7 +589,7 @@ public class DoubleTableFromFile implements DoubleTable {
 		}
 
 		if (!isCellEditable(rowIndex, columnIndex)) {
-			throw new TableException("Cell at [" + rowIndex + "," + columnIndex + "] is not editable.");
+			throw new Exception("Cell at [" + rowIndex + "," + columnIndex + "] is not editable.");
 		}
 
 		// get table row
@@ -614,7 +611,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -632,7 +629,7 @@ public class DoubleTableFromFile implements DoubleTable {
 		// set values
 		for (int i = 0; i < ncolumns; i++) {
 			if (!isCellEditable(rowIndex, i)) {
-				throw new TableException("Cell at [" + rowIndex + "," + i + "] is not editable.");
+				throw new Exception("Cell at [" + rowIndex + "," + i + "] is not editable.");
 			}
 
 			rowValues[i] = values[i];
@@ -656,7 +653,7 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
@@ -693,14 +690,14 @@ public class DoubleTableFromFile implements DoubleTable {
 	 * 
 	 * @throws java.lang.IllegalArgumentException
 	 *             if an index is out of range
-	 * @throws TableException
+	 * @throws Exception
 	 *             if the table is not open
 	 * @throws Exception
 	 *             if there are problems accessing the table's contents
 	 */
 	public void appendRow(String header, double values[]) throws Exception {
 		if (!isOpen) {
-			throw new TableException("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
+			throw new Exception("Table file [" + tableFile.getAbsolutePath() + "] is not open.");
 		}
 
 		// append header if rowHeaders List

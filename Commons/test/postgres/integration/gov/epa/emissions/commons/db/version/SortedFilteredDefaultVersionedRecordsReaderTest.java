@@ -16,7 +16,7 @@ public class SortedFilteredDefaultVersionedRecordsReaderTest extends SortedFilte
         super.setUp();
         datasetId = (int) Math.random();
 
-        setupVersionZero(datasource, versionsTable);
+        setupVersionZero(emfDatasource, versionsTable);
         setupVersionZeroData(datasource, dataTable);
         reader = new DefaultVersionedRecordsFactory(datasource);
     }
@@ -26,17 +26,17 @@ public class SortedFilteredDefaultVersionedRecordsReaderTest extends SortedFilte
     }
 
     private void setupVersionZeroData(Datasource datasource, String table) throws SQLException {
-        addRecord(datasource, table, new String[] { "1", "" + datasetId, "0", null, "A91", "W27", "D52", "X74", "L14" });
-        addRecord(datasource, table, new String[] { "2", "" + datasetId, "0", null, "E11", "F99", "K23", "P87", "Y78" });
-        addRecord(datasource, table, new String[] { "3", "" + datasetId, "0", null, "C17", "U45", "H19", "Z23", "B34" });
-        addRecord(datasource, table, new String[] { "4", "" + datasetId, "0", null, "G19", "N97", "R87", "J22", "Q26" });
-        addRecord(datasource, table, new String[] { "5", "" + datasetId, "0", null, "I61", "T18", "O16", "S15", "M19" });
-        addRecord(datasource, table, new String[] { "6", "" + datasetId, "0", null, "T16", "X14", "V18", "Z17", "B12" });
-        addRecord(datasource, table, new String[] { "7", "" + datasetId, "0", null, "A22", "W11", "D62", "X19", "L99" });
-        addRecord(datasource, table, new String[] { "8", "" + datasetId, "0", null, "A11", "W55", "D11", "X23", "L47" });
-        addRecord(datasource, table, new String[] { "9", "" + datasetId, "0", null, "G98", "N23", "R34", "J16", "Q19" });
+        addRecord(datasource, table, new String[] { "1", "" + datasetId, "0", "", "A91", "W27", "D52", "X74", "L14" });
+        addRecord(datasource, table, new String[] { "2", "" + datasetId, "0", "", "E11", "F99", "K23", "P87", "Y78" });
+        addRecord(datasource, table, new String[] { "3", "" + datasetId, "0", "", "C17", "U45", "H19", "Z23", "B34" });
+        addRecord(datasource, table, new String[] { "4", "" + datasetId, "0", "", "G19", "N97", "R87", "J22", "Q26" });
+        addRecord(datasource, table, new String[] { "5", "" + datasetId, "0", "", "I61", "T18", "O16", "S15", "M19" });
+        addRecord(datasource, table, new String[] { "6", "" + datasetId, "0", "", "T16", "X14", "V18", "Z17", "B12" });
+        addRecord(datasource, table, new String[] { "7", "" + datasetId, "0", "", "A22", "W11", "D62", "X19", "L99" });
+        addRecord(datasource, table, new String[] { "8", "" + datasetId, "0", "", "A11", "W55", "D11", "X23", "L47" });
+        addRecord(datasource, table, new String[] { "9", "" + datasetId, "0", "", "G98", "N23", "R34", "J16", "Q19" });
         addRecord(datasource, table,
-                new String[] { "10", "" + datasetId, "0", null, "G09", "N27", "R98", "J89", "Q01" });
+                new String[] { "10", "" + datasetId, "0", "", "G09", "N27", "R98", "J89", "Q01" });
     }
 
     public void testFetchVersionZeroWithNoFilters() throws Exception {

@@ -1,18 +1,7 @@
 package gov.epa.emissions.framework.services.data;
 
 import gov.epa.emissions.commons.Record;
-import gov.epa.emissions.commons.data.Country;
-import gov.epa.emissions.commons.data.Dataset;
-import gov.epa.emissions.commons.data.DatasetType;
-import gov.epa.emissions.commons.data.KeyVal;
-import gov.epa.emissions.commons.data.Keyword;
-import gov.epa.emissions.commons.data.Pollutant;
-import gov.epa.emissions.commons.data.Project;
-import gov.epa.emissions.commons.data.QAStepTemplate;
-import gov.epa.emissions.commons.data.Region;
-import gov.epa.emissions.commons.data.Sector;
-import gov.epa.emissions.commons.data.SourceGroup;
-import gov.epa.emissions.commons.data.UserFeature;
+import gov.epa.emissions.commons.data.*;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.SqlDataTypes;
 import gov.epa.emissions.commons.db.intendeduse.IntendedUse;
@@ -23,34 +12,23 @@ import gov.epa.emissions.commons.io.csv.CSVFileReader;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.EmfFileInfo;
-import gov.epa.emissions.framework.services.basic.EmfFilePatternMatcher;
-import gov.epa.emissions.framework.services.basic.EmfFileSerializer;
-import gov.epa.emissions.framework.services.basic.EmfServerFileSystemView;
-import gov.epa.emissions.framework.services.basic.FileDownload;
-import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
-import gov.epa.emissions.framework.services.basic.Status;
-import gov.epa.emissions.framework.services.basic.StatusDAO;
+import gov.epa.emissions.framework.services.basic.*;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.cost.controlStrategy.FileFormatFactory;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 //@Transactional(readOnly = true)
 //@Repository

@@ -18,6 +18,8 @@ public abstract class VersionedRecordsTestCase extends HibernateTestCase {
 
     protected Datasource datasource;
 
+    protected Datasource emfDatasource;
+
     protected SqlDataTypes types;
 
     protected String versionsTable;
@@ -31,6 +33,7 @@ public abstract class VersionedRecordsTestCase extends HibernateTestCase {
         types = dbServer.getSqlDataTypes();
 
         datasource = dbServer.getEmissionsDatasource();
+        emfDatasource = dbServer.getEmfDatasource();
         versionsTable = "versions";
         dataTable = "versioned_data";
 
@@ -49,7 +52,7 @@ public abstract class VersionedRecordsTestCase extends HibernateTestCase {
     }
 
     private void clean() throws SQLException {
-        DataModifier modifier = datasource.dataModifier();
+        DataModifier modifier = emfDatasource.dataModifier();
         modifier.dropAllData(versionsTable);
 
         try {

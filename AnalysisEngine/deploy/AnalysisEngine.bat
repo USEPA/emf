@@ -13,13 +13,13 @@ set PATH=%PATH%;%R_HOME%\bin
 ::  set needed jar files in CLASSPATH
 set CLASSPATH=%HOME_DIR%\analysis-engine.jar
 set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\colt.jar
-set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\cosu.jar;
-set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\jlfgr-1_0.jar
+set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\concurrent.jar
 set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\java_cup.jar;
+set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\jlfgr.jar
 set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\jh.jar
-set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\connectorJ.jar
-set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\weka.jar
-set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\xstream-1.2.1.jar
+set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\weka-stable.jar
+set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\xpp3_min.jar
+set CLASSPATH=%CLASSPATH%;%HOME_DIR%\lib\xstream.jar
 
 ::  argument definitions
 ::  -fileName <name>

@@ -21,7 +21,7 @@ public class VersionsTest extends HibernateTestCase {
         super.setUp();
 
         DbServer dbServer = dbSetup.getDbServer();
-        datasource = dbServer.getEmissionsDatasource();
+        datasource = dbServer.getEmfDatasource();
         versionsTable = "versions";
 
         setupData(datasource, versionsTable);

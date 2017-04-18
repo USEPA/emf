@@ -1,5 +1,6 @@
 package gov.epa.emissions.commons.db;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.SimpleDataset;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.io.importer.PersistenceTestCase;
@@ -19,7 +20,7 @@ public class ScrollableRecordsTest extends PersistenceTestCase {
         super.setUp();
         importNonPoint();
 
-        results = new ScrollableRecords(emissions(), "SELECT * from emissions." + dataset.getInternalSources()[0].getTable());
+        results = new ScrollableRecords(emissions(), "SELECT * from emissions." + dataset.getInternalSources()[0].getTable() + " order by record_id");
         results.execute();
     }
 
@@ -33,6 +34,7 @@ public class ScrollableRecordsTest extends PersistenceTestCase {
         dataset = new SimpleDataset();
         dataset.setName("test");
         dataset.setId(Math.abs(new Random().nextInt()));
+        dataset.setDatasetType(new DatasetType(DatasetType.orlNonpointInventory));
         File file = new File("test/data/orl/nc", "arinv.nonpoint.nti99_NC.txt");
         
         Version version = new Version();
@@ -119,10 +121,10 @@ public class ScrollableRecordsTest extends PersistenceTestCase {
         assertEquals("0", record.token(9));
         assertEquals("246", record.token(10));
         assertTrue(record.token(11).startsWith("0.000387296"));// because of precision
-        assertEquals("-9",record.token(12));
-        assertEquals("-9",record.token(13));
-        assertEquals("-9",record.token(14));
-        assertEquals("-9",record.token(15));
+        assertNull(record.token(12));
+        assertNull(record.token(13));
+        assertNull(record.token(14));
+        assertNull(record.token(15));
         assertNull(record.token(16));
     }
 

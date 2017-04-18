@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project name="AnalysisEngine" default="tests" basedir=".">
+<project name="AnalysisEngine" default="tests" basedir="."
+		 xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<!--  =================== Properties ====================================== -->
 	<property file="build.properties" />
@@ -23,13 +24,35 @@
 	<property name="app.name" value="ae" />
 	<property name="app.path" value="/${app.name}" />
 
+	<!-- begin Ivy properties -->
+	<property name="common.dir" value="${ivy.default.ivy.user.dir}"/>
+	<property name="ivy.default.ivy.user.dir" value="${ivy.default.ivy.user.dir}"/>
+	<property name="repo.downloader.dir" value="${user.home}/.ivy2/download" />
+	<ivy:settings file="${basedir}/../ivysettings.xml" id="ivy.instance" />
+	<!-- end Ivy properties -->
 
-	<path id="classpath">
-		<pathelement location="${build.classes.dir}" />
-		<fileset dir="${lib.dir}">
-			<include name="**/*.jar" />
-		</fileset>
-	</path>
+	<target name="retrieve">
+		<ivy:resolve/>
+		<ivy:cachepath pathid="build.path" conf="analysis_engine"/>
+		<ivy:cachepath pathid="test.build.path" conf="test"/>
+		<ivy:cachepath pathid="runtime.path" conf="runtime"/>
+	</target>
+
+	<target name="resolve" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" />
+	</target>
+
+
+	<target name="resolve-clean-cache" description="Cleans Ivy cache">
+		<ivy:cleancache />
+	</target>
+
+	<!--<path id="classpath">-->
+		<!--<pathelement location="${build.classes.dir}" />-->
+		<!--<fileset dir="${lib.dir}">-->
+			<!--<include name="**/*.jar" />-->
+		<!--</fileset>-->
+	<!--</path>-->
 
 	<target name="init">
 		<mkdir dir="${build.home}" />
@@ -45,21 +68,52 @@
 		</delete>
 	</target>
 
-	<target name="compile-src" depends="clean, init">
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+	<target name="compile-src" depends="clean, init, retrieve">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on">
+			<classpath>
+				<path refid="build.path" />
+				<path refid="test.build.path" />
+			</classpath>
+		</javac>
+
 		<copy todir="${build.classes.dir}">
 			<fileset dir="${src.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
+		<!--<ivy:resolve file="${ivy.file}"/>-->
+		<!--<ivy:publish organisation="epa" module="analysis-engine"  revision="${app.version}" artifactspattern="${build.classes.dir}/[artifact].[ext]" pubrevision="${app.version}" status="release" resolver="local" forcedeliver="true" >-->
+		<!--</ivy:publish>-->
 	</target>
 
 	<target name="compile" depends="clean, init, compile-src" />
 
-	<target name="do-dist" depends="do-dist-jar-only" />
+	<target name="do-dist" depends="jar,publish" >
+	</target>
 
-	<target name="do-dist-jar-only" depends="compile">
+	<target name="do-dist-src" depends="compile" >
+	</target>
+
+	<target name="jar" depends="compile">
 		<jar jarfile="${build.home}/${app.name}.jar" basedir="${build.classes.dir}" />
+	</target>
+
+	<target name="publish" description="Publish this build into repository" depends="jar">
+		<ivy:resolve />
+		<!--<ivy:deliver module="analysis-engine" organisation="epa"/>-->
+		<tstamp>
+			<format property="now" pattern="yyyyMMddHHmmss"/>
+		</tstamp>
+		<ivy:publish artifactspattern="${build.home}/[artifact].[ext]"
+					 resolver="local"
+					 pubrevision="${app.version}"
+					 pubdate="${now}"
+					 status="integration"
+					 forcedeliver="true"
+					 overwrite="true"
+					 publishivy="true"
+
+				/>
 	</target>
 
 	<target name="full-dist" depends="full-dist-sandbox" description="Builds the EMF Client distribution ">
@@ -70,9 +124,10 @@
 		<mkdir dir="${build.dist.dir}" />
 		<mkdir dir="${build.dist.dir.lib}" />
 
-		<copy todir="${build.dist.dir.lib}">
-			<fileset dir="${lib.dir}" />
-		</copy>
+		<ivy:retrieve pattern="${build.dist.dir.lib}/[artifact].[ext]" />
+		<!--<copy todir="${build.dist.dir.lib}">-->
+			<!--<fileset dir="${lib.dir}" />-->
+		<!--</copy>-->
 		<jar jarfile="${build.dist.dir}/${app.name}.jar" basedir="${build.classes.dir}">
 			<include name="**/*" />
 		</jar>
@@ -89,12 +144,21 @@
 	<!-- Test Targets -->
 
 	<target name="compile-tests" depends="clean, init, compile-src">
-		<javac srcdir="${test.unit.dir}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+		<javac srcdir="${test.unit.dir}" destdir="${build.classes.dir}" debug="on">
+			<classpath>
+				<path refid="build.path" />
+				<path refid="test.build.path" />
+			</classpath>
+		</javac>
 	</target>
 
-	<target name="do-tests">
-		<junit printsummary="yes" haltonfailure="no">
-			<classpath refid="classpath" />
+	<target name="do-tests" depends="retrieve">
+		<junit printsummary="yes" haltonfailure="no" showoutput="yes">
+			<classpath>
+				<path refid="build.path" />
+				<path refid="test.build.path" />
+				<pathelement location="${build.classes.dir}" />
+			</classpath>
 			<formatter type="xml" />
 			<batchtest fork="yes" todir="${reports.tests.dir}">
 				<fileset dir="${build.classes.dir}">
@@ -104,7 +168,7 @@
 		</junit>
 	</target>
 
-	<target name="tests" depends="compile-tests, do-tests" />
+	<target name="tests" depends="compile-tests, do-tests"  />
 
 </project>
 

@@ -130,14 +130,14 @@ public class EditorControlMeasurePresenterImpl implements ControlMeasurePresente
                 if (reportFile.exists()) {
                     overwrite = JOptionPane.showConfirmDialog(null, "File " + reportFile.getName()
                             + " already exist. Overwrite?", "Overwrite?", JOptionPane.YES_NO_OPTION);
+                } else {
+                    reportFile = new File(reportFile.getAbsolutePath() + ".pdf");
                 }
             }
 
         } while (overwrite == JOptionPane.NO_OPTION);
 
         if (retVal == JFileChooser.APPROVE_OPTION) {
-
-            reportFile = fileChooser.getSelectedFile();
 
             ControlMeasurePDFReportGenerator generator = new ControlMeasurePDFReportGenerator();
             generator.setSession(session);

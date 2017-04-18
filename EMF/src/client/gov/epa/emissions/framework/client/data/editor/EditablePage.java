@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import cern.colt.list.IntArrayList;
-
 public class EditablePage extends AbstractEditableTableData implements SelectableTableData {
 
     private List rows;
@@ -154,7 +152,7 @@ public class EditablePage extends AbstractEditableTableData implements Selectabl
     }
     
     public int[] getSelectedIndices() {
-        IntArrayList selected = new IntArrayList();
+        List<Integer> selected = new ArrayList<Integer>();
         int i=0;
         EditableRow row;
         for (Iterator iter = rows.iterator(); iter.hasNext();) {
@@ -164,8 +162,11 @@ public class EditablePage extends AbstractEditableTableData implements Selectabl
                 selected.add(i);
             i++;
         }
-        selected.trimToSize();
-        return selected.elements();
+        int[] selectedIndices = new int[selected.size()];
+        for (int k = 0; k < selected.size(); k++) {
+            selectedIndices[k] = selected.get(k);
+        }
+        return selectedIndices;
     }
     
     public VersionedRecord[] getHighlighted(int [] highlightedIndices) {

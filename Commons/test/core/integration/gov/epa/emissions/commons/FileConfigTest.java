@@ -31,7 +31,7 @@ public class FileConfigTest extends TestCase {
     }
 
     public void testShouldLoadProperties() throws Exception {
-        assertEquals("EMF", config.value("database.name"));
+        assertEquals("EMF-Test", config.value("database.name"));
     }
 
     public void testShouldReturnProperties() throws Exception {

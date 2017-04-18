@@ -16,7 +16,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -56,9 +59,46 @@ public abstract class PersistenceTestCase extends TestCase {
         properties.put("REFERENCE_FILE_BASE_DIR", "config/refDbFiles");
 
         dbSetup = new DatabaseSetup(properties);
+
+        System.setProperty("IMPORT_EXPORT_TEMP_DIR", getImportExportDir());
+
         fieldDefsFile = new File("config/field_defs.dat");
         referenceFilesDir = new File("config/refDbFiles");
     }
+
+    public String getImportExportDir() throws Exception {
+        String importExportDir = null;
+        ResultSet rs = null;
+        Statement statement = null;
+        Connection con = dbSetup.getDbServer().getConnection();
+
+        String query = "select value from emf.properties where name='ImportExportTempDir';";
+        try {
+            statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = statement.executeQuery(query);
+            while (rs.next()) {
+                importExportDir = rs.getString(1);
+            }
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /**/
+                }
+                rs = null;
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) { /**/
+                }
+                statement = null;
+            }
+
+        }
+        return importExportDir;
+    }
+
 
     private String configFilename() {
         String db = System.getProperty("Database");
@@ -70,7 +110,7 @@ public abstract class PersistenceTestCase extends TestCase {
 
     protected final void tearDown() throws Exception {
         doTearDown();
-        dropData("versions", dbServer().getEmissionsDatasource());
+        dropData("versions", dbServer().getEmfDatasource());
         dbSetup.tearDown();
     }
 

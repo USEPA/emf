@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class OptimizedPostgresQueryTest extends PersistenceTestCase {
+    public class OptimizedPostgresQueryTest extends PersistenceTestCase {
 
     private String table;
 

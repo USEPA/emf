@@ -1,0 +1,44 @@
+<ivysettings>
+    <settings defaultResolver="chain-example"/>
+    <resolvers>
+        <chain name="chain-example" returnFirst="true">
+            <!--<filesystem name="local">-->
+                <!--<artifact pattern="${ivy.settings.dir}/repository/[artifact]-[revision].[ext]" />-->
+            <!--</filesystem>-->
+            <ibiblio name="ibiblio" m2compatible="true"  />
+            <ibiblio name="central" m2compatible="true" />
+            <!--<ibiblio name="mvnrepo" m2compatible="true" root="http://mvnrepository.com/artifact/"/>-->
+            <!--<ibiblio name="ebi_repo" m2compatible="true" root="http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/"/>-->
+
+            <url name="com.springsource.repository.bundles.release">
+                <ivy pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></ivy>
+                <artifact pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></artifact>
+            </url>
+            <url name="com.springsource.repository.bundles.external">
+                <ivy pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></ivy>
+                <artifact pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></artifact>
+            </url>
+            <ibiblio name="example" m2compatible="true" root="http://repo.spring.io/plugins-release/"/>
+
+            <!--<url name="mvnrepo2">-->
+            <!--<ivy pattern="https://mvnrepository.com/artifact/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></ivy>-->
+            <!--<artifact pattern="https://mvnrepository.com/artifact/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></artifact>-->
+            <!--</url>-->
+        </chain>
+
+        <!--<chain name="spring-chain">-->
+            <!--<url name="com.springsource.repository.bundles.release">-->
+                <!--<ivy pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+                <!--<artifact pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+            <!--</url>-->
+            <!--<url name="com.springsource.repository.bundles.external">-->
+                <!--<ivy pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+                <!--<artifact pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+            <!--</url>-->
+            <!--<ibiblio name="ibiblio" m2compatible="true"/>-->
+        <!--</chain>-->
+    </resolvers>
+    <!--<modules>-->
+        <!--<module organisation="json" resolver="mvnrepo"/>-->
+    <!--</modules>-->
+</ivysettings>

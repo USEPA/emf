@@ -33,6 +33,8 @@ public class DataModifier {
             statement.execute(sql);
         } catch (SQLException e) {
             throw new SQLException("Error executing query-" + sql + "\n" + e.getMessage());
+        } catch (Exception e) {
+            throw new SQLException("Error executing query-" + sql + "\n" + e.getMessage());
         } finally {
             statement.close();
         }
@@ -257,7 +259,7 @@ public class DataModifier {
                 }
             }
             
-            if (!data[i].equalsIgnoreCase("NULL") && !data[i].equalsIgnoreCase("DEFAULT") && isTypeString(cols[i]) ) {
+            if (data[i] != null && !data[i].equalsIgnoreCase("NULL") && !data[i].equalsIgnoreCase("DEFAULT") && isTypeString(cols[i]) ) {
                 data[i] = escapeString(data[i]);
             }
 

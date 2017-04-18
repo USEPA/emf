@@ -47,6 +47,7 @@ public class CSVFileExImporterTest extends PersistenceTestCase {
 
     private Dataset dataset(String name) {
         SimpleDataset dataset = new SimpleDataset();
+        dataset.setId((int)(Math.random() * 10000));
         dataset.setName(name);
         DatasetType datasetType = new DatasetType("dsType");
         datasetType.setId(1); //fake id
@@ -117,6 +118,7 @@ public class CSVFileExImporterTest extends PersistenceTestCase {
     public void testImportASmallAndSimplePointFileWithVersionedCSVImporter() throws Exception {
         Version version = new Version();
         version.setVersion(0);
+        version.setDatasetId(dataset.getId());
         DbServer localDBServer = dbSetup.getNewPostgresDbServerInstance();
 
         File folder = new File("test/data/reference");
@@ -185,7 +187,7 @@ public class CSVFileExImporterTest extends PersistenceTestCase {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dropTable(repeatDataset.getInternalSources()[0].getTable(), datasource);
+//            dropTable(repeatDataset.getInternalSources()[0].getTable(), datasource);
         }
 
     }
@@ -203,6 +205,7 @@ public class CSVFileExImporterTest extends PersistenceTestCase {
     public void testShouldExImportShapeCatFile() throws Exception {
         Version version = new Version();
         version.setVersion(0);
+        version.setDatasetId(dataset.getId());
         DbServer localDBServer = dbSetup.getNewPostgresDbServerInstance();
 
         File folder = new File("test/data/csv");

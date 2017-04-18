@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project name="EMF" default="core" basedir=".">
+<project name="EMF" default="core" basedir="."
+		 xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<!--  =================== Properties ====================================== -->
 	<property name="ant.build.javac.target" value="1.6" />
@@ -73,6 +74,54 @@
 	<property name="" value="" />
 	<!-- end Tomcat properties -->
 
+	<!-- begin Ivy properties -->
+	<property name="common.dir" value="${ivy.default.ivy.user.dir}"/>
+	<property name="ivy.default.ivy.user.dir" value="${ivy.default.ivy.user.dir}"/>
+	<property name="repo.downloader.dir" value="${user.home}/.ivy2/download" />
+	<ivy:settings file="${basedir}/../ivysettings.xml" id="ivy.instance" />
+	<!-- end Ivy properties -->
+
+	<target name="resolve" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" />
+	</target>
+
+	<macrodef name="dependency">
+		<attribute name="org" />
+		<attribute name="name" />
+		<attribute name="rev" />
+		<attribute name="conf" />
+		<sequential>
+			<ivy:retrieve inline="true" type="jar" transitive="true" pattern="${repo.downloader.dir}/[organisation]/[revision]/[module]/[artifact]-[revision].[ext]" organisation="@{org}" module="@{name}" revision="@{rev}" conf="@{conf}" />
+			<ivy:retrieve inline="true" type="src,source,sources" transitive="true" pattern="${repo.downloader.dir}/[organisation]/[revision]/[module]/[artifact]-[revision].zip" organisation="@{org}" module="@{name}" revision="@{rev}" conf="@{conf}" />
+			<ivy:retrieve inline="true" type="doc,docs,javadoc,javadocs" transitive="true" pattern="${repo.downloader.dir}/[organisation]/[revision]/[module]/[artifact]-[revision].zip" organisation="@{org}" module="@{name}" revision="@{rev}" conf="@{conf}" />
+		</sequential>
+	</macrodef>
+
+	<target name="report" depends="init">
+		<mkdir dir="report" />
+		<!--
+         The type attribute is optional, we're using it to exlude other dependcy types we're not interested in.
+         Note that each resolve uses that list (via a property) in our build.
+        -->
+		<ivy:resolve type="jar,ejb,tld,bundle" />
+		<ivy:report todir="report" />
+	</target>
+
+	<target name="publish">
+	<ivy:publish resolver="local" module="EMF" organisation="epa" revision="1.0"  pubrevision="1.0" overwrite="true" artifactspattern="repository/[artifact].[ext]">
+	</ivy:publish>
+	</target>
+
+	<!--<target name="publish-local" depends="" description="Publish 3rd party jar into repository">-->
+		<!--<ivy:publish organisation="gov.epa" module="commons" revision="2.2" pubrevision="2.2" status="release" resolver="local" forcedeliver="true" >-->
+		<!--</ivy:publish>-->
+	<!--</target>-->
+
+
+	<target name="resolve-clean-cache" description="Cleans Ivy cache">
+		<ivy:cleancache />
+	</target>
+
 	<path id="classpath">
 		<pathelement location="${build.classes.dir}" />
 		<fileset dir="${lib.dir}">
@@ -111,18 +160,14 @@
 
 	<target name="compile-contract" depends="clean, init, compile-contract-no-clean-init" />
 
-	<target name="compile-contract-no-clean-init">
-		<antcall target="do-compile">
-			<param name="compile.src" value="${src.contract.dir}" />
-		</antcall>
+	<target name="compile-contract-no-clean-init" depends="retrieve">
+		<antcall target="do-compile-contract" inheritrefs="true" />
 	</target>
 
 	<target name="compile-client" depends="clean, init, compile-client-no-clean-init" />
 
-	<target name="compile-client-no-clean-init" depends="compile-contract-no-clean-init">
-		<antcall target="do-compile">
-			<param name="compile.src" value="${src.client.dir}" />
-		</antcall>
+	<target name="compile-client-no-clean-init" depends="retrieve, compile-contract-no-clean-init">
+		<antcall target="do-compile-client" inheritrefs="true" />
 		<antcall target="copy-client-resources">
 			<param name="target.dir" value="${build.classes.dir}" />
 		</antcall>
@@ -130,10 +175,8 @@
 
 	<target name="compile-services" depends="clean, init, compile-contract-no-clean-init" />
 
-	<target name="compile-services-no-clean-init" depends="compile-contract-no-clean-init">
-		<antcall target="do-compile">
-			<param name="compile.src" value="${src.services.dir}" />
-		</antcall>
+	<target name="compile-services-no-clean-init" depends="retrieve, compile-contract-no-clean-init">
+		<antcall target="do-compile-server" inheritrefs="true" />
 		<antcall target="copy-services-resources">
 			<param name="resources.root" value="${src.services.dir}" />
 		</antcall>
@@ -143,24 +186,27 @@
 
 	<target name="update-version-for-deploy" depends="clean, init, update-version-for-deploy-no-clean-init" description="Update EMF version file for deployment" />
 
-	<target name="build-version-no-clean-init" description="Build EMF version">
+	<target name="build-version-no-clean-init" description="Build EMF version" depends="retrieve">
+		<antcall target="do-compile-common" inheritrefs="true" />
 
-		<antcall target="do-compile">
-			<param name="compile.src" value="${src.common.dir}" />
-		</antcall>
-
-		<java classname="gov.epa.emissions.common.version.EMFVersionPropertiesBuilder" fork="true" failonerror="true" classpathref="classpath">
+		<java classname="gov.epa.emissions.common.version.EMFVersionPropertiesBuilder" fork="true" failonerror="true">
+			<classpath>
+				<path refid="runtime.path" />
+				<pathelement location="${build.classes.dir}" />
+			</classpath>
 			<arg value="/res/properties/version_generated.properties" />
 		</java>
 	</target>
 
-	<target name="update-version-for-deploy-no-clean-init" description="Update EMF version file for deployment">
+	<target name="update-version-for-deploy-no-clean-init" description="Update EMF version file for deployment" depends="retrieve">
 
-		<antcall target="do-compile">
-			<param name="compile.src" value="${src.common.dir}" />
-		</antcall>
+		<antcall target="do-compile-common" inheritrefs="true" inheritall="true"/>
 
-		<java classname="gov.epa.emissions.common.version.EMFVersionPropertiesUpdater" fork="true" failonerror="true" classpathref="classpath">
+		<java classname="gov.epa.emissions.common.version.EMFVersionPropertiesUpdater" fork="true" failonerror="true">
+			<classpath>
+				<path refid="client.build.path" />
+				<pathelement location="${build.classes.dir}" />
+			</classpath>
 			<arg value="/res/properties/version_for_deploy.properties" />
 		</java>
 	</target>
@@ -169,8 +215,29 @@
 
 	<target name="compile-src-no-clean-init" depends="build-version-no-clean-init, compile-contract-no-clean-init, compile-client-no-clean-init, compile-services-no-clean-init" />
 
-	<target name="do-compile">
-		<javac srcdir="${compile.src}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+	<target name="do-compile-common">
+		<javac srcdir="${src.common.dir}" destdir="${build.classes.dir}" debug="on" >
+			<classpath refid="client.build.path" />
+		</javac>
+	</target>
+
+	<target name="do-compile-client">
+		<echo message="${client.build.path}" />
+		<javac srcdir="${src.client.dir}" destdir="${build.classes.dir}" debug="on" >
+			<classpath refid="client.build.path" />
+		</javac>
+	</target>
+
+	<target name="do-compile-server">
+		<javac srcdir="${src.services.dir}" destdir="${build.classes.dir}" debug="on" >
+			<classpath refid="server.build.path" />
+		</javac>
+	</target>
+
+	<target name="do-compile-contract">
+		<javac srcdir="${src.contract.dir}" destdir="${build.classes.dir}" debug="on" >
+			<classpath refid="server.build.path" />
+		</javac>
 	</target>
 
 	<target name="copy-client-resources">
@@ -346,12 +413,14 @@
 		<mkdir dir="${client.dist.ref}" />
 
 		<!--copy files while preserving dates modified -->
-		<copy todir="${client.dist.lib}" preservelastmodified="true">
-			<fileset dir="${lib.dir}">
-				<exclude name="dev/**" />
-				<exclude name="tomcat/**" />
-			</fileset>
-		</copy>
+		<!--<copy todir="${client.dist.lib}" preservelastmodified="true">-->
+			<!--<fileset dir="${lib.dir}">-->
+				<!--<exclude name="dev/**" />-->
+				<!--<exclude name="tomcat/**" />-->
+			<!--</fileset>-->
+		<!--</copy>-->
+		<ivy:retrieve conf="client" pattern="${client.dist.lib}/[artifact].[ext]" />
+
 		<jar jarfile="${client.dist}/${app.name}-client.jar" basedir="${build.classes.dir}">
 			<include name="**/*" />
 		</jar>
@@ -389,6 +458,14 @@
 	</target>
 
 	<target name="client-dist(only jar)" depends="clean, init, client-dist-jar-only-no-clean-init" description="Builds the EMF Client jar file excluding dependent jar file" />
+
+	<target name="retrieve">
+		<ivy:resolve/>
+		<!--<ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" />-->
+		<ivy:cachepath pathid="client.build.path" conf="client"/>
+		<ivy:cachepath pathid="server.build.path" conf="server"/>
+		<ivy:cachepath pathid="runtime.path" conf="runtime"/>
+	</target>
 
 	<target name="client-dist-jar-only-no-clean-init" depends="compile-client-no-clean-init" description="Builds the EMF Client jar file excluding dependent jar file">
 		<jar jarfile="${build.home}/${app.name}-client.jar" basedir="${build.classes.dir}">
@@ -476,12 +553,15 @@
 			<include name="**/*" />
 		</jar>
 
-		<copy todir="${client.dist.dir}" file="${basedir}/lib/epa-commons.jar" failonerror="true" />
-		<copy todir="${client.dist.dir}" file="${basedir}/lib/analysis-engine.jar" failonerror="true" />
+		<!--<copy todir="${client.dist.dir}" file="${basedir}/lib/epa-commons.jar" failonerror="true" />-->
+		<!--<copy todir="${client.dist.dir}" file="${basedir}/lib/analysis-engine.jar" failonerror="true" />-->
+		<ivy:retrieve conf="commons" organisation="epa"  module="epa-commons" revision="0.5" pattern="${client.dist.dir}/[artifact].[ext]" />
+		<ivy:retrieve conf="analysis_engine" organisation="epa" module="analysis-engine" revision="0.1.1" pattern="${client.dist.dir}/[artifact].[ext]" />
+
 		<copy todir="${client.dist.dir}" file="${src.client.dir}/gov/epa/emissions/framework/install/installer/runinstaller.bat" failonerror="true" />
 
 		<java classname="gov.epa.emissions.framework.install.installer.CreateDownloadFilesList" fork="true" failonerror="true">
-			<arg value="${lib.dir}" />
+			<arg value="${client.dist.lib}" />
 			<arg value="${client.dist.dir}" />
 			<classpath>
 				<pathelement location="${client.jar}" />
@@ -517,22 +597,23 @@
 		<copy todir="${build.dist.dir}">
 			<fileset dir="${web.dir}" />
 		</copy>
-		<copy todir="${build.web-inf.dir}/lib">
-			<fileset dir="${lib.dir}">
-				<exclude name="dev/**" />
-				<exclude name="tomcat/**" />
-				<exclude name="axis-1.4/**" />
-				<exclude name="xerces-2.10.0/**" />
-			</fileset>
-		</copy>
-		<copy todir="${build.web-inf.dir}/lib">
-			<fileset dir="${lib.dir}/axis-1.4">
-			</fileset>
-		</copy>
-		<copy todir="${build.web-inf.dir}/lib">
-			<fileset dir="${lib.dir}/xerces-2.10.0">
-			</fileset>
-		</copy>
+		<ivy:retrieve conf="server" pattern="${build.web-inf.dir}/lib/[artifact]-[revision].[ext]" />
+		<!--<copy todir="${build.web-inf.dir}/lib">-->
+			<!--<fileset dir="${lib.dir}">-->
+				<!--<exclude name="dev/**" />-->
+				<!--<exclude name="tomcat/**" />-->
+				<!--<exclude name="axis-1.4/**" />-->
+				<!--<exclude name="xerces-2.10.0/**" />-->
+			<!--</fileset>-->
+		<!--</copy>-->
+		<!--<copy todir="${build.web-inf.dir}/lib">-->
+			<!--<fileset dir="${lib.dir}/axis-1.4">-->
+			<!--</fileset>-->
+		<!--</copy>-->
+		<!--<copy todir="${build.web-inf.dir}/lib">-->
+			<!--<fileset dir="${lib.dir}/xerces-2.10.0">-->
+			<!--</fileset>-->
+		<!--</copy>-->
 	</target>
 
 	<target name="app-dist" depends="clean, init, app-dist-no-clean-init" description="Create EMF Services(server) binary distribution" />
@@ -676,7 +757,7 @@
 		<path refid="classpath" />
 	</path>
 
-	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+	<!--<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />-->
 	<property name="coverage.dir" value="${reports.dir}/coverage" />
 	<property name="instrumented.dir" value="${coverage.dir}/instrumented" />
 	<property name="reports.xml.dir" value="${coverage.dir}/tests/xml" />
