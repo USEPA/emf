@@ -316,6 +316,8 @@ public class RemoteCommand {
         cmds[2] = executeCmd;
 
         try {
+            LOG.debug("RemoteCommand.execute executeCmd = " + executeCmd);
+
             final Process p = Runtime.getRuntime().exec(cmds);
             
             ProcessThread waitNKill = new ProcessThread(p, executeCmd, 300000);
