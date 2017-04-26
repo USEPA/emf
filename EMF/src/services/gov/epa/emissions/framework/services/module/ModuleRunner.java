@@ -486,7 +486,7 @@ abstract class ModuleRunner {
 
         // 1.d. if the current user doesn't own the dataset and he is not an admin user
         // ==> error: cannot delete or replace
-        if (!dataset.getCreator().equals(user.getName()) && !user.isAdmin()) {
+        if (!dataset.getCreator().equals(user.getUsername()) && !user.isAdmin()) {
             String errorMessage = String.format("Cannot delete or replace dataset '%s': the dataset was created by %s (%s) and the current user %s (%s) is not an administrator.",
                                                 dataset.getName(), dataset.getCreator(), dataset.getCreatorFullName(), user.getUsername(), user.getName());
             throw new EmfException(errorMessage);
