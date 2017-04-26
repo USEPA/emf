@@ -50,7 +50,7 @@ class ModuleRunnerContext {
 
     public void stop() {
         Date stopDate = new Date();
-        long durationSeconds = (stopDate.getTime() - startDate.getTime()) / 1000;
+        long durationSeconds = (stopDate.getTime() - startDate.getTime() + 999) / 1000 + 1;
         history.setDurationSeconds((int)durationSeconds);
         history = getModulesDAO().updateHistory(history, getSession());
     }
