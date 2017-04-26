@@ -93,6 +93,18 @@ public class ModuleServiceTransport implements ModuleService {
     }
 
     @Override
+    public ModuleType finalizeModuleTypeVersion(int moduleTypeVersionId, User user) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("finalizeModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.addParam("user", mappings.user());
+        call.setReturnType(mappings.moduleType());
+
+        return (ModuleType) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId), user });
+    }
+
+    @Override
     public ModuleType removeModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
         EmfCall call = call();
 
@@ -331,6 +343,19 @@ public class ModuleServiceTransport implements ModuleService {
         call.setReturnType(mappings.dataset());
 
         return (EmfDataset) call.requestResponse(new Object[] { new Integer(moduleDatasetId) });
+    }
+
+    @Override
+    public synchronized EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId, Integer newDatasetId, String newDatasetNamePattern) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getEmfDatasetForModuleDataset");
+        call.addIntegerParam("moduleId");
+        call.addIntegerParam("newDatasetId");
+        call.addStringParam("newDatasetNamePattern");
+        call.setReturnType(mappings.dataset());
+
+        return (EmfDataset) call.requestResponse(new Object[] { new Integer(moduleDatasetId), newDatasetId, newDatasetNamePattern });
     }
 
     @Override

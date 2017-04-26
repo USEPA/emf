@@ -40,21 +40,12 @@ public class ModuleTypeVersionDatasetsTableData extends AbstractTableData {
             Object[] values = { element.getMode(),
                                 element.getPlaceholderName(),
                                 element.getDatasetType().getName(),
-                                getShortDescription(element) };
+                                element.getDescription() };
 
             Row row = new ViewableRow(element, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(ModuleTypeVersionDataset dataset) {
-        String description = dataset.getDescription();
-
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

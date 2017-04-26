@@ -162,13 +162,24 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         return this.moduleTypeVersions;
     }
 
+    /// may return null
+    public ModuleTypeVersion getLastModuleTypeVersion() {
+        ModuleTypeVersion lastModuleTypeVersion = null;
+        for (ModuleTypeVersion moduleTypeVersion : this.moduleTypeVersions.values())
+            if ((lastModuleTypeVersion == null) || (lastModuleTypeVersion.getVersion() < moduleTypeVersion.getVersion()))
+                lastModuleTypeVersion = moduleTypeVersion;
+        return lastModuleTypeVersion;
+    }
+
     public void setModuleTypeVersions(Map<Integer, ModuleTypeVersion> moduleTypeVersions) {
         this.moduleTypeVersions = moduleTypeVersions;
     }
 
     public void addModuleTypeVersion(ModuleTypeVersion moduleTypeVersion) {
         moduleTypeVersion.setModuleType(this);
-        moduleTypeVersion.setVersion(this.moduleTypeVersions.size());
+        ModuleTypeVersion lastModuleTypeVersion = getLastModuleTypeVersion();
+        int newVersion = (lastModuleTypeVersion == null) ? 1 : (lastModuleTypeVersion.getVersion() + 1); 
+        moduleTypeVersion.setVersion(newVersion);
         this.moduleTypeVersions.put(moduleTypeVersion.getVersion(), moduleTypeVersion);
     }
 

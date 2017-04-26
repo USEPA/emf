@@ -68,6 +68,10 @@ public class ModuleTypeVersionPropertiesPresenter {
         return session.moduleService().updateModuleTypeVersion(moduleTypeVersion, user);
     }
 
+    public ModuleType finalizeModuleTypeVersion(int moduleTypeVersionId, User user) throws EmfException {
+        return session.moduleService().finalizeModuleTypeVersion(moduleTypeVersionId, user);
+    }
+
     public void displayModuleTypeVersionDatasetView(ModuleTypeVersionDatasetView view) {
         ModuleTypeVersionDatasetPresenter presenter = new ModuleTypeVersionDatasetPresenter(session, view, this.view);
         presenter.doDisplay();

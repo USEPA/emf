@@ -24,7 +24,7 @@ public class ModulesTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] {"Module Name", "Composite?", "Final?", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date"};
+        return new String[] {"Module Name", "Composite?", "Final?", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };
     }
 
     public Class getColumnClass(int col) {
@@ -53,7 +53,8 @@ public class ModulesTableData extends AbstractTableData {
                                 liteModule.getCreator().getName(),
                                 CustomDateFormat.format_YYYY_MM_DD_HH_MM(liteModule.getCreationDate()),
                                 liteModule.getLockOwner(),
-                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(liteModule.getLockDate()) };
+                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(liteModule.getLockDate()),
+                                liteModule.getDescription() };
 
             Row row = new ViewableRow(liteModule, values);
             rows.add(row);

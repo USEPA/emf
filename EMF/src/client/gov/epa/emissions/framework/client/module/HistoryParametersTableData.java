@@ -43,21 +43,12 @@ public class HistoryParametersTableData extends AbstractTableData {
                                 element.getParameterName(),
                                 moduleTypeVersionParameter.getSqlParameterType(),
                                 element.getValue(),
-                                getShortDescription(moduleTypeVersionParameter)};
+                                moduleTypeVersionParameter.getDescription() };
 
             Row row = new ViewableRow(element, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(ModuleTypeVersionParameter moduleTypeVersionParameter) {
-        String description = moduleTypeVersionParameter.getDescription();
-
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

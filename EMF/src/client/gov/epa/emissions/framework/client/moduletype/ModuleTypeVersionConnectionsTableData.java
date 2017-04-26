@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.moduletype;
 
+import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection;
@@ -40,34 +41,51 @@ public class ModuleTypeVersionConnectionsTableData extends AbstractTableData {
         List rows = new ArrayList();
         
         for (ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersion.getModuleTypeVersionDatasetConnections().values()) {
+            String sourceDatasetTypeName = "ERROR";
+            try {
+                sourceDatasetTypeName = datasetConnection.getSourceDatasetTypeName();
+            } catch (EmfException e) {
+                e.printStackTrace();
+            }
+            String targetDatasetTypeName = "ERROR";
+            try {
+                targetDatasetTypeName = datasetConnection.getTargetDatasetTypeName();
+            } catch (EmfException e) {
+                e.printStackTrace();
+            }
             Object[] values = { "dataset",
-                                datasetConnection.getSourceDatasetTypeName(), // source and target types must be the same
+                                sourceDatasetTypeName, // source and target types must be the same
                                 datasetConnection.getSourceName(),
-                                datasetConnection.getTargetDatasetTypeName(),
+                                targetDatasetTypeName,
                                 datasetConnection.getTargetName(),
-                                getShortDescription(datasetConnection.getDescription()) };
+                                datasetConnection.getDescription() };
             Row row = new ViewableRow(datasetConnection, values);
             rows.add(row);
         }
 
         for (ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersion.getModuleTypeVersionParameterConnections().values()) {
+            String sourceSqlType = "ERROR";
+            try {
+                sourceSqlType = parameterConnection.getSourceSqlType();
+            } catch (EmfException e) {
+                e.printStackTrace();
+            }
+            String targetSqlType = "ERROR";
+            try {
+                targetSqlType = parameterConnection.getTargetSqlType();
+            } catch (EmfException e) {
+                e.printStackTrace();
+            }
             Object[] values = { "parameter",
-                                parameterConnection.getSourceSqlType(), // source and target types can be different
+                                sourceSqlType, // source and target types can be different
                                 parameterConnection.getSourceName(),
-                                parameterConnection.getTargetSqlType(),
+                                targetSqlType,
                                 parameterConnection.getTargetName(),
-                                getShortDescription(parameterConnection.getDescription()) };
+                                parameterConnection.getDescription() };
             Row row = new ViewableRow(parameterConnection, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(String description) {
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

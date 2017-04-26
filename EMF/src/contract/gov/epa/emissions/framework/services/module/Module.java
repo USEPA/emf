@@ -3,6 +3,10 @@ package gov.epa.emissions.framework.services.module;
 import gov.epa.emissions.commons.data.Lockable;
 import gov.epa.emissions.commons.data.Mutex;
 import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.commons.util.CustomDateFormat;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.DataService;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -91,22 +95,54 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
     public boolean isValid(final StringBuilder error) {
         error.setLength(0);
 
-        if (!moduleTypeVersion.isValid(error)) return false;
+        if (!moduleTypeVersion.isValid(error))
+            return false;
         
+        Map<Integer, ModuleDataset> inputDatasets = new HashMap<Integer, ModuleDataset>();
+        Map<Integer, ModuleDataset> outputDatasets = new HashMap<Integer, ModuleDataset>();
         for(ModuleDataset moduleDataset : moduleDatasets.values()) {
-            if (!moduleDataset.isValid(error)) return false;
+            if (!moduleDataset.isValid(error))
+                return false;
+            if (!moduleDataset.getModuleTypeVersionDataset().isModeOUT()) {
+                if (outputDatasets.containsKey(moduleDataset.getDatasetId())) {
+                    ModuleDataset outputModuleDataset = outputDatasets.get(moduleDataset.getDatasetId());
+                    error.append(String.format("The %s output placeholder is replacing the dataset used by the %s input placeholder.",
+                            outputModuleDataset.getPlaceholderName(), moduleDataset.getPlaceholderName()));
+                    return false;
+                }
+                inputDatasets.put(moduleDataset.getDatasetId(), moduleDataset);
+            } else if (moduleDataset.getOutputMethod().equals(ModuleDataset.REPLACE)) {
+                if (outputDatasets.containsKey(moduleDataset.getDatasetId())) {
+                    ModuleDataset outputModuleDataset = outputDatasets.get(moduleDataset.getDatasetId());
+                    error.append(String.format("The %s and %s output placeholders are replacing the same dataset.",
+                            outputModuleDataset.getPlaceholderName(), moduleDataset.getPlaceholderName()));
+                    return false;
+                }
+                if (inputDatasets.containsKey(moduleDataset.getDatasetId())) {
+                    ModuleDataset inputModuleDataset = inputDatasets.get(moduleDataset.getDatasetId());
+                    error.append(String.format("The %s output placeholder is replacing the dataset used by the %s input placeholder.",
+                            moduleDataset.getPlaceholderName(), inputModuleDataset.getPlaceholderName()));
+                    return false;
+                }
+                outputDatasets.put(moduleDataset.getDatasetId(), moduleDataset);
+            }
         }
-
+        inputDatasets.clear();
+        outputDatasets.clear();
+        
         for(ModuleParameter moduleParameter : moduleParameters.values()) {
-            if (!moduleParameter.isValid(error)) return false;
+            if (!moduleParameter.isValid(error))
+                return false;
         }
         
         for(ModuleInternalDataset moduleInternalDataset : moduleInternalDatasets.values()) {
-            if (!moduleInternalDataset.isValid(error)) return false;
+            if (!moduleInternalDataset.isValid(error))
+                return false;
         }
 
         for(ModuleInternalParameter moduleInternalParameter : moduleInternalParameters.values()) {
-            if (!moduleInternalParameter.isValid(error)) return false;
+            if (!moduleInternalParameter.isValid(error))
+                return false;
         }
         
         return true;
@@ -297,7 +333,113 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         
         return updated;
     }
-    
+
+    public Map<String, String> getCompData(ModuleService moduleService, DataService dataService) {
+        Map<String, String> compData = new HashMap<String, String>();
+        
+        String lockOwner = getLockOwner();
+        String safeLockOwner = (lockOwner == null) ? "" : lockOwner;
+        
+        Date lockDate = getLockDate();
+        String safeLockDate = (lockDate == null) ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
+        
+        compData.put("Summary / Module Type", moduleTypeVersion.getModuleType().getName());
+        compData.put("Summary / Module Type Version", moduleTypeVersion.versionName());
+        compData.put("Summary / Module Name", name);
+        compData.put("Summary / Description", description);
+        compData.put("Summary / Creator", creator.getName());
+        compData.put("Summary / Creation Date", CustomDateFormat.format_MM_DD_YYYY_HH_mm(creationDate));
+        compData.put("Summary / Last Modified", CustomDateFormat.format_MM_DD_YYYY_HH_mm(lastModifiedDate));
+        compData.put("Summary / Lock Owner", safeLockOwner);
+        compData.put("Summary / Lock Date", safeLockDate);
+        compData.put("Summary / Is Final", getIsFinal() ? "Yes" : "No");
+
+        for(ModuleDataset moduleDataset : moduleDatasets.values()) {
+            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+            String mode = moduleTypeVersionDataset.getMode();
+            String outputMethod = moduleDataset.getOutputMethod();
+            String modeMethod = mode;
+            if (mode.equals(ModuleTypeVersionDataset.IN) || mode.equals(ModuleTypeVersionDataset.INOUT)) {
+                modeMethod = mode;
+            } else if (outputMethod.equals(ModuleDataset.NEW)) {
+                modeMethod = "OUT NEW";
+            } else if (outputMethod.equals(ModuleDataset.REPLACE)) {
+                modeMethod = "OUT REPLACE";
+            }
+            EmfDataset emfDataset = null;
+            try {
+                emfDataset = moduleService.getEmfDatasetForModuleDataset(moduleDataset.getId(), moduleDataset.getDatasetId(), moduleDataset.getDatasetNamePattern());
+            } catch (EmfException e) {
+                e.printStackTrace();
+            }
+            String datasetName = (emfDataset == null) ? "" : emfDataset.getName();
+            String datasetExists = (emfDataset == null) ? "No" : "Yes"; // TODO check version also
+            String datasetVersion = (moduleDataset.getVersion() == null) ? "" : (moduleDataset.getVersion() + "");
+            String tabName = "Datasets / " + moduleDataset.getPlaceholderName() + " / ";
+            compData.put(tabName + "Mode", modeMethod);
+            compData.put(tabName + "Dataset Type", moduleTypeVersionDataset.getDatasetType().getName());
+            compData.put(tabName + "Dataset Name Pattern", moduleDataset.getDatasetNamePattern());
+            compData.put(tabName + "Dataset Name", datasetName);
+            compData.put(tabName + "Dataset Version", datasetVersion);
+            compData.put(tabName + "Dataset Exists", datasetExists);
+            compData.put(tabName + "Description", moduleTypeVersionDataset.getDescription());
+        }
+
+        for(ModuleParameter moduleParameter : moduleParameters.values()) {
+            History lastHistory = moduleParameter.getModule().lastHistory();
+            HistoryParameter historyParameter = null;
+            if (lastHistory != null) {
+                if (History.SUCCESS.equals(lastHistory.getResult()) && lastHistory.getHistoryParameters().containsKey(moduleParameter.getParameterName())) {
+                    historyParameter = lastHistory.getHistoryParameters().get(moduleParameter.getParameterName());
+                }
+            }
+            ModuleTypeVersionParameter moduleTypeVersionParameter = moduleParameter.getModuleTypeVersionParameter();
+            String mode = moduleTypeVersionParameter.getMode();
+            String inValue = mode.equals(ModuleTypeVersionParameter.OUT) ? "N/A" : moduleParameter.getValue();
+            String outValue = mode.equals(ModuleTypeVersionParameter.IN) ? "N/A" : ((historyParameter == null) ? "N/A" : historyParameter.getValue());
+            String tabName = "Parameters / " + moduleParameter.getParameterName() + " / ";
+            compData.put(tabName + "Mode", mode);
+            compData.put(tabName + "SQL Type", moduleTypeVersionParameter.getSqlParameterType());
+            compData.put(tabName + "Input Value", inValue);
+            compData.put(tabName + "Output Value", outValue);
+            compData.put(tabName + "Description", moduleTypeVersionParameter.getDescription());
+        }
+
+        for(ModuleInternalDataset moduleInternalDataset : moduleInternalDatasets.values()) {
+            EmfDataset emfDataset = moduleInternalDataset.getEmfDataset(dataService);
+            String datasetName = (emfDataset == null) ? "" : emfDataset.getName();
+            String datasetExists = (emfDataset == null) ? "No" : "Yes"; // TODO check version also
+            String tabName = "Internal Datasets / " + moduleInternalDataset.getPlaceholderPathNames() + " / ";
+            compData.put(tabName + "Keep", moduleInternalDataset.getKeep() ? "Yes" : "No");
+            compData.put(tabName + "Dataset Type", moduleInternalDataset.getModuleTypeVersionDataset().getDatasetType().getName());
+            compData.put(tabName + "Dataset Name Pattern", moduleInternalDataset.getDatasetNamePattern());
+            compData.put(tabName + "Dataset Name", datasetName);
+            compData.put(tabName + "Dataset Version", "0");
+            compData.put(tabName + "Dataset Exists", datasetExists);
+        }
+
+        for(ModuleInternalParameter moduleInternalParameter : moduleInternalParameters.values()) {
+            String parameterPath = moduleInternalParameter.getParameterPath();
+            String parameterPathNames = moduleInternalParameter.getParameterPathNames();
+            ModuleTypeVersionParameter moduleTypeVersionParameter = moduleInternalParameter.getModuleTypeVersionParameter();
+            HistoryInternalParameter historyInternalParameter = null;
+            History lastHistory = moduleInternalParameter.getCompositeModule().lastHistory();
+            if (lastHistory != null) {
+                Map<String, HistoryInternalParameter> historyInternalParameters = lastHistory.getHistoryInternalParameters();
+                if (History.SUCCESS.equals(lastHistory.getResult()) && historyInternalParameters.containsKey(parameterPath)) {
+                    historyInternalParameter = historyInternalParameters.get(parameterPath);
+                }
+            }
+            String outValue = (historyInternalParameter == null) ? "N/A" : historyInternalParameter.getValue();
+            String tabName = "Internal Parameters / " + parameterPathNames + " / ";
+            compData.put(tabName + "Keep", moduleInternalParameter.getKeep() ? "Yes" : "No");
+            compData.put(tabName + "SQL Type", moduleTypeVersionParameter.getSqlParameterType());
+            compData.put(tabName + "Output Value", outValue);
+        }
+        
+        return compData;
+    }
+
     public boolean isComposite() {
         return (moduleTypeVersion != null) && moduleTypeVersion.isComposite();
     }
@@ -532,6 +674,12 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     public void clearModuleHistory() {
         this.moduleHistory.clear();
+    }
+
+    public History lastHistory() {
+        if (moduleHistory.size() == 0)
+            return null;
+        return moduleHistory.get(moduleHistory.size() - 1);
     }
 
     // standard methods

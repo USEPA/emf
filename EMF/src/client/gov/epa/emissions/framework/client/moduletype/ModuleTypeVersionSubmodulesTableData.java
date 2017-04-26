@@ -18,7 +18,7 @@ public class ModuleTypeVersionSubmodulesTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Name", "Module Type", "Version", "Description"};
+        return new String[] { "Name", "Module Type", "Version", "Final?", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -40,22 +40,14 @@ public class ModuleTypeVersionSubmodulesTableData extends AbstractTableData {
             ModuleTypeVersion moduleTypeVersion = submodule.getModuleTypeVersion();
             Object[] values = { submodule.getName(),
                                 moduleTypeVersion.getModuleType().getName(),
-                                moduleTypeVersion.getVersion() + " - " + moduleTypeVersion.getName(),
-                                getShortDescription(submodule) };
+                                moduleTypeVersion.versionName(),
+                                moduleTypeVersion.getIsFinal() ? "Yes" : "No",
+                                submodule.getDescription() };
 
             Row row = new ViewableRow(submodule, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(ModuleTypeVersionSubmodule submodule) {
-        String description = submodule.getDescription();
-
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

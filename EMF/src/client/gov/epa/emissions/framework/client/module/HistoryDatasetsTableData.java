@@ -59,21 +59,11 @@ public class HistoryDatasetsTableData extends AbstractTableData {
                                 datasetName,
                                 element.getVersion(),
                                 (dataset == null) ? "No" : "Yes",
-                                getShortDescription(element.getModuleTypeVersionDataset()) };
+                                element.getModuleTypeVersionDataset().getDescription() };
 
             Row row = new ViewableRow(element, values);
             rows.add(row);
         }
         return rows;
-    }
-
-
-    private String getShortDescription(ModuleTypeVersionDataset moduleTypeVersionDataset) {
-        String description = moduleTypeVersionDataset.getDescription();
-
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

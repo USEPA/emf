@@ -12,7 +12,6 @@ import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
 import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
@@ -21,8 +20,6 @@ import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.module.LiteModule;
-import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
@@ -41,14 +38,12 @@ import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
@@ -1016,7 +1011,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
     public static void showLargeErrorMessage(SingleLineMessagePanel messagePanel, String title, String error) {
         // TODO add this code to SingleLineMessagePanel.setMessage() instead
-        if (error.length() > 80) {
+        if (error.length() > 80 || error.contains("\n")) {
             messagePanel.setError(title);
             JTextArea errorTextArea = new JTextArea(error.toString());
             errorTextArea.setEditable(false);
@@ -1151,21 +1146,57 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             messagePanel.setError("Can't finalize. This module type version is invalid. " + error.toString());
             return;
         }
+        if (hasChanges() || isDirty) {
+            messagePanel.setError("Can't finalize. You must save changes first. " + error.toString());
+            return;
+        }
 
-        String title = moduleTypeVersion.getModuleType().getName() + " - " + moduleTypeVersion.getName() + " ("
-                + moduleTypeVersion.getVersion() + ")";
-        int selection = JOptionPane.showConfirmDialog(parentConsole,
-                "Are you sure you want to finalize this module type version?", title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
-        if (selection == JOptionPane.YES_OPTION) {
-            moduleTypeVersion.setIsFinal(true);
-            moduleTypeVersionIsFinal.setText(moduleTypeVersion.getIsFinal() ? "Yes" : "No");
-            if (doSave()) {
-                JOptionPane.showConfirmDialog(parentConsole, "This module type version has been finalized!", title,
-                        JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                doClose();
+        String title = moduleTypeVersion.fullNameSDS("%s - Version %d - %s");
+        String message = "Are you sure you want to finalize this module type version?";
+        
+        TreeMap<Integer, ModuleTypeVersion> unfinalizedSubmodules = moduleTypeVersion.getUnfinalizedSubmodules();
+        if (unfinalizedSubmodules.size() > 0) {
+            message += "\n\nThe following module type versions will be finalized also:\n";
+            for (ModuleTypeVersion unfinalizedModuleTypeVersion : unfinalizedSubmodules.values()) {
+                message += unfinalizedModuleTypeVersion.fullNameSDS("%s - Version %d - %s\n");
             }
+        }
+        
+        int selection = JOptionPane.showConfirmDialog(parentConsole,
+                                        message, title, JOptionPane.YES_NO_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE);
+        if (selection != JOptionPane.YES_OPTION)
+            return;
+        
+        error.setLength(0);
+        for (ModuleTypeVersion unfinalizedModuleTypeVersion : unfinalizedSubmodules.values()) {
+            ModuleType moduleType = unfinalizedModuleTypeVersion.getModuleType();
+            if (moduleType.isLocked(session.user()))
+                continue;
+            if (moduleType.isLocked()) {
+                String errorMessage = String.format("Module type \"%s\" has been locked by %s since %s.\n",
+                                                    moduleType.getName(), moduleType.getLockOwner(),
+                                                    CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleType.getLockDate()));
+                error.append(errorMessage);
+            }
+        }
+        if (error.length() > 0) {
+            showLargeErrorMessage(messagePanel, "Can't finalize this module type version!", error.toString());
+            return;
+        }
+
+        try {
+            moduleType = presenter.finalizeModuleTypeVersion(moduleTypeVersion.getId(), session.user());
+            if (moduleType == null)
+                throw new EmfException("Failed to get the updated module type.");
+            moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
+            moduleTypeVersionIsFinal.setText(moduleTypeVersion.getIsFinal() ? "Yes" : "No");
+            JOptionPane.showConfirmDialog(parentConsole, "This module type version has been finalized!", title,
+                    JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            doClose();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showLargeErrorMessage(messagePanel, "Failed to finalize this module type version!", e.getMessage());
         }
     }
 

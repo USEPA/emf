@@ -20,6 +20,7 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.editor.DataAccessToken;
 import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
@@ -30,7 +31,6 @@ import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -51,6 +51,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.Iterator;
 
@@ -443,7 +445,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layoutGenerator.addLabelWidgetPair("Lock Owner:", moduleLockOwner, formPanel);
 
         Date lockDate = module.getLockDate();
-        String safeLockDate = (module.getLockDate() == null) ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
+        String safeLockDate = (lockDate == null) ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
         moduleLockDate = new Label(safeLockDate);
         layoutGenerator.addLabelWidgetPair("Lock Date:", moduleLockDate, formPanel);
 
@@ -577,10 +579,11 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         runButton = new Button("Run", runAction());
         runButton.setMnemonic('u');
+        runButton.setEnabled(viewMode != ViewMode.VIEW);
         
         finalizeButton = new Button("Finalize", finalizeAction());
         finalizeButton.setMnemonic('F');
-        finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !module.getIsFinal());
+        finalizeButton.setEnabled(viewMode != ViewMode.VIEW);
         
         closeButton = new CloseButton("Close", closeAction());
         
@@ -689,12 +692,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             public Void doInBackground() throws EmfException  {
                 for (Iterator iter = datasets.iterator(); iter.hasNext();) {
                     ModuleDataset moduleDataset = (ModuleDataset) iter.next();
-                    EmfDataset emfDataset = null;
-                    try {
-                        emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId());
-                    } catch (EmfException e) {
-                        // ignore;
-                    }
+                    EmfDataset emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId(), moduleDataset.getDatasetId(), moduleDataset.getDatasetNamePattern());
                     if (emfDataset != null) {
                         DatasetPropertiesViewer view = new DatasetPropertiesViewer(session, parentConsole, desktopManager);
                         presenter.doDisplayDatasetProperties(view, emfDataset);
@@ -740,9 +738,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         String outputMethod = moduleDataset.getOutputMethod();
         EmfDataset emfDataset = null;
         try {
-            emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId());
-        } catch (EmfException e) {
-            // ignore;
+            emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId(), moduleDataset.getDatasetId(), moduleDataset.getDatasetNamePattern());
+        } catch (EmfException e1) {
+            // NOTE Auto-generated catch block
+            e1.printStackTrace();
         }
         if (emfDataset == null) {
             messagePanel.setMessage("The dataset does not exist");
@@ -1273,51 +1272,98 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             messagePanel.setError("The module failed to run: " + e.getMessage());
         }
     }
-    
+
     private void doFinalize() {
         StringBuilder error = new StringBuilder();
         if (!module.isValid(error)) {
             messagePanel.setError("Can't finalize. This module is invalid. " + error.toString());
             return;
         }
-
+        if (hasChanges() || isDirty) {
+            messagePanel.setError("Can't finalize. You must save changes first.");
+            return;
+        }
+        History lastHistory = module.lastHistory();
+        if (lastHistory == null) {
+            messagePanel.setError("Can't finalize. The module must be run at least once.");
+            return;
+        }
+        String result = lastHistory.getResult();
+        if (result == null || !result.equals(History.SUCCESS)) {
+            messagePanel.setError("Can't finalize. The last module run was not successful.");
+            return;
+        }
         if (!moduleTypeVersion.getIsFinal()) {
-            messagePanel.setError("Can't finalize. The module type version is not final.");
+            messagePanel.setError("Can't finalize. The module type " + moduleTypeVersion.fullNameSS("\"%s\" version \"%s\"") + " is not final.");
+            return;
+        }
+
+        // check that all input datasets are final
+        TreeMap<Integer, Version> nonfinalInputVersions = new TreeMap<Integer, Version>();
+        TreeMap<Integer, EmfDataset> nonfinalInputDatasets = new TreeMap<Integer, EmfDataset>(); // index is the Version.id
+        StringBuilder nonfinalInputVersionsText = new StringBuilder();
+        if (!lastHistory.getNonfinalInputDatasets(error, nonfinalInputVersions, nonfinalInputDatasets, nonfinalInputVersionsText, session.dataService(), session.dataEditorService())) {
+            messagePanel.setError("Can't finalize. " + error.toString());
             return;
         }
         
-        // check that all input datasets are final
-        for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
-            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
-            String mode = moduleTypeVersionDataset.getMode();
-            if (mode.equals(ModuleTypeVersionDataset.OUT))
-                continue;
-            if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) {
-                String errorMessage = String.format("Can't finalize. The module dataset for '%s' placeholder was not.", moduleDataset.getPlaceholderName());
-                messagePanel.setError(errorMessage);
+        if (nonfinalInputVersionsText.length() > 0) {
+            String title = "Finalizing module " + module.getName(); 
+            String message = "Are you sure you want to finalize these input datasets?\n\n" + nonfinalInputVersionsText.toString();
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (selection != JOptionPane.YES_OPTION)
                 return;
-            }
-            Version version = null;
-            try {
-                version = session.dataEditorService().getVersion(moduleDataset.getDatasetId(), moduleDataset.getVersion());
-                if (version == null) {
-                    String errorMessage = String.format("Can't finalize. The module dataset version for '%s' placeholder is invalid.", moduleDataset.getPlaceholderName());
+            for (Version version : nonfinalInputVersions.values()) {
+                try {
+                    session.dataEditorService().markFinal(new DataAccessToken(version, null));
+                } catch (EmfException e) {
+                    e.printStackTrace();
+                    EmfDataset dataset = nonfinalInputDatasets.get(version.getId());
+                    String errorMessage = String.format("Failed to finalize dataset \"" + dataset.getName() + "\" version " + version.getId());
                     messagePanel.setError(errorMessage);
                     return;
                 }
-            } catch (Exception e) {
-                String errorMessage = String.format("Can't finalize. The module dataset version for '%s' placeholder is invalid.", moduleDataset.getPlaceholderName());
-                messagePanel.setError(errorMessage);
-                return;
             }
-            if (!version.isFinalVersion()) {
-                String errorMessage = String.format("Can't finalize. The module dataset version for '%s' placeholder is not final.", moduleDataset.getPlaceholderName());
-                messagePanel.setError(errorMessage);
-                return;
-            }
+            messagePanel.setMessage("Finalized the input dataset(s).");
         }
         
-        String title = module.getName();
+        StringBuilder explanation = new StringBuilder();
+        if (lastHistory.isOutOfDate(explanation, session.dataService(), session.dataEditorService())) {
+            String title = "Failed to finalize module " + module.getName(); 
+            showLargeErrorMessage(title, "Module is out of date and must be run again.\n\n" + explanation.toString());
+            return;
+        }
+
+        // check if all input datasets are final
+        TreeMap<Integer, Version> nonfinalOutputVersions = new TreeMap<Integer, Version>();
+        TreeMap<Integer, EmfDataset> nonfinalOutputDatasets = new TreeMap<Integer, EmfDataset>(); // index is the Version.id
+        StringBuilder nonfinalOutputVersionsText = new StringBuilder();
+        if (!lastHistory.getNonfinalOutputDatasets(error, nonfinalOutputVersions, nonfinalOutputDatasets, nonfinalOutputVersionsText, session.dataService(), session.dataEditorService())) {
+            messagePanel.setError("Can't finalize. " + error.toString());
+            return;
+        }
+        
+        if (nonfinalOutputVersionsText.length() > 0) {
+            String message = "Are you sure you want to finalize these output datasets?\n\n" + nonfinalOutputVersionsText.toString();
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (selection != JOptionPane.YES_OPTION)
+                return;
+            for (Version version : nonfinalOutputVersions.values()) {
+                try {
+                    session.dataEditorService().markFinal(new DataAccessToken(version, null));
+                } catch (EmfException e) {
+                    e.printStackTrace();
+                    EmfDataset dataset = nonfinalOutputDatasets.get(version.getId());
+                    String errorMessage = String.format("Failed to finalize dataset \"" + dataset.getName() + "\" version " + version.getId());
+                    messagePanel.setError(errorMessage);
+                    return;
+                }
+            }
+            messagePanel.setMessage("Finalized the output dataset(s).");
+        }
+        
+        
+        title = module.getName();
         int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to finalize this module?",
                                                       title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -1426,7 +1472,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         StringBuilder error = new StringBuilder();
         if (module.getModuleTypeVersion().isValid(error)) {
             if (!module.isValid(error)) {
-                int selection = JOptionPane.showConfirmDialog(parentConsole, error + "\n\nAre you sure you want to close incomplete module?\n",
+                int selection = JOptionPane.showConfirmDialog(parentConsole, error + "\n\nAre you sure you want to close invalid/incomplete module?\n",
                                                               "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (selection == JOptionPane.NO_OPTION)
                     return;

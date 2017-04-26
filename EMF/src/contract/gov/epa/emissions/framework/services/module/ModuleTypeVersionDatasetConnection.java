@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.framework.services.EmfException;
 
 public class ModuleTypeVersionDatasetConnection implements Serializable {
 
@@ -83,32 +84,42 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
         return true;
     }
     
-    public DatasetType getSourceDatasetType() {
-        if (sourcePlaceholderName == null)
-            return null; // no source
-        if (sourceSubmodule != null) {
-            // internal source
-            return sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().get(sourcePlaceholderName).getDatasetType();
+    public DatasetType getSourceDatasetType() throws EmfException {
+        try {
+            if (sourcePlaceholderName == null)
+                return null; // no source
+            if (sourceSubmodule != null) {
+                // internal source
+                return sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDataset(sourcePlaceholderName).getDatasetType();
+            }
+            // external source
+            return compositeModuleTypeVersion.getModuleTypeVersionDataset(sourcePlaceholderName).getDatasetType();
+        } catch (Exception e) {
+            String errorMessage = String.format("%s connection \"%s\" source: %s", compositeModuleTypeVersion.fullNameSS("\"%s\" version \"%s\""), connectionName, e.getMessage());
+            throw new EmfException(errorMessage);
         }
-        // external source
-        return compositeModuleTypeVersion.getModuleTypeVersionDatasets().get(sourcePlaceholderName).getDatasetType();
     }
     
-    public String getSourceDatasetTypeName() {
+    public String getSourceDatasetTypeName() throws EmfException {
         DatasetType datasetType = getSourceDatasetType();
         return (datasetType == null) ? "" : datasetType.getName();
     }
     
-    public DatasetType getTargetDatasetType() {
-        if (targetSubmodule != null) {
-            // internal target
-            return targetSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().get(targetPlaceholderName).getDatasetType();
+    public DatasetType getTargetDatasetType() throws EmfException {
+        try {
+            if (targetSubmodule != null) {
+                // internal target
+                return targetSubmodule.getModuleTypeVersion().getModuleTypeVersionDataset(targetPlaceholderName).getDatasetType();
+            }
+            // external target
+            return compositeModuleTypeVersion.getModuleTypeVersionDataset(targetPlaceholderName).getDatasetType();
+        } catch (Exception e) {
+            String errorMessage = String.format("%s connection \"%s\" target: %s", compositeModuleTypeVersion.fullNameSS("\"%s\" version \"%s\""), connectionName, e.getMessage());
+            throw new EmfException(errorMessage);
         }
-        // external target
-        return compositeModuleTypeVersion.getModuleTypeVersionDatasets().get(targetPlaceholderName).getDatasetType();
     }
     
-    public String getTargetDatasetTypeName() {
+    public String getTargetDatasetTypeName() throws EmfException {
         DatasetType datasetType = getTargetDatasetType();
         return (datasetType == null) ? "" : datasetType.getName();
     }

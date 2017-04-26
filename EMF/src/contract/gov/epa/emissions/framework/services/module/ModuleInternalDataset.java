@@ -62,10 +62,9 @@ public class ModuleInternalDataset implements Serializable {
 
     public EmfDataset getEmfDataset(DataService dataService) {
         try {
-            List<History> history = compositeModule.getModuleHistory();
             HistoryInternalDataset historyInternalDataset = null;
-            if (history.size() > 0) {
-                History lastHistory = history.get(history.size() - 1);
+            History lastHistory = compositeModule.lastHistory();
+            if (lastHistory != null) {
                 if (lastHistory.getResult().equals(History.SUCCESS)) {
                     Map<String, HistoryInternalDataset> historyInternalDatasets = lastHistory.getHistoryInternalDatasets();
                     if (historyInternalDatasets.containsKey(placeholderPath)) {

@@ -48,18 +48,11 @@ public class HistorySubmodulesTableData extends AbstractTableData {
                                 historySubmodule.getDurationSeconds(),
                                 historySubmodule.getStatus(),
                                 historySubmodule.getResult(),
-                                getShortText(historySubmodule.getErrorMessage()) };
+                                historySubmodule.getErrorMessage() };
 
             Row row = new ViewableRow(historySubmodule, values);
             rows.add(row);
         }
         return rows;
-    }
-
-    private String getShortText(String text) {
-        if (text != null && text.length() > 100)
-            return text.substring(0, 96) + " ...";
-
-        return text;
     }
 }

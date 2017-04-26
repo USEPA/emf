@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.module;
 
 import gov.epa.emissions.framework.services.module.History;
+import gov.epa.emissions.framework.services.module.HistoryInternalParameter;
 import gov.epa.emissions.framework.services.module.HistoryParameter;
 import gov.epa.emissions.framework.services.module.ModuleInternalParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
@@ -39,22 +40,22 @@ public class ModuleInternalParametersTableData extends AbstractTableData {
         List rows = new ArrayList();
 
         for (ModuleInternalParameter moduleInternalParameter : moduleInternalParameters.values()) {
-//            List<History> history = moduleInternalParameter.getCompositeModule().getModuleHistory();
-//            HistoryParameter historyParameter = null;
-//            if (history.size() > 0) {
-//                History lastHistory = history.get(history.size() - 1);
-//                if (History.SUCCESS.equals(lastHistory.getResult())) {
-//                    historyParameter = lastHistory.getHistoryParameters().get(moduleInternalParameter.getParameterName());
-//                }
-//            }
-//            ModuleTypeVersionParameter moduleTypeVersionParameter = moduleInternalParameter.getModuleTypeVersionParameter();
-//            String mode = moduleTypeVersionParameter.getMode();
-//            String inValue = mode.equals(ModuleTypeVersionParameter.OUT) ? "N/A" : moduleInternalParameter.getValue();
-//            String outValue = mode.equals(ModuleTypeVersionParameter.IN) ? "N/A" : ((historyParameter == null) ? "N/A" : historyParameter.getValue());
-            Object[] values = { moduleInternalParameter.getParameterPathNames(),
+            String parameterPath = moduleInternalParameter.getParameterPath();
+            String parameterPathNames = moduleInternalParameter.getParameterPathNames();
+            ModuleTypeVersionParameter moduleTypeVersionParameter = moduleInternalParameter.getModuleTypeVersionParameter();
+            HistoryInternalParameter historyInternalParameter = null;
+            History lastHistory = moduleInternalParameter.getCompositeModule().lastHistory();
+            if (lastHistory != null) {
+                Map<String, HistoryInternalParameter> historyInternalParameters = lastHistory.getHistoryInternalParameters();
+                if (History.SUCCESS.equals(lastHistory.getResult()) && historyInternalParameters.containsKey(parameterPath)) {
+                    historyInternalParameter = historyInternalParameters.get(parameterPath);
+                }
+            }
+            String outValue = (historyInternalParameter == null) ? "N/A" : historyInternalParameter.getValue();
+            Object[] values = { parameterPathNames,
                                 moduleInternalParameter.getKeep() ? "Yes" : "No",
-                                moduleInternalParameter.getModuleTypeVersionParameter().getSqlParameterType(),
-                                ""  // TODO outValue
+                                moduleTypeVersionParameter.getSqlParameterType(),
+                                outValue
                               };
 
             Row row = new ViewableRow(moduleInternalParameter, values);

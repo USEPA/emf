@@ -3,9 +3,6 @@ package gov.epa.emissions.framework.client.module;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.module.History;
-import gov.epa.emissions.framework.services.module.HistoryDataset;
-import gov.epa.emissions.framework.services.module.HistoryParameter;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.ui.AbstractTableData;
@@ -43,24 +40,25 @@ public class ModuleDatasetsTableData extends AbstractTableData {
         List rows = new ArrayList();
 
         for (ModuleDataset moduleDataset : moduleDatasets.values()) {
-            String mode = moduleDataset.getModuleTypeVersionDataset().getMode();
+            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset(); 
+            String mode = moduleTypeVersionDataset.getMode();
             String outputMethod = moduleDataset.getOutputMethod();
             EmfDataset emfDataset = null;
             try {
-                emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId());
+                emfDataset = session.moduleService().getEmfDatasetForModuleDataset(moduleDataset.getId(), moduleDataset.getDatasetId(), moduleDataset.getDatasetNamePattern());
             } catch (EmfException e) {
                 e.printStackTrace();
             }
             String datasetName = (emfDataset == null) ? "" : emfDataset.getName();
             String datasetExists = (emfDataset == null) ? "No" : "Yes"; // TODO check version also
-            if (mode.equals("IN") || mode.equals("INOUT")) {
+            if (mode.equals(ModuleTypeVersionDataset.IN) || mode.equals(ModuleTypeVersionDataset.INOUT)) {
                 Object[] values = { mode,
                                     moduleDataset.getPlaceholderName(),
                                     "N/A",
                                     datasetName,
                                     moduleDataset.getVersion(),
                                     datasetExists,
-                                    getShortDescription(moduleDataset.getModuleTypeVersionDataset()) };
+                                    moduleTypeVersionDataset.getDescription() };
     
                 Row row = new ViewableRow(moduleDataset, values);
                 rows.add(row);
@@ -72,7 +70,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
                                     datasetName,
                                     0,
                                     datasetExists,
-                                    getShortDescription(moduleDataset.getModuleTypeVersionDataset()) };
+                                    moduleTypeVersionDataset.getDescription() };
 
                 Row row = new ViewableRow(moduleDataset, values);
                 rows.add(row);
@@ -84,22 +82,12 @@ public class ModuleDatasetsTableData extends AbstractTableData {
                                     datasetName,
                                     0,
                                     datasetExists,
-                                    getShortDescription(moduleDataset.getModuleTypeVersionDataset()) };
+                                    moduleTypeVersionDataset.getDescription() };
     
                 Row row = new ViewableRow(moduleDataset, values);
                 rows.add(row);
             }
         }
         return rows;
-    }
-
-
-    private String getShortDescription(ModuleTypeVersionDataset moduleTypeVersionDataset) {
-        String description = moduleTypeVersionDataset.getDescription();
-
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

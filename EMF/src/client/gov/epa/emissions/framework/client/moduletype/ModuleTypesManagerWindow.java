@@ -53,7 +53,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     private EmfSession session;
 
     public ModuleTypesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Type Manager", new Dimension(700, 350), desktopManager);
+        super("Module Type Manager", new Dimension(800, 400), desktopManager);
         super.setName("moduleTypeManager");
 
         this.session = session;

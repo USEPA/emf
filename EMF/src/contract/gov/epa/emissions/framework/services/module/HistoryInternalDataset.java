@@ -1,12 +1,15 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.editor.DataEditorService;
 
 public class HistoryInternalDataset implements Serializable {
 
@@ -34,6 +37,40 @@ public class HistoryInternalDataset implements Serializable {
         return null;
     }
     
+    public boolean isOutOfDate(final StringBuilder explanation, DataService dataService, DataEditorService dataEditorService) {
+        if (datasetId == null) {
+            explanation.append("Internal dataset for placeholder '" + placeholderPathNames + "' is missing.\n");
+            return true;
+        }
+        EmfDataset dataset = null;
+        try {
+            dataset = dataService.getDataset(datasetId);
+        } catch (EmfException e) {
+            e.printStackTrace();
+            explanation.append("Internal dataset for placeholder '" + placeholderPathNames + "' is missing: " + e.getMessage() + "\n");
+            return true;
+        }
+        Version datasetVersion = null;
+        try {
+            datasetVersion = dataEditorService.getVersion(datasetId, version);
+        } catch (EmfException e) {
+            e.printStackTrace();
+            explanation.append("Internal dataset \"" + dataset.getName() + "\" version " + version + " for placeholder '" + placeholderPathNames + "' is missing: " + e.getMessage() + "\n");
+            return true;
+        }
+        if (datasetVersion == null) {
+            explanation.append("Internal dataset \"" + dataset.getName() + "\" version " + version + " for placeholder '" + placeholderPathNames + "' is missing");
+            return true;
+        }
+        String finalText = datasetVersion.isFinalVersion() ? " final " : " ";
+        Date endDate = history.endDate();
+        if (datasetVersion.getLastModifiedDate().after(endDate)) {
+            explanation.append("Internal dataset \"" + dataset.getName() + "\"" + finalText + "version " + version + " for placeholder '" + placeholderPathNames + "' was modified after the end of the last run.");
+            return true;
+        }
+        return false;
+    }
+
     public int getId() {
         return id;
     }

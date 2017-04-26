@@ -103,7 +103,14 @@ public class ModuleTypeVersionParameterConnectionWindow extends DisposableIntera
         JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        Label sqlType = new Label(moduleTypeVersionParameterConnection.getTargetSqlType());
+        String targetSqlType;
+        try {
+            targetSqlType = moduleTypeVersionParameterConnection.getTargetSqlType();
+        } catch (EmfException e) {
+            targetSqlType = e.getMessage();
+            e.printStackTrace();
+        }
+        Label sqlType = new Label(targetSqlType);
         layoutGenerator.addLabelWidgetPair("Parameter Type:", sqlType, contentPanel);
         
         sourcesCB = new ComboBox(sourceEndpointNames);

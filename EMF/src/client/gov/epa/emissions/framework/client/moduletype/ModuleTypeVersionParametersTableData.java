@@ -37,7 +37,7 @@ public class ModuleTypeVersionParametersTableData extends AbstractTableData {
         Object[] values = { element.getMode(),
                             element.getParameterName(),
                             element.getSqlParameterType(),
-                            getShortDescription(element) };
+                            element.getDescription() };
 
         Row row = new ViewableRow(element, values);
         this.rows.add(row);
@@ -50,21 +50,12 @@ public class ModuleTypeVersionParametersTableData extends AbstractTableData {
             Object[] values = { element.getMode(),
                                 element.getParameterName(),
                                 element.getSqlParameterType(),
-                                getShortDescription(element) };
+                                element.getDescription() };
 
             Row row = new ViewableRow(element, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(ModuleTypeVersionParameter parameter) {
-        String description = parameter.getDescription();
-
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

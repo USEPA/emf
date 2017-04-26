@@ -39,7 +39,7 @@ public class ModuleHistoryTableData extends AbstractTableData {
                             history.getDurationSeconds(),
                             history.getStatus(),
                             history.getResult(),
-                            getShortText(history.getErrorMessage()) };
+                            history.getErrorMessage() };
 
         Row row = new ViewableRow(history, values);
         this.rows.add(row);
@@ -55,18 +55,12 @@ public class ModuleHistoryTableData extends AbstractTableData {
                                 history.getDurationSeconds(),
                                 history.getStatus(),
                                 history.getResult(),
-                                getShortText(history.getErrorMessage()) };
+                                history.getErrorMessage() };
 
             Row row = new ViewableRow(history, values);
             rows.add(row);
         }
 
         return rows;
-    }
-    private String getShortText(String text) {
-        if (text != null && text.length() > 100)
-            return text.substring(0, 96) + " ...";
-
-        return text;
     }
 }

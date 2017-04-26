@@ -28,6 +28,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
@@ -50,6 +52,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     SelectAwareButton copyButton;
     RemoveButton removeButton;
     Button runButton;
+    Button compareButton;
 
     private JPanel layout;
 
@@ -62,7 +65,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     private EmfSession session;
 
     public ModulesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Manager", new Dimension(700, 350), desktopManager);
+        super("Module Manager", new Dimension(800, 400), desktopManager);
         super.setName("moduleManager");
 
         this.session = session;
@@ -147,6 +150,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
+        viewButton.setMnemonic(KeyEvent.VK_V);
 
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -154,6 +158,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
+        editButton.setMnemonic(KeyEvent.VK_E);
 
         Action lockAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -177,6 +182,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         newButton = new NewButton(createAction);
+        newButton.setMnemonic(KeyEvent.VK_N);
 
         Action copyAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -184,6 +190,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         copyButton = new SelectAwareButton("Copy", copyAction, table, confirmDialog);
+        copyButton.setMnemonic(KeyEvent.VK_Y);
 
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -191,6 +198,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         removeButton = new RemoveButton(removeAction);
+        removeButton.setMnemonic(KeyEvent.VK_M);
 
         Action runAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -198,7 +206,15 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         runButton = new Button("Run", runAction);
-        unlockButton.setMnemonic(KeyEvent.VK_U);
+        runButton.setMnemonic(KeyEvent.VK_U);
+
+        Action compareAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                compareModules();
+            }
+        };
+        compareButton = new Button("Compare", compareAction);
+        compareButton.setMnemonic(KeyEvent.VK_C);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
@@ -207,6 +223,8 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         crudPanel.add(newButton);
         crudPanel.add(copyButton);
         crudPanel.add(removeButton);
+        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        crudPanel.add(compareButton);
         crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
         crudPanel.add(lockButton);
         crudPanel.add(unlockButton);
@@ -421,6 +439,39 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         } catch (EmfException e) {
           JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
         }
+    }
+
+    private void compareModules() {
+        messagePanel.clear();
+        
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length < 2) {
+            messagePanel.setMessage("Please select two modules");
+            return;
+        }
+        if (selectedModuleIds.length > 2) {
+            messagePanel.setMessage("Please select only two modules");
+            return;
+        }
+
+        Module[] modules = new Module[selectedModuleIds.length];
+        for (int i = 0; i < selectedModuleIds.length; i++) {
+            int moduleId = selectedModuleIds[i];
+            modules[i] = null;
+            try {
+                modules[i] = presenter.getModule(moduleId);
+            } catch (EmfException e) {
+                messagePanel.setError("Failed to get module (ID = " + moduleId + "): " + e.getMessage());
+                return;
+            }
+            if (modules[i] == null) {
+                messagePanel.setError("Failed to get module (ID = " + moduleId + ")");
+                return;
+            }
+        }
+
+        ModuleComparisonWindow view = new ModuleComparisonWindow(session, parentConsole, desktopManager, modules[0], modules[1]);
+        presenter.displayModuleComparisonView(view);
     }
 
     private int[] selectedModuleIds() {

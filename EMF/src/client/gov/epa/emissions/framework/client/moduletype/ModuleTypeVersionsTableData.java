@@ -18,7 +18,7 @@ public class ModuleTypeVersionsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Version", "Name", "Final?", "Description", "Creator", "Creation Date", "Last Mod Date", "Base Version"};
+        return new String[] { "Version", "Name", "Final?", "Creator", "Creation Date", "Last Mod Date", "Base Version", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -40,23 +40,16 @@ public class ModuleTypeVersionsTableData extends AbstractTableData {
             Object[] values = { moduleTypeVersion.getVersion(),
                                 moduleTypeVersion.getName(),
                                 moduleTypeVersion.getIsFinal() ? "Yes" : "No",
-                                getShortDescription(moduleTypeVersion.getDescription()),
                                 moduleTypeVersion.getCreator().getName(),
                                 CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleTypeVersion.getCreationDate()),
                                 CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleTypeVersion.getLastModifiedDate()),
-                                moduleTypeVersion.getBaseVersion() };
+                                moduleTypeVersion.getBaseVersion(),
+                                moduleTypeVersion.getDescription() };
 
             Row row = new ViewableRow(moduleTypeVersion, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(String description) {
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

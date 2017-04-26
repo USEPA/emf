@@ -1,6 +1,14 @@
 package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.Map;
+
+import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.DataService;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.editor.DataEditorService;
 
 public class HistoryDataset implements Serializable {
 
@@ -13,6 +21,53 @@ public class HistoryDataset implements Serializable {
     private Integer datasetId;
 
     private int version;
+
+    public boolean isOutOfDate(final StringBuilder explanation, DataService dataService, DataEditorService dataEditorService) {
+        if (datasetId == null) {
+            explanation.append("Dataset for placeholder '" + placeholderName + "' is missing.\n");
+            return true;
+        }
+        EmfDataset dataset = null;
+        try {
+            dataset = dataService.getDataset(datasetId);
+        } catch (EmfException e) {
+            e.printStackTrace();
+            explanation.append("Dataset for placeholder '" + placeholderName + "' is missing: " + e.getMessage() + "\n");
+            return true;
+        }
+        Version datasetVersion = null;
+        try {
+            datasetVersion = dataEditorService.getVersion(datasetId, version);
+        } catch (EmfException e) {
+            e.printStackTrace();
+            explanation.append("Dataset \"" + dataset.getName() + "\" version " + version + " for placeholder '" + placeholderName + "' is missing: " + e.getMessage() + "\n");
+            return true;
+        }
+        if (datasetVersion == null) {
+            explanation.append("Dataset \"" + dataset.getName() + "\" version " + version + " for placeholder '" + placeholderName + "' is missing");
+            return true;
+        }
+        ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
+        if (moduleTypeVersionDataset == null) {
+            explanation.append("Module type version dataset for placeholder '" + placeholderName + "' is missing.\n");
+            return true;
+        }
+        String finalText = datasetVersion.isFinalVersion() ? " final " : " ";
+        if (moduleTypeVersionDataset.isModeOUT()) {
+            Date endDate = history.endDate();
+            if (datasetVersion.getLastModifiedDate().after(endDate)) {
+                explanation.append("Dataset \"" + dataset.getName() + "\"" + finalText + "version " + version + " for output placeholder '" + placeholderName + "' was modified after the end of the last run.");
+                return true;
+            }
+        } else {
+            Date startDate = history.startDate();
+            if (datasetVersion.getLastModifiedDate().after(startDate)) {
+                explanation.append("Dataset \"" + dataset.getName() + "\"" + finalText + "version " + version + " for input placeholder '" + placeholderName + "' was modified after the start of the last run.");
+                return true;
+            }
+        }
+        return false;
+    }
 
     public int getId() {
         return id;
@@ -56,6 +111,10 @@ public class HistoryDataset implements Serializable {
 
     // could return null if the module type for this module was changed after this history record was created
     public ModuleTypeVersionDataset getModuleTypeVersionDataset() {
-        return history.getModule().getModuleTypeVersion().getModuleTypeVersionDatasets().get(placeholderName);
+        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets =
+                history.getModule().getModuleTypeVersion().getModuleTypeVersionDatasets();
+        if (moduleTypeVersionDatasets.containsKey(placeholderName))
+            return moduleTypeVersionDatasets.get(placeholderName);
+        return null;
     }
 }

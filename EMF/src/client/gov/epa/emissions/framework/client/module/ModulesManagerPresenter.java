@@ -41,6 +41,11 @@ public class ModulesManagerPresenter {
         presenter.doDisplay();
     }
 
+    public void displayModuleComparisonView(ModuleComparisonView view) {
+        ModuleComparisonPresenter presenter = new ModuleComparisonPresenter(session, view);
+        presenter.doDisplay();
+    }
+
     public int[] doRemove(int[] moduleIds) throws EmfException {
         
         int[] lockedModuleIds = lockModules(moduleIds);

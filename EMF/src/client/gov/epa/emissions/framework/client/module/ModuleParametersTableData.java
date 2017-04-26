@@ -39,10 +39,9 @@ public class ModuleParametersTableData extends AbstractTableData {
         List rows = new ArrayList();
 
         for (ModuleParameter moduleParameter : moduleParameters.values()) {
-            List<History> history = moduleParameter.getModule().getModuleHistory();
+            History lastHistory = moduleParameter.getModule().lastHistory();
             HistoryParameter historyParameter = null;
-            if (history.size() > 0) {
-                History lastHistory = history.get(history.size() - 1);
+            if (lastHistory != null) {
                 if (History.SUCCESS.equals(lastHistory.getResult())) {
                     historyParameter = lastHistory.getHistoryParameters().get(moduleParameter.getParameterName());
                 }
@@ -51,26 +50,17 @@ public class ModuleParametersTableData extends AbstractTableData {
             String mode = moduleTypeVersionParameter.getMode();
             String inValue = mode.equals(ModuleTypeVersionParameter.OUT) ? "N/A" : moduleParameter.getValue();
             String outValue = mode.equals(ModuleTypeVersionParameter.IN) ? "N/A" : ((historyParameter == null) ? "N/A" : historyParameter.getValue());
-            Object[] values = { moduleTypeVersionParameter.getMode(),
+            Object[] values = { mode,
                                 moduleParameter.getParameterName(),
                                 moduleTypeVersionParameter.getSqlParameterType(),
                                 inValue,
                                 outValue,
-                                getShortDescription(moduleTypeVersionParameter)};
+                                moduleTypeVersionParameter.getDescription() };
 
             Row row = new ViewableRow(moduleParameter, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(ModuleTypeVersionParameter moduleTypeVersionParameter) {
-        String description = moduleTypeVersionParameter.getDescription();
-
-        if (description != null && description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

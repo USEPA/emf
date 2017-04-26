@@ -38,7 +38,7 @@ public class ModuleTypeVersionRevisionsTableData extends AbstractTableData {
         Object[] values = { element.getRevision(),
                             safeCreationDate,
                             safeCreator,
-                            getShortDescription(element.getDescription()) };
+                            element.getDescription() };
 
         Row row = new ViewableRow(element, values);
         this.rows.add(row);
@@ -53,22 +53,12 @@ public class ModuleTypeVersionRevisionsTableData extends AbstractTableData {
             Object[] values = { element.getRevision(),
                                 safeCreationDate,
                                 safeCreator,
-                                getShortDescription(element.getDescription()) };
+                                element.getDescription() };
 
             Row row = new ViewableRow(element, values);
             rows.add(row);
         }
 
         return rows;
-    }
-
-    private String getShortDescription(String description) {
-        if (description == null)
-            return "";
-        
-        if (description.length() > 100)
-            return description.substring(0, 96) + " ...";
-
-        return description;
     }
 }

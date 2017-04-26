@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.framework.services.EmfException;
 
 public class ModuleTypeVersionParameterConnection implements Serializable {
 
@@ -84,24 +85,34 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
         return true;
     }
     
-    public String getSourceSqlType() {
-        if (sourceParameterName == null)
-            return ""; // no source
-        if (sourceSubmodule != null) {
-            // internal target
-            return sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().get(sourceParameterName).getSqlParameterType();
+    public String getSourceSqlType() throws EmfException {
+        try {
+            if (sourceParameterName == null)
+                return ""; // no source
+            if (sourceSubmodule != null) {
+                // internal target
+                return sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameter(sourceParameterName).getSqlParameterType();
+            }
+            // external target
+            return compositeModuleTypeVersion.getModuleTypeVersionParameter(sourceParameterName).getSqlParameterType();
+        } catch (Exception e) {
+            String errorMessage = String.format("%s parameter connection \"%s\" source: %s", compositeModuleTypeVersion.fullNameSS("\"%s\" version \"%s\""), connectionName, e.getMessage());
+            throw new EmfException(errorMessage);
         }
-        // external target
-        return compositeModuleTypeVersion.getModuleTypeVersionParameters().get(sourceParameterName).getSqlParameterType();
     }
     
-    public String getTargetSqlType() {
-        if (targetSubmodule != null) {
-            // internal target
-            return targetSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().get(targetParameterName).getSqlParameterType();
+    public String getTargetSqlType() throws EmfException {
+        try {
+            if (targetSubmodule != null) {
+                // internal target
+                return targetSubmodule.getModuleTypeVersion().getModuleTypeVersionParameter(targetParameterName).getSqlParameterType();
+            }
+            // external target
+            return compositeModuleTypeVersion.getModuleTypeVersionParameter(targetParameterName).getSqlParameterType();
+        } catch (Exception e) {
+            String errorMessage = String.format("%s parameter connection \"%s\" target: %s", compositeModuleTypeVersion.fullNameSS("\"%s\" version \"%s\""), connectionName, e.getMessage());
+            throw new EmfException(errorMessage);
         }
-        // external target
-        return compositeModuleTypeVersion.getModuleTypeVersionParameters().get(targetParameterName).getSqlParameterType();
     }
     
     public String getSourceName() {

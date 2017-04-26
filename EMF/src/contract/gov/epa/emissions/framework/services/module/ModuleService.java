@@ -18,17 +18,17 @@ public interface ModuleService {
     
     ModuleType addModuleType(ModuleType moduleType) throws EmfException;
 
-    // ModuleType updateModuleType(ModuleType moduleType) throws EmfException;
+    void deleteModuleTypes(User owner, ModuleType[] moduleTypes) throws EmfException;
 
-    void deleteModuleTypes(User owner, ModuleType[] moduleTypes) throws EmfException; // TODO send module type ids only
+    ModuleType obtainLockedModuleType(User owner, int moduleTypeId) throws EmfException;
 
-    ModuleType obtainLockedModuleType(User owner, int moduleTypeId) throws EmfException; // TODO send module type id only
-
-    ModuleType releaseLockedModuleType(User owner, int moduleTypeId) throws EmfException; // TODO send module type id only
+    ModuleType releaseLockedModuleType(User owner, int moduleTypeId) throws EmfException;
 
     // Module Type Versions
     
     ModuleType updateModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, User user) throws EmfException;
+
+    ModuleType finalizeModuleTypeVersion(int moduleTypeVersionId, User user) throws EmfException;
 
     ModuleType removeModuleTypeVersion(int moduleTypeVersionId) throws EmfException;
 
@@ -59,6 +59,7 @@ public interface ModuleService {
     void runModules(int[] moduleIds, User user) throws EmfException;
 
     EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId) throws EmfException;
+    EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId, Integer newDatasetId, String newDatasetNamePattern) throws EmfException;
     
     Module[] getModulesForModuleTypeVersion(int moduleTypeVersionId) throws EmfException;
 }

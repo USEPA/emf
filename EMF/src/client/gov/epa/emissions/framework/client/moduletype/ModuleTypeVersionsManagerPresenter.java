@@ -49,6 +49,10 @@ public class ModuleTypeVersionsManagerPresenter {
         return session.moduleService().getModuleType(id);
     }
 
+    public ModuleType[] getModuleTypes() throws EmfException {
+        return session.moduleService().getModuleTypes();
+    }
+
     public ModuleType removeModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
         return session.moduleService().removeModuleTypeVersion(moduleTypeVersionId);
     }

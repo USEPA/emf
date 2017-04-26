@@ -80,7 +80,9 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     // summary
     private Label moduleName;
     private Label runId;
-    private Label runDate;
+    private Label startDate;
+    private Label duration;
+    private Label endDate;
     private Label user;
     private Label status;
     private Label result;
@@ -192,8 +194,14 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         runId = new Label(history.getRunId() + "");
         layoutGenerator.addLabelWidgetPair("Run ID:", runId, formPanel);
 
-        runDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(history.getCreationDate()));
-        layoutGenerator.addLabelWidgetPair("Run Date:", runDate, formPanel);
+        startDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(history.startDate()));
+        layoutGenerator.addLabelWidgetPair("Start Date:", startDate, formPanel);
+
+        duration = new Label(history.getDurationSeconds() + " seconds");
+        layoutGenerator.addLabelWidgetPair("Duration:", duration, formPanel);
+
+        endDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(history.endDate()));
+        layoutGenerator.addLabelWidgetPair("End Date:", endDate, formPanel);
 
         user = new Label(history.getCreator().getName());
         layoutGenerator.addLabelWidgetPair("User:", user, formPanel);
@@ -208,7 +216,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         layoutGenerator.addLabelWidgetPair("Comment:", comment, formPanel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(formPanel, 7, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(formPanel, 9, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -358,7 +366,9 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     private void refreshSummary() {
         moduleName.setText(module.getName());
         runId.setText(history.getRunId() + "");
-        runDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(history.getCreationDate()));
+        startDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(history.startDate()));
+        duration.setText(history.getDurationSeconds() + " seconds");
+        endDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm_ss(history.endDate()));
         user.setText(history.getCreator().getName());
         status.setText((history.getStatus() == null) ? "" : history.getStatus());
         result.setText((history.getResult() == null) ? "" : history.getResult());

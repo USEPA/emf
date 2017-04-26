@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
+import gov.epa.emissions.framework.services.EmfException;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.HashMap;
@@ -313,24 +315,27 @@ public class ModuleTypeVersion implements Serializable {
     }
     
     public Map<String, ModuleTypeVersionDatasetConnectionEndpoint> getSourceDatasetEndpoints(ModuleTypeVersionDatasetConnection datasetConnection) {
-        String datasetTypeName = datasetConnection.getTargetDatasetTypeName();
         Map<String, ModuleTypeVersionDatasetConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionDatasetConnectionEndpoint>();
-        for (ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
-            if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
-                ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, null, dataset.getPlaceholderName());
-                endpoints.put(endpoint.getEndpointName(), endpoint);
-            }
-        }
-        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
-            if (submodule.equals(datasetConnection.getTargetSubmodule())) continue;
-            for (ModuleTypeVersionDataset dataset : submodule.getModuleTypeVersion().getModuleTypeVersionDatasets().values()) {
-                if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
-                    ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, submodule, dataset.getPlaceholderName());
+        try {
+            String datasetTypeName = datasetConnection.getTargetDatasetTypeName();
+            for (ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
+                if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
+                    ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, null, dataset.getPlaceholderName());
                     endpoints.put(endpoint.getEndpointName(), endpoint);
                 }
             }
+            for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+                if (submodule.equals(datasetConnection.getTargetSubmodule())) continue;
+                for (ModuleTypeVersionDataset dataset : submodule.getModuleTypeVersion().getModuleTypeVersionDatasets().values()) {
+                    if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
+                        ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, submodule, dataset.getPlaceholderName());
+                        endpoints.put(endpoint.getEndpointName(), endpoint);
+                    }
+                }
+            }
+        } catch (EmfException e) {
+            e.printStackTrace();
         }
-        
         return endpoints;
     }
     
@@ -339,24 +344,27 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public Map<String, ModuleTypeVersionParameterConnectionEndpoint> getSourceParameterEndpoints(ModuleTypeVersionParameterConnection parameterConnection) {
-        String targetSqlType = parameterConnection.getTargetSqlType();
         Map<String, ModuleTypeVersionParameterConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionParameterConnectionEndpoint>();
-        for (ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
-            if (compatibleParameterTypes(parameter.getSqlParameterType(), targetSqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
-                ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, null, parameter.getParameterName());
-                endpoints.put(endpoint.getEndpointName(), endpoint);
-            }
-        }
-        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
-            if (submodule.equals(parameterConnection.getTargetSubmodule())) continue;
-            for (ModuleTypeVersionParameter parameter : submodule.getModuleTypeVersion().getModuleTypeVersionParameters().values()) {
-                if (compatibleParameterTypes(parameter.getSqlParameterType(), targetSqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
-                    ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, submodule, parameter.getParameterName());
+        try {
+            String targetSqlType = parameterConnection.getTargetSqlType();
+            for (ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
+                if (compatibleParameterTypes(parameter.getSqlParameterType(), targetSqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
+                    ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, null, parameter.getParameterName());
                     endpoints.put(endpoint.getEndpointName(), endpoint);
                 }
             }
+            for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+                if (submodule.equals(parameterConnection.getTargetSubmodule())) continue;
+                for (ModuleTypeVersionParameter parameter : submodule.getModuleTypeVersion().getModuleTypeVersionParameters().values()) {
+                    if (compatibleParameterTypes(parameter.getSqlParameterType(), targetSqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
+                        ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, submodule, parameter.getParameterName());
+                        endpoints.put(endpoint.getEndpointName(), endpoint);
+                    }
+                }
+            }
+        } catch (EmfException e) {
+            e.printStackTrace();
         }
-        
         return endpoints;
     }
     
@@ -439,6 +447,20 @@ public class ModuleTypeVersion implements Serializable {
         }
     }
 
+    public TreeMap<Integer, ModuleTypeVersion> getUnfinalizedSubmodules() {
+        TreeMap<Integer, ModuleTypeVersion> unfinalizedSubmodules = new TreeMap<Integer, ModuleTypeVersion>();
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            ModuleTypeVersion moduleTypeVersion = submodule.getModuleTypeVersion();
+            if (moduleTypeVersion.getIsFinal())
+                continue;
+            if (unfinalizedSubmodules.containsKey(moduleTypeVersion.getId()))
+                continue;
+            unfinalizedSubmodules.put(moduleTypeVersion.getId(), moduleTypeVersion);
+            unfinalizedSubmodules.putAll(moduleTypeVersion.getUnfinalizedSubmodules());
+        }
+        return unfinalizedSubmodules;
+    }
+
     public int getId() {
         return id;
     }
@@ -473,6 +495,16 @@ public class ModuleTypeVersion implements Serializable {
 
     public String versionName() {
         return version + " - " + name;
+    }
+
+    // %s for module type, %d for version number, %s for version name
+    public String fullNameSDS(String format) {
+        return String.format(format, moduleType.getName(), version, name);
+    }
+
+    // %s for module type, %s for version name
+    public String fullNameSS(String format) {
+        return String.format(format, moduleType.getName(), versionName());
     }
 
     public String getDescription() {
@@ -537,6 +569,14 @@ public class ModuleTypeVersion implements Serializable {
         return this.moduleTypeVersionDatasets;
     }
 
+    public ModuleTypeVersionDataset getModuleTypeVersionDataset(String placeholderName) throws EmfException {
+        if (moduleTypeVersionDatasets.containsKey(placeholderName))
+            return moduleTypeVersionDatasets.get(placeholderName);
+        String errorMessage = String.format("Module type \"%s\" version \"%s\" does not have a dataset placeholder named \"%s\"",
+                                            moduleType.getName(), versionName(), placeholderName);
+        throw new EmfException(errorMessage);
+    }
+
     public boolean containsDatasetId(int datasetId) {
         for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
             if (moduleTypeVersionDataset.getId() == datasetId) {
@@ -589,6 +629,14 @@ public class ModuleTypeVersion implements Serializable {
 
     public Map<String, ModuleTypeVersionParameter> getModuleTypeVersionParameters() {
         return this.moduleTypeVersionParameters;
+    }
+
+    public ModuleTypeVersionParameter getModuleTypeVersionParameter(String parameterName) throws EmfException {
+        if (moduleTypeVersionParameters.containsKey(parameterName))
+            return moduleTypeVersionParameters.get(parameterName);
+        String errorMessage = String.format("Module type \"%s\" version \"%s\" does not have a parameter named \"%s\"",
+                                            moduleType.getName(), versionName(), parameterName);
+        throw new EmfException(errorMessage);
     }
 
     public boolean containsParameterId(int parameterId) {

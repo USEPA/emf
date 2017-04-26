@@ -1,11 +1,17 @@
 package gov.epa.emissions.framework.services.module;
 
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.DataService;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.editor.DataEditorService;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.HashMap;
 
 public class History implements Serializable, Comparable<History> {
@@ -74,6 +80,123 @@ public class History implements Serializable, Comparable<History> {
     public History(int id) {
         this();
         this.setId(id);
+    }
+
+    public Date startDate() {
+        return creationDate;
+    }
+    
+    public Date endDate() {
+        Date endDate = new Date();
+        endDate.setTime(creationDate.getTime() + durationSeconds * 1000);
+        return endDate;
+    }
+
+    public boolean isOutOfDate(final StringBuilder explanation, DataService dataService, DataEditorService dataEditorService) {
+        for (HistoryDataset historyDataset : historyDatasets.values()) {
+            if (historyDataset.isOutOfDate(explanation, dataService, dataEditorService))
+                return true;
+        }
+        for (HistoryInternalDataset historyInternalDataset : historyInternalDatasets.values()) {
+            if (historyInternalDataset.isOutOfDate(explanation, dataService, dataEditorService))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean getNonfinalInputDatasets(final StringBuilder error,
+                                            final Map<Integer, Version> nonfinalInputVersions,
+                                            final Map<Integer, EmfDataset> nonfinalInputDatasets,
+                                            final StringBuilder nonfinalInputVersionsText,
+                                            DataService dataService, DataEditorService dataEditorService) {
+        error.setLength(0);
+        
+        // check that all input datasets are final
+        for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
+            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+            String mode = moduleTypeVersionDataset.getMode();
+            if (mode.equals(ModuleTypeVersionDataset.OUT))
+                continue;
+            if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) { // should never happen
+                error.append(String.format("The dataset for '%s' input placeholder was not set.", moduleDataset.getPlaceholderName()));
+                return false;
+            }
+            Version version = null;
+            try {
+                version = dataEditorService.getVersion(moduleDataset.getDatasetId(), moduleDataset.getVersion());
+                if (version == null) {
+                    error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' input placeholder.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName()));
+                    return false;
+                }
+            } catch (Exception e) {
+                error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' input placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                return false;
+            }
+            if (!version.isFinalVersion()) {
+                EmfDataset dataset = null;
+                try {
+                    dataset = dataService.getDataset(moduleDataset.getDatasetId());
+                } catch (EmfException e) {
+                    e.printStackTrace();
+                    error.append(String.format("Cant get dataset (ID=%d) for '%s' input placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                    return false;
+                }
+                if (nonfinalInputVersionsText.length() > 0)
+                    nonfinalInputVersionsText.append("\n");
+                nonfinalInputVersionsText.append(dataset.getName() + " version " + version.getVersion() + "\n");
+                nonfinalInputVersions.put(version.getId(), version);
+                nonfinalInputDatasets.put(version.getId(), dataset);
+            }
+        }
+        return true;
+    }
+
+
+    public boolean getNonfinalOutputDatasets(final StringBuilder error,
+                                             final Map<Integer, Version> nonfinalOutputVersions,
+                                             final Map<Integer, EmfDataset> nonfinalOutputDatasets,
+                                             final StringBuilder nonfinalOutputVersionsText,
+                                             DataService dataService, DataEditorService dataEditorService) {
+        error.setLength(0);
+        
+        // check if all output datasets are final
+        for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
+            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+            String mode = moduleTypeVersionDataset.getMode();
+            if (!mode.equals(ModuleTypeVersionDataset.OUT))
+                continue;
+            if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) {
+                error.append(String.format("The output dataset for '%s' placeholder was not set.", moduleDataset.getPlaceholderName()));
+                return false;
+            }
+            Version version = null;
+            try {
+                version = dataEditorService.getVersion(moduleDataset.getDatasetId(), moduleDataset.getVersion());
+                if (version == null) {
+                    error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' output placeholder.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName()));
+                    return false;
+                }
+            } catch (Exception e) {
+                error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' output placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                return false;
+            }
+            if (!version.isFinalVersion()) {
+                EmfDataset dataset = null;
+                try {
+                    dataset = dataService.getDataset(moduleDataset.getDatasetId());
+                } catch (EmfException e) {
+                    e.printStackTrace();
+                    error.append(String.format("Cant get dataset (ID=%d) for '%s' output placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                    return false;
+                }
+                if (nonfinalOutputVersionsText.length() > 0)
+                    nonfinalOutputVersionsText.append("\n");
+                nonfinalOutputVersionsText.append(dataset.getName() + " version " + version.getVersion() + "\n");
+                nonfinalOutputVersions.put(version.getId(), version);
+                nonfinalOutputDatasets.put(version.getId(), dataset);
+            }
+        }
+        return true;
     }
 
     public int getId() {
