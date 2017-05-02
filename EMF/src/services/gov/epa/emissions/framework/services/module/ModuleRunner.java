@@ -887,6 +887,7 @@ abstract class ModuleRunner {
     
     protected static String getTempUserTeardownScript(String tempUserName) {
         String teardownScript =
+            "REINDEX SYSTEM \"EMF\";\n" +
             "DROP OWNED BY ${temp_user} CASCADE;\n" +
             "DROP USER ${temp_user};\n";
 
@@ -945,11 +946,20 @@ abstract class ModuleRunner {
             history = modulesDAO.updateHistory(history, session);
             
             statement = connection.createStatement();
-            statement.execute(teardownScript);
+            int count = 3;
+            for (int attempt = 0; attempt < count; attempt++) {
+                try {
+                    statement.execute(teardownScript);
+                    break;
+                } catch (Exception e) {
+                    if (attempt == count - 1) // last attempt?
+                        throw e;
+                    history.addLogMessage(History.WARNING, TEARDOWN_SCRIPT_ERROR + "\n" + e.getMessage() + "\n\n" +
+                                                           getLineNumberedScript(teardownScript) + "\n\nRetrying ...\n\n");
+                }
+            }
             
         } catch (Exception e) {
-            // e.printStackTrace();
-            // TODO save error to the current execution history record
             throw new EmfException(TEARDOWN_SCRIPT_ERROR + e.getMessage());
         } finally {
             if (statement != null) {
