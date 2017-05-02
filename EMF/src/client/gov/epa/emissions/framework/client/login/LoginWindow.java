@@ -50,7 +50,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
     public final static String EMF_VERSION = "Upstream Beta 9 Build #73 - 4/26/2017";
 
     public LoginWindow(ServiceLocator serviceLocator) {
-        super("Login", "Login to the Emissions Modeling Framework [" + EMF_VERSION + "]");
+        super("Login", "Login to EMF [" + EMF_VERSION + "]");
         this.serviceLocator = serviceLocator;
 
         JPanel layoutPanel = createLayout();
