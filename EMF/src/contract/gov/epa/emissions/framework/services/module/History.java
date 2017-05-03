@@ -104,6 +104,58 @@ public class History implements Serializable, Comparable<History> {
         return false;
     }
 
+    // verify that the last run history datasets are identical (id & version) to the current module datasets
+    public boolean checkModuleDatasets(final StringBuilder error) {
+        error.setLength(0);
+        
+        // check that all input datasets are final
+        for(HistoryDataset historyDataset : historyDatasets.values()) {
+            String placeholderName = historyDataset.getPlaceholderName();
+            ModuleDataset moduleDataset = historyDataset.getModuleDataset();
+            if (moduleDataset == null) {
+                error.append(String.format("The module dataset for '%s' placeholder is missing. The module type has changed since the last run.", placeholderName));
+                return false;
+            }
+            ModuleTypeVersionDataset moduleTypeVersionDataset = historyDataset.getModuleTypeVersionDataset();
+            if (moduleTypeVersionDataset == null) {
+                error.append(String.format("The module type version dataset for '%s' placeholder is missing. The module type has changed since the last run.", placeholderName));
+                return false;
+            }
+            String mode = moduleTypeVersionDataset.getMode();
+            if (mode.equals(ModuleTypeVersionDataset.OUT)) {
+                String outputMethod = moduleDataset.getOutputMethod();
+                if (outputMethod.equals(ModuleDataset.REPLACE)) {
+                    if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) {
+                        error.append(String.format("The dataset for '%s' output placeholder was not set.", placeholderName));
+                        return false;
+                    }
+                    if (historyDataset.getDatasetId() == null) {
+                        error.append(String.format("The dataset for '%s' output placeholder was not captured by the run.", placeholderName));
+                        return false;
+                    }
+                    if (!moduleDataset.getDatasetId().equals(historyDataset.getDatasetId()) || !moduleDataset.getVersion().equals(historyDataset.getVersion())) {
+                        error.append(String.format("The module dataset for '%s' output placeholder has been changed since the last run.", placeholderName));
+                        return false;
+                    }
+                }
+            } else { // IN or INOUT
+                if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) {
+                    error.append(String.format("The dataset for '%s' input placeholder was not set.", placeholderName));
+                    return false;
+                }
+                if (historyDataset.getDatasetId() == null) {
+                    error.append(String.format("The dataset for '%s' input placeholder was not captured by the run.", placeholderName));
+                    return false;
+                }
+                if (!moduleDataset.getDatasetId().equals(historyDataset.getDatasetId()) || !moduleDataset.getVersion().equals(historyDataset.getVersion())) {
+                    error.append(String.format("The module dataset for '%s' input placeholder has been changed since the last run.", placeholderName));
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     public boolean getNonfinalInputDatasets(final StringBuilder error,
                                             final Map<Integer, Version> nonfinalInputVersions,
                                             final Map<Integer, EmfDataset> nonfinalInputDatasets,
@@ -112,33 +164,34 @@ public class History implements Serializable, Comparable<History> {
         error.setLength(0);
         
         // check that all input datasets are final
-        for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
-            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+        for(HistoryDataset historyDataset : historyDatasets.values()) {
+            String placeholderName = historyDataset.getPlaceholderName();
+            ModuleTypeVersionDataset moduleTypeVersionDataset = historyDataset.getModuleTypeVersionDataset();
             String mode = moduleTypeVersionDataset.getMode();
             if (mode.equals(ModuleTypeVersionDataset.OUT))
                 continue;
-            if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) { // should never happen
-                error.append(String.format("The dataset for '%s' input placeholder was not set.", moduleDataset.getPlaceholderName()));
+            if (historyDataset.getDatasetId() == null) { // should never happen
+                error.append(String.format("The dataset for '%s' input placeholder was not captured by the run.", placeholderName));
                 return false;
             }
             Version version = null;
             try {
-                version = dataEditorService.getVersion(moduleDataset.getDatasetId(), moduleDataset.getVersion());
+                version = dataEditorService.getVersion(historyDataset.getDatasetId(), historyDataset.getVersion());
                 if (version == null) {
-                    error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' input placeholder.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName()));
+                    error.append(String.format("Can't get dataset (ID=%d) version %d for '%s' input placeholder.", historyDataset.getDatasetId(), historyDataset.getVersion(), placeholderName));
                     return false;
                 }
             } catch (Exception e) {
-                error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' input placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                error.append(String.format("Can't get dataset (ID=%d) version %d for '%s' input placeholder: %s.", historyDataset.getDatasetId(), historyDataset.getVersion(), placeholderName, e.getMessage()));
                 return false;
             }
             if (!version.isFinalVersion()) {
                 EmfDataset dataset = null;
                 try {
-                    dataset = dataService.getDataset(moduleDataset.getDatasetId());
+                    dataset = dataService.getDataset(historyDataset.getDatasetId());
                 } catch (EmfException e) {
                     e.printStackTrace();
-                    error.append(String.format("Cant get dataset (ID=%d) for '%s' input placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                    error.append(String.format("Can't get dataset (ID=%d) for '%s' input placeholder: %s.", historyDataset.getDatasetId(), placeholderName, e.getMessage()));
                     return false;
                 }
                 if (nonfinalInputVersionsText.length() > 0)
@@ -151,42 +204,40 @@ public class History implements Serializable, Comparable<History> {
         return true;
     }
 
-
     public boolean getNonfinalOutputDatasets(final StringBuilder error,
                                              final Map<Integer, Version> nonfinalOutputVersions,
                                              final Map<Integer, EmfDataset> nonfinalOutputDatasets,
                                              final StringBuilder nonfinalOutputVersionsText,
                                              DataService dataService, DataEditorService dataEditorService) {
         error.setLength(0);
-        
-        // check if all output datasets are final
-        for(ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
-            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleDataset.getModuleTypeVersionDataset();
+        for(HistoryDataset historyDataset : historyDatasets.values()) {
+            String placeholderName = historyDataset.getPlaceholderName();
+            ModuleTypeVersionDataset moduleTypeVersionDataset = historyDataset.getModuleTypeVersionDataset();
             String mode = moduleTypeVersionDataset.getMode();
             if (!mode.equals(ModuleTypeVersionDataset.OUT))
                 continue;
-            if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) {
-                error.append(String.format("The output dataset for '%s' placeholder was not set.", moduleDataset.getPlaceholderName()));
+            if (historyDataset.getDatasetId() == null) {
+                error.append(String.format("The output dataset for '%s' placeholder was not captured by the run.", placeholderName));
                 return false;
             }
             Version version = null;
             try {
-                version = dataEditorService.getVersion(moduleDataset.getDatasetId(), moduleDataset.getVersion());
+                version = dataEditorService.getVersion(historyDataset.getDatasetId(), historyDataset.getVersion());
                 if (version == null) {
-                    error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' output placeholder.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName()));
+                    error.append(String.format("Can't get dataset (ID=%d) version %d for '%s' output placeholder.", historyDataset.getDatasetId(), historyDataset.getVersion(), placeholderName));
                     return false;
                 }
             } catch (Exception e) {
-                error.append(String.format("Cant get dataset (ID=%d) version %d for '%s' output placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getVersion(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                error.append(String.format("Can't get dataset (ID=%d) version %d for '%s' output placeholder: %s.", historyDataset.getDatasetId(), historyDataset.getVersion(), placeholderName, e.getMessage()));
                 return false;
             }
             if (!version.isFinalVersion()) {
                 EmfDataset dataset = null;
                 try {
-                    dataset = dataService.getDataset(moduleDataset.getDatasetId());
+                    dataset = dataService.getDataset(historyDataset.getDatasetId());
                 } catch (EmfException e) {
                     e.printStackTrace();
-                    error.append(String.format("Cant get dataset (ID=%d) for '%s' output placeholder: %s.", moduleDataset.getDatasetId(), moduleDataset.getPlaceholderName(), e.getMessage()));
+                    error.append(String.format("Can't get dataset (ID=%d) for '%s' output placeholder: %s.", historyDataset.getDatasetId(), placeholderName, e.getMessage()));
                     return false;
                 }
                 if (nonfinalOutputVersionsText.length() > 0)

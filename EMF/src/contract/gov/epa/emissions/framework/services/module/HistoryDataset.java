@@ -110,9 +110,16 @@ public class HistoryDataset implements Serializable {
     }
 
     // could return null if the module type for this module was changed after this history record was created
+    public ModuleDataset getModuleDataset() {
+        Map<String, ModuleDataset> moduleDatasets = history.getModule().getModuleDatasets();
+        if (moduleDatasets.containsKey(placeholderName))
+            return moduleDatasets.get(placeholderName);
+        return null;
+    }
+
+    // could return null if the module type for this module was changed after this history record was created
     public ModuleTypeVersionDataset getModuleTypeVersionDataset() {
-        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets =
-                history.getModule().getModuleTypeVersion().getModuleTypeVersionDatasets();
+        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = history.getModule().getModuleTypeVersion().getModuleTypeVersionDatasets();
         if (moduleTypeVersionDatasets.containsKey(placeholderName))
             return moduleTypeVersionDatasets.get(placeholderName);
         return null;

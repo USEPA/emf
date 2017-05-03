@@ -1191,8 +1191,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                 throw new EmfException("Failed to get the updated module type.");
             moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
             moduleTypeVersionIsFinal.setText(moduleTypeVersion.getIsFinal() ? "Yes" : "No");
-            JOptionPane.showConfirmDialog(parentConsole, "This module type version has been finalized!", title,
-                    JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(parentConsole, "This module type version has been finalized!", title, JOptionPane.INFORMATION_MESSAGE);
+            resetChanges();
+            isDirty = false;
             doClose();
         } catch (Exception e) {
             e.printStackTrace();

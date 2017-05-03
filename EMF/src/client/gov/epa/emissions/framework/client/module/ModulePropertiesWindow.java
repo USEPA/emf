@@ -315,6 +315,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
         refreshModuleTypeVersion();
         resetChanges();
+        isDirty = false;
     }
 
     private Action selectModuleTypeVersionAction() {
@@ -1298,7 +1299,25 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             return;
         }
 
-        // check that all input datasets are final
+        // verify that the last run's history datasets are identical (id & version) to the current module datasets
+        if (!lastHistory.checkModuleDatasets(error)) {
+            messagePanel.setError("Can't finalize. " + error.toString());
+            return;
+        }
+
+        // check module type version last modified date against last run start time
+        if (moduleTypeVersion.getLastModifiedDate().after(lastHistory.startDate())) {
+            messagePanel.setError("Can't finalize. The module type version is more recent than the last run.");
+            return;
+        }
+        
+        // check module last modified date against last run start time
+        if (module.getLastModifiedDate().after(lastHistory.startDate())) {
+            messagePanel.setError("Can't finalize. The module is more recent than the last run.");
+            return;
+        }
+
+        // check if all input datasets are final
         TreeMap<Integer, Version> nonfinalInputVersions = new TreeMap<Integer, Version>();
         TreeMap<Integer, EmfDataset> nonfinalInputDatasets = new TreeMap<Integer, EmfDataset>(); // index is the Version.id
         StringBuilder nonfinalInputVersionsText = new StringBuilder();
@@ -1372,8 +1391,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
             isDirty = true;
             if (doSave()) {
-                JOptionPane.showConfirmDialog(parentConsole, "This module has been finalized!",
-                                              title, JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(parentConsole, "This module has been finalized!", title, JOptionPane.INFORMATION_MESSAGE);
                 doClose();
             }
         }

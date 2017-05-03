@@ -257,6 +257,8 @@ class SimpleModuleRunner extends ModuleRunner {
                 }
             }
             
+            // TODO verify that all output parameters have been set
+            
             executeTeardownScript(outputDatasetTables);
             
             history.setStatus(History.COMPLETED);
