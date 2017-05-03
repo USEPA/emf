@@ -384,7 +384,7 @@ public class JobFieldsPanel extends JPanel implements JobFieldsPanelView {
             initDir = new EmfFileInfo(lastPath, true, false);
         }
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
+        EmfFileChooser chooser = new EmfFileChooser(parent.getSession(), initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle(title);
         chooser.setDirectoryAndFileMode();
         int option = chooser.showDialog(parent, "Select a file that contains the executable");

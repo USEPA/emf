@@ -29,18 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 
 public class EmfFileChooserPanel extends JPanel implements Runnable {
 
@@ -85,13 +74,13 @@ public class EmfFileChooserPanel extends JPanel implements Runnable {
     private final String[] filters = { "*", "*.*", "*.txt", "*.ncf" };
 
     public EmfFileChooserPanel(Component parent, EmfFileSystemView fsv, EmfFileInfo initialFile, boolean dirOnly,
-            Window window) {
+            Window window, SingleLineMessagePanel messagePanel) {
         this.fsv = fsv;
         this.currentDir = initialFile;
         this.dirOnly = dirOnly;
-        this.messagePanel = new SingleLineMessagePanel();
         this.parent = parent;
         this.window = window;
+        this.messagePanel = messagePanel;
         this.curFilterList = new ArrayList<String>();
         this.curFilterList.addAll(Arrays.asList(filters));
         if (!dirOnly)
@@ -106,7 +95,7 @@ public class EmfFileChooserPanel extends JPanel implements Runnable {
     public void display(EmfFileInfo[] subdirs, EmfFileInfo[] files) {
         removeAll();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(this.messagePanel);
+//        add(this.messagePanel);
         add(upperPanel());
         add(fileListPanels(subdirs, files));
 
@@ -118,15 +107,16 @@ public class EmfFileChooserPanel extends JPanel implements Runnable {
         });
 
         if (dirOnly){
-            setPreferredSize(new Dimension(600, 350));
-            setMinimumSize(new Dimension(600, 350));
+            setPreferredSize(new Dimension(600, 370));
+            setMinimumSize(new Dimension(600, 370));
         }
         else{
-            setPreferredSize(new Dimension(800, 440));
-            setMinimumSize(new Dimension(800, 440));
+            setPreferredSize(new Dimension(800, 460));
+            setMinimumSize(new Dimension(800, 460));
         }
 
         setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+
     }
 
     private JPanel fileListPanels(EmfFileInfo[] subdirs, EmfFileInfo[] files) {

@@ -227,7 +227,7 @@ public class LoadCaseDialog extends JDialog {
     private void selectFile() {
         EmfFileInfo initDir = new EmfFileInfo(path.getText(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(service));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(service));
         chooser.setTitle("Select a case log file for loading data into case");
         chooser.setDirectoryAndFileMode();
         int option = chooser.showDialog(parentConsole, "Select a file");

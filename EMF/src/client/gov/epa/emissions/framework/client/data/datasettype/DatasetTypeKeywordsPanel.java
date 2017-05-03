@@ -19,7 +19,7 @@ public class DatasetTypeKeywordsPanel extends JPanel implements Editor {
     private EditableTablePanel editableTablePanel;
     
     public DatasetTypeKeywordsPanel(EditableKeyValueTableData tableData, Keyword[] keywords, ManageChangeables changeablesList, EmfConsole parent) {
-        editableTablePanel = new EditableTablePanel("Keywords", tableData, changeablesList, parent);
+        editableTablePanel = new EditableTablePanel(null, tableData, changeablesList, parent);
         editableTablePanel.setColumnEditor(cellEditor(keywords), 1, "Select from the list");
 
         super.setLayout(new BorderLayout());

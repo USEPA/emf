@@ -442,7 +442,7 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
     private void selectFolder() {
         EmfFileInfo initDir = new EmfFileInfo(folder.getText(), true, true);
         
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(service));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(service));
         chooser.setTitle("Select a folder to contain the exported Datasets");
         int option = chooser.showDialog(parentConsole, "Select a folder");
 

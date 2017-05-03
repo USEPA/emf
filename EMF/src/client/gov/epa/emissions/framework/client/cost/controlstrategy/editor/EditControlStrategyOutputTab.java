@@ -620,7 +620,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
     private void selectFolder() {
         EmfFileInfo initDir = new EmfFileInfo(getExportFolder(), true, true);
         
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle("Select a folder to contain the exported strategy results");
         int option = chooser.showDialog(parentConsole, "Select a folder");
 

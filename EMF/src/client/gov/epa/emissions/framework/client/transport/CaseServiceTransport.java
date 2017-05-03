@@ -1229,7 +1229,17 @@ public class CaseServiceTransport implements CaseService {
         
         return (String) call.requestResponse(new Object[] { caseIds });
     }
-    
+
+    @Override
+    public String getCaseComparisonDatasetRevisionResult(int[] caseIds) throws EmfException {
+        EmfCall call = call();
+        call.setOperation("getCaseComparisonDatasetRevisionResult");
+        call.addParam("caseIds", dataMappings.integers());
+        call.setStringReturnType();
+
+        return (String) call.requestResponse(new Object[] { caseIds });
+    }
+
     public String getCaseQaReports(User user, int[] caseIds, String gridName, Sector[] sectors, 
             String[] repDims, String whereClause, String serverDir) throws EmfException {
         EmfCall call = call();

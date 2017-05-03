@@ -2052,3 +2052,8 @@ values ('postgres-backup-dir-for-emissions-schema', '/backups/EMF/emissions_sche
 
 -- 01/03/2017 - add modules to user feature list
 INSERT INTO emf.user_features values (DEFAULT, 'Modules');
+
+-- 03/07/2017 - adding new upload file capability
+insert into emf.properties (name, value)
+values ('MAX_FILE_UPLOAD_SIZE', '100');	-- stored as MB not bytes
+

@@ -2,21 +2,22 @@ package gov.epa.emissions.framework.services.spring;
 
 import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.RemoveDownloadFilesTask;
-
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
+import gov.epa.emissions.framework.services.basic.RemoveUploadFilesTask;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackages = "gov.epa.emissions.framework")
+@EnableScheduling
 //@EnableTransactionManagement(proxyTargetClass=true, mode=AdviceMode.PROXY)gov.epa.emissions.framework.services.basic
 public class AppConfig {
 
@@ -46,7 +47,7 @@ public class AppConfig {
        AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
        sessionFactory.setDataSource(dataSource());
        sessionFactory.setAnnotatedPackages(/*PackagesToScan(*/new String[] { "gov.epa.emissions.framework" });
-       sessionFactory.setAnnotatedClasses(new Class[] { FileDownloadDAO.class, RemoveDownloadFilesTask.class });
+       sessionFactory.setAnnotatedClasses(new Class[] { FileDownloadDAO.class, RemoveDownloadFilesTask.class, RemoveUploadFilesTask.class });
        sessionFactory.setHibernateProperties(hibernateProperties());
 
        return sessionFactory;

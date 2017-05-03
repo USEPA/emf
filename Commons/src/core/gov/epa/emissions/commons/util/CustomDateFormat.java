@@ -132,7 +132,7 @@ public class CustomDateFormat {
     }
     
     public static String format_h_m_a_MMM_DD(Date date) {
-        dateFormatter.applyPattern("hh:mm a MMM dd");
+        dateFormatter.applyPattern("hh:mm a MMM dd yyyy");
         return date == null ? "" : dateFormatter.format(date);
     }
     

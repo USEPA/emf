@@ -211,4 +211,10 @@ public class RemoteServiceLocator implements ServiceLocator {
     public void setEmfSession(EmfSession emfSession) {
         this.emfSession = emfSession;
     }
+
+    @Override
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
 }

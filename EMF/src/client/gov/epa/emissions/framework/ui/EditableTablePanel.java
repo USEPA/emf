@@ -41,7 +41,8 @@ public class EditableTablePanel extends JPanel implements Editor {
     private JPanel doLayout(String label, InlineEditableTableData tableData) {
         JPanel container = new JPanel(new BorderLayout());
 
-        container.add(labelPanel(label), BorderLayout.PAGE_START);
+        if (label != null)
+            container.add(labelPanel(label), BorderLayout.PAGE_START);
         container.add(table(tableData), BorderLayout.CENTER);
         container.add(buttonsPanel(tableData), BorderLayout.PAGE_END);
 

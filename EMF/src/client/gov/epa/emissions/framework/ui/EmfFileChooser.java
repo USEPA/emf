@@ -3,25 +3,35 @@ package gov.epa.emissions.framework.ui;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.CancelButton;
 import gov.epa.emissions.commons.gui.buttons.OKButton;
+import gov.epa.emissions.commons.util.CustomDateFormat;
+import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.download.FileDownloadTableCellRenderer;
+import gov.epa.emissions.framework.client.download.FileDownloadTableModel;
+import gov.epa.emissions.framework.client.upload.UploadTask;
+import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.EmfFileSystemView;
+import gov.epa.emissions.framework.services.basic.EmfProperty;
+import gov.epa.emissions.framework.services.basic.FileDownload;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Frame;
-import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 public class EmfFileChooser extends JComponent {
 
@@ -48,6 +58,7 @@ public class EmfFileChooser extends JComponent {
     public static final String APPROVE_SELECTION = "ApproveSelection";
     
     private static EmfFileInfo LAST_SELECTED_DIR = null;
+    private EmfSession session;
 
     private EmfFileInfo current;
 
@@ -67,15 +78,32 @@ public class EmfFileChooser extends JComponent {
 
     private EmfFileSystemView fsv;
 
-    public EmfFileChooser(EmfFileInfo dir, EmfFileSystemView fsv) {
+    private SingleLineMessagePanel messagePanel;
+    private FileDownloadTableModel fileDownloadTableModel;
+    private JTable table;
+    private UploadTask task;
+    private JFileChooser fileChooser;
+    private JTabbedPane tabbedPane;
+    private int maxFileUploadSize = 0;
+
+//    public EmfFileChooser(EmfFileInfo dir, EmfFileSystemView fsv) {
+//        this.fsv = fsv;
+//        this.current = dir;
+//        if ((dir.getAbsolutePath().trim().equalsIgnoreCase("")) && (LAST_SELECTED_DIR != null))
+//            this.current = LAST_SELECTED_DIR;
+//    }
+//
+//    public EmfFileChooser(EmfFileSystemView fsv) {
+//        this(fsv.getDefaultDir(), fsv);
+//    }
+//
+    public EmfFileChooser(EmfSession session, EmfFileInfo dir, EmfFileSystemView fsv) {
+        this.session = session;
         this.fsv = fsv;
-        this.current = dir;     
+        this.current = dir;
         if ((dir.getAbsolutePath().trim().equalsIgnoreCase("")) && (LAST_SELECTED_DIR != null))
             this.current = LAST_SELECTED_DIR;
-    }
-
-    public EmfFileChooser(EmfFileSystemView fsv) {
-        this(fsv.getDefaultDir(), fsv);
+        this.maxFileUploadSize = getUploadFileMaxSize();
     }
 
     public void setDirectoryOnlyMode() {
@@ -89,12 +117,53 @@ public class EmfFileChooser extends JComponent {
     public EmfFileInfo getSelectedDir() {
         if (this.chooserPanel == null)
             return null;
-        
-        return this.chooserPanel.selectedDirectory();
+
+        if (tabbedPane.getSelectedIndex() == 0) {        //SERVER FILES
+            return this.chooserPanel.selectedDirectory();
+        } else if (tabbedPane.getSelectedIndex() == 1) { //LOCAL FILES
+            EmfFileInfo fileInfo = new EmfFileInfo();
+            String tempDirectory = getTempDirectory();//"/upload"
+            if (tempDirectory.lastIndexOf("/") > 0 ) {   //assume linux server
+                tempDirectory += "/upload/" + session.user().getUsername();
+            } else {
+                tempDirectory += (tempDirectory.lastIndexOf("/") != tempDirectory.length() - 1 ? File.separator : "")
+                        + "upload" + File.separator + session.user().getUsername();
+            }
+            fileInfo = new EmfFileInfo(tempDirectory, true);
+            fileInfo.setAbsolutePath(tempDirectory);
+            return fileInfo;
+        }
+        return null;
     }
 
     public EmfFileInfo[] getSelectedFiles() {
-        return this.chooserPanel.selectedFiles();
+        if (tabbedPane.getSelectedIndex() == 0) {        //SERVER FILES
+            return this.chooserPanel.selectedFiles();
+        } else if (tabbedPane.getSelectedIndex() == 1) { //LOCAL FILES
+            //translate to EmfFileInfo model
+            EmfFileInfo[] files = new EmfFileInfo[fileDownloadTableModel.getFileDownloads().size()];
+            int i = 0;
+            String tempDirectory = getTempDirectory() + File.separator + "upload" + File.separator + session.user().getUsername();
+            for (FileDownload fileDownload : fileDownloadTableModel.getFileDownloads()) {
+                EmfFileInfo fileInfo = files[i];
+                fileInfo = new EmfFileInfo(fileDownload.getAbsolutePath(), true);
+                String fileName = fileDownload.getFileName();
+                if (fileName.lastIndexOf("/") > 0 ) {   //assume linux server
+                    fileName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
+                    fileInfo.setName(fileName);
+                    fileInfo.setAbsolutePath(tempDirectory + "/" + fileName);
+                } else {
+                    fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.length());
+                    fileInfo.setName(fileName);
+                    fileInfo.setAbsolutePath(tempDirectory + File.separator + fileName);
+                }
+                files[i] = fileInfo;
+                i++;
+            }
+
+            return files;
+        }
+        return new EmfFileInfo[0];
     }
 
     public void setApproveButtonText(String approveButtonText) {
@@ -137,10 +206,69 @@ public class EmfFileChooser extends JComponent {
         JDialog dialog = new JDialog((Frame) parent, title, true);
         dialog.setComponentOrientation(this.getComponentOrientation());
 
-        this.chooserPanel = new EmfFileChooserPanel(parent, fsv, current, dirOnly, dialog);
+        this.messagePanel = new SingleLineMessagePanel();
+        this.chooserPanel = new EmfFileChooserPanel(parent, fsv, current, dirOnly, dialog, this.messagePanel);
         Container contentPane = dialog.getContentPane();
         contentPane.setLayout(new BorderLayout());
-        contentPane.add(this.chooserPanel, BorderLayout.CENTER);
+        contentPane.add(this.messagePanel, BorderLayout.NORTH);
+
+        tabbedPane = new JTabbedPane();
+        JPanel serverPanel = new JPanel();
+        serverPanel.setLayout(new BoxLayout(serverPanel, BoxLayout.Y_AXIS));
+
+        serverPanel.add(this.chooserPanel);
+
+        tabbedPane.addTab("Server", serverPanel);
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
+
+        JPanel localPanel = new JPanel();
+        localPanel.setLayout(new BoxLayout(localPanel, BoxLayout.Y_AXIS));
+        fileChooser = new JFileChooser();
+        fileChooser.setMultiSelectionEnabled(true);
+        fileChooser.setApproveButtonText("Upload");
+        fileChooser.setControlButtonsAreShown(false);
+        fileChooser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent action)
+            {
+                if (action.getActionCommand().equals(JFileChooser.CANCEL_SELECTION))
+                {
+                    System.out.printf("CancelSelection\n");
+                    ;
+//                    this.setVisible(false);
+//                    this.dispose();
+                }
+                if (action.getActionCommand().equals(JFileChooser.APPROVE_SELECTION))
+                {
+                    for (File file : fileChooser.getSelectedFiles()) {
+                        System.out.printf("Selected file:" + file.getAbsolutePath() + " \n");
+                    }
+//                    this.setVisible(false);
+//                    this.dispose();
+                }
+            }
+        });
+
+        localPanel.add(fileChooser);
+        JButton buttonUpload = new JButton("Upload");
+        buttonUpload.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                buttonUploadActionPerformed(event);
+            }
+        });
+        JPanel uploadFileButtonPanel = new JPanel(new BorderLayout());
+        uploadFileButtonPanel.add(buttonUpload, BorderLayout.EAST);
+        localPanel.add(uploadFileButtonPanel);
+        JPanel uploadFilesPanel = new JPanel(new BorderLayout());
+        uploadFilesPanel.add(new JLabel("Uploaded Files:"), BorderLayout.NORTH);
+        uploadFilesPanel.add(uploadFilesListWidgit());
+        uploadFilesPanel.setPreferredSize(new Dimension(150, 250));
+        localPanel.add(uploadFilesPanel);
+
+        tabbedPane.addTab("Local", localPanel);
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
+        contentPane.add((dirOnly ? this.chooserPanel : tabbedPane), BorderLayout.CENTER);
         contentPane.add(buttonsPanel(), BorderLayout.SOUTH);
 
         if (JDialog.isDefaultLookAndFeelDecorated()) {
@@ -154,6 +282,112 @@ public class EmfFileChooser extends JComponent {
 
         return dialog;
     }
+
+
+    private JScrollPane uploadFilesListWidgit() {
+
+        fileDownloadTableModel = new FileDownloadTableModel();
+        fileDownloadTableModel.setHeader(new String[] { "Uploaded Files" });
+        table = new JTable(fileDownloadTableModel);
+//            new MultiLineTable(fileDownloadTableModel);
+        table.setName("fileDownloads");
+//        table.setRowHeight(50);
+        //table.setDefaultRenderer(Object.class, new TextAreaTableCellRenderer());
+
+        table.setCellSelectionEnabled(true);
+//        MultiLineCellRenderer multiLineCR = new MultiLineCellRenderer();
+        FileDownloadTableCellRenderer progressBarTableCellRenderer = new FileDownloadTableCellRenderer();
+//        table.getColumnModel().getColumn(0).setCellRenderer(multiLineCR);
+//        table.getColumnModel().getColumn(1).setCellRenderer(multiLineCR);
+//        table.getColumnModel().getColumn(2).setCellRenderer(multiLineCR);
+        table.getColumnModel().getColumn(0).setCellRenderer(progressBarTableCellRenderer);
+
+//        setColumnWidths(table.getColumnModel());
+//        table.setPreferredScrollableViewportSize(this.getSize());
+
+        return new JScrollPane(table);
+    }
+
+    /**
+     * handle click event of the Upload button
+     */
+    private void buttonUploadActionPerformed(ActionEvent event) {
+        String uploadURL = session.serviceLocator().getBaseUrl().replaceFirst("/services","/uploadFile");
+        //final FileDownload[] fileDownloads = new FileDownload[fileChooser.getSelectedFiles().length];
+        List<FileDownload> fileDownloads = new ArrayList<FileDownload>();
+        for (File uploadFile : fileChooser.getSelectedFiles()) {
+
+            if (uploadFile.length() >= maxFileUploadSize) {
+                JOptionPane.showMessageDialog(null, "File to large (max size is " + (maxFileUploadSize / (1024 * 1024))
+                                + " MB) to upload: " + uploadFile.getName(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+            }
+
+            FileDownload fileDownload = new FileDownload();
+            fileDownload.setUrl(uploadFile.getPath());
+            fileDownload.setAbsolutePath(uploadFile.getPath());
+
+            Path path = Paths.get(uploadFile.getPath()); // the path to the file
+            BasicFileAttributes attributes =
+                    null;
+            try {
+                attributes = Files.readAttributes(path, BasicFileAttributes.class);
+                FileTime creationTime = attributes.lastModifiedTime();
+                fileDownload.setTimestamp(new Date(creationTime.toMillis()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                fileDownload.setTimestamp(new Date());
+            }
+            fileDownload.setSize(uploadFile.length());
+            fileDownloads.add(fileDownload);
+        }
+
+        fileDownloadTableModel.refresh(fileDownloads.toArray(new FileDownload[0]));
+        //make sure row height is consistent
+        for (int j = 0; j < fileDownloadTableModel.getRowCount(); j++) {
+            table.setRowHeight(j, 50);
+        }
+
+        for (final FileDownload fileDownload : fileDownloads) {
+            System.out.printf("Selected file:" + fileDownload.getAbsolutePath() + " \n");
+            try {
+                fileDownload.setProgress(0);
+
+                File uploadFile = new File(fileDownload.getAbsolutePath());
+                UploadTask task = new UploadTask(session.user().getUsername(), uploadURL, uploadFile);
+                task.addPropertyChangeListener(new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        if ("progress" == evt.getPropertyName()) {
+                            int progress = (Integer) evt.getNewValue();
+                            fileDownload.setProgress(progress);
+                            table.repaint();
+                        }
+                    }
+                });
+                task.execute();
+                uploadFile = null;
+                task = null;
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Error executing upload task: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+    }
+
+    /**
+     * Update the progress bar's state whenever the progress of upload changes.
+     */
+    public void propertyChange(JProgressBar progressBar, PropertyChangeEvent evt) {
+        if ("progress" == evt.getPropertyName()) {
+            int progress = (Integer) evt.getNewValue();
+            progressBar.setValue(progress);
+        }
+    }
+
 
     private void setDialogType(int dialogType) {
         if (this.dialogType == dialogType) {
@@ -247,4 +481,22 @@ public class EmfFileChooser extends JComponent {
         dialog = null;
     }
 
+    private String getTempDirectory() {
+        try {
+            return session.userService().getPropertyValue(EmfProperty.IMPORT_EXPORT_TEMP_DIR);
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    private int getUploadFileMaxSize() {
+        try {
+            return 1024 * 1024 * Integer.parseInt(session.userService().getPropertyValue(EmfProperty.MAX_FILE_UPLOAD_SIZE));
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

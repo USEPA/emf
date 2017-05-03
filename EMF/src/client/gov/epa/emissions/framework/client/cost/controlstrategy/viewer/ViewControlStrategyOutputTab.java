@@ -585,7 +585,7 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
 
         EmfFileInfo initDir = new EmfFileInfo(getExportFolder(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(this.getSession()
+        EmfFileChooser chooser = new EmfFileChooser(getParentConsole().getSession(), initDir, new EmfFileSystemView(this.getSession()
                 .dataCommonsService()));
         chooser.setTitle("Select a folder to contain the exported strategy results");
         int option = chooser.showDialog(this.getParentConsole(), "Select a folder");

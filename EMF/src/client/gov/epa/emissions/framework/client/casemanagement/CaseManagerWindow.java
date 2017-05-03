@@ -348,6 +348,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
             ids[i] = cases.get(i).getId();
         }
         presenter.viewCaseComparisonResult(ids, "");
+        presenter.viewCaseComparisonDatasetRevisionResult(ids, "");
     }
     
     protected void compareCasesOutputs() throws EmfException {
@@ -561,6 +562,11 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
     public void displayCaseComparisonResult(String qaStepName, String exportedFileName) {
         AnalysisEngineTableApp app = new AnalysisEngineTableApp("View QA Step Results: " + qaStepName, new Dimension(500, 500), desktopManager, parentConsole);
         app.display(new String[] { exportedFileName });
-    }   
-    
+    }
+
+
+    public void displayCaseComparisonDatasetRevisionResult(String qaStepName, String exportedFileName) {
+        AnalysisEngineTableApp app = new AnalysisEngineTableApp("View QA Step Results: " + qaStepName, new Dimension(500, 500), desktopManager, parentConsole);
+        app.display(new String[] { exportedFileName });
+    }
 }

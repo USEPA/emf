@@ -62,4 +62,7 @@ public interface ServiceLocator {
     TemporalAllocationService temporalAllocationService();
 
     void setEmfSession(EmfSession emfSession);
+
+    String getBaseUrl();
 }
+

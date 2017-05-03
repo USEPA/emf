@@ -182,7 +182,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
     private void selectFolder(JTextField dir, String title) {
         EmfFileInfo initDir = new EmfFileInfo(dir.getText(), true, true);
 
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle(title);
         int option = chooser.showDialog(parentConsole, "Select a folder");
 

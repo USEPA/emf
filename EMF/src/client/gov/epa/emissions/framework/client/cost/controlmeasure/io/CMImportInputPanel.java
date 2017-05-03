@@ -253,7 +253,7 @@ public class CMImportInputPanel extends JPanel {
     private void selectFile() {
         EmfFileInfo initDir = new EmfFileInfo(folder.getText(), true, true);
         
-        EmfFileChooser chooser = new EmfFileChooser(initDir, new EmfFileSystemView(session.dataCommonsService()));
+        EmfFileChooser chooser = new EmfFileChooser(parentConsole.getSession(), initDir, new EmfFileSystemView(session.dataCommonsService()));
         chooser.setTitle("Select files containing control measures to import");
         chooser.setDirectoryAndFileMode();
         

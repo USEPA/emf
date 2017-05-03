@@ -18,6 +18,8 @@ public class EmfProperty implements Serializable {
     public static final String DOWNLOAD_EXPORT_FOLDER = "DOWNLOAD_EXPORT_FOLDER";
     public static final String DOWNLOAD_EXPORT_ROOT_URL = "DOWNLOAD_EXPORT_ROOT_URL";
     public static final String DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE = "DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE";
+    public static final String IMPORT_EXPORT_TEMP_DIR = "ImportExportTempDir";
+    public static final String MAX_FILE_UPLOAD_SIZE = "MAX_FILE_UPLOAD_SIZE";
 
     public EmfProperty() {// needed for persistence
     }

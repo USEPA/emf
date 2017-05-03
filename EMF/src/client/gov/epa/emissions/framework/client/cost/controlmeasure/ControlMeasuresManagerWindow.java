@@ -266,7 +266,7 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
     }
 
     private Pollutant[] getPollutants(EmfSession session) throws EmfException {
-        return session.dataCommonsService().getPollutants();
+        return session.controlMeasureService().getMeasurePollutants();
     }
 
     // private JScrollPane sortFilterPane(EmfConsole parentConsole) {

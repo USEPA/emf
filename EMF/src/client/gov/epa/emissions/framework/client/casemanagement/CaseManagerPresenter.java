@@ -50,6 +50,8 @@ public interface CaseManagerPresenter extends HeavySwingWorkerPresenter, LightSw
     Case[] getCases(CaseCategory category, String nameContains) throws EmfException;
 
     void viewCaseComparisonResult(int[] caseIds, String exportDir) throws EmfException;
+
+    void viewCaseComparisonDatasetRevisionResult(int[] caseIds, String exportDir) throws EmfException;
     
     String viewCaseQaReports(User user, int[] caseIds, String gridName, Sector[] sectors, String[] repDims, 
             String whereClause, String serverDir) throws EmfException;
