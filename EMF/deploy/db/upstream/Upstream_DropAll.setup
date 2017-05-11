@@ -1,4 +1,7 @@
-﻿
+﻿DROP TABLE modules.modules_tags;
+DROP TABLE modules.module_types_tags;
+DROP TABLE modules.tags;
+
 DROP TABLE modules.history_internal_parameters;
 DROP TABLE modules.history_internal_datasets;
 DROP TABLE modules.history_submodules;

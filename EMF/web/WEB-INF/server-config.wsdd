@@ -265,6 +265,10 @@
 		qname="ns1:ParameterType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+		languageSpecificType="java:gov.epa.emissions.framework.services.module.Tag"
+		qname="ns1:Tag" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.LiteModuleType"
 		qname="ns1:LiteModuleType" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 

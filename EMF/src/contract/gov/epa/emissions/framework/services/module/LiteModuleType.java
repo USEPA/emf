@@ -6,6 +6,8 @@ import gov.epa.emissions.commons.security.User;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LiteModuleType implements Serializable, Lockable, Comparable<LiteModuleType> {
 
@@ -27,9 +29,12 @@ public class LiteModuleType implements Serializable, Lockable, Comparable<LiteMo
 
     private boolean isComposite;
 
+    private Set<Tag> tags;
+
     public LiteModuleType() {
         lock = new Mutex();
         isComposite = false;
+        tags = new HashSet<Tag>();
     }
 
     public LiteModuleType(int id, String name) {
@@ -151,6 +156,34 @@ public class LiteModuleType implements Serializable, Lockable, Comparable<LiteMo
         setIsComposite(isComposite);
     }
     
+    // tags
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
+
+    public void clearTags() {
+        this.tags.clear();
+    }
+
+    public String getTagsText() {
+        StringBuilder tagsText = new StringBuilder();
+        for(Tag tag : tags) {
+            if (tagsText.length() > 0)
+                tagsText.append(", ");
+            tagsText.append(tag.name);
+        }
+        return tagsText.toString();
+    }
+
     // standard methods
 
     public int hashCode() {

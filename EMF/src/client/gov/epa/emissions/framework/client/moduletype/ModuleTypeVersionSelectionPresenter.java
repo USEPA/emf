@@ -2,7 +2,6 @@ package gov.epa.emissions.framework.client.moduletype;
 
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.DataCommonsService;
 import gov.epa.emissions.framework.services.module.ModuleType;
 
 public class ModuleTypeVersionSelectionPresenter {

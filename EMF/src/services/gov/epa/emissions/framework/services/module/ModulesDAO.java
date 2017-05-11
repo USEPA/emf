@@ -1,13 +1,17 @@
 package gov.epa.emissions.framework.services.module;
 
-import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -46,7 +50,37 @@ public class ModulesDAO {
     }
 
     @SuppressWarnings({ "unchecked" })
-    public List<Module> getModulesForModuleTypeVersion(Session session, int moduleTypeVersionId) {
+    public List<ModuleTypeVersionSubmodule> getSubmodulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
+        List<?> submodules = session.createCriteria(ModuleTypeVersionSubmodule.class)
+                                    .createCriteria("moduleTypeVersion").add(Restrictions.eq("id", moduleTypeVersionId))
+                                    .list();
+        return (List<ModuleTypeVersionSubmodule>) submodules;
+    }
+    
+    public List<ModuleTypeVersionSubmodule> getAllSubmodulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
+        Map<Integer, ModuleTypeVersionSubmodule> allSubmodulesMap = new HashMap<Integer, ModuleTypeVersionSubmodule>();
+        Set<Integer> todoMtvIds = new HashSet<Integer>();
+        todoMtvIds.add(moduleTypeVersionId);
+        while (todoMtvIds.size() > 0) {
+            Set<Integer> newMtvIds = new HashSet<Integer>(todoMtvIds);
+            todoMtvIds.clear();
+            for(int newMtvId : newMtvIds) {
+                List<ModuleTypeVersionSubmodule> newSubmodules = getSubmodulesUsingModuleTypeVersion(session, newMtvId);
+                for (ModuleTypeVersionSubmodule newSubmodule : newSubmodules) {
+                    // making sure it's not an orphan submodule (that is, it's actually a submodule in its composite module type version)
+                    if (newSubmodule.getCompositeModuleTypeVersion().containsSubmoduleId(newSubmodule.getId())) {
+                        allSubmodulesMap.put(newSubmodule.getId(), newSubmodule);
+                        todoMtvIds.add(newSubmodule.getCompositeModuleTypeVersion().getId());
+                    }
+                }
+            }
+        }
+        List<ModuleTypeVersionSubmodule> allSubmodules = new ArrayList<ModuleTypeVersionSubmodule>(allSubmodulesMap.values());
+        return allSubmodules;
+    }
+    
+    @SuppressWarnings({ "unchecked" })
+    public List<Module> getModulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
         List<?> modules = session.createCriteria(Module.class)
                                  .createCriteria("moduleTypeVersion").add(Restrictions.eq("id", moduleTypeVersionId))
                                  .list();

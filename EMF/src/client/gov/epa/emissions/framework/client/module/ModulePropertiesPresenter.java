@@ -3,15 +3,16 @@ package gov.epa.emissions.framework.client.module;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.meta.PropertiesView;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
+import gov.epa.emissions.framework.client.moduletype.AddTagsPresenter;
+import gov.epa.emissions.framework.client.moduletype.AddTagsView;
+import gov.epa.emissions.framework.client.moduletype.RemoveTagsPresenter;
+import gov.epa.emissions.framework.client.moduletype.RemoveTagsView;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 
 public class ModulePropertiesPresenter {
 
@@ -89,7 +90,7 @@ public class ModulePropertiesPresenter {
         }
     }
     
-    public void doDisplayRelatedModules(RelatedModulesView view) throws EmfException {
+    public void doDisplayRelatedModules(RelatedModulesView view) {
         RelatedModulesPresenter presenter = new RelatedModulesPresenter(session, view);
         presenter.doDisplay();
     }
@@ -98,5 +99,15 @@ public class ModulePropertiesPresenter {
         if (module == null)
             return;
         session.moduleService().runModules(new int[] { module.getId() }, session.user());
+    }
+
+    public void displayAddTagsView(AddTagsView view) throws Exception {
+        AddTagsPresenter presenter = new AddTagsPresenter(view, session);
+        presenter.display();
+    }
+
+    public void displayRemoveTagsView(RemoveTagsView view) throws Exception {
+        RemoveTagsPresenter presenter = new RemoveTagsPresenter(view, session);
+        presenter.display();
     }
 }

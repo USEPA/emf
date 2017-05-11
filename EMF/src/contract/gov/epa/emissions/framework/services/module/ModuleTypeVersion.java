@@ -314,6 +314,44 @@ public class ModuleTypeVersion implements Serializable {
         return moduleType.isComposite();
     }
     
+    public Map<String, ModuleTypeVersionDatasetConnectionEndpoint> getTargetDatasetEndpoints() {
+        Map<String, ModuleTypeVersionDatasetConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionDatasetConnectionEndpoint>();
+        for (ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
+            if (!dataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
+                ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, null, dataset.getPlaceholderName());
+                endpoints.put(endpoint.getEndpointName(), endpoint);
+            }
+        }
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            for (ModuleTypeVersionDataset dataset : submodule.getModuleTypeVersion().getModuleTypeVersionDatasets().values()) {
+                if (!dataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
+                    ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, submodule, dataset.getPlaceholderName());
+                    endpoints.put(endpoint.getEndpointName(), endpoint);
+                }
+            }
+        }
+        return endpoints;
+    }
+    
+    public Map<String, ModuleTypeVersionParameterConnectionEndpoint> getTargetParameterEndpoints() {
+        Map<String, ModuleTypeVersionParameterConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionParameterConnectionEndpoint>();
+        for (ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
+            if (!parameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
+                ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, null, parameter.getParameterName());
+                endpoints.put(endpoint.getEndpointName(), endpoint);
+            }
+        }
+        for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            for (ModuleTypeVersionParameter parameter : submodule.getModuleTypeVersion().getModuleTypeVersionParameters().values()) {
+                if (!parameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
+                    ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, submodule, parameter.getParameterName());
+                    endpoints.put(endpoint.getEndpointName(), endpoint);
+                }
+            }
+        }
+        return endpoints;
+    }
+    
     public Map<String, ModuleTypeVersionDatasetConnectionEndpoint> getSourceDatasetEndpoints(ModuleTypeVersionDatasetConnection datasetConnection) {
         Map<String, ModuleTypeVersionDatasetConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionDatasetConnectionEndpoint>();
         try {
@@ -325,7 +363,8 @@ public class ModuleTypeVersion implements Serializable {
                 }
             }
             for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
-                if (submodule.equals(datasetConnection.getTargetSubmodule())) continue;
+                if (submodule.equals(datasetConnection.getTargetSubmodule()))
+                    continue;
                 for (ModuleTypeVersionDataset dataset : submodule.getModuleTypeVersion().getModuleTypeVersionDatasets().values()) {
                     if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
                         ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, submodule, dataset.getPlaceholderName());
@@ -340,6 +379,7 @@ public class ModuleTypeVersion implements Serializable {
     }
     
     private static boolean compatibleParameterTypes(String sourceSqlType, String targetSqlType) {
+        // TODO a text source should not be compatible with a non-text target
         return true; // for now
     }
 
@@ -354,7 +394,8 @@ public class ModuleTypeVersion implements Serializable {
                 }
             }
             for (ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
-                if (submodule.equals(parameterConnection.getTargetSubmodule())) continue;
+                if (submodule.equals(parameterConnection.getTargetSubmodule()))
+                    continue;
                 for (ModuleTypeVersionParameter parameter : submodule.getModuleTypeVersion().getModuleTypeVersionParameters().values()) {
                     if (compatibleParameterTypes(parameter.getSqlParameterType(), targetSqlType) && !parameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
                         ModuleTypeVersionParameterConnectionEndpoint endpoint = new ModuleTypeVersionParameterConnectionEndpoint(this, submodule, parameter.getParameterName());
@@ -495,6 +536,10 @@ public class ModuleTypeVersion implements Serializable {
 
     public String versionName() {
         return version + " - " + name;
+    }
+
+    public String versionNameFinal() {
+        return versionName() + (isFinal ? " - Final" : "");
     }
 
     // %s for module type, %d for version number, %s for version name
@@ -837,7 +882,7 @@ public class ModuleTypeVersion implements Serializable {
     public void removeModuleTypeVersionDatasetConnection(String targetName) {
         this.moduleTypeVersionDatasetConnections.remove(targetName);
     }
-    
+
     // moduleTypeVersionParameterConnections
 
     public Map<String, ModuleTypeVersionParameterConnection> getModuleTypeVersionParameterConnections() {
@@ -866,6 +911,91 @@ public class ModuleTypeVersion implements Serializable {
         this.moduleTypeVersionParameterConnections.remove(targetName);
     }
     
+    public boolean updateConnections(final StringBuilder cleanupScriptBuilder) {
+        boolean updated = false;
+        cleanupScriptBuilder.setLength(0);
+        
+        Map<String, ModuleTypeVersionDatasetConnectionEndpoint> newDatasetTargets = getTargetDatasetEndpoints();
+        
+        Set<String> oldDatasetTargetNames = new HashSet<String>();
+        oldDatasetTargetNames.addAll(moduleTypeVersionDatasetConnections.keySet());
+
+        // handle modified or removed dataset connections
+        StringBuilder ids = new StringBuilder(); 
+        for(String oldDatasetTargetName : oldDatasetTargetNames) {
+            ModuleTypeVersionDatasetConnection datasetConnection = moduleTypeVersionDatasetConnections.get(oldDatasetTargetName);
+            if (newDatasetTargets.containsKey(oldDatasetTargetName)) {
+                Map<String, ModuleTypeVersionDatasetConnectionEndpoint> newDatasetSources = getSourceDatasetEndpoints(datasetConnection);
+                if (!newDatasetSources.containsKey(datasetConnection.getSourceName())) { // modified dataset connection
+                    datasetConnection.setSourceSubmodule(null);
+                    datasetConnection.setSourcePlaceholderName(null);
+                    updated = true;
+                }
+            } else { // removed dataset connection
+                removeModuleTypeVersionDatasetConnection(oldDatasetTargetName);
+                updated = true;
+                if (ids.length() > 0)
+                    ids.append(",");
+                ids.append(datasetConnection.getId());
+            }
+        }
+        if (ids.length() > 0) {
+            cleanupScriptBuilder.append("DELETE FROM modules.module_types_versions_connections_datasets WHERE id IN (" + ids.toString() + ");\n");
+        }
+        // handle new dataset connections
+        for(String newDatasetTargetName : newDatasetTargets.keySet()) {
+            if (!moduleTypeVersionDatasetConnections.containsKey(newDatasetTargetName)) {
+                ModuleTypeVersionDatasetConnectionEndpoint newDatasetTarget = newDatasetTargets.get(newDatasetTargetName);
+                ModuleTypeVersionDatasetConnection newDatasetConnection = new ModuleTypeVersionDatasetConnection();
+                newDatasetConnection.setTargetSubmodule(newDatasetTarget.getSubmodule());
+                newDatasetConnection.setTargetPlaceholderName(newDatasetTarget.getPlaceholderName());
+                addModuleTypeVersionDatasetConnection(newDatasetConnection);
+                updated = true;
+            }
+        }
+        
+        Map<String, ModuleTypeVersionParameterConnectionEndpoint> newParameterTargets = getTargetParameterEndpoints();
+        
+        Set<String> oldParameterTargetNames = new HashSet<String>();
+        oldParameterTargetNames.addAll(moduleTypeVersionParameterConnections.keySet());
+
+        // handle modified or removed parameter connections
+        ids.setLength(0);
+        for(String oldParameterTargetName : oldParameterTargetNames) {
+            ModuleTypeVersionParameterConnection parameterConnection = moduleTypeVersionParameterConnections.get(oldParameterTargetName);
+            if (newParameterTargets.containsKey(oldParameterTargetName)) {
+                Map<String, ModuleTypeVersionParameterConnectionEndpoint> newParameterSources = getSourceParameterEndpoints(parameterConnection);
+                if (!newParameterSources.containsKey(parameterConnection.getSourceName())) { // modified parameter connection
+                    parameterConnection.setSourceSubmodule(null);
+                    parameterConnection.setSourceParameterName(null);
+                    updated = true;
+                }
+            } else { // removed parameter connection
+                removeModuleTypeVersionParameterConnection(oldParameterTargetName);
+                updated = true;
+                if (ids.length() > 0)
+                    ids.append(",");
+                ids.append(parameterConnection.getId());
+            }
+        }
+        if (ids.length() > 0) {
+            cleanupScriptBuilder.append("DELETE FROM modules.module_types_versions_connections_parameters WHERE id IN (" + ids.toString() + ");\n");
+        }
+        // handle new parameter connections
+        for(String newParameterTargetName : newParameterTargets.keySet()) {
+            if (!moduleTypeVersionParameterConnections.containsKey(newParameterTargetName)) {
+                ModuleTypeVersionParameterConnectionEndpoint newParameterTarget = newParameterTargets.get(newParameterTargetName);
+                ModuleTypeVersionParameterConnection newParameterConnection = new ModuleTypeVersionParameterConnection();
+                newParameterConnection.setTargetSubmodule(newParameterTarget.getSubmodule());
+                newParameterConnection.setTargetParameterName(newParameterTarget.getParameterName());
+                addModuleTypeVersionParameterConnection(newParameterConnection);
+                updated = true;
+            }
+        }
+        
+        return updated;
+    }
+
     // standard methods
 
     public String toString() {

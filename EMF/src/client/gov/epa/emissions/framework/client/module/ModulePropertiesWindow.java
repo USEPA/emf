@@ -35,11 +35,14 @@ import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
+import gov.epa.emissions.framework.client.moduletype.AddTagsDialog;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionConnectionsTableData;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionPropertiesWindow;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionDialog;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSelectionPresenter;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSubmodulesTableData;
+import gov.epa.emissions.framework.client.moduletype.RemoveTagsDialog;
+import gov.epa.emissions.framework.client.moduletype.TagsObserver;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 
 import java.awt.BorderLayout;
@@ -51,7 +54,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.Iterator;
@@ -60,13 +62,11 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
 
-public class ModulePropertiesWindow extends DisposableInteralFrame implements ModulePropertiesView, RefreshObserver {
+public class ModulePropertiesWindow extends DisposableInteralFrame implements ModulePropertiesView, RefreshObserver, TagsObserver {
     private ModulePropertiesPresenter presenter;
 
     private EmfConsole parentConsole;
@@ -95,6 +95,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     
     private TextField moduleName;
     private TextArea  moduleDescription;
+    private TextArea  moduleTags;
     private Label     moduleCreator;
     private Label     moduleCreationDate;
     private Label     moduleLastModifiedDate;
@@ -157,7 +158,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     Button closeButton;
     
     public ModulePropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, ViewMode viewMode, Module module, ModuleTypeVersion moduleTypeVersion) {
-        super(getWindowTitle(viewMode, module), new Dimension(800, 600), desktopManager);
+        super(getWindowTitle(viewMode, module), new Dimension(850, 700), desktopManager);
 
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
@@ -214,7 +215,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         try {
             selectionPresenter.display();
         } catch (Exception e) {
-            // NOTE Auto-generated catch block
             e.printStackTrace();
         }
         return selectionView.getSelectedModuleTypeVersion();
@@ -303,6 +303,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleType = moduleTypeVersion.getModuleType();
         moduleName.setText(module.getName());
         moduleDescription.setText(module.getDescription());
+        moduleDescription.setText(module.getTagsText());
         moduleCreator.setText(module.getCreator().getName());
         moduleCreationDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getCreationDate()));
         moduleLastModifiedDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getLastModifiedDate()));
@@ -422,7 +423,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         layoutGenerator.addLabelWidgetPair("Module Name:", moduleName, formPanel);
 
-        moduleDescription = new TextArea("description", module.getDescription(), 60, 8);
+        moduleDescription = new TextArea("description", module.getDescription(), 60, 5);
+        moduleDescription.setLineWrap(true);
         moduleDescription.setEditable(viewMode != ViewMode.VIEW);
         if (viewMode != ViewMode.VIEW) {
             addChangeable(moduleDescription);
@@ -430,6 +432,15 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(moduleDescription);
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, formPanel);
+
+        moduleTags = new TextArea("tags", module.getTagsText(), 60, 3);
+        moduleTags.setLineWrap(true);
+        moduleTags.setEditable(false);
+        ScrollableComponent tagsScrollableTextArea = new ScrollableComponent(moduleTags);
+        tagsScrollableTextArea.setMaximumSize(new Dimension(575, 200));
+        layoutGenerator.addLabelWidgetPair("Tags:", tagsScrollableTextArea, formPanel);
+
+        layoutGenerator.addLabelWidgetPair("", tagsCrudPanel(), formPanel);
 
         moduleCreator = new Label(module.getCreator().getName());
         layoutGenerator.addLabelWidgetPair("Creator:", moduleCreator, formPanel);
@@ -454,7 +465,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layoutGenerator.addLabelWidgetPair("Is Final:", moduleIsFinal, formPanel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(formPanel, 11, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(formPanel, 13, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -598,6 +609,61 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         panel.add(container, BorderLayout.SOUTH);
 
         return panel;
+    }
+
+    //-----------------------------------------------------------------
+    
+    private JPanel tagsCrudPanel() {
+        Action addTagsAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                addTags();
+            }
+        };
+        Button addTagsButton = new Button("Add Tags", addTagsAction);
+        addTagsButton.setMnemonic('A');
+
+        Action removeTagsAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                removeTags();
+            }
+        };
+        Button removeTagsButton = new Button("Remove Tags", removeTagsAction);
+        removeTagsButton.setMnemonic('e');
+
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(addTagsButton);
+        crudPanel.add(removeTagsButton);
+        if (viewMode == ViewMode.VIEW) {
+            addTagsButton.setEnabled(false);
+            removeTagsButton.setEnabled(false);
+        }
+
+        return crudPanel;
+    }
+
+    private void addTags() {
+        AddTagsDialog view = new AddTagsDialog(parentConsole, module.getTags(), this);
+        try {
+            presenter.displayAddTagsView(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentConsole, 
+                    "Failed to open Add Tags dialog box:\n\n" + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void removeTags() {
+        RemoveTagsDialog view = new RemoveTagsDialog(parentConsole, module.getTags(), this);
+        try {
+            presenter.displayRemoveTagsView(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentConsole, 
+                    "Failed to open Remove Tags dialog box:\n\n" + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     //-----------------------------------------------------------------
@@ -751,12 +817,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
         // bring up the window with all related modules
         RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset);
-        try {
-            presenter.doDisplayRelatedModules(view);
-        } catch (EmfException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
+        presenter.doDisplayRelatedModules(view);
     }
 
     private List selectedDatasets() {
@@ -981,12 +1042,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
         // bring up the window with all related modules
         RelatedModulesWindow view = new RelatedModulesWindow(session, parentConsole, desktopManager, emfDataset);
-        try {
-            presenter.doDisplayRelatedModules(view);
-        } catch (EmfException e) {
-            // NOTE Auto-generated catch block
-            e.printStackTrace();
-        }
+        presenter.doDisplayRelatedModules(view);
     }
 
     @SuppressWarnings("rawtypes")
@@ -1507,5 +1563,16 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
 
         presenter.doClose();
+    }
+
+
+    @Override
+    public void refreshTags() {
+        String oldText = moduleTags.getText();
+        moduleTags.setText(module.getTagsText());
+        String newText = moduleTags.getText();
+        if (!newText.equals(oldText)) {
+            isDirty = true;
+        }
     }
 }

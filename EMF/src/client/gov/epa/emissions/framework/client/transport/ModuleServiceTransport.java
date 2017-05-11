@@ -12,7 +12,9 @@ import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.services.module.ParameterType;
+import gov.epa.emissions.framework.services.module.Tag;
 
 public class ModuleServiceTransport implements ModuleService {
 
@@ -45,6 +47,28 @@ public class ModuleServiceTransport implements ModuleService {
         call.setReturnType(mappings.parameterTypes());
 
         return (ParameterType[]) call.requestResponse(new Object[] {});
+    }
+
+
+    @Override
+    public synchronized Tag[] getTags() throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getTags");
+        call.setReturnType(mappings.tags());
+
+        return (Tag[]) call.requestResponse(new Object[] {});
+    }
+
+    @Override
+    public synchronized void addTag(Tag tag) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("addTag");
+        call.addParam("tag", mappings.tag());
+        call.setVoidReturnType();
+
+        call.request(new Object[] { tag });
     }
 
     @Override
@@ -378,10 +402,88 @@ public class ModuleServiceTransport implements ModuleService {
     }
 
     @Override
-    public Module[] getModulesForModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+    public ModuleTypeVersionSubmodule[] getSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
         EmfCall call = call();
 
-        call.setOperation("getModulesForModuleTypeVersion");
+        call.setOperation("getSubmodulesUsingModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.moduleTypeVersionSubmodules());
+
+        return (ModuleTypeVersionSubmodule[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+
+    @Override
+    public ModuleTypeVersionSubmodule[] getAllSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getAllSubmodulesUsingModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.moduleTypeVersionSubmodules());
+
+        return (ModuleTypeVersionSubmodule[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+    
+    @Override
+    public ModuleTypeVersion[] getModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getModuleTypeVersionsUsingModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.moduleTypeVersions());
+
+        return (ModuleTypeVersion[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+    
+    @Override
+    public ModuleTypeVersion[] getAllModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getAllModuleTypeVersionsUsingModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.moduleTypeVersions());
+
+        return (ModuleTypeVersion[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+    
+    @Override
+    public ModuleType[] getModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getModuleTypesUsingModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.moduleTypes());
+
+        return (ModuleType[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+    
+    @Override
+    public ModuleType[] getAllModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getAllModuleTypesUsingModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.moduleTypes());
+
+        return (ModuleType[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+    
+    @Override
+    public Module[] getModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getModulesUsingModuleTypeVersion");
+        call.addIntegerParam("moduleTypeVersionId");
+        call.setReturnType(mappings.modules());
+
+        return (Module[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+
+    
+    @Override
+    public Module[] getAllModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getAllModulesUsingModuleTypeVersion");
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.modules());
 

@@ -47,12 +47,15 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     private List<History> moduleHistory;
 
+    private Set<Tag> tags;
+
     public Module() {
         moduleDatasets = new HashMap<String, ModuleDataset>();
         moduleParameters = new HashMap<String, ModuleParameter>();
         moduleInternalDatasets = new HashMap<String, ModuleInternalDataset>();
         moduleInternalParameters = new HashMap<String, ModuleInternalParameter>();
         moduleHistory = new ArrayList<History>();
+        tags = new HashSet<Tag>();
         lock = new Mutex();
     }
 
@@ -153,72 +156,72 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         return lastModifiedDate.after(moduleTypeVersion.getLastModifiedDate());
     }
 
-    // synchronize this module with its module type version
+    // synchronize this module with its module type version or submodule type version
     // using the old module type version in order to detect what has changed
     public boolean update(ModuleTypeVersion oldMTV) {
         boolean updated = false;
         
-        if (isUpToDate())
-            return updated;
-        
-        // handle new or modified datasets
-        Map<String, ModuleTypeVersionDataset> oldMTVDatasets = oldMTV.getModuleTypeVersionDatasets();
-        for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
-            if (oldMTVDatasets.containsKey(moduleTypeVersionDataset.getPlaceholderName())) {
-                ModuleTypeVersionDataset oldMTVDataset = oldMTVDatasets.get(moduleTypeVersionDataset.getPlaceholderName());
-                if (oldMTVDataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType()) &&
-                    oldMTVDataset.getMode().equals(moduleTypeVersionDataset.getMode()))
+        // is it the same module type version or is it a submodule?
+        if (moduleTypeVersion.getId() == oldMTV.getId()) {
+            // handle new or modified datasets
+            Map<String, ModuleTypeVersionDataset> oldMTVDatasets = oldMTV.getModuleTypeVersionDatasets();
+            for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
+                if (oldMTVDatasets.containsKey(moduleTypeVersionDataset.getPlaceholderName())) {
+                    ModuleTypeVersionDataset oldMTVDataset = oldMTVDatasets.get(moduleTypeVersionDataset.getPlaceholderName());
+                    if (oldMTVDataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType()) &&
+                        oldMTVDataset.getMode().equals(moduleTypeVersionDataset.getMode()))
+                        continue;
+                    ModuleDataset moduleDataset = moduleDatasets.get(moduleTypeVersionDataset.getPlaceholderName()); // must exist
+                    moduleDataset.initSettings();
+                    updated = true;
+                } else {
+                    ModuleDataset moduleDataset = new ModuleDataset();
+                    moduleDataset.setModule(this);
+                    moduleDataset.setPlaceholderName(moduleTypeVersionDataset.getPlaceholderName());
+                    moduleDataset.initSettings();
+                    addModuleDataset(moduleDataset);
+                    updated = true;
+                }
+            }
+            
+            // handle removed datasets
+            Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
+            for(ModuleTypeVersionDataset oldMTVDataset : oldMTVDatasets.values()) {
+                if (moduleTypeVersionDatasets.containsKey(oldMTVDataset.getPlaceholderName()))
                     continue;
-                ModuleDataset moduleDataset = moduleDatasets.get(moduleTypeVersionDataset.getPlaceholderName()); // must exist
-                moduleDataset.initSettings();
-                updated = true;
-            } else {
-                ModuleDataset moduleDataset = new ModuleDataset();
-                moduleDataset.setModule(this);
-                moduleDataset.setPlaceholderName(moduleTypeVersionDataset.getPlaceholderName());
-                moduleDataset.initSettings();
-                addModuleDataset(moduleDataset);
+                moduleDatasets.remove(oldMTVDataset.getPlaceholderName()); // must exist
                 updated = true;
             }
-        }
-        
-        // handle removed datasets
-        Map<String, ModuleTypeVersionDataset> moduleTypeVersionDatasets = moduleTypeVersion.getModuleTypeVersionDatasets();
-        for(ModuleTypeVersionDataset oldMTVDataset : oldMTVDatasets.values()) {
-            if (moduleTypeVersionDatasets.containsKey(oldMTVDataset.getPlaceholderName()))
-                continue;
-            moduleDatasets.remove(oldMTVDataset.getPlaceholderName()); // must exist
-            updated = true;
-        }
-        
-        // handle new or modified parameters
-        Map<String, ModuleTypeVersionParameter> oldMTVParameters = oldMTV.getModuleTypeVersionParameters();
-        for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
-            if (oldMTVParameters.containsKey(moduleTypeVersionParameter.getParameterName())) {
-                ModuleTypeVersionParameter oldMTVParameter = oldMTVParameters.get(moduleTypeVersionParameter.getParameterName());
-                if (oldMTVParameter.getSqlParameterType().equals(moduleTypeVersionParameter.getSqlParameterType()) &&
-                    oldMTVParameter.getMode().equals(moduleTypeVersionParameter.getMode()))
+            
+            // handle new or modified parameters
+            Map<String, ModuleTypeVersionParameter> oldMTVParameters = oldMTV.getModuleTypeVersionParameters();
+            for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
+                if (oldMTVParameters.containsKey(moduleTypeVersionParameter.getParameterName())) {
+                    ModuleTypeVersionParameter oldMTVParameter = oldMTVParameters.get(moduleTypeVersionParameter.getParameterName());
+                    if (oldMTVParameter.getSqlParameterType().equals(moduleTypeVersionParameter.getSqlParameterType()) &&
+                        oldMTVParameter.getMode().equals(moduleTypeVersionParameter.getMode()))
+                        continue;
+                    ModuleParameter moduleParameter = moduleParameters.get(moduleTypeVersionParameter.getParameterName()); // must exist
+                    moduleParameter.initSettings();
+                    updated = true;
+                } else {
+                    ModuleParameter moduleParameter = new ModuleParameter();
+                    moduleParameter.setModule(this);
+                    moduleParameter.setParameterName(moduleTypeVersionParameter.getParameterName());
+                    moduleParameter.initSettings();
+                    addModuleParameter(moduleParameter);
+                    updated = true;
+                }
+            }
+            
+            // handle removed parameters
+            Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
+            for(ModuleTypeVersionParameter oldMTVParameter : oldMTVParameters.values()) {
+                if (moduleTypeVersionParameters.containsKey(oldMTVParameter.getParameterName()))
                     continue;
-                ModuleParameter moduleParameter = moduleParameters.get(moduleTypeVersionParameter.getParameterName()); // must exist
-                moduleParameter.initSettings();
-                updated = true;
-            } else {
-                ModuleParameter moduleParameter = new ModuleParameter();
-                moduleParameter.setModule(this);
-                moduleParameter.setParameterName(moduleTypeVersionParameter.getParameterName());
-                moduleParameter.initSettings();
-                addModuleParameter(moduleParameter);
+                moduleParameters.remove(oldMTVParameter.getParameterName()); // must exist
                 updated = true;
             }
-        }
-        
-        // handle removed parameters
-        Map<String, ModuleTypeVersionParameter> moduleTypeVersionParameters = moduleTypeVersion.getModuleTypeVersionParameters();
-        for(ModuleTypeVersionParameter oldMTVParameter : oldMTVParameters.values()) {
-            if (moduleTypeVersionParameters.containsKey(oldMTVParameter.getParameterName()))
-                continue;
-            moduleParameters.remove(oldMTVParameter.getParameterName()); // must exist
-            updated = true;
         }
         
         // update internal datasets
@@ -680,6 +683,34 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         if (moduleHistory.size() == 0)
             return null;
         return moduleHistory.get(moduleHistory.size() - 1);
+    }
+
+    // tags
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
+
+    public void clearTags() {
+        this.tags.clear();
+    }
+
+    public String getTagsText() {
+        StringBuilder tagsText = new StringBuilder();
+        for(Tag tag : tags) {
+            if (tagsText.length() > 0)
+                tagsText.append(", ");
+            tagsText.append(tag.name);
+        }
+        return tagsText.toString();
     }
 
     // standard methods

@@ -307,9 +307,8 @@ public class History implements Serializable, Comparable<History> {
     }
 
     public void addLogMessage(String logType, String logMessage) {
-//      String date = CustomDateFormat.format_yyyy_MM_dd_HHmmssSSS(new Date());
         SimpleDateFormat dateFormatter = new SimpleDateFormat();
-        dateFormatter.applyPattern("HH:mm:ss.SSS");
+        dateFormatter.applyPattern("HH:mm:ss.SSS zzz");
         String date = dateFormatter.format(new Date());
         String header = date + " [" + logType + "] ";
         StringBuilder sb = new StringBuilder();

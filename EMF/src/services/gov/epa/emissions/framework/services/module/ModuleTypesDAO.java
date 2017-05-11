@@ -124,5 +124,13 @@ public class ModuleTypesDAO {
     public List getParameterTypes(Session session) {
         return hibernateFacade.getAll(ParameterType.class, Order.asc("sqlType").ignoreCase(), session);
     }
-
+    
+    @SuppressWarnings("rawtypes")
+    public List getTags(Session session) {
+        return hibernateFacade.getAll(Tag.class, Order.asc("name").ignoreCase(), session);
+    }
+    
+    public void addTag(Tag tag, Session session) {
+        hibernateFacade.add(tag, session);
+    }
 }

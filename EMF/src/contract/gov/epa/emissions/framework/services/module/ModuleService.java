@@ -10,6 +10,11 @@ public interface ModuleService {
     
     ParameterType[] getParameterTypes() throws EmfException;
 
+    // Tags
+    
+    Tag[] getTags() throws EmfException;
+    void addTag(Tag tag) throws EmfException;
+
     // Module Types
 
     ModuleType[] getModuleTypes() throws EmfException; // TODO add LiteModuleType class (and maybe LiteModuleTypeVersion too) and use the session object cache
@@ -61,5 +66,15 @@ public interface ModuleService {
     EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId) throws EmfException;
     EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId, Integer newDatasetId, String newDatasetNamePattern) throws EmfException;
     
-    Module[] getModulesForModuleTypeVersion(int moduleTypeVersionId) throws EmfException;
+    ModuleTypeVersionSubmodule[] getSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException;    // one level only
+    ModuleTypeVersionSubmodule[] getAllSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException; // all levels (recursive)
+    
+    ModuleTypeVersion[] getModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException;    // one level only
+    ModuleTypeVersion[] getAllModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException; // all levels (recursive)
+    
+    ModuleType[] getModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException;    // one level only
+    ModuleType[] getAllModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException; // all levels (recursive)
+    
+    Module[] getModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException;    // one level only
+    Module[] getAllModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException; // all levels (recursive)
 }

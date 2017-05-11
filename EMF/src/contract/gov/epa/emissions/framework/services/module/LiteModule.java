@@ -6,6 +6,8 @@ import gov.epa.emissions.commons.security.User;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LiteModule implements Serializable, Lockable, Comparable<LiteModule> {
 
@@ -27,8 +29,11 @@ public class LiteModule implements Serializable, Lockable, Comparable<LiteModule
 
     private Mutex lock;
 
+    private Set<Tag> tags;
+
     public LiteModule() {
         lock = new Mutex();
+        tags = new HashSet<Tag>();
     }
 
     public int getId() {
@@ -125,6 +130,34 @@ public class LiteModule implements Serializable, Lockable, Comparable<LiteModule
 
     public boolean isLocked() {
         return lock.isLocked();
+    }
+
+    // tags
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
+
+    public void clearTags() {
+        this.tags.clear();
+    }
+
+    public String getTagsText() {
+        StringBuilder tagsText = new StringBuilder();
+        for(Tag tag : tags) {
+            if (tagsText.length() > 0)
+                tagsText.append(", ");
+            tagsText.append(tag.name);
+        }
+        return tagsText.toString();
     }
 
     // standard methods

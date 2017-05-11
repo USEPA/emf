@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -34,8 +35,11 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
     private ModuleTypeVersionSelectionPresenter presenter;
 
     private ModuleType[] moduleTypes;
-    private Map<String, ModuleType> moduleTypeMap;
+    private TreeMap<String, ModuleType> moduleTypeMap;
     String[] moduleTypeNames;
+
+    private TreeMap<String, ModuleTypeVersion> moduleTypeVersionMap;
+    String[] moduleTypeVersionNames;
     
     ModuleTypeVersion initialModuleTypeVersion;
     
@@ -43,7 +47,6 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
     ModuleTypeVersion selectedModuleTypeVersion;
 
     private ComboBox moduleTypeCB;
-
     private ComboBox versionCB;
 
     public ModuleTypeVersionSelectionDialog(EmfConsole parent, ModuleTypeVersion initialModuleTypeVersion) {
@@ -60,14 +63,12 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
 
     private void loadModuleTypes() {
         moduleTypes = presenter.getModuleTypes();
-        moduleTypeMap = new HashMap<String, ModuleType>();
-        moduleTypeNames = new String[moduleTypes.length];
+        moduleTypeMap = new TreeMap<String, ModuleType>();
         int i = 0;
         for(ModuleType moduleType : moduleTypes) {
             moduleTypeMap.put(moduleType.getName(), moduleType);
-            moduleTypeNames[i++] = moduleType.getName();
         }
-        Arrays.sort(moduleTypeNames);
+        moduleTypeNames = moduleTypeMap.keySet().toArray(new String[] {});
     }
 
     public void display() {
@@ -91,14 +92,12 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
     }
 
     public void refreshModuleTypeVersions(Map<Integer, ModuleTypeVersion> moduleTypeVersions) {
-        String[] versionNames = new String[moduleTypeVersions.size()];
-        SortedSet<Integer> sortedVersions = new TreeSet<Integer>(moduleTypeVersions.keySet());
-        int i = 0;
-        for(int version : sortedVersions) {
-            ModuleTypeVersion moduleTypeVersion = moduleTypeVersions.get(version);
-            versionNames[i++] = moduleTypeVersion.getVersion() + " - " + moduleTypeVersion.getName() + (moduleTypeVersion.getIsFinal() ? " - Final" : "");
+        moduleTypeVersionMap = new TreeMap<String, ModuleTypeVersion>();
+        for(ModuleTypeVersion moduleTypeVersion : moduleTypeVersions.values()) {
+            moduleTypeVersionMap.put(moduleTypeVersion.versionNameFinal(), moduleTypeVersion);
         }
-        versionCB.resetModel(versionNames);
+        moduleTypeVersionNames = moduleTypeVersionMap.keySet().toArray(new String[] {});
+        versionCB.resetModel(moduleTypeVersionNames);
     }
 
     public ModuleTypeVersion getSelectedModuleTypeVersion() {
@@ -117,8 +116,12 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
         moduleTypeCB.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 String selectedItem = moduleTypeCB.getSelectedItem().toString();
-                selectedModuleType = moduleTypeMap.get(selectedItem);
-                refreshModuleTypeVersions(selectedModuleType.getModuleTypeVersions());
+                if (moduleTypeMap.containsKey(selectedItem)) {
+                    selectedModuleType = moduleTypeMap.get(selectedItem);
+                    refreshModuleTypeVersions(selectedModuleType.getModuleTypeVersions());
+                } else {
+                    selectedModuleType = null;
+                }
             }
         });
         layoutGenerator.addLabelWidgetPair("Module Type:", moduleTypeCB, selectionPanel);
@@ -127,9 +130,11 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
         versionCB.setMaximumSize(new Dimension(575, 20));
         versionCB.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                int selectedIndex = versionCB.getSelectedIndex();
-                if (selectedIndex > 0) {
-                    selectedModuleTypeVersion = selectedModuleType.getModuleTypeVersions().get(selectedIndex - 1);
+                String selectedItem = versionCB.getSelectedItem().toString();
+                if (moduleTypeVersionMap.containsKey(selectedItem)) {
+                    selectedModuleTypeVersion = moduleTypeVersionMap.get(selectedItem);
+                } else {
+                    selectedModuleTypeVersion = null;
                 }
             }
         });
@@ -141,7 +146,7 @@ public class ModuleTypeVersionSelectionDialog extends JDialog implements ModuleT
                 versionCB.setSelectedIndex(1);
             } else {
                 moduleTypeCB.setSelectedItem(initialModuleTypeVersion.getModuleType().getName());
-                versionCB.setSelectedIndex(initialModuleTypeVersion.getVersion() + 1);
+                versionCB.setSelectedItem(initialModuleTypeVersion.versionNameFinal());
             }
         }
         

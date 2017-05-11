@@ -24,6 +24,14 @@
         <property name="isFinal" column="is_final" type="boolean" not-null="true"/>
         <property name="lockOwner" column="lock_owner" type="string" not-null="false"/>
         <property name="lockDate" column="lock_date" type="timestamp" not-null="false" length="4"/>
+        <set name="tags" table="modules_tags" schema="modules" inverse="false" lazy="false" fetch="select" cascade="all">
+            <key>
+                <column name="module_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="gov.epa.emissions.framework.services.module.Tag">
+                <column name="tag_id" not-null="true" />
+            </many-to-many>
+        </set>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.Module" table="modules" schema="modules">
@@ -70,6 +78,14 @@
             <list-index column="run_id" base="1"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.History"/>
         </list>
+        <set name="tags" table="modules_tags" schema="modules" inverse="false" lazy="false" fetch="select" cascade="all">
+            <key>
+                <column name="module_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="gov.epa.emissions.framework.services.module.Tag">
+                <column name="tag_id" not-null="true" />
+            </many-to-many>
+        </set>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.ModuleDataset" table="modules_datasets" schema="modules">

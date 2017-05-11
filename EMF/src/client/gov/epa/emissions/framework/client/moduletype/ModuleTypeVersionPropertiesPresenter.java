@@ -108,4 +108,14 @@ public class ModuleTypeVersionPropertiesPresenter {
     public Module updateModule(Module module) throws EmfException {
         return session.moduleService().updateModule(module);
     }
+
+    public void displayAddTagsView(AddTagsView view) throws Exception {
+        AddTagsPresenter presenter = new AddTagsPresenter(view, session);
+        presenter.display();
+    }
+
+    public void displayRemoveTagsView(RemoveTagsView view) throws Exception {
+        RemoveTagsPresenter presenter = new RemoveTagsPresenter(view, session);
+        presenter.display();
+    }
 }

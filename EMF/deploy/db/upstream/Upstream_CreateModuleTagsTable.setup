@@ -1,0 +1,71 @@
+﻿-- Table: modules.tags
+
+-- DROP TABLE modules.tags;
+
+CREATE TABLE modules.tags
+(
+  id serial NOT NULL PRIMARY KEY,
+  name varchar(64) NOT NULL,
+  description text
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE modules.tags
+  OWNER TO emf;
+
+CREATE UNIQUE INDEX modules_tags_name_index ON modules.tags (LOWER(SUBSTRING(name FROM '^\s*(\S*)\s*$')));
+
+-----------------------------------------------------------------------
+
+-- Table: modules.module_types_tags
+
+-- DROP TABLE modules.module_types_tags;
+
+CREATE TABLE modules.module_types_tags
+(
+  module_type_id integer NOT NULL,
+  tag_id integer NOT NULL,
+  PRIMARY KEY (module_type_id, tag_id),
+  CONSTRAINT module_types_tags_module_type_id_fkey FOREIGN KEY (module_type_id)
+      REFERENCES modules.module_types (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT module_types_tags_tag_id_fkey FOREIGN KEY (tag_id)
+      REFERENCES modules.tags (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE modules.module_types_tags
+  OWNER TO emf;
+
+-----------------------------------------------------------------------
+
+-- Table: modules.modules_tags
+
+-- DROP TABLE modules.modules_tags;
+
+CREATE TABLE modules.modules_tags
+(
+  module_id integer NOT NULL,
+  tag_id integer NOT NULL,
+  PRIMARY KEY (module_id, tag_id),
+  CONSTRAINT modules_tags_module_id_fkey FOREIGN KEY (module_id)
+      REFERENCES modules.modules (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT modules_tags_tag_id_fkey FOREIGN KEY (tag_id)
+      REFERENCES modules.tags (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE modules.modules_tags
+  OWNER TO emf;
+
+-----------------------------------------------------------------------
+

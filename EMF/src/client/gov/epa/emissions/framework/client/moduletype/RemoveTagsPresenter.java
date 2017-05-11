@@ -2,13 +2,13 @@ package gov.epa.emissions.framework.client.moduletype;
 
 import gov.epa.emissions.framework.client.EmfSession;
 
-public class ModuleTypeVersionNewRevisionPresenter {
+public class RemoveTagsPresenter {
 
     private EmfSession session;
 
-    private ModuleTypeVersionNewRevisionView view;
+    private RemoveTagsView view;
     
-    public ModuleTypeVersionNewRevisionPresenter(ModuleTypeVersionNewRevisionView view, EmfSession session) {
+    public RemoveTagsPresenter(RemoveTagsView view, EmfSession session) {
         this.session = session;
         this.view = view;
     }

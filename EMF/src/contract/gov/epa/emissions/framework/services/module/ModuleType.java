@@ -7,7 +7,9 @@ import gov.epa.emissions.commons.security.User;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ModuleType implements Serializable, Lockable, Comparable<ModuleType> {
 
@@ -31,10 +33,13 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
 
     private Map<Integer, ModuleTypeVersion> moduleTypeVersions;
 
+    private Set<Tag> tags;
+
     public ModuleType() {
         lock = new Mutex();
         isComposite = false;
         moduleTypeVersions = new HashMap<Integer, ModuleTypeVersion>();
+        tags = new HashSet<Tag>();
     }
 
     public ModuleType(int id, String name) {
@@ -178,7 +183,7 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
     public void addModuleTypeVersion(ModuleTypeVersion moduleTypeVersion) {
         moduleTypeVersion.setModuleType(this);
         ModuleTypeVersion lastModuleTypeVersion = getLastModuleTypeVersion();
-        int newVersion = (lastModuleTypeVersion == null) ? 1 : (lastModuleTypeVersion.getVersion() + 1); 
+        int newVersion = (lastModuleTypeVersion == null) ? 0 : (lastModuleTypeVersion.getVersion() + 1);
         moduleTypeVersion.setVersion(newVersion);
         this.moduleTypeVersions.put(moduleTypeVersion.getVersion(), moduleTypeVersion);
     }
@@ -189,6 +194,34 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
 
     public void removeModuleTypeVersion(Integer version) {
         this.moduleTypeVersions.remove(version);
+    }
+
+    // tags
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
+
+    public void clearTags() {
+        this.tags.clear();
+    }
+
+    public String getTagsText() {
+        StringBuilder tagsText = new StringBuilder();
+        for(Tag tag : tags) {
+            if (tagsText.length() > 0)
+                tagsText.append(", ");
+            tagsText.append(tag.name);
+        }
+        return tagsText.toString();
     }
 
     // standard methods

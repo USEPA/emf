@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -129,7 +130,37 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
-    private String computeModuleTypeVersionCleanupScript(ModuleTypeVersion oldMTV, ModuleTypeVersion moduleTypeVersion, Session session) throws EmfException {
+    @Override
+    public synchronized Tag[] getTags() throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            @SuppressWarnings("unchecked")
+            List<Tag> list = moduleTypesDAO.getTags(session);
+
+            Tag[] moduleTypes = list.toArray(new Tag[0]); 
+            return moduleTypes;
+        } catch (Exception e) {
+            LOG.error("Could not get all Tags", e);
+            throw new EmfException("Could not get all Tags: " + e.getMessage());
+        } finally {
+            session.close(); 
+        }
+    }
+
+    @Override
+    public void addTag(Tag tag) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            moduleTypesDAO.addTag(tag, session);
+        } catch (Exception e) {
+            LOG.error("Could not create new tag", e);
+            throw new EmfException("Could not create tag " + tag.getName() + ": " + e.toString());
+        } finally {
+            session.close();
+        }
+    }
+    
+    private String computeModuleTypeVersionCleanupScript(ModuleTypeVersion oldMTV, ModuleTypeVersion moduleTypeVersion) throws EmfException {
         StringBuilder statements = new StringBuilder();
         
         try {
@@ -211,12 +242,63 @@ public class ModuleServiceImpl implements ModuleService {
         
         Session session = sessionFactory.getSession();
 
-        // lock all dependent modules
-        
-        Module[] modules = getModulesForModuleTypeVersion(moduleTypeVersion.getId());
+        // lock all dependent module types (one level only)
+        // we need to update the connections for the dependent composite module type versions
+        ModuleTypeVersion[] dependentModuleTypeVersions = getModuleTypeVersionsUsingModuleTypeVersion(moduleTypeVersion.getId());
 
+        Map<Integer, ModuleType> dependentModuleTypes = new HashMap<Integer, ModuleType>();
+        for (ModuleTypeVersion dependentModuleTypeVersion : dependentModuleTypeVersions) {
+            ModuleType dependentModuleType = dependentModuleTypeVersion.getModuleType();
+            dependentModuleTypes.put(dependentModuleType.getId(), dependentModuleType);
+        }
+        
         StringBuilder list = new StringBuilder();
-        for (Module module : modules) {
+        for (ModuleType dependentModuleType : dependentModuleTypes.values()) {
+            if (dependentModuleType.getId() == moduleType.getId())
+                continue; // skip the updated module type (we know it's locked by this user)
+            if (dependentModuleType.isLocked()) {
+                list.append(dependentModuleType.getName() + " locked by " + dependentModuleType.getLockOwner() + " at " +
+                            CustomDateFormat.format_YYYY_MM_DD_HH_MM(dependentModuleType.getLockDate()) + "\n");
+            }
+        }
+        if (!list.toString().isEmpty()) {
+            throw new EmfException("Can't save module type version because the following dependent module types are locked:\n" + list.toString());
+        }
+
+        Map<Integer, ModuleType> lockedDependentModuleTypes = new HashMap<Integer, ModuleType>();
+
+        for (ModuleType dependentModuleType : dependentModuleTypes.values()) {
+            if (dependentModuleType.getId() == moduleType.getId())
+                continue; // skip the updated module type (we know it's locked by this user)
+            try {
+                ModuleType lockedDependentModuleType = moduleTypesDAO.obtainLockedModuleType(user, dependentModuleType.getId(), session);
+                lockedDependentModuleTypes.put(lockedDependentModuleType.getId(), lockedDependentModuleType);
+            } catch (Exception ex) {
+                for (ModuleType lockedDependentModuleType : lockedDependentModuleTypes.values()) {
+                    if (lockedDependentModuleType.isLocked()) {
+                        try {
+                            moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), session);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                throw new EmfException("Can't save module type version: failed to lock the \"" + dependentModuleType.getName() + "\" module type. " + ex.getMessage());
+            }
+        }
+
+        // lock all dependent modules (all levels)
+        // we need to update the internal datasets and parameters
+        
+        Module[] dependentModulesArray = getAllModulesUsingModuleTypeVersion(moduleTypeVersion.getId());
+
+        Map<Integer, Module> dependentModules = new HashMap<Integer, Module>();
+        for (Module dependentModule : dependentModulesArray) {
+            dependentModules.put(dependentModule.getId(), dependentModule);
+        }
+        
+        list.setLength(0);
+        for (Module module : dependentModules.values()) {
             if (module.isLocked()) {
                 list.append(module.getName() + " locked by " + module.getLockOwner() + " at " +
                             CustomDateFormat.format_YYYY_MM_DD_HH_MM(module.getLockDate()) + "\n");
@@ -226,31 +308,38 @@ public class ModuleServiceImpl implements ModuleService {
             throw new EmfException("Can't save module type version because the following dependent modules are locked:\n" + list.toString());
         }
 
-        int nextModule = 0;
-        try {
-            for (nextModule = 0; nextModule < modules.length; nextModule++) {
-                modules[nextModule] = modulesDAO.obtainLockedModule(user, modules[nextModule].getId(), session);
-            }
-        } catch (Exception ex) {
-            for (int i = 0; i < nextModule; i++) {
-                if (modules[i].isLocked()) {
-                    try {
-                        modules[i] = modulesDAO.releaseLockedModule(user, modules[i].getId(), session);
-                    } catch (Exception e) {
-                        // NOTE Auto-generated catch block
-                        e.printStackTrace();
+        Map<Integer, Module> lockedDependentModules = new HashMap<Integer, Module>();
+        
+        for (Module dependentModule : dependentModules.values()) {
+            try {
+                Module lockedDependentModule = modulesDAO.obtainLockedModule(user, dependentModule.getId(), session);
+                lockedDependentModules.put(lockedDependentModule.getId(), lockedDependentModule);
+            } catch (Exception ex) {
+                for (Module lockedDependentModule : lockedDependentModules.values()) {
+                    if (lockedDependentModule.isLocked()) {
+                        try {
+                            modulesDAO.releaseLockedModule(user, lockedDependentModule.getId(), session);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+                for (ModuleType lockedDependentModuleType : lockedDependentModuleTypes.values()) {
+                    if (lockedDependentModuleType.isLocked()) {
+                        try {
+                            moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), session);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                throw new EmfException("Can't save module type version: failed to lock the \"" + dependentModule.getName() + "\" module. " + ex.getMessage());
             }
-            throw new EmfException("Can't save module type version: failed to lock the \"" + modules[nextModule].getName() + "\" module. " + ex.getMessage());
         }
 
-        Connection connection = null;
-        Statement statement = null;
+        // update module type and all dependents
+        
         try {
-            connection = dbServerFactory.getDbServer().getConnection();
-            statement = connection.createStatement();
-            
             ModuleTypeVersion oldMTV = moduleTypesDAO.currentModuleTypeVersion(moduleTypeVersion.getId(), session);
             
             session.clear();
@@ -258,34 +347,102 @@ public class ModuleServiceImpl implements ModuleService {
             moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
         
             if (oldMTV != null) {
-                String clenupScript = computeModuleTypeVersionCleanupScript(oldMTV, moduleTypeVersion, session);
+                String cleanupScript = computeModuleTypeVersionCleanupScript(oldMTV, moduleTypeVersion);
                 
                 // manually delete the missing datasets, parameters, submodules, and connections from the database
                 // this is necessary to compensate for an old Hibernate bug
                 
-                if (clenupScript.length() > 0) {
+                if (cleanupScript.length() > 0) {
+                    Connection connection = null;
+                    Statement statement = null;
                     try {
-                        statement.execute(clenupScript);
+                        connection = dbServerFactory.getDbServer().getConnection();
+                        statement = connection.createStatement();
+                        statement.execute(cleanupScript);
                     } catch (Exception e) {
                         throw new EmfException("Failed to execute " + moduleTypeVersion.fullNameSS("\"%s\" version \"%s\"") + " cleanup script: " + e.getMessage());
-                    }
-                }
-    
-                // get fresh modules with updated moduleTypeVersion
-                modules = getModulesForModuleTypeVersion(moduleTypeVersion.getId());
-    
-                StringBuilder errorMessage = new StringBuilder();
-                for (nextModule = 0; nextModule < modules.length; nextModule++) {
-                    try {
-                        if (modules[nextModule].update(oldMTV)) {
-                            modules[nextModule] = updateModule(modules[nextModule]);
+                    } finally {
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException e) {
+                                // ignore
+                            }
+                            statement = null;
                         }
-                        modules[nextModule] = modulesDAO.releaseLockedModule(user, modules[nextModule].getId(), session);
-                    } catch (Exception e) {
-                        errorMessage.append("Failed to update or unlock the \"" + modules[nextModule].getName() + "\" module. " + e.getMessage());
-                        e.printStackTrace();
+                        if (connection != null) {
+                            try {
+                                connection.close();
+                            } catch (SQLException e) {
+                                // ignore
+                            }
+                            connection = null;
+                        }
                     }
                 }
+                
+                StringBuilder errorMessage = new StringBuilder();
+                for (ModuleTypeVersion dependentModuleTypeVersion : dependentModuleTypeVersions) {
+                    dependentModuleTypeVersion = moduleTypesDAO.getModuleTypeVersion(dependentModuleTypeVersion.getId(), session); // get fresh copy
+
+                    StringBuilder cleanupScriptBuilder = new StringBuilder(); 
+                    if (!dependentModuleTypeVersion.updateConnections(cleanupScriptBuilder))
+                        continue;
+                    
+                    try {
+                        dependentModuleTypeVersion = moduleTypesDAO.updateModuleTypeVersion(dependentModuleTypeVersion, session);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        errorMessage.append("Failed to update " + dependentModuleTypeVersion.fullNameSS("module type \"%s\" version \"%s\": ") + e.getMessage());
+                        continue;
+                    }
+                    
+                    // manually delete the missing datasets, parameters, submodules, and connections from the database
+                    // this is necessary to compensate for an old Hibernate bug
+                    
+                    cleanupScript = cleanupScriptBuilder.toString();
+                    if (cleanupScript.length() > 0) {
+                        Connection connection = null;
+                        Statement statement = null;
+                        try {
+                            connection = dbServerFactory.getDbServer().getConnection();
+                            statement = connection.createStatement();
+                            statement.execute(cleanupScript);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            throw new EmfException("Failed to execute " + dependentModuleTypeVersion.fullNameSS("module type \"%s\" version \"%s\"") + " cleanup script: " + e.getMessage());
+                        } finally {
+                            if (statement != null) {
+                                try {
+                                    statement.close();
+                                } catch (SQLException e) {
+                                    // ignore
+                                }
+                                statement = null;
+                            }
+                            if (connection != null) {
+                                try {
+                                    connection.close();
+                                } catch (SQLException e) {
+                                    // ignore
+                                }
+                                connection = null;
+                            }
+                        }
+                    }
+                }
+                for (Integer lockedDependentModuleId : lockedDependentModules.keySet()) {
+                    Module lockedDependentModule = modulesDAO.getModule(lockedDependentModuleId, session); // get fresh copy
+                    try {
+                        if (lockedDependentModule.update(oldMTV)) {
+                            lockedDependentModule = updateModule(lockedDependentModule, session);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        errorMessage.append("Failed to update or unlock the \"" + lockedDependentModule.getName() + "\" module. " + e.getMessage());
+                    }
+                }
+    
                 if (errorMessage.length() > 0) {
                     throw new EmfException(errorMessage.toString());
                 }
@@ -295,33 +452,26 @@ public class ModuleServiceImpl implements ModuleService {
             e.printStackTrace();
             throw new EmfException("Failed to update module type \"" + moduleType.getName() + "\" version \"" + moduleTypeVersion.versionName() + "\": " + e.getMessage());
         } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    // ignore
-                }
-                statement = null;
-            }
-                
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    // NOTE Auto-generated catch block
-                    e.printStackTrace();
-                }
-                connection = null;
-            }
-
+            // unlock all dependent modules and module types
+            
             StringBuilder errorMessage = new StringBuilder();
-            for (int i = 0; i < modules.length; i++) {
-                if (modules[i].isLocked()) {
+            for (Module lockedDependentModule : lockedDependentModules.values()) {
+                if (lockedDependentModule.isLocked()) {
                     try {
-                        modules[i] = modulesDAO.releaseLockedModule(user, modules[i].getId(), session);
+                        modulesDAO.releaseLockedModule(user, lockedDependentModule.getId(), session);
                     } catch (Exception e) {
-                        errorMessage.append("Failed to unlock the \"" + modules[i].getName() + "\" module. " + e.getMessage());
                         e.printStackTrace();
+                        errorMessage.append("Failed to unlock the \"" + lockedDependentModule.getName() + "\" module. " + e.getMessage());
+                    }
+                }
+            }
+            for (ModuleType lockedDependentModuleType : lockedDependentModuleTypes.values()) {
+                if (lockedDependentModuleType.isLocked()) {
+                    try {
+                        moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), session);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        errorMessage.append("Failed to unlock the \"" + lockedDependentModuleType.getName() + "\" module type. " + e.getMessage());
                     }
                 }
             }
@@ -516,9 +666,7 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
-    @Override
-    public synchronized Module updateModule(Module module) throws EmfException {
-        Session session = sessionFactory.getSession();
+    private Module updateModule(Module module, Session session) throws EmfException {
         Connection connection = null;
         Statement statement = null;
         try {
@@ -641,17 +789,25 @@ public class ModuleServiceImpl implements ModuleService {
             return released;
         } catch (Exception e) {
             LOG.error("Could not update module: " + module.getName(), e);
-            throw new EmfException("The module is already in use");
+            throw new EmfException("Could not update module \"" + module.getName() + "\": " + e.getMessage());
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    // NOTE Auto-generated catch block
                     e.printStackTrace();
                 }
                 connection = null;
             }
+        }
+    }
+
+    @Override
+    public synchronized Module updateModule(Module module) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            return updateModule(module, session);
+        } finally {
             session.close();
         }
     }
@@ -865,15 +1021,145 @@ public class ModuleServiceImpl implements ModuleService {
     }
     
     @Override
-    public synchronized Module[] getModulesForModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+    public synchronized ModuleTypeVersionSubmodule[] getSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
-            List<Module> list = modulesDAO.getModulesForModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> list = modulesDAO.getSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            ModuleTypeVersionSubmodule[] submodules = list.toArray(new ModuleTypeVersionSubmodule[0]);
+            return submodules;
+        } catch (Exception e) {
+            LOG.error("Could not get submodules using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get submodules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
+    public synchronized ModuleTypeVersionSubmodule[] getAllSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<ModuleTypeVersionSubmodule> list = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            ModuleTypeVersionSubmodule[] submodules = list.toArray(new ModuleTypeVersionSubmodule[0]);
+            return submodules;
+        } catch (Exception e) {
+            LOG.error("Could not get all submodules using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get all submodules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
+    public synchronized ModuleTypeVersion[] getModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            Map<Integer, ModuleTypeVersion> moduleTypeVersionsMap = new HashMap<Integer, ModuleTypeVersion>();
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            for (ModuleTypeVersionSubmodule submodule : submodules) {
+                ModuleTypeVersion moduleTypeVersion = submodule.getCompositeModuleTypeVersion();
+                moduleTypeVersionsMap.put(moduleTypeVersion.getId(), moduleTypeVersion);
+            }
+            ModuleTypeVersion[] moduleTypeVersions = moduleTypeVersionsMap.values().toArray(new ModuleTypeVersion[0]);
+            return moduleTypeVersions;
+        } catch (Exception e) {
+            LOG.error("Could not get the module type versions using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get the module type versions using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
+    public synchronized ModuleTypeVersion[] getAllModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            Map<Integer, ModuleTypeVersion> moduleTypeVersionsMap = new HashMap<Integer, ModuleTypeVersion>();
+            for (ModuleTypeVersionSubmodule submodule : submodules) {
+                ModuleTypeVersion moduleTypeVersion = submodule.getCompositeModuleTypeVersion();
+                moduleTypeVersionsMap.put(moduleTypeVersion.getId(), moduleTypeVersion);
+            }
+            ModuleTypeVersion[] moduleTypeVersions = moduleTypeVersionsMap.values().toArray(new ModuleTypeVersion[0]);
+            return moduleTypeVersions;
+        } catch (Exception e) {
+            LOG.error("Could not get all module type versions using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get all module type versions using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
+    public synchronized ModuleType[] getModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            Map<Integer, ModuleType> moduleTypesMap = new HashMap<Integer, ModuleType>();
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            for (ModuleTypeVersionSubmodule submodule : submodules) {
+                ModuleType moduleType = submodule.getCompositeModuleTypeVersion().getModuleType();
+                moduleTypesMap.put(moduleType.getId(), moduleType);
+            }
+            ModuleType[] moduleTypes = moduleTypesMap.values().toArray(new ModuleType[0]);
+            return moduleTypes;
+        } catch (Exception e) {
+            LOG.error("Could not get the module types using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get the module types using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
+    public synchronized ModuleType[] getAllModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            Map<Integer, ModuleType> moduleTypesMap = new HashMap<Integer, ModuleType>();
+            for (ModuleTypeVersionSubmodule submodule : submodules) {
+                ModuleType moduleType = submodule.getCompositeModuleTypeVersion().getModuleType();
+                moduleTypesMap.put(moduleType.getId(), moduleType);
+            }
+            ModuleType[] moduleTypes = moduleTypesMap.values().toArray(new ModuleType[0]);
+            return moduleTypes;
+        } catch (Exception e) {
+            LOG.error("Could not get all module types using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get all module types using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
+    public synchronized Module[] getModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<Module> list = modulesDAO.getModulesUsingModuleTypeVersion(session, moduleTypeVersionId);
             Module[] modules = list.toArray(new Module[0]); 
             return modules;
         } catch (Exception e) {
-            LOG.error("Could not get all modules for module type version (ID = " + moduleTypeVersionId + ")", e);
-            throw new EmfException("Could not get all modules for module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+            LOG.error("Could not get all modules using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get all modules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
+    public synchronized Module[] getAllModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<Module> list = modulesDAO.getModulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            for (ModuleTypeVersionSubmodule submodule : submodules) {
+                List<Module> list2 = modulesDAO.getModulesUsingModuleTypeVersion(session, submodule.getCompositeModuleTypeVersion().getId());
+                list.addAll(list2);
+            }
+            Module[] modules = list.toArray(new Module[0]); 
+            return modules;
+        } catch (Exception e) {
+            LOG.error("Could not get all modules using module type version (ID = " + moduleTypeVersionId + ")", e);
+            throw new EmfException("Could not get all modules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
             session.close();
         }

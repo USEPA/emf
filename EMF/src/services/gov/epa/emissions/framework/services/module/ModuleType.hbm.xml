@@ -22,6 +22,14 @@
             not-null="false"/>
         <property name="defaultVersion" column="default_version" type="integer" not-null="false"/>
         <property name="isComposite" column="is_composite" type="boolean" not-null="true"/>
+        <set name="tags" table="module_types_tags" schema="modules" inverse="false" lazy="false" fetch="select" cascade="all">
+            <key>
+                <column name="module_type_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="gov.epa.emissions.framework.services.module.Tag">
+                <column name="tag_id" not-null="true" />
+            </many-to-many>
+        </set>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.LiteModuleTypeVersion" table="module_types_versions" schema="modules">
@@ -66,6 +74,14 @@
             <map-key column="version" type="integer"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleTypeVersion"/>
         </map>
+        <set name="tags" table="module_types_tags" schema="modules" inverse="false" lazy="false" fetch="select" cascade="all">
+            <key>
+                <column name="module_type_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="gov.epa.emissions.framework.services.module.Tag">
+                <column name="tag_id" not-null="true" />
+            </many-to-many>
+        </set>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersion" table="module_types_versions" schema="modules">
@@ -225,6 +241,14 @@
         </id>
         <property name="sqlType" column="sql_type" type="string" not-null="true" length="256"/>
         <property name="isTextType" column="is_text_type" type="boolean" not-null="true"/>
+    </class>
+
+    <class name="gov.epa.emissions.framework.services.module.Tag" table="tags" schema="modules">
+        <id name="id" type="integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="name" column="name" type="string" not-null="true" length="64"/>
+        <property name="description" column="description" type="text" not-null="false"/>
     </class>
 
 </hibernate-mapping>

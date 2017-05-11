@@ -62,12 +62,11 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
-import javax.swing.text.Document;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
-        implements ModuleTypeVersionPropertiesView {
+        implements ModuleTypeVersionPropertiesView, TagsObserver {
     private ModuleTypeVersionPropertiesPresenter presenter;
 
     private EmfConsole parentConsole;
@@ -90,99 +89,65 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
     // layout
     private JPanel layout;
-
     private SingleLineMessagePanel messagePanel;
-
     private JTabbedPane tabbedPane;
 
     // module type
     private JPanel moduleTypePanel;
-
     private TextField moduleTypeName;
-
     private TextArea moduleTypeDescription;
-
+    private TextArea moduleTypeTags;
     private Label moduleTypeLockOwner;
-
     private Label moduleTypeLockDate;
-
     private Label moduleTypeCreationDate;
-
     private Label moduleTypeLastModifiedDate;
-
     private Label moduleTypeCreator;
-
     private Label moduleTypeDefaultVersionNumber;
 
     // version
     private JPanel versionPanel;
-
     private Label moduleTypeVersionNumber;
-
     private TextField moduleTypeVersionName;
-
     private TextArea moduleTypeVersionDescription;
-
     private Label moduleTypeVersionCreationDate;
-
     private Label moduleTypeVersionLastModifiedDate;
-
     private Label moduleTypeVersionCreator;
-
     private Label moduleTypeVersionBaseVersionNumber;
-
     private Label moduleTypeVersionIsFinal;
 
     // datasets
     private JPanel datasetsPanel;
-
     private JPanel datasetsTablePanel;
-
     private GetDatasetTypesTask getDatasetTypesTask;
-
     private DatasetType[] datasetTypesCache;
-
     private SelectableSortFilterWrapper datasetsTable;
-
     private ModuleTypeVersionDatasetsTableData datasetsTableData;
 
     // parameters
     private JPanel parametersPanel;
-
     private JPanel parametersTablePanel;
-
     private SelectableSortFilterWrapper parametersTable;
-
     private ModuleTypeVersionParametersTableData parametersTableData;
 
     // algorithm
     private JPanel algorithmPanel;
-
     private TextArea algorithm;
-
     private UndoManager algorithmUndoManager;
 
     // submodules
     private JPanel submodulesPanel;
-
     private JPanel submodulesTablePanel;
-
     private SelectableSortFilterWrapper submodulesTable;
-
     private ModuleTypeVersionSubmodulesTableData submodulesTableData;
 
     // connections
     private JPanel connectionsPanel;
-
     private JPanel connectionsTablePanel;
-
     private SelectableSortFilterWrapper connectionsTable;
-
     private ModuleTypeVersionConnectionsTableData connectionsTableData;
 
     // revisions
     private JPanel revisionsPanel;
-
     private TextArea revisions;
 
     class GetDatasetTypesTask extends SwingWorker<DatasetType[], Void> {
@@ -220,7 +185,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
     // New Module Type
     public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager,
             EmfSession session, ModuleTypeVersionObserver moduleTypeVersionObserver, boolean composite) {
-        super(getWindowTitle(ViewMode.NEW, null), new Dimension(800, 600), desktopManager);
+        super(getWindowTitle(ViewMode.NEW, null), new Dimension(850, 700), desktopManager);
 
         this.parentConsole = parentConsole;
         this.session = session;
@@ -376,7 +341,8 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         }
         layoutGenerator.addLabelWidgetPair("Name:", moduleTypeName, formPanel);
 
-        moduleTypeDescription = new TextArea("Module Type Description", moduleType.getDescription(), 60, 8);
+        moduleTypeDescription = new TextArea("Module Type Description", moduleType.getDescription(), 60, 5);
+        moduleTypeDescription.setLineWrap(true);
         moduleTypeDescription.setEditable(viewMode != ViewMode.VIEW);
         if (viewMode != ViewMode.VIEW) {
             addChangeable(moduleTypeDescription);
@@ -385,14 +351,22 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         descScrollableTextArea.setMaximumSize(new Dimension(575, 200));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, formPanel);
 
+        moduleTypeTags = new TextArea("tags", moduleType.getTagsText(), 60, 3);
+        moduleTypeTags.setLineWrap(true);
+        moduleTypeTags.setEditable(false);
+        ScrollableComponent tagsScrollableTextArea = new ScrollableComponent(moduleTypeTags);
+        tagsScrollableTextArea.setMaximumSize(new Dimension(575, 200));
+        layoutGenerator.addLabelWidgetPair("Tags:", tagsScrollableTextArea, formPanel);
+
+        layoutGenerator.addLabelWidgetPair("", tagsCrudPanel(), formPanel);
+        
         moduleTypeCreator = new Label(moduleType.getCreator().getName());
         layoutGenerator.addLabelWidgetPair("Creator:", moduleTypeCreator, formPanel);
 
         moduleTypeCreationDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleType.getCreationDate()));
         layoutGenerator.addLabelWidgetPair("Creation Date:", moduleTypeCreationDate, formPanel);
 
-        moduleTypeLastModifiedDate = new Label(
-                CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleType.getLastModifiedDate()));
+        moduleTypeLastModifiedDate = new Label(CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleType.getLastModifiedDate()));
         layoutGenerator.addLabelWidgetPair("Last Modified:", moduleTypeLastModifiedDate, formPanel);
 
         String lockOwner = moduleType.getLockOwner();
@@ -401,8 +375,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         layoutGenerator.addLabelWidgetPair("Lock Owner:", moduleTypeLockOwner, formPanel);
 
         Date lockDate = moduleType.getLockDate();
-        String safeLockDate = (moduleType.getLockDate() == null) ? ""
-                : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
+        String safeLockDate = (moduleType.getLockDate() == null) ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(lockDate);
         moduleTypeLockDate = new Label(safeLockDate);
         layoutGenerator.addLabelWidgetPair("Lock Date:", moduleTypeLockDate, formPanel);
 
@@ -410,7 +383,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         layoutGenerator.addLabelWidgetPair("Default Version:", moduleTypeDefaultVersionNumber, formPanel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(formPanel, 9, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(formPanel, 11, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -635,6 +608,59 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         panel.add(container, BorderLayout.SOUTH);
 
         return panel;
+    }
+
+    private JPanel tagsCrudPanel() {
+        Action addTagsAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                addTags();
+            }
+        };
+        Button addTagsButton = new Button("Add Tags", addTagsAction);
+        addTagsButton.setMnemonic('A');
+
+        Action removeTagsAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                removeTags();
+            }
+        };
+        Button removeTagsButton = new Button("Remove Tags", removeTagsAction);
+        removeTagsButton.setMnemonic('e');
+
+        JPanel crudPanel = new JPanel();
+        crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        crudPanel.add(addTagsButton);
+        crudPanel.add(removeTagsButton);
+        if (viewMode == ViewMode.VIEW) {
+            addTagsButton.setEnabled(false);
+            removeTagsButton.setEnabled(false);
+        }
+
+        return crudPanel;
+    }
+
+    private void addTags() {
+        AddTagsDialog view = new AddTagsDialog(parentConsole, moduleType.getTags(), this);
+        try {
+            presenter.displayAddTagsView(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentConsole, 
+                    "Failed to open Add Tags dialog box:\n\n" + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void removeTags() {
+        RemoveTagsDialog view = new RemoveTagsDialog(parentConsole, moduleType.getTags(), this);
+        try {
+            presenter.displayRemoveTagsView(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentConsole, 
+                    "Failed to open Remove Tags dialog box:\n\n" + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private JPanel datasetsCrudPanel() {
@@ -1085,10 +1111,10 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                 moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
                 mustUnlock = true;
             } else {
-                ModuleTypeVersionNewRevisionDialog newRevisionView = new ModuleTypeVersionNewRevisionDialog(
-                        parentConsole, moduleTypeVersion, this);
-                ModuleTypeVersionNewRevisionPresenter newRevisionPresenter = new ModuleTypeVersionNewRevisionPresenter(
-                        newRevisionView, session);
+                ModuleTypeVersionNewRevisionDialog newRevisionView =
+                        new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, this);
+                ModuleTypeVersionNewRevisionPresenter newRevisionPresenter =
+                        new ModuleTypeVersionNewRevisionPresenter(newRevisionView, session);
                 try {
                     newRevisionPresenter.display();
                 } catch (Exception e) {
@@ -1116,7 +1142,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             isDirty = false;
 
         } catch (EmfException e) {
-            messagePanel.setError(e.getMessage());
+            showLargeErrorMessage(messagePanel, "Failed to save this module type version!", e.getMessage());
             return false;
         }
 
@@ -1252,5 +1278,15 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         // ComponentUtility.enableComponents(this, false);
         getDatasetTypesTask = new GetDatasetTypesTask(this);
         getDatasetTypesTask.execute();
+    }
+
+    @Override
+    public void refreshTags() {
+        String oldText = moduleTypeTags.getText();
+        moduleTypeTags.setText(moduleType.getTagsText());
+        String newText = moduleTypeTags.getText();
+        if (!newText.equals(oldText)) {
+            isDirty = true;
+        }
     }
 }
