@@ -70,7 +70,7 @@ public class NewTagDialog extends JDialog implements NewTagView {
         JPanel formPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        name = new JTextField("name", 60);
+        name = new JTextField(null, 60);
         name.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 if (Character.isWhitespace(e.getKeyChar()))
