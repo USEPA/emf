@@ -350,6 +350,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         compData.put("Summary / Module Type Version", moduleTypeVersion.versionName());
         compData.put("Summary / Module Name", name);
         compData.put("Summary / Description", description);
+        compData.put("Summary / Tags", getTagsText());
         compData.put("Summary / Creator", creator.getName());
         compData.put("Summary / Creation Date", CustomDateFormat.format_MM_DD_YYYY_HH_mm(creationDate));
         compData.put("Summary / Last Modified", CustomDateFormat.format_MM_DD_YYYY_HH_mm(lastModifiedDate));
