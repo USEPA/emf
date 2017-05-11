@@ -29,6 +29,8 @@ public class WeeklyPacketLoaderTest extends PersistenceTestCase {
 
     private SqlDataTypes typeMapper;
 
+    private DbServer dbServer;
+
     private NonVersionedTableFormat tableFormat;
 
     private FileFormat fileFormat;
@@ -36,7 +38,7 @@ public class WeeklyPacketLoaderTest extends PersistenceTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        DbServer dbServer = dbSetup.getDbServer();
+        dbServer = dbSetup.getDbServer();
         typeMapper = dbServer.getSqlDataTypes();
         datasource = dbServer.getEmissionsDatasource();
 
@@ -50,16 +52,21 @@ public class WeeklyPacketLoaderTest extends PersistenceTestCase {
     }
 
     public void testShouldLoadRecordsIntoWeeklyTable() throws Exception {
+
+
         File file = new File("test/data/temporal-profiles/weekly.txt");
         BufferedReader fileReader = new BufferedReader(new CustomCharSetInputStreamReader(new FileInputStream(file)));
         int lineNumber = 0;
         reader = new FixedWidthPacketReader(fileReader, fileReader.readLine().trim(), fileFormat, lineNumber);
 
         try {
-            DataLoader loader = new FixedColumnsDataLoader(datasource, tableFormat);
-
             Dataset dataset = new SimpleDataset();
             dataset.setName("test");
+
+//            TemporalProfileImporter temporalProfileImporter = new TemporalProfileImporter(folder, new String[] {"weekly.txt"}, dataset, dbServer, typeMapper);
+
+            DataLoader loader = new FixedColumnsDataLoader(datasource, tableFormat);
+
             String tableName = "Weekly";
             loader.load(reader, dataset, tableName);
             // assert
@@ -76,9 +83,10 @@ public class WeeklyPacketLoaderTest extends PersistenceTestCase {
 
     public void testShouldDropDataOnEncounteringBadData() throws Exception {
         File file = new File("test/data/temporal-profiles/BAD-weekly.txt");
-        BufferedReader fileReader = new BufferedReader(new FileReader(file));
+        BufferedReader fileReader = new BufferedReader(new CustomCharSetInputStreamReader(new FileInputStream(file)));
+//        BufferedReader fileReader = new BufferedReader(new FileReader(file));
         int lineNumber=0;
-        reader = new FixedWidthPacketReader(fileReader, fileReader.readLine().trim(), tableFormat, lineNumber);
+        reader = new FixedWidthPacketReader(fileReader, fileReader.readLine().trim(), fileFormat, lineNumber);
 
         DataLoader loader = new FixedColumnsDataLoader(datasource, tableFormat);
 

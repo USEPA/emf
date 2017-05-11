@@ -30,7 +30,7 @@ public class PostgresTableReader extends DbOperation implements TableReader {
             ds.addTable(table);
 
             ITableIterator iterator = ds.iterator();
-
+            iterator.next();    //iterate to item
             return iterator.getTable();
         } catch (Exception e) {
             throw new RuntimeException("could not lookup table - " + table + "\n" + e.getMessage());
@@ -43,6 +43,7 @@ public class PostgresTableReader extends DbOperation implements TableReader {
             ds.addTable(qualified(schema, table));
 
             ITableIterator iterator = ds.iterator();
+            iterator.next();
             return iterator.getTable() != null;
         } catch (Exception e) {
             return false;

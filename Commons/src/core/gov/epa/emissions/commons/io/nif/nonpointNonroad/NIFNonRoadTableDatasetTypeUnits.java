@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.SqlDataTypes;
 import gov.epa.emissions.commons.io.DataFormatFactory;
 import gov.epa.emissions.commons.io.FormatUnit;
+import gov.epa.emissions.commons.io.importer.ImporterException;
 import gov.epa.emissions.commons.io.nif.NIFImportHelper;
 
 public class NIFNonRoadTableDatasetTypeUnits extends NIFNonRoadDatasetTypeUnits {
@@ -20,23 +21,23 @@ public class NIFNonRoadTableDatasetTypeUnits extends NIFNonRoadDatasetTypeUnits 
         this.datasource = dbServer.getEmissionsDatasource();
     }
 
-    public void process() {
-        try {
+    public void process() throws ImporterException {
+//        try {
             associateTables(tables, datasource);
             requiredExist();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
         
     }
 
-    private void associateTables(String[] tables, Datasource datasource) throws Exception {
+    private void associateTables(String[] tables, Datasource datasource) throws ImporterException {
         NIFImportHelper helper = new NIFImportHelper();
         for (int i = 0; i < tables.length; i++) {
             // VERSIONS TABLE - Completed - throws exception if the following case is true
             if ("emissions".equalsIgnoreCase(datasource.getName()) && "versions".equalsIgnoreCase(tables[i].toLowerCase())) {
-                throw new Exception("Table versions moved to schema emf."); // VERSIONS TABLE
+                throw new ImporterException("Table versions moved to schema emf."); // VERSIONS TABLE
             }
             String key = helper.notation(datasource, tables[i]);
             FormatUnit formatUnit = keyToDatasetTypeUnit(key);

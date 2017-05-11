@@ -9,6 +9,7 @@ import gov.epa.emissions.commons.db.DbUpdate;
 import gov.epa.emissions.commons.db.SqlDataTypes;
 import gov.epa.emissions.commons.db.TableReader;
 import gov.epa.emissions.commons.io.importer.Importer;
+import gov.epa.emissions.commons.io.importer.ImporterException;
 import gov.epa.emissions.commons.io.importer.PersistenceTestCase;
 import gov.epa.emissions.commons.io.nif.nonpointNonroad.NIFNonRoadImporter;
 import gov.epa.emissions.commons.io.nif.nonpointNonroad.NIFNonRoadTableImporter;
@@ -84,7 +85,7 @@ public class NIFNonRoadTableImporterTest extends PersistenceTestCase {
         }
     }
 
-    public void testShouldCheckForReuiredTables() throws Exception {
+    public void testShouldCheckForRequiredTables() throws Exception {
         File folder = new File("test/data/nif/nonroad");
         String[] files = {"ct_em.txt", "ct_ep.txt", "ct_pe.txt"};
         NIFNonRoadImporter importer = new NIFNonRoadImporter(folder, files, dataset, dbServer(), sqlDataTypes);
@@ -113,7 +114,7 @@ public class NIFNonRoadTableImporterTest extends PersistenceTestCase {
         String[] tables2 = { tableEP, tablePE };
         try {
             new NIFNonRoadTableImporter(tables2, dataset, dbServer(), sqlDataTypes);
-        } catch (Exception e) {
+        } catch (ImporterException e) {
             assertTrue(e.getMessage().startsWith("NIF nonroad import requires following types "));
             return;
         } finally {

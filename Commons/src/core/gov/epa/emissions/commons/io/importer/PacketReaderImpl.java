@@ -67,6 +67,7 @@ public class PacketReaderImpl implements PacketReader {
 
     private boolean isData(String line) {
         return !(line.trim().length() == 0) && (!isComment(line));
+
     }
 
     private boolean isComment(String line) {

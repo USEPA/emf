@@ -61,7 +61,8 @@ public class TestPrettyConverters extends TestCase
       "DOTDASH",
       "DOTTED",
       "LONGDASH",
-      "SOLID"
+      "SOLID",
+      "TWODASH"
    };
 
    /** Path to line style icons file. */
@@ -75,7 +76,8 @@ public class TestPrettyConverters extends TestCase
       "dotDash.jpg",
       "dotted.jpg",
       "longDash.jpg",
-      "solid.jpg"
+      "solid.jpg",
+      "twoDash.jpg"
    };
 
    /** Test Icons for line style. */
@@ -84,29 +86,29 @@ public class TestPrettyConverters extends TestCase
    /** System strings for line style icons. */
    private String[] symbolSystemStrings =
    {
-        "CIRCLE",
-        "TRIANGLE_UP",
-        "PLUS",
-        "CROSS",
-        "SQUARE_ROTATED",
-        "TRIANGLE_DOWN",
-        "CROSS_IN_SQUARE",
-        "STARBURST",
-        "PLUS_IN_SQUARE_ROTATED",
-        "LineType.PLUS_IN_CIRCLE",
-        "TRIANGLE_UP_AND_DOWN",
-        "PLUS_IN_SQUARE",
-        "CIRCLE_AND_CROSS",
-        "UP_TRIANGLE_IN_SQUARE",
-        "SQUARE_SOLID",
-        "CIRCLE_SOLID",
-        "UP_TRIANGLE_SOLID)",
-        "SQUARE_ROTATED_SOLID",
-        "CIRCLE_FILLED",
-        "BULLET",
-        "CIRCLE2",
-        "SQUARE",
-        "DIAMOND"
+           "CIRCLE_SOLID",
+           "UP_TRIANGLE_SOLID",
+           "SQUARE_ROTATED_SOLID",
+           "CIRCLE",
+           "SQUARE",
+           "PLUS",
+           "CROSS",
+           "STARBURST",
+           "SQUARE_ROTATED",
+           "PLUS_IN_CIRCLE",
+           "SQUARE_SOLID",
+           "TRIANGLE_UP",
+           "TRIANGLE_DOWN",
+           "CROSS_IN_SQUARE",
+           "PLUS_IN_SQUARE_ROTATED",
+           "TRIANGLE_UP_AND_DOWN",
+           "PLUS_IN_SQUARE",
+           "CIRCLE_AND_CROSS",
+           "UP_TRIANGLE_IN_SQUARE",
+           "CIRCLE_FILLED",
+           "BULLET",
+           "CIRCLE2",
+           "DIAMOND"
    };
 
    /** Path to line style icons file. */
@@ -115,30 +117,57 @@ public class TestPrettyConverters extends TestCase
    /** Icon file names for symbols. */
    private String[] symbolIconFileNames =
    {
-      "circle.JPG",
-        "triangleUp.JPG",
-        "plus.JPG",
-        "cross.JPG",
-        "squareRotated.JPG",
-        "triangleDown.JPG",
-        "crossInSquare.JPG",
-        "starBurst.JPG",
-        "plusInSquareRotated.JPG",
-        "plusInCircle.JPG",
-        "triangleUpAndDown.JPG",
-        "plusInSquare.JPG",
-        "circleAndCross.JPG",
-        "upTriangleInSquare.JPG",
-        "squareSolid.JPG",
-        "circleSolid.JPG",
-        "upTriangleSolid.JPG",
-        "squareRotatedSolid.JPG",
-        "circleFilled.JPG",
-         "bullet.JPG",
-        "circle2.JPG",
-         "square.JPG",
-        "diamond.JPG"
+           "circleSolid.jpg",
+           "upTriangleSolid.jpg",
+           "squareRotatedSolid.jpg",
+           "circle.jpg",
+           "square.jpg",
+           "plus.jpg",
+           "cross.jpg",
+           "starBurst.jpg",
+           "squareRotated.jpg",
+           "plusInCircle.jpg",
+           "squareSolid.jpg",
+           "triangleUp.jpg",
+           "triangleDown.jpg",
+           "crossInSquare.jpg",
+           "plusInSquareRotated.jpg",
+           "triangleUpAndDown.jpg",
+           "plusInSquare.jpg",
+           "circleAndCross.jpg",
+           "upTriangleInSquare.jpg",
+           "circleFilled.jpg",
+           "bullet.jpg",
+           "circle2.jpg",
+           "diamond.jpg"
    };
+
+    private String[] symbolIconFileNames_ORIGINAL =
+            {
+                    "circle.jpg",
+                    "triangleUp.jpg",
+                    "plus.jpg",
+                    "cross.jpg",
+                    "squareRotated.jpg",
+                    "triangleDown.jpg",
+                    "crossInSquare.jpg",
+                    "starBurst.jpg",
+                    "plusInSquareRotated.jpg",
+                    "plusInCircle.jpg",
+                    "triangleUpAndDown.jpg",
+                    "plusInSquare.jpg",
+                    "circleAndCross.jpg",
+                    "upTriangleInSquare.jpg",
+                    "squareSolid.jpg",
+                    "circleSolid.jpg",
+                    "upTriangleSolid.jpg",
+                    "squareRotatedSolid.jpg",
+                    "circleFilled.jpg",
+                    "bullet.jpg",
+                    "circle2.jpg",
+                    "square.jpg",
+                    "diamond.jpg"
+            };
 
    /** Test Icons for symbol. */
    private ImageIcon[] symbolTestIcons = null;

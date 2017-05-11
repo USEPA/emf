@@ -13,15 +13,13 @@ import gov.epa.emissions.commons.io.Exporter;
 import gov.epa.emissions.commons.io.importer.Importer;
 import gov.epa.emissions.commons.io.importer.PersistenceTestCase;
 import gov.epa.emissions.commons.io.importer.VersionedDataFormatFactory;
+import gov.epa.emissions.commons.io.importer.VersionedImporter;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ORLExportersTest extends PersistenceTestCase {
@@ -74,8 +72,14 @@ public class ORLExportersTest extends PersistenceTestCase {
 
     public void testShouldExportOnRoad() throws Exception {
         File folder = new File("test/data/orl/nc");
-        Importer importer = new ORLOnRoadImporter(folder, new String[] { "small-onroad-comma.txt" }, dataset, dbServer,
-                sqlDataTypes);
+
+//        ImporterFactory importerFactory = new ImporterFactory(dbServer);
+//        Importer importer = importerFactory.createVersioned(dataset, path, files);
+
+//        Importer importer = new ORLOnRoadImporter(folder, new String[] { "small-onroad-comma.txt" }, dataset, dbServer,
+//                sqlDataTypes);
+        Importer importer = new VersionedImporter(new ORLOnRoadImporter(folder, new String[] { "small-onroad-comma.txt" }, dataset, dbServer,
+                sqlDataTypes), dataset, dbServer, new Date());
         importer.run();
 
         Exporter exporter = new ORLOnRoadExporter(dataset, "", dbServer, optimizedBatchSize);

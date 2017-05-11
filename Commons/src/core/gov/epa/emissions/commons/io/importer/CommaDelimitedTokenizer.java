@@ -20,11 +20,11 @@ public class CommaDelimitedTokenizer implements Tokenizer {
         input = padding(input);
         String[] tokens = null;
         
-        try {
+//        try {
             tokens = delegate.doTokenize(input);
-        } catch (Exception e) {
-            throw new ImporterException(e.getMessage());
-        }
+//        } catch (Exception e) {
+//            throw new ImporterException(e.getMessage());
+//        }
         
         if (!initialized) {
             numOfDelimiter = tokens.length;
