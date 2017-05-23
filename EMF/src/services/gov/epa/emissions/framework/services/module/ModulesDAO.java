@@ -130,7 +130,7 @@ public class ModulesDAO {
         return history;
     }
 
-    public HistorySubmodule updateSubmodule(HistorySubmodule historySubmodule, Session session) {
+    public HistorySubmodule updateHistorySubmodule(HistorySubmodule historySubmodule, Session session) {
         session.clear();
         Transaction tx = session.beginTransaction();
         try {

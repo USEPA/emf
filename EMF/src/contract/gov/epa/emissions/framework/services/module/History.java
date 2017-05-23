@@ -20,6 +20,7 @@ public class History implements Serializable, Comparable<History> {
     public static final String STARTED         = "STARTED";
     public static final String SETUP_SCRIPT    = "SETUP_SCRIPT";
     public static final String USER_SCRIPT     = "USER_SCRIPT";
+    public static final String SUBMODULES      = "SUBMODULES";
     public static final String TEARDOWN_SCRIPT = "TEARDOWN_SCRIPT";
     public static final String COMPLETED       = "COMPLETED";
     

@@ -939,7 +939,6 @@ abstract class ModuleRunner {
         Statement statement = null;
         try {
             history.setTeardownScript(teardownScript);
-            history.setStatus(History.TEARDOWN_SCRIPT);
             
             history.addLogMessage(History.INFO, "Starting teardown script.");
             

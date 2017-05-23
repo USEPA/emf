@@ -80,6 +80,9 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         newModule.setCreationDate(date);
         newModule.setLastModifiedDate(date);
         newModule.setIsFinal(false);
+        for(Tag tag : tags) {
+            newModule.addTag(tag);
+        }
         for(ModuleDataset moduleDataset : moduleDatasets.values()) {
             newModule.addModuleDataset(moduleDataset.deepCopy(newModule));
         }

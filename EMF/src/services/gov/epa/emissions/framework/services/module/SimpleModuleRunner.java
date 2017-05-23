@@ -53,6 +53,9 @@ class SimpleModuleRunner extends ModuleRunner {
         
         setFinalStatusMessage("");
         
+        List<Version> outputDatasetVersions = new ArrayList<Version>();
+        List<String> outputDatasetTables = new ArrayList<String>();
+        
         try {
             String algorithm = moduleTypeVersion.getAlgorithm();
             history.setUserScript(algorithm);
@@ -62,9 +65,6 @@ class SimpleModuleRunner extends ModuleRunner {
             String datasetTablesSchema = EmfDbServer.EMF_EMISSIONS_SCHEMA; // FIXME hard-coded schema name
             
             StringBuilder viewDefinitions = new StringBuilder();
-            
-            List<Version> outputDatasetVersions = new ArrayList<Version>();
-            List<String> outputDatasetTables = new ArrayList<String>();
             
             // create views for all datasets
             // replace all dataset placeholders in the algorithm
@@ -177,8 +177,6 @@ class SimpleModuleRunner extends ModuleRunner {
                 statement.execute(setupScript);
                 
             } catch (Exception e) {
-                // e.printStackTrace();
-                // TODO save error to the current execution history record
                 throw new EmfException(SETUP_SCRIPT_ERROR + e.getMessage());
             } finally {
                 if (statement != null) {
@@ -238,8 +236,6 @@ class SimpleModuleRunner extends ModuleRunner {
                 history.addLogMessage(History.INFO, "User script (algorithm) completed successfully.");
                 
             } catch (Exception e) {
-                // e.printStackTrace();
-                // TODO save error to the current execution history record
                 throw new EmfException(USER_SCRIPT_ERROR + e.getMessage());
             } finally {
                 if (statement != null) {
@@ -259,6 +255,7 @@ class SimpleModuleRunner extends ModuleRunner {
             
             // TODO verify that all output parameters have been set
             
+            history.setStatus(History.TEARDOWN_SCRIPT);
             executeTeardownScript(outputDatasetTables);
             
             history.setStatus(History.COMPLETED);
@@ -272,21 +269,35 @@ class SimpleModuleRunner extends ModuleRunner {
             
             String eMessage = e.getMessage();
             
-            history.setStatus(History.COMPLETED);
             history.setResult(History.FAILED);
             history.setErrorMessage(eMessage);
 
             if (eMessage.startsWith(SETUP_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getSetupScript()) + "\n";
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
+                }
             } else if (eMessage.startsWith(USER_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getUserScript()) + "\n";
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
+                }
             } else if (eMessage.startsWith(TEARDOWN_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
             } else {
                 errorMessage = eMessage;
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
+                }
             }
             
-            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getResult() + "\n\n" + errorMessage);
+            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getStatus() + " " + history.getResult() + "\n\n" + errorMessage);
             
             history.addLogMessage(History.ERROR, getFinalStatusMessage());
             

@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.services.module;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -84,6 +83,9 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
             // there is no setup script for composite submodules
             
             // execute submodules
+            historySubmodule.setStatus(History.SUBMODULES);
+            historySubmodule.addLogMessage(History.INFO, "Started executing submodules.");
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
             
             TreeMap<Integer, SubmoduleRunner>  todoSubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
             TreeMap<Integer, SubmoduleRunner> readySubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
@@ -234,13 +236,12 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
             
             historySubmodule.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
             
         } catch (Exception e) {
             
             String eMessage = e.getMessage();
             
-            historySubmodule.setStatus(History.COMPLETED);
             historySubmodule.setResult(History.FAILED);
             historySubmodule.setErrorMessage(eMessage);
 
@@ -254,11 +255,11 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
                 errorMessage = eMessage + "\n";
             }
             
-            setFinalStatusMessage("Completed running submodule '" + getPathNames() + "': " + historySubmodule.getResult() + "\n\n" + errorMessage);
+            setFinalStatusMessage("Completed running submodule '" + getPathNames() + "': " + historySubmodule.getStatus() + " " + historySubmodule.getResult() + "\n\n" + errorMessage);
             
             historySubmodule.addLogMessage(History.ERROR, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
             
         } finally {
             history = modulesDAO.updateHistory(history, session);

@@ -54,6 +54,9 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
         
         setFinalStatusMessage("");
         
+        List<Version> outputDatasetVersions = new ArrayList<Version>();
+        List<String> outputDatasetTables = new ArrayList<String>();
+        
         try {
             String algorithm = moduleTypeVersion.getAlgorithm();
             historySubmodule.setUserScript(algorithm);
@@ -63,9 +66,6 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
             String datasetTablesSchema = EmfDbServer.EMF_EMISSIONS_SCHEMA; // FIXME hard-coded schema name
             
             StringBuilder viewDefinitions = new StringBuilder();
-            
-            List<Version> outputDatasetVersions = new ArrayList<Version>();
-            List<String> outputDatasetTables = new ArrayList<String>();
             
             // create views for all datasets
             // replace all dataset placeholders in the algorithm
@@ -187,14 +187,12 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 
                 historySubmodule.addLogMessage(History.INFO, "Starting setup script.");
                 
-                historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
+                historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
 
                 statement = connection.createStatement();
                 statement.execute(setupScript);
                 
             } catch (Exception e) {
-                // e.printStackTrace();
-                // TODO save error to the current execution history record
                 throw new EmfException(SETUP_SCRIPT_ERROR + e.getMessage());
             } finally {
                 if (statement != null) {
@@ -218,7 +216,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 
                 historySubmodule.addLogMessage(History.INFO, "Starting user script (algorithm).");
                 
-                historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
+                historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
                 
                 userConnection = getUserConnection(userTimeStamp, getTempUserPassword());
                 userConnection.setAutoCommit(true);
@@ -257,8 +255,6 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 historySubmodule.addLogMessage(History.INFO, "User script (algorithm) completed successfully.");
                 
             } catch (Exception e) {
-                // e.printStackTrace();
-                // TODO save error to the current execution history record
                 throw new EmfException(USER_SCRIPT_ERROR + e.getMessage());
             } finally {
                 if (statement != null) {
@@ -276,6 +272,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 }
             }
             
+            historySubmodule.setStatus(History.TEARDOWN_SCRIPT);
             executeTeardownScript(outputDatasetTables);
             
             historySubmodule.setStatus(History.COMPLETED);
@@ -285,31 +282,45 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
             
             historySubmodule.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
             
         } catch (Exception e) {
             
             String eMessage = e.getMessage();
             
-            historySubmodule.setStatus(History.COMPLETED);
             historySubmodule.setResult(History.FAILED);
             historySubmodule.setErrorMessage(eMessage);
 
             if (eMessage.startsWith(SETUP_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(historySubmodule.getSetupScript()) + "\n";
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(historySubmodule.getTeardownScript()) + "\n";
+                }
             } else if (eMessage.startsWith(USER_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(historySubmodule.getUserScript()) + "\n";
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(historySubmodule.getTeardownScript()) + "\n";
+                }
             } else if (eMessage.startsWith(TEARDOWN_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(historySubmodule.getTeardownScript()) + "\n";
             } else {
                 errorMessage = eMessage;
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(historySubmodule.getTeardownScript()) + "\n";
+                }
             }
             
-            setFinalStatusMessage("Completed running submodule '" + getPathNames() + "': " + historySubmodule.getResult() + "\n\n" + errorMessage);
+            setFinalStatusMessage("Completed running submodule '" + getPathNames() + "': " + historySubmodule.getStatus() + " " + historySubmodule.getResult() + "\n\n" + errorMessage);
             
             historySubmodule.addLogMessage(History.ERROR, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
             
         } finally {
             history = modulesDAO.updateHistory(history, session);

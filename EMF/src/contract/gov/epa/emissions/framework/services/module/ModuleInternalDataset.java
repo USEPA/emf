@@ -65,7 +65,7 @@ public class ModuleInternalDataset implements Serializable {
             HistoryInternalDataset historyInternalDataset = null;
             History lastHistory = compositeModule.lastHistory();
             if (lastHistory != null) {
-                if (lastHistory.getResult().equals(History.SUCCESS)) {
+                if (History.SUCCESS.equals(lastHistory.getResult())) {
                     Map<String, HistoryInternalDataset> historyInternalDatasets = lastHistory.getHistoryInternalDatasets();
                     if (historyInternalDatasets.containsKey(placeholderPath)) {
                         historyInternalDataset = historyInternalDatasets.get(placeholderPath);

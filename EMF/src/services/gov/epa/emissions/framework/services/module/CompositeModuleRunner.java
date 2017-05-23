@@ -52,6 +52,8 @@ class CompositeModuleRunner extends ModuleRunner {
         
         setFinalStatusMessage("");
         
+        List<String> outputDatasetTables = new ArrayList<String>();
+
         try {
             createDatasets();
             
@@ -81,7 +83,6 @@ class CompositeModuleRunner extends ModuleRunner {
             
             // execute setup script
             
-            List<String> outputDatasetTables = new ArrayList<String>();
             String setupScript = getTempUserSetupScript(userTimeStamp, tempUserPassword) +
                                  getGrantPermissionsScript(userTimeStamp, outputDatasetTables);
             
@@ -97,8 +98,6 @@ class CompositeModuleRunner extends ModuleRunner {
                 statement.execute(setupScript);
                 
             } catch (Exception e) {
-                // e.printStackTrace();
-                // TODO save error to the current execution history record
                 throw new EmfException(SETUP_SCRIPT_ERROR + e.getMessage());
             } finally {
                 if (statement != null) {
@@ -112,6 +111,9 @@ class CompositeModuleRunner extends ModuleRunner {
             }
             
             // execute submodules
+            history.setStatus(History.SUBMODULES);
+            history.addLogMessage(History.INFO, "Started executing submodules.");
+            history = modulesDAO.updateHistory(history, session);
             
             TreeMap<Integer, SubmoduleRunner>  todoSubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
             TreeMap<Integer, SubmoduleRunner> readySubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
@@ -249,6 +251,7 @@ class CompositeModuleRunner extends ModuleRunner {
 
             // TODO verify that all output parameters have been set
             
+            history.setStatus(History.TEARDOWN_SCRIPT);
             executeTeardownScript(outputDatasetTables);
             
             history.setStatus(History.COMPLETED);
@@ -264,21 +267,35 @@ class CompositeModuleRunner extends ModuleRunner {
             
             String eMessage = e.getMessage();
             
-            history.setStatus(History.COMPLETED);
             history.setResult(History.FAILED);
             history.setErrorMessage(eMessage);
 
             if (eMessage.startsWith(SETUP_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getSetupScript()) + "\n";
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
+                }
             } else if (eMessage.startsWith(SUBMODULE_ERROR)) {
                 errorMessage = eMessage + "\n";
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
+                }
             } else if (eMessage.startsWith(TEARDOWN_SCRIPT_ERROR)) {
                 errorMessage = eMessage + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
             } else {
                 errorMessage = eMessage + "\n";
+                try {
+                    executeTeardownScript(outputDatasetTables);
+                } catch (Exception e2) {
+                    errorMessage += "\n\n" + e2.getMessage() + "\n\n" + getLineNumberedScript(history.getTeardownScript()) + "\n";
+                }
             }
             
-            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getResult() + "\n\n" + errorMessage);
+            setFinalStatusMessage("Completed running module '" + module.getName() + "': " + history.getStatus() + " " + history.getResult() + "\n\n" + errorMessage);
             
             history.addLogMessage(History.ERROR, getFinalStatusMessage());
             

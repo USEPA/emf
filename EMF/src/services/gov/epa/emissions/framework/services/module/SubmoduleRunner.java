@@ -75,7 +75,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
         Date submoduleStopDate = new Date();
         long durationSeconds = (submoduleStopDate.getTime() - submoduleStartDate.getTime()) / 1000;
         historySubmodule.setDurationSeconds((int)durationSeconds);
-        historySubmodule = getModulesDAO().updateSubmodule(historySubmodule, getSession());
+        historySubmodule = getModulesDAO().updateHistorySubmodule(historySubmodule, getSession());
     }
 
     public void run() throws EmfException {
@@ -323,18 +323,15 @@ abstract class SubmoduleRunner extends ModuleRunner {
         Statement statement = null;
         try {
             historySubmodule.setTeardownScript(teardownScript);
-            historySubmodule.setStatus(History.TEARDOWN_SCRIPT);
             
             historySubmodule.addLogMessage(History.INFO, "Starting teardown script.");
             
-            historySubmodule = modulesDAO.updateSubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
             
             statement = connection.createStatement();
             statement.execute(teardownScript);
             
         } catch (Exception e) {
-            // e.printStackTrace();
-            // TODO save error to the current execution history record
             throw new EmfException(TEARDOWN_SCRIPT_ERROR + e.getMessage());
         } finally {
             if (statement != null) {

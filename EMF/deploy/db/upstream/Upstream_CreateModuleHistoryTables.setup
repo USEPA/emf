@@ -15,7 +15,7 @@ CREATE TABLE modules.history
   teardown_script text,
   log_messages text,
   status character varying(16) NOT NULL
-      CHECK (status IN ('STARTED', 'SETUP_SCRIPT', 'USER_SCRIPT', 'TEARDOWN_SCRIPT', 'COMPLETED') ),
+      CHECK (status IN ('STARTED', 'SETUP_SCRIPT', 'USER_SCRIPT', 'SUBMODULES', 'TEARDOWN_SCRIPT', 'COMPLETED') ),
   result character varying(16)
       CHECK (result IN ('TIMEOUT', 'CANCELLED', 'FAILED', 'SUCCESS') ),
   error_message text,

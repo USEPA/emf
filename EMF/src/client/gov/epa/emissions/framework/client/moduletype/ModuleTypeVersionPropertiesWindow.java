@@ -1037,6 +1037,10 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
     public static void showLargeErrorMessage(SingleLineMessagePanel messagePanel, String title, String error) {
         // TODO add this code to SingleLineMessagePanel.setMessage() instead
+        if (title == null)
+            title = "";
+        if (error == null)
+            error = "";
         if (error.length() > 80 || error.contains("\n")) {
             messagePanel.setError(title);
             JTextArea errorTextArea = new JTextArea(error.toString());

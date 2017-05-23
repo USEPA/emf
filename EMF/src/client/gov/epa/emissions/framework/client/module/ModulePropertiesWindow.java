@@ -31,6 +31,7 @@ import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
+import gov.epa.emissions.framework.services.module.Tag;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -46,6 +47,7 @@ import gov.epa.emissions.framework.client.moduletype.TagsObserver;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -151,6 +153,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private SelectAwareButton viewButton;
 
     // buttons
+    Button statusButton;
+    Label  statusText;
     Button validateButton;
     Button saveButton;
     Button runButton;
@@ -233,6 +237,11 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         this.moduleTypeVersion = moduleTypeVersion;
         moduleType = moduleTypeVersion.getModuleType();
         module.setModuleTypeVersion(moduleTypeVersion);
+        if (module.getTags().isEmpty()) {
+            for(Tag tag : module.getModuleTypeVersion().getModuleType().getTags()) {
+                module.addTag(tag);
+            }
+        }
 
         module.clearModuleDatasets();
         for(ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
@@ -295,7 +304,23 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         refreshHistory();
     }
+
+    private void refreshStatusText() {
+        StringBuilder reason = new StringBuilder();
+        boolean isOutOfDate = isOutOfDate(reason);
+        refreshStatusText(isOutOfDate);
+    }
     
+    private void refreshStatusText(boolean isOutOfDate) {
+        if (isOutOfDate) {
+            statusText.setText("Out-Of-Date");
+            statusText.setForeground(Color.RED);
+        } else {
+            statusText.setText("Up-To-Date");
+            statusText.setForeground(Color.BLUE);
+        }
+    }
+
     @Override
     public void doRefresh() throws EmfException {
         module = presenter.getModule(module.getId());
@@ -317,6 +342,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         refreshModuleTypeVersion();
         resetChanges();
         isDirty = false;
+        refreshStatusText();
     }
 
     private Action selectModuleTypeVersionAction() {
@@ -577,11 +603,30 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private JPanel createButtonsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        JPanel container = new JPanel();
-        FlowLayout layout = new FlowLayout();
-        layout.setHgap(20);
-        layout.setVgap(25);
-        container.setLayout(layout);
+        //-----------------------------------------------------
+        
+        JPanel statusContainer = new JPanel();
+        FlowLayout statusLayout = new FlowLayout();
+        statusLayout.setHgap(20);
+        statusLayout.setVgap(20);
+        statusContainer.setLayout(statusLayout);
+        
+        statusButton = new Button("Status", statusAction());
+        statusButton.setMnemonic('S');
+        
+        statusText = new Label("");
+        refreshStatusText();
+        
+        statusContainer.add(statusButton);
+        statusContainer.add(statusText);
+        
+        //-----------------------------------------------------
+        
+        JPanel buttonsContainer = new JPanel();
+        FlowLayout buttonsLayout = new FlowLayout();
+        buttonsLayout.setHgap(20);
+        buttonsLayout.setVgap(20);
+        buttonsContainer.setLayout(buttonsLayout);
 
         validateButton = new Button("Validate", validateAction());
         validateButton.setMnemonic('V');
@@ -599,15 +644,18 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         closeButton = new CloseButton("Close", closeAction());
         
-        container.add(validateButton);
-        container.add(saveButton);
-        container.add(runButton);
-        container.add(finalizeButton);
-        container.add(closeButton);
+        buttonsContainer.add(validateButton);
+        buttonsContainer.add(saveButton);
+        buttonsContainer.add(runButton);
+        buttonsContainer.add(finalizeButton);
+        buttonsContainer.add(closeButton);
+
+        //-----------------------------------------------------
+        
+        panel.add(statusContainer, BorderLayout.WEST);
+        panel.add(buttonsContainer, BorderLayout.CENTER);
+
         getRootPane().setDefaultButton(saveButton);
-
-        panel.add(container, BorderLayout.SOUTH);
-
         return panel;
     }
 
@@ -1291,6 +1339,24 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         ModuleTypeVersionPropertiesWindow.showLargeErrorMessage(messagePanel, title, error);
     }
 
+    private Action statusAction() {
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                StringBuilder reason = new StringBuilder(); 
+                boolean isOutOfDate = isOutOfDate(reason);
+                refreshStatusText(isOutOfDate);
+                String title = "This module is " + statusText.getText() + "!";
+                if (isOutOfDate) {
+                    showLargeErrorMessage(title, reason.toString());
+                } else {
+                    messagePanel.setMessage(title);
+                }
+            }
+        };
+
+        return action;
+    }
+
     private Action validateAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -1328,6 +1394,52 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         } catch (EmfException e) {
             messagePanel.setError("The module failed to run: " + e.getMessage());
         }
+    }
+
+    private boolean isOutOfDate(final StringBuilder reason) {
+        reason.setLength(0);
+        
+        StringBuilder error = new StringBuilder();
+        if (!module.isValid(error)) {
+            reason.append("This module is invalid. " + error.toString() + "\n\n");
+        }
+        
+        if (hasChanges() || isDirty) {
+            reason.append("This module has unsaved changes.\n\n");
+        }
+        
+        History lastHistory = module.lastHistory();
+        if (lastHistory == null) {
+            reason.append("This module has never been run.\n\n");
+            return true;
+        }
+        
+        String result = lastHistory.getResult();
+        if (result == null || !result.equals(History.SUCCESS)) {
+            reason.append("The last module run was not successful.\n\n");
+        }
+        
+        // verify that the last run's history datasets are identical (id & version) to the current module datasets
+        if (!lastHistory.checkModuleDatasets(error)) {
+            reason.append("The module datasets have changed since the last sucessfull run:\n" + error.toString() + "\n\n");
+        }
+
+        // check module type version last modified date against last run start time
+        if (moduleTypeVersion.getLastModifiedDate().after(lastHistory.startDate())) {
+            reason.append("The module type version is more recent than the last run.\n\n");
+        }
+        
+        // check module last modified date against last run start time
+        if (module.getLastModifiedDate().after(lastHistory.startDate())) {
+            reason.append("The module is more recent than the last run.\n\n");
+        }
+
+        StringBuilder explanation = new StringBuilder();
+        if (lastHistory.isOutOfDate(explanation, session.dataService(), session.dataEditorService())) {
+            reason.append("Last run is out of date:\n" + explanation.toString());
+        }
+        
+        return (reason.length() > 0);
     }
 
     private void doFinalize() {
@@ -1436,7 +1548,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
             messagePanel.setMessage("Finalized the output dataset(s).");
         }
-        
         
         title = module.getName();
         int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to finalize this module?",
