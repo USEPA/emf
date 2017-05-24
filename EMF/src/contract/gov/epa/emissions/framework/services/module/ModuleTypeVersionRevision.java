@@ -19,6 +19,13 @@ public class ModuleTypeVersionRevision implements Serializable {
 
     private User creator;
 
+    public void prepareForImport(final StringBuilder changeLog, User user) {
+        if (id == 0)
+            return;
+        id = 0;
+        creator = user;
+    }
+    
     public int getId() {
         return id;
     }

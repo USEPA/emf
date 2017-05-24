@@ -65,6 +65,32 @@ public class ModuleTypeVersion implements Serializable {
         moduleTypeVersionParameterConnections = new HashMap<String, ModuleTypeVersionParameterConnection>();
     }
 
+    public void prepareForImport(final StringBuilder changeLog, User user) {
+        if (id == 0)
+            return;
+        id = 0;
+        name = "Imported " + name;
+        creator = user;
+        for(ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
+            dataset.prepareForImport(changeLog, user);
+        }
+        for(ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
+            parameter.prepareForImport(changeLog, user);
+        }
+        for(ModuleTypeVersionRevision revision : moduleTypeVersionRevisions) {
+            revision.prepareForImport(changeLog, user);
+        }
+//        for(ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+//            submodule.prepareForImport(user);
+//        }
+//        for(ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersionDatasetConnections.values()) {
+//            datasetConnection.prepareForImport(user);
+//        }
+//        for(ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersionParameterConnections.values()) {
+//            parameterConnection.prepareForImport(user);
+//        }
+    }
+    
     public ModuleTypeVersion deepCopy(User user) {
         ModuleTypeVersion newModuleTypeVersion = new ModuleTypeVersion();
         newModuleTypeVersion.setModuleType(moduleType);

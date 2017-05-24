@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.io.FileFormat;
-import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.commons.security.User;
 
 public class ModuleTypeVersionDataset implements Serializable {
 
@@ -29,6 +29,13 @@ public class ModuleTypeVersionDataset implements Serializable {
 
     private String description;
 
+    public void prepareForImport(final StringBuilder changeLog, User user) {
+        if (id == 0)
+            return;
+        id = 0;
+        // TODO dataset type
+    }
+    
     public ModuleTypeVersionDataset deepCopy() {
         ModuleTypeVersionDataset newModuleTypeVersionDataset = new ModuleTypeVersionDataset();
         newModuleTypeVersionDataset.setModuleTypeVersion(moduleTypeVersion);

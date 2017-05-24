@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gov.epa.emissions.commons.security.User;
+
 public class ModuleTypeVersionParameter implements Serializable {
 
     public static final String IN    = "IN";
@@ -24,6 +26,12 @@ public class ModuleTypeVersionParameter implements Serializable {
     private String sqlParameterType;
 
     private String description;
+
+    public void prepareForImport(final StringBuilder changeLog, User user) {
+        if (id == 0)
+            return;
+        id = 0;
+    }
 
     public ModuleTypeVersionParameter deepCopy() {
         ModuleTypeVersionParameter newModuleTypeVersionParameter = new ModuleTypeVersionParameter();

@@ -87,4 +87,7 @@ public class ModuleTypesManagerPresenter {
         return session.moduleService().getModuleTypes();
     }
 
+    public ModuleType addModuleType(ModuleType moduleType) throws EmfException {
+        return session.moduleService().addModuleType(moduleType);
+    }
 }

@@ -26,6 +26,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
@@ -33,6 +42,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -158,12 +169,30 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
         };
         Button removeButton = new RemoveButton(removeAction);
+        
+        Action exportAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                exportModuleTypes();
+            }
+        };
+        SelectAwareButton exportButton = new SelectAwareButton("Export", exportAction, table, confirmDialog);
+
+        Action importAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                importModuleTypes();
+            }
+        };
+        SelectAwareButton importButton = new SelectAwareButton("Import", importAction, table, confirmDialog);
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(viewButton);
         crudPanel.add(editButton);
         crudPanel.add(newButton);
         crudPanel.add(removeButton);
+        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        crudPanel.add(exportButton);
+        crudPanel.add(importButton);
         return crudPanel;
     }
 
@@ -276,6 +305,90 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }
     }
 
+    private static void saveToXML(String filename, ModuleType[] moduleTypes) {
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(fos));
+        encoder.writeObject(moduleTypes);
+        encoder.close();
+    }
+
+    private ModuleType[] readFromXML(String filename) {
+        FileInputStream fis;
+        try {
+            fis = new FileInputStream(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(fis));
+        ModuleType[] moduleTypes = (ModuleType[])decoder.readObject();
+        decoder.close();
+        return moduleTypes;
+    }
+
+    private void exportModuleTypes() {
+        List<?> selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more module types");
+            return;
+        }   
+
+        ModuleType[] moduleTypes = (ModuleType[]) selected.toArray(new ModuleType[0]);
+        
+        JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File file = fc.getSelectedFile();
+        String filename;
+        try {
+            filename = file.getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            messagePanel.setError("Failed to get export file full path: " + e.getMessage());
+            return;
+        }
+        saveToXML(filename, moduleTypes);
+        messagePanel.setMessage(moduleTypes.length + " module type(s) exported successfully to: " + filename);
+    }
+
+    private void importModuleTypes() {
+        JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File file = fc.getSelectedFile();
+        String filename;
+        try {
+            filename = file.getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            messagePanel.setError("Failed to get import file full path: " + e.getMessage());
+            return;
+        }
+        ModuleType[] moduleTypes = readFromXML(filename);
+        StringBuilder changeLog = new StringBuilder(); 
+        for(ModuleType moduleType : moduleTypes) {
+            moduleType.prepareForImport(changeLog, session.user());
+            ModuleType importedModuleType;
+            try {
+                importedModuleType = presenter.addModuleType(moduleType);
+            } catch (EmfException e) {
+                e.printStackTrace();
+                messagePanel.setError("Failed to add module type: " + e.getMessage());
+                return;
+            }
+        }
+        messagePanel.setMessage(moduleTypes.length + " module type(s) imported successfully from: " + filename);
+    }
 
     private List selected() {
         return table.selected();

@@ -53,6 +53,18 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         this.name = name;
     }
 
+    public void prepareForImport(final StringBuilder changeLog, User user) {
+        if (this.id == 0)
+            return;
+        this.id = 0;
+        this.name = "Imported " + this.name;
+        this.creator = user;
+        for (ModuleTypeVersion moduleTypeVersion : this.moduleTypeVersions.values()) {
+            moduleTypeVersion.prepareForImport(changeLog, user);
+        }
+        tags.clear();
+    }
+    
     public String getName() {
         return name;
     }
