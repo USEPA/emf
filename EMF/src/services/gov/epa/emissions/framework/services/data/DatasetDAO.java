@@ -1008,7 +1008,7 @@ public class DatasetDAO {
         try {
             resultSet = dataQuery.executeQuery(query);
             while (resultSet.next()) {
-                moduleIds.add(resultSet.getInt(0));
+                moduleIds.add(resultSet.getInt(1));
             }
         } finally {
             if (resultSet != null)
