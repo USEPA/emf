@@ -63,7 +63,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     private EmfSession session;
 
     public ModulesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Manager", new Dimension(800, 400), desktopManager);
+        super("Module Manager", new Dimension(1200, 800), desktopManager);
         super.setName("moduleManager");
 
         this.session = session;
@@ -497,7 +497,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         editButton.setEnabled(hasData);
         lockButton.setEnabled(hasData);
         unlockButton.setEnabled(hasData);
-        newButton.setEnabled(hasData);
+        newButton.setEnabled(true);
         removeButton.setEnabled(hasData);
         runButton.setEnabled(hasData);
 

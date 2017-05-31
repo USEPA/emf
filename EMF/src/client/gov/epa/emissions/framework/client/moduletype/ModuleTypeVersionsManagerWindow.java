@@ -62,7 +62,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
     private int newEditMTVs;                     // counts all New/Edit Module Type Version windows open
 
     public ModuleTypeVersionsManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager, ViewMode viewMode, ModuleType moduleType) {
-        super(getWindowTitle(viewMode, moduleType), new Dimension(700, 350), desktopManager);
+        super(getWindowTitle(viewMode, moduleType), new Dimension(800, 400), desktopManager);
 
         this.session = session;
         this.parentConsole = parentConsole;
