@@ -1121,6 +1121,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
+            isDirty = true;
             refreshInternalDatasets();
         }
     }
@@ -1142,6 +1143,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
+            isDirty = true;
             refreshInternalDatasets();
         }
     }
@@ -1243,6 +1245,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
+            isDirty = true;
             refreshInternalParameters();
         }
     }
@@ -1264,6 +1267,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
+            isDirty = true;
             refreshInternalParameters();
         }
     }
