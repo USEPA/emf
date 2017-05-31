@@ -28,6 +28,8 @@ import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
+import gov.epa.emissions.framework.ui.RefreshButton;
+import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
@@ -66,7 +68,7 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
-        implements ModuleTypeVersionPropertiesView, TagsObserver {
+        implements ModuleTypeVersionPropertiesView, RefreshObserver, TagsObserver {
     private ModuleTypeVersionPropertiesPresenter presenter;
 
     private EmfConsole parentConsole;
@@ -288,10 +290,21 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
     }
 
     private void doLayout(JPanel layout) {
-        messagePanel = new SingleLineMessagePanel();
-        layout.add(messagePanel, BorderLayout.NORTH);
-        layout.add(tabbedPane(), BorderLayout.CENTER);
+        layout.add(createTopPanel(), BorderLayout.NORTH);
+        layout.add(createTabbedPane(), BorderLayout.CENTER);
         layout.add(createButtonsPanel(), BorderLayout.SOUTH);
+    }
+
+    private JPanel createTopPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        messagePanel = new SingleLineMessagePanel();
+        panel.add(messagePanel, BorderLayout.CENTER);
+
+        Button button = new RefreshButton(this, "Refresh Module Type Version", messagePanel);
+        panel.add(button, BorderLayout.EAST);
+
+        return panel;
     }
 
     public void observe(ModuleTypeVersionPropertiesPresenter presenter) {
@@ -305,7 +318,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         super.display();
     }
 
-    private JTabbedPane tabbedPane() {
+    private JTabbedPane createTabbedPane() {
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Module Type", moduleTypePanel());
         tabbedPane.addTab("Version", versionPanel());
@@ -1292,5 +1305,17 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         if (!newText.equals(oldText)) {
             isDirty = true;
         }
+    }
+
+    @Override
+    public void doRefresh() throws EmfException {
+        populateDatasetTypesCache();
+        
+        refreshTags();
+        refreshDatasets();
+        refreshParameters();
+        refreshSubmodules();
+        refreshConnections();
+        refreshRevisions();
     }
 }
