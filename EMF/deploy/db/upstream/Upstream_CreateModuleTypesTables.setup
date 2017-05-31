@@ -59,7 +59,7 @@ ALTER TABLE modules.module_types_versions
 
 -- Table: modules.module_types_versions_datasets
 
--- DROP TABLE modules.module_types_version_datasets;
+-- DROP TABLE modules.module_types_versions_datasets;
 
 CREATE TABLE modules.module_types_versions_datasets
 (
@@ -73,6 +73,7 @@ CREATE TABLE modules.module_types_versions_datasets
       REFERENCES emf.dataset_types(id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION,
   description text,
+  is_optional boolean NOT NULL DEFAULT FALSE,
   CONSTRAINT module_types_versions_datasets_ukey UNIQUE (module_type_version_id, placeholder_name)
 )
 WITH (
@@ -97,6 +98,7 @@ CREATE TABLE modules.module_types_versions_parameters
   mode character varying(5) NOT NULL CHECK (mode IN ('IN', 'INOUT', 'OUT') ),
   sql_parameter_type character varying(256) NOT NULL, -- should be large enough
   description text,
+  is_optional boolean NOT NULL DEFAULT FALSE,
   CONSTRAINT module_types_versions_parameters_ukey UNIQUE (module_type_version_id, parameter_name)
 )
 WITH (
