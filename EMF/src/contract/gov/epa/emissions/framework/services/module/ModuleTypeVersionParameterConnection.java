@@ -33,10 +33,10 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
     public ModuleTypeVersionParameter getSourceModuleTypeVersionParameter() {
         ModuleTypeVersionParameter moduleTypeVersionParameter = null;
         try {
-            if (sourceSubmodule != null) {
+            if ((sourceSubmodule != null) && (sourceParameterName != null)) {
                 // internal parameter
                 moduleTypeVersionParameter = sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameter(sourceParameterName);
-            } else {
+            } else if (sourceParameterName != null) {
                 // external parameter
                 moduleTypeVersionParameter = compositeModuleTypeVersion.getModuleTypeVersionParameter(sourceParameterName);
             }
@@ -50,10 +50,10 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
     public ModuleTypeVersionParameter getTargetModuleTypeVersionParameter() {
         ModuleTypeVersionParameter moduleTypeVersionParameter = null;
         try {
-            if (targetSubmodule != null) {
+            if ((targetSubmodule != null) && (targetParameterName != null)) {
                 // internal parameter
                 moduleTypeVersionParameter = targetSubmodule.getModuleTypeVersion().getModuleTypeVersionParameter(targetParameterName);
-            } else {
+            } else if (targetParameterName != null) {
                 // external parameter
                 moduleTypeVersionParameter = compositeModuleTypeVersion.getModuleTypeVersionParameter(targetParameterName);
             }

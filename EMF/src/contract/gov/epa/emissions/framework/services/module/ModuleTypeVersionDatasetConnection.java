@@ -32,10 +32,10 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
     public ModuleTypeVersionDataset getSourceModuleTypeVersionDataset() {
         ModuleTypeVersionDataset moduleTypeVersionDataset = null;
         try {
-            if (sourceSubmodule != null) {
+            if ((sourceSubmodule != null) && (sourcePlaceholderName != null)) {
                 // internal dataset
                 moduleTypeVersionDataset = sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDataset(sourcePlaceholderName);
-            } else {
+            } else if (sourcePlaceholderName != null) {
                 // external dataset
                 moduleTypeVersionDataset = compositeModuleTypeVersion.getModuleTypeVersionDataset(sourcePlaceholderName);
             }
@@ -49,10 +49,10 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
     public ModuleTypeVersionDataset getTargetModuleTypeVersionDataset() {
         ModuleTypeVersionDataset moduleTypeVersionDataset = null;
         try {
-            if (targetSubmodule != null) {
+            if ((targetSubmodule != null) && (targetPlaceholderName != null)) {
                 // internal dataset
                 moduleTypeVersionDataset = targetSubmodule.getModuleTypeVersion().getModuleTypeVersionDataset(targetPlaceholderName);
-            } else {
+            } else if (targetPlaceholderName != null) {
                 // external dataset
                 moduleTypeVersionDataset = compositeModuleTypeVersion.getModuleTypeVersionDataset(targetPlaceholderName);
             }
