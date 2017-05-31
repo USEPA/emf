@@ -22,7 +22,7 @@ public class ModuleTypeVersionConnectionsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Category", "Source Type", "Source", "Target Type", "Target", "Description"};
+        return new String[] { "Category", "Source Type", "Source", "Optional?", "Target Type", "Target", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -56,6 +56,7 @@ public class ModuleTypeVersionConnectionsTableData extends AbstractTableData {
             Object[] values = { "dataset",
                                 sourceDatasetTypeName, // source and target types must be the same
                                 datasetConnection.getSourceName(),
+                                datasetConnection.isOptional() ? "Yes" : "No",
                                 targetDatasetTypeName,
                                 datasetConnection.getTargetName(),
                                 datasetConnection.getDescription() };
@@ -79,6 +80,7 @@ public class ModuleTypeVersionConnectionsTableData extends AbstractTableData {
             Object[] values = { "parameter",
                                 sourceSqlType, // source and target types can be different
                                 parameterConnection.getSourceName(),
+                                parameterConnection.isOptional() ? "Yes" : "No",
                                 targetSqlType,
                                 parameterConnection.getTargetName(),
                                 parameterConnection.getDescription() };

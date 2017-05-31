@@ -26,6 +26,15 @@ public class ModuleDataset implements Serializable {
 
     private Boolean overwriteExisting;
 
+    public boolean isOptional() {
+        ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
+        return moduleTypeVersionDataset.getIsOptional();
+    }
+
+    public boolean isSet() {
+        return (datasetId != null) || (datasetNamePattern != null);
+    }
+
     public ModuleDataset deepCopy(Module newModule) {
         ModuleDataset newModuleDataset = new ModuleDataset();
         newModuleDataset.setModule(newModule);
@@ -103,7 +112,7 @@ public class ModuleDataset implements Serializable {
                 return false;
             }
         }
-        else if (datasetId == null) {
+        else if (datasetId == null && !moduleTypeVersionDataset.getIsOptional()) {
             error.append(String.format("The dataset for placeholder '%s' has not been set.", placeholderName));
             return false;
         }

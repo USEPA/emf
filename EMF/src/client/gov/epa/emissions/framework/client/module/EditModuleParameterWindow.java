@@ -11,7 +11,6 @@ import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleParameter;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
@@ -61,9 +60,8 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
     private static String getWindowTitle(ModuleParameter moduleParameter) {
         if (moduleParameter.getId() == 0) {
             return "Edit Module Parameter (" + moduleParameter.getParameterName() + ")";
-        } else {
-            return "Edit Module Parameter (ID=" + moduleParameter.getId() + ")";
         }
+        return "Edit Module Parameter (ID=" + moduleParameter.getId() + ")";
     }
     
     private void doLayout(JPanel layout) {
@@ -134,10 +132,6 @@ public class EditModuleParameterWindow extends DisposableInteralFrame implements
         panel.add(container, BorderLayout.SOUTH);
 
         return panel;
-    }
-
-    private void clear() {
-        messagePanel.clear();
     }
 
     private boolean checkInputFields() {

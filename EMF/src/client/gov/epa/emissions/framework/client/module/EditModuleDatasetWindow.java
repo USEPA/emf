@@ -56,6 +56,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     private TextField datasetName;
 //    private CheckBox overwriteExisting;
     private Button selectDataset;
+    private Button clearDataset;
     private Label existingDatasetName;
     private ComboBox existingVersion;
 
@@ -80,9 +81,8 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     private static String getWindowTitle(ModuleDataset moduleDataset) {
         if (moduleDataset.getId() == 0) {
             return "Edit Module Dataset (" + moduleDataset.getPlaceholderName() + ")";
-        } else {
-            return "Edit Module Dataset (ID=" + moduleDataset.getId() + ")";
         }
+        return "Edit Module Dataset (ID=" + moduleDataset.getId() + ")";
     }
     
     private void doLayout(JPanel layout) {
@@ -130,6 +130,23 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             }
         }
         
+        JPanel buttonsPanel = new JPanel();
+        FlowLayout buttonsLayout = new FlowLayout();
+        buttonsLayout.setHgap(0);
+        buttonsLayout.setVgap(0);
+        buttonsPanel.setLayout(buttonsLayout);
+
+        selectDataset = new Button("Select Dataset", selectDatasetAction());
+        buttonsPanel.add(selectDataset);
+        
+        clearDataset = new Button("Clear Dataset", clearDatasetAction());
+        buttonsPanel.add(new Label("   "));
+        buttonsPanel.add(clearDataset);
+        
+        if (!moduleTypeVersionDataset.getIsOptional()) {
+            clearDataset.setEnabled(false);
+        }
+
         if (isOUT) {
             outputMethod = new ComboBox(new String[] {"New Dataset", "Replace Dataset"});
             outputMethod.addActionListener(selectOutputMethodActionListener());
@@ -142,8 +159,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             layoutGenerator.addLabelWidgetPair("Dataset Name:", datasetName, contentPanel);
             rows++;
             
-            selectDataset = new Button("Select Dataset", selectDatasetAction());
-            layoutGenerator.addLabelWidgetPair("", selectDataset, contentPanel);
+            layoutGenerator.addLabelWidgetPair("", buttonsPanel, contentPanel);
             rows++;
     
             if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
@@ -151,6 +167,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 datasetName.setText(moduleDataset.getDatasetNamePattern());
                 datasetName.setEditable(true);
                 selectDataset.setEnabled(false);
+                clearDataset.setEnabled(false);
             } else { // REPLACE
                 outputMethod.setSelectedIndex(1);
                 if (dataset != null) {
@@ -160,12 +177,12 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 }
                 datasetName.setEditable(false);
                 selectDataset.setEnabled(true);
+                clearDataset.setEnabled(false);
             }
             
         } else { // IN or INOUT
             
-            selectDataset = new Button("Select Dataset", selectDatasetAction());
-            layoutGenerator.addLabelWidgetPair("", selectDataset, contentPanel);
+            layoutGenerator.addLabelWidgetPair("", buttonsPanel, contentPanel);
             rows++;
     
             existingDatasetName = new Label("");
@@ -209,75 +226,106 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         return detailsPanel;
     }
 
+    private void doSelectDataset() {
+        messagePanel.clear();
+        try {
+            DatasetType[] datasetTypes = new DatasetType[] { moduleDataset.getModuleTypeVersionDataset().getDatasetType() };
+            InputDatasetSelectionDialog selectionView = new InputDatasetSelectionDialog(parentConsole);
+            InputDatasetSelectionPresenter selectionPresenter = new InputDatasetSelectionPresenter(selectionView, session, datasetTypes);
+            if (datasetTypes.length == 1)
+                selectionPresenter.display(datasetTypes[0], true);
+            else
+                selectionPresenter.display(null, true);
+
+            EmfDataset[] datasets = selectionPresenter.getDatasets();
+            if (datasets.length > 0) {
+                if ((dataset == null) || (dataset.getId() != datasets[0].getId())) {
+                    dataset = datasets[0];
+                    isDirty = true;
+                    if (isOUT) {
+                        datasetName.setText(dataset.getName());
+                    } else {
+                        existingDatasetName.setText(dataset.getName());
+                        Version[] versions = session.dataEditorService().getVersions(dataset.getId());
+                        existingVersions = new String[versions.length];
+                        int i = 0;
+                        for(Version v : versions) {
+                            existingVersions[i++] = v.getVersion() + " - " + v.getName() + (v.isFinalVersion() ? " - Final" : ""); 
+                        }
+                        existingVersion.resetModel(existingVersions);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            messagePanel.setError(ex.getMessage());
+        }
+    }
+
     private Action selectDatasetAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                try {
-                    DatasetType[] datasetTypes = new DatasetType[] { moduleDataset.getModuleTypeVersionDataset().getDatasetType() };
-                    InputDatasetSelectionDialog selectionView = new InputDatasetSelectionDialog(parentConsole);
-                    InputDatasetSelectionPresenter selectionPresenter = new InputDatasetSelectionPresenter(selectionView, session, datasetTypes);
-                    if (datasetTypes.length == 1)
-                        selectionPresenter.display(datasetTypes[0], true);
-                    else
-                        selectionPresenter.display(null, true);
-    
-                    EmfDataset[] datasets = selectionPresenter.getDatasets();
-                    if (datasets.length > 0) {
-                        if ((dataset == null) || (dataset.getId() != datasets[0].getId())) {
-                            dataset = datasets[0];
-                            isDirty = true;
-                            if (isOUT) {
-                                datasetName.setText(dataset.getName());
-                            } else {
-                                existingDatasetName.setText(dataset.getName());
-                                Version[] versions = session.dataEditorService().getVersions(dataset.getId());
-                                existingVersions = new String[versions.length];
-                                int i = 0;
-                                for(Version v : versions) {
-                                    existingVersions[i++] = v.getVersion() + " - " + v.getName() + (v.isFinalVersion() ? " - Final" : ""); 
-                                }
-                                existingVersion.resetModel(existingVersions);
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    messagePanel.setError(ex.getMessage());
-                }
+                doSelectDataset();
             }
         };
 
         return action;
     }
 
+    private void doClearDataset() {
+        messagePanel.clear();
+        dataset = null;
+        existingDatasetName.setText(""); // TODO handle exception
+        existingVersions = new String[]{};
+        existingVersion.resetModel(existingVersions);
+        isDirty = true;
+    }
+
+    private Action clearDatasetAction() {
+        Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent event) {
+                doClearDataset();
+            }
+        };
+
+        return action;
+    }
+
+    private void doSelectOutputMethod() {
+        messagePanel.clear();
+        try {
+            String oldOutputMethod = moduleDataset.getOutputMethod();
+            if (outputMethod.getSelectedIndex() == 0) { // NEW DATASET
+                moduleDataset.setOutputMethod(ModuleDataset.NEW);
+            } else { // REPLACE DATASET
+                moduleDataset.setOutputMethod(ModuleDataset.REPLACE);
+            }
+            if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
+                datasetName.setText(moduleDataset.getDatasetNamePattern());
+                datasetName.setEditable(true);
+                selectDataset.setEnabled(false);
+                clearDataset.setEnabled(false);
+            } else { // REPLACE
+                if (dataset != null) {
+                    datasetName.setText(dataset.getName());
+                } else {
+                    datasetName.setText("");
+                }
+                datasetName.setEditable(false);
+                selectDataset.setEnabled(true);
+                clearDataset.setEnabled(false);
+            }
+            if (oldOutputMethod != moduleDataset.getOutputMethod()) {
+                isDirty = true;
+            }
+        } catch (Exception ex) {
+            messagePanel.setError(ex.getMessage());
+        }
+    }
+
     private ActionListener selectOutputMethodActionListener() {
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                try {
-                    String oldOutputMethod = moduleDataset.getOutputMethod();
-                    if (outputMethod.getSelectedIndex() == 0) { // NEW DATASET
-                        moduleDataset.setOutputMethod(ModuleDataset.NEW);
-                    } else { // REPLACE DATASET
-                        moduleDataset.setOutputMethod(ModuleDataset.REPLACE);
-                    }
-                    if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
-                        datasetName.setText(moduleDataset.getDatasetNamePattern());
-                        datasetName.setEditable(true);
-                        selectDataset.setEnabled(false);
-                    } else { // REPLACE
-                        if (dataset != null) {
-                            datasetName.setText(dataset.getName());
-                        } else {
-                            datasetName.setText("");
-                        }
-                        datasetName.setEditable(false);
-                        selectDataset.setEnabled(true);
-                    }
-                    if (oldOutputMethod != moduleDataset.getOutputMethod()) {
-                        isDirty = true;
-                    }
-                } catch (Exception ex) {
-                    messagePanel.setError(ex.getMessage());
-                }
+                doSelectOutputMethod();
             }
         };
 
@@ -303,10 +351,6 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         return panel;
     }
 
-    private void clear() {
-        messagePanel.clear();
-    }
-
     private boolean checkInputFields() {
         messagePanel.clear();
         if (isOUT) {
@@ -314,61 +358,71 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 StringBuilder error = new StringBuilder();
                 if (datasetName.getText().trim().equals("")) {
                     messagePanel.setError("You must enter a dataset name pattern.");
+                    return false;
                 } else if (!ModuleDataset.isValidDatasetNamePattern(datasetName.getText(), error)) {
                     messagePanel.setError(error.toString());
-                } else {
-                    return true;
+                    return false;
                 }
             } else { // REPLACE
                 if (dataset == null) {
                     messagePanel.setError("You must select a dataset.");
-                } else {
-                    return true;
+                    return false;
                 }
             }
         } else { // IN or INOUT
             if (dataset == null) {
-                messagePanel.setError("You must select a dataset.");
+                if (!moduleTypeVersionDataset.getIsOptional()) {
+                    messagePanel.setError("You must select a dataset.");
+                    return false;
+                }
             } else if (existingVersion.getSelectedIndex() <= 0) {
                 messagePanel.setError("You must select a dataset version.");
-            } else {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
+    private void doSave() {
+        if (checkInputFields()) {
+            try {
+                if (isOUT) {
+                    if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
+                        moduleDataset.setDatasetId(null);
+                        moduleDataset.setVersion(null);
+                        moduleDataset.setDatasetNamePattern(datasetName.getText());
+                        moduleDataset.setOverwriteExisting(false);
+                    } else { // REPLACE
+                        moduleDataset.setDatasetId(dataset.getId());
+                        moduleDataset.setVersion(0);
+                        moduleDataset.setDatasetNamePattern(null);
+                        moduleDataset.setOverwriteExisting(null);
+                    }
+                } else { // IN or INOUT
+                    if (dataset == null) {
+                        moduleDataset.setDatasetId(null);
+                        moduleDataset.setVersion(null);
+                    } else {
+                        moduleDataset.setDatasetId(dataset.getId());
+                        moduleDataset.setVersion(existingVersion.getSelectedIndex() - 1);
+                    }
+                    moduleDataset.setDatasetNamePattern(null);
+                    moduleDataset.setOverwriteExisting(null);
+                }
+                presenter.doSave(moduleDataset);
+                resetChanges();
+                isDirty = false;
+                messagePanel.setMessage("Saved module dataset");
+            } catch (EmfException e) {
+                messagePanel.setError(e.getMessage());
+            }
+        }
+    }
+    
     private Action saveAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (checkInputFields()) {
-                    try {
-                        if (isOUT) {
-                            if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
-                                moduleDataset.setDatasetId(null);
-                                moduleDataset.setVersion(null);
-                                moduleDataset.setDatasetNamePattern(datasetName.getText());
-                                moduleDataset.setOverwriteExisting(false);
-                            } else { // REPLACE
-                                moduleDataset.setDatasetId(dataset.getId());
-                                moduleDataset.setVersion(0);
-                                moduleDataset.setDatasetNamePattern(null);
-                                moduleDataset.setOverwriteExisting(null);
-                            }
-                        } else { // IN or INOUT
-                            moduleDataset.setDatasetId(dataset.getId());
-                            moduleDataset.setVersion(existingVersion.getSelectedIndex() - 1);
-                            moduleDataset.setDatasetNamePattern(null);
-                            moduleDataset.setOverwriteExisting(null);
-                        }
-                        presenter.doSave(moduleDataset);
-                        resetChanges();
-                        isDirty = false;
-                        messagePanel.setMessage("Saved module dataset");
-                    } catch (EmfException e) {
-                        messagePanel.setError(e.getMessage());
-                    }
-                }
+                doSave();
             }
         };
 

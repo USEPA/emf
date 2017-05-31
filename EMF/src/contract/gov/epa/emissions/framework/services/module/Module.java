@@ -384,6 +384,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
             String datasetVersion = (moduleDataset.getVersion() == null) ? "" : (moduleDataset.getVersion() + "");
             String tabName = "Datasets / " + moduleDataset.getPlaceholderName() + " / ";
             compData.put(tabName + "Mode", modeMethod);
+            compData.put(tabName + "Optional", moduleTypeVersionDataset.getIsOptional() ? "Yes" : "No");
             compData.put(tabName + "Dataset Type", moduleTypeVersionDataset.getDatasetType().getName());
             compData.put(tabName + "Dataset Name Pattern", moduleDataset.getDatasetNamePattern());
             compData.put(tabName + "Dataset Name", datasetName);
@@ -406,6 +407,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
             String outValue = mode.equals(ModuleTypeVersionParameter.IN) ? "N/A" : ((historyParameter == null) ? "N/A" : historyParameter.getValue());
             String tabName = "Parameters / " + moduleParameter.getParameterName() + " / ";
             compData.put(tabName + "Mode", mode);
+            compData.put(tabName + "Optional", moduleTypeVersionParameter.getIsOptional() ? "Yes" : "No");
             compData.put(tabName + "SQL Type", moduleTypeVersionParameter.getSqlParameterType());
             compData.put(tabName + "Input Value", inValue);
             compData.put(tabName + "Output Value", outValue);

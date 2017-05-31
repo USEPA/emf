@@ -18,7 +18,7 @@ public class ModuleTypeVersionParametersTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name", "SQL Type", "Description"};
+        return new String[] { "Mode", "Optional?", "Name", "SQL Type", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -35,6 +35,7 @@ public class ModuleTypeVersionParametersTableData extends AbstractTableData {
 
     private void add(ModuleTypeVersionParameter element) {
         Object[] values = { element.getMode(),
+                            element.getIsOptional() ? "Yes" : "No",
                             element.getParameterName(),
                             element.getSqlParameterType(),
                             element.getDescription() };
@@ -48,6 +49,7 @@ public class ModuleTypeVersionParametersTableData extends AbstractTableData {
 
         for (ModuleTypeVersionParameter element : moduleTypeVersionParameters.values()) {
             Object[] values = { element.getMode(),
+                                element.getIsOptional() ? "Yes" : "No",
                                 element.getParameterName(),
                                 element.getSqlParameterType(),
                                 element.getDescription() };

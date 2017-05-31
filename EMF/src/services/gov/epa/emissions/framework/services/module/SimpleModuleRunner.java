@@ -78,17 +78,23 @@ class SimpleModuleRunner extends ModuleRunner {
                 } else { // IN or INOUT
                     datasetVersion = getInputDataset(moduleDataset.getPlaceholderName());
                 }
-                EmfDataset dataset = datasetVersion.getDataset();
-                int versionNumber = datasetVersion.getVersion();
-                InternalSource internalSource = getInternalSource(dataset);
-                if (!moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
-                    Version version = getVersion(dataset, versionNumber, session);
-                    outputDatasetVersions.add(version);
-                    outputDatasetTables.add(datasetTablesSchema + "." + internalSource.getTable());
+                if (datasetVersion == null) {
+                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, null, 0);
+                    viewDefinitions.append(viewDefinition);
+                    algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, null, 0, viewName.toString());
+                } else {
+                    EmfDataset dataset = datasetVersion.getDataset();
+                    int versionNumber = datasetVersion.getVersion();
+                    InternalSource internalSource = getInternalSource(dataset);
+                    if (!moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
+                        Version version = getVersion(dataset, versionNumber, session);
+                        outputDatasetVersions.add(version);
+                        outputDatasetTables.add(datasetTablesSchema + "." + internalSource.getTable());
+                    }
+                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, dataset, versionNumber);
+                    viewDefinitions.append(viewDefinition);
+                    algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, versionNumber, viewName.toString());
                 }
-                createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, dataset, versionNumber);
-                viewDefinitions.append(viewDefinition);
-                algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, versionNumber, viewName.toString());
             }
             
             // replace global placeholders in the algorithm
@@ -121,8 +127,13 @@ class SimpleModuleRunner extends ModuleRunner {
                     parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + ";\n";
                     historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), null);
                 } else { // IN or INOUT
-                    parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := CAST('" + moduleParameter.getValue() + "' AS " + sqlParameterType + ");\n";
-                    historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
+                    if (moduleParameter.isSet()) {
+                        parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := CAST('" + moduleParameter.getValue() + "' AS " + sqlParameterType + ");\n";
+                        historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
+                    } else {
+                        parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := NULL;\n";
+                        historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), null);
+                    }
                 }
                 historyParameters.put(moduleParameter.getParameterName(), historyParameter);
             }
@@ -266,6 +277,8 @@ class SimpleModuleRunner extends ModuleRunner {
             history.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
         } catch (Exception e) {
+            
+            e.printStackTrace();
             
             String eMessage = e.getMessage();
             

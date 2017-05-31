@@ -20,7 +20,7 @@ public class ModuleParametersTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name", "SQL Type", "Input Value", "Output Value", "Description"};
+        return new String[] { "Mode", "Optional?", "Name", "SQL Type", "Input Value", "Output Value", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -51,6 +51,7 @@ public class ModuleParametersTableData extends AbstractTableData {
             String inValue = mode.equals(ModuleTypeVersionParameter.OUT) ? "N/A" : moduleParameter.getValue();
             String outValue = mode.equals(ModuleTypeVersionParameter.IN) ? "N/A" : ((historyParameter == null) ? "N/A" : historyParameter.getValue());
             Object[] values = { mode,
+                                moduleTypeVersionParameter.getIsOptional() ? "Yes": "No",
                                 moduleParameter.getParameterName(),
                                 moduleTypeVersionParameter.getSqlParameterType(),
                                 inValue,

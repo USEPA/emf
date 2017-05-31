@@ -27,6 +27,8 @@ public class ModuleTypeVersionParameter implements Serializable {
 
     private String description;
 
+    private boolean isOptional;
+    
     public void prepareForImport(final StringBuilder changeLog, User user) {
         if (id == 0)
             return;
@@ -40,6 +42,7 @@ public class ModuleTypeVersionParameter implements Serializable {
         newModuleTypeVersionParameter.setMode(mode);
         newModuleTypeVersionParameter.setSqlParameterType(sqlParameterType);
         newModuleTypeVersionParameter.setDescription(description);
+        newModuleTypeVersionParameter.setIsOptional(isOptional);
         return newModuleTypeVersionParameter;
     }
 
@@ -142,6 +145,14 @@ public class ModuleTypeVersionParameter implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean getIsOptional() {
+        return isOptional;
+    }
+
+    public void setIsOptional(boolean isOptional) {
+        this.isOptional = isOptional;
     }
 
     public String toString() {

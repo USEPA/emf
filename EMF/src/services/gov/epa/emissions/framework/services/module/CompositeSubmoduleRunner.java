@@ -62,7 +62,7 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
                 if (moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
                     parameterValue = null;
                 } else { // IN or INOUT
-                    parameterValue = getInputParameter(parameterName);
+                    parameterValue = getInputParameter(parameterName); // could be null
                 }
                 boolean keepInternalParameter = false;
                 if (moduleInternalParameters.containsKey(parameterPath)) {
@@ -103,8 +103,13 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
                     SubmoduleRunner submoduleRunner = todoSubmoduleRunners.get(datasetConnection.getTargetSubmodule().getId());
                     submoduleRunner.setInputDataset(datasetConnection.getTargetPlaceholderName(), datasetVersion);
                 }
-                logMessage = String.format("Passing dataset \"%s\" version %d from \"%s\" to \"%s\"",
-                                           datasetVersion.getDataset().getName(), datasetVersion.getVersion(), datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                if (datasetVersion == null) {
+                    logMessage = String.format("Passing dataset \"%s\" version %d from \"%s\" to \"%s\"",
+                                               datasetVersion.getDataset().getName(), datasetVersion.getVersion(), datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                } else {
+                    logMessage = String.format("Passing dataset NULL version NULL from \"%s\" to \"%s\"",
+                                               datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                }
                 historySubmodule.addLogMessage(History.INFO, logMessage);
             }
             
@@ -112,15 +117,20 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
             for(ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersion.getModuleTypeVersionParameterConnections().values()) {
                 if (parameterConnection.getSourceSubmodule() != null)
                     continue;
-                String value = getInputParameter(parameterConnection.getSourceParameterName());
+                String value = getInputParameter(parameterConnection.getSourceParameterName()); // could be null
                 if (parameterConnection.getTargetSubmodule() == null) {
                     setOutputParameter(parameterConnection.getTargetParameterName(), value);
                 } else {
                     SubmoduleRunner submoduleRunner = todoSubmoduleRunners.get(parameterConnection.getTargetSubmodule().getId());
                     submoduleRunner.setInputParameter(parameterConnection.getTargetParameterName(), value);
                 }
-                logMessage = String.format("Passing value \"%s\" from \"%s\" to \"%s\"",
-                                           value, parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                if (value == null) {
+                    logMessage = String.format("Passing value NULL from \"%s\" to \"%s\"",
+                                               parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                } else {
+                    logMessage = String.format("Passing value \"%s\" from \"%s\" to \"%s\"",
+                                               value, parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                }
                 historySubmodule.addLogMessage(History.INFO, logMessage);
             }
             
@@ -186,12 +196,18 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
                             } else {
                                 SubmoduleRunner targetSubmoduleRunner = todoSubmoduleRunners.get(targetSubmodule.getId());
                                 targetSubmoduleRunner.setInputDataset(datasetConnection.getTargetPlaceholderName(), submoduleOutputDatasetVersion);
-                                logMessage = String.format("Passing dataset \"%s\" version %d from \"%s\" to \"%s\"",
-                                                           submoduleOutputDatasetVersion.getDataset().getName(), submoduleOutputDatasetVersion.getVersion(),
-                                                           datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                                if (submoduleOutputDatasetVersion == null) {
+                                    logMessage = String.format("Passing dataset NULL version NULL from \"%s\" to \"%s\"",
+                                                               datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                                } else {
+                                    logMessage = String.format("Passing dataset \"%s\" version %d from \"%s\" to \"%s\"",
+                                                               submoduleOutputDatasetVersion.getDataset().getName(), submoduleOutputDatasetVersion.getVersion(),
+                                                               datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                                }
                                 historySubmodule.addLogMessage(History.INFO, logMessage);
                             }
                         }
+
                         // TODO delete the unused output datasets (that are not connected to any targets)
                         
                         // pass submodule output parameters to this module and other submodules in the todo list
@@ -212,8 +228,13 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
                                 SubmoduleRunner targetSubmoduleRunner = todoSubmoduleRunners.get(targetSubmodule.getId());
                                 targetSubmoduleRunner.setInputParameter(parameterConnection.getTargetParameterName(), submoduleOutputValue);
                             }
-                            logMessage = String.format("Passing value \"%s\" from \"%s\" to \"%s\"",
-                                                       submoduleOutputValue, parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                            if (submoduleOutputValue == null) {
+                                logMessage = String.format("Passing value NULL from \"%s\" to \"%s\"",
+                                                           parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                            } else {
+                                logMessage = String.format("Passing value \"%s\" from \"%s\" to \"%s\"",
+                                                           submoduleOutputValue, parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                            }
                             historySubmodule.addLogMessage(History.INFO, logMessage);
                         }
                         

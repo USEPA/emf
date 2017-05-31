@@ -150,6 +150,7 @@
             column="dataset_type_id"
             not-null="true"/>
         <property name="description" column="description" type="text" not-null="false"/>
+        <property name="isOptional" column="is_optional" type="boolean" not-null="true"/>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter" table="module_types_versions_parameters" schema="modules">
@@ -163,6 +164,7 @@
         <property name="mode" column="mode" type="string" not-null="true" length="5"/>
         <property name="sqlParameterType" column="sql_parameter_type" type="string" not-null="true" length="255"/>
         <property name="description" column="description" type="text" not-null="false"/>
+        <property name="isOptional" column="is_optional" type="boolean" not-null="true"/>
     </class>
 
     <class name="gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision" table="module_types_versions_revisions" schema="modules">

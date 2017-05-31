@@ -985,16 +985,20 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public synchronized EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId, Integer newDatasetId, String newDatasetNamePattern) {
         Session session = sessionFactory.getSession();
+        
         EmfDataset emfDataset = null;
+        if (newDatasetId == null && newDatasetNamePattern == null)
+            return emfDataset;
+        
         try {
-            ModuleDataset moduleDataset = modulesDAO.getModuleDataset(moduleDatasetId, session);
-            if (moduleDataset == null)
-                throw new EmfException("Failed to get module dataset (ID = " + moduleDatasetId + ")");
             if (newDatasetId != null) {
                 emfDataset = datasetDAO.getDataset(session, newDatasetId);
             } else if (ModuleDataset.isSimpleDatasetName(newDatasetNamePattern)) {
                 emfDataset = datasetDAO.getDataset(session, newDatasetNamePattern);
             } else {
+                ModuleDataset moduleDataset = modulesDAO.getModuleDataset(moduleDatasetId, session);
+                if (moduleDataset == null)
+                    throw new EmfException("Failed to get module dataset (ID = " + moduleDatasetId + ")");
                 Module module = moduleDataset.getModule();
                 List<History> history = module.getModuleHistory();
                 HistoryDataset historyDataset = null;

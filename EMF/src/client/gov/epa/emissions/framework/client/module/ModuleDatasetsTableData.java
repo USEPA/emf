@@ -21,7 +21,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name/Placeholder", "Dataset Name Pattern", "Dataset Name", "Version", "Exists?", "Description"};
+        return new String[] { "Mode", "Optional?", "Name/Placeholder", "Dataset Name Pattern", "Dataset Name", "Version", "Exists?", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -53,6 +53,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
             String datasetExists = (emfDataset == null) ? "No" : "Yes"; // TODO check version also
             if (mode.equals(ModuleTypeVersionDataset.IN) || mode.equals(ModuleTypeVersionDataset.INOUT)) {
                 Object[] values = { mode,
+                                    moduleTypeVersionDataset.getIsOptional() ? "Yes" : "No",
                                     moduleDataset.getPlaceholderName(),
                                     "N/A",
                                     datasetName,
@@ -65,6 +66,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
             }
             else if (outputMethod.equals(ModuleDataset.NEW)) {
                 Object[] values = { "OUT NEW",
+                                    moduleTypeVersionDataset.getIsOptional() ? "Yes" : "No", // should be No
                                     moduleDataset.getPlaceholderName(),
                                     moduleDataset.getDatasetNamePattern(),
                                     datasetName,
@@ -77,6 +79,7 @@ public class ModuleDatasetsTableData extends AbstractTableData {
             }
             else if (outputMethod.equals(ModuleDataset.REPLACE)) {
                 Object[] values = { "OUT REPLACE",
+                                    moduleTypeVersionDataset.getIsOptional() ? "Yes" : "No", // should be No
                                     moduleDataset.getPlaceholderName(),
                                     "N/A",
                                     datasetName,

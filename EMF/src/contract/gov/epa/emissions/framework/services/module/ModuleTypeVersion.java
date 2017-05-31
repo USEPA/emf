@@ -153,7 +153,7 @@ public class ModuleTypeVersion implements Serializable {
         error.setLength(0);
         
         // Important: keep the list of valid placeholders in sync with
-        //            gov.epa.emissions.framework.services.module.ModuleRunnerTask
+        //            gov.epa.emissions.framework.services.module.ModuleRunner
         Set<String> validPlaceholders = new HashSet<String>();
         validPlaceholders.add("${user.full_name}");
         validPlaceholders.add("${user.id}");
@@ -173,6 +173,8 @@ public class ModuleTypeVersion implements Serializable {
             validPlaceholders.add("${" + placeholderName + ".version}");
             validPlaceholders.add("${" + placeholderName + ".table_name}");
             validPlaceholders.add("${" + placeholderName + ".view}");
+            validPlaceholders.add("${" + placeholderName + ".is_optional}");
+            validPlaceholders.add("${" + placeholderName + ".is_set}");
             validPlaceholders.add("${" + placeholderName + ".mode}");
             if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                 validPlaceholders.add("${" + placeholderName + ".output_method}");
@@ -199,6 +201,8 @@ public class ModuleTypeVersion implements Serializable {
             String parameter = moduleTypeVersionParameter.getParameterName().toLowerCase();
             validPlaceholders.add("#{" + parameter + "}");
             validPlaceholders.add("#{" + parameter + ".sql_type}");
+            validPlaceholders.add("#{" + parameter + ".is_optional}");
+            validPlaceholders.add("#{" + parameter + ".is_set}");
             validPlaceholders.add("#{" + parameter + ".mode}");
             if (!moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
                 validPlaceholders.add("#{" + parameter + ".input_value}");
@@ -380,9 +384,12 @@ public class ModuleTypeVersion implements Serializable {
     
     public Map<String, ModuleTypeVersionDatasetConnectionEndpoint> getSourceDatasetEndpoints(ModuleTypeVersionDatasetConnection datasetConnection) {
         Map<String, ModuleTypeVersionDatasetConnectionEndpoint> endpoints = new HashMap<String, ModuleTypeVersionDatasetConnectionEndpoint>();
+        boolean includeOptional = datasetConnection.isOptional();
         try {
             String datasetTypeName = datasetConnection.getTargetDatasetTypeName();
             for (ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
+                if (dataset.getIsOptional() && !includeOptional)
+                    continue;
                 if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                     ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, null, dataset.getPlaceholderName());
                     endpoints.put(endpoint.getEndpointName(), endpoint);
@@ -392,6 +399,8 @@ public class ModuleTypeVersion implements Serializable {
                 if (submodule.equals(datasetConnection.getTargetSubmodule()))
                     continue;
                 for (ModuleTypeVersionDataset dataset : submodule.getModuleTypeVersion().getModuleTypeVersionDatasets().values()) {
+                    if (dataset.getIsOptional() && !includeOptional)
+                        continue;
                     if (dataset.getDatasetType().getName().equals(datasetTypeName) && !dataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
                         ModuleTypeVersionDatasetConnectionEndpoint endpoint = new ModuleTypeVersionDatasetConnectionEndpoint(this, submodule, dataset.getPlaceholderName());
                         endpoints.put(endpoint.getEndpointName(), endpoint);

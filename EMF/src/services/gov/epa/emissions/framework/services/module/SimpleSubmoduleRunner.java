@@ -79,17 +79,23 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 } else { // IN or INOUT
                     datasetVersion = getInputDataset(placeholderName);
                 }
-                EmfDataset dataset = datasetVersion.getDataset();
-                int versionNumber = datasetVersion.getVersion();
-                InternalSource internalSource = getInternalSource(dataset);
-                if (!moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
-                    Version version = getVersion(dataset, versionNumber, session);
-                    outputDatasetVersions.add(version);
-                    outputDatasetTables.add(datasetTablesSchema + "." + internalSource.getTable());
+                if (datasetVersion == null) {
+                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, null, 0);
+                    viewDefinitions.append(viewDefinition);
+                    algorithm = replaceDatasetPlaceholders(algorithm, module, moduleTypeVersionDataset, null, 0, viewName.toString());
+                } else {
+                    EmfDataset dataset = datasetVersion.getDataset();
+                    int versionNumber = datasetVersion.getVersion();
+                    InternalSource internalSource = getInternalSource(dataset);
+                    if (!moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
+                        Version version = getVersion(dataset, versionNumber, session);
+                        outputDatasetVersions.add(version);
+                        outputDatasetTables.add(datasetTablesSchema + "." + internalSource.getTable());
+                    }
+                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, dataset, versionNumber);
+                    viewDefinitions.append(viewDefinition);
+                    algorithm = replaceDatasetPlaceholders(algorithm, module, moduleTypeVersionDataset, dataset, versionNumber, viewName.toString());
                 }
-                createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, dataset, versionNumber);
-                viewDefinitions.append(viewDefinition);
-                algorithm = replaceDatasetPlaceholders(algorithm, module, moduleTypeVersionDataset, dataset, versionNumber, viewName.toString());
             }
             
             // replace global placeholders in the algorithm
@@ -102,7 +108,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
 
             // replace all parameter placeholders
             for(ModuleTypeVersionParameter moduleTypeVersionParameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
-                String parameterValue = "";
+                String parameterValue = null;
                 if (!moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.OUT)) {
                     parameterValue = getInputParameter(getPath(moduleTypeVersionParameter.getParameterName()));
                 }
@@ -129,7 +135,13 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                     parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + ";\n";
                 } else { // IN or INOUT
                     parameterValue = getInputParameter(parameterName);
-                    parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := CAST('" + parameterValue + "' AS " + sqlParameterType + ");\n";
+                    boolean isSet = (parameterValue != null) && (parameterValue.trim().length() > 0);
+                    if (isSet) {
+                        parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := CAST('" + parameterValue + "' AS " + sqlParameterType + ");\n";
+                    } else {
+                        parameterValue = null;
+                        parameterDeclarations += "    " + parameterTimeStamp + " " + sqlParameterType + " := NULL;\n";
+                    }
                 }
                 if (moduleInternalParameters.containsKey(parameterPath)) {
                     ModuleInternalParameter moduleInternalParameter = moduleInternalParameters.get(parameterPath);

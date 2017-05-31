@@ -18,7 +18,7 @@ public class ModuleTypeVersionDatasetsTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Mode", "Name/Placeholder", "Dataset Type", "Description"};
+        return new String[] { "Mode", "Optional?", "Name/Placeholder", "Dataset Type", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -38,6 +38,7 @@ public class ModuleTypeVersionDatasetsTableData extends AbstractTableData {
 
         for (ModuleTypeVersionDataset element : moduleTypeVersionDatasets.values()) {
             Object[] values = { element.getMode(),
+                                element.getIsOptional() ? "Yes" : "No",
                                 element.getPlaceholderName(),
                                 element.getDatasetType().getName(),
                                 element.getDescription() };

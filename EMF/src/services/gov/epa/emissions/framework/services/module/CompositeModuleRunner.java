@@ -62,15 +62,26 @@ class CompositeModuleRunner extends ModuleRunner {
                 ModuleTypeVersionParameter moduleTypeVersionParameter = moduleParameter.getModuleTypeVersionParameter();
                 HistoryParameter historyParameter;
                 if (moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.IN)) {
-                    historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
-                    setInputParameter(moduleParameter.getParameterName(), moduleParameter.getValue());
+                    if (moduleParameter.isSet()) {
+                        historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
+                        setInputParameter(moduleParameter.getParameterName(), moduleParameter.getValue());
+                    } else {
+                        historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), null);
+                        setInputParameter(moduleParameter.getParameterName(), null);
+                    }
                 } else if (moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionParameter.INOUT)) {
-                    historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
-                    setInputParameter(moduleParameter.getParameterName(), moduleParameter.getValue());
-                    setOutputParameter(moduleParameter.getParameterName(), moduleParameter.getValue());
+                    if (moduleParameter.isSet()) {
+                        historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), moduleParameter.getValue());
+                        setInputParameter(moduleParameter.getParameterName(), moduleParameter.getValue());
+                        setOutputParameter(moduleParameter.getParameterName(), moduleParameter.getValue());
+                    } else {
+                        historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), null);
+                        setInputParameter(moduleParameter.getParameterName(), null);
+                        setOutputParameter(moduleParameter.getParameterName(), null);
+                    }
                 } else { // OUT
                     historyParameter = new HistoryParameter(history, moduleParameter.getParameterName(), null);
-                    setOutputParameter(moduleParameter.getParameterName(), moduleParameter.getValue());
+                    setOutputParameter(moduleParameter.getParameterName(), null);
                 }
                 historyParameters.put(moduleParameter.getParameterName(), historyParameter);
                 logMessage = String.format("%s parameter: %s %s = %s",
@@ -131,8 +142,13 @@ class CompositeModuleRunner extends ModuleRunner {
                     SubmoduleRunner submoduleRunner = todoSubmoduleRunners.get(datasetConnection.getTargetSubmodule().getId());
                     submoduleRunner.setInputDataset(datasetConnection.getTargetPlaceholderName(), datasetVersion);
                 }
-                logMessage = String.format("Passing dataset \"%s\" version %d from \"%s\" to \"%s\"",
-                                           datasetVersion.getDataset().getName(), datasetVersion.getVersion(), datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                if (datasetVersion == null) {
+                    logMessage = String.format("Passing dataset NULL version NULL from \"%s\" to \"%s\"",
+                                               datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                } else {
+                    logMessage = String.format("Passing dataset \"%s\" version %d from \"%s\" to \"%s\"",
+                                               datasetVersion.getDataset().getName(), datasetVersion.getVersion(), datasetConnection.getSourceName(), datasetConnection.getTargetName());
+                }
                 history.addLogMessage(History.INFO, logMessage);
             }
             
@@ -140,15 +156,20 @@ class CompositeModuleRunner extends ModuleRunner {
             for(ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersion.getModuleTypeVersionParameterConnections().values()) {
                 if (parameterConnection.getSourceSubmodule() != null)
                     continue;
-                String value = getInputParameter(parameterConnection.getSourceParameterName());
+                String value = getInputParameter(parameterConnection.getSourceParameterName()); // could be null
                 if (parameterConnection.getTargetSubmodule() == null) {
                     setOutputParameter(parameterConnection.getTargetParameterName(), value);
                 } else {
                     SubmoduleRunner submoduleRunner = todoSubmoduleRunners.get(parameterConnection.getTargetSubmodule().getId());
                     submoduleRunner.setInputParameter(parameterConnection.getTargetParameterName(), value);
                 }
-                logMessage = String.format("Passing value \"%s\" from \"%s\" to \"%s\"",
-                                           value, parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                if (value == null) {
+                    logMessage = String.format("Passing value NULL from \"%s\" to \"%s\"",
+                                               parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                } else {
+                    logMessage = String.format("Passing value \"%s\" from \"%s\" to \"%s\"",
+                            value, parameterConnection.getSourceName(), parameterConnection.getTargetName());
+                }
                 history.addLogMessage(History.INFO, logMessage);
             }
             

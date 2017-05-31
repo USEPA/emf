@@ -28,6 +28,62 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
     
     private String description;
 
+    // could return null (source invalid or not set)
+    public ModuleTypeVersionDataset getSourceModuleTypeVersionDataset() {
+        ModuleTypeVersionDataset moduleTypeVersionDataset = null;
+        try {
+            if (sourceSubmodule != null) {
+                // internal dataset
+                moduleTypeVersionDataset = sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDataset(sourcePlaceholderName);
+            } else {
+                // external dataset
+                moduleTypeVersionDataset = compositeModuleTypeVersion.getModuleTypeVersionDataset(sourcePlaceholderName);
+            }
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
+        return moduleTypeVersionDataset;
+    }
+
+    // could return null (target invalid)
+    public ModuleTypeVersionDataset getTargetModuleTypeVersionDataset() {
+        ModuleTypeVersionDataset moduleTypeVersionDataset = null;
+        try {
+            if (targetSubmodule != null) {
+                // internal dataset
+                moduleTypeVersionDataset = targetSubmodule.getModuleTypeVersion().getModuleTypeVersionDataset(targetPlaceholderName);
+            } else {
+                // external dataset
+                moduleTypeVersionDataset = compositeModuleTypeVersion.getModuleTypeVersionDataset(targetPlaceholderName);
+            }
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
+        return moduleTypeVersionDataset;
+    }
+
+    public boolean sourceIsSet() {
+        return getSourceModuleTypeVersionDataset() != null; 
+    }
+
+    public boolean sourceIsOptional() {
+        ModuleTypeVersionDataset sourceModuleTypeVersionDataset = getSourceModuleTypeVersionDataset();
+        if (sourceModuleTypeVersionDataset == null)
+            return true; // source invalid or not set
+        return sourceModuleTypeVersionDataset.getIsOptional();
+    }
+
+    public boolean targetIsOptional() {
+        ModuleTypeVersionDataset targetModuleTypeVersionDataset = getTargetModuleTypeVersionDataset();
+        if (targetModuleTypeVersionDataset == null)
+            return true; // target invalid 
+        return targetModuleTypeVersionDataset.getIsOptional();
+    }
+
+    public boolean isOptional() {
+        return targetIsOptional();
+    }
+
     public ModuleTypeVersionDatasetConnection deepCopy() {
         ModuleTypeVersionDatasetConnection newModuleTypeVersionConnectionDatasets = new ModuleTypeVersionDatasetConnection();
         newModuleTypeVersionConnectionDatasets.setCompositeModuleTypeVersion(compositeModuleTypeVersion);
@@ -57,21 +113,23 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
             return false;
         }
  
-        if (sourcePlaceholderName == null) {
-            error.append("Source placeholder name is missing.");
-            return false;
-        }
-        if (sourceSubmodule != null) {
-            // internal source
-            if (!sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().containsKey(sourcePlaceholderName)) {
-                error.append(String.format("Source placeholder name %s is invalid.", getSourceName()));
+        if (!isOptional() || (sourcePlaceholderName != null) || (sourceSubmodule != null)) {
+            if (sourcePlaceholderName == null) {
+                error.append("Source placeholder name is missing for target " + getTargetName() + ".");
                 return false;
             }
-        } else if (!compositeModuleTypeVersion.getModuleTypeVersionDatasets().containsKey(sourcePlaceholderName)) {
-            error.append(String.format("Source placeholder name %s is invalid.", sourcePlaceholderName));
-            return false;
+            if (sourceSubmodule != null) {
+                // internal source
+                if (!sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionDatasets().containsKey(sourcePlaceholderName)) {
+                    error.append(String.format("Source name %s is invalid for target %s.", getSourceName(), getTargetName()));
+                    return false;
+                }
+            } else if (!compositeModuleTypeVersion.getModuleTypeVersionDatasets().containsKey(sourcePlaceholderName)) {
+                error.append(String.format("Source placeholder name %s is invalid for target %s.", sourcePlaceholderName, getTargetName()));
+                return false;
+            }
         }
- 
+        
         if (connectionName == null) {
             error.append("Connection name is missing.");
             return false;
@@ -81,6 +139,11 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
             return false;
         }
         
+        if (sourceIsOptional() && !targetIsOptional()) {
+            error.append(String.format("Invalid dataset connection from optional %s to required %s.", getSourceName(), getTargetName()));
+            return false;
+        }
+
         return true;
     }
     

@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.moduletype;
 
 import gov.epa.emissions.commons.gui.Button;
+import gov.epa.emissions.commons.gui.CheckBox;
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.TextArea;
@@ -9,6 +10,7 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
@@ -50,6 +52,7 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
     private TextField name;
     private ComboBox sqlType;
     private TextArea description;
+    private CheckBox isOptional;
     
     private TreeMap<String, ParameterType> parameterTypesMap;
     private String[] parameterTypes;
@@ -71,6 +74,7 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
             this.moduleTypeVersionParameter.setMode(ModuleTypeVersionParameter.IN);
             this.moduleTypeVersionParameter.setSqlParameterType(parameterTypes[0]);
             this.moduleTypeVersionParameter.setDescription("");
+            this.moduleTypeVersionParameter.setIsOptional(false);
         } else {
             this.moduleTypeVersionParameter = moduleTypeVersionParameter;
         }
@@ -115,11 +119,40 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
         JPanel contentPanel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
+        JPanel modePanel = new JPanel();
+        FlowLayout modeLayout = new FlowLayout();
+        modeLayout.setHgap(0);
+        modeLayout.setVgap(0);
+        modePanel.setLayout(modeLayout);
+        
         mode = new ComboBox(new String[] {ModuleTypeVersionParameter.IN, ModuleTypeVersionParameter.INOUT, ModuleTypeVersionParameter.OUT});
         mode.setSelectedItem(moduleTypeVersionParameter.getMode());
         addChangeable(mode);
-        layoutGenerator.addLabelWidgetPair("Mode:", mode, contentPanel);
+        modePanel.add(mode);
+        modePanel.add(new Label("   "));
+        
+        isOptional = new CheckBox("Optional", moduleTypeVersionParameter.getIsOptional());
+        addChangeable(isOptional);
+        if (moduleTypeVersionParameter.isModeOUT()) {
+            isOptional.setSelected(false);
+            isOptional.setEnabled(false);
+        }
+        modePanel.add(isOptional);
+        
+        mode.addActionListener(new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedItem = mode.getSelectedItem().toString();
+                if (ModuleTypeVersionParameter.OUT.equals(selectedItem)) {
+                    isOptional.setSelected(false);
+                    isOptional.setEnabled(false);
+                } else {
+                    isOptional.setEnabled(true);
+                }
+            }
+        });
 
+        layoutGenerator.addLabelWidgetPair("Mode:", modePanel, contentPanel);
+        
         sqlType = new ComboBox(parameterTypes);
         sqlType.setSelectedItem(moduleTypeVersionParameter.getSqlParameterType());
         addChangeable(sqlType);
@@ -199,6 +232,7 @@ public class ModuleTypeVersionParameterWindow extends DisposableInteralFrame imp
                         moduleTypeVersionParameter.setParameterName(name.getText().trim());
                         moduleTypeVersionParameter.setSqlParameterType(sqlType.getSelectedItem().toString());
                         moduleTypeVersionParameter.setDescription(description.getText());
+                        moduleTypeVersionParameter.setIsOptional(isOptional.isSelected());
                         presenter.doSave(moduleTypeVersion, moduleTypeVersionParameter);
                         messagePanel.setMessage("Parameter definition saved.");
                         resetChanges();

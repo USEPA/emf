@@ -29,6 +29,8 @@ public class ModuleTypeVersionDataset implements Serializable {
 
     private String description;
 
+    private boolean isOptional;
+    
     public void prepareForImport(final StringBuilder changeLog, User user) {
         if (id == 0)
             return;
@@ -43,6 +45,7 @@ public class ModuleTypeVersionDataset implements Serializable {
         newModuleTypeVersionDataset.setMode(mode);
         newModuleTypeVersionDataset.setDatasetType(datasetType);
         newModuleTypeVersionDataset.setDescription(description);
+        newModuleTypeVersionDataset.setIsOptional(isOptional);
         return newModuleTypeVersionDataset;
     }
     
@@ -207,6 +210,14 @@ public class ModuleTypeVersionDataset implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean getIsOptional() {
+        return isOptional;
+    }
+
+    public void setIsOptional(boolean isOptional) {
+        this.isOptional = isOptional;
     }
 
     public String toString() {

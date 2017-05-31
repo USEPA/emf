@@ -433,7 +433,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleTypeName = new Label(moduleType.getName());
         layoutGenerator.addLabelWidgetPair("Module Type:", moduleTypeName, formPanel);
 
-        moduleTypeVersionNumber = new Label(String.valueOf(moduleTypeVersion.getVersion()));
+        moduleTypeVersionNumber = new Label(moduleTypeVersion.versionName());
         layoutGenerator.addLabelWidgetPair("Version:", moduleTypeVersionNumber, formPanel);
 
         selectModuleTypeVersion = new Button("Select Module Type Version", selectModuleTypeVersionAction());

@@ -16,6 +16,7 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnectionEndpoint;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnectionEndpoint;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
@@ -31,6 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 public class ModuleTypeVersionDatasetConnectionWindow extends DisposableInteralFrame implements ModuleTypeVersionDatasetConnectionView {
+
+    private static final String NONE = "<none>";
 
     private ModuleTypeVersionDatasetConnectionPresenter presenter;
 
@@ -59,7 +62,16 @@ public class ModuleTypeVersionDatasetConnectionWindow extends DisposableInteralF
         this.viewMode = (viewMode == ViewMode.NEW) ? ViewMode.EDIT : viewMode; // can't be NEW, use EDIT instead
         this.moduleTypeVersionDatasetConnection = moduleTypeVersionDatasetConnection;
         this.sourceEndpoints = moduleTypeVersionDatasetConnection.getSourceDatasetEndpoints();
-        this.sourceEndpointNames = sourceEndpoints.keySet().toArray(new String[] {}); 
+        if (moduleTypeVersionDatasetConnection.isOptional()) {
+            String[] tempEndpointNames = sourceEndpoints.keySet().toArray(new String[0]);
+            this.sourceEndpointNames = new String[tempEndpointNames.length + 1];
+            this.sourceEndpointNames[0] = NONE;
+            for(int i = 0; i < tempEndpointNames.length; i++) {
+                this.sourceEndpointNames[i + 1] = tempEndpointNames[i];
+            }
+       } else {
+           this.sourceEndpointNames = sourceEndpoints.keySet().toArray(new String[0]);
+       }
         Arrays.sort(this.sourceEndpointNames);
         
         layout = new JPanel();
@@ -119,6 +131,9 @@ public class ModuleTypeVersionDatasetConnectionWindow extends DisposableInteralF
         sourcesCB.setMaximumSize(new Dimension(575, 20));
         layoutGenerator.addLabelWidgetPair("Source:", sourcesCB, contentPanel);
 
+        Label isOptional = new Label(moduleTypeVersionDatasetConnection.isOptional() ? "Yes" : "No");
+        layoutGenerator.addLabelWidgetPair("Optional:", isOptional, contentPanel);
+        
         Label targetName = new Label(moduleTypeVersionDatasetConnection.getTargetName());
         layoutGenerator.addLabelWidgetPair("Target:", targetName, contentPanel);
         
@@ -129,7 +144,7 @@ public class ModuleTypeVersionDatasetConnectionWindow extends DisposableInteralF
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, contentPanel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(contentPanel, 4, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(contentPanel, 5, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -168,9 +183,15 @@ public class ModuleTypeVersionDatasetConnectionWindow extends DisposableInteralF
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (checkTextFields()) {
-                    ModuleTypeVersionDatasetConnectionEndpoint endpoint = sourceEndpoints.get(sourcesCB.getSelectedItem());
-                    moduleTypeVersionDatasetConnection.setSourceSubmodule(endpoint.getSubmodule());
-                    moduleTypeVersionDatasetConnection.setSourcePlaceholderName(endpoint.getPlaceholderName());
+                    String selectedItem = sourcesCB.getSelectedItem().toString(); 
+                    if (selectedItem.equals(NONE)) {
+                        moduleTypeVersionDatasetConnection.setSourceSubmodule(null);
+                        moduleTypeVersionDatasetConnection.setSourcePlaceholderName(null);
+                    } else {
+                        ModuleTypeVersionDatasetConnectionEndpoint endpoint = sourceEndpoints.get(selectedItem);
+                        moduleTypeVersionDatasetConnection.setSourceSubmodule(endpoint.getSubmodule());
+                        moduleTypeVersionDatasetConnection.setSourcePlaceholderName(endpoint.getPlaceholderName());
+                    }
                     moduleTypeVersionDatasetConnection.setDescription(description.getText());
                     presenter.refreshConnections();
                     messagePanel.setMessage("Connection saved.");

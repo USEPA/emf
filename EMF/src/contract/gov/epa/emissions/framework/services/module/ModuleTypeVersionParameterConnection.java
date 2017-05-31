@@ -29,6 +29,62 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
     
     private String description;
 
+    // could return null (source invalid or not set)
+    public ModuleTypeVersionParameter getSourceModuleTypeVersionParameter() {
+        ModuleTypeVersionParameter moduleTypeVersionParameter = null;
+        try {
+            if (sourceSubmodule != null) {
+                // internal parameter
+                moduleTypeVersionParameter = sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameter(sourceParameterName);
+            } else {
+                // external parameter
+                moduleTypeVersionParameter = compositeModuleTypeVersion.getModuleTypeVersionParameter(sourceParameterName);
+            }
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
+        return moduleTypeVersionParameter;
+    }
+
+    // could return null (target invalid)
+    public ModuleTypeVersionParameter getTargetModuleTypeVersionParameter() {
+        ModuleTypeVersionParameter moduleTypeVersionParameter = null;
+        try {
+            if (targetSubmodule != null) {
+                // internal parameter
+                moduleTypeVersionParameter = targetSubmodule.getModuleTypeVersion().getModuleTypeVersionParameter(targetParameterName);
+            } else {
+                // external parameter
+                moduleTypeVersionParameter = compositeModuleTypeVersion.getModuleTypeVersionParameter(targetParameterName);
+            }
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
+        return moduleTypeVersionParameter;
+    }
+
+    public boolean sourceIsSet() {
+        return getSourceModuleTypeVersionParameter() != null; 
+    }
+
+    public boolean sourceIsOptional() {
+        ModuleTypeVersionParameter sourceModuleTypeVersionParameter = getSourceModuleTypeVersionParameter();
+        if (sourceModuleTypeVersionParameter == null)
+            return true; // source invalid or not set
+        return sourceModuleTypeVersionParameter.getIsOptional();
+    }
+
+    public boolean targetIsOptional() {
+        ModuleTypeVersionParameter targetModuleTypeVersionParameter = getTargetModuleTypeVersionParameter();
+        if (targetModuleTypeVersionParameter == null)
+            return true; // target invalid 
+        return targetModuleTypeVersionParameter.getIsOptional();
+    }
+
+    public boolean isOptional() {
+        return targetIsOptional();
+    }
+
     public ModuleTypeVersionParameterConnection deepCopy() {
         ModuleTypeVersionParameterConnection newModuleTypeVersionParameterConnection = new ModuleTypeVersionParameterConnection();
         newModuleTypeVersionParameterConnection.setCompositeModuleTypeVersion(compositeModuleTypeVersion);
@@ -58,19 +114,21 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
             return false;
         }
  
-        if (sourceParameterName == null) {
-            error.append("Source parameter name is missing.");
-            return false;
-        }
-        if (sourceSubmodule != null) {
-            // internal source
-            if (!sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().containsKey(sourceParameterName)) {
-                error.append(String.format("Source parameter name %s is invalid.", getSourceName()));
+        if (!isOptional() || (sourceParameterName != null) || (sourceSubmodule != null)) {
+            if (sourceParameterName == null) {
+                error.append("Source parameter name is missing for target " + getTargetName() + ".");
                 return false;
             }
-        } else if (!compositeModuleTypeVersion.getModuleTypeVersionParameters().containsKey(sourceParameterName)) {
-            error.append(String.format("Source parameter name %s is invalid.", sourceParameterName));
-            return false;
+            if (sourceSubmodule != null) {
+                // internal source
+                if (!sourceSubmodule.getModuleTypeVersion().getModuleTypeVersionParameters().containsKey(sourceParameterName)) {
+                    error.append(String.format("Source name %s is invalid for target %s.", getSourceName(), getTargetName()));
+                    return false;
+                }
+            } else if (!compositeModuleTypeVersion.getModuleTypeVersionParameters().containsKey(sourceParameterName)) {
+                error.append(String.format("Source parameter name %s is invalid for target %s.", sourceParameterName, getTargetName()));
+                return false;
+            }
         }
         
         if (connectionName == null) {
@@ -82,6 +140,11 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
             return false;
         }
  
+        if (sourceIsOptional() && !targetIsOptional()) {
+            error.append(String.format("Invalid parameter connection from optional %s to required %s.", getSourceName(), getTargetName()));
+            return false;
+        }
+
         return true;
     }
     
