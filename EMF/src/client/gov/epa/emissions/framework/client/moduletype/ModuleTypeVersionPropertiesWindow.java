@@ -219,8 +219,10 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         moduleTypeVersion.setLastModifiedDate(date);
         moduleTypeVersion.setCreator(session.user());
         moduleTypeVersion.setBaseVersion(0);
-        moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" + "-- \n"
-                + "-- TODO: implement the algorithm\n\n");
+        if (!moduleType.isComposite()) {
+            moduleTypeVersion.setAlgorithm("-- Initial version created by " + session.user().getName() + "\n" + "-- \n"
+                    + "-- TODO: implement the algorithm\n\n");
+        }
         moduleTypeVersion.setIsFinal(false);
         moduleTypeVersion.setModuleType(moduleType);
         moduleType.addModuleTypeVersion(moduleTypeVersion);
@@ -230,6 +232,58 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         moduleTypeVersionRevision.setCreationDate(date);
         moduleTypeVersionRevision.setCreator(session.user());
         moduleTypeVersion.addModuleTypeVersionRevision(moduleTypeVersionRevision);
+
+        layout = new JPanel();
+        layout.setLayout(new BorderLayout());
+        super.getContentPane().add(layout);
+    }
+
+    // New Module Type from existing Module Type Version
+    public ModuleTypeVersionPropertiesWindow(EmfConsole parentConsole, DesktopManager desktopManager,
+            EmfSession session, ModuleTypeVersionObserver moduleTypeVersionObserver, ModuleTypeVersion existingModuleTypeVersion) {
+        super(getWindowTitle(ViewMode.NEW, null), new Dimension(850, 700), desktopManager);
+
+        this.parentConsole = parentConsole;
+        this.session = session;
+        this.moduleTypeVersionObserver = moduleTypeVersionObserver;
+
+        this.initialViewMode = ViewMode.NEW;
+        this.viewMode = ViewMode.NEW;
+        this.mustUnlock = false;
+        this.isDirty = true;
+
+        ModuleType existingModuleType = existingModuleTypeVersion.getModuleType();
+        
+        Date date = new Date();
+
+        moduleType = new ModuleType();
+        moduleType.setName(existingModuleType.getName() + " Copy");
+        moduleType.setDescription("Copy of " + existingModuleType.getName() + " module type.\n" + existingModuleType.getDescription());
+        moduleType.setCreationDate(date);
+        moduleType.setLastModifiedDate(date);
+        moduleType.setCreator(session.user());
+        moduleType.setDefaultVersion(0);
+        moduleType.setIsComposite(existingModuleType.getIsComposite());
+        moduleType.setTags(existingModuleType.getTags());
+
+        moduleTypeVersion = existingModuleTypeVersion.deepCopy(session.user());
+        moduleTypeVersion.setVersion(0);
+        moduleTypeVersion.setModuleType(moduleType);
+        moduleTypeVersion.setDescription("Copy of " + existingModuleTypeVersion.fullNameSDS("\"%s\" module type - version %d - \"%s\""));
+        moduleTypeVersion.setCreationDate(date);
+        moduleTypeVersion.setLastModifiedDate(date);
+        moduleTypeVersion.setCreator(session.user());
+        moduleTypeVersion.setBaseVersion(0);
+        moduleTypeVersion.setIsFinal(false);
+        moduleTypeVersion.getModuleTypeVersionRevisions().clear();
+        
+        ModuleTypeVersionRevision moduleTypeVersionRevision = new ModuleTypeVersionRevision();
+        moduleTypeVersionRevision.setDescription(moduleTypeVersion.getDescription());
+        moduleTypeVersionRevision.setCreationDate(date);
+        moduleTypeVersionRevision.setCreator(session.user());
+        moduleTypeVersion.addModuleTypeVersionRevision(moduleTypeVersionRevision);
+
+        moduleType.addModuleTypeVersion(moduleTypeVersion);
 
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
@@ -1286,7 +1340,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             moduleType = presenter.releaseLockedModuleType(moduleType.getId());
         }
         presenter.doClose();
-        moduleTypeVersionObserver.closedChildWindow(moduleTypeVersion, initialViewMode);
+        if (moduleTypeVersionObserver != null) {
+            moduleTypeVersionObserver.closedChildWindow(moduleTypeVersion, initialViewMode);
+        }
     }
 
     public void populateDatasetTypesCache() {

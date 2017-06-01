@@ -4,7 +4,6 @@ import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
-import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
@@ -13,7 +12,6 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.LiteModule;
-import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
@@ -178,6 +176,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
+        viewButton.setMnemonic('V');
 
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -185,13 +184,23 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
+        editButton.setMnemonic('E');
 
-        Action createAction = new AbstractAction() {
+        Action newVersionAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                createModuleTypeVersion();
+                newVersion();
             }
         };
-        Button newButton = new NewButton(createAction);
+        Button newVersionButton = new Button("New Version", newVersionAction);
+        newVersionButton.setMnemonic('N');
+
+        Action newModuleTypeAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                newModuleType();
+            }
+        };
+        Button newModuleTypeButton = new Button("New Module Type", newModuleTypeAction);
+        newModuleTypeButton.setMnemonic('T');
 
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -199,16 +208,18 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         Button removeButton = new RemoveButton(removeAction);
+        removeButton.setMnemonic('m');
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(viewButton);
         crudPanel.add(editButton);
-        crudPanel.add(newButton);
+        crudPanel.add(newVersionButton);
+        crudPanel.add(newModuleTypeButton);
         crudPanel.add(removeButton);
         if (viewMode == ViewMode.VIEW) {
             editButton.setEnabled(false);
-            newButton.setEnabled(false);
+            newVersionButton.setEnabled(false);
             removeButton.setEnabled(false);
         }
 
@@ -260,7 +271,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         }
     }
 
-    private void createModuleTypeVersion() {
+    private void newVersion() {
         List selected = selected();
         if (selected.isEmpty()) {
             messagePanel.setMessage("Please select one or more module type versions to use as base versions");
@@ -274,6 +285,25 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             newEditMTVs++;
             ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, ViewMode.NEW, newModuleTypeVersion);
             presenter.displayNewModuleTypeView(view);
+        }
+    }
+
+    private void newModuleType() {
+        List selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select a module type version to use as base version");
+            return;
+        }   
+        if (selected.size() > 1) {
+            messagePanel.setMessage("Please select only one module type version to use as base version");
+            return;
+        }   
+
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            ModuleTypeVersion moduleTypeVersion = (ModuleTypeVersion) iter.next();
+            ModuleTypeVersionPropertiesWindow newView = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, null, moduleTypeVersion);
+            ModuleTypeVersionPropertiesPresenter newPresenter = new ModuleTypeVersionPropertiesPresenter(session, newView);
+            newPresenter.doDisplay();
         }
     }
 
