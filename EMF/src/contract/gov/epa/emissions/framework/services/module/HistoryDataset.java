@@ -23,7 +23,14 @@ public class HistoryDataset implements Serializable {
     private int version;
 
     public boolean isOutOfDate(final StringBuilder explanation, DataService dataService, DataEditorService dataEditorService) {
+        ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
+        if (moduleTypeVersionDataset == null) {
+            explanation.append("Module type version dataset for placeholder '" + placeholderName + "' is missing.\n");
+            return true;
+        }
         if (datasetId == null) {
+            if (moduleTypeVersionDataset.getIsOptional())
+                return false;
             explanation.append("Dataset for placeholder '" + placeholderName + "' is missing.\n");
             return true;
         }
@@ -45,11 +52,6 @@ public class HistoryDataset implements Serializable {
         }
         if (datasetVersion == null) {
             explanation.append("Dataset \"" + dataset.getName() + "\" version " + version + " for placeholder '" + placeholderName + "' is missing");
-            return true;
-        }
-        ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
-        if (moduleTypeVersionDataset == null) {
-            explanation.append("Module type version dataset for placeholder '" + placeholderName + "' is missing.\n");
             return true;
         }
         String finalText = datasetVersion.isFinalVersion() ? " final " : " ";

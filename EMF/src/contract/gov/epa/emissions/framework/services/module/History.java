@@ -139,7 +139,7 @@ public class History implements Serializable, Comparable<History> {
                         return false;
                     }
                 }
-            } else { // IN or INOUT
+            } else if (!moduleDataset.isOptional()) { // IN or INOUT
                 if (moduleDataset.getDatasetId() == null || moduleDataset.getVersion() == null) {
                     error.append(String.format("The dataset for '%s' input placeholder was not set.", placeholderName));
                     return false;
