@@ -647,8 +647,13 @@ abstract class ModuleRunner {
                             .matcher(result).replaceAll("NEW"); // internal dataset output method is NEW (with REPLACE if exists)
         }
 
+        String is_optional = "\\/\\* " + moduleTypeVersionDataset.getPlaceholderName() + "\\.is_optional \\*\\/ " +
+                             (moduleTypeVersionDataset.getIsOptional() ? "TRUE" : "FALSE");
+        
         result = Pattern.compile(startPattern + separatorPattern + "is_optional" + endPattern, Pattern.CASE_INSENSITIVE)
-                        .matcher(result).replaceAll(moduleTypeVersionDataset.getIsOptional() ? "TRUE" : "FALSE");
+                        .matcher(result).replaceAll(is_optional);
+
+        String is_set = "\\/\\* " + moduleTypeVersionDataset.getPlaceholderName() + "\\.is_set \\*\\/ ";
 
         if (viewName == null) { // should never happen
             // new simplified syntax
@@ -676,7 +681,7 @@ abstract class ModuleRunner {
         
         if (dataset == null) {
             result = Pattern.compile(startPattern + separatorPattern + "is_set" + endPattern, Pattern.CASE_INSENSITIVE)
-                            .matcher(result).replaceAll("FALSE");
+                            .matcher(result).replaceAll(is_set + "FALSE");
             
             result = Pattern.compile(startPattern + separatorPattern + "dataset_name" + endPattern, Pattern.CASE_INSENSITIVE)
                             .matcher(result).replaceAll("NULL");
@@ -695,7 +700,7 @@ abstract class ModuleRunner {
             }
     
             result = Pattern.compile(startPattern + separatorPattern + "is_set" + endPattern, Pattern.CASE_INSENSITIVE)
-                            .matcher(result).replaceAll("TRUE");
+                            .matcher(result).replaceAll(is_set + "TRUE");
 
             result = Pattern.compile(startPattern + separatorPattern + "dataset_name" + endPattern, Pattern.CASE_INSENSITIVE)
                             .matcher(result).replaceAll(dataset.getName());
@@ -754,18 +759,24 @@ abstract class ModuleRunner {
         result = Pattern.compile(startPattern + separatorPattern + "mode" + endPattern, Pattern.CASE_INSENSITIVE)
                         .matcher(result).replaceAll(moduleTypeVersionParameter.getMode());
 
+        String is_optional = "\\/\\* " + moduleTypeVersionParameter.getParameterName() + "\\.is_optional \\*\\/ " +
+                             (moduleTypeVersionParameter.getIsOptional() ? "TRUE" : "FALSE");
+
         result = Pattern.compile(startPattern + separatorPattern + "is_optional" + endPattern, Pattern.CASE_INSENSITIVE)
-                        .matcher(result).replaceAll(moduleTypeVersionParameter.getIsOptional() ? "TRUE" : "FALSE");
+                        .matcher(result).replaceAll(is_optional);
 
         // TODO for string module parameters: distinguish between "" (empty string) and NULL (not set)
-        boolean isSet = (parameterInputValue != null) && (parameterInputValue.trim().length() > 0);
+        boolean hasValue = (parameterInputValue != null) && (parameterInputValue.trim().length() > 0);
         
+        String is_set = "\\/\\* " + moduleTypeVersionParameter.getParameterName() + "\\.is_set \\*\\/ " +
+                        (hasValue ? "TRUE" : "FALSE");
+
         result = Pattern.compile(startPattern + separatorPattern + "is_set" + endPattern, Pattern.CASE_INSENSITIVE)
-                        .matcher(result).replaceAll(isSet ? "TRUE" : "FALSE");
+                        .matcher(result).replaceAll(is_set);
 
         if (!moduleTypeVersionParameter.getMode().equals(ModuleTypeVersionDataset.OUT)) {
             result = Pattern.compile(startPattern + separatorPattern + "input_value" + endPattern, Pattern.CASE_INSENSITIVE)
-                            .matcher(result).replaceAll(isSet ? parameterInputValue : "NULL");
+                            .matcher(result).replaceAll(hasValue ? parameterInputValue : "NULL");
         }
 
         return result;
