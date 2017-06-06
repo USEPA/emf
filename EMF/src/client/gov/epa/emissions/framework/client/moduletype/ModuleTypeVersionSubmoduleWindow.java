@@ -112,18 +112,22 @@ public class ModuleTypeVersionSubmoduleWindow extends DisposableInteralFrame imp
         moduleTypeVersionNumber.setText(String.valueOf(this.moduleTypeVersionSubmodule.getModuleTypeVersion().getVersion()));
     }
     
+    private void doSelectModuleTypeVersion() {
+        try {
+            ModuleTypeVersion newModuleTypeVersion = selectModuleTypeVersion(parentConsole, session, moduleTypeVersionSubmodule.getModuleTypeVersion());
+            if (newModuleTypeVersion != null && !newModuleTypeVersion.equals(moduleTypeVersionSubmodule.getModuleTypeVersion())) {
+                setModuleTypeVersion(newModuleTypeVersion);
+                refreshModuleTypeVersion();
+            }
+        } catch (Exception ex) {
+            messagePanel.setError(ex.getMessage());
+        }
+    }
+
     private Action selectModuleTypeVersionAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                try {
-                    ModuleTypeVersion newModuleTypeVersion = selectModuleTypeVersion(parentConsole, session);
-                    if (newModuleTypeVersion != null && !newModuleTypeVersion.equals(moduleTypeVersionSubmodule.getModuleTypeVersion())) {
-                        setModuleTypeVersion(newModuleTypeVersion);
-                        refreshModuleTypeVersion();
-                    }
-                } catch (Exception ex) {
-                    messagePanel.setError(ex.getMessage());
-                }
+                doSelectModuleTypeVersion();
             }
         };
 
