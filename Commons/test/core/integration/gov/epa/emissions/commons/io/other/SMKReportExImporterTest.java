@@ -148,7 +148,7 @@ public class SMKReportExImporterTest extends PersistenceTestCase {
         exporter.export(exportfile);
         List data = readData(exportfile);
         assertEquals("Stationary area", data.get(0));
-        assertEquals("date;region;state;_123co;_456nox;_7voc;nh3;so2;_1999pm10;pm2_5;pmc;comments", data.get(12));
+        assertEquals("date;region;state;_123co;_456nox;_7voc;nh3;so2;_1999pm10;pm2_5;pmc", data.get(12));
         assertEquals("07/08/2002;232000;\"Zacatecas\";4.0529;2.3955;85.799;100.51;25.768;21.124;6.1412;14.983", data
                 .get(79));
         assertEquals(67, exporter.getExportedLinesCount());

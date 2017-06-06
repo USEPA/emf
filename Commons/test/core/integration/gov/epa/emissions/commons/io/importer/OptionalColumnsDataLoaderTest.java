@@ -34,12 +34,17 @@ public class OptionalColumnsDataLoaderTest extends PersistenceTestCase {
         DbServer dbServer = dbSetup.getDbServer();
         sqlDataTypes = dbServer.getSqlDataTypes();
         datasource = dbServer.getEmissionsDatasource();
-        table = "varying";
+        table = "test";
     }
 
     protected void doTearDown() throws Exception {
         DbUpdate dbUpdate = dbSetup.dbUpdate(datasource);
-        dbUpdate.dropTable(datasource.getName(), table);
+        try {
+            dbUpdate.dropTable(datasource.getName(), table);
+        } catch (Exception ex) {
+            //suppress issue
+            ex.printStackTrace();
+        }
     }
 
     private FileFormatWithOptionalCols setupUnversionedTable() throws SQLException {
@@ -79,7 +84,7 @@ public class OptionalColumnsDataLoaderTest extends PersistenceTestCase {
         Reader reader = new DelimitedFileReader(file, new DelimiterIdentifyingTokenizer(2));
         try {
             loader.load(reader, dataset, table);
-        } catch (Exception e) {
+        } catch (ImporterException e) {
             assertTrue(e.getMessage().contains("Could not find 5 of ' ' delimiters on the line."));
         } 
     }

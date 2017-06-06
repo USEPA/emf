@@ -3,7 +3,7 @@ cnty_tn_lcc,D:\MIMS\mimssp_7_2005\data\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+la
 us_counties,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",US county boundary GIS data from Census 2000,US Census Bureau,
 tn_counties,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",US county boundary GIS data cliped from EPA data,,
 county_bndy,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",US county boundary GIS data from EPA,,
-pophu2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Population and housing units from Census 2000,US Census Bureau,,
+pophu2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Population and housing units from Census 2000,US Census Bureau,
 vi_pophu2k,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Population and housing units from Census 2000 for Virginia Islands,,Right Projection?
 us_ph,D:\MIMS\emiss_shp2003\us\,,,The change in housing between 1990 and 2000,US Census Bureau,No Data
 us_heat,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Number of housing units in primary heating categories for each census block,US Census Bureau,1990 or 2000 census tracts?
@@ -33,10 +33,10 @@ us_timb,D:\MIMS\emiss_shp2003\us\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40
 can_socio_econ,D:\MIMS\emiss_shp2003\canada\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Grided socio-economic data and total labor force 15 years and over by industry source,Extracted from 1996 Census of Population,
 can_rds,D:\MIMS\emiss_shp2003\canada\,SPHERE,"proj=lcc,+lat_1=33,+lat_2=45,+lat_0=40,+lon_0=-97",Length of roads in km in grid cell,Provided by Environment Canada,
 mexmunic_new,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico polpulation data in counites,,
-mexico_air_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Airport locations for Mexico
-mexico_ports_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Ports locations for Mexico
-mexico_region,D:\SPAT\data\shapefiles\Mexico\mexico_region.shp,SPHERE,LATLON,Mexico State population
-mexico_rivers_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico rivers
-mexico_roads_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico roads
-mexico_rr_fips,D:\SPAT\data\shapefiles\Mexico,SPHERE,LATLON,Mexico railroads
-mex_hh,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico State population and housing units
+mexico_air_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Airport locations for Mexico,,
+mexico_ports_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Ports locations for Mexico,,
+mexico_region,D:\SPAT\data\shapefiles\Mexico\mexico_region.shp,SPHERE,LATLON,Mexico State population,,
+mexico_rivers_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico rivers,,
+mexico_roads_fips,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico roads,,
+mexico_rr_fips,D:\SPAT\data\shapefiles\Mexico,SPHERE,LATLON,Mexico railroads,,
+mex_hh,D:\SPAT\data\shapefiles\Mexico\,SPHERE,LATLON,Mexico State population and housing units,,
