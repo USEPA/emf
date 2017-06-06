@@ -826,14 +826,26 @@ public class ModuleTypeVersion implements Serializable {
     }
 
     public void addModuleTypeVersionSubmodule(ModuleTypeVersionSubmodule moduleTypeVersionSubmodule) {
+        ModuleTypeVersion submoduleTypeVersion = moduleTypeVersionSubmodule.getModuleTypeVersion();
+
+        // save the IDs of all dataset connections indexed by connection name
+        Map<String, Integer> datasetTargetIds = new HashMap<String, Integer>();
+        for (ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersionDatasetConnections.values()) {
+            datasetTargetIds.put(datasetConnection.getConnectionName(), datasetConnection.getId());
+        }
+        // save the IDs of all parameter connections indexed by connection name
+        Map<String, Integer> parameterTargetIds = new HashMap<String, Integer>();
+        for (ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersionParameterConnections.values()) {
+            parameterTargetIds.put(parameterConnection.getConnectionName(), parameterConnection.getId());
+        }
+
         if (this.moduleTypeVersionSubmodules.containsKey(moduleTypeVersionSubmodule.getName())) {
             removeModuleTypeVersionSubmodule(moduleTypeVersionSubmodule.getName());
         }
         moduleTypeVersionSubmodule.setCompositeModuleTypeVersion(this);
         this.moduleTypeVersionSubmodules.put(moduleTypeVersionSubmodule.getName(), moduleTypeVersionSubmodule);
-        
+
         // add connections for the new internal targets (IN/INOUT datasets and parameters)
-        ModuleTypeVersion submoduleTypeVersion = moduleTypeVersionSubmodule.getModuleTypeVersion();
         for (ModuleTypeVersionDataset dataset : submoduleTypeVersion.getModuleTypeVersionDatasets().values()) {
             if (dataset.getMode().equals(ModuleTypeVersionDataset.OUT))
                 continue;
@@ -841,6 +853,13 @@ public class ModuleTypeVersion implements Serializable {
             datasetConnection.setTargetSubmodule(moduleTypeVersionSubmodule);
             datasetConnection.setTargetPlaceholderName(dataset.getPlaceholderName());
             addModuleTypeVersionDatasetConnection(datasetConnection);
+            
+            // reuse the old dataset connection ID for the matching connection name
+            // otherwise we get constraint violations from database
+            String datasetConnectionName = datasetConnection.getConnectionName();
+            if (datasetTargetIds.containsKey(datasetConnectionName)) {
+                datasetConnection.setId(datasetTargetIds.get(datasetConnectionName));
+            }
         }
         for (ModuleTypeVersionParameter parameter : submoduleTypeVersion.getModuleTypeVersionParameters().values()) {
             if (parameter.getMode().equals(ModuleTypeVersionParameter.OUT))
@@ -849,6 +868,13 @@ public class ModuleTypeVersion implements Serializable {
             parameterConnection.setTargetSubmodule(moduleTypeVersionSubmodule);
             parameterConnection.setTargetParameterName(parameter.getParameterName());
             addModuleTypeVersionParameterConnection(parameterConnection);
+            
+            // reuse the old parameter connection ID for the matching connection name
+            // otherwise we get constraint violations from database
+            String parameterConnectionName = parameterConnection.getConnectionName();
+            if (parameterTargetIds.containsKey(parameterConnectionName)) {
+                parameterConnection.setId(parameterTargetIds.get(parameterConnectionName));
+            }
         }
     }
 
