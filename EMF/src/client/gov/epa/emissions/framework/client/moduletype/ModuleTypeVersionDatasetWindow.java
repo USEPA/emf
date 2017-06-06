@@ -247,7 +247,7 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
                 moduleTypeVersionDataset.setDatasetType(datasetTypeMap.get(datasetTypeCB.getSelectedItem()));
                 moduleTypeVersionDataset.setDescription(description.getText());
                 moduleTypeVersionDataset.setIsOptional(isOptional.isSelected());
-                moduleTypeVersionDataset = presenter.doSave(moduleTypeVersionDataset);
+                presenter.doSave(moduleTypeVersion, moduleTypeVersionDataset);
                 moduleTypeVersion = moduleTypeVersionDataset.getModuleTypeVersion();
                 messagePanel.setMessage("Dataset definition saved.");
                 resetChanges();
