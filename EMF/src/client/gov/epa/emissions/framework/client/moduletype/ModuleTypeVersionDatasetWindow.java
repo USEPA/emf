@@ -234,28 +234,33 @@ public class ModuleTypeVersionDatasetWindow extends DisposableInteralFrame imple
         return true;
     }
 
+    private void doSave() {
+        if (checkTextFields()) {
+            try {
+                String trimName = name.getText().trim();
+                if (!trimName.equals(moduleTypeVersionDataset.getPlaceholderName())) {
+                    presenter.doRemove(moduleTypeVersion, moduleTypeVersionDataset);
+                    moduleTypeVersionDataset = moduleTypeVersionDataset.deepCopy();
+                }
+                moduleTypeVersionDataset.setPlaceholderName(name.getText().trim());
+                moduleTypeVersionDataset.setMode(mode.getSelectedItem().toString());
+                moduleTypeVersionDataset.setDatasetType(datasetTypeMap.get(datasetTypeCB.getSelectedItem()));
+                moduleTypeVersionDataset.setDescription(description.getText());
+                moduleTypeVersionDataset.setIsOptional(isOptional.isSelected());
+                moduleTypeVersionDataset = presenter.doSave(moduleTypeVersionDataset);
+                moduleTypeVersion = moduleTypeVersionDataset.getModuleTypeVersion();
+                messagePanel.setMessage("Dataset definition saved.");
+                resetChanges();
+            } catch (EmfException e) {
+                messagePanel.setError(e.getMessage());
+            }
+        }
+    }
+
     private Action saveAction() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (checkTextFields()) {
-                    try {
-                        String trimName = name.getText().trim();
-                        if (!trimName.equals(moduleTypeVersionDataset.getPlaceholderName())) {
-                            presenter.doRemove(moduleTypeVersion, moduleTypeVersionDataset);
-                            moduleTypeVersionDataset = moduleTypeVersionDataset.deepCopy();
-                        }
-                        moduleTypeVersionDataset.setPlaceholderName(name.getText().trim());
-                        moduleTypeVersionDataset.setMode(mode.getSelectedItem().toString());
-                        moduleTypeVersionDataset.setDatasetType(datasetTypeMap.get(datasetTypeCB.getSelectedItem()));
-                        moduleTypeVersionDataset.setDescription(description.getText());
-                        moduleTypeVersionDataset.setIsOptional(isOptional.isSelected());
-                        presenter.doSave(moduleTypeVersion, moduleTypeVersionDataset);
-                        messagePanel.setMessage("Dataset definition saved.");
-                        resetChanges();
-                    } catch (EmfException e) {
-                        messagePanel.setError(e.getMessage());
-                    }
-                }
+                doSave();
             }
         };
 
