@@ -79,7 +79,7 @@ class SimpleModuleRunner extends ModuleRunner {
                     datasetVersion = getInputDataset(moduleDataset.getPlaceholderName());
                 }
                 if (datasetVersion == null) {
-                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, null, 0);
+                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, dbServer, null, 0);
                     viewDefinitions.append(viewDefinition);
                     algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, null, 0, viewName.toString());
                 } else {
@@ -91,7 +91,7 @@ class SimpleModuleRunner extends ModuleRunner {
                         outputDatasetVersions.add(version);
                         outputDatasetTables.add(datasetTablesSchema + "." + internalSource.getTable());
                     }
-                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, dataset, versionNumber);
+                    createView(viewName, viewDefinition, connection, module, moduleTypeVersionDataset, dbServer, dataset, versionNumber);
                     viewDefinitions.append(viewDefinition);
                     algorithm = replaceDatasetPlaceholders(algorithm, moduleDataset, dataset, versionNumber, viewName.toString());
                 }

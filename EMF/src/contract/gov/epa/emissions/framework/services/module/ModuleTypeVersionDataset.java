@@ -96,7 +96,8 @@ public class ModuleTypeVersionDataset implements Serializable {
         }
         FileFormat fileFormat = datasetType.getFileFormat();
         if (fileFormat == null) {
-            return false;
+            if (!datasetType.getName().equals(DatasetType.projectionPacket))
+                return false;
         }
         if (datasetType.isExternal()) {
             return false;
@@ -122,11 +123,13 @@ public class ModuleTypeVersionDataset implements Serializable {
         }
         FileFormat fileFormat = datasetType.getFileFormat();
         if (fileFormat == null) {
-            if (error != null) {
-                error.append(String.format("The '%s' dataset type is not supported by the modules subsystem because it doesn't have a file format.",
-                                           datasetType.getName()));
+            if (!datasetType.getName().equals(DatasetType.projectionPacket)) {
+                if (error != null) {
+                    error.append(String.format("The '%s' dataset type is not supported by the modules subsystem.",
+                                               datasetType.getName()));
+                }
+                return false;
             }
-            return false;
         }
         if (datasetType.isExternal()) {
             if (error != null) {

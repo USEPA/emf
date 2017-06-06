@@ -26,6 +26,8 @@ import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.db.version.Versions;
 import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.FileFormat;
+import gov.epa.emissions.commons.io.TableFormat;
+import gov.epa.emissions.commons.io.other.ProjectionPacketFileFormat;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
@@ -68,6 +70,22 @@ abstract class ModuleRunner {
         finalStatusMessage = "";
     }
     
+    public static TableFormat getTableFormat(ModuleTypeVersionDataset moduleTypeVersionDataset, DbServer dbServer) throws EmfException {
+        SqlDataTypes sqlDataTypes = dbServer.getSqlDataTypes();
+        DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
+        FileFormat fileFormat = datasetType.getFileFormat();
+        if (fileFormat == null) {
+            if (datasetType.getName().equals(DatasetType.projectionPacket)) {
+                fileFormat = new ProjectionPacketFileFormat(sqlDataTypes);
+            } else {
+                throw new EmfException(String.format("Dataset type \"%s\" used by \"%s\" placeholder is not supported",
+                                                     datasetType.getName(), moduleTypeVersionDataset.getPlaceholderName())); 
+            }
+        }
+        VersionedTableFormat versionedTableFormat = new VersionedTableFormat(fileFormat, sqlDataTypes);
+        return versionedTableFormat;
+    }
+
     protected void createDatasets() throws Exception {
         
         DbServer dbServer = getDbServer();
@@ -97,22 +115,20 @@ abstract class ModuleRunner {
             if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                 if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
                     DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
-                    FileFormat fileFormat = datasetType.getFileFormat();
-                    SqlDataTypes types = dbServer.getSqlDataTypes();
-                    VersionedTableFormat versionedTableFormat = new VersionedTableFormat(fileFormat, types);
-                    String description = "New dataset created by the '" + module.getName() + "' module for the '" + placeholderName + "' placeholder.";
                     DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, sessionFactory, dbServerFactory, datasource);
                     String newDatasetName = getNewDatasetName(moduleDataset.getDatasetNamePattern(), user, startDate, history);
                     boolean newDataset = true;
                     dataset = datasetDAO.getDataset(session, newDatasetName);
                     if (dataset == null) { // dataset doesn't exists, create NEW
-                        dataset = datasetCreator.addDataset("mod", newDatasetName, datasetType, module.getIsFinal(), versionedTableFormat, description);
+                        TableFormat tableFormat = getTableFormat(moduleTypeVersionDataset, dbServer);
+                        String description = "New dataset created by the '" + module.getName() + "' module for the '" + placeholderName + "' placeholder.";
+                        dataset = datasetCreator.addDataset("mod", newDatasetName, datasetType, module.getIsFinal(), tableFormat, description);
                         newDataset = true;
-                    } else if (!dataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType())) { // different dataset type
+                    } else if (!dataset.getDatasetType().equals(datasetType)) { // different dataset type
                         throw new EmfException("Dataset \"" + dataset.getName() +
                                                "\" already exists and can't be replaced because it has a different dataset type (\"" +
                                                dataset.getDatasetType().getName() + "\" instead of \"" +
-                                               moduleTypeVersionDataset.getDatasetType().getName() + "\")");
+                                               datasetType.getName() + "\")");
                     } else if (!wasDatasetCreatedByModule(dataset, module, placeholderName)) { // dataset was not created by this module
                         throw new EmfException("Dataset \"" + dataset.getName() +
                                                "\" already exists and can't be replaced because it was not created by module \"" + module.getName() +
@@ -858,14 +874,15 @@ abstract class ModuleRunner {
     }
 
     protected static void createView(final StringBuilder viewName, final StringBuilder viewDefinition,
-                                     Connection connection, Module module, ModuleTypeVersionDataset moduleTypeVersionDataset,
+                                     Connection connection, Module module, ModuleTypeVersionDataset moduleTypeVersionDataset, DbServer dbServer,
                                      EmfDataset emfDataset, int version) throws EmfException {
         viewName.setLength(0);
         viewDefinition.setLength(0);
         
         String mode = moduleTypeVersionDataset.getMode().toLowerCase();
         
-        Column[] columns = moduleTypeVersionDataset.getDatasetType().getFileFormat().getColumns();
+        TableFormat tableFormat = getTableFormat(moduleTypeVersionDataset, dbServer);
+        Column[] columns = tableFormat.cols();
         
         StringBuilder colNames = new StringBuilder();
         StringBuilder newColNames = new StringBuilder();

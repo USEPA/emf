@@ -15,6 +15,7 @@ import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.SqlDataTypes;
+import gov.epa.emissions.commons.io.TableFormat;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
@@ -139,6 +140,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
             String placeholderName = moduleTypeVersionDataset.getPlaceholderName();
             String placeholderPath = getPath(placeholderName);
             String placeholderPathNames = getPathNames(placeholderName);
+            DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
             boolean keepInternalDataset = false;
             String internalDatasetName = "";
             if (moduleInternalDatasets.containsKey(placeholderPath)) {
@@ -158,12 +160,10 @@ abstract class SubmoduleRunner extends ModuleRunner {
             EmfDataset dataset = getDatasetDAO().getDataset(session, internalDatasetName);
             int versionNumber = 0;
             if (dataset == null) { // NEW
-                DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
-                SqlDataTypes types = dbServer.getSqlDataTypes();
-                VersionedTableFormat versionedTableFormat = new VersionedTableFormat(datasetType.getFileFormat(), types);
+                TableFormat tableFormat = getTableFormat(moduleTypeVersionDataset, dbServer);
                 String description = "New internal dataset created by the '" + module.getName() + "' module for the '" + placeholderPathNames + "' placeholder.";
                 DatasetCreator datasetCreator = new DatasetCreator(module, placeholderPathNames, user, sessionFactory, dbServerFactory, datasource);
-                dataset = datasetCreator.addDataset("mod", internalDatasetName, datasetType, module.getIsFinal(), versionedTableFormat, description);
+                dataset = datasetCreator.addDataset("mod", internalDatasetName, datasetType, module.getIsFinal(), tableFormat, description);
                
                 InternalSource internalSource = getInternalSource(dataset);
                 
@@ -173,11 +173,11 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 historySubmodule.addLogMessage(History.INFO, logMessage);
 
                 setOutputDataset(placeholderName, new DatasetVersion(dataset, versionNumber, keepInternalDataset));
-            } else if (!dataset.getDatasetType().equals(moduleTypeVersionDataset.getDatasetType())) { // different dataset type
+            } else if (!dataset.getDatasetType().equals(datasetType)) { // different dataset type
                 throw new EmfException("Dataset \"" + dataset.getName() +
                                        "\" already exists and can't be replaced because it has a different dataset type (\"" +
                                        dataset.getDatasetType().getName() + "\" instead of \"" +
-                                       moduleTypeVersionDataset.getDatasetType().getName() + "\")");
+                                       datasetType.getName() + "\")");
             } else if (!wasDatasetCreatedByModule(dataset, module, placeholderPathNames)) { // dataset was not created by this module
                 throw new EmfException("Can't replace internal dataset \"" + dataset.getName() +
                                        "\" because it was not created by module \"" + module.getName() +
