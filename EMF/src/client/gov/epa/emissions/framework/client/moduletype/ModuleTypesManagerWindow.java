@@ -37,7 +37,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
@@ -190,9 +189,9 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         crudPanel.add(editButton);
         crudPanel.add(newButton);
         crudPanel.add(removeButton);
-        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        crudPanel.add(exportButton);
-        crudPanel.add(importButton);
+//        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
+//        crudPanel.add(exportButton);
+//        crudPanel.add(importButton);
         return crudPanel;
     }
 
