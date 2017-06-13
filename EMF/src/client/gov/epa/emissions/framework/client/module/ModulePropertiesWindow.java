@@ -1,8 +1,10 @@
 package gov.epa.emissions.framework.client.module;
 
+import gov.epa.emissions.commons.data.Project;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
+import gov.epa.emissions.commons.gui.EditableComboBox;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.TextArea;
@@ -15,8 +17,10 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.ViewMode;
+import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.data.Projects;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -74,8 +78,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private EmfConsole parentConsole;
     private EmfSession session;
 
-    ViewMode viewMode;
-    
+    private ViewMode viewMode;
+
+    private Project[] allProjects;
+
     private Date date;
     private Module module;
     private ModuleType moduleType;
@@ -98,6 +104,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private TextField moduleName;
     private TextArea  moduleDescription;
     private TextArea  moduleTags;
+    private EditableComboBox projectsCB;
     private Label     moduleCreator;
     private Label     moduleCreationDate;
     private Label     moduleLastModifiedDate;
@@ -468,6 +475,18 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
         layoutGenerator.addLabelWidgetPair("", tagsCrudPanel(), formPanel);
 
+        allProjects = session.getProjects();
+        projectsCB = new EditableComboBox(allProjects);
+        projectsCB.setSelectedItem(module.getProject());
+        projectsCB.setPreferredSize(new Dimension(250, 20));
+        projectsCB.setEnabled(viewMode != ViewMode.VIEW);
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(projectsCB);
+            if (!session.user().isAdmin())
+                projectsCB.setEditable(false);
+        }
+        layoutGenerator.addLabelWidgetPair("Project:", projectsCB, formPanel);
+
         moduleCreator = new Label(module.getCreator().getName());
         layoutGenerator.addLabelWidgetPair("Creator:", moduleCreator, formPanel);
 
@@ -491,7 +510,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         layoutGenerator.addLabelWidgetPair("Is Final:", moduleIsFinal, formPanel);
 
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(formPanel, 13, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(formPanel, 14, 2, // rows, cols
                 10, 10, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -1588,12 +1607,35 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         return action;
     }
 
+    private void updateProject() {
+        Object selected = projectsCB.getSelectedItem();
+        if (selected instanceof String) {
+            String projectName = (String) selected;
+            if (projectName.length() > 0) {
+                Project project = project(projectName);// checking for duplicates
+                module.setProject(project);
+                if (project.getId() == 0) {
+                    session.getObjectCache().invalidate(ObjectCacheType.PROJECTS_LIST);
+                }
+            } else {
+                module.setProject(null);
+            }
+        } else if (selected instanceof Project) {
+            module.setProject((Project) selected);
+        }
+    }
+
+    private Project project(String name) {
+        return new Projects(allProjects).get(name);
+    }
+
     private boolean doSave() {
         try {
             // TODO save only if it's dirty
             Date date = new Date();
             module.setName(moduleName.getText());
             module.setDescription(moduleDescription.getText());
+            updateProject();
             module.setLastModifiedDate(date);
 
             if (viewMode == ViewMode.NEW) {

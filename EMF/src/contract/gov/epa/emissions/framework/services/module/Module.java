@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.data.Lockable;
 import gov.epa.emissions.commons.data.Mutex;
+import gov.epa.emissions.commons.data.Project;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.EmfException;
@@ -26,6 +27,8 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
     private String description;
 
     private ModuleTypeVersion moduleTypeVersion;
+
+    private Project project;
 
     private User creator;
 
@@ -483,6 +486,14 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     public void setModuleTypeVersion(ModuleTypeVersion moduleTypeVersion) {
         this.moduleTypeVersion = moduleTypeVersion;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public User getCreator() {
