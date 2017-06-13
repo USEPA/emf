@@ -1219,7 +1219,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             }
             messagePanel.setMessage("Saved module type version.");
 
-            resetChanges();
+            doRefresh();
 
         } catch (EmfException e) {
             showLargeErrorMessage(messagePanel, "Failed to save this module type version!", e.getMessage());

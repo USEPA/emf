@@ -944,6 +944,18 @@ public class ModuleTypeVersion implements Serializable {
         this.moduleTypeVersionDatasetConnections.remove(targetName);
     }
 
+    public void clearModuleTypeVersionDatasetConnections(String placeholderName) {
+        // clear all connections to/from this placeholder
+        for (ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersionDatasetConnections.values()) {
+            if ((datasetConnection.getSourceSubmodule() == null) && placeholderName.equals(datasetConnection.getSourcePlaceholderName())) {
+                datasetConnection.setSourcePlaceholderName(null);
+            } else if ((datasetConnection.getTargetSubmodule() == null) && placeholderName.equals(datasetConnection.getTargetPlaceholderName())) {
+                datasetConnection.setSourceSubmodule(null);
+                datasetConnection.setSourcePlaceholderName(null);
+            }
+        }
+    }
+
     // moduleTypeVersionParameterConnections
 
     public Map<String, ModuleTypeVersionParameterConnection> getModuleTypeVersionParameterConnections() {
@@ -971,6 +983,20 @@ public class ModuleTypeVersion implements Serializable {
     public void removeModuleTypeVersionParameterConnection(String targetName) {
         this.moduleTypeVersionParameterConnections.remove(targetName);
     }
+    
+    public void clearModuleTypeVersionParameterConnections(String parameterName) {
+        // clear all connections to/from this parameter
+        for (ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersionParameterConnections.values()) {
+            if ((parameterConnection.getSourceSubmodule() == null) && parameterName.equals(parameterConnection.getSourceParameterName())) {
+                parameterConnection.setSourceParameterName(null);
+            } else if ((parameterConnection.getTargetSubmodule() == null) && parameterName.equals(parameterConnection.getTargetParameterName())) {
+                parameterConnection.setSourceSubmodule(null);
+                parameterConnection.setSourceParameterName(null);
+            }
+        }
+    }
+
+    // all connections
     
     public boolean updateConnections(final StringBuilder cleanupScriptBuilder) {
         boolean updated = false;
