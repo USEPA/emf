@@ -103,8 +103,6 @@ public class ModuleTypeVersionSubmoduleWindow extends DisposableInteralFrame imp
             return; // nothing to do
         
         this.moduleTypeVersionSubmodule.setModuleTypeVersion(moduleTypeVersion);
-
-        //isDirty = true;
     }
 
     private void refreshModuleTypeVersion() {

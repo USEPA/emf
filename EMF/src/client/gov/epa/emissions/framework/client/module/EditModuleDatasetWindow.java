@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
@@ -42,8 +41,8 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     private ModuleDataset moduleDataset;
     private ModuleTypeVersionDataset moduleTypeVersionDataset;
     private boolean isOUT;
-    private boolean isDirty;
-    
+    private TextField isDirty;
+
     // layout
     private JPanel layout;
     private SingleLineMessagePanel messagePanel;
@@ -69,7 +68,8 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         this.moduleDataset = moduleDataset;
         this.moduleTypeVersionDataset = moduleDataset.getModule().getModuleTypeVersion().getModuleTypeVersionDatasets().get(moduleDataset.getPlaceholderName());
         this.isOUT = moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT);
-        this.isDirty = false;
+        this.isDirty = new TextField("", 5);
+        addChangeable(this.isDirty);
 
         layout = new JPanel();
         layout.setLayout(new BorderLayout());
@@ -220,7 +220,6 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 10, 10);// xPad, yPad
 
         resetChanges();
-        isDirty = false;
 
         detailsPanel.add(contentPanel, BorderLayout.NORTH);
         return detailsPanel;
@@ -241,7 +240,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             if (datasets.length > 0) {
                 if ((dataset == null) || (dataset.getId() != datasets[0].getId())) {
                     dataset = datasets[0];
-                    isDirty = true;
+                    isDirty.setText("true");
                     if (isOUT) {
                         datasetName.setText(dataset.getName());
                     } else {
@@ -277,7 +276,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         existingDatasetName.setText(""); // TODO handle exception
         existingVersions = new String[]{};
         existingVersion.resetModel(existingVersions);
-        isDirty = true;
+        isDirty.setText("true");
     }
 
     private Action clearDatasetAction() {
@@ -315,7 +314,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 clearDataset.setEnabled(false);
             }
             if (oldOutputMethod != moduleDataset.getOutputMethod()) {
-                isDirty = true;
+                isDirty.setText("true");
             }
         } catch (Exception ex) {
             messagePanel.setError(ex.getMessage());
@@ -411,7 +410,6 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 }
                 presenter.doSave(moduleDataset);
                 resetChanges();
-                isDirty = false;
                 messagePanel.setMessage("Saved module dataset");
             } catch (EmfException e) {
                 messagePanel.setError(e.getMessage());
@@ -444,12 +442,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     }
 
     private void doClose() {
-        if (isDirty) {
-            int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to close without saving?",
-                                                          "Edit Module Dataset", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (selection == JOptionPane.NO_OPTION)
-                return;
-        } else if (!shouldDiscardChanges()) {
+        if (!shouldDiscardChanges()) {
             return;
         }
         

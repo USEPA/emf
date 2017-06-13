@@ -83,7 +83,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
     private boolean mustUnlock;
 
-    private boolean isDirty;
+    private TextField isDirty;
 
     private ModuleType moduleType;
 
@@ -196,7 +196,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         this.initialViewMode = ViewMode.NEW;
         this.viewMode = ViewMode.NEW;
         this.mustUnlock = false;
-        this.isDirty = true;
+        this.isDirty = new TextField("", 5);
+        addChangeable(this.isDirty);
+        this.isDirty.setText("true");
 
         Date date = new Date();
 
@@ -250,7 +252,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         this.initialViewMode = ViewMode.NEW;
         this.viewMode = ViewMode.NEW;
         this.mustUnlock = false;
-        this.isDirty = true;
+        this.isDirty = new TextField("", 5);
+        addChangeable(this.isDirty);
+        this.isDirty.setText("true");
 
         ModuleType existingModuleType = existingModuleTypeVersion.getModuleType();
         
@@ -303,12 +307,13 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
         this.mustUnlock = false;
 
-        this.isDirty = false;
+        this.isDirty = new TextField("", 5);
+        addChangeable(this.isDirty);
         this.initialViewMode = viewMode;
         this.viewMode = viewMode;
 
         if (this.viewMode == ViewMode.NEW) {
-            this.isDirty = true;
+            this.isDirty.setText("true");
             this.viewMode = ViewMode.EDIT;
         }
 
@@ -625,6 +630,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         revisions = new TextArea("revisions", moduleTypeVersion.revisionsReport(), 60);
         revisions.setEditable(false);
         revisions.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        if (viewMode != ViewMode.VIEW) {
+            addChangeable(revisions);
+        }
         ScrollableComponent scrollableRevisionsReport = new ScrollableComponent(revisions);
         scrollableRevisionsReport.setMaximumSize(new Dimension(575, 200));
         revisionsPanel.add(scrollableRevisionsReport);
@@ -797,7 +805,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         datasetsTableData = new ModuleTypeVersionDatasetsTableData(moduleTypeVersion.getModuleTypeVersionDatasets());
         datasetsTable.refresh(datasetsTableData);
         refreshConnections();
-        isDirty = true;
+        isDirty.setText("true");
     }
 
     private void removeDatasets() {
@@ -895,7 +903,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                 moduleTypeVersion.getModuleTypeVersionParameters());
         parametersTable.refresh(parametersTableData);
         refreshConnections();
-        isDirty = true;
+        isDirty.setText("true");
     }
 
     private void removeParameters() {
@@ -991,11 +999,13 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
     }
 
     public void refreshSubmodules() {
-        submodulesTableData = new ModuleTypeVersionSubmodulesTableData(
-                moduleTypeVersion.getModuleTypeVersionSubmodules());
-        submodulesTable.refresh(submodulesTableData);
-        refreshConnections();
-        isDirty = true;
+        if (moduleTypeVersion.isComposite()) {
+            submodulesTableData = new ModuleTypeVersionSubmodulesTableData(
+                    moduleTypeVersion.getModuleTypeVersionSubmodules());
+            submodulesTable.refresh(submodulesTableData);
+            refreshConnections();
+            isDirty.setText("true");
+        }
     }
 
     private void removeSubmodules() {
@@ -1077,7 +1087,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         if (moduleTypeVersion.isComposite()) {
             connectionsTableData = new ModuleTypeVersionConnectionsTableData(moduleTypeVersion);
             connectionsTable.refresh(connectionsTableData);
-            isDirty = true;
+            isDirty.setText("true");
         }
     }
 
@@ -1210,7 +1220,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             messagePanel.setMessage("Saved module type version.");
 
             resetChanges();
-            isDirty = false;
 
         } catch (EmfException e) {
             showLargeErrorMessage(messagePanel, "Failed to save this module type version!", e.getMessage());
@@ -1243,7 +1252,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             messagePanel.setError("Can't finalize. This module type version is invalid. " + error.toString());
             return;
         }
-        if (hasChanges() || isDirty) {
+        if (hasChanges()) {
             messagePanel.setError("Can't finalize. You must save changes first. " + error.toString());
             return;
         }
@@ -1290,7 +1299,6 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             moduleTypeVersionIsFinal.setText(moduleTypeVersion.getIsFinal() ? "Yes" : "No");
             JOptionPane.showMessageDialog(parentConsole, "This module type version has been finalized!", title, JOptionPane.INFORMATION_MESSAGE);
             resetChanges();
-            isDirty = false;
             doClose();
         } catch (Exception e) {
             e.printStackTrace();
@@ -1325,13 +1333,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
     private void doClose() {
 
-        if (isDirty) {
-            int selection = JOptionPane.showConfirmDialog(parentConsole,
-                    "Are you sure you want to close without saving?", "Module Type Version Properties",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (selection == JOptionPane.NO_OPTION)
-                return;
-        } else if (!shouldDiscardChanges()) {
+        if (!shouldDiscardChanges()) {
             return;
         }
 
@@ -1359,7 +1361,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         moduleTypeTags.setText(moduleType.getTagsText());
         String newText = moduleTypeTags.getText();
         if (!newText.equals(oldText)) {
-            isDirty = true;
+            isDirty.setText("true");
         }
     }
 
@@ -1373,5 +1375,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         refreshSubmodules();
         refreshConnections();
         refreshRevisions();
+        
+        resetChanges();
     }
 }

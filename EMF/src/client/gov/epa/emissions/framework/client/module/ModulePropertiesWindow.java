@@ -87,7 +87,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private ModuleType moduleType;
     private ModuleTypeVersion moduleTypeVersion;
 
-    private boolean isDirty;
+    private TextField isDirty;
     private String initialStatus;
 
     // layout
@@ -179,6 +179,8 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         this.viewMode = viewMode;
         
+        this.isDirty = new TextField("", 5);
+        addChangeable(this.isDirty);
         this.initialStatus = new String();
         
         this.date = new Date();
@@ -192,14 +194,14 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             this.module.setCreator(session.user());
             this.module.setIsFinal(false);
             setModuleTypeVersion(moduleTypeVersion);
-            this.isDirty = true;
+            this.isDirty.setText("true");
             this.initialStatus = "New module.";
         } else {
             this.module = module;
             this.moduleTypeVersion = module.getModuleTypeVersion();
             this.moduleType = this.moduleTypeVersion.getModuleType();
-            this.isDirty = this.module.refresh(this.date);
-            if (this.isDirty) {
+            if (this.module.refresh(this.date)) {
+                this.isDirty.setText("true");
                 this.initialStatus = "The module has been updated to match the module type version.";
             }
         }
@@ -291,7 +293,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         // TODO should we clear the module history too?
         
-        isDirty = true;
+        isDirty.setText("true");
     }
 
     private void refreshModuleTypeVersion() {
@@ -348,7 +350,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
         refreshModuleTypeVersion();
         resetChanges();
-        isDirty = false;
         refreshStatusText();
     }
 
@@ -894,6 +895,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshDatasets() {
         datasetsTableData = new ModuleDatasetsTableData(module.getModuleDatasets(), session);
         datasetsTable.refresh(datasetsTableData);
+        isDirty.setText("true");
     }
 
     //-----------------------------------------------------------------
@@ -951,6 +953,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshParameters() {
         parametersTableData = new ModuleParametersTableData(module.getModuleParameters());
         parametersTable.refresh(parametersTableData);
+        isDirty.setText("true");
     }
 
     //-----------------------------------------------------------------
@@ -1120,6 +1123,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshInternalDatasets() {
         internalDatasetsTableData = new ModuleInternalDatasetsTableData(module.getModuleInternalDatasets(), session);
         internalDatasetsTable.refresh(internalDatasetsTableData);
+        isDirty.setText("true");
     }
 
     private void keepInternalDatasets() {
@@ -1140,7 +1144,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
-            isDirty = true;
             refreshInternalDatasets();
         }
     }
@@ -1162,7 +1165,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
-            isDirty = true;
             refreshInternalDatasets();
         }
     }
@@ -1245,6 +1247,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     public void refreshInternalParameters() {
         internalParametersTableData = new ModuleInternalParametersTableData(module.getModuleInternalParameters());
         internalParametersTable.refresh(internalParametersTableData);
+        isDirty.setText("true");
     }
 
     private void keepInternalParameters() {
@@ -1264,7 +1267,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
-            isDirty = true;
             refreshInternalParameters();
         }
     }
@@ -1286,7 +1288,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         }
         
         if (mustRefresh) {
-            isDirty = true;
             refreshInternalParameters();
         }
     }
@@ -1396,7 +1397,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private void doRun() {
-        if ((viewMode == ViewMode.NEW) || isDirty || hasChanges()) {
+        if ((viewMode == ViewMode.NEW) || hasChanges()) {
             if (!doSave())
                 return;
         }
@@ -1427,7 +1428,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             reason.append("This module is invalid. " + error.toString() + "\n\n");
         }
         
-        if (hasChanges() || isDirty) {
+        if (hasChanges()) {
             reason.append("This module has unsaved changes.\n\n");
         }
         
@@ -1471,7 +1472,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             messagePanel.setError("Can't finalize. This module is invalid. " + error.toString());
             return;
         }
-        if (hasChanges() || isDirty) {
+        if (hasChanges()) {
             messagePanel.setError("Can't finalize. You must save changes first.");
             return;
         }
@@ -1579,7 +1580,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         if (selection == JOptionPane.YES_OPTION) {
             module.setIsFinal(true);
             moduleIsFinal.setText(module.getIsFinal() ? "Yes" : "No");
-            isDirty = true;
+            isDirty.setText("true");
             if (doSave()) {
                 JOptionPane.showMessageDialog(parentConsole, "This module has been finalized!", title, JOptionPane.INFORMATION_MESSAGE);
                 doClose();
@@ -1691,12 +1692,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     private void doClose() {
-        if (isDirty) {
-            int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to close without saving?",
-                                                          "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (selection == JOptionPane.NO_OPTION)
-                return;
-        } else if (!shouldDiscardChanges()) {
+        if (!shouldDiscardChanges()) {
             return;
         }
 
@@ -1729,7 +1725,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleTags.setText(module.getTagsText());
         String newText = moduleTags.getText();
         if (!newText.equals(oldText)) {
-            isDirty = true;
+            isDirty.setText("true");
         }
     }
 }
