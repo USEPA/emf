@@ -225,14 +225,14 @@ public class DatasetDAO {
     }
 
     public void updateWithoutLocking(EmfDataset dataset, Session session) throws Exception {
-        try {
-            renameEmissionTable(dataset, getDataset(session, dataset.getId()), session);
-        } catch (Exception e) {
-            LOG.info("Can not rename emission table: " + dataset.getInternalSources()[0].getTable());
-        } finally {
+//        try {
+//            renameEmissionTable(dataset, getDataset(session, dataset.getId()), session);
+//        } catch (Exception e) {
+//            LOG.info("Can not rename emission table: " + dataset.getInternalSources()[0].getTable());
+//        } finally {
             session.clear();
             hibernateFacade.updateOnly(dataset, session);
-        }
+//        }
     }
 
     public void remove(EmfDataset dataset, Session session) {
@@ -342,16 +342,16 @@ public class DatasetDAO {
     public EmfDataset update(EmfDataset locked, Session session) throws Exception {
         EmfDataset toReturn = null;
 
-        try {
-            renameEmissionTable(locked, getDataset(session, locked.getId()), session);
-        } catch (Exception e) {
-            LOG.error("Can not rename emission table: " + locked.getInternalSources()[0].getTable(), e);
-        } finally { // to ignore if the rename fails
+//        try {
+//            renameEmissionTable(locked, getDataset(session, locked.getId()), session);
+//        } catch (Exception e) {
+//            LOG.error("Can not rename emission table: " + locked.getInternalSources()[0].getTable(), e);
+//        } finally { // to ignore if the rename fails
             if (DebugLevels.DEBUG_12())
                 System.out.println("Update dataset " + locked.getName() + " with id: " + locked.getId());
 
             toReturn = (EmfDataset) lockingScheme.releaseLockOnUpdate(locked, current(locked, session), session);
-        }
+//        }
 
         return toReturn;
     }
