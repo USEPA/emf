@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.data.Lockable;
 import gov.epa.emissions.commons.data.Mutex;
+import gov.epa.emissions.commons.data.Project;
 import gov.epa.emissions.commons.security.User;
 
 import java.io.Serializable;
@@ -18,6 +19,8 @@ public class LiteModule implements Serializable, Lockable, Comparable<LiteModule
     private String description;
 
     private LiteModuleTypeVersion liteModuleTypeVersion;
+
+    private Project project;
 
     private User creator;
 
@@ -66,6 +69,14 @@ public class LiteModule implements Serializable, Lockable, Comparable<LiteModule
 
     public void setLiteModuleTypeVersion(LiteModuleTypeVersion liteModuleTypeVersion) {
         this.liteModuleTypeVersion = liteModuleTypeVersion;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public User getCreator() {

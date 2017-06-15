@@ -632,7 +632,10 @@ abstract class ModuleRunner {
 
         text = Pattern.compile(startPattern + "module" + separatorPattern + "final" + endPattern, Pattern.CASE_INSENSITIVE)
                       .matcher(text).replaceAll(module.getIsFinal() ? "Final" : "");
-  
+
+        text = Pattern.compile(startPattern + "module" + separatorPattern + "project_name" + endPattern, Pattern.CASE_INSENSITIVE)
+                      .matcher(text).replaceAll((module.getProject() == null) ? "" : module.getProject().getName());
+
         text = Pattern.compile(startPattern + "run" + separatorPattern + "id" + endPattern, Pattern.CASE_INSENSITIVE)
                       .matcher(text).replaceAll(history.getRunId() + "");
 
@@ -1068,7 +1071,7 @@ abstract class ModuleRunner {
         return lineNumberedScript.toString();
     }
     
-    protected void executeTeardownScript(List<String> outputDatasetTables) throws EmfException {
+    protected void executeTeardownScript(@SuppressWarnings("unused") List<String> outputDatasetTables) throws EmfException {
         Connection connection = moduleRunnerContext.getConnection();
         ModulesDAO modulesDAO = moduleRunnerContext.getModulesDAO();
         Session session = moduleRunnerContext.getSession();
@@ -1204,7 +1207,7 @@ abstract class ModuleRunner {
         }
     }
 
-    protected static boolean wasDatasetCreatedByModule(EmfDataset dataset, Module module, String placeholderPathNames) throws EmfException {
+    protected static boolean wasDatasetCreatedByModule(EmfDataset dataset, Module module, String placeholderPathNames) {
         KeyVal[] keyVals = dataset.getKeyVals();
         int checkCount = 0;
         for(KeyVal keyVal : keyVals) {

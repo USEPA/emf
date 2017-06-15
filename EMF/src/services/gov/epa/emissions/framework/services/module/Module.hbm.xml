@@ -14,6 +14,11 @@
         <many-to-one name="liteModuleTypeVersion" class="gov.epa.emissions.framework.services.module.LiteModuleTypeVersion" fetch="select">
             <column name="module_type_version_id" not-null="true" />
         </many-to-one>
+        <many-to-one cascade="save-update"
+            name="project" 
+            class="gov.epa.emissions.commons.data.Project"
+            column="project"
+            not-null="false"/> 
         <many-to-one 
             name="creator" 
             class="gov.epa.emissions.commons.security.User"

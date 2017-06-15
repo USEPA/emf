@@ -161,6 +161,7 @@ public class ModuleTypeVersion implements Serializable {
         validPlaceholders.add("${module.name}");
         validPlaceholders.add("${module.id}");
         validPlaceholders.add("${module.final}");
+        validPlaceholders.add("${module.project_name}");
         validPlaceholders.add("${run.id}");
         validPlaceholders.add("${run.date}");
         validPlaceholders.add("${run.time}");

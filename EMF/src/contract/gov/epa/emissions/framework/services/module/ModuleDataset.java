@@ -77,6 +77,7 @@ public class ModuleDataset implements Serializable {
         datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "module" + separatorPattern + "name"         + endPattern);
         datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "module" + separatorPattern + "id"           + endPattern);
         datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "module" + separatorPattern + "final"        + endPattern);
+        datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "module" + separatorPattern + "project_name" + endPattern);
         datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "run"    + separatorPattern + "id"           + endPattern);
         datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "run"    + separatorPattern + "date"         + endPattern);
         datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, startPattern + "run"    + separatorPattern + "time"         + endPattern);
