@@ -154,7 +154,7 @@ public class ModuleTypeVersion implements Serializable {
                 StringBuilder datasetDifferences = new StringBuilder();
                 if (moduleTypeVersionDataset.matchesImportedModuleTypeVersionDataset(indent + "    ", datasetDifferences, importedModuleTypeVersionDataset)) {
                     if (datasetDifferences.length() > 0) {
-                        differences.append(String.format("%sINFO: Local %s dataset with placeholder \"%s\" matches the corresponding imported module type version dataset:%s\n",
+                        differences.append(String.format("%sINFO: Local %s dataset with placeholder \"%s\" matches the corresponding imported module type version dataset:\n%s",
                                                          indent, fullName, placeholderName, datasetDifferences.toString()));
                     }
                     // result = false;
@@ -188,7 +188,7 @@ public class ModuleTypeVersion implements Serializable {
                 StringBuilder parameterDifferences = new StringBuilder();
                 if (moduleTypeVersionParameter.matchesImportedModuleTypeVersionParameter(indent + "    ", parameterDifferences, importedModuleTypeVersionParameter)) {
                     if (parameterDifferences.length() > 0) {
-                        differences.append(String.format("%sINFO: Local %s parameter \"%s\" matches the corresponding imported module type version parameter:%s\n",
+                        differences.append(String.format("%sINFO: Local %s parameter \"%s\" matches the corresponding imported module type version parameter:\n%s",
                                                          indent, fullName, parameterName, parameterDifferences.toString()));
                     }
                     // result = false;
@@ -225,7 +225,7 @@ public class ModuleTypeVersion implements Serializable {
                     StringBuilder submoduleDifferences = new StringBuilder();
                     if (moduleTypeVersionSubmodule.matchesImportedModuleTypeVersionSubmodule(indent + "    ", submoduleDifferences, importedModuleTypeVersionSubmodule)) {
                         if (submoduleDifferences.length() > 0) {
-                            differences.append(String.format("%sINFO: Local %s submodule \"%s\" matches the corresponding imported module type version submodule:%s\n",
+                            differences.append(String.format("%sINFO: Local %s submodule \"%s\" matches the corresponding imported module type version submodule:\n%s",
                                                              indent, fullName, submoduleName, submoduleDifferences.toString()));
                         }
                         // result = false;
@@ -259,7 +259,7 @@ public class ModuleTypeVersion implements Serializable {
                     StringBuilder dcDifferences = new StringBuilder();
                     if (moduleTypeVersionDatasetConnection.matchesImportedDatasetConnection(indent + "    ", dcDifferences, importedModuleTypeVersionDatasetConnection)) {
                         if (dcDifferences.length() > 0) {
-                            differences.append(String.format("%sINFO: Local %s dataset connection \"%s\" matches the corresponding imported module type version dataset connection:%s\n",
+                            differences.append(String.format("%sINFO: Local %s dataset connection \"%s\" matches the corresponding imported module type version dataset connection:\n%s",
                                                              indent, fullName, connectionName, dcDifferences.toString()));
                         }
                         // result = false;
@@ -293,7 +293,7 @@ public class ModuleTypeVersion implements Serializable {
                     StringBuilder pcDifferences = new StringBuilder();
                     if (moduleTypeVersionParameterConnection.matchesImportedParameterConnection(indent + "    ", pcDifferences, importedModuleTypeVersionParameterConnection)) {
                         if (pcDifferences.length() > 0) {
-                            differences.append(String.format("%sINFO: Local %s parameter connection \"%s\" matches the corresponding imported module type version parameter connection:%s\n",
+                            differences.append(String.format("%sINFO: Local %s parameter connection \"%s\" matches the corresponding imported module type version parameter connection:\n%s",
                                                              indent, fullName, connectionName, pcDifferences.toString()));
                         }
                         // result = false;

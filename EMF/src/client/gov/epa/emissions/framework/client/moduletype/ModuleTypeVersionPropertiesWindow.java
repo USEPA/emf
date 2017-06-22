@@ -40,6 +40,7 @@ import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Date;
@@ -1122,17 +1123,41 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             messagePanel.setError(title);
             JTextArea errorTextArea = new JTextArea(error.toString());
             errorTextArea.setEditable(false);
-            errorTextArea.setLineWrap(true);
+            errorTextArea.setLineWrap(false);
             errorTextArea.setWrapStyleWord(true);
-            JScrollPane errorScrollPane = new JScrollPane(errorTextArea) {
-                @Override
-                public Dimension getPreferredSize() {
-                    return new Dimension(600, 400);
-                }
-            };
+            JScrollPane errorScrollPane = new JScrollPane(errorTextArea);
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            int width = (int)(screenSize.getWidth() * 0.8);
+            errorScrollPane.setSize(new Dimension(width, 10));
+            int height = Math.min((int)(screenSize.getHeight() * 0.8), errorScrollPane.getPreferredSize().height);
+            errorScrollPane.setPreferredSize(new Dimension(width, height));
             JOptionPane.showMessageDialog(null, errorScrollPane, title, JOptionPane.ERROR_MESSAGE);
         } else {
             messagePanel.setError(error.toString());
+        }
+    }
+
+    public static void showLargeMessage(SingleLineMessagePanel messagePanel, String title, String message) {
+        // TODO add this code to SingleLineMessagePanel.setMessage() instead
+        if (title == null)
+            title = "";
+        if (message == null)
+            message = "";
+        if (message.length() > 80 || message.contains("\n")) {
+            messagePanel.setMessage(title);
+            JTextArea messageTextArea = new JTextArea(message.toString());
+            messageTextArea.setEditable(false);
+            messageTextArea.setLineWrap(false);
+            messageTextArea.setWrapStyleWord(true);
+            JScrollPane messageScrollPane = new JScrollPane(messageTextArea);
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            int width = (int)(screenSize.getWidth() * 0.8);
+            messageScrollPane.setSize(new Dimension(width, 10));
+            int height = Math.min((int)(screenSize.getHeight() * 0.8), messageScrollPane.getPreferredSize().height);
+            messageScrollPane.setPreferredSize(new Dimension(width, height));
+            JOptionPane.showMessageDialog(null, messageScrollPane, title, JOptionPane.ERROR_MESSAGE);
+        } else {
+            messagePanel.setMessage(message.toString());
         }
     }
 

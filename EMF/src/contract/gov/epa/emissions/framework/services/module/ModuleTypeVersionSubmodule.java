@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import gov.epa.emissions.commons.data.DatasetType;
-import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 
 public class ModuleTypeVersionSubmodule implements Serializable {

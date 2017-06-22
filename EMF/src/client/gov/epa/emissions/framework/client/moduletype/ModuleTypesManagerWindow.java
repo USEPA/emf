@@ -64,7 +64,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
     private JPanel tablePanel;
 
-    private MessagePanel messagePanel;
+    private SingleLineMessagePanel messagePanel;
 
     private EmfConsole parentConsole;
 
@@ -575,7 +575,17 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                                        moduleTypeConflicts, (moduleTypeConflicts == 1) ? "" : "s",
                                        moduleTypeAdditions, (moduleTypeAdditions == 1) ? "" : "s", file.getName());
         changeLog.append("\n\n" + summary + "\n\n");
-        messagePanel.setMessage(summary);
+        showLargeMessage(summary, changeLog.toString());
+    }
+
+    private void showLargeErrorMessage(String title, String error) {
+        // reusing implementation from ModuleTypeVersionPropertiesWindow
+        ModuleTypeVersionPropertiesWindow.showLargeErrorMessage(messagePanel, title, error);
+    }
+
+    private void showLargeMessage(String title, String message) {
+        // reusing implementation from ModuleTypeVersionPropertiesWindow
+        ModuleTypeVersionPropertiesWindow.showLargeMessage(messagePanel, title, message);
     }
 
     private List selected() {

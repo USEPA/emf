@@ -137,7 +137,7 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
                 StringBuilder mtvDifferences = new StringBuilder();
                 if (moduleTypeVersion.matchesImportedModuleTypeVersion(indent + "    ", mtvDifferences, importedModuleTypeVersion)) {
                     if (mtvDifferences.length() > 0) {
-                        differences.append(String.format("%sINFO: Local %s matches the corresponding imported module type version:%s\n",
+                        differences.append(String.format("%sINFO: Local %s matches the corresponding imported module type version:\n%s\n",
                                                          indent, fullName, mtvDifferences.toString()));
                     }
                     // result = false;

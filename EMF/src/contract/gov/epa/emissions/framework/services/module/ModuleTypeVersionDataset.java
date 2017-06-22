@@ -2,7 +2,6 @@ package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +10,6 @@ import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.FileFormat;
 import gov.epa.emissions.commons.io.XFileFormat;
-import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.EmfException;
 
@@ -176,11 +174,11 @@ public class ModuleTypeVersionDataset implements Serializable {
                 StringBuilder columnDifferences = new StringBuilder();
                 if (matchesImportedColumn(indent + "    ", columnDifferences, localColumn, importedColumn)) {
                     if (columnDifferences.length() > 0) {
-                        differences.append(String.format("%sINFO: Local \"%s\" column matches the imported column:%s\n",
+                        differences.append(String.format("%sINFO: Local \"%s\" column matches the imported column:\n%s\n",
                                                          indent, localColumn.getName(), columnDifferences.toString()));
                     }
                 } else {
-                    differences.append(String.format("%sERROR: Local \"%s\" column doesn't match the imported column:%s\n",
+                    differences.append(String.format("%sERROR: Local \"%s\" column doesn't match the imported column:\n%s\n",
                                                      indent, localColumn.getName(), columnDifferences.toString()));
                     result = false;
                 }
@@ -307,11 +305,11 @@ public class ModuleTypeVersionDataset implements Serializable {
             StringBuilder ffDifferences = new StringBuilder();
             if (matchesImportedFileFormat(indent + "    ", ffDifferences, localDatasetType.getFileFormat(), importedDatasetType.getFileFormat())) {
                 if (ffDifferences.length() > 0) {
-                    differences.append(String.format("%sINFO: Local dataset type \"%s\" file format matches the imported file format:%s\n",
+                    differences.append(String.format("%sINFO: Local dataset type \"%s\" file format matches the imported file format:\n%s\n",
                                                      indent, localDatasetType.getName(), ffDifferences.toString()));
                 }
             } else {
-                differences.append(String.format("%sERROR: Local dataset type \"%s\" file format doesn't match the imported file format:%s\n",
+                differences.append(String.format("%sERROR: Local dataset type \"%s\" file format doesn't match the imported file format:\n%s\n",
                                                  indent, localDatasetType.getName(), ffDifferences.toString()));
                 result = false;
             }
@@ -372,11 +370,11 @@ public class ModuleTypeVersionDataset implements Serializable {
         StringBuilder dtDifferences = new StringBuilder();
         if (matchesImportedDatasetType(indent + "    ", dtDifferences, datasetType, importedModuleTypeVersionDataset.getDatasetType())) {
             if (dtDifferences.length() > 0) {
-                differences.append(String.format("%sINFO: Local %s placeholder \"%s\" dataset type \"%s\" matches the dataset type for the corresponding imported module type version dataset placeholder:%s\n",
+                differences.append(String.format("%sINFO: Local %s placeholder \"%s\" dataset type \"%s\" matches the dataset type for the corresponding imported module type version dataset placeholder:\n%s\n",
                                                  indent, fullName, placeholderName, datasetType.getName(), dtDifferences.toString()));
             }
         } else {
-            differences.append(String.format("%sERROR: Local %s placeholder \"%s\" dataset type \"%s\" does not match the dataset type for the corresponding imported module type version dataset placeholder:%s\n",
+            differences.append(String.format("%sERROR: Local %s placeholder \"%s\" dataset type \"%s\" does not match the dataset type for the corresponding imported module type version dataset placeholder:\n%s\n",
                                              indent, fullName, placeholderName, datasetType.getName(), dtDifferences.toString()));
             result = false;
         }
