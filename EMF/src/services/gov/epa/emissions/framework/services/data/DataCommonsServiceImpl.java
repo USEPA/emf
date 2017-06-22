@@ -634,6 +634,10 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             XFileFormat xFileFormat = type.getFileFormat();
             Column[] cols = new Column[] { };
             if (xFileFormat != null) {
+                if (xFileFormat.getId() == 0) {
+                    xFileFormat = addFileFormat(xFileFormat);
+                    type.setFileFormat(xFileFormat);
+                }
                 cols = xFileFormat.cols();
             } else {
                 TableFormat tableFormat = new FileFormatFactory(dbServer).tableFormat(type, true);
@@ -643,12 +647,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 dao.validateDatasetTypeIndicesKeyword(type, cols);
             
             dao.add(type, session);
-        } catch (RuntimeException e) {
-            LOG.error("Could not add new DatasetType", e);
-            throw new EmfException("DatasetType name already in use");
         } catch (Exception e) {
-            LOG.error(e.getMessage());
-            throw new EmfException(e.getMessage());
+            LOG.error("Could not add DatasetType", e);
+            throw new EmfException("Could not add DatasetType: " + e.getMessage());
         } finally {
             session.close();
             try {

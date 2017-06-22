@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.services.module;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.EmfException;
@@ -65,32 +66,353 @@ public class ModuleTypeVersion implements Serializable {
         moduleTypeVersionParameterConnections = new HashMap<String, ModuleTypeVersionParameterConnection>();
     }
 
-    public void prepareForImport(final StringBuilder changeLog, User user) {
+    public void exportTypes(final Map<Integer, DatasetType> datasetTypesMap, final Map<Integer, ModuleType> moduleTypesMap, final List<ModuleType> moduleTypesList, final Map<Integer, ModuleType> moduleTypesInProgress) throws EmfException {
+        for (ModuleTypeVersionDataset moduleTypeVersionDataset : moduleTypeVersionDatasets.values()) {
+            moduleTypeVersionDataset.exportTypes(datasetTypesMap);
+        }
+        for (ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : moduleTypeVersionSubmodules.values()) {
+            moduleTypeVersionSubmodule.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress);
+        }
+    }
+    
+    public boolean matchesImportedModuleTypeVersion(String indent, final StringBuilder differences, ModuleTypeVersion importedModuleTypeVersion) {
+        boolean result = true;
+        differences.setLength(0);
+        
+        if (this == importedModuleTypeVersion)
+            return result;
+
+        String fullName = fullNameSDS("module type \"%s\" version %d \"%s\"");
+        String importedFullName = importedModuleTypeVersion.fullNameSDS("module type \"%s\" version %d \"%s\"");
+        
+        // skipping id;
+
+        // skipping moduleType
+        
+        if (version != importedModuleTypeVersion.getVersion()) { // should never happen
+            differences.append(String.format("%sERROR: Local module type version (%d) is different than imported module type version (%d).\n",
+                                             indent, version, importedModuleTypeVersion.getVersion()));
+            result = false;
+        }
+
+        if (!name.equals(importedModuleTypeVersion.getName())) { // could happen and it's OK
+            differences.append(String.format("%sWARNING: Local %s name differs from imported %s name.\n",
+                                             indent, fullName, importedFullName));
+            // result = false;
+        }
+
+        if ((description == null) != (importedModuleTypeVersion.getDescription() != null) ||
+           ((description != null) && !description.equals(importedModuleTypeVersion.getDescription()))) { // could happen and it's OK
+            differences.append(String.format("%sWARNING: Local %s description differs from imported %s description.\n",
+                                             indent, fullName, importedFullName));
+            // result = false;
+        }
+
+        if (!creationDate.equals(importedModuleTypeVersion.getCreationDate())) { // should not happen but it's OK
+            differences.append(String.format("%sWARNING: Local %s creation date (%s) differs from imported %s creation date (%s).\n",
+                                             indent, fullName, CustomDateFormat.format_MM_DD_YYYY_HH_mm(creationDate),
+                                             importedFullName, CustomDateFormat.format_MM_DD_YYYY_HH_mm(importedModuleTypeVersion.getCreationDate())));
+            // result = false;
+        }
+
+        if (!lastModifiedDate.equals(importedModuleTypeVersion.getLastModifiedDate())) { // should happen and it's OK
+            differences.append(String.format("%sINFO: Local %s last modified date (%s) differs from imported %s last modified date (%s).\n",
+                                             indent, fullName, CustomDateFormat.format_MM_DD_YYYY_HH_mm(lastModifiedDate),
+                                             importedFullName, CustomDateFormat.format_MM_DD_YYYY_HH_mm(importedModuleTypeVersion.getLastModifiedDate())));
+            // result = false;
+        }
+
+        // skip creator
+
+        if (baseVersion != importedModuleTypeVersion.getBaseVersion()) { // should never happen but it's OK
+            differences.append(String.format("%sWARNING: Local %s base version (%d) differs from the imported %s base version (%d).\n",
+                                             indent, fullName, baseVersion, importedFullName, importedModuleTypeVersion.getBaseVersion()));
+            // result = false;
+        }
+
+        if (isFinal != importedModuleTypeVersion.getIsFinal()) { // could happen and it's OK
+            differences.append(String.format("%sWARNING: Local %s is %s while the imported %s is %s.\n",
+                                             indent, fullName, isFinal ? "final" : "not final",
+                                             importedFullName, importedModuleTypeVersion.getIsFinal() ? "final" : "not final"));
+            // result = false;
+        }
+
+        // importedModuleTypeVersion.getIsFinal() should be false
+        if (!importedModuleTypeVersion.getIsFinal()) { // should not happen but it's OK
+            differences.append(String.format("%sWARNING: Imported %s is %s.\n",
+                                             indent, importedFullName, importedModuleTypeVersion.getIsFinal() ? "final" : "not final"));
+            // result = false;
+        }
+
+        Map<String, ModuleTypeVersionDataset> importedModuleTypeVersionDatasets =
+                importedModuleTypeVersion.getModuleTypeVersionDatasets();
+        
+        for (String placeholderName : moduleTypeVersionDatasets.keySet()) {
+            ModuleTypeVersionDataset moduleTypeVersionDataset = moduleTypeVersionDatasets.get(placeholderName);
+            if (importedModuleTypeVersionDatasets.containsKey(placeholderName)) {
+                ModuleTypeVersionDataset importedModuleTypeVersionDataset = importedModuleTypeVersionDatasets.get(placeholderName);
+                StringBuilder datasetDifferences = new StringBuilder();
+                if (moduleTypeVersionDataset.matchesImportedModuleTypeVersionDataset(indent + "    ", datasetDifferences, importedModuleTypeVersionDataset)) {
+                    if (datasetDifferences.length() > 0) {
+                        differences.append(String.format("%sINFO: Local %s dataset with placeholder \"%s\" matches the corresponding imported module type version dataset:%s\n",
+                                                         indent, fullName, placeholderName, datasetDifferences.toString()));
+                    }
+                    // result = false;
+                } else {
+                    differences.append(String.format("%sERROR: Local %s dataset with placeholder \"%s\" does not match the corresponding imported module type version dataset:\n%s",
+                                                     indent, fullName, placeholderName, datasetDifferences.toString()));
+                    result = false;
+                }
+            } else { // could happen and it's not OK
+                differences.append(String.format("%sERROR: Local %s placeholder name \"%s\" missing from the imported module type version.\n",
+                                                 indent, fullName, placeholderName));
+                result = false;
+            }
+        }
+
+        for (String placeholderName : importedModuleTypeVersionDatasets.keySet()) {
+            if (!moduleTypeVersionDatasets.containsKey(placeholderName)) { // could happen and we can't add the new module type version dataset to the local module type version at this moment
+                differences.append(String.format("%sERROR: Imported %s dataset placeholder \"%s\" does not exist in the local module type version.\n",
+                                                 indent, importedFullName, placeholderName));
+                result = false;
+            }
+        }
+
+        Map<String, ModuleTypeVersionParameter> importedModuleTypeVersionParameters =
+                importedModuleTypeVersion.getModuleTypeVersionParameters();
+        
+        for (String parameterName : moduleTypeVersionParameters.keySet()) {
+            ModuleTypeVersionParameter moduleTypeVersionParameter = moduleTypeVersionParameters.get(parameterName);
+            if (importedModuleTypeVersionParameters.containsKey(parameterName)) {
+                ModuleTypeVersionParameter importedModuleTypeVersionParameter = importedModuleTypeVersionParameters.get(parameterName);
+                StringBuilder parameterDifferences = new StringBuilder();
+                if (moduleTypeVersionParameter.matchesImportedModuleTypeVersionParameter(indent + "    ", parameterDifferences, importedModuleTypeVersionParameter)) {
+                    if (parameterDifferences.length() > 0) {
+                        differences.append(String.format("%sINFO: Local %s parameter \"%s\" matches the corresponding imported module type version parameter:%s\n",
+                                                         indent, fullName, parameterName, parameterDifferences.toString()));
+                    }
+                    // result = false;
+                } else {
+                    differences.append(String.format("%sERROR: Local %s parameter \"%s\" does not match the corresponding imported module type version parameter:\n%s",
+                                                     indent, fullName, parameterName, parameterDifferences.toString()));
+                    result = false;
+                }
+            } else { // could happen and it's not OK
+                differences.append(String.format("%sERROR: Local %s parameter name \"%s\" missing from the imported module type version.\n",
+                                                 indent, fullName, parameterName));
+                result = false;
+            }
+        }
+
+        for (String parameterName : importedModuleTypeVersionParameters.keySet()) {
+            if (!moduleTypeVersionParameters.containsKey(parameterName)) { // could happen and we can't add the new module type version parameter to the local module type version at this moment
+                differences.append(String.format("%sERROR: Imported %s parameter \"%s\" does not exist in the local module type version.\n",
+                                                 indent, importedFullName, parameterName));
+                result = false;
+            }
+        }
+
+        // skip moduleTypeVersionRevisions
+
+        if (isComposite()) {
+            Map<String, ModuleTypeVersionSubmodule> importedModuleTypeVersionSubmodules =
+                    importedModuleTypeVersion.getModuleTypeVersionSubmodules();
+            
+            for (String submoduleName : moduleTypeVersionSubmodules.keySet()) {
+                ModuleTypeVersionSubmodule moduleTypeVersionSubmodule = moduleTypeVersionSubmodules.get(submoduleName);
+                if (importedModuleTypeVersionSubmodules.containsKey(submoduleName)) {
+                    ModuleTypeVersionSubmodule importedModuleTypeVersionSubmodule = importedModuleTypeVersionSubmodules.get(submoduleName);
+                    StringBuilder submoduleDifferences = new StringBuilder();
+                    if (moduleTypeVersionSubmodule.matchesImportedModuleTypeVersionSubmodule(indent + "    ", submoduleDifferences, importedModuleTypeVersionSubmodule)) {
+                        if (submoduleDifferences.length() > 0) {
+                            differences.append(String.format("%sINFO: Local %s submodule \"%s\" matches the corresponding imported module type version submodule:%s\n",
+                                                             indent, fullName, submoduleName, submoduleDifferences.toString()));
+                        }
+                        // result = false;
+                    } else {
+                        differences.append(String.format("%sERROR: Local %s submodule \"%s\" does not match the corresponding imported module type version submodule:\n%s",
+                                                         indent, fullName, submoduleName, submoduleDifferences.toString()));
+                        result = false;
+                    }
+                } else { // could happen and it's not OK
+                    differences.append(String.format("%sERROR: Local %s submodule name \"%s\" missing from the imported module type version.\n",
+                                                     indent, fullName, submoduleName));
+                    result = false;
+                }
+            }
+
+            for (String submoduleName : importedModuleTypeVersionSubmodules.keySet()) {
+                if (!moduleTypeVersionSubmodules.containsKey(submoduleName)) { // could happen and we can't add the new module type version submodule to the local module type version at this moment
+                    differences.append(String.format("%sERROR: Imported %s submodule \"%s\" does not exist in the local module type version.\n",
+                                                     indent, importedFullName, submoduleName));
+                    result = false;
+                }
+            }
+
+            Map<String, ModuleTypeVersionDatasetConnection> importedModuleTypeVersionDatasetConnections =
+                    importedModuleTypeVersion.getModuleTypeVersionDatasetConnections();
+            
+            for (String connectionName : moduleTypeVersionDatasetConnections.keySet()) {
+                ModuleTypeVersionDatasetConnection moduleTypeVersionDatasetConnection = moduleTypeVersionDatasetConnections.get(connectionName);
+                if (importedModuleTypeVersionDatasetConnections.containsKey(connectionName)) {
+                    ModuleTypeVersionDatasetConnection importedModuleTypeVersionDatasetConnection = importedModuleTypeVersionDatasetConnections.get(connectionName);
+                    StringBuilder dcDifferences = new StringBuilder();
+                    if (moduleTypeVersionDatasetConnection.matchesImportedDatasetConnection(indent + "    ", dcDifferences, importedModuleTypeVersionDatasetConnection)) {
+                        if (dcDifferences.length() > 0) {
+                            differences.append(String.format("%sINFO: Local %s dataset connection \"%s\" matches the corresponding imported module type version dataset connection:%s\n",
+                                                             indent, fullName, connectionName, dcDifferences.toString()));
+                        }
+                        // result = false;
+                    } else {
+                        differences.append(String.format("%sERROR: Local %s dataset connection \"%s\" does not match the corresponding imported module type version dataset connection:\n%s",
+                                                         indent, fullName, connectionName, dcDifferences.toString()));
+                        result = false;
+                    }
+                } else { // could happen and it's not OK
+                    differences.append(String.format("%sERROR: Local %s dataset connection name \"%s\" missing from the imported module type version.\n",
+                                                     indent, fullName, connectionName));
+                    result = false;
+                }
+            }
+
+            for (String connectionName : importedModuleTypeVersionDatasetConnections.keySet()) {
+                if (!moduleTypeVersionDatasetConnections.containsKey(connectionName)) { // could happen and we can't add the new module type version dataset connection to the local module type version at this moment
+                    differences.append(String.format("%sERROR: Imported %s dataset connection \"%s\" does not exist in the local module type version.\n",
+                                                     indent, importedFullName, connectionName));
+                    result = false;
+                }
+            }
+
+            Map<String, ModuleTypeVersionParameterConnection> importedModuleTypeVersionParameterConnections =
+                    importedModuleTypeVersion.getModuleTypeVersionParameterConnections();
+            
+            for (String connectionName : moduleTypeVersionParameterConnections.keySet()) {
+                ModuleTypeVersionParameterConnection moduleTypeVersionParameterConnection = moduleTypeVersionParameterConnections.get(connectionName);
+                if (importedModuleTypeVersionParameterConnections.containsKey(connectionName)) {
+                    ModuleTypeVersionParameterConnection importedModuleTypeVersionParameterConnection = importedModuleTypeVersionParameterConnections.get(connectionName);
+                    StringBuilder pcDifferences = new StringBuilder();
+                    if (moduleTypeVersionParameterConnection.matchesImportedParameterConnection(indent + "    ", pcDifferences, importedModuleTypeVersionParameterConnection)) {
+                        if (pcDifferences.length() > 0) {
+                            differences.append(String.format("%sINFO: Local %s parameter connection \"%s\" matches the corresponding imported module type version parameter connection:%s\n",
+                                                             indent, fullName, connectionName, pcDifferences.toString()));
+                        }
+                        // result = false;
+                    } else {
+                        differences.append(String.format("%sERROR: Local %s parameter connection \"%s\" does not match the corresponding imported module type version parameter connection:\n%s",
+                                                         indent, fullName, connectionName, pcDifferences.toString()));
+                        result = false;
+                    }
+                } else { // could happen and it's not OK
+                    differences.append(String.format("%sERROR: Local %s parameter connection name \"%s\" missing from the imported module type version.\n",
+                                                     indent, fullName, connectionName));
+                    result = false;
+                }
+            }
+
+            for (String connectionName : importedModuleTypeVersionParameterConnections.keySet()) {
+                if (!moduleTypeVersionParameterConnections.containsKey(connectionName)) { // could happen and we can't add the new module type version parameter connection to the local module type version at this moment
+                    differences.append(String.format("%sERROR: Imported %s parameter connection \"%s\" does not exist in the local module type version.\n",
+                                                     indent, importedFullName, connectionName));
+                    result = false;
+                }
+            }
+        } else {
+            if (!algorithm.equals(importedModuleTypeVersion.getAlgorithm())) { // could happen and it's not OK
+                differences.append(String.format("%sWARNING: Local %s algorithm differs from imported %s algorithm.\n",
+                                                 indent, fullName, importedFullName));
+                result = false;
+            }
+        }
+
+        return result;
+    }
+
+    public void prepareForExport(User user, String message) {
         if (id == 0)
             return;
         id = 0;
-        name = "Imported " + name;
-        creator = user;
+        creator = null;
+        description = (description == null) ? "" : (description + "\n");
+        description += message;
         for(ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
-            dataset.prepareForImport(changeLog, user);
+            dataset.prepareForExport();
         }
         for(ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
-            parameter.prepareForImport(changeLog, user);
+            parameter.prepareForExport();
         }
+        
+        Date now = new Date();
+        ModuleTypeVersionRevision exportRevision = new ModuleTypeVersionRevision();
+        exportRevision.setCreationDate(now);
+        exportRevision.setCreator(user);
+        exportRevision.setDescription(message);
+        addModuleTypeVersionRevision(exportRevision);
+        
+        String revisionsReport = revisionsReport("|   ");
+        moduleTypeVersionRevisions.clear();
+        
+        ModuleTypeVersionRevision historicalRevision = new ModuleTypeVersionRevision();
+        historicalRevision.setCreationDate(now);
+        historicalRevision.setCreator(null);
+        historicalRevision.setDescription(revisionsReport);
+        addModuleTypeVersionRevision(historicalRevision);
+        
         for(ModuleTypeVersionRevision revision : moduleTypeVersionRevisions) {
-            revision.prepareForImport(changeLog, user);
+            revision.prepareForExport();
         }
-//        for(ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
-//            submodule.prepareForImport(user);
-//        }
-//        for(ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersionDatasetConnections.values()) {
-//            datasetConnection.prepareForImport(user);
-//        }
-//        for(ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersionParameterConnections.values()) {
-//            parameterConnection.prepareForImport(user);
-//        }
+        for(ModuleTypeVersionSubmodule submodule : moduleTypeVersionSubmodules.values()) {
+            submodule.prepareForExport();
+        }
+        for(ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersionDatasetConnections.values()) {
+            datasetConnection.prepareForExport();
+        }
+        for(ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersionParameterConnections.values()) {
+            parameterConnection.prepareForExport();
+        }
     }
     
+    public void prepareForImport(User user, String message) {
+        if (creator == user)
+            return;
+        
+        creator = user;
+        description = (description == null) ? "" : (description + "\n");
+        description += message;
+        
+        // nothing to do for datasets
+
+        // nothing to do for parameters
+
+        for(ModuleTypeVersionRevision revision : moduleTypeVersionRevisions) {
+            revision.prepareForImport(user);
+        }
+        
+        Date now = new Date();
+        ModuleTypeVersionRevision importeRevision = new ModuleTypeVersionRevision();
+        importeRevision.setCreationDate(now);
+        importeRevision.setCreator(user);
+        importeRevision.setDescription(message);
+        addModuleTypeVersionRevision(importeRevision);
+
+        // nothing to do for submodules
+
+        // nothing to do for dataset connections
+
+        // nothing to do for parameter connections
+    }
+    
+    public void replaceDatasetType(DatasetType importedDatasetType, DatasetType localDatasetType) {
+        for(ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
+            dataset.replaceDatasetType(importedDatasetType, localDatasetType);
+        }
+    }
+
+    public void replaceModuleTypeVersion(ModuleTypeVersion importedModuleTypeVersion, ModuleTypeVersion localModuleTypeVersion) {
+        for (ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : moduleTypeVersionSubmodules.values()) {
+            moduleTypeVersionSubmodule.replaceModuleTypeVersion(importedModuleTypeVersion, localModuleTypeVersion);
+        }
+    }
+
     public ModuleTypeVersion deepCopy(User user) {
         ModuleTypeVersion newModuleTypeVersion = new ModuleTypeVersion();
         newModuleTypeVersion.setModuleType(moduleType);
@@ -800,6 +1122,28 @@ public class ModuleTypeVersion implements Serializable {
                                           moduleTypeVersionRevision.getRevision(),
                                           creationDate, creator,
                                           moduleTypeVersionRevision.getDescription());
+            
+            revisionsReport.append(record);
+        }
+        
+        return revisionsReport.toString();
+    }
+    
+    public String revisionsReport(String indent) {
+        StringBuilder revisionsReport = new StringBuilder();
+        
+        for (ModuleTypeVersionRevision moduleTypeVersionRevision : moduleTypeVersionRevisions) {
+            String creationDate = (moduleTypeVersionRevision.getCreationDate() == null)
+                                  ? "?"
+                                  : CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleTypeVersionRevision.getCreationDate());
+            
+            String creator = (moduleTypeVersionRevision.getCreator() == null)
+                             ? "?"
+                             : moduleTypeVersionRevision.getCreator().getName();
+            
+            String record = String.format("%sRevision %d created on %s by %s\n%s\n%s\n",
+                                          indent, moduleTypeVersionRevision.getRevision(), creationDate, creator,
+                                          moduleTypeVersionRevision.getDescription(indent), indent);
             
             revisionsReport.append(record);
         }

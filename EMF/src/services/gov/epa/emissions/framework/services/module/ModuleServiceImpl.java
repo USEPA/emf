@@ -114,6 +114,20 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public synchronized ModuleType getModuleType(String name) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            ModuleType moduleType = moduleTypesDAO.getModuleType(name, session);
+            return moduleType;
+        } catch (Exception e) {
+            LOG.error("Could not get ModuleType \"" + name + "\"", e);
+            throw new EmfException("Could not get ModuleType \"" + name + "\": " + e.getMessage());
+        } finally {
+            session.close(); 
+        }
+    }
+
+    @Override
     public synchronized ParameterType[] getParameterTypes() throws EmfException {
         Session session = sessionFactory.getSession();
         try {

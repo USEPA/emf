@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import gov.epa.emissions.commons.security.User;
 
@@ -19,10 +20,12 @@ public class ModuleTypeVersionRevision implements Serializable {
 
     private User creator;
 
-    public void prepareForImport(final StringBuilder changeLog, User user) {
-        if (id == 0)
-            return;
+    public void prepareForExport() {
         id = 0;
+        creator = null;
+    }
+    
+    public void prepareForImport(User user) {
         creator = user;
     }
     
@@ -52,6 +55,10 @@ public class ModuleTypeVersionRevision implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getDescription(String indent) {
+        return indent + Pattern.compile("\\n").matcher(description).replaceAll(indent + "\n");
     }
 
     public void setDescription(String description) {

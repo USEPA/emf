@@ -1,11 +1,13 @@
 package gov.epa.emissions.framework.client.moduletype;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
+import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
@@ -16,6 +18,8 @@ import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.LiteModuleType;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
+import gov.epa.emissions.framework.services.module.ModuleTypesExportImport;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -35,8 +39,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
@@ -189,9 +197,9 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         crudPanel.add(editButton);
         crudPanel.add(newButton);
         crudPanel.add(removeButton);
-//        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
-//        crudPanel.add(exportButton);
-//        crudPanel.add(importButton);
+        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        crudPanel.add(exportButton);
+        crudPanel.add(importButton);
         return crudPanel;
     }
 
@@ -304,7 +312,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }
     }
 
-    private static void saveToXML(String filename, ModuleType[] moduleTypes) {
+    private static void saveToXML(String filename, ModuleTypesExportImport moduleTypesExportImport) {
         FileOutputStream fos;
         try {
             fos = new FileOutputStream(filename);
@@ -313,11 +321,11 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             return;
         }
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(fos));
-        encoder.writeObject(moduleTypes);
+        encoder.writeObject(moduleTypesExportImport);
         encoder.close();
     }
 
-    private ModuleType[] readFromXML(String filename) {
+    private ModuleTypesExportImport readFromXML(String filename) {
         FileInputStream fis;
         try {
             fis = new FileInputStream(filename);
@@ -326,9 +334,9 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             return null;
         }
         XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(fis));
-        ModuleType[] moduleTypes = (ModuleType[])decoder.readObject();
+        ModuleTypesExportImport moduleTypesExportImport = (ModuleTypesExportImport)decoder.readObject();
         decoder.close();
-        return moduleTypes;
+        return moduleTypesExportImport;
     }
 
     private void exportModuleTypes() {
@@ -338,7 +346,21 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             return;
         }   
 
-        ModuleType[] moduleTypes = (ModuleType[]) selected.toArray(new ModuleType[0]);
+        Map<Integer, DatasetType> datasetTypesMap = new HashMap<Integer, DatasetType>();
+        Map<Integer, ModuleType> moduleTypesMap = new HashMap<Integer, ModuleType>();
+        List<ModuleType> moduleTypesList = new ArrayList<ModuleType>(); // in order of dependencies (most independent first, most dependent last)
+        Map<Integer, ModuleType> moduleTypesInProgress = new HashMap<Integer, ModuleType>();
+
+        for(Object object : selected) {
+            ModuleType moduleType = (ModuleType)object;
+            try {
+                moduleType.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress);
+            } catch (EmfException e) {
+                e.printStackTrace();
+                messagePanel.setError("Failed to export module type: " + e.getMessage());
+                return;
+            }
+        }
         
         JFileChooser fc = new JFileChooser();
         int returnVal = fc.showOpenDialog(this);
@@ -354,8 +376,56 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             messagePanel.setError("Failed to get export file full path: " + e.getMessage());
             return;
         }
-        saveToXML(filename, moduleTypes);
-        messagePanel.setMessage(moduleTypes.length + " module type(s) exported successfully to: " + filename);
+        
+        ModuleTypesExportImport moduleTypesExportImport = new ModuleTypesExportImport(datasetTypesMap, moduleTypesList);
+        moduleTypesExportImport.prepareForExport(file.getName(), session.user());
+        
+        saveToXML(filename, moduleTypesExportImport);
+        messagePanel.setMessage(moduleTypesExportImport.getModuleTypes().length + " module type(s) exported successfully to: " + file.getName());
+    }
+
+    // TODO move this to the server
+    private String findAvailableDatasetTypeName(String baseName) {
+        while (true) {
+            String availableName = "Imported " + baseName + " " + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
+            DatasetType localDatasetType = null;
+            try {
+                localDatasetType = presenter.getDatasetType(availableName);
+            } catch (EmfException e) {
+                // e.printStackTrace();
+            }
+            if (localDatasetType == null) {
+                return availableName;
+            }
+            
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // e.printStackTrace();
+            }
+        }
+    }
+
+    // TODO move this to the server
+    private String findAvailableModuleTypeName(String baseName) {
+        while (true) {
+            String availableName = "Imported " + baseName + " " + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
+            ModuleType localModuleType = null;
+            try {
+                localModuleType = presenter.getModuleType(availableName);
+            } catch (EmfException e) {
+                // e.printStackTrace();
+            }
+            if (localModuleType == null) {
+                return availableName;
+            }
+            
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // e.printStackTrace();
+            }
+        }
     }
 
     private void importModuleTypes() {
@@ -373,20 +443,139 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             messagePanel.setError("Failed to get import file full path: " + e.getMessage());
             return;
         }
-        ModuleType[] moduleTypes = readFromXML(filename);
-        StringBuilder changeLog = new StringBuilder(); 
-        for(ModuleType moduleType : moduleTypes) {
-            moduleType.prepareForImport(changeLog, session.user());
-            ModuleType importedModuleType;
+        
+        ModuleTypesExportImport moduleTypesExportImport = readFromXML(filename);
+        moduleTypesExportImport.prepareForImport(file.getName(), session.user());
+
+        StringBuilder changeLog = new StringBuilder();
+        
+        int datasetTypeMatches = 0;
+        int datasetTypeConflicts = 0;
+        int datasetTypeAdditions = 0;
+        
+        for (DatasetType importedDatasetType : moduleTypesExportImport.getDatasetTypes()) {
+            String oldDatasetTypeName = importedDatasetType.getName();
+            DatasetType localDatasetType = null;
             try {
-                importedModuleType = presenter.addModuleType(moduleType);
+                localDatasetType = presenter.getDatasetType(oldDatasetTypeName);
             } catch (EmfException e) {
-                e.printStackTrace();
-                messagePanel.setError("Failed to add module type: " + e.getMessage());
+                // e.printStackTrace();
+            }
+            
+            if (localDatasetType == null) { // importedDatasetType not found on the local server
+                try {
+                    localDatasetType = presenter.addDatasetType(importedDatasetType);
+                } catch (EmfException e) {
+                    e.printStackTrace();
+                    messagePanel.setError("Failed to add imported dataset type \"" + oldDatasetTypeName + "\": " + e.getMessage());
+                    return;
+                }
+                changeLog.append(String.format("Added imported dataset type \"%s\" to current server.\n", oldDatasetTypeName));
+                datasetTypeAdditions++;
+            } else { // found a dataset type with the same name on the local server
+                StringBuilder differences = new StringBuilder();
+                if (ModuleTypeVersionDataset.matchesImportedDatasetType("    ", differences, localDatasetType, importedDatasetType)) {
+                    if (differences.length() > 0) {
+                        changeLog.append(String.format("Using the local dataset type \"%s\" because it matches the imported dataset type \"%s\":\n%s",
+                                                       localDatasetType.getName(), importedDatasetType.getName(), differences));
+                    } else {
+                        changeLog.append(String.format("Using the local dataset type \"%s\" because it matches the imported dataset type \"%s\".\n",
+                                                       localDatasetType.getName(), importedDatasetType.getName()));
+                    }
+                    datasetTypeMatches++;
+                } else { // name conflict with a non-matching dataset type
+                    changeLog.append(String.format("Found local dataset type \"%s\" but it doesn't match the imported dataset type \"%s\":\n%s",
+                                                   localDatasetType.getName(), importedDatasetType.getName(), differences));
+
+                    String newDatasetTypeName = findAvailableDatasetTypeName(oldDatasetTypeName);
+                    importedDatasetType.setName(newDatasetTypeName);
+                    try {
+                        localDatasetType = presenter.addDatasetType(importedDatasetType);
+                    } catch (EmfException e) {
+                        e.printStackTrace();
+                        messagePanel.setError("Failed to add imported dataset type \"" + oldDatasetTypeName + "\" with modified name \"" + newDatasetTypeName + "\": " + e.getMessage());
+                        return;
+                    }
+                    changeLog.append(String.format("Added imported dataset type \"%s\" with modified name \"%s\" to current server.\n", oldDatasetTypeName, newDatasetTypeName));
+                    datasetTypeConflicts++;
+                }
+            }
+            if (localDatasetType == null) {
+                messagePanel.setError("Failed to add imported dataset type \"" + oldDatasetTypeName + "\" to current server.");
                 return;
             }
+            moduleTypesExportImport.replaceDatasetType(importedDatasetType, localDatasetType);
         }
-        messagePanel.setMessage(moduleTypes.length + " module type(s) imported successfully from: " + filename);
+        
+        int moduleTypeMatches = 0;
+        int moduleTypeConflicts = 0;
+        int moduleTypeAdditions = 0;
+        
+        for(ModuleType importedModuleType : moduleTypesExportImport.getModuleTypes()) {
+            String oldModuleTypeName = importedModuleType.getName();
+            ModuleType localModuleType = null;
+            try {
+                localModuleType = presenter.getModuleType(oldModuleTypeName);
+            } catch (EmfException e) {
+                // e.printStackTrace();
+            }
+
+            if (localModuleType == null) { // importedModuleType not found on the local server
+                try {
+                    localModuleType = presenter.addModuleType(importedModuleType);
+                } catch (EmfException e) {
+                    e.printStackTrace();
+                    messagePanel.setError("Failed to add imported module type \"" + oldModuleTypeName + "\": " + e.getMessage());
+                    return;
+                }
+                changeLog.append(String.format("Added imported module type \"%s\" to current server.\n", oldModuleTypeName));
+                moduleTypeAdditions++;
+            } else { // found a module type with the same name on the local server
+                StringBuilder differences = new StringBuilder();
+                if (localModuleType.matchesImportedModuleType("    ", differences, importedModuleType)) {
+                    if (differences.length() > 0) {
+                        changeLog.append(String.format("Using the local module type \"%s\" because it matches the imported module type \"%s\":\n%s",
+                                                       localModuleType.getName(), importedModuleType.getName(), differences));
+                    } else {
+                        changeLog.append(String.format("Using the local module type \"%s\" because it matches the imported module type \"%s\".\n",
+                                                       localModuleType.getName(), importedModuleType.getName()));
+                    }
+                    moduleTypeMatches++;
+                } else { // name conflict with a non-matching module type
+                    changeLog.append(String.format("Found local module type \"%s\" but it doesn't match the imported module type \"%s\":\n%s",
+                                                   localModuleType.getName(), importedModuleType.getName(), differences));
+
+                    String newModuleTypeName = findAvailableModuleTypeName(oldModuleTypeName);
+                    importedModuleType.setName(newModuleTypeName);
+                    try {
+                        localModuleType = presenter.addModuleType(importedModuleType);
+                    } catch (EmfException e) {
+                        e.printStackTrace();
+                        messagePanel.setError("Failed to add imported module type \"" + oldModuleTypeName + "\" with modified name \"" + newModuleTypeName + "\": " + e.getMessage());
+                        return;
+                    }
+                    changeLog.append(String.format("Added imported module type \"%s\" with modified name \"%s\" to current server.\n", oldModuleTypeName, newModuleTypeName));
+                    moduleTypeConflicts++;
+                }
+            }
+            if (localModuleType == null) {
+                messagePanel.setError("Failed to add imported module type \"" + oldModuleTypeName + "\" to current server.");
+                return;
+            }
+            moduleTypesExportImport.replaceModuleType(importedModuleType, localModuleType);
+        }
+        
+        String summary = String.format("Imported %d dataset type%s (%d matche%s, %d conflict%s, %d addition%s) and %d module type%s (%d matche%s, %d conflict%s, %d addition%s) from \"%s\"",
+                                       moduleTypesExportImport.getDatasetTypes().length, (moduleTypesExportImport.getDatasetTypes().length == 1) ? "" : "s",
+                                       datasetTypeMatches,     (datasetTypeMatches == 1) ? "" : "s",
+                                       datasetTypeConflicts, (datasetTypeConflicts == 1) ? "" : "s",
+                                       datasetTypeAdditions, (datasetTypeAdditions == 1) ? "" : "s",
+                                       moduleTypesExportImport.getModuleTypes().length, (moduleTypesExportImport.getModuleTypes().length == 1) ? "" : "s",
+                                       moduleTypeMatches,     (moduleTypeMatches == 1) ? "" : "s",
+                                       moduleTypeConflicts, (moduleTypeConflicts == 1) ? "" : "s",
+                                       moduleTypeAdditions, (moduleTypeAdditions == 1) ? "" : "s", file.getName());
+        changeLog.append("\n\n" + summary + "\n\n");
+        messagePanel.setMessage(summary);
     }
 
     private List selected() {

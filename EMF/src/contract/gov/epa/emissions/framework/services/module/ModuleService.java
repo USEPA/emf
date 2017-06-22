@@ -20,6 +20,8 @@ public interface ModuleService {
     ModuleType[] getModuleTypes() throws EmfException; // TODO add LiteModuleType class (and maybe LiteModuleTypeVersion too) and use the session object cache
 
     ModuleType getModuleType(int id) throws EmfException;
+
+    ModuleType getModuleType(String name) throws EmfException;
     
     ModuleType addModuleType(ModuleType moduleType) throws EmfException;
 

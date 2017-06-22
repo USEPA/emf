@@ -28,6 +28,55 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
     
     private String description;
 
+    public boolean matchesImportedDatasetConnection(String indent, final StringBuilder differences, ModuleTypeVersionDatasetConnection importedDatasetConnection) {
+        boolean result = true;
+        differences.setLength(0);
+        
+        if (this == importedDatasetConnection)
+            return result;
+
+        // skipping id;
+
+        // skipping compositeModuleTypeVersion
+        
+        if (!connectionName.equals(importedDatasetConnection.getConnectionName())) { // should never happen
+            differences.append(String.format("%sERROR: Local \"%s\" dataset connection name differs from imported \"%s\" dataset connection name.\n",
+                                             indent, connectionName, importedDatasetConnection.getConnectionName()));
+            result = false;
+        }
+
+        String localSourceName = getSourceName();
+        String importedSourceName = importedDatasetConnection.getSourceName();
+        
+        if (!localSourceName.equals(importedSourceName)) { // could happen and it's not OK
+            differences.append(String.format("%sERROR: Local \"%s\" dataset connection source name \"%s\" differs from imported dataset connection source name \"%s\".\n",
+                                             indent, connectionName, localSourceName, importedSourceName));
+            result = false;
+        }
+        
+        String localTargetName = getTargetName();
+        String importedTargetName = importedDatasetConnection.getTargetName();
+        
+        if (!localTargetName.equals(importedTargetName)) { // could happen and it's not OK
+            differences.append(String.format("%sERROR: Local \"%s\" dataset connection target name \"%s\" differs from imported dataset connection target name \"%s\".\n",
+                                             indent, connectionName, localTargetName, importedTargetName));
+            result = false;
+        }
+        
+        if ((description == null) != (importedDatasetConnection.getDescription() != null) ||
+           ((description != null) && !description.equals(importedDatasetConnection.getDescription()))) { // could happen and it's OK
+            differences.append(String.format("%sWARNING: Local \"%s\" dataset connection description differs from imported \"%s\" dataset connection description.\n",
+                                             indent, connectionName, importedDatasetConnection.getConnectionName()));
+            // result = false;
+        }
+        
+        return result;
+    }
+    
+    public void prepareForExport() {
+        id = 0;
+    }
+    
     // could return null (source invalid or not set)
     public ModuleTypeVersionDataset getSourceModuleTypeVersionDataset() {
         ModuleTypeVersionDataset moduleTypeVersionDataset = null;

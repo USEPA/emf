@@ -29,12 +29,62 @@ public class ModuleTypeVersionParameter implements Serializable {
 
     private boolean isOptional;
     
-    public void prepareForImport(final StringBuilder changeLog, User user) {
-        if (id == 0)
-            return;
+    public boolean matchesImportedModuleTypeVersionParameter(String indent, final StringBuilder differences, ModuleTypeVersionParameter importedModuleTypeVersionParameter) {
+        boolean result = true;
+        differences.setLength(0);
+        
+        if (this == importedModuleTypeVersionParameter)
+            return result;
+
+        String fullName = moduleTypeVersion.fullNameSDS("module type \"%s\" version %d \"%s\"");
+        String importedFullName = importedModuleTypeVersionParameter.getModuleTypeVersion().fullNameSDS("module type \"%s\" version %d \"%s\"");
+
+        // skipping id;
+
+        // skipping moduleTypeVersion
+        
+        if (!parameterName.equals(importedModuleTypeVersionParameter.getParameterName())) { // should never happen
+            differences.append(String.format("%sERROR: Local %s parameter name \"%s\" is different than imported %s parameter name \"%s\".\n",
+                                             indent, fullName, parameterName, importedFullName, importedModuleTypeVersionParameter.getParameterName()));
+            result = false;
+        }
+        
+        if (!mode.equals(importedModuleTypeVersionParameter.getMode())) { // could happen and it's not OK
+            differences.append(String.format("%sERROR: Local %s parameter \"%s\" mode (%s) is different than imported %s parameter \"%s\" mode (%s).\n",
+                                             indent, fullName, parameterName, mode, importedFullName,
+                                             importedModuleTypeVersionParameter.getParameterName(), importedModuleTypeVersionParameter.getMode()));
+            result = false;
+        }
+        
+        if (!sqlParameterType.equals(importedModuleTypeVersionParameter.getSqlParameterType())) { // could happen and it's not OK
+            differences.append(String.format("%sERROR: Local %s parameter \"%s\" SQL type (%s) is different than imported %s parameter \"%s\" SQL type (%s).\n",
+                                             indent, fullName, parameterName, sqlParameterType, importedFullName,
+                                             importedModuleTypeVersionParameter.getParameterName(), importedModuleTypeVersionParameter.getSqlParameterType()));
+            result = false;
+        }
+        
+        if ((description == null) != (importedModuleTypeVersionParameter.getDescription() != null) ||
+           ((description != null) && !description.equals(importedModuleTypeVersionParameter.getDescription()))) { // could happen and it's OK
+            differences.append(String.format("%sWARNING: Local %s parameter \"%s\" description differs from the corresponding imported module type version parameter description.\n",
+                                             indent, fullName, parameterName));
+            // result = false;
+        }
+
+        if (isOptional != importedModuleTypeVersionParameter.getIsOptional()) { // could happen and it's not OK
+            differences.append(String.format("%sERROR: Local %s parameter \"%s\" is %s while the imported %s parameter \"%s\" is %s.\n",
+                                             indent, fullName, parameterName, isOptional ? "optional" : "not optional",
+                                             importedFullName, importedModuleTypeVersionParameter.getParameterName(),
+                                             importedModuleTypeVersionParameter.getIsOptional() ? "optional" : "not optional"));
+            result = false;
+        }
+
+        return result;
+    }
+    
+    public void prepareForExport() {
         id = 0;
     }
-
+    
     public ModuleTypeVersionParameter deepCopy() {
         ModuleTypeVersionParameter newModuleTypeVersionParameter = new ModuleTypeVersionParameter();
         newModuleTypeVersionParameter.setModuleTypeVersion(moduleTypeVersion);

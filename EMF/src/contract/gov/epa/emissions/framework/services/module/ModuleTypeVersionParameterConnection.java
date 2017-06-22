@@ -29,6 +29,55 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
     
     private String description;
 
+    public boolean matchesImportedParameterConnection(String indent, final StringBuilder differences, ModuleTypeVersionParameterConnection importedParameterConnection) {
+        boolean result = true;
+        differences.setLength(0);
+        
+        if (this == importedParameterConnection)
+            return result;
+
+        // skipping id;
+
+        // skipping compositeModuleTypeVersion
+        
+        if (!connectionName.equals(importedParameterConnection.getConnectionName())) { // should never happen
+            differences.append(String.format("%sERROR: Local \"%s\" parameter connection name differs from imported \"%s\" parameter connection name.\n",
+                                             indent, connectionName, importedParameterConnection.getConnectionName()));
+            result = false;
+        }
+
+        String localSourceName = getSourceName();
+        String importedSourceName = importedParameterConnection.getSourceName();
+        
+        if (!localSourceName.equals(importedSourceName)) { // could happen and it's not OK
+            differences.append(String.format("%sERROR: Local \"%s\" parameter connection source name \"%s\" differs from imported parameter connection source name \"%s\".\n",
+                                             indent, connectionName, localSourceName, importedSourceName));
+            result = false;
+        }
+        
+        String localTargetName = getTargetName();
+        String importedTargetName = importedParameterConnection.getTargetName();
+        
+        if (!localTargetName.equals(importedTargetName)) { // could happen and it's not OK
+            differences.append(String.format("%sERROR: Local \"%s\" parameter connection target name \"%s\" differs from imported parameter connection target name \"%s\".\n",
+                                             indent, connectionName, localTargetName, importedTargetName));
+            result = false;
+        }
+        
+        if ((description == null) != (importedParameterConnection.getDescription() != null) ||
+           ((description != null) && !description.equals(importedParameterConnection.getDescription()))) { // could happen and it's OK
+            differences.append(String.format("%sWARNING: Local \"%s\" parameter connection description differs from imported \"%s\" parameter connection description.\n",
+                                             indent, connectionName, importedParameterConnection.getConnectionName()));
+            // result = false;
+        }
+        
+        return result;
+    }
+    
+    public void prepareForExport() {
+        id = 0;
+    }
+    
     // could return null (source invalid or not set)
     public ModuleTypeVersionParameter getSourceModuleTypeVersionParameter() {
         ModuleTypeVersionParameter moduleTypeVersionParameter = null;

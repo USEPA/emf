@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.moduletype;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -87,7 +88,20 @@ public class ModuleTypesManagerPresenter {
         return session.moduleService().getModuleTypes();
     }
 
+    public ModuleType getModuleType(String name) throws EmfException {
+        return session.moduleService().getModuleType(name);
+    }
+
     public ModuleType addModuleType(ModuleType moduleType) throws EmfException {
         return session.moduleService().addModuleType(moduleType);
+    }
+
+    public DatasetType getDatasetType(String name) throws EmfException {
+        return session.dataCommonsService().getDatasetType(name);
+    }
+
+    public DatasetType addDatasetType(DatasetType datasetType) throws EmfException {
+        session.dataCommonsService().addDatasetType(datasetType);
+        return session.dataCommonsService().getDatasetType(datasetType.getName());
     }
 }
