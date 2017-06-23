@@ -978,10 +978,21 @@ abstract class ModuleRunner {
 
     protected static String getGrantPermissionsScript(String tempUserName, List<String> outputDatasetTables) {
         String permissionsScript =
-            "GRANT USAGE ON SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
-            "GRANT SELECT, REFERENCES ON ALL TABLES IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
-            "GRANT USAGE ON ALL SEQUENCES IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
-            "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n\n";
+            "DO $$\n" +
+            "BEGIN\n" +
+            "    GRANT USAGE ON SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
+            "    GRANT SELECT, REFERENCES ON ALL TABLES IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
+            "    GRANT USAGE ON ALL SEQUENCES IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
+            "    GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA cases, emf, emissions, fast, modules, reference, sms TO ${temp_user};\n" +
+            "\n" +
+            "    IF EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'tiger_data')\n" +
+            "    THEN\n" +
+            "        GRANT USAGE ON SCHEMA tiger, tiger_data TO ${temp_user};\n" +
+            "        GRANT SELECT, REFERENCES ON ALL TABLES IN SCHEMA tiger, tiger_data TO ${temp_user};\n" +
+            "        GRANT USAGE ON ALL SEQUENCES IN SCHEMA tiger, tiger_data TO ${temp_user};\n" +
+            "        GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA tiger, tiger_data TO ${temp_user};\n" +
+            "    END IF;\n" +
+            "END $$;\n\n";
         
         // TODO grant USAGE permissions for all procedural languages, domains, and types
 
@@ -1031,8 +1042,15 @@ abstract class ModuleRunner {
     protected static String getTempUserTeardownScript(String tempUserName) {
         String teardownScript =
             "REINDEX SYSTEM \"EMF\";\n" +
-            "DROP OWNED BY ${temp_user} CASCADE;\n" +
-            "DROP USER ${temp_user};\n";
+            "\n" +
+            "DO $$\n" +
+            "BEGIN\n" +
+            "    IF EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = '${temp_user}')\n" +
+            "    THEN\n" +
+            "        DROP OWNED BY ${temp_user} CASCADE;\n" +
+            "        DROP USER ${temp_user};\n" +
+            "    END IF;\n" +
+            "END $$;\n";
 
         teardownScript = Pattern.compile("\\$\\{temp_user\\}", Pattern.CASE_INSENSITIVE)
                                 .matcher(teardownScript).replaceAll(tempUserName);
