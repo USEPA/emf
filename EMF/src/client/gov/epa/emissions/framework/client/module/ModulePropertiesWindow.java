@@ -72,6 +72,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 public class ModulePropertiesWindow extends DisposableInteralFrame implements ModulePropertiesView, RefreshObserver, TagsObserver {
     private ModulePropertiesPresenter presenter;
 
@@ -125,8 +129,9 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private ModuleParametersTableData parametersTableData;
 
     // algorithm
-    private JPanel   algorithmPanel;
-    private TextArea algorithm;
+    private JPanel          algorithmPanel;
+    private RSyntaxTextArea algorithm;
+    private RTextScrollPane algorithmScrollPane;
 
     // submodules
     private JPanel submodulesPanel;
@@ -573,13 +578,14 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private JPanel algorithmPanel() {
         algorithmPanel = new JPanel(new BorderLayout());
-        algorithm = new TextArea("algorithm", ((moduleTypeVersion.getAlgorithm() == null) ? "" : moduleTypeVersion.getAlgorithm()), 60);
+        algorithmPanel = new JPanel(new BorderLayout());
+        algorithm = new RSyntaxTextArea(((moduleTypeVersion.getAlgorithm() == null) ? "" : moduleTypeVersion.getAlgorithm()));
         algorithm.setEditable(false);
         algorithm.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        ScrollableComponent scrollableAlgorithm = new ScrollableComponent(algorithm);
-        scrollableAlgorithm.setMaximumSize(new Dimension(575, 200));
-        algorithmPanel.add(scrollableAlgorithm);
-
+        algorithm.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SQL);
+        algorithm.setCodeFoldingEnabled(true);
+        algorithmScrollPane = new RTextScrollPane(algorithm);
+        algorithmPanel.add(algorithmScrollPane);
         return algorithmPanel;
     }
 

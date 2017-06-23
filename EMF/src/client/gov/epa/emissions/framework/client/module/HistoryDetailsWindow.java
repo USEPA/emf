@@ -6,20 +6,14 @@ import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
-import gov.epa.emissions.commons.gui.buttons.NewButton;
-import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
-import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesViewer;
-import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionConnectionsTableData;
-import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSubmoduleWindow;
-import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionSubmodulesTableData;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.History;
@@ -27,9 +21,6 @@ import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.HistoryInternalDataset;
 import gov.epa.emissions.framework.services.module.HistorySubmodule;
 import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleDataset;
-import gov.epa.emissions.framework.services.module.ModuleInternalDataset;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -49,11 +40,14 @@ import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class HistoryDetailsWindow extends DisposableInteralFrame implements HistoryDetailsView, RefreshObserver {
     private HistoryDetailsPresenter presenter;
@@ -99,9 +93,14 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     private HistoryParametersTableData parametersTableData;
 
     // scripts
-    private TextArea setupScript;
-    private TextArea userScript;
-    private TextArea teardownScript;
+    private RSyntaxTextArea setupScript;
+    private RTextScrollPane setupScriptScrollPane;
+
+    private RSyntaxTextArea userScript;
+    private RTextScrollPane userScriptScrollPane;
+
+    private RSyntaxTextArea teardownScript;
+    private RTextScrollPane teardownScriptScrollPane;
 
     // submodules
     private JPanel submodulesPanel;
@@ -251,26 +250,38 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
 
     private JPanel setupScriptPanel() {
         setupScriptPanel = new JPanel(new BorderLayout());
-        setupScript = new TextArea("setup script", history.getSetupScript(), 60);
+        setupScript = new RSyntaxTextArea(history.getSetupScript());
         setupScript.setEditable(false);
         setupScript.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        ScrollableComponent scrollableScripts = new ScrollableComponent(setupScript);
-        scrollableScripts.setMaximumSize(new Dimension(575, 200));
-        setupScriptPanel.add(scrollableScripts);
-
+        setupScript.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SQL);
+        setupScript.setCodeFoldingEnabled(true);
+        setupScriptScrollPane = new RTextScrollPane(setupScript);
+        setupScriptPanel.add(setupScriptScrollPane);
         return setupScriptPanel;
     }
 
     private JPanel userScriptPanel() {
         userScriptPanel = new JPanel(new BorderLayout());
-        userScript = new TextArea("userScript", history.getUserScript(), 60);
+        userScript = new RSyntaxTextArea(history.getUserScript());
         userScript.setEditable(false);
         userScript.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        ScrollableComponent scrollableScripts = new ScrollableComponent(userScript);
-        scrollableScripts.setMaximumSize(new Dimension(575, 200));
-        userScriptPanel.add(scrollableScripts);
-
+        userScript.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SQL);
+        userScript.setCodeFoldingEnabled(true);
+        userScriptScrollPane = new RTextScrollPane(userScript);
+        userScriptPanel.add(userScriptScrollPane);
         return userScriptPanel;
+    }
+
+    private JPanel teardownScriptPanel() {
+        teardownScriptPanel = new JPanel(new BorderLayout());
+        teardownScript = new RSyntaxTextArea(history.getTeardownScript());
+        teardownScript.setEditable(false);
+        teardownScript.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        teardownScript.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SQL);
+        teardownScript.setCodeFoldingEnabled(true);
+        teardownScriptScrollPane = new RTextScrollPane(teardownScript);
+        teardownScriptPanel.add(teardownScriptScrollPane);
+        return teardownScriptPanel;
     }
 
     private JPanel submodulesPanel() {
@@ -310,18 +321,6 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
         // internalParametersPanel.add(internalParametersCrudPanel(), BorderLayout.SOUTH);
 
         return internalParametersPanel;
-    }
-
-    private JPanel teardownScriptPanel() {
-        teardownScriptPanel = new JPanel(new BorderLayout());
-        teardownScript = new TextArea("teardownScript", history.getTeardownScript(), 60);
-        teardownScript.setEditable(false);
-        teardownScript.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        ScrollableComponent scrollableScripts = new ScrollableComponent(teardownScript);
-        scrollableScripts.setMaximumSize(new Dimension(575, 200));
-        teardownScriptPanel.add(scrollableScripts);
-
-        return teardownScriptPanel;
     }
 
     private JPanel logsPanel() {

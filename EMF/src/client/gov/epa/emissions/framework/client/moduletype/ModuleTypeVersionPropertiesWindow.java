@@ -68,6 +68,10 @@ import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         implements ModuleTypeVersionPropertiesView, RefreshObserver, TagsObserver {
     private ModuleTypeVersionPropertiesPresenter presenter;
@@ -133,9 +137,10 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
     private ModuleTypeVersionParametersTableData parametersTableData;
 
     // algorithm
-    private JPanel algorithmPanel;
-    private TextArea algorithm;
-    private UndoManager algorithmUndoManager;
+    private JPanel          algorithmPanel;
+    private RSyntaxTextArea algorithm;
+    private RTextScrollPane algorithmScrollPane;
+    private UndoManager     algorithmUndoManager;
 
     // submodules
     private JPanel submodulesPanel;
@@ -547,15 +552,13 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
     private JPanel algorithmPanel() {
         algorithmPanel = new JPanel(new BorderLayout());
-        algorithm = new TextArea("algorithm", moduleTypeVersion.getAlgorithm(), 60);
+        algorithm = new RSyntaxTextArea(moduleTypeVersion.getAlgorithm());
         algorithm.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         algorithm.setEditable(viewMode != ViewMode.VIEW);
-        if (viewMode != ViewMode.VIEW) {
-            addChangeable(algorithm);
-        }
-        ScrollableComponent scrollableAlgorithm = new ScrollableComponent(algorithm);
-        scrollableAlgorithm.setMaximumSize(new Dimension(575, 200));
-        algorithmPanel.add(scrollableAlgorithm);
+        algorithm.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_SQL);
+        algorithm.setCodeFoldingEnabled(true);
+        algorithmScrollPane = new RTextScrollPane(algorithm);
+        algorithmPanel.add(algorithmScrollPane);
 
         algorithmUndoManager = new UndoManager();
 
@@ -563,6 +566,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             @Override
             public void undoableEditHappened(UndoableEditEvent e) {
                 algorithmUndoManager.addEdit(e.getEdit());
+                isDirty.setText("true");
             }
         });
 
