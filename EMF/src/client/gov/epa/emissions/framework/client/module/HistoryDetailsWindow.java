@@ -63,64 +63,64 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     private JPanel layout;
     private SingleLineMessagePanel messagePanel;
     private JTabbedPane tabbedPane;
-    private JPanel summaryPanel;
-    private JPanel datasetsPanel;
-    private JPanel parametersPanel;
-    private JPanel setupScriptPanel;
-    private JPanel userScriptPanel;
-    private JPanel teardownScriptPanel;
-    private JPanel logsPanel;
 
     // summary
-    private Label moduleName;
-    private Label runId;
-    private Label startDate;
-    private Label duration;
-    private Label endDate;
-    private Label user;
-    private Label status;
-    private Label result;
-    private Label comment;
+    private JPanel summaryPanel;
+    private Label  moduleName;
+    private Label  runId;
+    private Label  startDate;
+    private Label  duration;
+    private Label  endDate;
+    private Label  user;
+    private Label  status;
+    private Label  result;
+    private Label  comment;
 
     // datasets
-    private JPanel datasetsTablePanel;
+    private JPanel                      datasetsPanel;
+    private JPanel                      datasetsTablePanel;
     private SelectableSortFilterWrapper datasetsTable;
-    private HistoryDatasetsTableData datasetsTableData;
+    private HistoryDatasetsTableData    datasetsTableData;
 
     // parameters
-    private JPanel parametersTablePanel;
+    private JPanel                      parametersPanel;
+    private JPanel                      parametersTablePanel;
     private SelectableSortFilterWrapper parametersTable;
-    private HistoryParametersTableData parametersTableData;
+    private HistoryParametersTableData  parametersTableData;
 
     // scripts
+    private JPanel          setupScriptPanel;
     private RSyntaxTextArea setupScript;
     private RTextScrollPane setupScriptScrollPane;
 
+    private JPanel          userScriptPanel;
     private RSyntaxTextArea userScript;
     private RTextScrollPane userScriptScrollPane;
 
+    private JPanel          teardownScriptPanel;
     private RSyntaxTextArea teardownScript;
     private RTextScrollPane teardownScriptScrollPane;
 
     // submodules
-    private JPanel submodulesPanel;
-    private JPanel submodulesTablePanel;
+    private JPanel                      submodulesPanel;
+    private JPanel                      submodulesTablePanel;
     private SelectableSortFilterWrapper submodulesTable;
-    private HistorySubmodulesTableData submodulesTableData;
+    private HistorySubmodulesTableData  submodulesTableData;
 
     // internal datasets
-    private JPanel internalDatasetsPanel;
-    private JPanel internalDatasetsTablePanel;
-    private SelectableSortFilterWrapper internalDatasetsTable;
+    private JPanel                           internalDatasetsPanel;
+    private JPanel                           internalDatasetsTablePanel;
+    private SelectableSortFilterWrapper      internalDatasetsTable;
     private HistoryInternalDatasetsTableData internalDatasetsTableData;
 
     // internal parameters
-    private JPanel internalParametersPanel;
-    private JPanel internalParametersTablePanel;
-    private SelectableSortFilterWrapper internalParametersTable;
+    private JPanel                             internalParametersPanel;
+    private JPanel                             internalParametersTablePanel;
+    private SelectableSortFilterWrapper        internalParametersTable;
     private HistoryInternalParametersTableData internalParametersTableData;
 
     // logs
+    private JPanel   logsPanel;
     private TextArea logs;
 
     public HistoryDetailsWindow(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session, History history) {
