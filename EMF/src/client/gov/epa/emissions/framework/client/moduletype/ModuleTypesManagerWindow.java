@@ -29,6 +29,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -342,6 +343,28 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     private void exportModuleTypes() {
+        try {
+            doExportModuleTypes();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // ignore
+        }
+
+        JOptionPane.showMessageDialog(parentConsole, "Module Type Manager needs to be refreshed and all other windows must be closed.", "Warning", JOptionPane.OK_OPTION);
+        
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        try {
+            doRefresh();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // ignore
+        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));        
+        
+        messagePanel.setMessage("Module Type Manager has been refreshed. Please close all other windows.");
+    }
+    
+    private void doExportModuleTypes() {
         List<?> selected = selected();
         if (selected.isEmpty()) {
             messagePanel.setMessage("Please select one or more module types");
@@ -379,6 +402,14 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             return;
         }
         
+        if (file.exists()) {
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (selection == JOptionPane.NO_OPTION) {
+                messagePanel.setMessage("Export cancelled.");
+                return;
+            }
+        }
+
         ModuleTypesExportImport moduleTypesExportImport = new ModuleTypesExportImport(datasetTypesMap, moduleTypesList);
         moduleTypesExportImport.setExportEmfServer(session.serviceLocator().getBaseUrl());
         moduleTypesExportImport.setExportEmfVersion(LoginWindow.EMF_VERSION);
@@ -442,6 +473,28 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     private void importModuleTypes() {
+        try {
+            doImportModuleTypes();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // ignore
+        }
+
+        JOptionPane.showMessageDialog(parentConsole, "Module Type Manager needs to be refreshed and all other windows must be closed.", "Warning", JOptionPane.OK_OPTION);
+        
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        try {
+            doRefresh();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // ignore
+        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));        
+
+        messagePanel.setMessage("Module Type Manager has been refreshed. Please close all other windows.");
+    }
+    
+    private void doImportModuleTypes() {
         JFileChooser fc = new JFileChooser();
         int returnVal = fc.showOpenDialog(this);
         if (returnVal != JFileChooser.APPROVE_OPTION)
@@ -454,6 +507,11 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         } catch (IOException e) {
             e.printStackTrace();
             messagePanel.setError("Failed to get import file full path: " + e.getMessage());
+            return;
+        }
+        
+        if (!file.exists()) {
+            messagePanel.setError("File \"" + filename + "\" doesn't exists.");
             return;
         }
         
