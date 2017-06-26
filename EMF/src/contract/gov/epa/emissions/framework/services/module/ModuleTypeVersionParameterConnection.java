@@ -64,7 +64,7 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
             result = false;
         }
         
-        if ((description == null) != (importedParameterConnection.getDescription() != null) ||
+        if ((description == null) != (importedParameterConnection.getDescription() == null) ||
            ((description != null) && !description.equals(importedParameterConnection.getDescription()))) { // could happen and it's OK
             differences.append(String.format("%sWARNING: Local \"%s\" parameter connection description differs from imported \"%s\" parameter connection description.\n",
                                              indent, connectionName, importedParameterConnection.getConnectionName()));

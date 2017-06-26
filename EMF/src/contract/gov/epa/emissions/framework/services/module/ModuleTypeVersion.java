@@ -101,7 +101,7 @@ public class ModuleTypeVersion implements Serializable {
             // result = false;
         }
 
-        if ((description == null) != (importedModuleTypeVersion.getDescription() != null) ||
+        if ((description == null) != (importedModuleTypeVersion.getDescription() == null) ||
            ((description != null) && !description.equals(importedModuleTypeVersion.getDescription()))) { // could happen and it's OK
             differences.append(String.format("%sWARNING: Local %s description differs from imported %s description.\n",
                                              indent, fullName, importedFullName));
@@ -137,12 +137,12 @@ public class ModuleTypeVersion implements Serializable {
             // result = false;
         }
 
-        // importedModuleTypeVersion.getIsFinal() should be false
-        if (!importedModuleTypeVersion.getIsFinal()) { // should not happen but it's OK
-            differences.append(String.format("%sWARNING: Imported %s is %s.\n",
-                                             indent, importedFullName, importedModuleTypeVersion.getIsFinal() ? "final" : "not final"));
-            // result = false;
-        }
+//        // importedModuleTypeVersion.getIsFinal() should be false
+//        if (importedModuleTypeVersion.getIsFinal()) { // should not happen but it's OK
+//            differences.append(String.format("%sWARNING: Imported %s is %s.\n",
+//                                             indent, importedFullName, importedModuleTypeVersion.getIsFinal() ? "final" : "not final"));
+//            // result = false;
+//        }
 
         Map<String, ModuleTypeVersionDataset> importedModuleTypeVersionDatasets =
                 importedModuleTypeVersion.getModuleTypeVersionDatasets();
@@ -327,36 +327,17 @@ public class ModuleTypeVersion implements Serializable {
         return result;
     }
 
-    public void prepareForExport(User user, String message) {
+    public void prepareForExport() {
         if (id == 0)
             return;
         id = 0;
         creator = null;
-        description = (description == null) ? "" : (description + "\n");
-        description += message;
         for(ModuleTypeVersionDataset dataset : moduleTypeVersionDatasets.values()) {
             dataset.prepareForExport();
         }
         for(ModuleTypeVersionParameter parameter : moduleTypeVersionParameters.values()) {
             parameter.prepareForExport();
         }
-        
-        Date now = new Date();
-        ModuleTypeVersionRevision exportRevision = new ModuleTypeVersionRevision();
-        exportRevision.setCreationDate(now);
-        exportRevision.setCreator(user);
-        exportRevision.setDescription(message);
-        addModuleTypeVersionRevision(exportRevision);
-        
-        String revisionsReport = revisionsReport("|   ");
-        moduleTypeVersionRevisions.clear();
-        
-        ModuleTypeVersionRevision historicalRevision = new ModuleTypeVersionRevision();
-        historicalRevision.setCreationDate(now);
-        historicalRevision.setCreator(null);
-        historicalRevision.setDescription(revisionsReport);
-        addModuleTypeVersionRevision(historicalRevision);
-        
         for(ModuleTypeVersionRevision revision : moduleTypeVersionRevisions) {
             revision.prepareForExport();
         }
@@ -371,29 +352,23 @@ public class ModuleTypeVersion implements Serializable {
         }
     }
     
-    public void prepareForImport(User user, String message) {
-        if (creator == user)
+    public void prepareForImport(String exportImportMessage, User importUser, Date importDate) {
+        if (creator == importUser)
             return;
         
-        creator = user;
+        creator = importUser;
         description = (description == null) ? "" : (description + "\n");
-        description += message;
+        description += exportImportMessage;
+        lastModifiedDate  = importDate;
         
         // nothing to do for datasets
 
         // nothing to do for parameters
 
         for(ModuleTypeVersionRevision revision : moduleTypeVersionRevisions) {
-            revision.prepareForImport(user);
+            revision.prepareForImport(exportImportMessage);
         }
         
-        Date now = new Date();
-        ModuleTypeVersionRevision importeRevision = new ModuleTypeVersionRevision();
-        importeRevision.setCreationDate(now);
-        importeRevision.setCreator(user);
-        importeRevision.setDescription(message);
-        addModuleTypeVersionRevision(importeRevision);
-
         // nothing to do for submodules
 
         // nothing to do for dataset connections
@@ -1110,42 +1085,7 @@ public class ModuleTypeVersion implements Serializable {
         StringBuilder revisionsReport = new StringBuilder();
         
         for (ModuleTypeVersionRevision moduleTypeVersionRevision : moduleTypeVersionRevisions) {
-            String creationDate = (moduleTypeVersionRevision.getCreationDate() == null)
-                                  ? "?"
-                                  : CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleTypeVersionRevision.getCreationDate());
-            
-            String creator = (moduleTypeVersionRevision.getCreator() == null)
-                             ? "?"
-                             : moduleTypeVersionRevision.getCreator().getName();
-            
-            String record = String.format("Revision %d created on %s by %s\n%s\n\n",
-                                          moduleTypeVersionRevision.getRevision(),
-                                          creationDate, creator,
-                                          moduleTypeVersionRevision.getDescription());
-            
-            revisionsReport.append(record);
-        }
-        
-        return revisionsReport.toString();
-    }
-    
-    public String revisionsReport(String indent) {
-        StringBuilder revisionsReport = new StringBuilder();
-        
-        for (ModuleTypeVersionRevision moduleTypeVersionRevision : moduleTypeVersionRevisions) {
-            String creationDate = (moduleTypeVersionRevision.getCreationDate() == null)
-                                  ? "?"
-                                  : CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleTypeVersionRevision.getCreationDate());
-            
-            String creator = (moduleTypeVersionRevision.getCreator() == null)
-                             ? "?"
-                             : moduleTypeVersionRevision.getCreator().getName();
-            
-            String record = String.format("%sRevision %d created on %s by %s\n%s\n%s\n",
-                                          indent, moduleTypeVersionRevision.getRevision(), creationDate, creator,
-                                          moduleTypeVersionRevision.getDescription(indent), indent);
-            
-            revisionsReport.append(record);
+            revisionsReport.append(moduleTypeVersionRevision.getRecord());
         }
         
         return revisionsReport.toString();

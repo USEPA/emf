@@ -1131,9 +1131,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             errorTextArea.setWrapStyleWord(true);
             JScrollPane errorScrollPane = new JScrollPane(errorTextArea);
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            int width = (int)(screenSize.getWidth() * 0.8);
+            int width = (int)(screenSize.getWidth() * 0.75);
             errorScrollPane.setSize(new Dimension(width, 10));
-            int height = Math.min((int)(screenSize.getHeight() * 0.8), errorScrollPane.getPreferredSize().height);
+            int height = Math.min((int)(screenSize.getHeight() * 0.75), errorScrollPane.getPreferredSize().height);
             errorScrollPane.setPreferredSize(new Dimension(width, height));
             JOptionPane.showMessageDialog(null, errorScrollPane, title, JOptionPane.ERROR_MESSAGE);
         } else {
@@ -1155,9 +1155,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             messageTextArea.setWrapStyleWord(true);
             JScrollPane messageScrollPane = new JScrollPane(messageTextArea);
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            int width = (int)(screenSize.getWidth() * 0.8);
+            int width = (int)(screenSize.getWidth() * 0.75);
             messageScrollPane.setSize(new Dimension(width, 10));
-            int height = Math.min((int)(screenSize.getHeight() * 0.8), messageScrollPane.getPreferredSize().height);
+            int height = Math.min((int)(screenSize.getHeight() * 0.75), messageScrollPane.getPreferredSize().height);
             messageScrollPane.setPreferredSize(new Dimension(width, height));
             JOptionPane.showMessageDialog(null, messageScrollPane, title, JOptionPane.ERROR_MESSAGE);
         } else {

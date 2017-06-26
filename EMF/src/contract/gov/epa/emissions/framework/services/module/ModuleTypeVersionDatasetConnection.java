@@ -63,7 +63,7 @@ public class ModuleTypeVersionDatasetConnection implements Serializable {
             result = false;
         }
         
-        if ((description == null) != (importedDatasetConnection.getDescription() != null) ||
+        if ((description == null) != (importedDatasetConnection.getDescription() == null) ||
            ((description != null) && !description.equals(importedDatasetConnection.getDescription()))) { // could happen and it's OK
             differences.append(String.format("%sWARNING: Local \"%s\" dataset connection description differs from imported \"%s\" dataset connection description.\n",
                                              indent, connectionName, importedDatasetConnection.getConnectionName()));

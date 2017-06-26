@@ -89,7 +89,7 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
             result = false;
         }
 
-        if ((description == null) != (importedModuleType.getDescription() != null) ||
+        if ((description == null) != (importedModuleType.getDescription() == null) ||
            ((description != null) && !description.equals(importedModuleType.getDescription()))) { // could happen and it's OK
             differences.append(String.format("%sWARNING: Local \"%s\" module type description differs from imported module type description.\n",
                                              indent, name));
@@ -168,29 +168,28 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         return result;
     }
 
-    public void prepareForExport(User user, String message) {
+    public void prepareForExport() {
         if (this.id == 0)
             return;
         this.id = 0;
         this.creator = null;
         setLockDate(null);
         setLockOwner(null);
-        description = (description == null) ? "" : (description + "\n");
-        description += message;
         for (ModuleTypeVersion moduleTypeVersion : this.moduleTypeVersions.values()) {
-            moduleTypeVersion.prepareForExport(user, message);
+            moduleTypeVersion.prepareForExport();
         }
         tags.clear();
     }
 
-    public void prepareForImport(User user, String message) {
-        if (this.creator == user)
+    public void prepareForImport(String exportImportMessage, User importUser, Date importDate) {
+        if (this.creator == importUser)
             return;
-        this.creator = user;
+        this.creator = importUser;
         description = (description == null) ? "" : (description + "\n");
-        description += message;
+        description += exportImportMessage;
+        lastModifiedDate = importDate;
         for (ModuleTypeVersion moduleTypeVersion : this.moduleTypeVersions.values()) {
-            moduleTypeVersion.prepareForImport(user, message);
+            moduleTypeVersion.prepareForImport(exportImportMessage, importUser, importDate);
         }
     }
     

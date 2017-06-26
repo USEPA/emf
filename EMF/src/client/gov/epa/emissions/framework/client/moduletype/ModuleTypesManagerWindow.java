@@ -7,12 +7,14 @@ import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
+import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.login.LoginWindow;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.LiteModuleType;
@@ -378,10 +380,21 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }
         
         ModuleTypesExportImport moduleTypesExportImport = new ModuleTypesExportImport(datasetTypesMap, moduleTypesList);
-        moduleTypesExportImport.prepareForExport(file.getName(), session.user());
+        moduleTypesExportImport.setExportEmfServer(session.serviceLocator().getBaseUrl());
+        moduleTypesExportImport.setExportEmfVersion(LoginWindow.EMF_VERSION);
+        moduleTypesExportImport.setExportFileName(file.getName());
+        moduleTypesExportImport.setExportUserName(session.user().getName());
+        moduleTypesExportImport.setExportDate(new Date());
+        
+        moduleTypesExportImport.prepareForExport();
         
         saveToXML(filename, moduleTypesExportImport);
-        messagePanel.setMessage(moduleTypesExportImport.getModuleTypes().length + " module type(s) exported successfully to: " + file.getName());
+        
+        String summary = String.format("Exported %d dataset type%s and %d module type%s to \"%s\".",
+                                       moduleTypesExportImport.getDatasetTypes().length, (moduleTypesExportImport.getDatasetTypes().length == 1) ? "" : "s",
+                                       moduleTypesExportImport.getModuleTypes().length,  (moduleTypesExportImport.getModuleTypes().length == 1) ? "" : "s",
+                                       file.getName());
+        messagePanel.setMessage(summary);
     }
 
     // TODO move this to the server
@@ -445,8 +458,32 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }
         
         ModuleTypesExportImport moduleTypesExportImport = readFromXML(filename);
-        moduleTypesExportImport.prepareForImport(file.getName(), session.user());
+        
+        String importEmfServer = session.serviceLocator().getBaseUrl();
+        String importEmfVersion = LoginWindow.EMF_VERSION;
+        String importFileName = file.getName();
+        User importUser = session.user();
+        Date importDate = new Date();
 
+        // TODO add export/import version compatibility table 
+        if (!moduleTypesExportImport.getExportEmfVersion().equals(importEmfVersion)) {
+            String message = String.format("Can't import \"%s\": file version \"%s\" incompatible with local version \"%s\".",
+                                           importFileName, moduleTypesExportImport.getExportEmfVersion(), importEmfVersion);
+            messagePanel.setError(message);
+            return;
+        }
+
+        String exportMessage = String.format("Exported from server \"%s\" version \"%s\" to \"%s\" by %s on %s.",
+                                             moduleTypesExportImport.getExportEmfServer(), moduleTypesExportImport.getExportEmfVersion(),
+                                             moduleTypesExportImport.getExportFileName(), moduleTypesExportImport.getExportUserName(),
+                                             CustomDateFormat.format_MM_DD_YYYY_HH_mm(moduleTypesExportImport.getExportDate()));
+
+        String importMessage = String.format("Imported on server \"%s\" version \"%s\" from file \"%s\" by %s on %s.",
+                                             importEmfServer, importEmfVersion, importFileName, importUser.getName(),
+                                             CustomDateFormat.format_MM_DD_YYYY_HH_mm(importDate));
+        
+        String exportImportMessage = exportMessage + "\n" + importMessage;
+        
         StringBuilder changeLog = new StringBuilder();
         
         int datasetTypeMatches = 0;
@@ -464,6 +501,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             
             if (localDatasetType == null) { // importedDatasetType not found on the local server
                 try {
+                    ModuleTypesExportImport.prepareForImport(importedDatasetType, exportImportMessage, importUser, importDate);
                     localDatasetType = presenter.addDatasetType(importedDatasetType);
                 } catch (EmfException e) {
                     e.printStackTrace();
@@ -479,7 +517,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                         changeLog.append(String.format("Using the local dataset type \"%s\" because it matches the imported dataset type \"%s\":\n%s",
                                                        localDatasetType.getName(), importedDatasetType.getName(), differences));
                     } else {
-                        changeLog.append(String.format("Using the local dataset type \"%s\" because it matches the imported dataset type \"%s\".\n",
+                        changeLog.append(String.format("Using the local dataset type \"%s\" because it matches the imported dataset type \"%s\".\n\n",
                                                        localDatasetType.getName(), importedDatasetType.getName()));
                     }
                     datasetTypeMatches++;
@@ -490,6 +528,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                     String newDatasetTypeName = findAvailableDatasetTypeName(oldDatasetTypeName);
                     importedDatasetType.setName(newDatasetTypeName);
                     try {
+                        ModuleTypesExportImport.prepareForImport(importedDatasetType, exportImportMessage, importUser, importDate);
                         localDatasetType = presenter.addDatasetType(importedDatasetType);
                     } catch (EmfException e) {
                         e.printStackTrace();
@@ -506,6 +545,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
             moduleTypesExportImport.replaceDatasetType(importedDatasetType, localDatasetType);
         }
+
         
         int moduleTypeMatches = 0;
         int moduleTypeConflicts = 0;
@@ -522,6 +562,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
             if (localModuleType == null) { // importedModuleType not found on the local server
                 try {
+                    importedModuleType.prepareForImport(exportImportMessage, importUser, importDate);
                     localModuleType = presenter.addModuleType(importedModuleType);
                 } catch (EmfException e) {
                     e.printStackTrace();
@@ -537,7 +578,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                         changeLog.append(String.format("Using the local module type \"%s\" because it matches the imported module type \"%s\":\n%s",
                                                        localModuleType.getName(), importedModuleType.getName(), differences));
                     } else {
-                        changeLog.append(String.format("Using the local module type \"%s\" because it matches the imported module type \"%s\".\n",
+                        changeLog.append(String.format("Using the local module type \"%s\" because it matches the imported module type \"%s\".\n\n",
                                                        localModuleType.getName(), importedModuleType.getName()));
                     }
                     moduleTypeMatches++;
@@ -548,6 +589,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                     String newModuleTypeName = findAvailableModuleTypeName(oldModuleTypeName);
                     importedModuleType.setName(newModuleTypeName);
                     try {
+                        importedModuleType.prepareForImport(exportImportMessage, importUser, importDate);
                         localModuleType = presenter.addModuleType(importedModuleType);
                     } catch (EmfException e) {
                         e.printStackTrace();
@@ -565,7 +607,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             moduleTypesExportImport.replaceModuleType(importedModuleType, localModuleType);
         }
         
-        String summary = String.format("Imported %d dataset type%s (%d matche%s, %d conflict%s, %d addition%s) and %d module type%s (%d matche%s, %d conflict%s, %d addition%s) from \"%s\"",
+        String summary = String.format("Imported %d dataset type%s (%d matche%s, %d conflict%s, %d addition%s) and %d module type%s (%d matche%s, %d conflict%s, %d addition%s) from \"%s\".",
                                        moduleTypesExportImport.getDatasetTypes().length, (moduleTypesExportImport.getDatasetTypes().length == 1) ? "" : "s",
                                        datasetTypeMatches,     (datasetTypeMatches == 1) ? "" : "s",
                                        datasetTypeConflicts, (datasetTypeConflicts == 1) ? "" : "s",
@@ -574,7 +616,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                                        moduleTypeMatches,     (moduleTypeMatches == 1) ? "" : "s",
                                        moduleTypeConflicts, (moduleTypeConflicts == 1) ? "" : "s",
                                        moduleTypeAdditions, (moduleTypeAdditions == 1) ? "" : "s", file.getName());
-        changeLog.append("\n\n" + summary + "\n\n");
+        changeLog.append("\n" + summary + "\n");
         showLargeMessage(summary, changeLog.toString());
     }
 

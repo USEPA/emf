@@ -2,7 +2,6 @@ package gov.epa.emissions.framework.client;
 
 import java.security.PublicKey;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.google.common.cache.Cache;
@@ -103,5 +102,4 @@ public interface EmfSession {
     DatasetType getLightDatasetType(String name);
 
     Cache<ObjectCacheType, Object> getObjectCache();
-
 }

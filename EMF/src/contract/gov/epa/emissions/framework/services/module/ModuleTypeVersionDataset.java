@@ -379,7 +379,7 @@ public class ModuleTypeVersionDataset implements Serializable {
             result = false;
         }
         
-        if ((description == null) != (importedModuleTypeVersionDataset.getDescription() != null) ||
+        if ((description == null) != (importedModuleTypeVersionDataset.getDescription() == null) ||
            ((description != null) && !description.equals(importedModuleTypeVersionDataset.getDescription()))) { // could happen and it's OK
             differences.append(String.format("%sWARNING: Local %s placeholder \"%s\" description differs from the corresponding imported module type version dataset placeholder description.\n",
                                              indent, fullName, placeholderName));

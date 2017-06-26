@@ -63,7 +63,7 @@ public class ModuleTypeVersionSubmodule implements Serializable {
             result = false;
         }
         
-        if ((description == null) != (importedModuleTypeVersionSubmodule.getDescription() != null) ||
+        if ((description == null) != (importedModuleTypeVersionSubmodule.getDescription() == null) ||
            ((description != null) && !description.equals(importedModuleTypeVersionSubmodule.getDescription()))) { // could happen and it's OK
             differences.append(String.format("%sWARNING: Local \"%s\" submodule description differs from imported \"%s\" submodule description.\n",
                                              indent, name, importedModuleTypeVersionSubmodule.getName()));

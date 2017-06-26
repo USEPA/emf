@@ -63,7 +63,7 @@ public class ModuleTypeVersionParameter implements Serializable {
             result = false;
         }
         
-        if ((description == null) != (importedModuleTypeVersionParameter.getDescription() != null) ||
+        if ((description == null) != (importedModuleTypeVersionParameter.getDescription() == null) ||
            ((description != null) && !description.equals(importedModuleTypeVersionParameter.getDescription()))) { // could happen and it's OK
             differences.append(String.format("%sWARNING: Local %s parameter \"%s\" description differs from the corresponding imported module type version parameter description.\n",
                                              indent, fullName, parameterName));
