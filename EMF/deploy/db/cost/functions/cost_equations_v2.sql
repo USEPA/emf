@@ -1197,8 +1197,8 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
-					+ (' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
+					(' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
+					+ (' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
 					)
 				' end || '
 
@@ -1699,7 +1699,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ 
+					(' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ 
 					
 				' end || '
 
@@ -2230,7 +2230,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
+					(' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
 					
 				' end || '
 
@@ -3489,7 +3489,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
+					(' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
 					
 				' end || '
 
