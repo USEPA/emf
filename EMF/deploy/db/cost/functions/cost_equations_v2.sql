@@ -761,7 +761,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
 					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value10, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value12, 0.0) end)/*annual_cost_base*/
 					)
 
 				--Equation Type 2a 
@@ -782,7 +782,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
 					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value10, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value12, 0.0) end)/*annual_cost_base*/
 					)
 
 				--Equation Type 2b 
@@ -1197,8 +1197,8 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
-					+ (' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
+					(' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
+					+ (' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
 					)
 				' end || '
 
@@ -1296,7 +1296,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
 					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value9, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value11, 0.0) end)/*capital_cost_base*/
 					)
 
 				--Equation Type 2a 
@@ -1317,7 +1317,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
 					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value9, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value11, 0.0) end)/*capital_cost_base*/
 					)
 
 				--Equation Type 2b 
@@ -1699,7 +1699,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ 
+					(' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ 
 					
 				' end || '
 
@@ -1807,13 +1807,13 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
 					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value10, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value12, 0.0) end)/*annual_cost_base*/
 					)
 					- (
 					  (
 						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
 						((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)/*capital_cost*/ + 
-						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value9, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value11, 0.0) end)/*capital_cost_base*/
 						)
 						* (' || capital_recovery_factor_expression || ')/*annualized_capital_cost*/
 					)
@@ -1838,13 +1838,13 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value3 else ' || control_measure_equation_table_alias || '.value7 end)/*annual_cost_multiplier*/ * 
 					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value4 else ' || control_measure_equation_table_alias || '.value8 end)/*annual_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value10 else ' || control_measure_equation_table_alias || '.value12 end)/*annual_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value10, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value12, 0.0) end)/*annual_cost_base*/
 					)
 					- (
 					  (
 						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
 						((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/)/*capital_cost*/ + 
-						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+						(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value9, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value11, 0.0) end)/*capital_cost_base*/
 						)
 						* (' || capital_recovery_factor_expression || ')/*annualized_capital_cost*/
 					)
@@ -2230,7 +2230,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
+					(' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
 					
 				' end || '
 
@@ -3070,7 +3070,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
 					((3.412 * ' || convert_design_capacity_expression || '/*design_capacity*/) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value9, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value11, 0.0) end)/*capital_cost_base*/
 					)
 					* (' || capital_recovery_factor_expression || ')
 					)
@@ -3094,7 +3094,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					(
 					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value1 else ' || control_measure_equation_table_alias || '.value5 end)/*capital_cost_multiplier*/ * 
 					((' || emis_reduction_sql || ' / 365) ^ (case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value2 else ' || control_measure_equation_table_alias || '.value6 end)/*capital_cost_exponent*/) + 
-					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then ' || control_measure_equation_table_alias || '.value9 else ' || control_measure_equation_table_alias || '.value11 end)/*capital_cost_base*/
+					(case when coalesce(' || inv_table_alias || '.' || inv_ceff_expression || ', 0.0) = 0.0 then coalesce(' || control_measure_equation_table_alias || '.value9, 0.0) else coalesce(' || control_measure_equation_table_alias || '.value11, 0.0) end)/*capital_cost_base*/
 					)
 					* (' || capital_recovery_factor_expression || ')
 					)
@@ -3489,7 +3489,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 						var10 = O&M cost flowrate multiplier
 						var11 = O&M cost emissions multiplier
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(' || control_measure_equation_table_alias || '.value1 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * 3.412 * ' || convert_design_capacity_expression || ' ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
+					(' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value2 + ' || control_measure_equation_table_alias || '.value3 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value4)/*capital_cost*/ * (' || capital_recovery_factor_expression || ') 
 					
 				' end || '
 

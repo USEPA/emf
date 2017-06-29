@@ -47,7 +47,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
     private ServiceLocator serviceLocator;
 
-//  public final static String EMF_VERSION = "v2.13 - 03/20/2017";
+//  public final static String EMF_VERSION = "v2.14 - 06/27/2017";
     public final static String EMF_VERSION = "Upstream Beta 12 Build #94 - 6/26/2017";
 
     public LoginWindow(ServiceLocator serviceLocator) {

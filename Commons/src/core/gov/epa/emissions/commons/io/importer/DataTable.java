@@ -24,9 +24,9 @@ public class DataTable {
     private Dataset dataset;
 
     public DataTable(Dataset dataset, Datasource datasource) {
+        this.dataset = dataset;
         this.name = createName(dataset.getName()); // VERSIONS TABLE: this will not be a problem, the name never will be versions
         this.delegate = new TableCreator(datasource);
-        this.dataset = dataset;
     }
 
     public String name() {
@@ -36,6 +36,9 @@ public class DataTable {
     public String createName(String name) {
         name = name.trim();
         String prefix = "DS_";
+        if (dataset != null && dataset.getId() != 0) {
+            prefix += dataset.getId() + "_";
+        }
         String suffix = "_" + Math.abs(new Random().nextInt()); // to make name unique
         String table = prefix + name;
 
