@@ -1,3 +1,9 @@
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch2_installing_cost.md) - [Home](README.md) - [Next Chapter >>](ch4_control_strategy_manager.md)
+
+<!-- END COMMENT -->
+
 Title: Control Measure Manager
 Author: C. Seppanen, UNC
 CSS: base.css
@@ -614,3 +620,10 @@ Once you have selected the files to import, click the **Import** button. Informa
 ![Import Control Measures Dialog][import_control_measures_dialog]
 
 [import_control_measures_dialog]: images/Import_Control_Measures_Dialog.png
+
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch2_installing_cost.md) - [Home](README.md) - [Next Chapter >>](ch4_control_strategy_manager.md)<br>
+
+<!-- END COMMENT -->
+

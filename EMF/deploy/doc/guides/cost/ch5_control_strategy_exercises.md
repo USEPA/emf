@@ -1,3 +1,10 @@
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch4_control_strategy_manager.md) - [Home](README.md) - [Next Chapter >>](ch6_example_sql.md)
+
+<!-- END COMMENT -->
+
+
 Title: Control Strategy Exercises
 Author: C. Seppanen, UNC
 CSS: base.css
@@ -112,3 +119,10 @@ For this exercise, we will run a control strategy that will result in some contr
 8. Try setting a **Maximum Cost per Ton** constraint less than the typical cost per ton in the result you just generated and rerun the strategy.
 
     How does the constraint impact the results?
+
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch4_control_strategy_manager.md) - [Home](README.md) - [Next Chapter >>](ch6_example_sql.md)<br>
+
+<!-- END COMMENT -->
+

@@ -1,3 +1,9 @@
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch5_control_strategy_exercises.md) - [Home](README.md) - [Next Chapter >>](ch7_references.md)
+
+<!-- END COMMENT -->
+
 Title: Example SQL Statements for Creating Row Filters
 Author: C. Seppanen, UNC
 CSS: base.css
@@ -13,3 +19,10 @@ Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<b
 Filter sources only in NC (State FIPS = 37), SC (45), and VA (51);<br/>note that FIPS column format is State + County FIPS code (e.g., 37001)|`substring(FIPS,1,2) in ('37', '45', '51')`
 Filter sources only in CA (06) and include only NO~x and VOC pollutants|`substring(fips,1,2) = '06' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`fips like '06%' and (poll = 'NOX' or poll = 'VOC')`
 [Examples of Row Filters (Data Viewer window) and Inventory Filters (Inventories tab of the Edit Control Strategy window)][examples_of_row_filters_and_inventory_filters_table]
+
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch5_control_strategy_exercises.md) - [Home](README.md) - [Next Chapter >>](ch7_references.md)<br>
+
+<!-- END COMMENT -->
+

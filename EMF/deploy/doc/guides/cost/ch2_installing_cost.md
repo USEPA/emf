@@ -1,3 +1,10 @@
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch1_introduction.md) - [Home](README.md) - [Next Chapter >>](ch3_control_measure_manager.md)
+
+<!-- END COMMENT -->
+
+
 Title: Installing CoST Software and Data
 Author: C. Seppanen, UNC
 CSS: base.css
@@ -243,3 +250,10 @@ If instead you are an existing EMF user, enter your EMF username and password in
 ![EMF Main Window][emf_main_window]
 
 [emf_main_window]: images/EMF_Main_Window.png
+
+<!-- BEGIN COMMENT -->
+
+[<< Previous Chapter](ch1_introduction.md) - [Home](README.md) - [Next Chapter >>](ch3_control_measure_manager.md)<br>
+
+<!-- END COMMENT -->
+
