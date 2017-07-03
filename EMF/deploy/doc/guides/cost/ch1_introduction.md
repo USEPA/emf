@@ -1,3 +1,10 @@
+<!-- BEGIN COMMENT -->
+
+[Home](README.md) - [Next Chapter >>](ch2_installing_cost.md)
+
+<!-- END COMMENT -->
+
+
 Title: Introduction
 Author: C. Seppanen, UNC
 CSS: base.css
@@ -31,3 +38,10 @@ This document provides information on how to use CoST to view and edit control m
 * Control Strategy Tool (CoST) Cost Equations Documentation: describes how CoST uses control measure engineering cost equations
 
 These documents, and additional information about CoST, can be found at: [https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution). A glossary of terms is included as an appendix to this document.
+
+<!-- BEGIN COMMENT -->
+
+[Home](README.md) - [Next Chapter >>](ch2_installing_cost.md)<br>
+
+<!-- END COMMENT -->
+
