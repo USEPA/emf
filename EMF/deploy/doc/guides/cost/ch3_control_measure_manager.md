@@ -418,7 +418,7 @@ Notice that most of the fields have white backgrounds, which usually indicates t
 
 57\. To remove one or more efficiency records, click the corresponding checkboxes and then click **Remove** to remove those records. For training purposes, **click the checkbox in the Select column for the record for CO2 that you just added**. Next, click **Remove** to remove that record. When ask to confirm if you are sure you want to remove the selected record, click **Yes**. The record should disappear from the table.
 
-**When costs are specified for multiple efficiency records:** If you have cost per ton values specified for multiple efficiency records, they are additive when they are used in a control strategy. For example, if a CPT is specified for both NO~x and VOC for a measure, the total cost of applying the measure is the sum of (1) the cost per ton for NO~x times the NO~x emissions reduced and (2) the cost per ton for VOC times the VOC emissions reduced.
+**When costs are specified for multiple efficiency records:** If you have cost per ton values specified for multiple efficiency records, they are additive when they are used in a control strategy. For example, if a CPT is specified for both NO~x~ and VOC for a measure, the total cost of applying the measure is the sum of (1) the cost per ton for NO~x~ times the NO~x~ emissions reduced and (2) the cost per ton for VOC times the VOC emissions reduced.
 
 ### Editing the SCCs Tab for a Control Measure ###
 
