@@ -148,7 +148,7 @@ public class ModuleDataset implements Serializable {
     
     public void initSettings() {
         ModuleTypeVersionDataset moduleTypeVersionDataset = getModuleTypeVersionDataset();
-        setOutputMethod(moduleTypeVersionDataset.isModeOUT() ? ModuleDataset.NEW : null);
+        setOutputMethod(moduleTypeVersionDataset.isModeOUT() ? ModuleDataset.REPLACE : null);
         setDatasetNamePattern(null);
         setOverwriteExisting(null);
         setDatasetId(null);
