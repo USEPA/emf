@@ -1026,7 +1026,6 @@ abstract class ModuleRunner {
             // TODO use encrypted password
             "CREATE USER ${temp_user} WITH CONNECTION LIMIT 1 UNENCRYPTED PASSWORD '${temp_password}';\n" +
             "GRANT CONNECT, TEMPORARY ON DATABASE \"EMF\" TO ${temp_user};\n" +
-            "REVOKE CREATE ON SCHEMA public FROM ${temp_user};\n" +
             "CREATE SCHEMA AUTHORIZATION ${temp_user};\n\n";
 
         // TODO grant USAGE permissions for all procedural languages, domains, and types
