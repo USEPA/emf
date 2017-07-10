@@ -164,7 +164,7 @@ Next, change the **Font to Arial, the Style to Bold, the Size to 14, the Horizon
 
 21\. If you are unsure of what a button does when using CoST, place your cursor over the button and wait; in many cases, a small piece of text called a **"tooltip"** will appear. For example, **place your cursor over one of the buttons on the toolbar and hold it still**. You will see a tooltip describing what the button does. Many of the buttons and fields used in CoST have tooltips to clarify what they do or what type of data should be entered.
 
-22\. If you wish to retrieve an updated set of control measures data from the server, click the **Refresh** button at the upper right portion of the Control Measure Manager. Note that this will also reset any special formatting that you have specified, but any sort and filter settings will be preserved.
+22\. If you wish to retrieve an updated set of control measures data from the server, click the **Refresh** button: <img src="images/Refresh_button.png"/> at the upper right portion of the Control Measure Manager. Note that this will also reset any special formatting that you have specified, but any sort and filter settings will be preserved.
 
 ## Viewing Data for an Existing Control Measure [viewing_data_for_an_existing_control_measure_section] ##
 
