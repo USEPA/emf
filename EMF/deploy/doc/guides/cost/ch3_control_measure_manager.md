@@ -170,7 +170,7 @@ Next, change the **Font to Arial, the Style to Bold, the Size to 14, the Horizon
 
 In this section you will learn about viewing the detailed data for a control measure.
 
-23\. Before you can open a measure to view its data, you must select a measure of interest. For example, on the Control Measure Manager, make sure the Pollutant Filter is set to PM10, and then in the table locate the control measure and Source Group named **"Dry Electrostatic Precipitator-Wire Plate Type;(PM10) Commercial Institutional Boilers - Coal"**.
+23\. Before you can open a measure to view its data, you must select a measure of interest. For example, on the Control Measure Manager, make sure the Pollutant Filter is set to PM10, and then in the table locate the control measure and Source Group named **"Dry Electrostatic Precipitator-Wire Plate Type;(PM10) Municipal Waste Incineration"**.
 
 Hint: Using a filter on the name field to show measures with names that include "Wire" may make it easier to find.
 
