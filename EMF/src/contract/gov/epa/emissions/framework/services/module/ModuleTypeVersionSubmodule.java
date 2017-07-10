@@ -156,6 +156,10 @@ public class ModuleTypeVersionSubmodule implements Serializable {
         this.name = name;
     }
 
+    public String fullName() {
+        return compositeModuleTypeVersion.fullNameSDS("module type \"%s\" version \"%d - %s\" submodule \"") + name + "\"";
+    }
+    
     public ModuleTypeVersion getModuleTypeVersion() {
         return moduleTypeVersion;
     }

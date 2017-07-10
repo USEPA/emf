@@ -21,8 +21,8 @@ import gov.epa.emissions.framework.services.module.LiteModuleType;
 import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
 import gov.epa.emissions.framework.services.module.ModuleTypesExportImport;
-import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -61,6 +61,8 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
     private ModuleTypesManagerPresenter presenter;
 
+    private ModuleType[] moduleTypes;
+    
     private SelectableSortFilterWrapper table;
 
     private JPanel layout;
@@ -80,6 +82,8 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         this.session = session;
         this.parentConsole = parentConsole;
 
+        moduleTypes = new ModuleType[0];
+        
         layout = new JPanel();
         this.getContentPane().add(layout);
     }
@@ -122,7 +126,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
-        table = new SelectableSortFilterWrapper(parentConsole, new ModuleTypesTableData(new ModuleType[] {}), null);
+        table = new SelectableSortFilterWrapper(parentConsole, new ModuleTypesTableData(moduleTypes), null);
         tablePanel.add(table);
         return tablePanel;
     }
@@ -269,10 +273,10 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }   
 
         ModuleType[] selectedModuleTypes = selected.toArray(new ModuleType[0]);
-        int[] selectedModuleTypeIds = new int[selectedModuleTypes.length];
+        Map<Integer, ModuleType> selectedModuleTypesMap = new HashMap<Integer, ModuleType>();
         for (int i = 0; i < selectedModuleTypes.length; i++) {
             ModuleType selectedModuleType = selectedModuleTypes[i]; 
-            selectedModuleTypeIds[i] = selectedModuleType.getId(); 
+            selectedModuleTypesMap.put(selectedModuleType.getId(), selectedModuleType); 
             if (selectedModuleType.isLocked()) {
                 String error = String.format("Can't remove the %s module type: it's locked by %s", selectedModuleType.getName(), selectedModuleType.getLockOwner());
                 messagePanel.setError(error);
@@ -280,28 +284,83 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
         }
         
-        int count = 0;
-        ConcurrentSkipListMap<Integer, LiteModule> liteModules = session.getLiteModules();
-        for(LiteModule liteModule : liteModules.values()) {
-            LiteModuleType liteModuleType = liteModule.getLiteModuleTypeVersion().getLiteModuleType(); 
-            for(ModuleType selectedModuleType : selectedModuleTypes) {
-                if (liteModuleType.getId() == selectedModuleType.getId()) {
-                    count++;
-                    if (liteModule.isLocked()) {
-                        String error = String.format("Can't remove the %s module type: the %s module is locked by %s", selectedModuleType.getName(), liteModule.getName(), liteModule.getLockOwner());
-                        messagePanel.setError(error);
-                        return;
+        List<String> usingObjects = new ArrayList<String>();
+        
+        int moduleTypeCount = 0;
+        int moduleTypeVersionCount = 0;
+        int moduleTypeVersionSubmoduleCount = 0;
+        for(ModuleType moduleType : moduleTypes) {
+            if (selectedModuleTypesMap.containsKey(moduleType.getId()))
+                continue;
+            boolean moduleTypeFound = false;
+            for (ModuleTypeVersion moduleTypeVersion : moduleType.getModuleTypeVersions().values()) {
+                boolean moduleTypeVersionFound = false;
+                for (ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : moduleTypeVersion.getModuleTypeVersionSubmodules().values()) {
+                    ModuleType submoduleType = moduleTypeVersionSubmodule.getModuleTypeVersion().getModuleType();
+                    if (selectedModuleTypesMap.containsKey(submoduleType.getId())) {
+                        if (moduleType.isLocked()) {
+                            String error = String.format("Can't delete the \"%s\" module type because the \"%s\" module type is locked by %s",
+                                                         submoduleType.getName(), moduleType.getName(), moduleType.getLockOwner());
+                            messagePanel.setError(error);
+                            return;
+                        }
+                        moduleTypeVersionSubmoduleCount++;
+                        moduleTypeVersionFound = true;
+                        usingObjects.add(moduleTypeVersionSubmodule.fullName());
                     }
                 }
+                if (moduleTypeVersionFound) {
+                    moduleTypeVersionCount++;
+                    moduleTypeFound = true;
+                }
+            }
+            if (moduleTypeFound) {
+                moduleTypeCount++;
             }
         }
 
-        String message = "";
-        if (count > 0) {
-            message = String.format("Are you sure you want to remove the selected %d module type(s)? The %d module(s) that use this module type(s) will also be removed. There is no undo for this action.", selectedModuleTypes.length, count);
-        } else {
-            message = String.format("Are you sure you want to remove the selected %d module type(s)? There is no undo for this action.", selectedModuleTypes.length);
+        int moduleCount = 0;
+        ConcurrentSkipListMap<Integer, LiteModule> liteModules = session.getLiteModules();
+        for(LiteModule liteModule : liteModules.values()) {
+            LiteModuleType liteModuleType = liteModule.getLiteModuleTypeVersion().getLiteModuleType();
+            if (selectedModuleTypesMap.containsKey(liteModuleType.getId())) {
+                if (liteModule.isLocked()) {
+                    String error = String.format("Can't remove the %s module type: the %s module is locked by %s", liteModuleType.getName(), liteModule.getName(), liteModule.getLockOwner());
+                    messagePanel.setError(error);
+                    return;
+                }
+                moduleCount++;
+                usingObjects.add(String.format("module \"%s\"", liteModule.getName()));
+            }
         }
+
+        StringBuilder message = new StringBuilder();
+        if (selectedModuleTypes.length == 1)
+            message.append(String.format("Are you sure you want to remove the \"%s\" module type?\n", selectedModuleTypes[0].getName()));
+        else
+            message.append(String.format("Are you sure you want to remove the %d selected module types?\n", selectedModuleTypes.length));
+                
+        if (moduleTypeCount > 0 || moduleCount > 0) {
+            message.append(((selectedModuleTypes.length == 1) ? "It is " : "They are ") + "used by ");
+            if (moduleTypeCount > 0) {
+                message.append(String.format("%d module type%s, %d module type version%s, %s%d submodule%s",
+                                              moduleTypeCount, (moduleTypeCount == 1) ? "" : "s",
+                                              moduleTypeVersionCount, (moduleTypeVersionCount == 1) ? "" : "s",
+                                              (moduleCount > 0) ? "" : "and ", 
+                                              moduleTypeVersionSubmoduleCount, (moduleTypeVersionSubmoduleCount == 1) ? "" : "s"));
+            }
+            if (moduleTypeCount > 0 && moduleCount > 0) {
+                message.append(", and ");
+            }
+            if (moduleCount > 0) {
+                message.append(String.format("%d module%s", moduleCount, (moduleCount == 1) ? "" : "s"));
+            }
+            message.append(":\n");
+            for(String usingObject : usingObjects) {
+                message.append("* " + usingObject + "\n");
+            }
+        }
+        message.append("There is no undo for this action!");
         
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -704,8 +763,8 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     @Override
     public void populate() {
         try {
-            ModuleType[] types = presenter.getModuleTypes();
-            table.refresh(new ModuleTypesTableData(types));
+            moduleTypes = presenter.getModuleTypes();
+            table.refresh(new ModuleTypesTableData(moduleTypes));
             panelRefresh();
         } catch (EmfException e) {
             messagePanel.setError("Refresh failed: " + e.getMessage());
