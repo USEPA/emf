@@ -31,7 +31,7 @@ The software package can be downloaded via UNC's Community Modeling and Analysis
 
 1\. Download the installation package at the CMAS software download site: [http://www.cmascenter.org/download/software.cfm](http://www.cmascenter.org/download/software.cfm)
 
-2\. Unzip the ControlStrategyTool.zip file into a known folder location.
+2\. Unzip the emf_state_install_20170404.zip file into a known folder location.
 
 [Figure](#installation_package_zip_file_folder_and_file_structure) lists the batch file and the folders that are located in the install zip file; these are described below the figure.
 
