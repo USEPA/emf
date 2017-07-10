@@ -64,7 +64,7 @@ Notice the different parts of the Control Measure Manager window. There is a **P
 
 2\. To show some of the control measures from the database in the table, select a pollutant from the **Pollutant Filter** pull-down menu at the upper left corner of the Control Measure Manager (**for the training, click on the down arrow and use the scroll bar to find and select PM10**). Information about any control measures that control the selected pollutant will appear in the window ([Figure](#control_measure_manager_with_control_measures)). At this point, only the control measure **name**, **abbreviation**, **pollutant**, **sector**, and **class** are shown in the manager window. Note that name of each control measure must be unique within the database, and that the control measures appear in a table in which the data can be sorted and filtered.
 
-The abbreviation is a set of characters that is a 'short-hand' for the control measure. Typically, the abbreviation should express the name of the control measure in an abbreviated form such that if someone is familiar with the abbreviation conventions, the person might be able to infer the name of the measure. Typically the first character of the measure denotes the 'major pollutant' (e.g., 'P' for PM controls, 'N' for NO~x controls, 'S' for SO~2 controls). The next few characters usually denote the control technology (e.g., 'ESP' for Electrostatic Precipitator, 'FFM' for fabric filter mechanical shaker). Abbreviations must be unique within the database (i.e., no two control measures can use the same abbreviation).
+The abbreviation is a set of characters that is a 'short-hand' for the control measure. Typically, the abbreviation should express the name of the control measure in an abbreviated form such that if someone is familiar with the abbreviation conventions, the person might be able to infer the name of the measure. Typically the first character of the measure denotes the 'major pollutant' (e.g., 'P' for PM controls, 'N' for NO<sub>x</sub> controls, 'S' for SO~2 controls). The next few characters usually denote the control technology (e.g., 'ESP' for Electrostatic Precipitator, 'FFM' for fabric filter mechanical shaker). Abbreviations must be unique within the database (i.e., no two control measures can use the same abbreviation).
 
 ![Control Measure Manager with Control Measures][control_measure_manager_with_control_measures]
 
@@ -89,7 +89,7 @@ Column Name|Description
 Select|This column will allow the user to view, edit, or copy the measure by clicking the corresponding button at the bottom of the manager window. These features will be discussed later in the training.
 Name|A unique name for the measure.
 Abbreviation|A unique abbreviation for the measure.
-Pollutant|A pollutant (e.g., NO~x, PM~10) that the measure might control. Note that any pollutant-specific information in the row is for this pollutant.
+Pollutant|A pollutant (e.g., NO<sub>x</sub>, PM~10) that the measure might control. Note that any pollutant-specific information in the row is for this pollutant.
 Max, Min, and Avg CE|Maximum, minimum, and average control efficiencies for the specified pollutant, aggregated across all locales, effective dates, and source sizes.
 Max, Min, and Avg CPT|Maximum, minimum, and average cost per ton for the specified pollutant aggregated across all locales, effective dates, and source sizes.
 Avg Rule Eff.|Average rule effectiveness aggregated across all efficiency records for the specified pollutant.
@@ -418,7 +418,7 @@ Notice that most of the fields have white backgrounds, which usually indicates t
 
 57\. To remove one or more efficiency records, click the corresponding checkboxes and then click **Remove** to remove those records. For training purposes, **click the checkbox in the Select column for the record for CO2 that you just added**. Next, click **Remove** to remove that record. When ask to confirm if you are sure you want to remove the selected record, click **Yes**. The record should disappear from the table.
 
-**When costs are specified for multiple efficiency records:** If you have cost per ton values specified for multiple efficiency records, they are additive when they are used in a control strategy. For example, if a CPT is specified for both NO~x~ and VOC for a measure, the total cost of applying the measure is the sum of (1) the cost per ton for NO~x~ times the NO~x~ emissions reduced and (2) the cost per ton for VOC times the VOC emissions reduced.
+**When costs are specified for multiple efficiency records:** If you have cost per ton values specified for multiple efficiency records, they are additive when they are used in a control strategy. For example, if a CPT is specified for both NO<sub>x</sub> and VOC for a measure, the total cost of applying the measure is the sum of (1) the cost per ton for NO<sub>x</sub> times the NO<sub>x</sub> emissions reduced and (2) the cost per ton for VOC times the VOC emissions reduced.
 
 ### Editing the SCCs Tab for a Control Measure ###
 
