@@ -293,7 +293,7 @@ As an alternative to using a simple 'cost per ton of pollutant reduced' value to
 
 Each type of equation uses a different set of variables. CoST supports at least eleven different types of cost equations. Additional types of equations may be added in the future. For more information on the Equations and their input variables, see the document "Documentation of Cost Equations in EPA's Control Strategy Tool (CoST)" (available at [https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution)). The appropriate form of the equation will be used in conjunction with the specified values to compute the total cost of applying the measure to the source for the specified pollutant and cost year.
 
-33\. Once you are finished viewing the information about the control measure, click the **Close** button to close the View Control Measure window.
+33\. Once you are finished viewing the information about the control measure, do not click the **Close** button to close the View Control Measure window, as we need the View Control Measure window open for the next step.
 
 ![Equations Tab of View Control Measure Window][equations_tab_of_view_control_measure_window]
 
@@ -309,7 +309,7 @@ Equations|The cost equation definitions.
 
 ### Viewing the Properties Tab for a Control Measure ###
 
-34\. Click on the Properties tab to see the data that are available from this tab. You will see a table with many columns. Each row in the table corresponds to a different "property record" in the database. A property record allows for generic information to be stored about the control measures (e.g., metadata). In the control measures example shown in [Figure](#properties_tab_of_view_control_measure_window), this shows property information that happened to be archived from the AirControlNET software when the measures were transferred into the CMDB.
+34\. Click on the Properties tab on the View Control Measures Window to see the data that are available from this tab. You will see a table with many columns. Each row in the table corresponds to a different "property record" in the database. A property record allows for generic information to be stored about the control measures (e.g., metadata). In the control measures example shown in [Figure](#properties_tab_of_view_control_measure_window), this shows property information that happened to be archived from the AirControlNET software when the measures were transferred into the CMDB.
 
 ![Properties Tab of View Control Measure Window][properties_tab_of_view_control_measure_window]
 
@@ -320,7 +320,7 @@ Equations|The cost equation definitions.
 
 Notice that most of the fields in [Figure](#view_property_record_window) are set using text fields. The '**Category**' is a free-form drop down, where an existing category could be used or a new one could be used by typing in the new category.
 
-When you are done examining the information on the View Property Record Window, click **Close**.
+When you are done examining the information on the View Property Record Window, do not click **Close**, as we need the View Control Measure window open for the next step.
 
 ![View Property Record Window][view_property_record_window]
 
@@ -338,7 +338,7 @@ Value|The value of the property.
 
 ### Viewing the References Tab for a Control Measure ###
 
-36\. Click on the References tab to see the data that are available from this tab ([Figure](#references_tab_of_view_control_measure_window)). You will see a table with two columns. Each row in the table corresponds to a different "reference record" in the database. A reference record stores source and reference information that help create the control measure.
+36\. Click on the References tab of the View Control Measure window to see the data that are available from this tab ([Figure](#references_tab_of_view_control_measure_window)). You will see a table with two columns. Each row in the table corresponds to a different "reference record" in the database. A reference record stores source and reference information that help create the control measure.
 
 ![References Tab of View Control Measure Window][references_tab_of_view_control_measure_window]
 
@@ -346,7 +346,7 @@ Value|The value of the property.
 
 37\. To see the data for a reference record in their own window: In the Select column, **check the checkbox for the first reference record** and click **View**. A View Reference Record window will appear ([Figure](#view_reference_record_window)). Notice that only field in [Figure](#view_reference_record_window) is the actual source/reference description that can be entered into a text field.
 
-When you are done examining the information on the View Reference Record Window, click **Close**.
+When you are done examining the information on the View Reference Record Window, click **Close**. Now that you are done examining all of the tabs on the View Control Measure Window, you can click **Close**, to close it.
 
 ![View Reference Record Window][view_reference_record_window]
 
