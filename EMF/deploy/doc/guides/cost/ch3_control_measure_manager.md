@@ -220,8 +220,11 @@ The **Row Limit** and **Row Filter** fields are helpful when there are hundreds 
 
 27\. To see how the **Row Filter** works, enter **Pollutant='PM10'** into the text field and then click **Apply**. You will see only the record for PM10. These filters follow the syntax that can be used in a Structured Query Language (SQL) 'WHERE' clause. Note that the filter may not seem necessary in this particular example that only has a few records, but if this measure had entries for every county and pollutant as some mobile measure may have, then the filter can be very helpful to wade through all the records. If desired, you may **try some other filters with this measure**, such as:
 
-"Pollutant like 'PM%'", "Pollutant='PM10'", or
-"Control Efficiency > 95".
+```
+Pollutant like 'PM%'
+Pollutant='PM10'
+Control Efficiency > 95
+```
 
 Here are some examples of other types of filters that you may find useful that illustrate other aspects of the syntax, although they may not all be applicable to this particular measure:
 
