@@ -208,7 +208,7 @@ Months|The month(s) of the year to which the control measure is applicable. This
 
 ### Viewing the Efficiencies Tab for a Control Measure [viewing_the_efficiencies_tab_for_a_control_measure_section] ###
 
-26\. **Click on the Efficiencies tab** to see the data that are available from this tab. You will see a table with many columns. Each row in the table corresponds to a different "efficiency record" in the database. An efficiency record contains cost and control efficiency information about the control measure. In the example shown in [Figure](#efficiencies_tab_of_view_control_measure_window), notice that the control efficiency and cost data (CPT) vary by pollutant. **Scroll to the right** to see some of the other columns in the table that are not immediately visible.
+26\. **Click on the Efficiencies tab** in the View Control Measure Window to see the data that are available from this tab. You will see a table with many columns. Each row in the table corresponds to a different "efficiency record" in the database. An efficiency record contains cost and control efficiency information about the control measure. In the example shown in [Figure](#efficiencies_tab_of_view_control_measure_window), notice that the control efficiency and cost data (CPT) vary by pollutant. **Scroll to the right** to see some of the other columns in the table that are not immediately visible.
 
 If the cost or control efficiency varies over region or time, it is possible to specify different records in the table for each Locale (i.e., state or county) or for each Effective Date if the measure will be "phased in" over time. Different efficiency records can also be entered to account for different source sizes using the Min Emis and Max Emis columns.
 
@@ -275,7 +275,7 @@ Details|Text that specifies information about the source of data for this row or
 
 The inventory sources to which the control measure could be applied are those for which their SCC appears on the SCCs tab for the control measure. Note that while multiple SCCs can be specified for a measure, if the control efficiency or cost data differs for any of the SCCs, then a separate measure must be created to contain that data.
 
-30\. Click on the **SCCs** tab to see the SCCs associated with the measure. An example of this tab is shown in [Figure](#sccs_tab_of_view_control_measure_window). The control measure will be considered for application only to sources with SCCs listed on this tab.
+30\. Click on the **SCCs** tab in the View Control Measure Window to see the SCCs associated with the measure. An example of this tab is shown in [Figure](#sccs_tab_of_view_control_measure_window). The control measure will be considered for application only to sources with SCCs listed on this tab.
 
 Note that no expanding of SCC codes ending in zeros is performed by CoST; therefore each applicable SCC must be explicitly listed on this tab. You may sort and filter the SCCs in the table to get a better idea of what SCCs are associated with the measure.
 
@@ -283,13 +283,13 @@ Note that no expanding of SCC codes ending in zeros is performed by CoST; theref
 
 [sccs_tab_of_view_control_measure_window]: images/SCCs_Tab_of_View_Control_Measure_Window.png
 
-31\. When you are finished examining the SCCs the measure can apply to, click **Close**.
+31\. When you are finished examining the SCCs the measure can apply to, do not click **Close**, as this would close the View Control Measures Window, which we will use for the next step.
 
 ### Viewing the Equations Tab for a Control Measure ###
 
 As an alternative to using a simple 'cost per ton of pollutant reduced' value to compute the cost of a control measure, an engineering cost equation can be specified. The cost equation will then be used to associate costs with a particular pollutant. The equation must be selected from a list of pre-specified equation types. The value of the equation will be computed as specified by the form of the equation using the values of variables specified on the equations tab and values specified to the source that are given in the inventory (e.g., stack flow rate). Currently, only a single equation can be specified for any given measure.
 
-32\. Click on the **Equations** tab to see any information associated with cost equations for the measure. An example of this tab is shown in [Figure](#equations_tab_of_view_control_measure_window). If the measure does not use a cost equation, this tab will be blank. The table on the Equations tab shows the Equation Type (the same type is repeated in every row), in addition to the variable name and value for that variable. The fields of the **Equations** tab are shown in [Table](#control_measure_equations_tab_table).
+32\. Click on the **Equations** tab on the View Control Measures Window to see any information associated with cost equations for the measure. An example of this tab is shown in [Figure](#equations_tab_of_view_control_measure_window). If the measure does not use a cost equation, this tab will be blank. The table on the Equations tab shows the Equation Type (the same type is repeated in every row), in addition to the variable name and value for that variable. The fields of the **Equations** tab are shown in [Table](#control_measure_equations_tab_table).
 
 Each type of equation uses a different set of variables. CoST supports at least eleven different types of cost equations. Additional types of equations may be added in the future. For more information on the Equations and their input variables, see the document "Documentation of Cost Equations in EPA's Control Strategy Tool (CoST)" (available at [https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution)). The appropriate form of the equation will be used in conjunction with the specified values to compute the total cost of applying the measure to the source for the specified pollutant and cost year.
 
