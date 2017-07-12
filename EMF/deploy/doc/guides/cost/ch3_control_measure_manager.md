@@ -228,9 +228,11 @@ Control Efficiency > 95
 
 Here are some examples of other types of filters that you may find useful that illustrate other aspects of the syntax, although they may not all be applicable to this particular measure:
 
-* Pollutant <> 'PM10'
-* Locale LIKE '37%'
-* Pollutant IN ('EXH__CO', 'EXH__VOC', 'EXH__PM10')
+```
+Pollutant <> 'PM10'
+Locale LIKE '37%'
+Pollutant IN ('EXH__CO', 'EXH__VOC', 'EXH__PM10')
+```
 
 28\. To see the data for an efficiency record in their own window: In the Select column, **check the checkbox for the PM2_5 efficiency record** and click **View**. A View Efficiency Record window will appear ([Figure](#view_efficiency_record_window)). The fields of the efficiency record are shown in [Table](#control_measure_efficiency_record_table).
 
