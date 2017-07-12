@@ -99,6 +99,7 @@ Source Group|The group of sources to which the measure applies (e.g., Fabricated
 Equipment Life|Expected lifetime (in years) of the equipment used for the measure.
 Sectors|An emission sector or set of EPA's emission sectors to which the measure applies (e.g., ptipm, afdust, nonpoint). A sector represents a broad group of similar emissions sources.
 Class|The class of the measure. Options are Known (i.e., already in use), Emerging (i.e., realistic, but in an experimental phase), Hypothetical (i.e., the specified data are hypothetical), and Obsolete (i.e., no longer in use).
+Eq Type|The type of COST equation to use
 Last Modified Time|The date and time on which the information about the measure was last modified in the editor or imported from a file.
 Last Modified By|The last user to modify the measure.
 Date Reviewed|The date on which the data for the measure were last reviewed.
@@ -548,7 +549,7 @@ There are many situations in which you may be interested in what control measure
 
 89\. Now, click the **Find** button. You will see the Select SCCs dialog, similar to the one shown in [Figure](#select_sccs_and_filter_rows_dialogs), except that all 11,500+ SCCs will be shown.
 
-90\. Use the Filter Rows button on the toolbar of the Select SCCs dialog to enter a filter that will help identify SCCs for which you would like to see available control measures. For training purposes, try entering the filter **SCC starts with 103** and then **click OK**. Hint: the 'starts with' operation is above the 'contains' operation in the list of operations. You should see about 54 SCCs that meet this criterion.
+90\. Use the Filter Rows button on the toolbar of the Select SCCs dialog to enter a filter that will help identify SCCs for which you would like to see available control measures. For training purposes, try entering the filter **SCC starts with 103** and then **click OK**. Hint: the 'starts with' operation is above the 'contains' operation in the list of operations. You should see 58 SCCs that meet this criterion.
 
 91\. Click the checkbox in the Select column for a few of the SCCs that interest you
 (e.g., select at least **10300101**) and then click **OK**. If there are measures available for your selected SCC(s), they will be shown in the table. If you happened to select an SCC for which there are no measures available, none will be shown.
