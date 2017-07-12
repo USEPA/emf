@@ -320,7 +320,7 @@ Equations|The cost equation definitions.
 
 Notice that most of the fields in [Figure](#view_property_record_window) are set using text fields. The '**Category**' is a free-form drop down, where an existing category could be used or a new one could be used by typing in the new category.
 
-When you are done examining the information on the View Property Record Window, do not click **Close**, as we need the View Control Measure window open for the next step.
+When you are done examining the information on the View Property Record Window, click **Close**.
 
 ![View Property Record Window][view_property_record_window]
 
