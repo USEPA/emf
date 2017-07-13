@@ -118,4 +118,8 @@ public class ModuleTypeVersionPropertiesPresenter {
         RemoveTagsPresenter presenter = new RemoveTagsPresenter(view, session);
         presenter.display();
     }
+    
+    public ModuleTypeVersion[] getModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
+        return session.moduleService().getModuleTypeVersionsUsingModuleTypeVersion(moduleTypeVersionId);
+    }
 }

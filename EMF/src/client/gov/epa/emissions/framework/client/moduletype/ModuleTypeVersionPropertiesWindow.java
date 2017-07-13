@@ -1200,6 +1200,23 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         return action;
     }
 
+    private boolean canUpdateDependentModuleTypeVersions(ModuleTypeVersion moduleTypeVersion) throws EmfException {
+        ModuleTypeVersion[] dependentModuleTypeVersions = presenter.getModuleTypeVersionsUsingModuleTypeVersion(moduleTypeVersion.getId());
+        if (dependentModuleTypeVersions.length == 0)
+            return true;
+        
+        StringBuilder message = new StringBuilder();
+        message.append(String.format("Are you sure you want to save %s?\n\nThe following module type version%s may need to be updated also:\n",
+                                     moduleTypeVersion.fullNameSS("module type \"%s\" version \"%s\""),
+                                     (dependentModuleTypeVersions.length == 1) ? "" : "s"));
+        for (ModuleTypeVersion dependentModuleTypeVersion : dependentModuleTypeVersions) {
+            message.append(dependentModuleTypeVersion.fullNameSS("module type \"%s\" version \"%s\"\n"));
+        }
+        message.append("\n");
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        return (selection == JOptionPane.YES_OPTION);
+    }
+    
     private boolean doSave() {
         try {
             if (viewMode == ViewMode.NEW) {
@@ -1221,6 +1238,9 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                 moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
                 mustUnlock = true;
             } else {
+                if (!canUpdateDependentModuleTypeVersions(moduleTypeVersion))
+                    return false;
+                
                 ModuleTypeVersionNewRevisionDialog newRevisionView =
                         new ModuleTypeVersionNewRevisionDialog(parentConsole, moduleTypeVersion, this);
                 ModuleTypeVersionNewRevisionPresenter newRevisionPresenter =
@@ -1231,6 +1251,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                     // NOTE Auto-generated catch block
                     e.printStackTrace();
                 }
+                
                 Date date = new Date();
                 moduleType.setName(moduleTypeName.getText());
                 moduleType.setDescription(moduleTypeDescription.getText());
