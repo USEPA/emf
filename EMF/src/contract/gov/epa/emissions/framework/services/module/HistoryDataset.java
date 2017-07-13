@@ -42,6 +42,10 @@ public class HistoryDataset implements Serializable {
             explanation.append("Dataset for placeholder '" + placeholderName + "' is missing: " + e.getMessage() + "\n");
             return true;
         }
+        if (dataset == null) {
+            explanation.append("Dataset for placeholder '" + placeholderName + "' is missing.\n");
+            return true;
+        }
         Version datasetVersion = null;
         try {
             datasetVersion = dataEditorService.getVersion(datasetId, version);
