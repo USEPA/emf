@@ -1,0 +1,13 @@
+order to run create scripts
+---
+Upstream_CreateSchema.setup
+Upstream_CreateModuleTypesTables.setup
+Upstream_CreateModulesTables.setup
+Upstream_CreateModuleHistoryTables.setup
+Upstream_CreateModuleTagsTable.setup
+Upstream_CreateModuleParameterTypesTable.setup
+Upstream_CreateCompositeModuleTypesTables.setup
+Upstream_CreateCompositeModulesTables.setup
+Upstream_CreateCompositeModuleHistoryTables.setup
+Upstream_InsertModuleParameterTypes.setup
+Upstream_InsertModuleKeywords.setup (does not get removed by Upstream_DropAll.setup)
