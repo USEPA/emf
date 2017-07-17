@@ -10,6 +10,7 @@ import gov.epa.emissions.framework.services.module.DatasetCreator;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.GCEnforcerTask;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
+import gov.epa.emissions.framework.services.basic.UserDAO;
 import gov.epa.emissions.framework.services.data.DataCommonsDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -44,6 +45,8 @@ public class ModuleServiceImpl implements ModuleService {
     
     private ModuleTypesDAO moduleTypesDAO;
     
+    private UserDAO userDAO;
+    
     private StatusDAO statusDAO;
     
     private PooledExecutor threadPool;
@@ -68,6 +71,7 @@ public class ModuleServiceImpl implements ModuleService {
         this.threadPool = createThreadPool();
         modulesDAO = new ModulesDAO();
         moduleTypesDAO = new ModuleTypesDAO();
+        userDAO = new UserDAO();
         statusDAO = new StatusDAO(sessionFactory);
         datasetDAO = new DatasetDAO(dbServerFactory);
         dataCommonsDAO = new DataCommonsDAO();
@@ -1288,6 +1292,51 @@ public class ModuleServiceImpl implements ModuleService {
                 String fullName = moduleTypeVersion.fullNameSS("\"%s\" version \"%s\"");
                 LOG.error("Could not remove module type " + fullName, e);
                 throw new EmfException("Could not remove module type " + fullName + ": " + e.getMessage());
+            }
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public void releaseOrphanLocks() throws EmfException {
+        // NOTE modules may still be running
+        Session session = sessionFactory.getSession();
+        try {
+            Map<String, User> lockUserCache = new HashMap<String, User>();
+            @SuppressWarnings("unchecked")
+            List<Module> modules = modulesDAO.getModules(session);
+            for (Module module : modules) {
+                if (!module.isLocked())
+                    continue;
+                String lockUserName = module.getLockOwner();
+                User lockUser = null;
+                if (lockUserCache.containsKey(lockUserName)) {
+                    lockUser = lockUserCache.get(lockUserName);
+                } else {
+                    lockUser = userDAO.get(lockUserName, session);
+                    lockUserCache.put(lockUserName, lockUser);
+                }
+                if (!lockUser.isLoggedIn()) {
+                    modulesDAO.releaseLockedModule(lockUser, module.getId(), session);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            List<ModuleType> moduleTypes = moduleTypesDAO.getModuleTypes(session);
+            for (ModuleType moduleType : moduleTypes) {
+                if (!moduleType.isLocked())
+                    continue;
+                String lockUserName = moduleType.getLockOwner();
+                User lockUser = null;
+                if (lockUserCache.containsKey(lockUserName)) {
+                    lockUser = lockUserCache.get(lockUserName);
+                } else {
+                    lockUser = userDAO.get(lockUserName, session);
+                    lockUserCache.put(lockUserName, lockUser);
+                }
+                if (!lockUser.isLoggedIn()) {
+                    moduleTypesDAO.releaseLockedModuleType(lockUser, moduleType.getId(), session);
+                }
             }
         } finally {
             session.close();

@@ -357,7 +357,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
             message.append(":\n");
             for(String usingObject : usingObjects) {
-                message.append("* " + usingObject + "\n");
+                message.append(usingObject + "\n");
             }
         }
         message.append("There is no undo for this action!");

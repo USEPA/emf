@@ -1449,11 +1449,6 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             reason.append("The last module run was not successful.\n\n");
         }
         
-        // verify that the last run's history datasets are identical (id & version) to the current module datasets
-        if (!lastHistory.checkModuleDatasets(error)) {
-            reason.append("The module datasets have changed since the last sucessfull run:\n" + error.toString() + "\n\n");
-        }
-
         // check module type version last modified date against last run start time
         if (moduleTypeVersion.getLastModifiedDate().after(lastHistory.startDate())) {
             reason.append("The module type version is more recent than the last run.\n\n");
@@ -1462,6 +1457,11 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         // check module last modified date against last run start time
         if (module.getLastModifiedDate().after(lastHistory.startDate())) {
             reason.append("The module is more recent than the last run.\n\n");
+        }
+
+        // verify that the last run's history datasets are identical (id & version) to the current module datasets
+        if (!lastHistory.checkModuleDatasets(error)) {
+            reason.append("The module datasets have changed since the last sucessfull run:\n" + error.toString() + "\n\n");
         }
 
         StringBuilder explanation = new StringBuilder();

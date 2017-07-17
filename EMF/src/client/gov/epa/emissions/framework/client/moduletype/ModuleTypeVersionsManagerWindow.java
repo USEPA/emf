@@ -146,8 +146,9 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
     }
 
     private void doClose() {
-        if (newEditMTVs > 0) {
-            String error = String.format("Can't close this window: %d Edit Module Type Version %s still open", newEditMTVs, (newEditMTVs == 1) ? "window is" : "windows are");
+        int openMTVs = newEditMTVs + viewEditMTVs.size(); 
+        if (openMTVs > 0) {
+            String error = String.format("Can't close this window: %d View/Edit/New Module Type Version %s still open", openMTVs, (openMTVs == 1) ? "window is" : "windows are");
             messagePanel.setError(error);
             return;
         }
@@ -263,9 +264,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
                 messagePanel.setMessage(error);
                 continue;
             }
-            if (viewMode == ViewMode.EDIT) {
-                newEditMTVs++;
-            }
+            viewEditMTVs.put(moduleTypeVersion.getId(), viewMode);
             ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, viewMode, moduleTypeVersion);
             presenter.displayNewModuleTypeView(view);
         }
@@ -435,11 +434,10 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
 
     @Override
     public void closedChildWindow(ModuleTypeVersion moduleTypeVersion, ViewMode viewMode) {
-        if (viewMode != ViewMode.NEW) {
-            viewEditMTVs.remove(moduleTypeVersion.getId());
-        }
-        if (viewMode != ViewMode.VIEW) {
+        if (viewMode == ViewMode.NEW) {
             newEditMTVs--;
+        } else {
+            viewEditMTVs.remove(moduleTypeVersion.getId());
         }
         doRefresh();
     }
