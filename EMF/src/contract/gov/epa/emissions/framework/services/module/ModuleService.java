@@ -79,4 +79,8 @@ public interface ModuleService {
     
     Module[] getModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException;    // one level only
     Module[] getAllModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException; // all levels (recursive)
+
+    // modules and module types
+    
+    void releaseOrphanLocks() throws EmfException;
 }

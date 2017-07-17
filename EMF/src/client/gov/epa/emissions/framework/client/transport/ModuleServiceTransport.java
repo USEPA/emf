@@ -500,4 +500,15 @@ public class ModuleServiceTransport implements ModuleService {
 
         return (Module[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
     }
+
+    @Override
+    public void releaseOrphanLocks() throws EmfException {
+        // NOTE modules may still be running
+        EmfCall call = call();
+        
+        call.setOperation("releaseOrphanLocks");
+        call.setVoidReturnType();
+
+        call.request(new Object[] {});
+    }
 }

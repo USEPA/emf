@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.UserService;
+import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.ui.YesNoDialog;
 
 public class ExitAndLogoutAction {
@@ -43,12 +44,21 @@ public class ExitAndLogoutAction {
 
     private void logoutUser() throws EmfException {
         User user = session.user();
-        if (user.isLoggedIn()) {
-            user = userService.obtainLocked(session.user(), session.user());
-
-            if (user != null) { //Let it be silent if lock cannot be obtained.
-                user.setLoggedIn(false);
-                userService.updateUser(user);
+        try {
+            if (user.isLoggedIn()) {
+                user = userService.obtainLocked(session.user(), session.user());
+    
+                if (user != null) { //Let it be silent if lock cannot be obtained.
+                    user.setLoggedIn(false);
+                    userService.updateUser(user);
+                }
+            }
+        } finally {
+            ModuleService moduleService = session.moduleService();
+            try {
+                moduleService.releaseOrphanLocks();
+            } catch (EmfException e) {
+                e.printStackTrace();
             }
         }
     }
