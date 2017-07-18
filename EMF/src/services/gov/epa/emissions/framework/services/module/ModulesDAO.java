@@ -49,6 +49,18 @@ public class ModulesDAO {
         return hibernateFacade.getAll(Module.class, Order.asc("name").ignoreCase(), session);
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Module> getLockedModules(Session session) throws EmfException {
+        try {
+            List<?> lockedModules = session.createCriteria(Module.class)
+                                           .add(Restrictions.isNotNull("lockOwner"))
+                                           .list();
+            return (List<Module>) lockedModules;
+        } catch (Exception ex) {
+            throw new EmfException("Failed to get the list of locked modules: " + ex.getMessage());
+        }
+    }
+
     @SuppressWarnings({ "unchecked" })
     public List<ModuleTypeVersionSubmodule> getSubmodulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
         List<?> submodules = session.createCriteria(ModuleTypeVersionSubmodule.class)

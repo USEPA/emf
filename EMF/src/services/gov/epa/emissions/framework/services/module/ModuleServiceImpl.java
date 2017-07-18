@@ -1305,11 +1305,11 @@ public class ModuleServiceImpl implements ModuleService {
         try {
             Map<String, User> lockUserCache = new HashMap<String, User>();
             @SuppressWarnings("unchecked")
-            List<Module> modules = modulesDAO.getModules(session);
-            for (Module module : modules) {
-                if (!module.isLocked())
+            List<Module> lockedModules = modulesDAO.getLockedModules(session);
+            for (Module lockedModule : lockedModules) {
+                if (!lockedModule.isLocked())
                     continue;
-                String lockUserName = module.getLockOwner();
+                String lockUserName = lockedModule.getLockOwner();
                 User lockUser = null;
                 if (lockUserCache.containsKey(lockUserName)) {
                     lockUser = lockUserCache.get(lockUserName);
@@ -1318,15 +1318,15 @@ public class ModuleServiceImpl implements ModuleService {
                     lockUserCache.put(lockUserName, lockUser);
                 }
                 if (!lockUser.isLoggedIn()) {
-                    modulesDAO.releaseLockedModule(lockUser, module.getId(), session);
+                    modulesDAO.releaseLockedModule(lockUser, lockedModule.getId(), session);
                 }
             }
             @SuppressWarnings("unchecked")
-            List<ModuleType> moduleTypes = moduleTypesDAO.getModuleTypes(session);
-            for (ModuleType moduleType : moduleTypes) {
-                if (!moduleType.isLocked())
+            List<ModuleType> lockedModuleTypes = moduleTypesDAO.getLockedModuleTypes(session);
+            for (ModuleType lockedModuleType : lockedModuleTypes) {
+                if (!lockedModuleType.isLocked())
                     continue;
-                String lockUserName = moduleType.getLockOwner();
+                String lockUserName = lockedModuleType.getLockOwner();
                 User lockUser = null;
                 if (lockUserCache.containsKey(lockUserName)) {
                     lockUser = lockUserCache.get(lockUserName);
@@ -1335,7 +1335,7 @@ public class ModuleServiceImpl implements ModuleService {
                     lockUserCache.put(lockUserName, lockUser);
                 }
                 if (!lockUser.isLoggedIn()) {
-                    moduleTypesDAO.releaseLockedModuleType(lockUser, moduleType.getId(), session);
+                    moduleTypesDAO.releaseLockedModuleType(lockUser, lockedModuleType.getId(), session);
                 }
             }
         } finally {

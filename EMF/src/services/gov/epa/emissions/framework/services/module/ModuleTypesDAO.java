@@ -30,6 +30,18 @@ public class ModuleTypesDAO {
         return hibernateFacade.getAll(ModuleType.class, Order.asc("name").ignoreCase(), session);
     }
 
+    @SuppressWarnings("unchecked")
+    public List<ModuleType> getLockedModuleTypes(Session session) throws EmfException {
+        try {
+            List<?> lockedModuleTypes = session.createCriteria(ModuleType.class)
+                                               .add(Restrictions.isNotNull("lockOwner"))
+                                               .list();
+            return (List<ModuleType>) lockedModuleTypes;
+        } catch (Exception ex) {
+            throw new EmfException("Failed to get the list of locked module types: " + ex.getMessage());
+        }
+    }
+
     public void removeModuleType(ModuleType moduleType, Session session) {
         hibernateFacade.remove(moduleType, session);
     }
