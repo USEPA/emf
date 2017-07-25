@@ -275,10 +275,17 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         ModuleType[] selectedModuleTypes = selected.toArray(new ModuleType[0]);
         Map<Integer, ModuleType> selectedModuleTypesMap = new HashMap<Integer, ModuleType>();
         for (int i = 0; i < selectedModuleTypes.length; i++) {
-            ModuleType selectedModuleType = selectedModuleTypes[i]; 
-            selectedModuleTypesMap.put(selectedModuleType.getId(), selectedModuleType); 
+            ModuleType selectedModuleType = selectedModuleTypes[i];
+            selectedModuleTypesMap.put(selectedModuleType.getId(), selectedModuleType);
             if (selectedModuleType.isLocked()) {
                 String error = String.format("Can't remove the %s module type: it's locked by %s", selectedModuleType.getName(), selectedModuleType.getLockOwner());
+                messagePanel.setError(error);
+                return;
+            }
+            int finalizedVersionsCount = selectedModuleType.getFinalizedModuleTypeVersionsCount(); 
+            if (finalizedVersionsCount > 0) {
+                String error = String.format("Can't remove the %s module type: %d module type version%s final",
+                                             selectedModuleType.getName(), finalizedVersionsCount, (finalizedVersionsCount == 1) ? " is" : "s are");
                 messagePanel.setError(error);
                 return;
             }
@@ -326,6 +333,11 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             if (selectedModuleTypesMap.containsKey(liteModuleType.getId())) {
                 if (liteModule.isLocked()) {
                     String error = String.format("Can't remove the %s module type: the %s module is locked by %s", liteModuleType.getName(), liteModule.getName(), liteModule.getLockOwner());
+                    messagePanel.setError(error);
+                    return;
+                }
+                if (liteModule.getIsFinal()) {
+                    String error = String.format("Can't remove the %s module type: the %s module is final", liteModuleType.getName(), liteModule.getName());
                     messagePanel.setError(error);
                     return;
                 }

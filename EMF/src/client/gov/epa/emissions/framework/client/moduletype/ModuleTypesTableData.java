@@ -17,7 +17,7 @@ public class ModuleTypesTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Name", "Composite?", "Tags", "Creator", "Creation Date", "Last Mod Date", "Default Version", "Lock Owner", "Lock Date", "Description"};
+        return new String[] { "Name", "Composite?", "Final Versions", "Tags", "Creator", "Creation Date", "Last Mod Date", "Default Version", "Lock Owner", "Lock Date", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -34,21 +34,21 @@ public class ModuleTypesTableData extends AbstractTableData {
 
     private List createRows(ModuleType[] types) {
         List rows = new ArrayList();
-
         for (int i = 0; i < types.length; i++) {
-            ModuleType element = types[i];
-            Object[] values = { element.getName(),
-                                element.isComposite() ? "Yes" : "No",
-                                element.getTagsText(),
-                                element.getCreator().getName(),
-                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(element.getCreationDate()),
-                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(element.getLastModifiedDate()),
-                                element.getDefaultVersion(),
-                                element.getLockOwner(),
-                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(element.getLockDate()),
-                                element.getDescription() };
+            ModuleType moduleType = types[i];
+            Object[] values = { moduleType.getName(),
+                                moduleType.isComposite() ? "Yes" : "No",
+                                moduleType.finalVersions(),
+                                moduleType.getTagsText(),
+                                moduleType.getCreator().getName(),
+                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleType.getCreationDate()),
+                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleType.getLastModifiedDate()),
+                                moduleType.getDefaultVersion(),
+                                moduleType.getLockOwner(),
+                                CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleType.getLockDate()),
+                                moduleType.getDescription() };
 
-            Row row = new ViewableRow(element, values);
+            Row row = new ViewableRow(moduleType, values);
             rows.add(row);
         }
 

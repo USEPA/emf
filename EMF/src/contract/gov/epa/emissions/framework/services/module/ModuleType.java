@@ -348,6 +348,22 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         this.moduleTypeVersions.remove(version);
     }
 
+    public int getModuleTypeVersionsCount() {
+        return moduleTypeVersions.size();
+    }
+    
+    public int getFinalizedModuleTypeVersionsCount() {
+        int count = 0;
+        for (ModuleTypeVersion moduleTypeVersion : moduleTypeVersions.values())
+            if (moduleTypeVersion.getIsFinal())
+                count++;
+        return count;
+    }
+    
+    public String finalVersions() {
+        return String.format("%d / %d", getFinalizedModuleTypeVersionsCount(), getModuleTypeVersionsCount());
+    }
+
     // tags
 
     public Set<Tag> getTags() {
