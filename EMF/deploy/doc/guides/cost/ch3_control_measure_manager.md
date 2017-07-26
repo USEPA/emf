@@ -587,7 +587,7 @@ Note that if an equation is specified for a measure, and there are no default CP
 
 It is possible to export control measure data to a set of CSV files. To do this, you first need to identify a set of control measures for which you wish to export data. You can export measures based on specifically selected control measures via the Control Measure Manager, or you can export measures associated to a certain sector.
 
-97\. For example, to export some measures that control PM10, set the **Pollutant Filter** on the Control Measure Manager to **PM10**. Next, use the Filter Rows button the toolbar and enter the following criterion: **Name contains Fabric Filter**. You should see about 52 measures in the manager.
+97\. For example, to export some measures that control PM10, set the **Pollutant Filter** on the Control Measure Manager to **PM10**. Next, use the Filter Rows button the toolbar and enter the following criterion: **Name contains Fabric Filter**. You should see about 44 measures in the manager.
 
 98\. Click the **Select all** button on the Control Measure Manager toolbar, and then click the **Export** button. The Exporting Control Measures dialog ([Figure](#exporting_control_measures_dialog)) will appear.
 
