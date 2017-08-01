@@ -17,7 +17,7 @@ public class ModuleTypesTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Name", "Composite?", "Final Versions", "Tags", "Creator", "Creation Date", "Last Mod Date", "Default Version", "Lock Owner", "Lock Date", "Description"};
+        return new String[] { "Name", "Composite?", "Final", "Versions", "Tags", "Creator", "Creation Date", "Last Mod Date", "Default Version", "Lock Owner", "Lock Date", "Description"};
     }
 
     public Class getColumnClass(int col) {
@@ -38,7 +38,8 @@ public class ModuleTypesTableData extends AbstractTableData {
             ModuleType moduleType = types[i];
             Object[] values = { moduleType.getName(),
                                 moduleType.isComposite() ? "Yes" : "No",
-                                moduleType.finalVersions(),
+                                moduleType.getFinalizedModuleTypeVersionsCount(),
+                                moduleType.getModuleTypeVersionsCount(),
                                 moduleType.getTagsText(),
                                 moduleType.getCreator().getName(),
                                 CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleType.getCreationDate()),

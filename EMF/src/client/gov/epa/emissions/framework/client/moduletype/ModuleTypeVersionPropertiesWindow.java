@@ -44,8 +44,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
@@ -71,6 +73,10 @@ import javax.swing.undo.UndoManager;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
 
 public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         implements ModuleTypeVersionPropertiesView, RefreshObserver, TagsObserver {
@@ -153,6 +159,11 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
     private JPanel connectionsTablePanel;
     private SelectableSortFilterWrapper connectionsTable;
     private ModuleTypeVersionConnectionsTableData connectionsTableData;
+
+    // diagram
+    private JPanel           diagramPanel;
+    private mxGraph          diagram;
+    private mxGraphComponent diagramComponent;
 
     // revisions
     private JPanel revisionsPanel;
@@ -392,7 +403,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         if (moduleTypeVersion.isComposite()) {
             tabbedPane.addTab("Submodules", submodulesPanel());
             tabbedPane.addTab("Connections", connectionsPanel());
-            // tabbedPane.addTab("Flowchart", flowchartPanel());
+            tabbedPane.addTab("Diagram", diagramPanel());
         } else {
             tabbedPane.addTab("Algorithm", algorithmPanel());
         }
@@ -630,6 +641,189 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         return connectionsPanel;
     }
 
+    private JPanel diagramPanel() {
+        diagramPanel = new JPanel(new BorderLayout());
+        diagram = new mxGraph();
+        diagram.setAutoSizeCells(true);
+        diagram.setCellsMovable(true);
+        diagram.setEnabled(false);
+        diagramComponent = new mxGraphComponent(diagram);
+        diagramComponent.setAutoExtend(true);
+        diagramComponent.setEnabled(false);
+        diagramPanel.add(diagramComponent);
+        refreshDiagram();
+        return diagramPanel;
+    }
+
+    private int getMaxLineLength(String text) {
+        int maxLength = 0;
+        int currentLength = 0;
+        text += "\n";
+        for(char ch : text.toCharArray()) {
+            if (ch == '\n' || ch == '\r') {
+                if (maxLength < currentLength)
+                    maxLength = currentLength;
+                currentLength = 0;
+            } else {
+                currentLength++;
+            }
+        }
+        return maxLength;
+    }
+
+    private int getWidthFor(String text) {
+        int maxLineLength = getMaxLineLength(text);
+        return 6 * maxLineLength + 30;
+    }
+
+    public void refreshDiagram() {
+        if (!moduleTypeVersion.isComposite())
+            return;
+
+        // fontStyle: 0 = NORMAL, 1 = BOLD, 2 = ITALIC; 4 = UNDELINE
+        final String                     COMMON_STYLE = "strokeWidth=1.5;strokeColor=black;fillColor=white;fontColor=black;fontSize=12;fontStyle=0;";
+        
+        final String                    DATASET_STYLE =    COMMON_STYLE + "strokeColor=blue;"; 
+        final String                  PARAMETER_STYLE =    COMMON_STYLE + "strokeColor=red;";
+        
+        final String              INPUT_DATASET_STYLE =   DATASET_STYLE;
+        final String             OUTPUT_DATASET_STYLE =   DATASET_STYLE;
+        final String            INPUT_PARAMETER_STYLE = PARAMETER_STYLE;
+        final String           OUTPUT_PARAMETER_STYLE = PARAMETER_STYLE;
+        
+        final String                  SUBMODULE_STYLE =    COMMON_STYLE;
+        
+        final String    SUBMODULE_INPUT_DATASET_STYLE =   DATASET_STYLE;
+        final String   SUBMODULE_OUTPUT_DATASET_STYLE =   DATASET_STYLE;
+        final String  SUBMODULE_INPUT_PARAMETER_STYLE = PARAMETER_STYLE;
+        final String SUBMODULE_OUTPUT_PARAMETER_STYLE = PARAMETER_STYLE;
+        
+        final String             DATASET_CONNECTION_STYLE = DATASET_STYLE;
+        final String   SUBMODULE_DATASET_CONNECTION_STYLE = DATASET_STYLE;
+        final String           PARAMETER_CONNECTION_STYLE = PARAMETER_STYLE;
+        final String SUBMODULE_PARAMETER_CONNECTION_STYLE = PARAMETER_STYLE;
+
+        // all light colors from JGraphX/src/com/mxgraph/util/mxHtmlColor.java
+        final String colors[] = {
+            "lightblue",
+            "lightcoral",
+            "lightcyan",
+            "lightgoldenrodyellow",
+            "lightgray",
+            "lightgreen",
+            "lightpink",
+            "lightsalmon",
+            "lightseagreen",
+            "lightskyblue",
+            "lightslategrey",
+            "lightsteelblue",
+            "lightyellow"
+        };
+        
+        Map<Integer, Object> submodules = new HashMap<Integer, Object>(); // the keys are the Submodule IDs
+        Map<String, Object> sources = new HashMap<String, Object>(); // the keys are the connection endpoint names
+        Map<String, Object> targets = new HashMap<String, Object>(); // the keys are the connection endpoint names
+        
+        Object diagramParent = diagram.getDefaultParent();
+        diagram.getModel().beginUpdate();
+        try
+        {
+            diagram.selectAll();
+            diagram.removeCells();
+            
+            for (ModuleTypeVersionDataset dataset : moduleTypeVersion.getModuleTypeVersionDatasets().values()) {
+                String placeholderName = dataset.getPlaceholderName();
+                int placeholderWidth = getWidthFor(placeholderName);
+                if (!dataset.isModeOUT()) {
+                    Object inputDatasetVertex = diagram.insertVertex(diagramParent, null, placeholderName, 0, 0, placeholderWidth, 30, INPUT_DATASET_STYLE);
+                    sources.put(placeholderName, inputDatasetVertex);
+                }
+                if (!dataset.isModeIN()) {
+                    Object outputDatasetVertex = diagram.insertVertex(diagramParent, null, placeholderName, 0, 0, placeholderWidth, 30, OUTPUT_DATASET_STYLE);
+                    targets.put(placeholderName, outputDatasetVertex);
+                }
+            }
+            for (ModuleTypeVersionParameter parameter : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
+                String parameterName = parameter.getParameterName();
+                int parameterWidth = getWidthFor(parameterName);
+                if (!parameter.isModeOUT()) {
+                    Object inputParameterVertex = diagram.insertVertex(diagramParent, null, parameterName, 0, 0, parameterWidth, 30, INPUT_PARAMETER_STYLE);
+                    sources.put(parameterName, inputParameterVertex);
+                }
+                if (!parameter.isModeIN()) {
+                    Object outputParameterVertex = diagram.insertVertex(diagramParent, null, parameterName, 0, 0, parameterWidth, 30, OUTPUT_PARAMETER_STYLE);
+                    targets.put(parameterName, outputParameterVertex);
+                }
+            }
+            int colorIndex = 0;
+            for (ModuleTypeVersionSubmodule submodule : moduleTypeVersion.getModuleTypeVersionSubmodules().values()) {
+                final String submoduleColor = colors[colorIndex++ % colors.length];
+                final String submoduleFillColor = "fillColor=" + submoduleColor + ";";
+                final String submoduleText = submodule.getName() + "\n\n" + submodule.getModuleTypeVersion().fullNameSDS("%s\nVersion %d - %s");
+                int submoduleWidth = getWidthFor(submoduleText);
+                Object submoduleVertex = diagram.insertVertex(diagramParent, null, submoduleText, 0, 0, submoduleWidth, 150, SUBMODULE_STYLE + submoduleFillColor);
+                submodules.put(submodule.getId(), submoduleVertex);
+                ModuleTypeVersion submoduleTypeVersion = submodule.getModuleTypeVersion();
+                for (ModuleTypeVersionDataset submoduleDataset : submoduleTypeVersion.getModuleTypeVersionDatasets().values()) {
+                    String placeholderName = submoduleDataset.getPlaceholderName();
+                    int placeholderWidth = getWidthFor(placeholderName);
+                    String endPointName = submodule.getName() + " / " + placeholderName;
+                    if (!submoduleDataset.isModeOUT()) {
+                        Object inputDatasetVertex = diagram.insertVertex(diagramParent, null, placeholderName, 0, 0, placeholderWidth, 30, SUBMODULE_INPUT_DATASET_STYLE + submoduleFillColor);
+                        targets.put(endPointName, inputDatasetVertex);
+                        diagram.insertEdge(diagramParent, null, "", inputDatasetVertex, submoduleVertex, SUBMODULE_DATASET_CONNECTION_STYLE);
+                    }
+                    if (!submoduleDataset.isModeIN()) {
+                        Object outputDatasetVertex = diagram.insertVertex(diagramParent, null, placeholderName, 0, 0, placeholderWidth, 30, SUBMODULE_OUTPUT_DATASET_STYLE + submoduleFillColor);
+                        sources.put(endPointName, outputDatasetVertex);
+                        diagram.insertEdge(diagramParent, null, "", submoduleVertex, outputDatasetVertex, SUBMODULE_DATASET_CONNECTION_STYLE);
+                    }
+                }
+                for (ModuleTypeVersionParameter submoduleParameter : submoduleTypeVersion.getModuleTypeVersionParameters().values()) {
+                    String parameterName = submoduleParameter.getParameterName();
+                    int parameterWidth = getWidthFor(parameterName);
+                    String endPointName = submodule.getName() + " / " + parameterName;
+                    if (!submoduleParameter.isModeOUT()) {
+                        Object inputParameterVertex = diagram.insertVertex(diagramParent, null, parameterName, 0, 0, parameterWidth, 30, SUBMODULE_INPUT_PARAMETER_STYLE + submoduleFillColor);
+                        targets.put(endPointName, inputParameterVertex);
+                        diagram.insertEdge(diagramParent, null, "", inputParameterVertex, submoduleVertex, SUBMODULE_PARAMETER_CONNECTION_STYLE);
+                    }
+                    if (!submoduleParameter.isModeIN()) {
+                        Object outputParameterVertex = diagram.insertVertex(diagramParent, null, parameterName, 0, 0, parameterWidth, 30, SUBMODULE_OUTPUT_PARAMETER_STYLE + submoduleFillColor);
+                        sources.put(endPointName, outputParameterVertex);
+                        diagram.insertEdge(diagramParent, null, "", submoduleVertex, outputParameterVertex, SUBMODULE_PARAMETER_CONNECTION_STYLE);
+                    }
+                }
+            }
+            for (ModuleTypeVersionDatasetConnection datasetConnection : moduleTypeVersion.getModuleTypeVersionDatasetConnections().values()) {
+                Object sourceVertex = sources.get(datasetConnection.getSourceName());
+                Object targetVertex = targets.get(datasetConnection.getTargetName());
+                diagram.insertEdge(diagramParent, null, "", sourceVertex, targetVertex, DATASET_CONNECTION_STYLE);
+            }
+            for (ModuleTypeVersionParameterConnection parameterConnection : moduleTypeVersion.getModuleTypeVersionParameterConnections().values()) {
+                Object sourceVertex = sources.get(parameterConnection.getSourceName());
+                Object targetVertex = targets.get(parameterConnection.getTargetName());
+                diagram.insertEdge(diagramParent, null, "", sourceVertex, targetVertex, PARAMETER_CONNECTION_STYLE);
+            }
+            
+            // apply layout to graph
+            mxHierarchicalLayout layout = new mxHierarchicalLayout(diagram);
+            layout.setResizeParent(true);
+            layout.setParallelEdgeSpacing(15);
+            layout.setInterRankCellSpacing(100);
+            layout.execute(diagramParent);
+            
+            diagramComponent.zoomAndCenter();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        finally
+        {
+            diagram.getModel().endUpdate();
+        }
+    }
+
     private JPanel revisionsPanel() {
         revisionsPanel = new JPanel(new BorderLayout());
         revisions = new TextArea("revisions", moduleTypeVersion.revisionsReport(), 60);
@@ -809,7 +1003,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
     public void refreshDatasets() {
         datasetsTableData = new ModuleTypeVersionDatasetsTableData(moduleTypeVersion.getModuleTypeVersionDatasets());
         datasetsTable.refresh(datasetsTableData);
-        refreshConnections();
+        refreshConnections(); // calls refreshDiagram() also
         isDirty.setText("true");
     }
 
@@ -907,7 +1101,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         parametersTableData = new ModuleTypeVersionParametersTableData(
                 moduleTypeVersion.getModuleTypeVersionParameters());
         parametersTable.refresh(parametersTableData);
-        refreshConnections();
+        refreshConnections(); // calls refreshDiagram() also
         isDirty.setText("true");
     }
 
@@ -1008,7 +1202,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             submodulesTableData = new ModuleTypeVersionSubmodulesTableData(
                     moduleTypeVersion.getModuleTypeVersionSubmodules());
             submodulesTable.refresh(submodulesTableData);
-            refreshConnections();
+            refreshConnections(); // calls refreshDiagram() also
             isDirty.setText("true");
         }
     }
@@ -1092,6 +1286,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         if (moduleTypeVersion.isComposite()) {
             connectionsTableData = new ModuleTypeVersionConnectionsTableData(moduleTypeVersion);
             connectionsTable.refresh(connectionsTableData);
+            refreshDiagram();
             isDirty.setText("true");
         }
     }
@@ -1423,7 +1618,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         refreshDatasets();
         refreshParameters();
         refreshSubmodules();
-        refreshConnections();
+        refreshConnections(); // calls refreshDiagram() also 
         refreshRevisions();
         
         resetChanges();
