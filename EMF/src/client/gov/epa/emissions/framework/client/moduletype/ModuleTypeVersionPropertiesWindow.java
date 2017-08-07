@@ -646,10 +646,10 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         diagram = new mxGraph();
         diagram.setAutoSizeCells(true);
         diagram.setCellsMovable(true);
-        diagram.setEnabled(false);
+        diagram.setEnabled(viewMode != ViewMode.VIEW);
         diagramComponent = new mxGraphComponent(diagram);
         diagramComponent.setAutoExtend(true);
-        diagramComponent.setEnabled(false);
+        diagramComponent.setEnabled(viewMode != ViewMode.VIEW);
         diagramPanel.add(diagramComponent);
         refreshDiagram();
         return diagramPanel;
@@ -673,7 +673,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
     private int getWidthFor(String text) {
         int maxLineLength = getMaxLineLength(text);
-        return 6 * maxLineLength + 30;
+        return (int)(6.5 * maxLineLength) + 20;
     }
 
     public void refreshDiagram() {
