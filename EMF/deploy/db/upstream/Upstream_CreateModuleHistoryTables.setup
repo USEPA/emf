@@ -72,5 +72,5 @@ CREATE TABLE modules.history_parameters
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE modules.modules_parameters
+ALTER TABLE modules.history_parameters
   OWNER TO emf;
