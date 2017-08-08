@@ -390,8 +390,8 @@ Filter Purpose|SQL Where Clause
 -|-
 Filter on a particular set of SCCs|`scc like '101%' or scc like '102%'`
 Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<br/>`POLL = 'PM10' or POLL = 'PM2\_5'`
-Filter sources only in NC (REGION\_CD = 37), SC (45), and VA (51);<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37001)|`substring(FIPS,1,2) in ('37', '45', '51')`
-Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`fips like '37%' and (poll = 'NOX' or poll = 'VOC')`
+Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37001)|`substring(REGION\_CD,1,2) in ('37')`
+Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`REGION\_CD like '37%' and (poll = 'NOX' or poll = 'VOC')`
 [Examples of Row Filters (Data Viewer window) and Inventory Filters (Inventories tab of the Edit Control Strategy window)][examples_of_row_filters_table]
 
 36\. When you are finished examining the Data Viewer, click **Close** to close the window.
