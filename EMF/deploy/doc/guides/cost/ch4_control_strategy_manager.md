@@ -238,6 +238,7 @@ Note that if you had selected more than one control strategy before clicking Rem
 An **Edit Control Strategy** window for your newly created strategy will appear [Figure](#edit_control_strategy_window). The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section](#inputs_to_control_strategies_section).
 
 ![Edit Control Tab Summary Window][edit_control_strategy_window]
+
 [edit_control_strategy_window]: images/Least_Cost_2017_NOx_for_Training.png
 
 8\. Click **Save** to save your newly created strategy. You will be prompted to give values for the following fields prior to saving.
