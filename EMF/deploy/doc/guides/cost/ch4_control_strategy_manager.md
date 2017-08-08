@@ -382,7 +382,7 @@ There are also buttons at the bottom of the window. The **Edit Properties** butt
 
 33\. Inventories can have a lot of data - up to millions of rows. The fields in the upper right corner of the window in the area labeled "**Current**:" provide information about how many rows the inventory has, and which rows are currently visible. The Data Viewer transfers only a small amount of data (300 rows) from the server to your desktop client to keep the transfer time reasonable. It works similarly to a web search engine that shows the results in pages, and the pagination arrows near the upper right corner of the window facilitate moving between pages of data. **Try using some of the pagination arrows in the upper right corner to see how they work:** go to first record, go to previous page, give a specific record, go to next page, and go to last record.
 
-34\. You can control how the data are sorted by entering a comma-separated list of columns in the **Sort Order** field and then clicking **Apply**. For training purposes, if you are using a UNC laptop, do not specify a sort order because this function is very slow on these laptops. It should be much faster on a true EMF server. Note that a descending sort can be specified by following the column name with "desc" (e.g., "ANN\_EMIS desc, FIPS" will sort by decreasing annual emissions and then by county).
+34\. You can control how the data are sorted by entering a comma-separated list of columns in the **Sort Order** field and then clicking **Apply**. For training purposes, if you are using a UNC laptop, do not specify a sort order because this function is very slow on these laptops. It should be much faster on a true EMF server. Note that a descending sort can be specified by following the column name with "desc" (e.g., "ANN\_VALUE desc, REGION_CD" will sort by decreasing annual emissions and then by county).
 
 35\. If you enter a **Row Filter**, and then click **Apply**, the Data Viewer will find rows that meet the criteria you specified. Examples of the syntax for row filters are given in [Table](#examples_of_row_filters_table). See [Chapter](#sql_chapter) for additional row filter examples. For training purposes, if you are using a UNC laptop, do not specify a row filter because this function is very slow, otherwise you may try some of the filters.
 
@@ -390,8 +390,8 @@ Filter Purpose|SQL Where Clause
 -|-
 Filter on a particular set of SCCs|`scc like '101%' or scc like '102%'`
 Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<br/>`POLL = 'PM10' or POLL = 'PM2\_5'`
-Filter sources only in NC (State FIPS = 37), SC (45), and VA (51);<br/>note that FIPS column format is State + County FIPS code (e.g., 37001)|`substring(FIPS,1,2) in ('37', '45', '51')`
-Filter sources only in CA (06) and include only NO~x and VOC pollutants|`substring(fips,1,2) = '06' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`fips like '06%' and (poll = 'NOX' or poll = 'VOC')`
+Filter sources only in NC (REGION\_CD = 37), SC (45), and VA (51);<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37001)|`substring(FIPS,1,2) in ('37', '45', '51')`
+Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`fips like '37%' and (poll = 'NOX' or poll = 'VOC')`
 [Examples of Row Filters (Data Viewer window) and Inventory Filters (Inventories tab of the Edit Control Strategy window)][examples_of_row_filters_table]
 
 36\. When you are finished examining the Data Viewer, click **Close** to close the window.
@@ -408,7 +408,7 @@ The **County Dataset** field allows another way to filter the inventory. With th
 
 *Note that only the records of the input inventories that pass both the inventory and county filters will be considered for control measure application.*
 
-37\. **For training purposes**, on the **Inventories** tab, specify the following **Inventory Filter: `FIPS in ('45001', '45009', '45011')`**. Note that specifying a list of counties using the Inventory Filter is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as show in the next bullet). If you just wanted to control a few counties, you might use the Inventory Filter, but if you want to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the needs of your analysis (e.g., `SCC like '231%'`, or `ANN_EMIS>5`).
+37\. **For training purposes**, on the **Inventories** tab, specify the following **Inventory Filter: `FIPS in ('45001', '45009', '45011')`**. Note that specifying a list of counties using the Inventory Filter is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as show in the next bullet). If you just wanted to control a few counties, you might use the Inventory Filter, but if you want to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the needs of your analysis (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
 
 38\. **Examine the available county datasets by pulling down the menu and select one of the datasets.** After you have selected a county dataset, examine its properties and the data themselves by clicking the **View** and **View Data** buttons.
 
