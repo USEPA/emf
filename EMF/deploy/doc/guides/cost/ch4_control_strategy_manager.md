@@ -235,7 +235,7 @@ Note that if you had selected more than one control strategy before clicking Rem
 
 7\. To create a new control strategy, click the **New** button. A dialog will appear that asks you to name the strategy. Enter a name that is different from any of the existing control strategies (e.g., **Least Cost 2017 NOx for Training**) and then click **OK**.
 
-An **Edit Control Strategy** window for your newly created strategy will appear ([Figure](#edit_control_strategy_window]. The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section](#inputs_to_control_strategies_section).
+An **Edit Control Strategy** window for your newly created strategy will appear [Figure](#edit_control_strategy_window). The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section](#inputs_to_control_strategies_section).
 
 [edit_control_strategy_window]: images/Least_Cost_2017_NOx_for_Training.png
 
