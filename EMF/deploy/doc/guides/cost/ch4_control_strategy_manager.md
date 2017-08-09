@@ -390,7 +390,7 @@ Filter Purpose|SQL Where Clause
 -|-
 Filter on a particular set of SCCs|`scc like '101%' or scc like '102%'`
 Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<br/>`POLL = 'PM10' or POLL = 'PM2\_5'`
-Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37001)|`substring(REGION\_CD,1,2) in ('37')`
+Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37017)|`substring(REGION\_CD,1,2) in ('37')`
 Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`REGION\_CD like '37%' and (poll = 'NOX' or poll = 'VOC')`
 [Examples of Row Filters (Data Viewer window) and Inventory Filters (Inventories tab of the Edit Control Strategy window)][examples_of_row_filters_table]
 
@@ -408,7 +408,7 @@ The **County Dataset** field allows another way to filter the inventory. With th
 
 *Note that only the records of the input inventories that pass both the inventory and county filters will be considered for control measure application.*
 
-37\. **For training purposes**, on the **Inventories** tab, specify the following **Inventory Filter: `REGION_CD` in ('37001', '37009', '37011')`**. Note that specifying a list of counties using the Inventory Filter is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as show in the next bullet). If you just wanted to control a few counties, you might use the Inventory Filter, but if you want to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the needs of your analysis (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
+37\. **For training purposes**, on the **Inventories** tab, specify the following **Inventory Filter: `REGION_CD` in ('37017', '37013', '37015')`**. Note that specifying a list of counties using the Inventory Filter is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as show in the next bullet). If you just wanted to control a few counties, you might use the Inventory Filter, but if you want to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the needs of your analysis (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
 
 38\. **Examine the available county datasets by pulling down the menu and select one of the datasets.** After you have selected a county dataset, examine its properties and the data themselves by clicking the **View** and **View Data** buttons.
 
