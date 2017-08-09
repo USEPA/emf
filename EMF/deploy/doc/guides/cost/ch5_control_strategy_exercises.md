@@ -139,7 +139,7 @@ For this exercise, we will run a control strategy that will result in some contr
 
     How does the constraint impact the results?
 
-8. Use the Cost Control Summary Function in the Control Strategy Manager Window to create a local spreadsheet summarizing the selected control strategies, including name, strategy type, and constraints.
+8. Use the Cost Control Summary Function in the Control Strategy Manager Window to create a local spreadsheet summarizing the selected control strategies, including name, strategy type, and constraints, emission reductions and strategy costs.
 
 ([Cobenefit Strategy Summary with Constraint Figure](#summary_spreadsheet)).
 
@@ -153,7 +153,7 @@ For this exercise, we will run a control strategy that will result in some contr
 
 [summary_spreadsheet_no_constraints]: images/cobenefit_strategy_summary_no_constraints.png
 
-
+9. Note that the summary spreadsheet with constraints was for a cost per ton value of 3000. The result was that no controls were applied, as they all cost more than that.  For the summary spreadsheet with no constraints, the cost of the controls is listed after the status (completed), for a total value of $3,679,355 and a total emission of 331.2 tons of PM2.5. 
 
 <!-- BEGIN COMMENT -->
 
