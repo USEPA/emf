@@ -32,7 +32,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 4. Click the **Browse** button and browse to the location of your inventory on the EMF server or on your local computer (e.g., C:\Users\Public\EMF_Data\inventories).
 
-([Export Dataset Window Figure](#import_browse_window)).
+([Browse Datasets Window Figure](#import_browse_window)).
 
 ![Import Browse Window][import_browse_window]
 
@@ -61,7 +61,7 @@ From the Dataset Manager, you can:
 * use the **Purge** button to purge datasets that were removed from the system,
 * use the **Close** button to close the **Dataset Manager Window**.
 
-([Figure](#export_window)).
+([Export Dataset Window Figure](#export_window)).
 
 ![Export Window][export_window]
 
