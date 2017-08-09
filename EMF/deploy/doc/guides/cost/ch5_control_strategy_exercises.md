@@ -15,7 +15,7 @@ This chapter has some advanced training exercises for you to work through after 
 
 ## Importing an Emissions Inventory (or County List File) [importing_an_emissions_inventory_section] ##
 
-In many cases, it will be necessary to import an emissions inventory into the EMF for use with CoST. Before it can be imported, the inventory must be in one of these ORL formats: ORL Point, ORL Onroad, ORL Nonroad, or ORL Nonpoint. For more information on these formats, see [http://www.smoke-model.org/version3.0/html/ch08s02.html#d0e38904](http://www.smoke-model.org/version3.0/html/ch08s02.html#d0e38904). Try importing an inventory using the following steps:
+In many cases, it will be necessary to import an emissions inventory into the EMF for use with CoST. Before it can be imported, the inventory must be in one of these FF10 or ORL formats: Point, Onroad, Nonroad, or Nonpoint. For more information on these formats, see [https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02.html#sect_input_inventory_format](https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02.html#sect_input_inventory_format). Try importing an inventory using the following steps:
 
 1. Choose **Datasets** from the **Manage** menu of the EMF main window.
 
