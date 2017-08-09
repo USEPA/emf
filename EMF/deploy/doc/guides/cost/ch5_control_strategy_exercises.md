@@ -153,7 +153,7 @@ For this exercise, we will run a control strategy that will result in some contr
 
 [summary_spreadsheet_no_constraints]: images/cobenefit_strategy_summary_no_constraints.png
 
-9. Note that the summary spreadsheet with constraints was for a cost per ton value of 3000. The result was that no controls were applied, as they all cost more than that.  For the summary spreadsheet with no constraints, the cost of the controls is listed after the status (completed), for a total value of $3,679,355 and a total emission of 331.2 tons of PM2.5. 
+9. Note that the summary spreadsheet with constraints was for a cost per ton value of 3000. The result was that no controls were applied, as they all cost more than that.  For the summary spreadsheet with no constraints, the cost of the controls is listed after the status (Completed), for a total value of $3,679,355 and a total emission reduction of 331.2 tons of PM2.5. 
 
 <!-- BEGIN COMMENT -->
 
