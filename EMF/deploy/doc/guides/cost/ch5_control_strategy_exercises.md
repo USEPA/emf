@@ -30,7 +30,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 [import_dataset_window]: images/Import_Datasets.png
 
 
-4. Click the **Browse** button and browse to the location of your inventory on the EMF server computer (e.g., C:\EMF_temp\inventories\nonpoint).
+4. Click the **Browse** button and browse to the location of your inventory on the EMF server computer (e.g., C:\Users\Public\EMF_Data\inventories).
 
 ([Figure](#import_browse_window)).
 
@@ -38,7 +38,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 [import_browse_window]: images/EMF_Import_Dataset_Server_Local.png
 
-5. Select the checkbox that corresponds to your inventory (e.g., arinv\_nonpt\_2020cc\_31may2007\_v0\_orl\_txt) and then click **OK**.
+5. Select the checkbox that corresponds to your inventory (e.g., 2017eh\_from\_nonpt\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37.csv) and then click **OK**.
 
 6. Specify a meaningful name for the new dataset in the **Dataset Name** type-in field that does not duplicate one of the existing dataset names.
 
