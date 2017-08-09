@@ -23,14 +23,18 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 3. Click the **Import** button to show the **Import Datasets** window.
 
-([Figure](#window_dataset_manager_import_browse)).
+([Figure](#import_dataset_window)).
 
-![Inport Browse Window of Dataset Manager ][window_dataset_manager_import_browse]
+![Import Dataset Window][import_dataset_window]
 
-[window_dataset_manager_import_browse]: images/EMF_Import_Dataset_Server_Local.png
+[import_dataset_window]: images/Import_Datasets.png
 
 
 4. Click the **Browse** button and browse to the location of your inventory on the EMF server computer (e.g., C:\EMF_temp\inventories\nonpoint).
+
+([Figure](#window_dataset_manager_import_browse)).
+![Inport Browse Window of Dataset Manager ][window_dataset_manager_import_browse]
+[window_dataset_manager_import_browse]: images/EMF_Import_Dataset_Server_Local.png
 
 5. Select the checkbox that corresponds to your inventory (e.g., arinv\_nonpt\_2020cc\_31may2007\_v0\_orl\_txt) and then click **OK**.
 
