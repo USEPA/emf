@@ -30,7 +30,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 [import_dataset_window]: images/Import_Datasets.png
 
 
-4. Click the **Browse** button and browse to the location of your inventory on the EMF server computer (e.g., C:\Users\Public\EMF_Data\inventories).
+4. Click the **Browse** button and browse to the location of your inventory on the EMF server or on your local computer (e.g., C:\Users\Public\EMF_Data\inventories).
 
 ([Figure](#import_browse_window)).
 
@@ -57,9 +57,17 @@ From the Dataset Manager, you can:
 * use the **Edit Data** button to create new versions of the dataset,
 * use the **Remove** button to remove the dataset,
 * use the **Import** button to import new datasets,
-* use the **Export** button to export the data to a file on the EMF server,
+* use the **Export** button to export the data to a file on the EMF server, or to a file on your local machine.
 * use the **Purge** button to purge datasets that were removed from the system,
 * use the **Close** button to close the **Dataset Manager Window**.
+
+([Figure](#export_window)).
+
+![Export Window][export_window]
+
+[export_window]: images/EMF_Export_Window.png
+
+
 
 ## Running a Maximum Emissions Reduction Strategy ##
 
