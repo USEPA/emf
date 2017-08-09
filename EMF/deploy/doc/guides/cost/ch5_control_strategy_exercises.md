@@ -139,6 +139,22 @@ For this exercise, we will run a control strategy that will result in some contr
 
     How does the constraint impact the results?
 
+8. Use the Cost Control Summary Function in the Control Strategy Manager Window to create a local spreadsheet summarizing the selected control strategies, including name, strategy type, and constraints.
+
+([Cobenefit Strategy Summary with Constraint Figure](#summary_spreadsheet)).
+
+![Summary Spreadsheet][summary_spreadsheet]
+
+[summary_spreadsheet]: images/cobenefit_strategy_summary.png
+
+([Cobenefit Strategy Summary with No Constraints Figure](#summary_spreadsheet_no_constraints)).
+
+![Summary Spreadsheet No Constraints][summary_spreadsheet_no_constraints]
+
+[summary_spreadsheet_no_constraints]: images/cobenefit_strategy_summary_no_constraints.png
+
+
+
 <!-- BEGIN COMMENT -->
 
 [<< Previous Chapter](ch4_control_strategy_manager.md) - [Home](README.md) - [Next Chapter >>](ch6_example_sql.md)<br>
