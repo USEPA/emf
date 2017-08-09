@@ -75,7 +75,7 @@ For this exercise, we will modify the least cost strategy you created in [Chapte
 
 1. **Copy** the least cost strategy you created in [Chapter](#control_strategy_manager_chapter) to a new strategy.
 
-2. **Edit** the strategy and set the Strategy Type to **Max Emissions Reduction**.
+2. **Edit** the strategy and set the Type of Analysis to **Max Emissions Reduction**.
 
 3. **Run** the new strategy.
 
@@ -125,19 +125,17 @@ For this exercise, we will run a control strategy that will result in some contr
 
 3. Set the inventory to use to be the **nonpoint** inventory you imported in [Section](#importing_an_emissions_inventory_section).
 
-4. Set the inventory filter to: **`FIPS like '42%'`**.
+4. Set the Target Pollutant to **PM2_5**, then **Run** the strategy.
 
-5. Set the Target Pollutant to **PM10**, then **Run** the strategy.
+5. Once the run completes, summarize the Strategy Detailed result by Control Technology and Pollutant.
 
-6. Once the run completes, summarize the Strategy Detailed result by Control Technology and Pollutant.
-
-7. Once the summary has completed running, **view the Detailed Result**.
+6. Once the summary has completed running, **view the Detailed Result**.
 
     Do you see data for more than one pollutant?
     
     What is the typical cost per ton for the strategy?
 
-8. Try setting a **Maximum Cost per Ton** constraint less than the typical cost per ton in the result you just generated and rerun the strategy.
+7. Try setting a **Maximum Cost per Ton** constraint less than the typical cost per ton in the result you just generated and rerun the strategy.
 
     How does the constraint impact the results?
 
