@@ -19,7 +19,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 1. Choose **Datasets** from the **Manage** menu of the EMF main window.
 
-2. Set the **Show Datasets of Type** menu to the type that represents your inventory (e.g., ORL Nonpoint Inventory).
+2. Set the **Show Datasets of Type** menu to the type that represents your inventory (e.g., Flat File Nonpoint) .  
 
 3. Click the **Import** button to show the **Import Datasets** window.
 
@@ -40,7 +40,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 From the Dataset Manager, you can:
 
 * use the **View** button to open the Dataset Properties Viewer,
-* use the **Edit** button to open the Dataset Properties Editor,
+* use the **Edit Properties** button to open the Dataset Properties Editor,
 * use the **Edit Data** button to create new versions of the dataset,
 * use the **Remove** button to remove the dataset,
 * use the **Import** button to import new datasets,
