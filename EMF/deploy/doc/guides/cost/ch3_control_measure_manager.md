@@ -15,17 +15,17 @@
 [5. Creating a New Control Measure](#Creating3)<br>
 [6. Finding Available Control Measures for Specific SCCs](#Finding3)<br>
 [7. The Pollutant Menu](#PollutantMenu3)<br>
-[8. The Cost Year Menu](#CostYear3)<br>
+[8. The Cost Year Menu](#CostYearMenu3)<br>
 [9. Importing and Exporting Control Measure Data](#ImportExport3)<br>
 
 <a id=Ch3Intro3></a>
 ## Chapter 3 Introduction
 
-This chapter demonstrates the features of the CoST Control Measure Manager. The CoST installation includes area- and stationary-source control measures. The pre-loaded measures can be used directly for CoST control strategy runs, the measures are editable through the CoST/EMF client, and new measures may be imported through the client.
+This chapter demonstrates the features of the CoST Control Measure Manager. The initial CoST installation includes area- and stationary-source control measures. The pre-loaded measures can be used directly for CoST control strategy runs, the measures are editable through the CoST/EMF client, and new measures may be imported through the client.
 
 ***Control measures store information about control technologies and practices that are available to reduce emissions, the source categories to which they apply, the expected control efficiencies, and their estimated costs.***
 
-The Control Measure Manager allows control measure data to be entered, viewed, and edited. The data that are accessible through the Control Measure Manager are stored in the CoST Control Measures Database (CMDB). The CMDB is stored as a set of tables within the EMF database. Control measures can also be imported from files that are provided in a specific CSV format and exported to that same format. In CoST, the control measures are stored separately from the emission inventory data and are matched with the emission sources using a list of Source Classification Codes (SCCs) that are specified for each control measure.
+The Control Measure Manager allows control measure data to be entered, viewed, and edited. The data that are accessible through the Control Measure Manager are stored in the [CoST Control Measures Database (CMDB)](https://www3.epa.gov/ttn/ecas/models/CoST_CMDB_Document_2010-06-09.pdf). The CMDB is stored as a set of tables within the EMF database. Control measures can also be imported from files that are provided in a specific CSV format and exported to that same format. In CoST, the control measures are stored separately from the emission inventory data and are matched with the emission sources using a list of Source Classification Codes (SCCs) that are specified for each control measure.
 
 The Control Measure Manager has the following major features:
 
@@ -59,6 +59,7 @@ Begin by opening the Control Measure Manager and exploring the buttons and menus
 ![Manage Menu of EMF Main Window][manage_menu_of_emf_main_window]
 
 [manage_menu_of_emf_main_window]: images/Manage_Menu_of_EMF_Main_Window.png
+<a id=manage_menu_of_emf_main_window></a>
 **Figure 3-1. EMF Manage Menu**
 
 Notice the different parts of the Control Measure Manager window. There is a `Pollutant Filter` drop down menu at the top, a `Show Details` checkbox, a `Refresh` button, and a `Name or Abbr contains` dialog box. Below those buttons is a toolbar with buttons that operate on the data shown in the table below the toolbar, which by default is empty. There is another set of buttons and pull-down menus below the table. The functions of all of these buttons will be discussed below.
@@ -66,6 +67,7 @@ Notice the different parts of the Control Measure Manager window. There is a `Po
 ![Control Measure Manager before Control Measures are Loaded][control_measure_manager_before_control_measures_are_loaded]
 
 [control_measure_manager_before_control_measures_are_loaded]: images/Control_Measure_Manager_before_Control_Measures_are_Loaded.png
+<a id=control_measure_manager_before_control_measures_are_loaded></a>
 **Figure 3-2. Control Measure Manager Initial Window**
 
 **Step 1-2: Display Control Measures.** To display control measures from the CMDB in the Control Measure Manager window, select a pollutant from the `Pollutant Filter` pull-down menu at the upper left corner of the Control Measure Manager. For this example, use the scroll bar to find and select PM10. Information about any control measures that control the selected pollutant will appear in the Control Measure Manager window ([Figure 3-3](#control_measure_manager_with_control_measures)). The control measure **Name**, **Abbreviation**, **Pollutant**, **Sector**, and **Class** are shown in the window. Note that name of each control measure must be unique within the database, and that the control measures appear in a table in which the data can be sorted by clicking on the row headers.

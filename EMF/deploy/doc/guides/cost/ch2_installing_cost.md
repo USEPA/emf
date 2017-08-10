@@ -27,6 +27,7 @@ In the CoST client-server system, client software that runs on a desktop compute
 ![CoST/EMF Client-Server System][cost_emf_client_server_system]
 
 [cost_emf_client_server_system]: images/CoST_EMF_Client_Server_System.png
+<a id=cost_emf_client_server_system></a>
 **Figure 2-1. CoST/EMF Client Server Schematic**
 
 <a id=Download2></a>
@@ -49,17 +50,18 @@ B\. Unzip the downloaded file into a known folder location on a Windows machine.
 ![Installation Package Zip File Folder and File Structure][installation_package_zip_file_folder_and_file_structure]
 
 [installation_package_zip_file_folder_and_file_structure]: images/Installation_Package_Zip_File_Folder_and_File_Structure.png
+<a id=installation_package_zip_file_folder_and_file_structure></a>
 **Figure 2-2. CoST/EMF Installation Package Contents**
 
 * Install\_EMF.bat - bat file to install the EMF Client and Server
-* \control\_measures - contains measures in the database (note: These are already installed)
-* \database\_backup - contains a backup of the database
-* \EMF\_Client - includes client installation package (all the Java libraries etc.)
-* \EMF\_Server - includes the emf.war file that will be pushed to the tomcat server
-* \inventories - contains inventories
-* \java\_jre - includes the Java JRE installation package
-* \postgresql - includes the PostgreSQL installation package and postgresql jdbc driver
-* \tomcat - includes the Tomcat installation package
+* control\_measures - contains measures in the database (note: These are already installed)
+* database\_backup - contains a backup of the database
+* EMF\_Client - includes client installation package (all the Java libraries etc.)
+* EMF\_Server - includes the emf.war file that will be pushed to the tomcat server
+* inventories - contains inventories
+* java\_jre - includes the Java JRE installation package
+* postgresql - includes the PostgreSQL installation package and postgresql jdbc driver
+* tomcat - includes the Tomcat installation package
 
 <a id=Java2></a>
 ## 2. Install Java ##
@@ -259,6 +261,8 @@ In the `Register New User` window, fill in your full name, affiliation, phone nu
 If have logged into the EMF previously, enter your EMF username and password in the `Login to the Emissions Modeling Framework` window and click `Log In`. The following EMF main window will appear on your screen
 
 *Note: The administrator EMF login name is `admin`, with a password `admin12345`*.
+
+After successfully logging into CoST the main EMF window shown below will display.
 
 ![EMF Main Window][emf_main_window]
 
