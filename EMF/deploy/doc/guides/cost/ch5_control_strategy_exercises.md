@@ -4,24 +4,26 @@
 
 <!-- END COMMENT -->
 
+## Contents
+[Exercise 1. Importing an Emissions Inventory (or County List File)](#importing_an_emissions_inventory)<br>
+[Exercise 2. Running a Maximum Emissions Reduction Strategy](#running_max_emis_reduction)<br>
+[Exercise 3. Running a Strategy with a Hypothetical Measure](#running_hypothetical)<br>
+[Exercise 4. Examining Co-benefits of a Control Strategy](#cobenefits)<br>
 
-Title: Control Strategy Exercises
-Author: C. Seppanen, UNC
-CSS: base.css
+# Advanced Control Strategy Exercises #
 
-# Control Strategy Exercises [control_strategy_exercises_chapter] #
+This chapter includes advanced exercises for learning how to use different features of CoST. Users should complete the exercises in [Chapter 3](./ch3_control_measure_manager.md) and [Chapter 4](ch4_control_strategy_manager.md) before attempting the exercises in this chapter.  
 
-This chapter has some advanced training exercises for you to work through after you have completed the basic exercises above.
+<a id=importing_an_emissions_inventory></a>
+## Exercise 1. Importing an Emissions Inventory (or County List File)
 
-## Importing an Emissions Inventory (or County List File) [importing_an_emissions_inventory_section] ##
+1. Choose `Datasets` from the **Manage** menu of the main EMF window.
 
 In many cases, it will be necessary to import an emissions inventory into the EMF for use with CoST. Before it can be imported, the inventory must be in one of these FF10 or ORL formats: Point, Onroad, Nonroad, or Nonpoint. For more information on these formats, see [https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02.html#sect_input_inventory_format](https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02.html#sect_input_inventory_format). Try importing an inventory using the following steps:
 
-1. Choose **Datasets** from the **Manage** menu of the EMF main window.
+2. Select an inventory format from `Show Datasets of Type` menu to the type that represents the inventory to import (e.g., FF10 Nonpoint Inventory).
 
-2. Set the **Show Datasets of Type** menu to the type that represents your inventory (e.g., Flat File Nonpoint) .  
-
-3. Click the **Import** button to show the **Import Datasets** window.
+3. Click the `Import` button to show the **Import Datasets** window.
 
 ([Import Dataset Window Figure](#import_dataset_window)).
 
@@ -29,8 +31,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 [import_dataset_window]: images/Import_Datasets.png
 
-
-4. Click the **Browse** button and browse to the location of your inventory on the EMF server or on your local computer (e.g., C:\Users\Public\EMF_Data\inventories).
+4. Click the `Browse` button and browse to the location of the inventory to import on the EMF server computer (e.g., C:\Users\Public\EMF_Data\inventories).
 
 ([Browse Datasets Window Figure](#import_browse_window)).
 
@@ -38,28 +39,28 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 [import_browse_window]: images/EMF_Import_Dataset_Server_Local.png
 
-5. Select the checkbox that corresponds to your inventory (e.g., 2017eh\_from\_nonpt\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37.csv) and then click **OK**.
+5. Select the checkbox that corresponds to the inventory (e.g., 2017eh\_from\_nonpt\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37.csv) and then click `OK`.
 
-6. Specify a meaningful name for the new dataset in the **Dataset Name** type-in field that does not duplicate one of the existing dataset names.
+6. Specify a unique, descriptive name for the new dataset in the `Dataset Name` dialog box.
 
-7. Click the **Import** button. Monitor the **Status** window for the status of your import. If the inventory file was new, you may have data formatting issues to deal with.
+7. Click the `Import` button. Monitor the **Status** window for the status of the import.
 
-8. Click **Done** on the Import Datasets window.
+8. Click `Done` on the Import Datasets window.
 
-9. After you see a message that the Status window that indicates that the import has completed, click **Refresh** on the **Dataset Manager** and you should see the newly imported inventory dataset. The dataset could now be used as an input to a control strategy.
+9. After the Status window messages indicates that the import has completed, click `Refresh` on the **Dataset Manager** and to see the newly imported inventory dataset. The dataset could now be used as an input to a control strategy.
 
-10. To import a list of counties to limit the counties used for a strategy analysis, set the **Show Datasets of Type** menu to **List of Counties** and then import the file following steps 3 through 9 above. Be sure that your list of counties file has at least two columns, with one of them labeled 'FIPS'.
+10. To import a list of counties to limit the counties used for a strategy analysis, set the `Show Datasets of Type` menu to **List of Counties** and then import the file following steps 3 through 9 above. Be sure that the list of counties file has at least two columns, with one of them labeled 'FIPS'.
 
-From the Dataset Manager, you can:
+The Dataset Manager includes the following controls:
 
-* use the **View** button to open the Dataset Properties Viewer,
-* use the **Edit Properties** button to open the Dataset Properties Editor,
-* use the **Edit Data** button to create new versions of the dataset,
-* use the **Remove** button to remove the dataset,
-* use the **Import** button to import new datasets,
-* use the **Export** button to export the data to a file on the EMF server, or to a file on your local machine.
-* use the **Purge** button to purge datasets that were removed from the system,
-* use the **Close** button to close the **Dataset Manager Window**.
+* `View` opens the Dataset Properties Viewer
+* `Edit Properties` opens the Dataset Properties Editor
+* `Edit Data` creates new versions of the dataset
+* `Remove` removes the dataset
+* `Import` imports new datasets
+* `Export` exports the data to a file on the EMF server
+* `Purge` purges datasets that were removed from the system
+* `Close` closes the **Dataset Manager Window**
 
 ([Export Dataset Window Figure](#export_window)).
 
@@ -67,25 +68,25 @@ From the Dataset Manager, you can:
 
 [export_window]: images/EMF_Export_Window.png
 
+<a id=running_max_emis_reduction></a>
+## Exercise 2. Running a Maximum Emissions Reduction Strategy ##
+
+For this exercise, an existing Least Cost Strategy will be modified to create a Maximum Emissions Reductions strategy.
+
+1. From the Control Strategy Manager `Copy` the least cost strategy created in [Chapter 4](#ch4_control_strategy_manager.md) to a new strategy.
+
+2. `Edit` the strategy and set the Type of Analysis to **Max Emissions Reduction**.
+
+3. `Run` the new strategy and answer the following questions once it completes.
 
 
-## Running a Maximum Emissions Reduction Strategy ##
+* Did the Maximum Emissions Reduction strategy run slower or faster than the Least Cost?
 
-For this exercise, we will modify the least cost strategy you created in [Chapter](#control_strategy_manager_chapter) and run it as a maximum emissions reductions strategy.
+* How much more emissions reduction was achieved over the 50% level of reduction set in the Least Cost run in [Chapter 4](#ch4_control_strategy_manager.md)?
 
-1. **Copy** the least cost strategy you created in [Chapter](#control_strategy_manager_chapter) to a new strategy.
+* How do the Average Cost per Ton and Total Cost differ between the 50% Least Cost reduction strategy and the Maximum Emissions Reduction available?
 
-2. **Edit** the strategy and set the Type of Analysis to **Max Emissions Reduction**.
-
-3. **Run** the new strategy.
-
-4. Did the maximum emissions reduction strategy run slower or faster than the least cost?
-
-5. How much more reduction did you get over the 50% level of reduction you specified in [Chapter](#control_strategy_manager_chapter)?
-
-6. How does the Average Cost per Ton and Total Cost differ between the 50% reduction strategy you ran earlier and the maximum emissions reduction available?
-
-    Hint: **use the columns of the Control Strategy Manager** to answer this question.
+    *Hint: use the following columns of the **Control Strategy Manager** to answer this question.*
 
     **Least Cost Strategy Total Cost:**<br/>
     **Least Cost Strategy Average CPT:**
@@ -93,51 +94,51 @@ For this exercise, we will modify the least cost strategy you created in [Chapte
     **Max. Emissions Red Total Cost:**<br/>
     **Max. Emissions Red Average CPT:**
 
-7. What are some of the SCCs for sources that had control measures applied in the result, but had a control efficiency of less than 90%? [It is important to note these because they may provide opportunities for controls...] **Hint**: Examine the Strategy Detailed Result and apply a filter for CONTROL_EFF<90 to find the applicable rows.
+* What are some of the SCCs for sources that had control measures applied in the result, but had a control efficiency of less than 90%? [It is important to note these because they may provide opportunities for controls...] *Hint: Examine the Strategy Detailed Result and apply a filter for CONTROL_EFF<90 to find the applicable rows:*
 
     **SCCs with CE < 90%:**
 
-## Running a Strategy with a Hypothetical Measure ##
+<a id=running_hypothetical></a>
+## Exercise 3. Running a Strategy with a Hypothetical Measure ##
 
-For this exercise, we will create a new control measure and then see what impact it has on the strategy results.
+For this exercise, create a new control measure and then see what impact it has on the strategy results.
 
-1. Create a **new** control measure. Set the **Major Pollutant** to NOX. Set the **Class** to **Hypothetical**.
+1. From the **Control Strategy Manager** create a `New` control measure. Set the `Major Pollutant` to **NOX** and set the `Class` to **Hypothetical**.
 
-2. On your new measure, enter an Efficiency record for **NOX** with a control efficiency of **95%**, a cost per ton of **3000**, and a cost year of **2006**.
+2. For the new measure enter an `Efficiency` record for **NOX** with a control efficiency of **95%**, a `Cost per Ton` of **3000**, and a `Cost Year` of **2006**.
 
-3. For your new measure, add all SCCs **starting with 102** (there should be about 78 of these). Hint: you do not have to click 78 checkboxes to do this - remember to filter and Select All.
+3. For your new measure, add all SCCs **starting with 102** (there should be about 78 of these). *Hint: you do not have to click 78 checkboxes to do this - remember to filter and Select All.*
 
-4. **Copy** your maximum emissions reduction strategy from the previous exercise to a new strategy.
+4. `Copy` the Maximum Emissions Reduction strategy from the previous exercise to a new strategy.
 
-5. Set your new strategy to include **Hypothetical** measures in addition to **Known**.
+5. Set the new strategy to include **Hypothetical** measures in addition to **Known**.
 
-6. **Run** your new strategy.
+6. `Run` the new strategy.
 
-7. Based on the results of this strategy, **how much additional emissions reduction** could you get over the previous maximum reduction result if there was a control measure with a 95% CE available for sources with SCCs starting with 102, such as the one you created?
+Based on the results of this strategy, **how much additional emissions reduction** were realized over the previous maximum reduction result if there was a control measure with a 95% CE available for sources with SCCs starting with 102?
 
-## Examining Cobenefits ##
+<a id=cobenefits></a>
+## Exercise 4. Examining Co-benefits of a Control Strategy ##
 
-For this exercise, we will run a control strategy that will result in some control measures being applied that result in co-benefits.
+For this exercise, run a control strategy that produces co-benefits for multiple pollutants.
 
 1. Set up a new control strategy.
 
-2. Set the Target year to **2020** and the Strategy Type to **Max Emissions Reduction**.
+2. Set the `Target Year` to **2020** and the `Strategy Type` to **Maximum Emissions Reduction**.
 
-3. Set the inventory to use to be the **nonpoint** inventory you imported in [Section](#importing_an_emissions_inventory_section).
+3. Set the inventory to use to be the **Nonpoint** inventory imported in [Exercise 1](#importing_an_emissions_inventory_section).
 
-4. Set the Target Pollutant to **PM2_5**, then **Run** the strategy.
+4. Set the `Target Pollutant` to **PM2_5**, then `Run` the strategy.
 
-5. Once the run completes, summarize the Strategy Detailed result by Control Technology and Pollutant.
+5. Once the run completes, summarize the **Strategy Detailed Result** by **Control Technology and Pollutant**.
 
-6. Once the summary has completed running, **view the Detailed Result**.
+6. Once the summary has completed running, `View` the **Strategy Detailed Result**
 
-    Do you see data for more than one pollutant?
-    
-    What is the typical cost per ton for the strategy?
+* Does this result show more than one pollutant?
 
-7. Try setting a **Maximum Cost per Ton** constraint less than the typical cost per ton in the result you just generated and rerun the strategy.
+* What is the typical cost per ton for the strategy?
 
-    How does the constraint impact the results?
+7. Try setting a **Maximum Cost per Ton** constraint less than the typical cost per ton in the result just generated and rerun the strategy. How does the constraint impact the results?
 
 8. Use the Cost Control Summary Function in the Control Strategy Manager Window to create a local spreadsheet summarizing the selected control strategies, including name, strategy type, and constraints, emission reductions and strategy costs.
 
@@ -160,4 +161,3 @@ For this exercise, we will run a control strategy that will result in some contr
 [<< Previous Chapter](ch4_control_strategy_manager.md) - [Home](README.md) - [Next Chapter >>](ch6_example_sql.md)<br>
 
 <!-- END COMMENT -->
-
