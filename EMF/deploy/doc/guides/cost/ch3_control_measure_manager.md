@@ -21,9 +21,7 @@
 <a id=Ch3Intro3></a>
 ## Chapter 3 Introduction
 
-This chapter demonstrates the features of the CoST Control Measure Manager. The initial CoST installation includes area- and stationary-source control measures. The pre-loaded measures can be used directly for CoST control strategy runs, the measures are editable through the CoST/EMF client, and new measures may be imported through the client.
-
-***Control measures store information about control technologies and practices that are available to reduce emissions, the source categories to which they apply, the expected control efficiencies, and their estimated costs.***
+This chapter demonstrates the features of the CoST Control Measure Manager. The initial CoST installation includes area- and stationary-source control measures. The pre-loaded measures can be used directly for CoST control strategy runs, the measures are editable through the CoST/EMF client, and new measures may be imported through the client. **Control measures store information about control technologies and practices that are available to reduce emissions, the source categories to which they apply, the expected control efficiencies, and their estimated costs.**
 
 The Control Measure Manager allows control measure data to be entered, viewed, and edited. The data that are accessible through the Control Measure Manager are stored in the [CoST Control Measures Database (CMDB)](https://www3.epa.gov/ttn/ecas/models/CoST_CMDB_Document_2010-06-09.pdf). The CMDB is stored as a set of tables within the EMF database. Control measures can also be imported from files that are provided in a specific CSV format and exported to that same format. In CoST, the control measures are stored separately from the emission inventory data and are matched with the emission sources using a list of Source Classification Codes (SCCs) that are specified for each control measure.
 
@@ -56,23 +54,27 @@ Begin by opening the Control Measure Manager and exploring the buttons and menus
 
 **Step 1-1: Open Control Measure Manager.** To open the Control Measure Manager, choose `Control Measures` from the `Manage` drop down menu on the EMF main window ([Figure 3-1](#manage_menu_of_emf_main_window)). The Control Measure Manager window will appear ([Figure 3-2](#control_measure_manager_before_control_measures_are_loaded)). When the window first appears, it will be empty. Notice that the window appears within the EMF main window.
 
+<a id=manage_menu_of_emf_main_window></a>
+
 ![Manage Menu of EMF Main Window][manage_menu_of_emf_main_window]
 
 [manage_menu_of_emf_main_window]: images/Manage_Menu_of_EMF_Main_Window.png
-<a id=manage_menu_of_emf_main_window></a>
 **Figure 3-1. EMF Manage Menu**
 
 Notice the different parts of the Control Measure Manager window. There is a `Pollutant Filter` drop down menu at the top, a `Show Details` checkbox, a `Refresh` button, and a `Name or Abbr contains` dialog box. Below those buttons is a toolbar with buttons that operate on the data shown in the table below the toolbar, which by default is empty. There is another set of buttons and pull-down menus below the table. The functions of all of these buttons will be discussed below.
 
+<a id=control_measure_manager_before_control_measures_are_loaded></a>
+
 ![Control Measure Manager before Control Measures are Loaded][control_measure_manager_before_control_measures_are_loaded]
 
 [control_measure_manager_before_control_measures_are_loaded]: images/Control_Measure_Manager_before_Control_Measures_are_Loaded.png
-<a id=control_measure_manager_before_control_measures_are_loaded></a>
 **Figure 3-2. Control Measure Manager Initial Window**
 
 **Step 1-2: Display Control Measures.** To display control measures from the CMDB in the Control Measure Manager window, select a pollutant from the `Pollutant Filter` pull-down menu at the upper left corner of the Control Measure Manager. For this example, use the scroll bar to find and select PM10. Information about any control measures that control the selected pollutant will appear in the Control Measure Manager window ([Figure 3-3](#control_measure_manager_with_control_measures)). The control measure **Name**, **Abbreviation**, **Pollutant**, **Sector**, and **Class** are shown in the window. Note that name of each control measure must be unique within the database, and that the control measures appear in a table in which the data can be sorted by clicking on the row headers.
 
 The control measure abbreviation is a set of characters that is a *short-hand* for the control measure. Typically, the abbreviation should express the name of the control measure in an abbreviated form such that if someone is familiar with the abbreviation conventions, the person might be able to infer the name of the measure. Typically the first character of the measure denotes the major pollutant (e.g., 'P' for PM controls, 'N' for NO<sub>x</sub> controls, 'S' for SO<sub>2</sub> controls). The next few characters usually denote the control technology (e.g., 'ESP' for Electrostatic Precipitator, 'FFM' for fabric filter mechanical shaker). Abbreviations must be unique within the database (i.e., no two control measures can use the same abbreviation).
+
+<a id=control_measure_manager_with_control_measures></a>
 
 ![Control Measure Manager with Control Measures][control_measure_manager_with_control_measures]
 
@@ -80,6 +82,8 @@ The control measure abbreviation is a set of characters that is a *short-hand* f
 **Figure 3-3. PM10 Control Measures List**
 
 **Step 1-3: Show Details of Control Measures.** To see more information about the measures, check the `Show Details` checkbox - additional columns will appear on the right of the table. An example is shown in [Figure 3-4](#control_measure_manager_showing_control_measure_details).
+
+<a id=control_measure_manager_showing_control_measure_details></a>
 
 ![Control Measure Manager showing Control Measure Details][control_measure_manager_showing_control_measure_details]
 
@@ -94,7 +98,7 @@ The control measure abbreviation is a set of characters that is a *short-hand* f
 
 The columns shown on the Control Measure Manager with brief descriptions are shown in [Table 3-1](#control_measure_manager_columns_table). The control measures table supporting sorting and filtering the data. Tables of this same type are used many places throughout CoST and the EMF.
 
-<a name="control_measure_manager_columns_table"></a>
+<a id="control_measure_manager_columns_table"></a>
 
 **Table 3-1. Control Measure Manager Columns.**
 
@@ -135,6 +139,8 @@ Description|A textual description of the applicability of the measure and any ot
 - Click in the cell under `Operation` to see the available operations and, if desired, select an operation (**contains** is the default).
 - Enter a value in the `Value` cell (e.g., **Scrubber**). Note that the filter values are case-sensitive (e.g., Measure names containing "scrubber" will not match a filter value of "Scrubber").
 
+<a id=filter_rows_dialog></a>
+
 ![Filter Rows Dialog][filter_rows_dialog]
 
 [filter_rows_dialog]: images/Filter_Rows_Dialog.png
@@ -143,6 +149,8 @@ Description|A textual description of the applicability of the measure and any ot
 To add a second criterion click `Add Criteria` again on the **Filter Rows** dialog (e.g., enter **'Avg CE > 80'**). Note that if `Match using` is set to **ALL criteria** then only rows that match all the specified criteria will be shown in the table after you click OK. If `Match using` is set to **ANY criteria**, then rows will be shown in the table if they meet any of the criteria that are listed.
 
 Click `OK` to close the **Filter Rows** dialog and to apply the selected filter. [Figure 3-6](#control_measure_manager_with_filter_applied) shows the table that results from the selections shown in [Figure 3-5](#filter_rows_dialog). *Notice that the currently applied filter is reflected in the line under the horizontal scrollbar of the table.*
+
+<a id=control_measure_manager_with_filter_applied></a>
 
 ![Control Measure Manager with Filter Applied][control_measure_manager_with_filter_applied]
 
@@ -159,6 +167,8 @@ To unselect all of the measures, click the `Clear all the selections` button: <i
 
 **Step 1-13: Show/Hide Columns.** To hide some of the columns that are shown in the table, click the `Show/Hide columns` button: <img src="images/Show_Hide_Button.png"/>. On the Show/Hide Columns dialog that appears (similar to the one shown in [Figure 3-7](#show_hide_columns_dialog)), uncheck some of the checkboxes in the `Show?` column and then click `OK`. The columns you unchecked will no longer display in the control measures table.
 
+<a id=show_hide_columns_dialog></a>
+
 ![Show/Hide Columns Dialog][show_hide_columns_dialog]
 
 [show_hide_columns_dialog]: images/Show_Hide_Columns_Dialog.png
@@ -171,6 +181,8 @@ To select columns that are not next to each other, hold down the control key and
 **Step 1-14: Format Columns.** Click the `Format Columns` button, <img src="images/Format_Button.png"/>, to open the Format Columns dialog and examine the options for controlling how data in the table are shown. For example, check the checkboxes in the `Format?` column for one or more of the column names **"Avg CE"**, **"Min CE"**, and **"Max CE"** (note that you may first need to unhide the columns if you hid them in the previous step). Because these columns are all numeric, some controls used to format numbers will appear in the lower right corner.
 
 Change the `Font` to **Arial**, the `Style` to **Bold**, the `Size` to **14**, the `Horizontal Alignment` to **Left**, the `Text Color` to **blue**, the `Column Width` to **6**, the number of `Decimal Places` to **0**, and select `Significant Digits`. Once these selections have been made, the dialog should look similar to the one in [Figure 3-8](#format_columns_dialog). Click `OK` after makeing these selects to apply the formatting to the Control Measures table. The columns selected for formatting will have the attributes specified on the Format Columns dialog. In practice, this dialog is not used very often, but it can be particularly helpful to format numeric data by changing the number of decimal places or the number of significant digits shown.
+
+<a id=format_columns_dialog></a>
 
 ![Format Columns Dialog][format_columns_dialog]
 
@@ -194,6 +206,8 @@ In this section you will learn about viewing the detailed data for a control mea
 
 **Step 2-2: View Control Measure Data.** Click the checkbox in the **Select** column next to the measure and click `View`. The View Control Measure window will appear ([Figure 3-9](#summary_tab_of_view_control_measure_window)). There are several tabs available on the window; the Summary tab will be shown by default.
 
+<a id=summary_tab_of_view_control_measure_window></a>
+
 ![Summary Tab of View Control Measure Window][summary_tab_of_view_control_measure_window]
 
 [summary_tab_of_view_control_measure_window]: images/Summary_Tab_of_View_Control_Measure_Window.png
@@ -203,6 +217,7 @@ In this section you will learn about viewing the detailed data for a control mea
 
 **Step 2-3: Examine Control Measure Summary.** The `Summary` tab of the View Control Measure window contains high-level summary information about the measure. [Table 3-2](#control_measure_summary_tab_table) shows brief descriptions of the fields on this tab.
 
+<a id=control_measure_summary_tab_table></a>
 **Table 3-2. Control Measure Summary Tab Contents.**
 
 Component|Description
@@ -231,6 +246,8 @@ When viewing a control measure (as opposed to editing a control measure), you ca
 **Step 2-4: Examine Control Measure Efficiencies.** Click on the `Efficiencies` tab in the View Control Measure Window to see the data that are available from this tab. You will see a table with many columns. Each row in the table corresponds to a different "efficiency record" in the database. An efficiency record contains cost and control efficiency information about the control measure. In the example shown in [Figure 3-10](#efficiencies_tab_of_view_control_measure_window), notice that the **Control Efficiency** and **cost data (CPT)** vary by pollutant. Scroll to the right in the table to see some of the other columns that are not immediately visible.
 
 If the cost or control efficiency varies over region or time, it is possible to specify different records in the table for each Locale (i.e., state or county) or for each Effective Date if the measure will be "phased in" over time. Different efficiency records can also be entered to account for different source sizes using the Min Emis and Max Emis columns.
+
+<a id=efficiencies_tab_of_view_control_measure_window></a>
 
 ![Efficiencies Tab of View Control Measure Window][efficiencies_tab_of_view_control_measure_window]
 
@@ -261,11 +278,14 @@ Notice that most of the fields in [Figure 3-11](#view_efficiency_record_window) 
 
 *Note: The efficiency records must be unique according to the contents of the following fields:* Pollutant, Locale, Effective Date, Minimum Emissions, Maximum Emissions, and Existing Measure Abbreviation. This means that two records cannot have the same values for all of these fields.
 
+<a id=view_efficiency_record_window></a>
+
 ![View Efficiency Record Window][view_efficiency_record_window]
 
 [view_efficiency_record_window]: images/View_Efficiency_Record_Window.png
 **Figure 3-11. Efficiencies Record Window**
 
+<a id=control_measure_efficiency_record_table></a>
 **Table 3-3. Efficiencies Record Window Contents.**
 
 Component|Description
@@ -304,6 +324,8 @@ Click on the `SCCs` tab in the View Control Measure window to see the SCCs assoc
 
 *Note that CoST currently does not support wildcards in the SCC list for a control measure. There is no expanding of SCC codes ending in zeros; therefore each applicable SCC must be explicitly listed on this tab.* You may sort and filter the SCCs in the table to get a better idea of what SCCs are associated with the measure.
 
+<a id=sccs_tab_of_view_control_measure_window></a>
+
 ![SCCs Tab of View Control Measure Window][sccs_tab_of_view_control_measure_window]
 
 [sccs_tab_of_view_control_measure_window]: images/SCCs_Tab_of_View_Control_Measure_Window.png
@@ -320,6 +342,8 @@ As an alternative to using a simple 'cost per ton of pollutant reduced' value to
 Each type of equation uses a different set of variables. CoST supports eleven different types of cost equations. Additional types of equations may be added in the future. For more information on the Equations and their input variables, see the [Documentation of Cost Equations in EPA's Control Strategy Tool (CoST)](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution). The appropriate form of the equation will be used in conjunction with the specified values to compute the total cost of applying the measure to the source for the specified pollutant and cost year.
 
 Do not click `Close` after examining the Equations as this will close the View Control Measure window, which we will use for the next step.
+
+<a id=equations_tab_of_view_control_measure_window></a>
 
 ![Equations Tab of View Control Measure Window][equations_tab_of_view_control_measure_window]
 
@@ -339,6 +363,8 @@ Equations|The cost equation definitions.
 
 **Step 2-8: View the Control Measure Properties.** Click on the `Properties` tab on the View Control Measure window to see the data that are available from this tab. Each row in the Properties table corresponds to a different "property record" in the database. A property record allows for generic information to be stored about the control measures (e.g., metadata). The control measures example in [Figure 3-14](#properties_tab_of_view_control_measure_window) shows property information that happened to be archived from the AirControlNET software when the measures were transferred into the CMDB.
 
+<a id=properties_tab_of_view_control_measure_window></a>
+
 ![Properties Tab of View Control Measure Window][properties_tab_of_view_control_measure_window]
 
 [properties_tab_of_view_control_measure_window]: images/Properties_Tab_of_View_Control_Measure_Window.png
@@ -348,11 +374,14 @@ Equations|The cost equation definitions.
 
 Notice that most of the fields in [Figure 3-15](#view_property_record_window) are set using text fields. The `Category` is a free-form drop down, where an existing category could be used or a new one could be used by typing in the new category. When you are done examining the information on the View Property Record Window, click `Close`.
 
+<a id=view_property_record_window></a>
+
 ![View Property Record Window][view_property_record_window]
 
 [view_property_record_window]: images/View_Property_Record_Window.png
 **Figure 3-15. Control Measure Property Record Window**
 
+<a id=control_measure_property_record_table></a>
 **Table 3-5. Property Record Window Contents.**
 
 Component|Description
@@ -363,11 +392,12 @@ Units|The units for the property (e.g., % for percentage).
 Data Type|If applicable, this defines the data type of the property (e.g., double precision/float for numeric values, or a varchar/string for textual information).
 DB Field Name|If specified, this is a placeholder to help identify the database field name from the particular data source reference that supplied the property information (e.g., an ancillary dataset has a steam percentage stored in the STEAM\_PCT table field/column).
 Value|The value of the property.
-[Components on the Control Measure View Efficiency Record Window][control_measure_property_record_table]
 
 ### Control Measure References ###
 
 **Step 2-10: View the Control Measure References.** Click on the `References` tab of the View Control Measure window to see the report and literature citations associated with a control measure ([Figure 3-16](#references_tab_of_view_control_measure_window)). Each row in the table corresponds to a different "reference record" in the database. A reference record stores source and reference information of the primary information used to create a control measure.
+
+<a id=references_tab_of_view_control_measure_window></a>
 
 ![References Tab of View Control Measure Window][references_tab_of_view_control_measure_window]
 
@@ -377,6 +407,8 @@ Value|The value of the property.
 **Step 2-9: View a References Record in a Separate Window.**  To see the data for a reference record in a separate window, check a checkbox in the **Select** column and click `View`. For example, check the checkbox for the first reference record and click `View`. A View Reference Record window will appear ([Figure 3-16](#view_reference_record_window)) with an editable source/reference description text field.
 
 When you are done examining the information on the View Reference Record Window, click `Close`.
+
+<a id=view_reference_record_window></a>
 
 ![View Reference Record Window][view_reference_record_window]
 
@@ -411,6 +443,8 @@ Only control measures created by the current CoST user can be edited through the
 **Step 4-1: Find a Control Measure to Edit.** First, click the `Clear all the selections` button to
 unselect any previously selected measures: <img src="images/Clear_All_Button.png"/>. For this exercise, find the measure created using the copy button ([Section 3](#Copying3)) in the Control Measure Manager and check the corresponding select box in the **Select** column. Click `Edit` to edit the data for the control measure. The Edit Control Measure window will appear ([Figure 3-17](#summary_tab_of_edit_control_measure_window)).
 
+<a id=summary_tab_of_edit_control_measure_window></a>
+
 ![Summary Tab of Edit Control Measure Window][summary_tab_of_edit_control_measure_window]
 
 [summary_tab_of_edit_control_measure_window]: images/Summary_Tab_of_Edit_Control_Measure_Window.png
@@ -444,6 +478,8 @@ To set the months back to All Months, select all of the months in the `Months` l
 
 **Step 4-7: Edit Control Measure Efficiencies.**  Go to the `Efficiencies` tab of the Edit Control Measure Window ([Figure 3-18](#efficiencies_tab_of_edit_control_measure_window)). The buttons on the `Efficiencies` tab of the Edit window are different from those on the View window. The available buttons are `Add`, `Edit`, and `Remove`. Notice the efficiency record for the measure shown in [Figure 3-18](#efficiencies_tab_of_edit_control_measure_window) is for only one pollutant, and that this record can be applied only to sources emitting at least 25 tons/yr as specified in the **Min Emis** field.
 
+<a id=efficiencies_tab_of_edit_control_measure_window></a>
+
 ![Efficiencies Tab of Edit Control Measure Window][efficiencies_tab_of_edit_control_measure_window]
 
 [efficiencies_tab_of_edit_control_measure_window]: images/Efficiencies_Tab_of_Edit_Control_Measure_Window.png
@@ -452,6 +488,8 @@ To set the months back to All Months, select all of the months in the `Months` l
 Scroll to the right to examine additional efficiencies fields. Note that more of the fields are filled in for NOx than for the PM measure that you examined in [Section 2](#Viewing3). The additional data allow CoST to compute the capital and operating and maintenance (O&M) costs in addition to overall annualized costs when this measure is used in a control strategy.
 
 To edit an efficiency record, check the checkbox in the **Select** column for the pollutant to edit and then click `Edit`. The Edit Efficiency Record window will appear ([Figure 3-19](#edit_efficiency_record_window)).
+
+<a id=edit_efficiency_record_window></a>
 
 ![Edit Efficiency Record Window][edit_efficiency_record_window]
 
@@ -470,6 +508,8 @@ Edit the values for the efficiency record to configure the new control measure. 
 
 **Step 4-10: Edit Control Measure SCCs.** Click on the `SCCs` tab on the Edit Control Measure window to show the SCCs for inventory sources to which the edited measure can be applied. SCCs may be added or removed for a measure from this window. An example of this tab is shown in [Figure 3-19](#sccs_tab_of_edit_control_measure_window).
 
+<a id=sccs_tab_of_edit_control_measure_window></a>
+
 ![SCCs Tab of Edit Control Measure Window][sccs_tab_of_edit_control_measure_window]
 
 [sccs_tab_of_edit_control_measure_window]: images/SCCs_Tab_of_Edit_Control_Measure_Window.png
@@ -482,6 +522,8 @@ To filter the SCCs for the new measure on the Select SCCs window, click the `Fil
 * Description contains Natural Gas
 * Description contains Boiler
 * SCC starts with 1
+
+<a id=select_sccs_and_filter_rows_dialogs></a>
 
 ![Select SCCs and Filter Rows Dialogs][select_sccs_and_filter_rows_dialogs]
 
@@ -498,6 +540,8 @@ The Select SCCs window will show only the SCCs that met the above criteria, such
 
 **Step 4-12: Edit Control Measure Equations.** Go to the `Equations` tab of the Edit Control Measure window ([Figure 3-21](#equations_tab_of_edit_control_measure_window)). Double click your mouse in the **Value** column next to the variable named **Cost Year**. For this exercise, change the value to **1995** and then press the `Enter` key on your keyboard. You will see that the new cost year is set to 1995. Note that the values for other fields could be changed in a similar way.
 
+<a id=equations_tab_of_edit_control_measure_window></a>
+
 ![Equations Tab of Edit Control Measure Window][equations_tab_of_edit_control_measure_window]
 
 [equations_tab_of_edit_control_measure_window]: images/Equations_Tab_of_Edit_Control_Measure_Window.png
@@ -507,7 +551,7 @@ The Select SCCs window will show only the SCCs that met the above criteria, such
 
 **Step 4-14: Add Control Measure Equation Data.**  To add equation information to a measure, click the `Add` button on the `Equations` tab. You will see a Select Equation Type dialog. Click the pull-down menu to see the available types of equations and select the desired equation type. For this exercise, select **Type 1 - EGU** and click `OK`. You will see that there are eight variables for this equation type. Note that the variables differ somewhat from the variables for the Type 13 equation shown in [Figure 3-21](#equations_tab_of_edit_control_measure_window), and that the Type 1 equation is for NO<sub>x</sub> controls.
 
-Details on the types of cost equations and their variables are given in the [Documentation of Cost Equations in EPA's Control Strategy Tool (CoST)](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution).
+Details on the types of cost equations and their variables are given in the [Documentation of Cost Equations in EPA's Control Strategy Tool (CoST)](https://www3.epa.gov/ttn/ecas/docs/CoST_Equations_Document_2016_03_15.pdf).
 
 For this exercise, click the `Remove` button again `Yes` to confirm removal of the equation information. Click the `Add` button on the `Equations` tab and select **Type 13 - ICI Boiler Cost Equations**. Next, fill in the values for the variables as they are shown in [Figure 3-21](#equations_tab_of_edit_control_measure_window) by double clicking on the field corresponding to each value and then entering the appropriate information.
 
@@ -519,12 +563,16 @@ Click `Save` at the bottom of the Edit Control Measure window to save the change
 
 **Step 4-15: Edit Control Measure Properties.** Go to the `Properties` tab of the Edit Control Measure Window ([Figure 3-22](#properties_tab_of_edit_control_measure_window)). The buttons on the `Properties` tab of the Edit window are different from those on the View window. The available buttons are `Add`, `Edit`, and `Remove`. The property record allows for freeform property metadata/information to be associated with the measure. The property can be assigned a category grouping (e.g., Steam Factors), units (e.g., MW/hr), and a data type (e.g., numeric).
 
+<a id=properties_tab_of_edit_control_measure_window></a>
+
 ![Properties Tab of Edit Control Measure Window][properties_tab_of_edit_control_measure_window]
 
 [properties_tab_of_edit_control_measure_window]: images/Properties_Tab_of_Edit_Control_Measure_Window.png
 **Figure 3-22. Edit Control Measure Properties Window**
 
 To edit a property record, scroll down to the **COST_BASIS** property, and check the corresponding checkbox in the **Select** column for the **COST_BASIS** property and then click `Edit`. The Edit Property Record window will appear ([Figure 3-23](#edit_property_record_window)). The data type is text, which means the property will contain textual information about the measure. Note also how the value field contains detailed information about the methodologies used for costing this control measure.
+
+<a id=edit_property_record_window></a>
 
 ![Edit Property Record Window][edit_property_record_window]
 
@@ -541,12 +589,16 @@ Edit the value for the property record as needed to reflect the new control meas
 
 **Step 4-18: Edit Control Measure References.** Go to the `References` tab of the Edit Control Measure Window ([Figure 3-24](#references_tab_of_edit_control_measure_window)). The available edit buttons in this window are `Add`, `Edit`, and `Remove`.
 
+<a id=references_tab_of_edit_control_measure_window></a>
+
 ![References Tab of Edit Control Measure Window][references_tab_of_edit_control_measure_window]
 
 [references_tab_of_edit_control_measure_window]: images/References_Tab_of_Edit_Control_Measure_Window.png
 **Figure 3-24. Edit Control Measure References Window**
 
 To edit an existing reference record, check the corresponding checkbox in the **Select** column and click `Edit`. For example, click the box next to the **"MACTEC Engineering and Consulting..."** reference entry and then click `Edit`. The Edit Reference Record window will appear ([Figure 3-25](#edit_reference_record_window)).
+
+<a id=edit_reference_record_window></a>
 
 ![Edit Reference Record Window][edit_reference_record_window]
 
@@ -560,6 +612,8 @@ Edit the value for the reference record as needed to reflect information for the
 To choose an existing reference, click on the` Use existing reference` option and then search for the reference by filling in the `Text contains` field, then click `Search`. When you have located the correct reference, select the item in the `References` box and click `Save` to add the reference to the control measure.
 
 To create a new reference, click on the `Create new reference` option and then type the reference in the `Description` field, then click `Save` to add the reference to the control measure. For this exercise, click on `Create new reference` and then add **"sample technical reference"** to the `Description` field. Click `Save` and a new row will appear in the References table in the `References` tab of the Edit Control Measure window.
+
+<a id=add_reference_record_window></a>
 
 ![Add Reference Record Window][add_reference_record_window]
 
@@ -644,6 +698,8 @@ To export by selected measures, select the `Export By Measure` option . The list
 
 For this exercise, select `Export By Measure` to export the preselected measures from the Control Measure Manager. To specify the output folder (i.e., directory) into which the CSV files will be written, type the folder name into the `Server Export Folder` text field or use the `Browse` button to bring up a file and directory browser to select the output folder. To specify an export file name prefix for naming the new exported files, type the prefix string into the `File Name Prefix` text field.
 
+<a id=exporting_control_measures_dialog></a>
+
 ![Exporting Control Measures Dialog][exporting_control_measures_dialog]
 
 [exporting_control_measures_dialog]: images/Exporting_Control_Measures_Dialog.png
@@ -668,6 +724,8 @@ After selecting the files to import, click the `Import` button. Information abou
 *Note that as there will be no warning before the CMDB data are replaced, use the import feature with caution.*
 
 It is possible to purge existing measures from the CMDB by sector. This feature will remove all measures associated with the sectors chosen in the `Purge Existing Measures By Sectors` list. The user must also click the `Purge` checkbox to allow the measures to be purged. The measures will be purged when the `Import` button is clicked.
+
+<a id=import_control_measures_dialog></a>
 
 ![Import Control Measures Dialog][import_control_measures_dialog]
 

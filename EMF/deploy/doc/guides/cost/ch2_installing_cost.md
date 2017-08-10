@@ -24,10 +24,11 @@ Because CoST is fully integrated within the EMF, installing CoST is the same as 
 
 In the CoST client-server system, client software that runs on a desktop computer is used to connect to a server running the CoST algorithms and database. The CoST/EMF client is a Java program that accesses Java and [PostgreSQL](http://www.postgresql.org) software running on the CoST/EMF server. CoST/EMF requires that a recent version of Java be installed on each user's computer. The EMF database server stores information related to emissions modeling, including emissions inventory datasets and a database of emissions control measures. When a control strategy is developed, new datasets and summaries of them are created within CoST, and controlled emissions inventories can optionally be generated. These emissions inventories can be exported from CoST and then used as inputs to the SMOKE modeling system, which prepares emissions data for use in the CMAQ model. A schematic of the CoST/EMF client-server system is shown in [Figure 2-1](#cost_emf_client_server_system).
 
+<a id=cost_emf_client_server_system></a>
+
 ![CoST/EMF Client-Server System][cost_emf_client_server_system]
 
 [cost_emf_client_server_system]: images/CoST_EMF_Client_Server_System.png
-<a id=cost_emf_client_server_system></a>
 **Figure 2-1. CoST/EMF Client Server Schematic**
 
 <a id=Download2></a>
@@ -47,10 +48,11 @@ B\. Unzip the downloaded file into a known folder location on a Windows machine.
 
 [Figure 2-2](#installation_package_zip_file_folder_and_file_structure) lists the batch file and the folders that are located in the install zip file; these are described below the figure.
 
+<a id=installation_package_zip_file_folder_and_file_structure></a>
+
 ![Installation Package Zip File Folder and File Structure][installation_package_zip_file_folder_and_file_structure]
 
 [installation_package_zip_file_folder_and_file_structure]: images/Installation_Package_Zip_File_Folder_and_File_Structure.png
-<a id=installation_package_zip_file_folder_and_file_structure></a>
 **Figure 2-2. CoST/EMF Installation Package Contents**
 
 * Install\_EMF.bat - bat file to install the EMF Client and Server
