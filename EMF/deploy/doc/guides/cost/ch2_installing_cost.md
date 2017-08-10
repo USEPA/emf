@@ -21,7 +21,8 @@
 <!-- END COMMENT -->
 
 <a id=Background2></a>
-## Background on the CoST Client-Server System ##
+
+## Background on the CoST Client-Server System
 
 Because CoST is fully integrated within the EMF, installing CoST is the same as installing the EMF. There are two parts of the CoST/EMF system: a client and a server. For this guide, it is assumed that you need to install both the client and the server.
 
@@ -35,7 +36,8 @@ In the CoST client-server system, client software that runs on a desktop compute
 **Figure 2-1. CoST/EMF Client Server Schematic**
 
 <a id=Download2></a>
-## 1. Download the Software Installation Package ##
+
+## Download the Software Installation Package
 
 The software installation package is a ZIP file (~300MB) that contains all the relevant supporting applications and software required to run the CoST system on a Windows-based machine. The installation package also contains the most recent version of the Control Measures Database (CMDB) available at the time of the software release. Instructions for optionally updating the CMDB are provided at the end of this section.
 
@@ -69,7 +71,8 @@ B\. Unzip the downloaded file into a known folder location on a Windows machine.
 * tomcat - includes the Tomcat installation package
 
 <a id=Java2></a>
-## 2. Install Java ##
+
+## Install Java
 
 Go to the `java_jre` directory and double click the executable file, `jre-8u51-windows-i586.exe`.
 
@@ -92,7 +95,8 @@ Click `Install` to accept the license agreement and start the installation proce
 Click `Close` to finalize the installation process.
 
 <a id=Postgres2></a>
-## 3. Install the PostgreSQL Database ##
+
+## Install the PostgreSQL Database
 
 Go to the `postgresql` directory and double click the executable file, `postgresql-9.3.9-3-windows.exe`.
 
@@ -157,7 +161,8 @@ When you reach the end, uncheck the `Launch Stack Builder` option and click `Fin
 The PostgreSQL database is now installed and ready for the CoST system database. This database will be installed in a later step.
 
 <a id=Tomcat2></a>
-## 4. Install the Tomcat Web/Application Server ##
+
+## Install the Tomcat Web/Application Server
 
 Go to the `tomcat` directory and find the executable file, `apache-tomcat-7.0.63.exe`. Double click the file to install Tomcat. Follow the installation steps as illustrated in the following figures.
 
@@ -210,7 +215,8 @@ Once the program files have been installed click `Next` to finalize installation
 When you reach the end, click `Finish`. The Tomcat application server is now installed and ready for the CoST system application. This CoST application will be installed in the next step.
 
 <a id=Cost2></a>
-## 5. Installing CoST ##
+
+## Installing CoST
 
 Go to the root installation directory where the CoST/EMF zip file was installed and find the Install_EMF.bat executable file. Edit the bat file and change the following variables to match your computer's settings:
 
@@ -247,7 +253,8 @@ set JAVA_EXE=C:\Program Files\Java\jre1.8.0\_51\bin\java
 Save and exit from the file `EMFClient.bat`.
 
 <a id=RunningCost2></a>
-## 6. Running CoST and Logging into the EMF Server ##
+
+## Running CoST and Logging into the EMF Server
 
 The CoST application can now be run by going to the EMF client directory and locating the `EMFClient.bat` file. Double click this file, and you will then be prompted to log in to the system. If the configuration was specified properly and the server is running, you should the following window.
 
@@ -274,6 +281,7 @@ After successfully logging into CoST the main EMF window shown below will displa
 [emf_main_window]: images/EMF_Main_Window.png
 
 <a id=Upgrade2></a>
+
 ## (Optional) Upgrade the Control Measures Database (CMDB)
 
 The Control Measures Database includes all of the emissions control technology information, emissions reductions, and associated costs used by U.S. EPA for developing emissions control strategies for stationary sources. The latests CMDB is available from [EPA CoST Website](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution).
@@ -297,7 +305,8 @@ Use the `Browse` button to find the CMDB CSV file downloaded from the EPA websit
 Click `Import` to add the EPA CMDB to the CoST/EMF database.
 
 <a id=Remove2></a>
-## (Optional) Removing CoST Installation Package ##
+
+## (Optional) Removing CoST Installation Package
 
 To remove the CoST installation package, go to the root directory where the EMF/CoST Installer zip file was installed and manually remove all files and sub folders from this directory. The original zip package contains a compressed version of the installation package and can be kept for reference purposes. Removing these files and directories will free up around 1.2GB of space.
 
