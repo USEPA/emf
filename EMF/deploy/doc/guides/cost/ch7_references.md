@@ -4,12 +4,7 @@
 
 <!-- END COMMENT -->
 
-
-Title: References
-Author: C. Seppanen, UNC
-CSS: base.css
-
-# References [references_chapter] #
+# References 
 
 Eyth, A.M., D. Del Vecchio, D. Yang, D. Misenheimer, D. Weatherhead, L. Sorrels, "Recent Applications of the Control Strategy Tool (CoST) within the Emissions Modeling Framework", 17th Annual Emissions inventory Conference, Portland, OR, 2008.
 
@@ -22,4 +17,3 @@ Misenheimer, D.C., "A New Tool for Integrated Emissions and Controls Strategies 
 [<< Previous Chapter](ch6_example_sql.md) - [Home](README.md)
 
 <!-- END COMMENT -->
-
