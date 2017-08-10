@@ -6,6 +6,7 @@
 
 # Control Measure Manager #
 
+<!-- BEGIN COMMENT -->
 ## Contents
 [Chapter 3 Introduction](#Ch3Intro3)<br>
 [1. Introduction to the Control Measure Manager](#Intro3)<br>
@@ -17,6 +18,8 @@
 [7. The Pollutant Menu](#PollutantMenu3)<br>
 [8. The Cost Year Menu](#CostYearMenu3)<br>
 [9. Importing and Exporting Control Measure Data](#ImportExport3)<br>
+
+<!-- END COMMENT -->
 
 <a id=Ch3Intro3></a>
 

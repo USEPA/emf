@@ -2,13 +2,13 @@
 
 [<< Previous Chapter](ch4_control_strategy_manager.md) - [Home](README.md) - [Next Chapter >>](ch6_example_sql.md)
 
-<!-- END COMMENT -->
-
 ## Contents
 [Exercise 1. Importing an Emissions Inventory (or County List File)](#importing_an_emissions_inventory)<br>
 [Exercise 2. Running a Maximum Emissions Reduction Strategy](#running_max_emis_reduction)<br>
 [Exercise 3. Running a Strategy with a Hypothetical Measure](#running_hypothetical)<br>
 [Exercise 4. Examining Co-benefits of a Control Strategy](#cobenefits)<br>
+
+<!-- END COMMENT -->
 
 # Advanced Control Strategy Exercises #
 

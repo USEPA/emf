@@ -6,6 +6,7 @@
 
 # Installing the CoST Software and Data
 
+<!-- BEGIN COMMENT -->
 ## Contents
 [Background on the CoST Client-Server System](#Background2)<br>
 [1. Download the Software Installation Package](#Download2)<br>
@@ -16,6 +17,8 @@
 [6. Running CoST and Logging into the EMF Server](#RunningCost2)<br>
 [(Optional) Upgrade the Control Measures Database (CMDB)](#Upgrade2)<br>
 [(Optional) Removing CoST Installation Package](#Remove2)<br>
+
+<!-- END COMMENT -->
 
 <a id=Background2></a>
 ## Background on the CoST Client-Server System ##

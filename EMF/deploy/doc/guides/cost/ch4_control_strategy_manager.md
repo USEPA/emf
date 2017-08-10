@@ -6,6 +6,8 @@
 
 # Control Strategy Manager
 
+<!-- BEGIN COMMENT -->
+
 ## Contents
 [Chapter 4 Introduction](#Ch4Intro4)<br>
 [1. Introduction to Control Strategies](#Intro4)<br>
@@ -15,6 +17,8 @@
 [5. Running a Strategy and Accessing Its Outputs](#Running4)<br>
 [6. Outputs of Control Strategies](#Outputs4)<br>
 [7. Summaries of Strategy Inputs and Outputs](#Summaries4)<br>
+
+<!-- END COMMENT -->
 
 <a id=Ch4Intro4></a>
 
