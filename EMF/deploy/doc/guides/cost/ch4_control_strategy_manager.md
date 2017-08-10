@@ -975,9 +975,9 @@ RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tra
 <a id=example_of_strategy_messages_output_table></a>
 **Table 4-13. Example of Strategy Messages Output**
 
-Column|Description|Description|Description|Description|Description
+Column|Description|Description|Description|Description
 -|-
-test|test|test|test|test|test
+test|test|test|test|test
 
 
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
