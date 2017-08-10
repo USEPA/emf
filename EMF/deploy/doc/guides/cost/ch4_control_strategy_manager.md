@@ -975,14 +975,15 @@ RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tra
 <a id=example_of_strategy_messages_output_table></a>
 **Table 4-13. Example of Strategy Messages Output**
 
-Column|Description
+Column|Description|Description|Description|Description|Description|Description|Description
 -|-
-test|test
+test|test|test|test|test|test|test|test
 
 
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
 -|-
 42049|30900201|420490009|942|S942|1|PM2\_5|Warning|blank|test
+
 
 Negative emission reduction (-1693.9)
 
