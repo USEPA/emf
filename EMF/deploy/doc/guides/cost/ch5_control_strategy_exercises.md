@@ -15,6 +15,7 @@
 This chapter includes advanced exercises for learning how to use different features of CoST. Users should complete the exercises in [Chapter 3](./ch3_control_measure_manager.md) and [Chapter 4](ch4_control_strategy_manager.md) before attempting the exercises in this chapter.  
 
 <a id=importing_an_emissions_inventory></a>
+
 ## Exercise 1. Importing an Emissions Inventory (or County List File)
 
 1. Choose `Datasets` from the **Manage** menu of the main EMF window.
@@ -69,7 +70,8 @@ The Dataset Manager includes the following controls:
 [export_window]: images/EMF_Export_Window.png
 
 <a id=running_max_emis_reduction></a>
-## Exercise 2. Running a Maximum Emissions Reduction Strategy ##
+
+## Exercise 2. Running a Maximum Emissions Reduction Strategy
 
 For this exercise, an existing Least Cost Strategy will be modified to create a Maximum Emissions Reductions strategy.
 
@@ -99,7 +101,8 @@ For this exercise, an existing Least Cost Strategy will be modified to create a 
     **SCCs with CE < 90%:**
 
 <a id=running_hypothetical></a>
-## Exercise 3. Running a Strategy with a Hypothetical Measure ##
+
+## Exercise 3. Running a Strategy with a Hypothetical Measure
 
 For this exercise, create a new control measure and then see what impact it has on the strategy results.
 
@@ -118,7 +121,8 @@ For this exercise, create a new control measure and then see what impact it has 
 Based on the results of this strategy, **how much additional emissions reduction** were realized over the previous maximum reduction result if there was a control measure with a 95% CE available for sources with SCCs starting with 102?
 
 <a id=cobenefits></a>
-## Exercise 4. Examining Co-benefits of a Control Strategy ##
+
+## Exercise 4. Examining Co-benefits of a Control Strategy
 
 For this exercise, run a control strategy that produces co-benefits for multiple pollutants.
 

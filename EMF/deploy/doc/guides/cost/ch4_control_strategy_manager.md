@@ -17,7 +17,8 @@
 [7. Summaries of Strategy Inputs and Outputs](#Summaries4)<br>
 
 <a id=Ch4Intro4></a>
-## Chapter 4 Introduction
+
+### Chapter 4 Introduction
 
 This chapter demonstrates the features of the Control Strategy Manager. The Control Strategy Manager allows control strategies to be created, edited, copied, and removed. **A control strategy is a set of control measures applied to emissions inventory sources (in addition to any controls that are already in place) to accomplish an emissions reduction goal.** Such goals are usually set to improve air quality and/or to reduce risks to human health. In this chapter, you will learn how to:
 
@@ -32,7 +33,8 @@ This chapter demonstrates the features of the Control Strategy Manager. The Cont
 This chapter is presented as a series of steps so that it may be used as part of a training class or as a tutorial on how to use CoST. The numbered steps are the ones you are expected to perform, while other material is provided for documentation purposes.
 
 <a id=Intro4></a>
-## 1. Introduction to Control Strategies
+
+#### 1. Introduction to Control Strategies
 
 CoST automates the key steps for preparing control strategies. The purpose of developing control strategies is to answer questions about which sources can be controlled and how much the application of those controls might cost. For example, if the goal is to reduce NO<sub>x</sub> emissions for the Southeast U.S. in 2030 by 100,000 tons per year, CoST can help answer questions related to this goal, such as:
 
@@ -68,7 +70,8 @@ The Strategy Detailed Result table itself can be summarized on-demand in many wa
 Detailed information on the types of control strategy algorithms is provided in [Section 2](#Algorithms4). [Section 3](#Managing4) describes how to set up and manage control strategies. [Section 4](#Input4) details the inputs to control strategies, including adding inventories, control measures, and constraints to a strategy. Running a strategy and accessing its outputs are discussed in [Section 5](#Running4). Documentation for the various types of strategy outputs is given in [Section 6](#Outputs4) and information about summaries of strategy inputs and outputs is given in [Section 7](#Summaries4).
 
 <a id=Algorithms4></a>
-## 2. CoST Control Strategy Algorithms
+
+### 2. CoST Control Strategy Algorithms
 
 Once the inputs have been defined, the strategy can be run on the EMF server. The method by which the measures are associated with the strategies depends on the algorithm that has been selected for the strategy. At this time, six algorithms are available to determine how measures are assigned to sources:
 
@@ -93,17 +96,17 @@ Least Cost Curve|Will be merged|Area, nonpoint|One per source|Standard, Least Co
 Maximum Emissions Reduction|Processed independently|Area, nonpoint|One per source, to achieve maximum reduction of target pollutant|Standard
 Multi-Pollutant Maximum Emissions Reduction|Processed independently|Area, nonpoint|One per source target pollutant; based on specified target pollutant order; could be multiple per source|Standard
 
-### Maximum Emissions Reduction Control Strategy ###
+#### Maximum Emissions Reduction Control Strategy
 
 The Maximum Emissions Reduction control strategy is the simplest of the strategy algorithms. It assigns to each source the single control measure that provides the maximum reduction to the target pollutant, regardless of cost. The strategy produces the three standard types of strategy outputs, including a Strategy Detailed Result for each input inventory.
 
-### Apply Measures in Series Control Strategy ###
+#### Apply Measures in Series Control Strategy
 
 The Apply Measures in Series control strategy applies all relevant controls to a source, as opposed to the Maximum Emission Reduction strategy, where only the most relevant measure (with the best possible reduction for lowest cost) is applied to the source. The Apply Measures in Series strategy is typically used for mobile sources, for which the input inventories are often average day inventories specific to a given month, and for which there are often multiple independent controls available for each source. Therefore, the measures are applied to the source in series, one after the other. The order of application is based on the user-specified "apply order," but the system also considers the lowest cost and greatest control efficiency. Thus, the cost factor in terms of dollars per ton of pollutant reduced is used to calculate the annualized cost of the control measure when applied to a specific source.
 
 The three standard types of outputs are generated after a successful strategy run: a Strategy Detailed Result ***for each input inventory***, a single Strategy Measure Summary, and a single Strategy County Summary. Note that when input inventories contain average-day emissions data for a month, the corresponding Strategy Detailed Result datasets will specify total monthly emissions as opposed to average day emissions for each source; otherwise they will specify annual emissions. The total monthly emissions are calculated by multiplying the average day emissions by the number of days in the month. Regarding the two types of summary outputs, if the input datasets have data for each of the 12 months, the summaries will provide annual emissions.
 
-### Least Cost Control Strategy ###
+#### Least Cost Control Strategy
 
 The Least Cost strategy type assigns measures to emissions sources to achieve a specified percent reduction or absolute reduction of a target pollutant for sources in a specified geographic region while incurring the minimum possible annualized cost. This algorithm is similar to the maximum emissions reduction strategy in that only a single measure is applied to each source. For example, one measure might be selected for a source when trying to reduce the target pollutant by 20%. However, if you were trying to obtain a 40% reduction of the target pollutant, another more expensive measure that achieves a higher level of control might be selected for the same source to meet the targeted level of reduction. If multiple inventories are specified as inputs to a Least Cost strategy, they are automatically merged into one EMF dataset as an ORL Merged dataset type. This allows the multiple inventory sectors to be considered simultaneously during a single Least Cost run. Note that the merged inventory dataset will be truncated and repopulated at the start of each strategy run, to ensure that the most up to date inventory data is included in the run.
 
@@ -123,7 +126,7 @@ Note that cost equations are used to compute the annual cost, when applicable an
 
 If multiple input inventories are used for the least cost strategy run and the user requests to create controlled inventories, there will be one controlled inventory created for each of the input inventories.
 
-### Least Cost Curve Control Strategy ###
+#### Least Cost Curve Control Strategy
 
 The purpose of the Least Cost Curve strategy type is to iteratively run Least Cost strategies so that a cost curve of can be generated. Typically, a cost curve has the total cost of emissions reduction and the cost per ton of emissions reduction increases as the desired level of reduction increases. The input inventories are treated in the same way as the least cost run in that the data from the inventories will be put together into an ORL Merged inventory prior to performing any of the runs. The inventory filters and measure filters work in the same way as they do for the other strategy types, as do the constraints that apply to all strategy types. The main difference between the Least Cost and Least Cost Curve strategy types is in the specification of constraints. Instead of specifying a single percent reduction or absolute emissions reduction, three new constraints are used to control the run:
 
@@ -140,7 +143,7 @@ The types of outputs for a Least Cost Curve strategy are the following:
 * **Least Cost Curve Summary**: this output dataset contains a row with cost and emissions reduction information for each of the runs that was performed for the strategy. Rows are added to this output if additional strategy runs are performed (e.g., to examine different sections of the curve). The columns of this summary are: Poll, Uncontroll\_Emis (tons), Total\_Emis\_Reduction (tons), Target\_Percent\_Reduction, Actual\_Percent\_Reduction, Total\_Annual\_Cost, Average\_Ann\_Cost\_per\_Ton, Total\_Annual\_Oper\_Maint\_Cost, Total\_Annualized\_Capital\_Cost, Total\_Capital\_Cost. Here, the Uncontroll\_Emis column contains the emissions from the original input inventory with all existing controls backed out so that it represents the uncontrolled emissions. The columns starting with Total are computed by summing all of the values of the corresponding column in the Strategy Detailed Result for the pollutant specified in the Poll column. Examples of Least Cost Curve Summaries are given in Figure 10 (TODO: fix) and Table 19 (TODO: fix).
 * **Controlled Inventories**: these output datasets may optionally be created based on any of the Strategy Detailed Results that are available for the strategy. Thus, results corresponding to any of the targeted reductions may be processed by SMOKE and the resulting data used as an input to an air quality model. Note that for each targeted reduction, individual controlled inventories will be created for each of the input inventories.
 
-### Annotate Inventory Control Strategy ###
+#### Annotate Inventory Control Strategy
 
 The purpose of the Annotate Inventory strategy type is to specify what measures are likely to have been used to achieve specified percent reductions in input inventories. The input inventories are treated in the same way as the Maximum Emissions Reduction runs in that each inventory is processed separately and separate results are created for each one. The inventory filters and measure filters work in the same way as they do for the other strategy types. Note that the selected target pollutant is important because only records for that pollutant will be annotated, but CoST may be changed in the future to consider all inventory pollutants. Constraints are applicable in that if the controlled source does not satisfy the specified constraints, it will not be included in the result and another measure that does satisfy the constraints will be sought.
 
@@ -152,7 +155,7 @@ To address the issue of unspecified control measures in inventories that can be 
 
 When an Annotate Inventory strategy is run, CoST looks at the percent reduction specified by the CEFF, REFF, and RPEN columns and uses the available control measures in the database to try to determine what control measure has the closest percent reduction to the one specified in the inventory. It then fills in the control measures column with the measure that was found. Note that the originally specified control efficiency fields and the emissions in the inventory are not changed, even if the inventory efficiency differed from the efficiency specified for the control measure. If no measure was found, it leaves the control measure field blank. Once the strategy has been run, a summary report can be generated with using the "Compare CoST to NEI measures" query that shows the sources with non-zero CEFF values and the difference between the inventory specified percent reduction and the percent reduction that the control measure that CoST "guessed" had been applied to the source. **It is important for the user to then examine the results of this report to find cases where the specified control efficiency matches were not even close and those for which no match was found.** Both of these situations can indicate that there is missing or incorrect data in the control measures database, or that the information in the inventory was erroneous. The eventual goal of the Annotate Inventory strategy is to develop a base year inventory with more complete existing control measure information.
 
-### Multi-Pollutant Maximum Emissions Reduction Control Strategy ###
+#### Multi-Pollutant Maximum Emissions Reduction Control Strategy
 
 The Multi-Pollutant Maximum Emissions Reduction control strategy assigns to each source the single measure for each target pollutant that provides the maximum reduction, regardless of cost. This process is performed for each target pollutant in an order specified by the user (e.g., NO<sub>x</sub> first, PM<sub>10</sub> second, VOC third, and SO<sub>2</sub> last). If a measure would control a pollutant that was already controlled as a co-impact from a previous target pollutant analysis iteration, that measure will be excluded from consideration during the source-measure matching process. For example, if measure ABC controlled NO<sub>x</sub> (the first analyzed target pollutant) and VOC, and during the next pollutant iteration (for VOC) measure DEF also controls NO<sub>x</sub> and VOC, this measure will not be considered because VOC control was a co-impact from applying the ABC measure.
 
@@ -161,11 +164,12 @@ The inventory filter and county filter work differently for this control strateg
 The Multi-Pollutant Maximum Emissions Reduction strategy produces the three standard types of strategy outputs, including a Strategy Detailed Result for each input inventory.
 
 <a id=Managing4></a>
-## 3. Managing Control Strategies ##
+
+### 3. Managing Control Strategies
 
 The control strategies currently available within CoST are shown in the Control Strategy Manager. The Control Strategy Manager allows you to see information about control strategies, to create new control strategies, and also to edit, remove, and copy control strategies.
 
-### Opening the Control Strategy Manager ###
+#### Opening the Control Strategy Manager
 
 **Step 3-1: Open Control Strategy Manager.** To open the Control Strategy Manager, choose `Control Strategies` from the `Manage` menu on the EMF main window ([Figure 4-2](#manage_menu_of_emf_main_window_2)) and the Control Strategy Manager will appear ([Figure 4-3](#control_strategy_manager_window)).
 
@@ -195,7 +199,7 @@ Last Modified|shows the date and time on which the strategy was last changed.
 Run Status|gives information about the strategy run. Possible options are:<br/>Not started - the strategy run has never been started;<br/>Waiting - a run has been requested, but it is waiting because other strategies are running;<br/>Running - the strategy is currently running;<br/>Finished - the strategy run completed successfully;<br/>Failed - the strategy run started, but failed due to a problem.
 Inv Year|shows the year of the emissions inventory that the strategy will process.
 
-### Sorting and Filtering Control Strategies ###
+#### Sorting and Filtering Control Strategies
 
 By default, the strategies are shown using a descending sort on the last modified date and time, so that the most recently modified strategies appear at the top of the list.
 
@@ -218,7 +222,7 @@ After reviewing the information available on the Control Strategy Manager for PM
 
 For more information on performing sorting, filtering, formatting, and other operations on the table that shows the control strategies used for the Control Strategy Manager, refer to the [Introduction to the Control Measure Manager ](./ch3_control_measure_manager.md#Intro3).
 
-### Copying Control Strategies ###
+#### Copying Control Strategies
 
 Existing strategies can be copied to create new control strategies, regardless of whether they have been run. If you copy a strategy and then edit the newly created strategy, you will not be changing any settings for the original strategy, so this is a safe way to start working with your own strategies. When a strategy is copied, it retains all of the settings from the original strategy except for the information on the Outputs tab, and the output summary information that is shown on the Summary tab.
 
@@ -226,7 +230,7 @@ Existing strategies can be copied to create new control strategies, regardless o
 
 Note that multiple strategies can be copied at once by selecting as many strategies as needed before clicking `Copy`.
 
-### Removing Control Strategies ###
+#### Removing Control Strategies
 
 A control strategy creator and the EMF Administrator can remove control strategies from CoST. Strategies should be removed with caution, because there is no 'undo' for this operation.
 
@@ -234,7 +238,7 @@ A control strategy creator and the EMF Administrator can remove control strategi
 
 *Note that if you select more than one control strategy before clicking `Remove`, all of the selected strategies will be removed.*
 
-### Creating a New Control Strategy ###
+#### Creating a New Control Strategy
 
 **Step 3-6: Create New Control Strategies.**  To create a new control strategy, click the `New` button in the Control Strategy Manager. The **Create New Control Strategy** window will appear with a text box to name the new strategy. Enter a name that is different from any of the existing control strategies (e.g., **Least Cost 2017 NOx Example**) and then click `OK`.
 
@@ -254,7 +258,7 @@ Click `Save` to save the new strategy and click `Close` to close the **Edit Cont
 
 If the new strategy does not appear in the Control Strategy Manager, first click the `Reset` button on the toolbar to remove any filters that have been applied to the strategies. If the strategy still does not appear, click `Refresh` at the top right of the Control Strategy Manager to obtain new data from the server.
 
-### Editing Control Strategies ###
+#### Editing Control Strategies
 
 **Step 3-7: Edit Control Strategies.** Click the **Select** checkbox next to the new strategy (i.e., the strategy created in Step 2-6) and then click `Edit`. If you have permission to edit the strategy (i.e., you are its creator or an Administrator), the **Edit Control Strategy** window will appear with the **Summary** tab visible ([Figure 4-5](#summary_tab_of_edit_control_strategy_window)). Note that if you had selected multiple control strategies before clicking `Edit`, they each would have opened in their own window. The tabs on the Edit Control Strategy window are listed in [Table 4-3](#tabs_of_the_edit_control_strategy_window_table). The contents of these tabs are described in detail in [Section 4](#Inputs4).
 
@@ -277,11 +281,12 @@ Outputs|Shows the results from the strategy after it has been run.
 **Figure 4-5. Edit Control Strategy Summary Tab.**
 
 <a id=Inputs4></a>
-## 4. Inputs to Control Strategies ##
+### 4. Inputs to Control Strategies
 
 Control strategies are defined by a series of fields that must be set prior to running the strategy. These fields are described in this section.
 
 <a id=SummaryInputs4></a>
+
 ### Inputs on the Summary Tab
 
 Along with the name and description of the strategy, the Control Strategy **Summary** tab defines the type of analysis to use for the strategy, spatial-temporal parameters, the target pollutant, and the discount rate.  To set the fields for the strategy on the **Summary** tab (see [Figure 4-5](#summary_tab_of_edit_control_strategy_window)), follow the steps below. Note that the fields on the Summary tab missing from this list are automatically set by CoST, and are discussed in [Fields Automatically Set by CoST Section](#fields_automatically_set_by_cost_section). *Fields that are contained within boxes with either white backgrounds or that are pull-down menus are editable; fields that are not contained within boxes are set by the software and cannot be changed by the user.*
@@ -317,7 +322,9 @@ For this Least Cost example, use the pull-down menu to set `Target Pollutant` to
 **Step 4-9: Include Measures with No Cost Data.** When the `Include Measures with No Cost Data` checkbox is checked, measures with control efficiencies but without cost data are included in the strategy run; otherwise they are not included. These are typically measures with no cost data specified or measures that use a cost equation to compute cost, but for which there is not enough data for the source in the inventory to fill in the equations variables. For this exercise, leave `Include Measures with No Cost Data` checked.
 
 **Step 4-10: Specify whether **Major Pollutant must match Target**. When the checkbox is checked, then the major pollutant must be the same as the target.
+
 <a id=fields_automatically_set_by_cost_section></a>
+
 ### Fields Automatically Set by CoST
 
 
@@ -338,6 +345,7 @@ Total Annualized Cost|The total annualized cost of applying the strategy.
 Target Poll. Reduction (tons)|The absolute emissions reduction achieved for the target pollutant, in tons.
 
 <a id=inputs_on_the_inventories_tab_section></a>
+
 ### Inputs on the Inventories Tab
 
 This section describes how to set the inventory inputs for a Control Strategy on the Edit Control Strategy window **Inventories** tab ([Figure 4-6](#inventories_tab_of_edit_control_strategy_window)). Click on the **Inventories** tab.  The `Inventories to Process` table near the top of the tab lists the emissions inventories for which the control strategy will be run. A control strategy can have one or more emissions inventories as input. Before inventories can be selected for use in the strategy, they must already have been imported into the EMF using either the `Import` item on the `File` menu of the EMF Main Window or through the Dataset Manager. The CoST application comes preloaded with several example inventories for training purposes.
@@ -448,6 +456,7 @@ The `County Dataset` filter allows another way to filter the inventory. This fie
 For this example, set the `County Dataset` pull-down menu to **Not selected** before proceeding.
 
 <a id=inputs_on_the_measures_tab_section></a>
+
 ### Inputs on the Measures Tab
 
 The **Measures** tab appears on the Edit Control Strategy window for all types of strategies . The **Measures** tab sets the control measures to use in a strategy run. There are two mutually exclusive ways to select control measures for inclusion in the control strategy run. The default is to include measures according to their class (see the top half of [Figure 4-10](#measures_tab_of_edit_control_strategy_window)). Currently available classes are **Known** (i.e., already in use), **Emerging** (i.e., realistic, but in an experimental phase), **Hypothetical** (i.e., the specified data are hypothetical), **Obsolete** (i.e., no longer in use), and **Temporary** (controls that are used during the analysis only if the user was the creator of the control measure, therefore other users' temporary measures won't be considered during an analysis). By default, only **Known** measures will be included in the strategy run. The second way to specify measures for inclusion in a strategy run is to select a list of specific measures to consider using for the run. The use of these two methods is described in this section. To select additional classes of measures other than the default 'Known', **hold down the Ctrl key while clicking the desired classes of measures**. To start over with selecting classes, just click on a single class of measure without holding down the Ctrl key. Note that only the measures with the classes selected by the user will be included in the strategy run.
@@ -495,6 +504,7 @@ After selecting some the specific measures and overrides using the **Select Cont
 For this example, remove all of the individually selected measures by clicking the `Select All` button on the **Measures** tab toolbar and then clicking `Remove` and `Yes` when prompted. Make sure that **Emerging** and **Known** are both selected in the `Classes to Include` list. The Measures tab will again look like [Figure 4-10](#measures_tab_of_edit_control_strategy_window).
 
 <a id=input_on_constraints_tab_section></a>
+
 ### Input on Constraints Tab
 
 The **Constraints** tab ([Figure 4-13](#constraints_tab_of_edit_control_strategy_window)) of the **Edit Control Strategy** window can be used to specify constraints for a control strategy to limit how control measures are assigned during the strategy run. For example, a strategy could be set up to not use any measures that cost more than $5,000 per ton (in 2013 dollars) for the target pollutant. Alternatively, a strategy could be defined to only use measures that reduce at least 1 ton of the target pollutant for the source. CoST evaluates the constraints while the source is being matched with the control measures. For example, the emission reduction achieved by applying a measure to a source is not known until the measure and its control efficiency have been selected. Thus, constraint calculations are dependent on both the inventory source and the measure being considered for application to the source. Note that the term "source" here refers to a single row of the emissions inventory, which for point sources is uniquely determined by FIPS, plant, point, stack, segment, and SCC, and for nonpoint sources is uniquely determined by FIPS and SCC. Sources should not be confused with "plants", each of which can contain many sources.
@@ -530,6 +540,7 @@ Note that if you were to click `Close` without saving the changes, a prompt will
 ![Constraints Tab of Edit Control Strategy Window][constraints_tab_of_edit_control_strategy_window]
 
 [constraints_tab_of_edit_control_strategy_window]: images/Constraints_Tab_of_Edit_Control_Strategy_Window.png
+
 **Figure 4-13. Edit Control Strategy Constraints Tab.**
 
 #### Least Cost Curve Algorithm Constraints
@@ -574,9 +585,10 @@ See [Table 4-7](constraints_common_to_multiple_control_strategy_types_table) for
 **Figure 4-15. Multi-Pollutant Target Pollutant Window.**
 
 <a id=Running4></a>
-## 5. Running a Strategy and Accessing Its Outputs
 
-### Running a Strategy ###
+### 5. Running a Strategy and Accessing Its Outputs
+
+#### Running a Strategy
 
 **Step 5-1: Run Least Cost Example Strategy.** After setting all of the example strategy inputs and constraints, as described in [Section 4](#Inputs4), click the `Run` button in the **Edit Control Strategy** window to start running the strategy. If the strategy was not saved before clicking `Run`, the changes will automatically be saved to the database. Note if the **Edit Control Strategy** window for the "Least Cost 2017 NOx Example" strategy is closed, it can be reopened by selecting the strategy from the list of strategies in the **Control Strategy Manager** and clicking the `Edit` button.
 
@@ -584,7 +596,7 @@ See [Table 4-7](constraints_common_to_multiple_control_strategy_types_table) for
 
 If the strategy runs successfully, one message will be displayed for each inventory that completes, such as **"Completed processing control strategy input dataset: *dataset\_name*"**. When the entire run has finished, the following message will be displayed: **"Completed running control strategy: *your strategy name*"** in the **Status** window. Otherwise, message will display stating that the strategy failed with information about why it failed.
 
-### List Strategy Outputs ###
+#### List Strategy Outputs
 
 **Step 5-3: List Control Strategy Run Outputs.** Once the strategy run completes, click on the **Outputs** tab in the **Edit Control Strategy** window and then click `Refresh` at the bottom of the window to see the outputs from the run listed in the `Output Datasets` table ([Figure 4-16](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy) and [Figure 4-17](#sample_outputs_tab_for_a_least_cost_curve_strategy)).
 
@@ -608,7 +620,7 @@ For additional details on the algorithms that are applied to assign measures to 
 [sample_outputs_tab_for_a_least_cost_curve_strategy]: images/Sample_Outputs_Tab_for_a_Least_Cost_Curve_Strategy.png
 **Figure 4-17. Least Cost Sample Outputs.**
 
-### Viewing and Editing Properties of the Strategy Outputs ###
+#### Viewing and Editing Properties of the Strategy Outputs
 
 It is possible to perform a number of operations on the strategy outputs. These operations are described in this and the following subsections.
 
@@ -655,6 +667,7 @@ The keywords in the `Keywords Specific to Dataset Type` section (the upper part 
 After examining the other Dataset Properties tabs, close the **Dataset Properties Editor** by clicking `Save` to save the changes, or `Close` to close without saving changes. For the example exercise, click `Close` and do not save any changes.
 
 <a id=summarizing_the_strategy_outputs_section></a>
+
 ### Summarizing the Strategy Outputs ###
 
 Strategy outputs, particularly **Strategy Detailed Results**, but also the input emissions inventories, can be summarized in many different ways. The ability to prepare summaries is helpful because in many cases there could be thousands of records in a single **Strategy Detailed Result** or emissions inventory. Thus, when the results of a strategy are analyzed or presented to others, it is useful to show the impact of the strategy in a summarized fashion. Frequently, it is helpful to summarize a strategy for each county, state, SCC, and/or control technology. The summaries are prepared using the EMF subsystem that was originally designed to support quality assurance (QA) of emissions inventories and related datasets, for which summaries are also needed. Thus, each summary is stored as the result of a "QA Step" that is created by having CoST run a SQL query. There are many predefined queries stored in the EMF as 'templates', circumventing the need for a user of the system to know SQL to create a summary. Summaries can be added from the QA tab of the **Dataset Properties Editor**, although there is a shortcut available on the **Outputs** tab. Summaries are discussed in more detail in [Section 7](#Summaries4).
@@ -731,13 +744,13 @@ Close the **Create Google Earth file** window by clicking the `X` at the top rig
 
 **Step 5-10: Export Control Strategy Summaries to CSV.** From the **Edit QA Step** window ([Figure 4-23](#edit_qa_step_window_to_create_a_summary)) select a folder to export the results to by either typing a directory path in the `Export Folder` field, or by using the `Browse` button to select an output directory. Click the `Export` button and the **Export QA Step Result** will be written to the selected folder on the EMF server.
 
-### Exporting the Strategy Outputs ###
+#### Exporting the Strategy Outputs
 
 Return to the **Outputs** tab of the **Edit Control Strategy window** ([Figure 4-16](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)).
 
 **Step 5-11: Export Control Strategy Outputs.** To export the strategy output datasets to the EMF server, enter a folder/directory name into the `Server Export Folder` field on the **Outputs** tab. Use the checkboxes to select one or more results to export from the `Output Datasets` table and click `Export`. The files will be written as ASCII files to the `Server Export Folder`. The resulting CSV files can be imported into a spreadsheet or other database software for analysis. *Note that the dataset must be exported to a location where the EMF application user has read/write access to the folder (e.g., the same directory as specified in the environment variable, `EMF_DATA_DIRECTORY`, in the EMF installation batch file).*
 
-### Analyzing the Strategy Outputs ###
+#### Analyzing the Strategy Outputs
 
 It is possible to view the strategy results directly from the **Outputs** tab in a sortable, filterable table, similar to the table used by the View QA Step Results window ([Figure 4-24](#view_qa_step_results_window)).
 
@@ -758,6 +771,7 @@ It is possible to view the strategy results directly from the **Outputs** tab in
 **Figure 4-27. Least Cost Curve Strategy Summary.**
 
 <a id=creating_a_controlled_emissions_inventory_section></a>
+
 ### Creating a Controlled Emissions Inventory
 
 CoST can create a controlled emissions inventory that reflects the effects of the strategy by merging the detailed result with the original emissions inventory. Details on controlled inventories are discussed further in the [Controlled Emissions Inventory Section](#controlled_emissions_inventory_section).
@@ -784,18 +798,20 @@ Click `Create` to receive a prompt to **Enter a name prefix for the controlled i
 
 To view the data for the input inventory that was merged with the **Strategy Detailed Result** to create the controlled inventory, select the `Input Inventory` radio button and click `View Data`.
 
-### Creating Custom Strategy Outputs ###
+#### Creating Custom Strategy Outputs
 
 The `Customize` button on the **Outputs** tab is not frequently used, but can generate special types of outputs related to analyses with a Response Surface Model (RSM). These custom outputs are not discussed here.
 
 The remainder of this chapter provides reference documentation on the outputs of strategies and summaries that can be created with CoST. Additional advanced exercises and examples are available in [Chapter 5](./ch5_control_strategy_exercises.md).
 
 <a id=Outputs4></a>
-## 6. Outputs of Control Strategies ##
+
+### 6. Outputs of Control Strategies
 
 This section provides details on the contents of each type of CoST output.
 
 <a id=strategy_detailed_result_section></a>
+
 ### Strategy Detailed Result
 
 As noted earlier, the Strategy Detailed Result is the primary output from running a control strategy. It is a table of emission source-control measure pairings, each of which contains information about the costs and emission reduction achieved for measures after they are applied to the sources. The contents of this table are described later in this subsection. When generating the Strategy Detailed Result table, some data are needed for CoST to calculate the values of some columns related to costs, such as:
@@ -897,11 +913,12 @@ SOURCE\_GROUP|Indicates the source group of the control measure.
 COMMENT|Information about this record and how it was produced; this information is either created automatically by the system or entered by the user.
 RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
-### Strategy Measure Summary ###
+#### Strategy Measure Summary
 
 The Strategy Measure Summary output dataset is a table of emission reduction and cost values aggregated by the emissions sector (i.e., an EMF Sector), state/county FIPS code, SCC, pollutant, and control measure. This table contains information only for sources that were controlled during the strategy run. It is generated by running a SQL statement that aggregates the data from the Strategy Detailed Result according to the five categories just listed. The annual cost and emission reduction are calculated by summing all costs and emission reductions for the specified grouping (sector, FIPS, SCC, pollutant, and control measure). The average annual cost per ton is calculated by dividing the total annual costs by the total emission reduction for each measure. The columns contained in this summary and the formulas used to compute their values are shown in [Table 4-10](#columns_in_the_strategy_measure_summary_table). An example Strategy Measure Summary is shown in [Table 4-14](#example_of_strategy_measure_summary_data_table).
 
 <a id=columns_in_the_strategy_measure_summary_table></a>
+
 **Table 4-10. Columns in the Strategy Measure Summary**
 
 Column|Description
@@ -946,6 +963,7 @@ AVG\_ANN\_COST\_PER\_TON|The average annual cost per ton (\$/ton). This is calcu
 RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
 <a id=controlled_emissions_inventory_section></a>
+
 ### Controlled Emissions Inventory
 
 Another output that can be created is a controlled emissions inventory (introduced earlier in the [Creating a Controlled Emissions Inventory Section](#creating_a_controlled_emissions_inventory_section)). This dataset is not automatically created during a strategy run; instead, a user can choose to create it after the strategy run has completed successfully. When CoST creates a controlled inventory, comments are placed at the top of the inventory file that indicate the strategy that produced it and the high-level settings for that strategy. For the sources that were controlled, CoST fills in the CEFF (control efficiency), REFF (rule effectiveness), and RPEN (rule penetration) columns based on the control measures applied to the sources. It also populates several additional columns toward the end of the ORL inventory rows that specify information about measures that it has applied. These columns are:
@@ -1020,7 +1038,8 @@ ptnonipm|37001|SO2|54.3864| |54.3864| | | | | | |
 
 
 <a id=Summaries4></a>
-## 7. Summaries of Strategy Inputs and Outputs
+
+### 7. Summaries of Strategy Inputs and Outputs
 
 The EMF/CoST system can prepare summaries of the datasets that are loaded into the system, including both the emissions inventory datasets and the Strategy Detailed Result outputs. The ability to prepare summaries is helpful because in many cases there could be thousands of records in a single Strategy Detailed Result. Thus, when the results of a strategy are analyzed or presented to others, it is useful to show the impact of the strategy in a summarized fashion. Frequently, it is helpful to summarize a strategy for each county, state, SCC, or control technology. The power of the PostgreSQL relational database that contains the system data is used to develop these summaries. Currently, they are prepared using the EMF subsystem that was designed to support quality assurance (QA) of emissions inventories and related datasets. Recall that the creation of summaries for strategy outputs was discussed in the [Summarizing Strategy Outputs Section](#summarizing_the_strategy_outputs_section).
 
