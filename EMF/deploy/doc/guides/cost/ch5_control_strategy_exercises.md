@@ -17,17 +17,29 @@ This chapter includes advanced exercises for learning how to use different featu
 <a id=importing_an_emissions_inventory></a>
 ## Exercise 1. Importing an Emissions Inventory (or County List File)
 
-In many cases, it will be necessary to import an emissions inventory into the EMF for use with CoST. Before it can be imported, the inventory must be in either the ORL or FF10 formats For more information on these formats, see [http://www.smoke-model.org/version3.0/html/ch08s02.html#d0e38904](http://www.smoke-model.org/version3.0/html/ch08s02.html#d0e38904). Try importing an inventory using the following steps:
-
 1. Choose `Datasets` from the **Manage** menu of the main EMF window.
+
+In many cases, it will be necessary to import an emissions inventory into the EMF for use with CoST. Before it can be imported, the inventory must be in one of these FF10 or ORL formats: Point, Onroad, Nonroad, or Nonpoint. For more information on these formats, see [https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02.html#sect_input_inventory_format](https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02.html#sect_input_inventory_format). Try importing an inventory using the following steps:
 
 2. Select an inventory format from `Show Datasets of Type` menu to the type that represents the inventory to import (e.g., FF10 Nonpoint Inventory).
 
 3. Click the `Import` button to show the **Import Datasets** window.
 
-4. Click the `Browse` button and browse to the location of the inventory to import on the EMF server computer (e.g., C:\EMF_temp\inventories\nonpoint).
+([Import Dataset Window Figure](#import_dataset_window)).
 
-5. Select the checkbox that corresponds to the inventory (e.g., arinv\_nonpt\_2020cc\_31may2007\_v0\_orl\_txt) and then click `OK`.
+![Import Dataset Window][import_dataset_window]
+
+[import_dataset_window]: images/Import_Datasets.png
+
+4. Click the `Browse` button and browse to the location of the inventory to import on the EMF server computer (e.g., C:\Users\Public\EMF_Data\inventories).
+
+([Browse Datasets Window Figure](#import_browse_window)).
+
+![Import Browse Window][import_browse_window]
+
+[import_browse_window]: images/EMF_Import_Dataset_Server_Local.png
+
+5. Select the checkbox that corresponds to the inventory (e.g., 2017eh\_from\_nonpt\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37.csv) and then click `OK`.
 
 6. Specify a unique, descriptive name for the new dataset in the `Dataset Name` dialog box.
 
@@ -42,13 +54,19 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 The Dataset Manager includes the following controls:
 
 * `View` opens the Dataset Properties Viewer
-* `Edit` opens the Dataset Properties Editor
+* `Edit Properties` opens the Dataset Properties Editor
 * `Edit Data` creates new versions of the dataset
 * `Remove` removes the dataset
 * `Import` imports new datasets
 * `Export` exports the data to a file on the EMF server
 * `Purge` purges datasets that were removed from the system
 * `Close` closes the **Dataset Manager Window**
+
+([Export Dataset Window Figure](#export_window)).
+
+![Export Window][export_window]
+
+[export_window]: images/EMF_Export_Window.png
 
 <a id=running_max_emis_reduction></a>
 ## Exercise 2. Running a Maximum Emissions Reduction Strategy ##
@@ -57,7 +75,7 @@ For this exercise, an existing Least Cost Strategy will be modified to create a 
 
 1. From the Control Strategy Manager `Copy` the least cost strategy created in [Chapter 4](#ch4_control_strategy_manager.md) to a new strategy.
 
-2. `Edit` the strategy and set the Strategy Type to **Max Emissions Reduction**.
+2. `Edit` the strategy and set the Type of Analysis to **Max Emissions Reduction**.
 
 3. `Run` the new strategy and answer the following questions once it completes.
 
@@ -110,20 +128,33 @@ For this exercise, run a control strategy that produces co-benefits for multiple
 
 3. Set the inventory to use to be the **Nonpoint** inventory imported in [Exercise 1](#importing_an_emissions_inventory_section).
 
-4. Set the `Inventory Filter` to: **`FIPS like '42%'`**.
+4. Set the `Target Pollutant` to **PM2_5**, then `Run` the strategy.
 
-5. Set the `Target Pollutant` to **PM10**, then `Run` the strategy.
+5. Once the run completes, summarize the **Strategy Detailed Result** by **Control Technology and Pollutant**.
 
-6. Once the run completes, summarize the **Strategy Detailed Result** by **Control Technology and Pollutant**.
-
-7. Once the summary has completed running, `View` the **Strategy Detailed Result**.
-
+6. Once the summary has completed running, `View` the **Strategy Detailed Result**
 
 * Does this result show more than one pollutant?
 
 * What is the typical cost per ton for the strategy?
 
-* Try setting a **Maximum Cost per Ton** constraint less than the typical cost per ton in the result just generated and rerun the strategy. How does the constraint impact the results?
+7. Try setting a **Maximum Cost per Ton** constraint less than the typical cost per ton in the result just generated and rerun the strategy. How does the constraint impact the results?
+
+8. Use the Cost Control Summary Function in the Control Strategy Manager Window to create a local spreadsheet summarizing the selected control strategies, including name, strategy type, and constraints, emission reductions and strategy costs.
+
+([Cobenefit Strategy Summary with Constraint Figure](#summary_spreadsheet)).
+
+![Summary Spreadsheet][summary_spreadsheet]
+
+[summary_spreadsheet]: images/cobenefit_strategy_summary.png
+
+([Cobenefit Strategy Summary with No Constraints Figure](#summary_spreadsheet_no_constraints)).
+
+![Summary Spreadsheet No Constraints][summary_spreadsheet_no_constraints]
+
+[summary_spreadsheet_no_constraints]: images/cobenefit_strategy_summary_no_constraints.png
+
+9. Note that the summary spreadsheet with constraints was for a cost per ton value of 3000. The result was that no controls were applied, as they all cost more than that.  For the summary spreadsheet with no constraints, the cost of the controls is listed after the status (Completed), for a total value of $3,679,355 and a total emission reduction of 331.2 tons of PM2.5. 
 
 <!-- BEGIN COMMENT -->
 

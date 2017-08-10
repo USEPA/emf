@@ -148,7 +148,7 @@ The outputs from the Annotate Inventory strategy type are an Annotated Inventory
 
 One of the goals for CoST that has not yet been met is for the tool to be able to intelligently make use of control measures that can be applied in addition to other controls (also known as 'add-on' controls). In order for the software to meet this goal, it is important for it to first be able to determine whether there are any existing control measures on the emissions source and the type of control device(s) used by the existing measures. Currently, a data gap exists in this area for both the base year emissions inventories and the future year emission inventories which may be used as inputs to a control strategy run. The NEI contains data fields to store this information, and there is a limited amount of existing control efficiency and control device code data in the base year NEI. However, these fields are not very well populated in the base year inventory for sectors other than the EGU point sources, and the fields are even less well populated in the future year modeling inventories. Generally, the control efficiency field is much better populated than the control device fields. In addition, the control device codes that are stored in the NEI are a lot less specific than the control measure abbreviations that CoST uses. Therefore, even if the control device codes were well populated, these codes would need to be translated into the CoST control measure abbreviations for CoST to really have the information it needs to properly apply add-on controls.
 
-To address the issue of unspecified control measures in inventories that can be input to CoST, several steps have been taken. First, when CoST creates a controlled inventory, in addition to filling in the information in the CEFF, REFF, and RPEN columns, CoST populates the Control Measures, Pct Reduction, Current Cost, and Total Cost columns in the ORL inventory to specify information about measures that it has applied. In this way, the controlled inventories created by CoST always specify the relevant information about the measures that have been applied as a result of a CoST control strategy. The Annotate Inventory strategy type is a second step that has been taken to provide more information about existing control measures.
+To address the issue of unspecified control measures in inventories that can be input to CoST, several steps have been taken. First, when CoST creates a controlled inventory, in addition to filling in the information in the CEFF, REFF, and RPEN columns, CoST populates the Control Measures, Pct Reduction, Current Cost, and Total Cost columns in the FF10 or ORL inventory to specify information about measures that it has applied. In this way, the controlled inventories created by CoST always specify the relevant information about the measures that have been applied as a result of a CoST control strategy. The Annotate Inventory strategy type is a second step that has been taken to provide more information about existing control measures.
 
 When an Annotate Inventory strategy is run, CoST looks at the percent reduction specified by the CEFF, REFF, and RPEN columns and uses the available control measures in the database to try to determine what control measure has the closest percent reduction to the one specified in the inventory. It then fills in the control measures column with the measure that was found. Note that the originally specified control efficiency fields and the emissions in the inventory are not changed, even if the inventory efficiency differed from the efficiency specified for the control measure. If no measure was found, it leaves the control measure field blank. Once the strategy has been run, a summary report can be generated with using the "Compare CoST to NEI measures" query that shows the sources with non-zero CEFF values and the difference between the inventory specified percent reduction and the percent reduction that the control measure that CoST "guessed" had been applied to the source. **It is important for the user to then examine the results of this report to find cases where the specified control efficiency matches were not even close and those for which no match was found.** Both of these situations can indicate that there is missing or incorrect data in the control measures database, or that the information in the inventory was erroneous. The eventual goal of the Annotate Inventory strategy is to develop a base year inventory with more complete existing control measure information.
 
@@ -238,7 +238,11 @@ A control strategy creator and the EMF Administrator can remove control strategi
 
 **Step 3-6: Create New Control Strategies.**  To create a new control strategy, click the `New` button in the Control Strategy Manager. The **Create New Control Strategy** window will appear with a text box to name the new strategy. Enter a name that is different from any of the existing control strategies (e.g., **Least Cost 2017 NOx Example**) and then click `OK`.
 
-The **Edit Control Strategy** window for the new strategy will appear. The window has five tabs: **Summary**, **Inventories**, **Measures**, **Constraints**, and **Outputs**. This window and how to fill in the information on these tabs is discussed in more detail below in [Section 4](#Inputs4).
+An **Edit Control Strategy** window for your newly created strategy will appear [Figure](#edit_control_strategy_window). The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section](#inputs_to_control_strategies_section).
+
+![Edit Control Tab Summary Window][edit_control_strategy_window]
+
+[edit_control_strategy_window]: images/Least_Cost_2017_NOx_for_Training.png
 
 For this example, edit the following fields in the **Edit Control Strategy** window:
 
@@ -290,7 +294,7 @@ Optionally, use the `Project` pull-down menu to select a project for which this 
 
 Optionally specify whether the strategy `Is Final` to finalize and archive the strategy. Once marked as final, a strategy may not be rerun. For this exercise, do not check the `Is Final` checkbox.
 
-**Step 4-3: Set the Cost Year.** Use the `Cost Year` pull-down menu to set the year to use for estimating the costs of a strategy. For this exercise, set `Cost Year` to **2011**. All cost data specified for the control measures will be converted to this year using the Gross Domestic Product (GDP): Implicit Price Deflator (IPD), issued by the U.S. Department of Commerce, Bureau of Economic Analysis. Details of the computation used are given in the [Control Strategy Tool (CoST) Development Document](Add link). As there is a 1- to 2-year lag between the current year and the latest available cost year data, the `Cost Year` cannot be set to the current year.
+**Step 4-3: Set the Cost Year.** Use the `Cost Year` pull-down menu to set the year to use for estimating the costs of a strategy. For this exercise, set `Cost Year` to **2013**. All cost data specified for the control measures will be converted to this year using the Gross Domestic Product (GDP): Implicit Price Deflator (IPD), issued by the U.S. Department of Commerce, Bureau of Economic Analysis. Details of the computation used are given in the [Control Strategy Tool (CoST) Development Document](Add link). As there is a 1- to 2-year lag between the current year and the latest available cost year data, the `Cost Year` cannot be set to the current year.
 
 **Step 4-4: Set the Target Year.** The target year should correspond to the input inventory or inventories (e.g., 2020, 2030). For control measure efficiency records to be considered for a strategy, the specified effective date for the record must be equal to or earlier than the target year. Note that any control measure efficiency records that come into effect *after* the target year will not be considered for use in the strategy. For this example set `Target Year` to **2017**.
 
@@ -312,8 +316,10 @@ For this Least Cost example, use the pull-down menu to set `Target Pollutant` to
 
 **Step 4-9: Include Measures with No Cost Data.** When the `Include Measures with No Cost Data` checkbox is checked, measures with control efficiencies but without cost data are included in the strategy run; otherwise they are not included. These are typically measures with no cost data specified or measures that use a cost equation to compute cost, but for which there is not enough data for the source in the inventory to fill in the equations variables. For this exercise, leave `Include Measures with No Cost Data` checked.
 
+**Step 4-10: Specify whether **Major Pollutant must match Target**. When the checkbox is checked, then the major pollutant must be the same as the target.
 <a id=fields_automatically_set_by_cost_section></a>
 ### Fields Automatically Set by CoST
+
 
 Some fields of a control strategy that appear on the **Summary** tab are set automatically by the CoST software and are not specified by the user. Note that some of these summarize the results of the strategy analysis, so information for them is not available until after the strategy has been run. The automatically set fields are described in [Table 4-4](#fields_on_the_control_strategy_summary_tab_automatically_set_by_cost_table).
 
@@ -370,7 +376,7 @@ To select an inventory to use for the strategy from the **Select Datasets** wind
 **Table 4-5. Dataset Properties View Window Tabs**
 
 Tab|Description
--|-
+-------------|------------------------------------------------------------------------------------------------------------
 Summary|Shows high-level properties of the dataset
 Data|Provides access to the actual inventory data so that you can view the data that will be used in the control strategy
 Keywords|Shows additional types of metadata not found on the Summary tab
@@ -402,7 +408,7 @@ Close the **Dataset Properties View** window by clicking `Close`.
 
 As inventories can contain a lot of data, only the first 300 rows of an inventory are transfered from the server to the Data Viewer by default. The fields in the upper right corner of the window in the area labeled "**Current**" provide information about how many rows the inventory has, and which rows are currently visible. The **Data Viewer** works similarly to a web search engine that shows the results in pages, and the pagination arrows near the upper right corner of the window facilitate moving between pages of data. Use the pagination arrows in the upper right corner of the window to see how they work. Go to first record, go to previous page, give a specific record, go to next page, and go to last record.
 
-The data sorting can be controlled by entering a comma-separated list of columns in the `Sort Order` field and then clicking `Apply`. Note that a descending sort order can be specified by following the column name with "desc" (e.g., "ANN\_EMIS desc, FIPS" will sort by decreasing annual emissions and then by county).
+The data sorting can be controlled by entering a comma-separated list of columns in the `Sort Order` field and then clicking `Apply`. Note that a descending sort order can be specified by following the column name with "desc" (e.g., "ANN\_VALUE desc, REGION_CD" will sort by decreasing annual emissions and then by county).
 
 If you enter a `Row Filter`, and then click `Apply`, the **Data Viewer** will find rows that meet the specified criteria. Examples of the syntax for row filters are given in [Table 4-6](#examples_of_row_filters_table). See [Chapter 6](./ch6_example_sql.md) for additional row filter examples.
 
@@ -410,13 +416,16 @@ If you enter a `Row Filter`, and then click `Apply`, the **Data Viewer** will fi
 **Table 4-6. Row Filter Examples**
 
 Filter Purpose|SQL Where Clause
--|-
+--------------------------------------------------------------------------------|--------------------------------------------------------------------
 Filter on a particular set of SCCs|`scc like '101%' or scc like '102%'`
 Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<br/>`POLL = 'PM10' or POLL = 'PM2\_5'`
-Filter sources only in NC (State FIPS = 37), SC (45), and VA (51);<br/>note that FIPS column format is State + County FIPS code (e.g., 37001)|`substring(FIPS,1,2) in ('37', '45', '51')`
-Filter sources only in CA (06) and include only NO~x and VOC pollutants|`substring(fips,1,2) = '06' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`fips like '06%' and (poll = 'NOX' or poll = 'VOC')`
+
+Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37017)|`substring(REGION\_CD,1,2) in ('37')`
+Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`REGION\_CD like '37%' and (poll = 'NOX' or poll = 'VOC')`
+[Examples of Row Filters (Data Viewer window) and Inventory Filters (Inventories tab of the Edit Control Strategy window)][examples_of_row_filters_table]
 
 Click `Close` to close the **Data Viewer** window.
+
 
 The next few paragraphs provide information on how the options at the lower portion of the **Inventories** tab work.
 
@@ -432,7 +441,7 @@ The `County Dataset` filter allows another way to filter the inventory. This fie
 
 *Note that only the records of the input inventories that pass both the inventory and county filters will be considered for control measure application.*
 
-**Step 4-16: Set Inventory Filters.** For this exercise, set the following on the **Inventories** tab:  `Inventory Filter`: **\`FIPS in ('45001', '45009', '45011')\`**. Note that specifying a list of counties using the `Inventory Filter` is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as shown in the next bullet). To control only a few counties, it is straightforward to use the `Inventory Filter`; to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the specifications of the control strategy (e.g., `SCC like '231%'`, or `ANN_EMIS>5`).
+**Step 4-16: Set Inventory Filters.** For this exercise, set the following on the **Inventories** tab:  `Inventory Filter`: **\`REGION_CD in ('45001', '45009', '45011')\`**. Note that specifying a list of counties using the `Inventory Filter` is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as shown in the next bullet). To control only a few counties, it is straightforward to use the `Inventory Filter`; to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the specifications of the control strategy (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
 
 **Step 4-17: View a County Dataset.** Examine the available county datasets by pulling down the `County Dataset` menu and selecting one of the datasets. After selecting a county dataset, examine the dataset properties by clicking `View`. Display the the actual county dataset data by clicking `View Data`. Select a version of the dataset using the `County Dataset Version` field, which shows the available versions of the selected dataset. This selection is required because the EMF can store multiple versions of each dataset.
 
@@ -441,13 +450,14 @@ For this example, set the `County Dataset` pull-down menu to **Not selected** be
 <a id=inputs_on_the_measures_tab_section></a>
 ### Inputs on the Measures Tab
 
-The **Measures** tab appears on the Edit Control Strategy window for all types of strategies . The **Measures** tab sets the control measures to use in a strategy run. There are two mutually exclusive ways to select control measures for inclusion in the control strategy run. The default is to include measures according to their class (see the top half of [Figure 4-10](#measures_tab_of_edit_control_strategy_window)). Currently available classes are **Known** (i.e., already in use), **Emerging** (i.e., realistic, but in an experimental phase), **Hypothetical** (i.e., the specified data are hypothetical), **Obsolete** (i.e., no longer in use), and **Temporary** (controls that are used during the analysis only if the user was the creator of the control measure, therefore other users' temporary measures won't be considered during an analysis). By default, only **Known** measures will be included in the strategy run. The second way to specify measures for inclusion in a strategy run is to select a list of specific measures to consider using for the run. The use of these two methods is described in this section.
+The **Measures** tab appears on the Edit Control Strategy window for all types of strategies . The **Measures** tab sets the control measures to use in a strategy run. There are two mutually exclusive ways to select control measures for inclusion in the control strategy run. The default is to include measures according to their class (see the top half of [Figure 4-10](#measures_tab_of_edit_control_strategy_window)). Currently available classes are **Known** (i.e., already in use), **Emerging** (i.e., realistic, but in an experimental phase), **Hypothetical** (i.e., the specified data are hypothetical), **Obsolete** (i.e., no longer in use), and **Temporary** (controls that are used during the analysis only if the user was the creator of the control measure, therefore other users' temporary measures won't be considered during an analysis). By default, only **Known** measures will be included in the strategy run. The second way to specify measures for inclusion in a strategy run is to select a list of specific measures to consider using for the run. The use of these two methods is described in this section. To select additional classes of measures other than the default 'Known', **hold down the Ctrl key while clicking the desired classes of measures**. To start over with selecting classes, just click on a single class of measure without holding down the Ctrl key. Note that only the measures with the classes selected by the user will be included in the strategy run.
 
 <a id=measures_tab_of_edit_control_strategy_window></a>
 
 ![Measures Tab of Edit Control Strategy Window][measures_tab_of_edit_control_strategy_window]
 
 [measures_tab_of_edit_control_strategy_window]: images/Measures_Tab_of_Edit_Control_Strategy_Window.png
+
 **Figure 4-10. Edit Control Strategy Measures Tab.**
 
 **Step 4-18: Select Control Measures by Class.** Click on one of the classes in the `Classes to Include` table and click `Save` to include all measures of a given class in a control strategy. To select multiple classes of measures, hold down the Ctrl key while clicking the desired classes of measures. To start over with selecting classes, just click on a single class of measure without holding down the Ctrl key. Note that only the measures with the classes selected by the user will be included in the strategy run.
@@ -461,7 +471,7 @@ The **Measures** tab appears on the Edit Control Strategy window for all types o
 [dialog_to_add_specific_control_measures_to_a_strategy]: images/Dialog_to_Add_Specific_Control_Measures_to_a_Strategy.png
 **Figure 4-11. Select Control Measures Window.**
 
-Additional settings are available for selecting control measures to include in a control strategy (see `Measure Properties` and `Regions` at bottom of the **Select Control Measures** window). These settings include the following:
+* Specify an **Order** to control the order in which this group of measures is applied as compared to other groups of measures you have selected. This order of application is particularly relevant to the "Apply Measures in Series" strategy type. When running this type of strategy, since multiple measures can be applied to the sources, they will be applied in increasing numerical order (i.e., measures with order set to 1 will be applied before those with order set to 2).
 
 * `Set Order`: Controls the order in which the current group of measures is applied as compared to other groups of measures selected for the control strategy. This order of application is particularly relevant to the "Apply Measures in Series" strategy type. When running this type of strategy, since multiple measures can be applied to the sources, they will be applied in increasing numerical order (i.e., measures with order set to 1 will be applied before those with order set to 2).
 * `Set RE%`: Overrides the values of Rule Effectiveness specified in the measure efficiency records.
@@ -469,6 +479,7 @@ Additional settings are available for selecting control measures to include in a
 * `Regions`: Sets a county dataset from the `Dataset` pull-down menu and a version of that dataset from the `Version` menu. By setting a `Region` the selected measures will only be applied to counties listed in the selected county dataset.
 
 After selecting some the specific measures and overrides using the **Select Control Measures** window, click `OK` to add the measures to the control strategy. The selected measures will appear on the **Measures** tab. The tab will now look similar to that shown in [Figure 4-12](#measures_tab_showing_specific_measures_to_include). Note that only the table of specific measures and their properties is shown, and the Classes to Include list is no longer shown. If desired, you may repeat the process of selecting specific measures to add new sets of measures to the list of measures to be used for the strategy. Each new group of measures selected can have different settings for the order, RE, RP, and Region.
+
 
 <a id=measures_tab_showing_specific_measures_to_include></a>
 
@@ -494,7 +505,7 @@ The **Constraints** tab ([Figure 4-13](#constraints_tab_of_edit_control_strategy
 **Table 4-7. Constraints Elements Applicable to All Strategy Types**
 
 Constraint Name|Constraint Description
--|-
+-------------------------------------|---------------------------------------------------------------------------------------------------------------------
 Minimum Emissions Reduction (tons)|If specified, requires each control measure to reduce the target pollutant by at least the specified minimum tonnage for a particular source (down to the plant+point+stack+segment level of specification); if the minimum tonnage reduction is not attainable, the measure will not be applied.
 Minimum Control Efficiency (%)|If specified, requires each control measure used in the strategy to have a control efficiency greater than or equal to the specified control efficiency for a particular source and target pollutant.
 Maximum 2013 Cost per Ton (\$/ton)|If specified, each control measure must have an annualized cost per ton less than or equal to the specified maximum annualized cost per ton for the target pollutant for each source. This cost is based on 2013 dollars.
@@ -502,6 +513,7 @@ Maximum 2013 Annualized Cost (\$/yr)|If specified, each control measure must hav
 Minimum Percent Reduction Difference for Replacement Control (%)|If specified, each control measure must have a percent reduction in emissions with the new measure that is greater than or equal to the specified difference in order for the old control measure to be "replaced by" the new control measure. Incremental controls that add an additional device onto a previously controlled source are not yet supported by CoST except for the Apply Measures in Series strategy type, for which all controls are assumed to be independently applicable. In the event that a combination of two control devices is listed as a control measure (e.g., LNB+FGR) and the combined control efficiency provides an ample increase in the control efficiency over the original efficiency, that combination of the devices can still serve as a replacement control if the source already has a measure applied (e.g., LNB). In the future, instead of requiring an increase in the percent reduction, it may be more useful to specify a minimum additional percent reduction in remaining emissions (e.g., such as one might see when going from a 99% control measure to a 99.5% control measure).
 
 The constraints in [Table 4-7](#constraints_common_to_multiple_control_strategy_types_table) are available in the `All Strategy Types` section of the **Constraints** tab. The `Least Cost` section of the **Constraints** tab is used to specify constraints that are specific to the Least Cost strategy type. These constraints vary based on the type of algorithm selected. [Figure 4-13](#constraints_tab_of_edit_control_strategy_window) shows the constraints specific to the Least Cost strategy algorithm.
+
 
 Details of algorithm-specific constraints for the Least Cost, Least Cost Curve, and Multi-Pollutant Maximum Emissions Reduction follow.
 
@@ -619,6 +631,7 @@ Click `Close` to exit from the **Data Viewer** when you are finished reviewing t
 
 <a id=summary_tab_of_dataset_properties_editor></a>
 
+
 ![Summary Tab of Dataset Properties Editor][summary_tab_of_dataset_properties_editor]
 
 [summary_tab_of_dataset_properties_editor]: images/Summary_Tab_of_Dataset_Properties_Editor.png
@@ -635,7 +648,7 @@ Examine the other tabs of the **Dataset Properties Editor** for the **Strategy D
 [keywords_tab_of_dataset_properties_editor]: images/Keywords_Tab_of_Dataset_Properties_Editor.png
 **Figure 4-20. Output Dataset Properties Keywords Tab.**
 
-The keywords in the `Keywords Specific to Dataset Type` section (the upper part of window in [Figure 4-20](#keywords_tab_of_dataset_properties_editor)) typically contain directives on how to export the data or other data values that are the same for all datasets of the same type.
+The keywords in the `Keywords Specific to Dataset Type` section (the upper part of window in [Figure 4-20](#keywords_tab_of_dataset_properties_editor)) typically contain directives on how to export the data or other data values that are the same for all datasets of the same type. Typically FF10 or ORL inventories will have some of these keywords.
 
 *Note that when the Dataset Properties Editor is open for a dataset no other users can edit that dataset.* Similarly, if a control strategy or control measure is open for *editing*, no other users can edit those items. Users will be able to view these items of the access permissions are set appropriately (see `Intended Use` setting on the **Summary** tab).
 
@@ -917,7 +930,7 @@ The Strategy County Summary output dataset is a table of emission reduction and 
 **Table 4-11. Columns in the Strategy County Summary**
 
 Column|Description
--|-
+------------------------------------------|------------------------------------------------------------------------------------------------------------------
 SECTOR|The emissions sector for the source (i.e., ptnonipm for the point non-IPM emissions sector)
 FIPS|The state and county FIPS code for the source
 POLL|The pollutant for the source
@@ -958,7 +971,7 @@ The columns of the Strategy Messages output are described in [Table 4-12](#colum
 **Table 4-12. Columns in the Strategy Messages Output**
 
 Column|Description
--|-
+------------------------------------------|--------------------------------------------------------------------------------------------------------------
 FIPS|The state and county FIPS code for the source, found in the inventory
 SCC|The SCC code for the source, found in the inventory
 PLANTID|For point sources, the plant ID for the source from the inventory.
