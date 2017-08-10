@@ -3,7 +3,7 @@ Cost Strategy Tool (CoST) User's Guide
 
 This guide is an operational guidance document for users of the [Control Strategy Tool](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution#control%20strategy%20tool) (CoST). It is designed to support the installation, configuration, and execution of CoST for creating and applying emissions control strategies to emissions inventories.
 
-[Download a PDF version of this User's Guide](add link)
+[Download a PDF version of this User's Guide](./PDF/COST_USER_GUIDE.08-10-2017.pdf)
 
 [Chapter 1 (Background).](./ch1_introduction.md) CoST background, goals, and terminology.
 
