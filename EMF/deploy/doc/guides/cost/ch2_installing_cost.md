@@ -40,14 +40,14 @@ The software package can be downloaded via UNC's Community Modeling and Analysis
 [installation_package_zip_file_folder_and_file_structure]: images/Installation_Package_Zip_File_Folder_and_File_Structure.png
 
 * Install\_EMF.bat - bat file to install the EMF Client and Server
-* \control\_measures - contains measures in the database (note: These are already installed)
-* \database\_backup - contains a backup of the database
-* \EMF\_Client - includes client installation package (all the Java libraries etc.)
-* \EMF\_Server - includes the emf.war file that will be pushed to the tomcat server
-* \inventories - contains inventories
-* \java\_jre - includes the Java JRE installation package
-* \postgresql - includes the PostgreSQL installation package and postgresql jdbc driver
-* \tomcat - includes the Tomcat installation package
+* control\_measures - contains measures in the database (note: These are already installed)
+* database\_backup - contains a backup of the database
+* EMF\_Client - includes client installation package (all the Java libraries etc.)
+* EMF\_Server - includes the emf.war file that will be pushed to the tomcat server
+* inventories - contains inventories
+* java\_jre - includes the Java JRE installation package
+* postgresql - includes the PostgreSQL installation package and postgresql jdbc driver
+* tomcat - includes the Tomcat installation package
 
 ## Installing Java ##
 
@@ -195,9 +195,9 @@ When you reach the end, click **Finish**. The Tomcat application server is now i
 
 > `SET EMF_DATA_DIRECTORY=C:\Users\Public\EMF_Data`
 
-> `SET POSTGRESDIR=C:\Program Files\PostgreSQL\9.3`
+> `SET POSTGRESDIR=C:\\Program Files\PostgreSQL\9.3`
 
-> `SET TOMCAT_DIR=C:\Program Files\Apache Software Foundation\Tomcat 7.0`
+> `SET TOMCAT_DIR=C:\\Program Files\Apache Software Foundation\Tomcat 7.0`
 
 The `EMF_CLIENT_DIRECTORY` variable contains the location where the EMF client application will be installed. This is the location where you will find the actual program to run CoST.
 
@@ -219,7 +219,7 @@ The `TOMCAT_DIR` variable contains the location where the Tomcat application was
 
 > `set EMF_HOME=`Location of EMF client application (e.g., `C:\Users\Public\EMF` - see `EMF_CLIENT_DIRECTORY` environment from Step 6)
 
-> `set JAVA_EXE=`Location of Java runtime application (e.g., 'C:\Program Files\Java\jre1.8.0\_51\bin\java`, note that the directory is C:\Program Files\Java\jre1.8.0\_51\bin and java is the Java runtime application)
+> `set JAVA_EXE=`Location of Java runtime application (e.g., 'C:\\Program Files\Java\jre1.8.0\_51\bin\java`, note that the directory is C:\\Program Files\Java\jre1.8.0\_51\bin and java is the Java runtime application)
 
 12\. Run the client by double clicking on the bat file EMFClient.bat. Instead of the using the default system login, we recommend creating a new user by clicking the Register New User button as shown in [Figure](#login_to_the_emissions_modeling_framework_window).
 
