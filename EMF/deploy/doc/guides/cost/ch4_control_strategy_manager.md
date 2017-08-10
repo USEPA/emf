@@ -85,7 +85,7 @@ Some of the key aspects of each of the strategy types are summarized in [Table 4
 **Table 4-1. Control Strategy Algorithms**
 
 Strategy Type|Multiple Inventories|Typical Sectors|Measure Assignment|Outputs
--|-|-|-|-
+----------------------------|-----------------------|---------------------------------------------------|--------------------------|----------------
 Annotate Inventory|Processed independently|Area, nonpoint|One per source|Standard
 Apply Measures in Series|Processed independently|Mobile: Onroad, nonroad|Multiple per source|Standard
 Least Cost|Will be merged|Area, nonpoint|One per source|Standard, Least Cost Control Measure Worksheet
@@ -189,7 +189,7 @@ The Control Strategy Manager shows all of the control strategies currently avail
 **Table 4-2. Control Strategy Manager Table**
 
 Column|Description
--|-
+--------------------|---------------------------------------------------------------------------------------------------------------------------------
 Name|shows the name of the control strategy.
 Last Modified|shows the date and time on which the strategy was last changed.
 Run Status|gives information about the strategy run. Possible options are:<br/>Not started - the strategy run has never been started;<br/>Waiting - a run has been requested, but it is waiting because other strategies are running;<br/>Running - the strategy is currently running;<br/>Finished - the strategy run completed successfully;<br/>Failed - the strategy run started, but failed due to a problem.
@@ -262,7 +262,7 @@ If the new strategy does not appear in the Control Strategy Manager, first click
 **Table 4-3. Control Strategy Manager Summary Tab**
 
 Tab|Description
--|-
+--------------------|-------------------------------------------------------------------------------------------------------------
 Summary|Shows you high-level information about the strategy, such as its Name and the Target Pollutant.
 Inventories|From which you can specify the emission inventories to use as input to the strategy and filters for those inventories.
 Measures|Allows you to specify the classes of measures to include in the strategy, or select specific measures to include.
@@ -327,7 +327,7 @@ Some fields of a control strategy that appear on the **Summary** tab are set aut
 **Table 4-4. Fields Automatically Set by CoST**
 
 Field|Description
--|-
+----------------------------------|------------------------------------------------------------------------------------------------------
 Creator|The name of the person who created the strategy.
 Last Modified Date|The date and time when the strategy was last modified.
 Copied From|The name of the strategy that this strategy was copied from, if any.
@@ -822,7 +822,7 @@ Implicit Price Deflator (IPD) available from the United States Department of Com
 **Table 4-8. Excerpt from the gdplev Table Used to Convert Data between Cost Years**
 
 Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD
--|-|-|-|-|-|-|-|-|-|-
+---------|-----------|----|-------|---------|---|-----------|------|-|-------------|-----------
 1980|44.377| |1990|66.773| |2000|81.887| |2010|101.221
 1981|48.520| |1991|68.996| |2001|83.754| |2011|103.311
 1982|51.530| |1992|70.569| |2002|85.039| |2012|105.214
@@ -842,7 +842,7 @@ As indicated above, [Table 4-9](#columns_in_the_strategy_detailed_result_table) 
 **Table 4-9. Columns in the Strategy Detailed Result**
 
 Column|Description
--|-
+-------------|--------------------------------------------------------------------------------------------------------
 DISABLE|A true-false value that determines whether to disable the control represented on this line during the creation of a controlled inventory.
 CM\_ABBREV|The abbreviation for the control measure that was applied to the source.
 POLL|The pollutant for the source, found in the inventory.
@@ -905,7 +905,7 @@ The Strategy Measure Summary output dataset is a table of emission reduction and
 **Table 4-10. Columns in the Strategy Measure Summary**
 
 Column|Description
--|-
+--------------------|-----------------------------------------------------------------------------------------------------------------------
 SECTOR|The sector for the source (e.g., ptnonipm for the point non-IPM sector)
 FIPS|The state and county FIPS code for the source
 SCC|The SCC for the source
@@ -989,7 +989,7 @@ RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tra
 **Table 4-13. Example of Strategy Messages Output**
 
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
--|-|-|-|-|-|-|-|-|-
+------|----------|------------|-----|------|---|----------|------------|---|-------------------------------------------
 42049|30900201|420490009|942|S942|1|PM2\_5|Warning| |Negative emission reduction (-1693.9)
 
 
@@ -997,7 +997,7 @@ fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
 **Table 4-14. Example of Strategy Measure Summary Data**
 
 SECTOR|FIPS|SCC|POLL|CONTROL\_MEASURE\_ABBREV|CONTROL\_MEASURE|CONTROL\_TECHNOLOGY|SOURCE\_GROUP|ANNUAL\_COST|AVG\_ANN\_COST\_PER\_TON|EMIS\_REDUCTION
--|-|-|-|-|-|-|-|-|-|-
+---------|------|-----------|------|-------------|----------------------------------------------|-------------------------|--------------|---------|--------|-----------
 ptnonipm|37001|10200906|PM10|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
 ptnonipm|37001|10200906|PM2\_5|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
 ptnonipm|37001|30500311|PM10|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
@@ -1010,7 +1010,7 @@ ptnonipm|37001|30501110|PM2\_5|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) M
 **Table 4-15. Example of Strategy County Summary Data**
 
 SECTOR|FIPS|POLL|INPUT\_EMIS|EMIS\_REDUCTION|REMAINING\_EMIS|PCT\_RED|ANNUAL\_COST|ANNUAL\_OPER\_MAINT\_COST|ANNUALIZED\_CAPITAL\_COST|TOTAL\_CAPITAL\_COST|AVG\_ANN\_COST\_PER\_TON
--|-|-|-|-|-|-|-|-|-|-|-
+------------|-------|------|-----------|-----|--------|---------|-----------|-----------|----------|----------|----------
 ptnonipm|37001|VOC|313.8724| |313.8724| | | | | | |
 ptnonipm|37001|PM2\_5|33.4717|33.2505|0.2212|99.3391| | | | | |
 ptnonipm|37001|NH3|6.9128| |6.9128| | | | | | |
