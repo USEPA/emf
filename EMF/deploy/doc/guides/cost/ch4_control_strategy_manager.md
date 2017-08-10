@@ -975,13 +975,8 @@ RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tra
 <a id=example_of_strategy_messages_output_table></a>
 **Table 4-13. Example of Strategy Messages Output**
 
-Column|Description|Description|Description|Description
--|-
-test|test|test|test|test
-
-
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
--|-
+-|-|-|-|-|-|-|-|-|-
 42049|30900201|420490009|942|S942|1|PM2\_5|Warning|blank|test
 
 
@@ -991,7 +986,7 @@ Negative emission reduction (-1693.9)
 **Table 4-14. Example of Strategy Measure Summary Data**
 
 SECTOR|FIPS|SCC|POLL|CONTROL\_MEASURE\_ABBREV|CONTROL\_MEASURE|CONTROL\_TECHNOLOGY|SOURCE\_GROUP|ANNUAL\_COST|AVG\_ANN\_COST\_PER\_TON|EMIS\_REDUCTION
--|-
+-|-|-|-|-|-|-|-|-|-|-|-
 ptnonipm|37001|10200906|PM10|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
 ptnonipm|37001|10200906|PM2\_5|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
 ptnonipm|37001|30500311|PM10|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
@@ -1004,7 +999,7 @@ ptnonipm|37001|30501110|PM2\_5|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) M
 **Table 4-15. Example of Strategy County Summary Data**
 
 SECTOR|FIPS|POLL|INPUT\_EMIS|EMIS\_REDUCTION|REMAINING\_EMIS|PCT\_RED|ANNUAL\_COST|ANNUAL\_OPER\_MAINT\_COST|ANNUALIZED\_CAPITAL\_COST|TOTAL\_CAPITAL\_COST|AVG\_ANN\_COST\_PER\_TON
--|-
+-|-|-|-|-|-|-|-|-|-|-|-
 ptnonipm|37001|VOC|313.8724| |313.8724| | | | | | |
 ptnonipm|37001|PM2\_5|33.4717|33.2505|0.2212|99.3391| | | | | |
 ptnonipm|37001|NH3|6.9128| |6.9128| | | | | | |
