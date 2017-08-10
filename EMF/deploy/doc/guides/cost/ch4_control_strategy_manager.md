@@ -986,7 +986,7 @@ Negative emission reduction (-1693.9)
 **Table 4-14. Example of Strategy Measure Summary Data**
 
 SECTOR|FIPS|SCC|POLL|CONTROL\_MEASURE\_ABBREV|CONTROL\_MEASURE|CONTROL\_TECHNOLOGY|SOURCE\_GROUP|ANNUAL\_COST|AVG\_ANN\_COST\_PER\_TON|EMIS\_REDUCTION
--|-|-|-|-|-|-|-|-|-|-ß
+-|-|-|-|-|-|-|-|-|-|-
 ptnonipm|37001|10200906|PM10|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
 ptnonipm|37001|10200906|PM2\_5|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
 ptnonipm|37001|30500311|PM10|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
