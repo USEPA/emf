@@ -982,8 +982,9 @@ test|test
 
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
 -|-
-42049|30900201|420490009|942|S942|1|PM2\_5|Warning|blank|Negative emission reduction (-1693.9)
+42049|30900201|420490009|942|S942|1|PM2\_5|Warning|blank|test
 
+Negative emission reduction (-1693.9)
 
 <a id=example_of_strategy_measure_summary_data_table></a>
 **Table 4-14. Example of Strategy Measure Summary Data**
