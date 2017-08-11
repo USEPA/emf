@@ -1,0 +1,13 @@
+#FORMAT=FF10_POINT
+#COUNTRY=US
+#YEAR=2014
+#
+# This dataset is for the purpose of testing example calculations in the April 2017 revised draft CoST Equations document
+# 
+#EXPORT_DATE=Fri Aug 11 10:09:41 EDT 2017
+#EXPORT_VERSION_NAME=Initial Version
+#EXPORT_VERSION_NUMBER=0
+country_cd,region_cd,tribal_code,facility_id,unit_id,rel_point_id,process_id,agy_facility_id,agy_unit_id,agy_rel_point_id,agy_process_id,scc,poll,ann_value,ann_pct_red,facility_name,erptype,stkhgt,stkdiam,stktemp,stkflow,stkvel,naics,longitude,latitude,ll_datum,horiz_coll_mthd,design_capacity,design_capacity_units,reg_codes,fac_source_type,unit_type_code,control_ids,control_measures,current_cost,cumulative_cost,projection_factor,submitter_id,calc_method,data_set_id,facil_category_code,oris_facility_code,oris_boiler_id,ipm_yn,calc_year,date_updated,fug_height,fug_width_ydim,fug_length_xdim,fug_angle,zipcode,annual_avg_hours_per_year,jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value,jan_pctred,feb_pctred,mar_pctred,apr_pctred,may_pctred,jun_pctred,jul_pctred,aug_pctred,sep_pctred,oct_pctred,nov_pctred,dec_pctred,comment
+"US","01001",,"0000001","1","1","1","Ex1","00",,,"10100211","NOX",100,,"Cost Equation Type 1 Example Calculation","2",86,0.5,1100,,306.110000000000014,"211111",-92.1749999999999972,29.0650000000000013,,,182.298000000000002,"MW",,"109","999",,,,,,"UNC",8,"UNC","UNK",,,,"2014",20170109,,,,,"00000",,,,,,,,,,,,,,,,,,,,,,,,,,"Example data to test cost equation calcs"
+"US","01001",,"0000008","1","1","1","Ex8","00",,,"10100211","SO2",100,,"Cost Equation Type 1 Example Calculation","2",86,0.5,1100,,306.110000000000014,"211111",-92.1749999999999972,29.0650000000000013,,,40,"MW",,"109","999",,,,,,"UNC",8,"UNC","UNK",,,,"2014",20170109,,,,,"00000",,,,,,,,,,,,,,,,,,,,,,,,,,"Example data to test cost equation calcs"
+"US","01001",,"0000016","1","1","1","Ex16","00","0002","01","10100101","PM25-PRI",100,,"Cost Equation Type 1 Example Calculation","2",44,2,450,2100,10.6157006369426998,"311813",-88.4067500000000024,39.4888490000000019,,,75,"MW","",,"100","",,,,,"UNC",28,"UNC","UNK",,"","","2014",20151113,,,,,"61938",2688,,,,,,,,,,,,,,,,,,,,,,,,,"Example data to test cost equation calcs"
