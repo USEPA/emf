@@ -1113,101 +1113,103 @@ public class ControlMeasuresPDFReport implements Runnable {
                     // }
                 }
 
-                table = new PdfPTable((efficiencyRecordCount > maxRecords ? efficiencyRecordCount % maxRecords + 1 : maxRecords + 1));
-                table.setWidthPercentage(100);
+                if (efficiencyRecordCount % maxRecords != 0) {
+                    table = new PdfPTable((efficiencyRecordCount > maxRecords ? efficiencyRecordCount % maxRecords + 1 : maxRecords + 1));
+                    table.setWidthPercentage(100);
 
-                float[] columnWidths = new float[(efficiencyRecordCount > maxRecords ? efficiencyRecordCount % maxRecords + 1 : maxRecords + 1)];
-                for (int j = 0; j < columnWidths.length; j++) {
+                    float[] columnWidths = new float[(efficiencyRecordCount > maxRecords ? efficiencyRecordCount % maxRecords + 1 : maxRecords + 1)];
+                    for (int j = 0; j < columnWidths.length; j++) {
 
-                    if (j == 0) {
-                        columnWidths[j] = 1.2f;
-                    } else {
-                        columnWidths[j] = 1;
+                        if (j == 0) {
+                            columnWidths[j] = 1.2f;
+                        } else {
+                            columnWidths[j] = 1;
+                        }
                     }
-                }
-                table.setTotalWidth(columnWidths);
-                table.getDefaultCell().setBorderColor(borderColor);
+                    table.setTotalWidth(columnWidths);
+                    table.getDefaultCell().setBorderColor(borderColor);
 
-                /*
-                 * build table
-                 */
-                for (PdfPCell pdfPCell : pollutantList) {
-                    table.addCell(pdfPCell);
-                }
+                    /*
+                     * build table
+                     */
+                    for (PdfPCell pdfPCell : pollutantList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : localeList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : localeList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : effectiveList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : effectiveList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : costYearList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : costYearList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : cptList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : cptList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : refYrCPTList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : refYrCPTList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : controlEfficiencyList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : controlEfficiencyList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : minEmisList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : minEmisList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : maxEmisList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : maxEmisList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : ruleEffectivenessList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : ruleEffectivenessList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : rulePenetrationList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : rulePenetrationList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : equationTypeList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : equationTypeList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : capRecFacList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : capRecFacList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : discountRateList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : discountRateList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : capAnnRatList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : capAnnRatList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : incCPTList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : incCPTList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : detailsList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : detailsList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : existingMeasureList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : existingMeasureList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                for (PdfPCell pdfPCell : existingNEIDevList) {
-                    table.addCell(pdfPCell);
-                }
+                    for (PdfPCell pdfPCell : existingNEIDevList) {
+                        table.addCell(pdfPCell);
+                    }
     
-                document.add(table);
+                    document.add(table);
+                }
             }
         }
     }
