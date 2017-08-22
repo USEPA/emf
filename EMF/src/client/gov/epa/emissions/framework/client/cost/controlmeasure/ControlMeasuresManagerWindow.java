@@ -86,8 +86,8 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
 
     private Scc[] sccs = new Scc[] {};
 
-    private String[] years = { "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006",
-            "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014" };
+    private String[] years = { "2000", "2001", "2002", "2003", "2004", "2005", "2006",
+            "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016" };
 
     private CostYearTable costYearTable;
 
@@ -467,7 +467,7 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
 
     private void createYearsComboBox() {
         costYear = new EditableComboBox(years);
-        costYear.setSelectedIndex(14);
+        costYear.setSelectedIndex(13);
         costYear.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getEfficiencyAndCost();

@@ -119,7 +119,7 @@ BEGIN
 
 
 	-- see if there are pm target pollutant for the stategy...
-	has_pm_target_pollutant := case when target_pollutant = 'PM10' or target_pollutant = 'PM25-PRI' then true else false end;
+	has_pm_target_pollutant := case when target_pollutant = 'PM10-PRI' or target_pollutant = 'PM25-PRI' then true else false end;
 
 	-- see if there are point specific columns in the inventory
 	is_point_table := public.check_table_for_columns(inv_table_name, 'plantid,pointid,stackid,segment', ',');

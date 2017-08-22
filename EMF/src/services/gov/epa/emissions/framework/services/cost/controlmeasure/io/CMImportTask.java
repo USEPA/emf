@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.DbServerFactory;
+import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
@@ -115,7 +116,11 @@ public class CMImportTask implements Runnable {
                     }
                     //s.setDescription( desc);
                     //s.setIsFinal( true);
+                    if (!csDAO.obtainLocked(user, s.getId(), session).isLocked(user)) {
+                        throw new EmfException("Cannot lock control strategy");
+                    }
                     csDAO.finalizeControlStrategy(s.getId(), cmMsg, session, ids);
+                    csDAO.releaseLocked(user, s.getId(), session);
                 }
                 
                 if ( DebugLevels.DEBUG_23()) {
@@ -149,7 +154,11 @@ public class CMImportTask implements Runnable {
                     }
                     //s.setDescription( desc);
                     //s.setIsFinal( true);
+                    if (!cpDAO.obtainLocked(user, p.getId(), session).isLocked(user)) {
+                        throw new EmfException("Cannot lock control program");
+                    }
                     cpDAO.updateControlProgram(p.getId(), cmMsg, session, ids);
+                    cpDAO.releaseLocked(user, p.getId(), session);
                 } 
                 
                 if ( DebugLevels.DEBUG_23()) {

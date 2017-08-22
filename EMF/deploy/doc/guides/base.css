@@ -1,0 +1,37 @@
+body {
+  margin: 1em auto;
+  width: 860px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.5em;
+  border: solid 1px gray;
+}
+
+table.table_layout td {
+  border: none;
+}
+
+td {
+  vertical-align: top;
+}
+
+figure {
+  text-align: center;
+}
+
+h1 {
+  margin-top: 2em;
+}
+
+h2, h3 {
+  margin-top: 1em;
+}
+
+h1, h2, h3, h4 {
+  font-family: Helvetica, Arial, sans-serif;
+}
