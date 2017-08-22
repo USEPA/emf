@@ -50,7 +50,6 @@ DECLARE
 	remaining_emis_sql character varying;
 	inventory_sectors character varying := '';
 	include_unspecified_costs boolean := true; 
-	has_pm_target_pollutant boolean := false; 
 	has_cpri_column boolean := false;
 	has_primary_device_type_code_column boolean := false;
 	has_control_ids_column boolean := false;
@@ -243,9 +242,6 @@ BEGIN
 	FROM emf.users u
 	where u.id = creator_user_id
 	INTO is_cost_su;
-
-	-- see if there are pm target pollutant for the stategy...
-	has_pm_target_pollutant := case when target_pollutant = 'PM10' or target_pollutant = 'PM25-PRI' then true else false end;
 
 	-- see if there are point specific columns in the inventory
 	is_point_table := public.check_table_for_columns(inv_table_name, '' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '', ',');
@@ -629,7 +625,7 @@ return;
 				from emissions.' || inv_table_name || ' inv
 
 				where ' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
-					and inv.poll in (''PM10'',''PM25-PRI'')
+					and inv.poll in (''PM10-PRI'',''PM25-PRI'')
 
 				WINDOW source_window AS (PARTITION BY ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ' order by ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ',coalesce(' || inv_ceff_expression || ',0.0) desc)
 			) foo
@@ -647,12 +643,12 @@ return;
 					from emissions.' || inv_table_name || ' inv
 
 					where ' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
-						and inv.poll in (''PM10'',''PM25-PRI'',''SO2'')
+						and inv.poll in (''PM10-PRI'',''PM25-PRI'',''SO2'')
 
 					WINDOW source_window AS (PARTITION BY ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ')
 
 				) tbl
-				where so2_ann_value is not null and poll in (''PM10'',''PM25-PRI'')
+				where so2_ann_value is not null and poll in (''PM10-PRI'',''PM25-PRI'')
 			) so2_emis
 
 			on pm_fillin_ceff.record_id = so2_emis.record_id';
