@@ -929,7 +929,9 @@ abstract class ModuleRunner {
             
             viewDefinition.append("    CREATE TEMP TABLE " + viewName.toString() + "\n");
             viewDefinition.append("    (\n");
-            viewDefinition.append(String.join("\n", colDefs) + "\n");
+            for (String colDef : colDefs) {
+                viewDefinition.append(colDef + "\n");
+            }
             viewDefinition.append("    );\n\n");
         } else {
             viewName.append(moduleTypeVersionDataset.getPlaceholderName() + "_" + mode + "_view");
@@ -948,7 +950,9 @@ abstract class ModuleRunner {
     
             String versionWhereFilter = getVersionWhereFilter(connection, datasetId, version, "ds");
 
-            viewDefinition.append(String.join("\n", colDesc) + "\n");
+            for (String colDescVal : colDesc) {
+                viewDefinition.append(colDescVal + "\n");
+            }
             viewDefinition.append(String.format("    CREATE TEMP VIEW %s AS\n" +
                                                 "        SELECT %s\n" +
                                                 "        FROM %s ds\n" +
