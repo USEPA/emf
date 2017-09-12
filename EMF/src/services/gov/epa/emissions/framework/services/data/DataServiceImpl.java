@@ -63,7 +63,7 @@ public class DataServiceImpl implements DataService {
     private PooledExecutor threadPool;
 
     public enum DeleteType {
-        GENERAL, FAST, SECTOR_SCENARIO, CONTROL_STRATEGY, CONTROL_PROGRAM, TEMPORAL_ALLOCATION
+        GENERAL, FAST, SECTOR_SCENARIO, CONTROL_STRATEGY, CONTROL_PROGRAM, TEMPORAL_ALLOCATION, MODULE
     }
 
     public DataServiceImpl() {
@@ -475,6 +475,9 @@ public class DataServiceImpl implements DataService {
         
         if (delType != DeleteType.TEMPORAL_ALLOCATION)
             ids = dao.notUsedByTemporalAllocations(EmfArrays.convert(ids), owner, session);
+        
+        if (delType != DeleteType.MODULE)
+            ids = dao.notUsedByFinalModules(EmfArrays.convert(ids), owner, session);
         
         return ids;
     }

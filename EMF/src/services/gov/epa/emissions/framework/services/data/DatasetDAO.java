@@ -1401,6 +1401,29 @@ public class DatasetDAO {
         List<Integer> list = notUsedByTemporalAllocations(datasetIDs, user, session);
         return (list.size() == 0);
     }
+    
+    public List<Integer> notUsedByFinalModules(int[] datasetIDs, User user, Session session) throws Exception {
+        if (datasetIDs == null || datasetIDs.length == 0)
+            return new ArrayList<Integer>();
+        
+        // check if dataset is in the modules.modules_datasets table
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = session.createQuery(
+                "SELECT DISTINCT dataset, m.name " +
+                  "FROM Module as m, ModuleDataset as md, EmfDataset as dataset " +
+                 "WHERE m.isFinal = true " +
+                   "AND md.module.id = m.id " +
+                   "AND dataset.id = md.datasetId " +
+                   "AND (md.datasetId = " + getAndOrClause(datasetIDs, "md.datasetId") + ")").list();
+        
+        List<Integer> all = EmfArrays.convert(datasetIDs);
+        String usedby = "used by module";
+        
+        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        all.removeAll(ids);
+        
+        return all;
+    }
         
     private List<Integer> getRefdDatasetIds(User user, int[] idArray, DataQuery dataQuery, String query, String dsId, Session session)
             throws SQLException {
