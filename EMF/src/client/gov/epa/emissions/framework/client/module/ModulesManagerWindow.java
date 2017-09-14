@@ -388,6 +388,29 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             return;
         }
         
+        // for non-admin users, check ownership and finalization of selected modules
+        if (!session.user().isAdmin()) {
+            for (int moduleId : selectedModuleIds) {
+                Module module = null;
+                try {
+                    // fetch full module instead of using lite version in case changes haven't
+                    // been refreshed
+                    module = presenter.getModule(moduleId);
+                } catch (EmfException e) {
+                    messagePanel.setError("Failed to get module (ID = " + moduleId + "): " + e.getMessage());
+                    return;
+                }
+                if (!module.getCreator().equals(session.user())) {
+                    messagePanel.setError("Cannot delete module \"" + module.getName() + "\" because you did not create it.");
+                    return;
+                }
+                if (module.getIsFinal()) {
+                    messagePanel.setError("Cannot delete final module \"" + module.getName() + "\".");
+                    return;
+                }
+            }
+        }
+        
         String message = "Are you sure you want to remove the selected " + selectedModuleIds.length + " module(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
