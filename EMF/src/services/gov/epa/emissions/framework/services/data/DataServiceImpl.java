@@ -477,7 +477,7 @@ public class DataServiceImpl implements DataService {
             ids = dao.notUsedByTemporalAllocations(EmfArrays.convert(ids), owner, session);
         
         if (delType != DeleteType.MODULE)
-            ids = dao.notUsedByFinalModules(EmfArrays.convert(ids), owner, session);
+            ids = dao.notUsedByModules(EmfArrays.convert(ids), owner, session);
         
         return ids;
     }

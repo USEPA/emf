@@ -1402,7 +1402,7 @@ public class DatasetDAO {
         return (list.size() == 0);
     }
     
-    public List<Integer> notUsedByFinalModules(int[] datasetIDs, User user, Session session) throws Exception {
+    public List<Integer> notUsedByModules(int[] datasetIDs, User user, Session session) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
@@ -1411,8 +1411,7 @@ public class DatasetDAO {
         List<Object[]> list = session.createQuery(
                 "SELECT DISTINCT dataset, m.name " +
                   "FROM Module as m, ModuleDataset as md, EmfDataset as dataset " +
-                 "WHERE m.isFinal = true " +
-                   "AND md.module.id = m.id " +
+                 "WHERE md.module.id = m.id " +
                    "AND dataset.id = md.datasetId " +
                    "AND (md.datasetId = " + getAndOrClause(datasetIDs, "md.datasetId") + ")").list();
         
