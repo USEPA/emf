@@ -183,6 +183,9 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
         };
         Button removeButton = new RemoveButton(removeAction);
+        if (!session.user().isAdmin()) {
+            removeButton.setEnabled(false);
+        }
         
         Action exportAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -266,6 +269,11 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
     private void removeModuleType() {
         messagePanel.clear();
+        if (!session.user().isAdmin()) {
+            messagePanel.setMessage("You must be an administrator to remove module types");
+            return;
+        }
+        
         List<?> selected = selected();
         if (selected.isEmpty()) {
             messagePanel.setMessage("Please select one or more module types");
