@@ -321,6 +321,12 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
 
         ModuleTypeVersion[] selectedMTVs = selected.toArray(new ModuleTypeVersion[0]);
         ModuleTypeVersion selectedMTV = selectedMTVs[0];
+        
+        // check if the selected MTV is finalized
+        if (!session.user().isAdmin() && selectedMTV.getIsFinal()) {
+            messagePanel.setError("Only administrators can remove finalized module type versions");
+            return;
+        }
 
         // check if the selected MTV is used by any module
         ConcurrentSkipListMap<Integer, LiteModule> liteModules = session.getLiteModules();
