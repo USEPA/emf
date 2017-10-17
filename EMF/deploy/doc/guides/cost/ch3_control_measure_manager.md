@@ -423,7 +423,7 @@ When you are done examining the information on the View Reference Record Window,
 [view_reference_record_window]: images/View_Reference_Record_Window.png
 **Figure 3-16. Control Measure Reference Record Window**
 
-This concludes the exercises on examining existing control measures. Click `Close` to close the Control Measure window.
+This concludes the exercises on examining existing control measures. Click `Close` to close the View Control Measure window.
 
 <a id=Copying3></a>
 
