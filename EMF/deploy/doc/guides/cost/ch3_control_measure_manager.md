@@ -314,6 +314,8 @@ Equation Type|The type of cost equation to use.
 Capital Recovery Factor|The capital recovery factor to use. *Applicable only for equation-based annualized costs.*
 Discount Rate|The discount rate used to compute the capital recovery factor. *Applicable only for equation-based annualized costs.*
 Incremental CPT(Based on specified cost year dollars)|The cost to reduce a ton of the specified pollutant, when applied on top of an existing measure at an emissions source.
+Minimum Capacity (MW)| The minimum capacity for the control measure (megawatts).
+Maximum Capacity (MW)| The maximum capacity for the control measure (megawatts).
 Last Modified By|The last user to modify the efficiency record.
 Last Modified Time|The last date and time a user modified the efficiency record.
 Details|Text that specifies information about the source of data for this row or reason they were changed.
