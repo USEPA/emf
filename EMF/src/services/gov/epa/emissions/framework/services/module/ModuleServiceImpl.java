@@ -12,9 +12,11 @@ import gov.epa.emissions.framework.services.GCEnforcerTask;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.basic.UserDAO;
 import gov.epa.emissions.framework.services.data.DataCommonsDAO;
+import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
+import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.Connection;
@@ -831,12 +833,41 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public synchronized int[] deleteModules(User owner, int[] moduleIds) throws EmfException {
+    public synchronized int[] deleteModules(User owner, int[] moduleIds, boolean deleteOutputs) throws EmfException {
         List<Integer> deletedModuleIdsList = new ArrayList<Integer>();
 
         Session session = this.sessionFactory.getSession();
         for (int moduleId : moduleIds) {
             try {
+                if (deleteOutputs) {
+                    Module module = modulesDAO.getModule(moduleId, session);
+                    List<EmfDataset> datasets = new ArrayList<EmfDataset>();
+                    for (ModuleDataset md : module.getModuleDatasets().values()) {
+                        ModuleTypeVersionDataset mtvd = md.getModuleTypeVersionDataset();
+                        if (mtvd.isModeOUT()) {
+                            for (History historyRecord : module.getModuleHistory()) {
+                                HistoryDataset historyDataset = null;
+                                String result = historyRecord.getResult();
+                                if (result != null && result.equals(History.SUCCESS)) {
+                                    if (historyRecord.getHistoryDatasets().containsKey(md.getPlaceholderName())) {
+                                        historyDataset = historyRecord.getHistoryDatasets().get(md.getPlaceholderName());
+                                    }
+                                }
+                                if (historyDataset != null && historyDataset.getDatasetId() != null) {
+                                    EmfDataset emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId());
+                                    if (emfDataset != null && !datasets.contains(emfDataset)) {
+                                        datasets.add(emfDataset);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (datasets.size() > 0) {
+                        deleteDatasets(datasets.toArray(new EmfDataset[0]), owner, session);
+                        datasetDAO.deleteDatasets(datasets.toArray(new EmfDataset[0]), dbServerFactory.getDbServer(), session);
+                    }
+                }
+                
                 modulesDAO.removeModule(moduleId, session);
                 deletedModuleIdsList.add(moduleId);
             } finally {
@@ -850,6 +881,51 @@ public class ModuleServiceImpl implements ModuleService {
             deletedModuleIds[i] = deletedModuleIdsList.get(i);
         }
         return deletedModuleIds;
+    }
+    
+    public void deleteDatasets(EmfDataset[] datasets, User user, Session session) throws EmfException {
+        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, session);
+        
+        if (lockedDatasets == null)
+            return;
+        
+        try {
+            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, lockedDatasets, DeleteType.MODULE);
+        } catch (EmfException e) {
+            if (!e.getType().equals(EmfException.MSG_TYPE))
+                throw new EmfException(e.getMessage());
+        } finally {
+            releaseLocked(lockedDatasets, user, session);
+        }
+    }
+    
+    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, Session session) {
+        List<EmfDataset> lockedList = new ArrayList<EmfDataset>();
+        
+        for (int i = 0; i < datasets.length; i++) {
+            EmfDataset locked = obtainLockedDataset(datasets[i], user, session);
+            if (locked == null) {
+                releaseLocked(lockedList.toArray(new EmfDataset[0]), user, session);
+                return null;
+            }
+            
+            lockedList.add(locked);
+        }
+        
+        return lockedList.toArray(new EmfDataset[0]);
+    }
+
+    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, Session session) {
+        EmfDataset locked = datasetDAO.obtainLocked(user, dataset, session);
+        return locked;
+    }
+    
+    private void releaseLocked(EmfDataset[] lockedDatasets, User user, Session session) {
+        if (lockedDatasets.length == 0)
+            return;
+        
+        for(int i = 0; i < lockedDatasets.length; i++)
+            datasetDAO.releaseLocked(user, lockedDatasets[i], session);
     }
 
     @Override

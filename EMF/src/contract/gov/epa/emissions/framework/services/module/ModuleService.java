@@ -53,7 +53,7 @@ public interface ModuleService {
 
     Module updateModule(Module module) throws EmfException;
 
-    int[] deleteModules(User owner, int[] moduleIds) throws EmfException;
+    int[] deleteModules(User owner, int[] moduleIds, boolean deleteOutputs) throws EmfException;
 
     Module obtainLockedModule(User owner, int moduleId) throws EmfException;
 

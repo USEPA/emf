@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -412,12 +413,14 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         }
         
         String message = "Are you sure you want to remove the selected " + selectedModuleIds.length + " module(s)?";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        JCheckBox deleteOutputs = new JCheckBox("Delete any output datasets?");
+        Object[] contents = {message, deleteOutputs};
+        int selection = JOptionPane.showConfirmDialog(parentConsole, contents, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
         
         try {
-            int[] removedModuleIds = presenter.doRemove(selectedModuleIds);
+            int[] removedModuleIds = presenter.doRemove(selectedModuleIds, deleteOutputs.isSelected());
             if (removedModuleIds.length == 0)
                 messagePanel.setError("No module has been removed.");
             else if (removedModuleIds.length == 1)

@@ -262,15 +262,16 @@ public class ModuleServiceTransport implements ModuleService {
     }
 
     @Override
-    public synchronized int[] deleteModules(User owner, int[] moduleIds) throws EmfException {
+    public synchronized int[] deleteModules(User owner, int[] moduleIds, boolean deleteOutputs) throws EmfException {
         EmfCall call = call();
 
         call.setOperation("deleteModules");
         call.addParam("owner", mappings.user());
         call.addParam("moduleIds", mappings.integers());
+        call.addBooleanParameter("deleteOutputs");
         call.setReturnType(mappings.integers());
 
-        int[] deletedModuleIds = (int[]) call.requestResponse(new Object[] {owner, moduleIds} ); 
+        int[] deletedModuleIds = (int[]) call.requestResponse(new Object[] {owner, moduleIds, deleteOutputs} ); 
 
         // refresh the lite modules cache
         ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();

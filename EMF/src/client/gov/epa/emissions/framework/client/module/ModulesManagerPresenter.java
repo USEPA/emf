@@ -46,14 +46,14 @@ public class ModulesManagerPresenter {
         presenter.doDisplay();
     }
 
-    public int[] doRemove(int[] moduleIds) throws EmfException {
+    public int[] doRemove(int[] moduleIds, boolean deleteOutputs) throws EmfException {
         
         int[] lockedModuleIds = lockModules(moduleIds);
         if (lockedModuleIds == null)
             return new int[0];
 
         try {
-            return service().deleteModules(session.user(), lockedModuleIds);
+            return service().deleteModules(session.user(), lockedModuleIds, deleteOutputs);
         } catch (EmfException e) {
             throw new EmfException(e.getMessage());
         } finally {
