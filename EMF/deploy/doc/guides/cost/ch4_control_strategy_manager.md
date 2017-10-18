@@ -411,7 +411,7 @@ History|Shows how the dataset has been used in the past
 Sources|Shows where the data came from and where it is stored in the database, if applicable
 QA|Shows QA summaries that have been made of the dataset (e.g., state summaries, county summaries)
 
-In addition to the different tabs, there are buttons at the bottom of the Data Properties window. The `Edit Properties` button displays the **Dataset Properties Editor** for *changeing* (as opposed to viewing) the properties of the Dataset. The `Edit Data` button displays the **Dataset Versions Editor** for editing the actual data of the dataset by adding new versions. The `Refresh` button updates the data on the **Dataset Properties View** window with the latest information available from the server. The `Export` button exports the dataset data to a file. The `Close` button closes the **Dataset Properties View** window.
+In addition to the different tabs, there are buttons at the bottom of the Data Properties window. The `Edit Properties` button displays the **Dataset Properties Editor** for *changing* (as opposed to viewing) the properties of the Dataset. The `Edit Data` button displays the **Dataset Versions Editor** for editing the actual data of the dataset by adding new versions. The `Refresh` button updates the data on the **Dataset Properties View** window with the latest information available from the server. The `Export` button exports the dataset data to a file. The `Close` button closes the **Dataset Properties View** window.
 
 <a id=dataset_properties_view_window_for_an_emissions_inventory></a>
 
