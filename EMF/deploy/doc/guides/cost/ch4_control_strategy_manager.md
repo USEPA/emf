@@ -764,29 +764,29 @@ Close the **Create Google Earth file** window by clicking the `X` at the top rig
 
 ### Exporting the Strategy Outputs
 
-Return to the **Outputs** tab of the **Edit Control Strategy window** ([Figure 4-16](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)).
+Return to the **Outputs** tab of the **Edit Control Strategy window** ([Figure 4-18(#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)).
 
 **Step 5-11: Export Control Strategy Outputs.** To export the strategy output datasets to the EMF server, enter a folder/directory name into the `Server Export Folder` field on the **Outputs** tab. Use the checkboxes to select one or more results to export from the `Output Datasets` table and click `Export`. The files will be written as ASCII files to the `Server Export Folder`. The resulting CSV files can be imported into a spreadsheet or other database software for analysis. *Note that the dataset must be exported to a location where the EMF application user has read/write access to the folder (e.g., the same directory as specified in the environment variable, `EMF_DATA_DIRECTORY`, in the EMF installation batch file).*
 
 ### Analyzing the Strategy Outputs
 
-It is possible to view the strategy results directly from the **Outputs** tab in a sortable, filterable table, similar to the table used by the View QA Step Results window ([Figure 4-24](#view_qa_step_results_window)).
+It is possible to view the strategy results directly from the **Outputs** tab in a sortable, filterable table, similar to the table used by the View QA Step Results window ([Figure 4-26](#view_qa_step_results_window)).
 
-**Step 5-12: Analyze Control Strategy Outputs in CoST.** Use the checkboxes to select one or more results to analyze from the `Output Datasets` table and click **Analyze** to show the **Analyze Control Strategy** window for the selected outputs. An example of a Strategy County Summary analysis is shown in [Figure 4-26](#analyze_control_strategy_window). The results in this window can be sorted, filtered, plotted, and summarized with statistics. An example of a Least Cost Curve Summary is shown in [Figure 4-27](#analyzing_a_least_cost_curve_output). Exit from the **Analyze Control Strategy** window using the `X` at the top of the window.
+**Step 5-12: Analyze Control Strategy Outputs in CoST.** Use the checkboxes to select one or more results to analyze from the `Output Datasets` table and click **Analyze** to show the **Analyze Control Strategy** window for the selected outputs. An example of a Strategy County Summary analysis is shown in [Figure 4-28](#analyze_control_strategy_window). The results in this window can be sorted, filtered, plotted, and summarized with statistics. An example of a Least Cost Curve Summary is shown in [Figure 4-29](#analyzing_a_least_cost_curve_output). Exit from the **Analyze Control Strategy** window using the `X` at the top of the window.
 
 <a id=analyze_control_strategy_window></a>
 
 ![Analyze Control Strategy Window][analyze_control_strategy_window]
 
 [analyze_control_strategy_window]: images/Analyze_Control_Strategy_Window.png
-**Figure 4-26. Control Strategy Analysis Window.**
+**Figure 4-28. Control Strategy Analysis Window.**
 
 <a id=analyzing_a_least_cost_curve_output></a>
 
 ![Analyzing a Least Cost Curve Output][analyzing_a_least_cost_curve_output]
 
 [analyzing_a_least_cost_curve_output]: images/Analyzing_a_Least_Cost_Curve_Output.png
-**Figure 4-27. Least Cost Curve Strategy Summary.**
+**Figure 4-29. Least Cost Curve Strategy Summary.**
 
 <a id=creating_a_controlled_emissions_inventory_section></a>
 
@@ -794,25 +794,25 @@ It is possible to view the strategy results directly from the **Outputs** tab in
 
 CoST can create a controlled emissions inventory that reflects the effects of the strategy by merging the detailed result with the original emissions inventory. Details on controlled inventories are discussed further in the [Controlled Emissions Inventory Section](#controlled_emissions_inventory_section).
 
-**Step 5-13: Creating a Controlled Inventory.** To create a controlled inventory, click the `Controlled Inventory` radio button on the **Outputs** tab of the **Edit Control Strategy** window ([Figure 4-16](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)) and select the **Strategy Detailed Result** in the `Output Datasets` table to enable the `Create` button. *Note that only creators of a strategy or the Administrator can create inventories from a strategy result.*
+**Step 5-13: Creating a Controlled Inventory.** To create a controlled inventory, click the `Controlled Inventory` radio button on the **Outputs** tab of the **Edit Control Strategy** window ([Figure 4-18](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)) and select the **Strategy Detailed Result** in the `Output Datasets` table to enable the `Create` button. *Note that only creators of a strategy or the Administrator can create inventories from a strategy result.*
 
-Click `Create` to receive a prompt to **Enter a name prefix for the controlled inventories**; for this exercise, enter **training** and click the `OK` button. Cancelling this prompt will result in a controlled inventory with no name prefix. The status of the inventory creation will be shown in the Status window. Once the controlled inventory has been successfully created, for all but the Least Cost strategy types the name of the inventory will appear at the far right of the `Output Datasets` table in the row corresponding to the Strategy Detailed Result. For Least Cost strategy types, the controlled inventory will show up as rows in the `Output Datasets` table a "Controlled Inventory" **Result Type**. [Figure 4-28](#controlled_inventory_for_maximum_emissions_reduction_example) shows an example of where the controlled inventory name is located for a Maximum Emissions Reduction example strategy. [Figure 4-29](#controlled_inventory_for_least_cost_curve_example) shows an example of where the controlled inventories are located for a Least Cost example strategy.
+Click `Create` to receive a prompt to **Enter a name prefix for the controlled inventories**; for this exercise, enter **training** and click the `OK` button. Cancelling this prompt will result in a controlled inventory with no name prefix. The status of the inventory creation will be shown in the Status window. Once the controlled inventory has been successfully created, for all but the Least Cost strategy types the name of the inventory will appear at the far right of the `Output Datasets` table in the row corresponding to the Strategy Detailed Result. For Least Cost strategy types, the controlled inventory will show up as rows in the `Output Datasets` table a "Controlled Inventory" **Result Type**. [Figure 4-30](#controlled_inventory_for_maximum_emissions_reduction_example) shows an example of where the controlled inventory name is located for a Maximum Emissions Reduction example strategy. [Figure 4-31](#controlled_inventory_for_least_cost_curve_example) shows an example of where the controlled inventories are located for a Least Cost example strategy.
 
 <a id=controlled_inventory_for_maximum_emissions_reduction_example></a>
 
 ![Controlled Inventory for Maximum Emissions Reduction Example][controlled_inventory_for_maximum_emissions_reduction_example]
 
 [controlled_inventory_for_maximum_emissions_reduction_example]: images/Controlled_Inventory_for_Maximum_Emissions_Reduction_Example.png
-**Figure 4-28. Maximum Emissions Reduction Controlled Inventory Entry.**
+**Figure 4-29. Maximum Emissions Reduction Controlled Inventory Entry.**
 
 <a id=controlled_inventory_for_least_cost_curve_example></a>
 
 ![Controlled Inventory for Least Cost Curve Example][controlled_inventory_for_least_cost_curve_example]
 
 [controlled_inventory_for_least_cost_curve_example]: images/Controlled_Inventory_for_Least_Cost_Curve_Example.png
-**Figure 4-29. Least Cost Curve Controlled Inventory Entry.**
+**Figure 4-30. Least Cost Curve Controlled Inventory Entry.**
 
-**Step 5-14: Viewing a Controlled Inventory.** To view the data for a controlled inventory generated from all but the Least Cost strategy types, select the `Controlled Inventory` radio button and click `View Data` ([Figure 4-28](#controlled_inventory_for_maximum_emissions_reduction_example)). For Least Cost strategy types use the checkbox in the **Select** column of the `Output Datasets` table to select a controlled inventory, select the `Result` radio button, and click `View Data` ([Figure 4-29](#controlled_inventory_for_least_cost_curve_example)). The data for the controlled inventory dataset will appear in the **Data Viewer**.
+**Step 5-14: Viewing a Controlled Inventory.** To view the data for a controlled inventory generated from all but the Least Cost strategy types, select the `Controlled Inventory` radio button and click `View Data` ([Figure 4-30](#controlled_inventory_for_maximum_emissions_reduction_example)). For Least Cost strategy types use the checkbox in the **Select** column of the `Output Datasets` table to select a controlled inventory, select the `Result` radio button, and click `View Data` ([Figure 4-31](#controlled_inventory_for_least_cost_curve_example)). The data for the controlled inventory dataset will appear in the **Data Viewer**.
 
 To view the data for the input inventory that was merged with the **Strategy Detailed Result** to create the controlled inventory, select the `Input Inventory` radio button and click `View Data`.
 
@@ -1112,14 +1112,14 @@ This query is quite a bit more complex, but is still supported by the EMF QA ste
 * "Summarize by U.S. State and SMOKE Pollutant Name"
 * "Cost Curve"
 
-A plot created based the output of a Summarize by Control Technology and Pollutant summary is shown in [Figure 4-30](#control_technologies_used_within_a_least_cost_analysis).
+A plot created based the output of a Summarize by Control Technology and Pollutant summary is shown in [Figure 4-32](#control_technologies_used_within_a_least_cost_analysis).
 
 <a id=control_technologies_used_within_a_least_cost_analysis></a>
 
 ![Control Technologies used within a Least Cost Analysis][control_technologies_used_within_a_least_cost_analysis]
 
 [control_technologies_used_within_a_least_cost_analysis]: images/Control_Technologies_used_within_a_Least_Cost_Analysis.png
-**Figure 4-30. Control Technologies used within a Least Cost Analysis.**
+**Figure 4-32. Control Technologies used within a Least Cost Analysis.**
 
 When multiple datasets need to be considered in a summary (e.g., to compare two inventories), the EMF "QA Program" mechanism is used. The QA programs each have customized user interfaces that allow users to select the datasets to be used in the query. Some of the following QA programs may prove useful to CoST users:
 
