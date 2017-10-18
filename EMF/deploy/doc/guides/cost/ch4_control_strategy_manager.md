@@ -764,7 +764,7 @@ Close the **Create Google Earth file** window by clicking the `X` at the top rig
 
 ### Exporting the Strategy Outputs
 
-Return to the **Outputs** tab of the **Edit Control Strategy window** ([Figure 4-18(#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)).
+Return to the **Outputs** tab of the **Edit Control Strategy window** ([Figure 4-18](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)).
 
 **Step 5-11: Export Control Strategy Outputs.** To export the strategy output datasets to the EMF server, enter a folder/directory name into the `Server Export Folder` field on the **Outputs** tab. Use the checkboxes to select one or more results to export from the `Output Datasets` table and click `Export`. The files will be written as ASCII files to the `Server Export Folder`. The resulting CSV files can be imported into a spreadsheet or other database software for analysis. *Note that the dataset must be exported to a location where the EMF application user has read/write access to the folder (e.g., the same directory as specified in the environment variable, `EMF_DATA_DIRECTORY`, in the EMF installation batch file).*
 
@@ -803,14 +803,14 @@ Click `Create` to receive a prompt to **Enter a name prefix for the controlled i
 ![Controlled Inventory for Maximum Emissions Reduction Example][controlled_inventory_for_maximum_emissions_reduction_example]
 
 [controlled_inventory_for_maximum_emissions_reduction_example]: images/Controlled_Inventory_for_Maximum_Emissions_Reduction_Example.png
-**Figure 4-29. Maximum Emissions Reduction Controlled Inventory Entry.**
+**Figure 4-30. Maximum Emissions Reduction Controlled Inventory Entry.**
 
 <a id=controlled_inventory_for_least_cost_curve_example></a>
 
 ![Controlled Inventory for Least Cost Curve Example][controlled_inventory_for_least_cost_curve_example]
 
 [controlled_inventory_for_least_cost_curve_example]: images/Controlled_Inventory_for_Least_Cost_Curve_Example.png
-**Figure 4-30. Least Cost Curve Controlled Inventory Entry.**
+**Figure 4-31. Least Cost Curve Controlled Inventory Entry.**
 
 **Step 5-14: Viewing a Controlled Inventory.** To view the data for a controlled inventory generated from all but the Least Cost strategy types, select the `Controlled Inventory` radio button and click `View Data` ([Figure 4-30](#controlled_inventory_for_maximum_emissions_reduction_example)). For Least Cost strategy types use the checkbox in the **Select** column of the `Output Datasets` table to select a controlled inventory, select the `Result` radio button, and click `View Data` ([Figure 4-31](#controlled_inventory_for_least_cost_curve_example)). The data for the controlled inventory dataset will appear in the **Data Viewer**.
 
