@@ -238,11 +238,12 @@ Note that multiple strategies can be copied at once by selecting as many strateg
 
 A control strategy creator and the EMF Administrator can remove control strategies from CoST. Strategies should be removed with caution, because there is no 'undo' for this operation.
 
-**Step 3-5: Remove Control Strategies.**  Click the **Select** checkbox next to one of the strategies and then click `Remove`. As an example, select the strategy you just copied in the previous subsection. When prompted to confirm removal of the control strategy, a pop-up menu  will appear [Figure](#confirm_deletion) where the user can select whether to remove output datasets associated with the strategy that they would like to remove. The first check box is to remove the following output data: Strategy results, messages, and summaries assocated with the control strategy that is being deleted.  The second check box is to remove the Controlled inventories associated with the control strategy that is being deleted.  Check both check boxes, so that all datasets created by the control strategy are cleaned up when the strategy is deleted. The selected strategy and output datasets will be removed from the table of strategies in the Control Strategy Manager.
+**Step 3-5: Remove Control Strategies.**  Click the **Select** checkbox next to one of the strategies and then click `Remove`. As an example, select the strategy you just copied in the previous subsection. When prompted to confirm removal of the control strategy, a pop-up menu  will appear [Figure 4-5](#confirm_strategy_deletion) where the user can select whether to remove output datasets associated with the strategy that they would like to remove. The first check box is to remove the following output data: Strategy results, messages, and summaries assocated with the control strategy that is being deleted.  The second check box is to remove the Controlled inventories associated with the control strategy that is being deleted.  Check both check boxes, so that all datasets created by the control strategy are cleaned up when the strategy is deleted. The selected strategy and output datasets will be removed from the table of strategies in the Control Strategy Manager.
 
 ![Confirm_Strategy_Deletion][confirm_strategy_deletion]
 
 [confirm_strategy_deletion]: images/Confirm_Strategy_Deletion.png
+**Figure 4-5. Confirm Strategy Deletion Window.**
 
 
 *Note that if you select more than one control strategy before clicking `Remove`, all of the selected strategies will be removed.*
