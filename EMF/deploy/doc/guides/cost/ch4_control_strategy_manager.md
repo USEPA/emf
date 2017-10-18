@@ -338,7 +338,7 @@ For this Least Cost example, use the pull-down menu to set `Target Pollutant` to
 
 **Step 4-9: Include Measures with No Cost Data.** When the `Include Measures with No Cost Data` checkbox is checked, measures with control efficiencies but without cost data are included in the strategy run; otherwise they are not included. These are typically measures with no cost data specified or measures that use a cost equation to compute cost, but for which there is not enough data for the source in the inventory to fill in the equations variables. For this exercise, leave `Include Measures with No Cost Data` checked.
 
-**Step 4-10: Specify whether **Major Pollutant must match Target**. When the checkbox is checked, then the major pollutant must be the same as the target.
+**Step 4-10: Specify whether Major Pollutant must match Target.** When the checkbox is checked, then the major pollutant must be the same as the target. For this exercise, leave `Major Pollutant must match Target` checked.
 
 <a id=fields_automatically_set_by_cost_section></a>
 
