@@ -447,7 +447,6 @@ Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<b
 Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37017)|`substring(REGION\_CD,1,2) in ('37')` or REGION\_CD like '371' for only sources in NC with a county FIPS code that starts with 1.
 Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`REGION\_CD like '37%' and (poll = 'NOX' or poll = 'VOC')`
 
-![Examples of Row Filters (Data Viewer window) and Inventory Filters (Inventories tab of the Edit Control Strategy window)][examples_of_row_filters_table]
 
 Click `Close` to close the **Data Viewer** window.
 
