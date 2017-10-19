@@ -634,8 +634,8 @@ For additional details on the algorithms that are applied to assign measures to 
 
 ![Sample Outputs Tab for a Least Cost Curve Strategy][sample_outputs_tab_for_a_least_cost_curve_strategy]
 
-[sample_outputs_tab_for_a_least_cost_curve_strategy]: images/Sample_Outputs_Tab_for_a_Least_Cost_Curve_Strategy.png
-**Figure 4-19. Least Cost Sample Outputs.**
+[sample_outputs_tab_for_a_least_cost_curve_strategy]: images/Dataset_Properties_Editor_Strategy.png
+**Figure 4-19. Dataset Properties Editor for Strategy Detailed Result.**
 
 ### Viewing and Editing Properties of the Strategy Outputs
 
