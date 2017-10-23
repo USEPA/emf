@@ -844,20 +844,28 @@ public class ModuleServiceImpl implements ModuleService {
                     List<EmfDataset> datasets = new ArrayList<EmfDataset>();
                     for (ModuleDataset md : module.getModuleDatasets().values()) {
                         ModuleTypeVersionDataset mtvd = md.getModuleTypeVersionDataset();
-                        if (mtvd.isModeOUT()) {
-                            for (History historyRecord : module.getModuleHistory()) {
-                                HistoryDataset historyDataset = null;
-                                String result = historyRecord.getResult();
-                                if (result != null && result.equals(History.SUCCESS)) {
-                                    if (historyRecord.getHistoryDatasets().containsKey(md.getPlaceholderName())) {
-                                        historyDataset = historyRecord.getHistoryDatasets().get(md.getPlaceholderName());
-                                    }
-                                }
-                                if (historyDataset != null && historyDataset.getDatasetId() != null) {
-                                    EmfDataset emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId());
-                                    if (emfDataset != null && !datasets.contains(emfDataset)) {
-                                        datasets.add(emfDataset);
-                                    }
+                        if (!mtvd.isModeOUT()) continue; // only consider output datasets
+                        
+                        for (History historyRecord : module.getModuleHistory()) {
+                            HistoryDataset historyDataset = null;
+                            String result = historyRecord.getResult();
+                            // check that run was a success
+                            if (result == null || !result.equals(History.SUCCESS)) continue;
+                            
+                            if (historyRecord.getHistoryDatasets().containsKey(md.getPlaceholderName())) {
+                                historyDataset = historyRecord.getHistoryDatasets().get(md.getPlaceholderName());
+                            }
+                            if (historyDataset == null || historyDataset.getDatasetId() == null) continue;
+                            
+                            EmfDataset emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId());
+                            if (emfDataset != null && !datasets.contains(emfDataset)) {
+                                try {
+                                    // check if any modules besides the one to be deleted use this dataset as input
+                                    List<Integer> consumerModuleIds = datasetDAO.getModulesUsingDataset(emfDataset.getId());
+                                    consumerModuleIds.remove(new Integer(moduleId));
+                                    if (consumerModuleIds.size() == 0) datasets.add(emfDataset);
+                                } catch (Exception e) {
+                                    throw new EmfException("Error checking dataset usage", e);
                                 }
                             }
                         }
