@@ -1402,12 +1402,12 @@ public class DatasetDAO {
         return (list.size() == 0);
     }
     
+    @SuppressWarnings("unchecked")
     public List<Integer> notUsedByModules(int[] datasetIDs, User user, Session session) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
         // check if dataset is in the modules.modules_datasets table
-        @SuppressWarnings("unchecked")
         List<Object[]> list = session.createQuery(
                 "SELECT DISTINCT dataset, m.name " +
                   "FROM Module as m, ModuleDataset as md, EmfDataset as dataset " +
@@ -1419,6 +1419,39 @@ public class DatasetDAO {
         String usedby = "used by module";
         
         List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        all.removeAll(ids);
+        
+        if (all.size() == 0)
+            return all;
+        
+        // check for OUT NEW datasets in most recent history records
+        list = session.createSQLQuery(
+                "SELECT d.id, d.name, m.name AS module " +
+                  "FROM (SELECT h.module_id, MAX(h.id) AS history_id " +
+                          "FROM modules.history h " +
+                      "GROUP BY h.module_id) v " +
+                  "JOIN modules.modules m " +
+                    "ON v.module_id = m.id " +
+                  "JOIN modules.modules_datasets md " +
+                    "ON v.module_id = md.module_id " +
+                  "JOIN modules.history h " +
+                    "ON v.history_id = h.id " +
+                  "JOIN modules.history_datasets hd " +
+                    "ON v.history_id = hd.history_id " +
+                  "JOIN emf.datasets d " +
+                    "ON d.id = hd.dataset_id " +
+                 "WHERE h.result = 'SUCCESS' " +
+                   "AND md.output_method = 'NEW' " +
+                   "AND hd.placeholder_name = md.placeholder_name " +
+                   "AND (hd.dataset_id = " + getAndOrClause(datasetIDs, "hd.dataset_id") + ")").list();
+        ids = new ArrayList<Integer>();
+        
+        if (list != null && list.size() != 0) {
+            for (int i = 0; i < list.size(); i++) {
+                ids.add((Integer)list.get(i)[0]);
+                setStatus(user.getUsername(), "Dataset \"" + list.get(i)[1] + "\" " + usedby + ": " + list.get(i)[2] + ".", "Delete Dataset", session);
+            }
+        }
         all.removeAll(ids);
         
         return all;
