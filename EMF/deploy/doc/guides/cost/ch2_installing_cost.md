@@ -78,14 +78,14 @@ Go to the `java_jre` directory and double click the executable file, `jre-8u51-w
 Follow the installation steps as illustrated in the following figures.
 
 <div id="fig:Figure2-3">
-![Figure 2-3: Java Setup Welcome](images/Java_Setup_Welcome.png)
+![Figure 2-3: Java Setup Welcome](images/Java_Setup_Welcome.png){height=25%}
 
 </div>
 
 Click `Install` to accept the license agreement and start the installation process.
 
 <div id="fig:Figure2-4">
-![Figure 2-4: Java Setup Progress](images/Java_Setup_Progress.png)
+![Figure 2-4: Java Setup Progress](images/Java_Setup_Progress.png){height=25%}
 
 </div>
 
@@ -178,7 +178,7 @@ The PostgreSQL database is now installed and ready for the CoST system database.
 Go to the `tomcat` directory and find the executable file, `apache-tomcat-7.0.63.exe`. Double click the file to install Tomcat. Follow the installation steps as illustrated in the following figures.
 
 <div id="fig:Figure2-15">
-![Figure 2-15: Tomcat Welcome](images/Tomcat.png)
+![Figure 2-15: Tomcat Welcome](images/Tomcat_Welcome.png)
 
 </div>
 
