@@ -13,7 +13,7 @@
 [2. Install Java](#Java2)<br>
 [3. Install the PostgreSQL Database](#Postgres2)<br>
 [4. Install the Tomcat Web/Application Server](#Tomcat2)<br>
-[5. Installing CoST](#Cost2></br>
+[5. Installing CoST](#Cost2)></br>
 
 ## Running CoST and Logging into the EMF Server
 
