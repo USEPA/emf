@@ -52,7 +52,7 @@ A\. Download the CoST Windows Installation zip file from the CMAS software downl
 
 B\. Unzip the downloaded file into a known folder location on a Windows machine.
 
-[Figure2-2](#fig:Figure2-2) lists the batch file and the folders that are located in the install zip file; these are described below the figure.
+[The next figure](#installation_package) lists the batch file and the folders that are located in the install zip file; these are described below the figure.
 
 
 <a id=installation_package></a>
