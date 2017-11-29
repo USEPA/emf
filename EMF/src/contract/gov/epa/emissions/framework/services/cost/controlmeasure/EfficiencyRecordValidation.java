@@ -36,9 +36,9 @@ public class EfficiencyRecordValidation {
         if (rate.length() == 0)
             return null;
 
-        double value = parseDouble("discount rate", rate);
+        double value = parseDouble("interest rate", rate);
         if (value < 0 || value > 20)
-            throw new EmfException("discount rate should be a percent between 0 and 20 - e.g., 1 = 1%, 0.01 = 0.01%");
+            throw new EmfException("interest rate should be a percent between 0 and 20 - e.g., 1 = 1%, 0.01 = 0.01%");
         return value;
     }
 
