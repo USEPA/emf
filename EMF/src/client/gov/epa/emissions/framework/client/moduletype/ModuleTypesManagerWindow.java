@@ -467,7 +467,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }
         
         JFileChooser fc = new JFileChooser();
-        int returnVal = fc.showOpenDialog(this);
+        int returnVal = fc.showSaveDialog(this);
         if (returnVal != JFileChooser.APPROVE_OPTION)
             return;
 
