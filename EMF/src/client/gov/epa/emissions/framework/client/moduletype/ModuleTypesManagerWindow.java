@@ -744,13 +744,13 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             moduleTypesExportImport.replaceModuleType(importedModuleType, localModuleType);
         }
         
-        String summary = String.format("Imported %d dataset type%s (%d matche%s, %d conflict%s, %d addition%s) and %d module type%s (%d matche%s, %d conflict%s, %d addition%s) from \"%s\".",
+        String summary = String.format("Imported %d dataset type%s (%d match%s, %d conflict%s, %d addition%s) and %d module type%s (%d match%s, %d conflict%s, %d addition%s) from \"%s\".",
                                        moduleTypesExportImport.getDatasetTypes().length, (moduleTypesExportImport.getDatasetTypes().length == 1) ? "" : "s",
-                                       datasetTypeMatches,     (datasetTypeMatches == 1) ? "" : "s",
+                                       datasetTypeMatches,     (datasetTypeMatches == 1) ? "" : "es",
                                        datasetTypeConflicts, (datasetTypeConflicts == 1) ? "" : "s",
                                        datasetTypeAdditions, (datasetTypeAdditions == 1) ? "" : "s",
                                        moduleTypesExportImport.getModuleTypes().length, (moduleTypesExportImport.getModuleTypes().length == 1) ? "" : "s",
-                                       moduleTypeMatches,     (moduleTypeMatches == 1) ? "" : "s",
+                                       moduleTypeMatches,     (moduleTypeMatches == 1) ? "" : "es",
                                        moduleTypeConflicts, (moduleTypeConflicts == 1) ? "" : "s",
                                        moduleTypeAdditions, (moduleTypeAdditions == 1) ? "" : "s", file.getName());
         changeLog.append("\n" + summary + "\n");
