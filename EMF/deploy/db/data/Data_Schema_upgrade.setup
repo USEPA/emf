@@ -2055,7 +2055,7 @@ insert into emf.properties (name, value)
 values ('MAX_FILE_UPLOAD_SIZE', '100');	-- stored as MB not bytes
 
 -- 11/15/2017 - this view will help identify what tables to backup/restore
-CREATE OR REPLACE VIEW emissions."VW_BACKUP_RESTORE_TABLES" AS
+CREATE OR REPLACE VIEW emf."VW_BACKUP_RESTORE_TABLES" AS
  SELECT t.id,
     ((((('/backups/EMF/emissions_schema/'::text || t.dataset_type::text) || '/'::text) || ceiling(t.id::numeric / 1000.0)) || '/'::text) || t.id) || '.bck'::text AS backup_file,
     t.dataset_type,
@@ -2099,7 +2099,7 @@ CREATE OR REPLACE VIEW emissions."VW_BACKUP_RESTORE_TABLES" AS
   GROUP BY t.id, t.dataset_type, t.last_modified
   ORDER BY t.last_modified DESC;
 
-ALTER TABLE emissions."VW_BACKUP_RESTORE_TABLES"
+ALTER TABLE emf."VW_BACKUP_RESTORE_TABLES"
     OWNER TO postgres;
 
 
