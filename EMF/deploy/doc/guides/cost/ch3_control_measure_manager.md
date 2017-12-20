@@ -185,7 +185,7 @@ To select columns that are not next to each other, hold down the control key and
 
 **Step 1-14: Format Columns.** Click the `Format Columns` button, <img src="images/Format_Button.png"/>, to open the Format Columns dialog and examine the options for controlling how data in the table are shown. For example, check the checkboxes in the `Format?` column for one or more of the column names **"Avg CE"**, **"Min CE"**, and **"Max CE"** (note that you may first need to unhide the columns if you hid them in the previous step). Because these columns are all numeric, some controls used to format numbers will appear in the lower right corner.
 
-Change the `Font` to **Arial**, the `Style` to **Bold**, the `Size` to **14**, the `Horizontal Alignment` to **Left**, the `Text Color` to **blue**, the `Column Width` to **6**, the number of `Decimal Places` to **0**, and select `Significant Digits`. Once these selections have been made, the dialog should look similar to the one in [Figure 3-8](#format_columns_dialog). Click `OK` after makeing these selects to apply the formatting to the Control Measures table. The columns selected for formatting will have the attributes specified on the Format Columns dialog. In practice, this dialog is not used very often, but it can be particularly helpful to format numeric data by changing the number of decimal places or the number of significant digits shown.
+Change the `Font` to **Arial**, the `Style` to **Bold**, the `Size` to **14**, the `Horizontal Alignment` to **Left**, the `Text Color` to **blue**, the `Column Width` to **6**, the number of `Decimal Places` to **0**, and select `Significant Digits`. Once these selections have been made, the dialog should look similar to the one in [Figure 3-8](#format_columns_dialog). Click `OK` after making these selections to apply the formatting to the Control Measures table. The columns selected for formatting will have the attributes specified on the Format Columns dialog. In practice, this dialog is not used very often, but it can be particularly helpful to format numeric data by changing the number of decimal places or the number of significant digits shown.
 
 <a id=format_columns_dialog></a>
 
@@ -314,6 +314,8 @@ Equation Type|The type of cost equation to use.
 Capital Recovery Factor|The capital recovery factor to use. *Applicable only for equation-based annualized costs.*
 Discount Rate|The discount rate used to compute the capital recovery factor. *Applicable only for equation-based annualized costs.*
 Incremental CPT(Based on specified cost year dollars)|The cost to reduce a ton of the specified pollutant, when applied on top of an existing measure at an emissions source.
+Minimum Capacity (MW)| The minimum capacity for the control measure (megawatts).
+Maximum Capacity (MW)| The maximum capacity for the control measure (megawatts).
 Last Modified By|The last user to modify the efficiency record.
 Last Modified Time|The last date and time a user modified the efficiency record.
 Details|Text that specifies information about the source of data for this row or reason they were changed.
@@ -421,7 +423,7 @@ When you are done examining the information on the View Reference Record Window,
 [view_reference_record_window]: images/View_Reference_Record_Window.png
 **Figure 3-16. Control Measure Reference Record Window**
 
-This concludes the exercises on examining existing control measures. Click `Close` to close the Control Measure window.
+This concludes the exercises on examining existing control measures. Click `Close` to close the View Control Measure window.
 
 <a id=Copying3></a>
 
@@ -493,7 +495,7 @@ To set the months back to All Months, select all of the months in the `Months` l
 [efficiencies_tab_of_edit_control_measure_window]: images/Efficiencies_Tab_of_Edit_Control_Measure_Window.png
 **Figure 3-18. Edit Control Measure Efficiencies**
 
-Scroll to the right to examine additional efficiencies fields. Note that more of the fields are filled in for NOx than for the PM measure that you examined in [Section 2](#Viewing3). The additional data allow CoST to compute the capital and operating and maintenance (O&M) costs in addition to overall annualized costs when this measure is used in a control strategy.
+Scroll to the right to examine additional efficiencies fields. Note that more of the fields are filled in for NOx than for the PM measure that you examined in [Section 2](#Viewing3). The additional data allows CoST to compute the capital and operating and maintenance (O&M) costs in addition to overall annualized costs when this measure is used in a control strategy.
 
 To edit an efficiency record, check the checkbox in the **Select** column for the pollutant to edit and then click `Edit`. The Edit Efficiency Record window will appear ([Figure 3-19](#edit_efficiency_record_window)).
 
@@ -640,7 +642,7 @@ This section describes how to create new CoST control measures through the Contr
 
 **Step 5-1: Add a New Control Measure.** To create a new control measure, click `New` on the Control Measure Manager to display the New Control Measure window as shown in [Figure 3-17](#summary_tab_of_edit_control_measure_window), except with none of the control measure information filled in.
 
-**Step 5-2: Adding a New Control Measure: Summary.** Enter a unique name (e.g., New PM10 Control Measure) in the `Name` field and a unique abbreviation (e.g., PNCM) in the `Abbreviation` field for the control measure. You must also set the `Major Pollutant` (e.g., PM10) and `Class` (e.g., Hypothetical) for the measure before the measure can be saved into the CMDB. For more information on the fields in the Summary tab, see [Section 2](#Viewing3) and [Section 4](#Editing3) above.
+**Step 5-2: Adding a New Control Measure: Summary.** Enter a unique name (e.g., New PM10 Control Measure) in the `Name` field and a unique abbreviation (e.g., PNCM) in the `Abbreviation` field for the control measure. You must also set the `Major Pollutant` (e.g., PM10) and `Class` (e.g., Hypothetical) and the `Date Reviewed` for the measure before the measure can be saved into the CMDB. For more information on the fields in the Summary tab, see [Section 2](#Viewing3) and [Section 4](#Editing3) above.
 
 **Step 5-3: Adding a New Control Measure: Efficiencies.**  Go to the `Efficiencies` tab of the New Control Measure window and add at least one efficiency record for the measure; otherwise it will have no effect on any emissions sources. The efficiencies tab for the new measure will look similar to [Figure 3-18](#efficiencies_tab_of_edit_control_measure_window), except initially there will be no efficiency records. For more information on the data needed for efficiency records, see [Section 2](#Viewing3) and [Section 4](#Editing3). Add as many efficiency records as needed to describe the control efficiency and cost of the measure.
 
@@ -669,13 +671,13 @@ Use the `Filter Rows` button on the toolbar of the Select SCCs window to enter a
 Click the checkbox in the **Select** column for a few of the SCCs
 (e.g., select at least **10300101** and **30500606**) and then click `OK`. If there are measures available for the selected SCC(s), they will be shown in the table. If you selected an SCC for which there are no measures available, none will be shown.
 
-Click `Find` again and enter a filter on the Select SCCs window based on the SCC description instead of the SCC itself. For example, use the `Filter Rows` button on the Select SCCs window toolbar to enter the filter **description contains Cement**, then click on the checkbox in the **Select** column for a few of these SCCs (e.g., 30500606) and click `OK`. If there are measures in the database for the selected SCCs, they will be shown in the Control Measure Manager table. Note that there may be some SCCs for which there are no measures available in the database. In that case, no measures would be shown in the table after applying the SCC filter. For the measures that are returned, notice whether they all have the same value for Pollutant (e.g., measures for SCC 30500606 target NO<sub>x</sub>, PM<sub>10</sub>, and SO<sub>2</sub>).
+Click `Find` again and enter a filter on the Select SCCs window based on the SCC description instead of the SCC itself. For example, use the `Filter Rows` button on the Select SCCs window toolbar to enter the filter **description contains Cement**, then click on the checkbox in the **Select** column for a few of these SCCs (e.g., 30500606) and click `OK`. If there are measures in the database for the selected SCCs, they will be shown in the Control Measure Manager table. Note that there may be some SCCs for which there are no measures available in the database. In that case, no measures would be shown in the table after applying the SCC filter. For the measures that are returned, notice whether they all have the same value for Pollutant (e.g., measures for SCC 30500606 target NO<sub>x</sub>, PM<sub>2\_5</sub>, and SO<sub>2</sub>).
 
 <a id=PollutantMenu3></a>
 
 ## The Pollutant Menu
 
-The `Pollutant` pull-down menu near the bottom of the Control Measure Manager selects the pollutant for which the **CPT**, **Control Efficiency (CE)**, **Rule Effectiveness**, and **Rule Penetration** data are shown in the Control Measure Manager. Note that view these fields `Show Details` must be checked and you may need to scroll right or widen the window. Recall that each control measure can have efficiency records for multiple pollutants. By setting the `Pollutant Filter` at the top of the window, any measures that controls the selected pollutant will be shown in the table. The `Pollutant` pull-down menu displays the specific setting for the selected pollutant.  
+The `Pollutant` pull-down menu near the bottom of the Control Measure Manager selects the pollutant for which the **CPT**, **Control Efficiency (CE)**, **Rule Effectiveness**, and **Rule Penetration** data are shown in the Control Measure Manager. Note that to view these fields `Show Details` must be checked and you may need to scroll right or widen the window. Recall that each control measure can have efficiency records for multiple pollutants. By setting the `Pollutant Filter` at the top of the window, any measures that controls the selected pollutant will be shown in the table. The `Pollutant` pull-down menu displays the specific setting for the selected pollutant.  
 
 **Step 7-1: Use the Pollutant Menu.** To see the effect of the Pollutant pull-down menu, click the `Reset` button <img src="images/Reset_Button.png"/> on the Control Measure Manager toolbar to remove any previously specified filters. Set the `Pollutant Filter` to **PM2_5** and make sure that `Show Details?` is checked.  Set the `Pollutant` menu at the bottom of the window to **MAJOR**.
 

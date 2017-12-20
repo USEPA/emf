@@ -144,7 +144,7 @@ The types of outputs for a Least Cost Curve strategy are the following:
 
 * **Strategy Detailed Result** datasets for each targeted percent reduction. Note that several results could have the same actual percent reduction if the targeted reduction exceeds the maximum available reduction. As with a Least Cost strategy, the actual percent reduction may not exactly match the targeted reduction due to the discrete nature of applying specific controls to specific sources. CoST will ensure that each actual reduction is equal to or greater than the corresponding targeted reduction.
 * **Least Cost Control Measure Worksheet**: this output is the same as the worksheet produced for a regular Least Cost strategy run. Note that the same worksheet is used for all targeted percent reductions and only the status column is updated to specify when measure-source combinations are included in the current strategy.
-* **Least Cost Curve Summary**: this output dataset contains a row with cost and emissions reduction information for each of the runs that was performed for the strategy. Rows are added to this output if additional strategy runs are performed (e.g., to examine different sections of the curve). The columns of this summary are: Poll, Uncontroll\_Emis (tons), Total\_Emis\_Reduction (tons), Target\_Percent\_Reduction, Actual\_Percent\_Reduction, Total\_Annual\_Cost, Average\_Ann\_Cost\_per\_Ton, Total\_Annual\_Oper\_Maint\_Cost, Total\_Annualized\_Capital\_Cost, Total\_Capital\_Cost. Here, the Uncontroll\_Emis column contains the emissions from the original input inventory with all existing controls backed out so that it represents the uncontrolled emissions. The columns starting with Total are computed by summing all of the values of the corresponding column in the Strategy Detailed Result for the pollutant specified in the Poll column. Examples of Least Cost Curve Summaries are given in Figure 10 (TODO: fix) and Table 19 (TODO: fix).
+* **Least Cost Curve Summary**: this output dataset contains a row with cost and emissions reduction information for each of the runs that was performed for the strategy. Rows are added to this output if additional strategy runs are performed (e.g., to examine different sections of the curve). The columns of this summary are: Poll, Uncontroll\_Emis (tons), Total\_Emis\_Reduction (tons), Target\_Percent\_Reduction, Actual\_Percent\_Reduction, Total\_Annual\_Cost, Average\_Ann\_Cost\_per\_Ton, Total\_Annual\_Oper\_Maint\_Cost, Total\_Annualized\_Capital\_Cost, Total\_Capital\_Cost. Here, the Uncontroll\_Emis column contains the emissions from the original input inventory with all existing controls backed out so that it represents the uncontrolled emissions. The columns starting with Total are computed by summing all of the values of the corresponding column in the Strategy Detailed Result for the pollutant specified in the Poll column. Examples of Least Cost Curve Summaries are given in ([Figure 4-27](#analyzing_a_least_cost_curve_output)) and Table 19 (TODO: fix).
 * **Controlled Inventories**: these output datasets may optionally be created based on any of the Strategy Detailed Results that are available for the strategy. Thus, results corresponding to any of the targeted reductions may be processed by SMOKE and the resulting data used as an input to an air quality model. Note that for each targeted reduction, individual controlled inventories will be created for each of the input inventories.
 
 ### Annotate Inventory Control Strategy
@@ -242,7 +242,15 @@ Note that multiple strategies can be copied at once by selecting as many strateg
 
 A control strategy creator and the EMF Administrator can remove control strategies from CoST. Strategies should be removed with caution, because there is no 'undo' for this operation.
 
-**Step 3-5: Remove Control Strategies.**  Click the **Select** checkbox next to one of the strategies and then click `Remove`. As an example, select the strategy you just copied in the previous subsection. When prompted to confirm removal of the control strategy, click `Yes`. The selected strategy will be removed from the table of strategies in the Control Strategy Manager.
+**Step 3-5: Remove Control Strategies.**  Click the **Select** checkbox next to one of the strategies and then click `Remove`. As an example, select the strategy you just copied in the previous subsection. When prompted to confirm removal of the control strategy, a pop-up menu  will appear [Figure 4-5](#confirm_strategy_deletion) where the user can select whether to remove output datasets associated with the strategy that they would like to remove. The first check box is to remove the following output data: Strategy results, messages, and summaries assocated with the control strategy that is being deleted.  The second check box is to remove the Controlled inventories associated with the control strategy that is being deleted.  Check both check boxes, so that all datasets created by the control strategy are cleaned up when the strategy is deleted. The selected strategy and output datasets will be removed from the table of strategies in the Control Strategy Manager.
+
+<a id=confirm_strategy_deletion></a>
+
+![Confirm_Strategy_Deletion][confirm_strategy_deletion]
+
+[confirm_strategy_deletion]: images/Confirm_Strategy_Deletion.png
+**Figure 4-5. Confirm Strategy Deletion Window.**
+
 
 *Note that if you select more than one control strategy before clicking `Remove`, all of the selected strategies will be removed.*
 
@@ -250,11 +258,15 @@ A control strategy creator and the EMF Administrator can remove control strategi
 
 **Step 3-6: Create New Control Strategies.**  To create a new control strategy, click the `New` button in the Control Strategy Manager. The **Create New Control Strategy** window will appear with a text box to name the new strategy. Enter a name that is different from any of the existing control strategies (e.g., **Least Cost 2017 NOx Example**) and then click `OK`.
 
-An **Edit Control Strategy** window for your newly created strategy will appear [Figure](#edit_control_strategy_window). The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section](#inputs_to_control_strategies_section).
+An **Edit Control Strategy** window for your newly created strategy will appear ([Figure 4-6](#edit_control_strategy_window)). The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section](#inputs_to_control_strategies_section).
+
+<a id=edit_control_strategy_window></a>
 
 ![Edit Control Tab Summary Window][edit_control_strategy_window]
 
 [edit_control_strategy_window]: images/Least_Cost_2017_NOx_for_Training.png
+
+**Figure 4-6. Edit Control Strategy Window.**
 
 For this example, edit the following fields in the **Edit Control Strategy** window:
 
@@ -268,7 +280,7 @@ If the new strategy does not appear in the Control Strategy Manager, first click
 
 ### Editing Control Strategies
 
-**Step 3-7: Edit Control Strategies.** Click the **Select** checkbox next to the new strategy (i.e., the strategy created in Step 2-6) and then click `Edit`. If you have permission to edit the strategy (i.e., you are its creator or an Administrator), the **Edit Control Strategy** window will appear with the **Summary** tab visible ([Figure 4-5](#summary_tab_of_edit_control_strategy_window)). Note that if you had selected multiple control strategies before clicking `Edit`, they each would have opened in their own window. The tabs on the Edit Control Strategy window are listed in [Table 4-3](#tabs_of_the_edit_control_strategy_window_table). The contents of these tabs are described in detail in [Section 4](#Inputs4).
+**Step 3-7: Edit Control Strategies.** Click the **Select** checkbox next to the new strategy (i.e., the strategy created in Step 2-6) and then click `Edit`. If you have permission to edit the strategy (i.e., you are its creator or an Administrator), the **Edit Control Strategy** window will appear with the **Summary** tab visible ([Figure 4-7](#summary_tab_of_edit_control_strategy_window)). Note that if you had selected multiple control strategies before clicking `Edit`, they each would have opened in their own window. The tabs on the Edit Control Strategy window are listed in [Table 4-3](#tabs_of_the_edit_control_strategy_window_table). The contents of these tabs are described in detail in [Section 4](#Inputs4).
 
 <a id=tabs_of_the_edit_control_strategy_window_table></a>
 **Table 4-3. Control Strategy Manager Summary Tab**
@@ -286,7 +298,7 @@ Outputs|Shows the results from the strategy after it has been run.
 ![Summary Tab of Edit Control Strategy Window][summary_tab_of_edit_control_strategy_window]
 
 [summary_tab_of_edit_control_strategy_window]: images/Summary_Tab_of_Edit_Control_Strategy_Window.png
-**Figure 4-5. Edit Control Strategy Summary Tab.**
+**Figure 4-7. Edit Control Strategy Summary Tab.**
 
 <a id=Inputs4></a>
 
@@ -330,7 +342,7 @@ For this Least Cost example, use the pull-down menu to set `Target Pollutant` to
 
 **Step 4-9: Include Measures with No Cost Data.** When the `Include Measures with No Cost Data` checkbox is checked, measures with control efficiencies but without cost data are included in the strategy run; otherwise they are not included. These are typically measures with no cost data specified or measures that use a cost equation to compute cost, but for which there is not enough data for the source in the inventory to fill in the equations variables. For this exercise, leave `Include Measures with No Cost Data` checked.
 
-**Step 4-10: Specify whether **Major Pollutant must match Target**. When the checkbox is checked, then the major pollutant must be the same as the target.
+**Step 4-10: Specify whether Major Pollutant must match Target.** When the checkbox is checked, then the major pollutant must be the same as the target. For this exercise, leave `Major Pollutant must match Target` checked.
 
 <a id=fields_automatically_set_by_cost_section></a>
 
@@ -357,7 +369,7 @@ Target Poll. Reduction (tons)|The absolute emissions reduction achieved for the 
 
 ### Inputs on the Inventories Tab
 
-This section describes how to set the inventory inputs for a Control Strategy on the Edit Control Strategy window **Inventories** tab ([Figure 4-6](#inventories_tab_of_edit_control_strategy_window)). Click on the **Inventories** tab.  The `Inventories to Process` table near the top of the tab lists the emissions inventories for which the control strategy will be run. A control strategy can have one or more emissions inventories as input. Before inventories can be selected for use in the strategy, they must already have been imported into the EMF using either the `Import` item on the `File` menu of the EMF Main Window or through the Dataset Manager. The CoST application comes preloaded with several example inventories for training purposes.
+This section describes how to set the inventory inputs for a Control Strategy on the Edit Control Strategy window **Inventories** tab ([Figure 4-8](#inventories_tab_of_edit_control_strategy_window)). Click on the **Inventories** tab.  The `Inventories to Process` table near the top of the tab lists the emissions inventories for which the control strategy will be run. A control strategy can have one or more emissions inventories as input. Before inventories can be selected for use in the strategy, they must already have been imported into the EMF using either the `Import` item on the `File` menu of the EMF Main Window or through the Dataset Manager. The CoST application comes preloaded with several example inventories for training purposes.
 
 CoST/EMF supports both one-record-per-line (ORL) and flat file (FF10) inventory formats. Point inventories have information about emissions sources with specific locations, which are specified using latitude and longitude. Nonpoint, nonroad, and onroad inventories contain data aggregated to the county level. *Note that IDA inventories are not supported by CoST and need to be converted to ORL or FF10 prior to use with CoST.* The EMF database stores the data for the emissions inventories along with metadata about the inventories in its PostgreSQL ([http://www.postgresql.org](http://www.postgresql.org)) database.
 
@@ -366,9 +378,9 @@ CoST/EMF supports both one-record-per-line (ORL) and flat file (FF10) inventory 
 ![Inventories Tab of Edit Control Strategy Window][inventories_tab_of_edit_control_strategy_window]
 
 [inventories_tab_of_edit_control_strategy_window]: images/Inventories_Tab_of_Edit_Control_Strategy_Window.png
-**Figure 4-6. Edit Control Strategy Inventories Tab.**
+**Figure 4-8. Edit Control Strategy Inventories Tab.**
 
-**Step 4-10: Add an Inventory to Control Strategy.** To add one or more inventories to the `Inventories to Process` table for the control strategy, click the `Add` button on the **Inventories** tab. From the **Select Datasets** window that appears, use the `Choose a dataset type` pull-down menu to select the type of inventory to add (e.g., ORL Nonpoint). The file browser will display the inventories of the specified type ([Figure 4-7](#selecting_inventory_datasets_for_a_control_strategy)). If there are many inventories in the list, narrow down the list (e.g., to find inventories for 2017) by entering a search string in the `Dataset name contains` field and pressing the `Enter` key on your keyboard.
+**Step 4-11: Add an Inventory to Control Strategy.** To add one or more inventories to the `Inventories to Process` table for the control strategy, click the `Add` button on the **Inventories** tab. From the **Select Datasets** window that appears, use the `Choose a dataset type` pull-down menu to select the type of inventory to add (e.g., Flat File 2010 Nonpoint). The file browser will display the inventories of the specified type ([Figure 4-9](#selecting_inventory_datasets_for_a_control_strategy)). If there are many inventories in the list, narrow down the list (e.g., to find inventories for 2017) by entering a search string in the `Dataset name contains` field and pressing the `Enter` key on your keyboard.
 
 To select an inventory to use for the strategy from the **Select Datasets** window, click on the name of the inventory in the table. For this exercise, after choosing **Flat File 2010 Nonpoint** from the `Choose a dataset type` pull-down menu, select **2017eh\_from\_nonpoint\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37** and then click `OK`. The inventory file will then be displyed in the `Inventories to Process` window of the **Inventories** tab.
 
@@ -377,17 +389,17 @@ To select an inventory to use for the strategy from the **Select Datasets** wind
 ![Selecting Inventory Datasets for a Control Strategy][selecting_inventory_datasets_for_a_control_strategy]
 
 [selecting_inventory_datasets_for_a_control_strategy]: images/Selecting_Inventory_Datasets_for_a_Control_Strategy.png
-**Figure 4-7. Selecting Inventories for a Control Strategy.**
+**Figure 4-9. Selecting Inventories for a Control Strategy.**
 
-**Step 4-11: Add a Second Inventory to Control Strategy.** Click the `Add` button to add a second inventory to the control strategy. Select **Flat File 2010 Point** from the `Choose a dataset type` pull-down menu and add **2017eh\_from\_ptnonipm\_2011NEIv2\_POINT\_20140913\_revised\_20150115\_10mar2015\_v0\_FIPS\_37**.
+**Step 4-12: Add a Second Inventory to Control Strategy.** Click the `Add` button to add a second inventory to the control strategy. Select **Flat File 2010 Point** from the `Choose a dataset type` pull-down menu and add **2017eh\_from\_ptnonipm\_2011NEIv2\_POINT\_20140913\_revised\_20150115\_10mar2015\_v0\_FIPS\_37**.
 
 *Note: To select multiple inventories, hold down the control key while clicking the additional inventories.*
 
-**Step 4-12: Remove an Inventory from a Control Strategy.** To remove inventories from a control strategy, click the **Select** checkbox next to the inventory to remove and click the `Remove` button below the `Inventories to Process` table ([Figure 406](#inventories_tab_of_edit_control_strategy_window)). Click `Yes` to confirm deletion of the selected inventories. There is no need to remove either of the inventories for this example strategy.
+**Step 4-13: Remove an Inventory from a Control Strategy.** To remove inventories from a control strategy, click the **Select** checkbox next to the inventory to remove and click the `Remove` button below the `Inventories to Process` table ([Figure 4-8](#inventories_tab_of_edit_control_strategy_window)). Click `Yes` to confirm deletion of the selected inventories. There is no need to remove either of the inventories for this example strategy.
 
-**Step 4-13: Set Dataset Versions.** Note that multiple versions of the inventories may be available within the EMF. The EMF supports dataset versioning to facilitate reproducibility of historical runs. To specify which version of an inventory to use, check the **Select** checkbox next to a single inventory file in the `Inventories to Process` table and then click the `Set Version` button. A window will appear with a pull-down menu that lists the versions available for the selected inventory. Choose the desired version from the menu and then click the `OK` button to set the version to use for the strategy. You will then see the version number in the **Version** column of the `Inventories to Process` table. Note that the initial version of a dataset is always version **0**. There is no need to change the inventory versions for the example exercises.
+**Step 4-14: Set Dataset Versions.** Note that multiple versions of the inventories may be available within the EMF. The EMF supports dataset versioning to facilitate reproducibility of historical runs. To specify which version of an inventory to use, check the **Select** checkbox next to a single inventory file in the `Inventories to Process` table and then click the `Set Version` button. A window will appear with a pull-down menu that lists the versions available for the selected inventory. Choose the desired version from the menu and then click the `OK` button to set the version to use for the strategy. You will then see the version number in the **Version** column of the `Inventories to Process` table. Note that the initial version of a dataset is always version **0**. There is no need to change the inventory versions for the example exercises.
 
-**Step 4-14: View Dataset Properties.** To see the properties (i.e., metadata) for an inventory dataset, click the checkbox in the **Select** column of the `Inventories to Process` table and then click `View`. The **Dataset Properties View** window will appear ([Figure 4-8](#dataset_properties_view_window_for_an_emissions_inventory)). The **Dataset Properties View**  window provides information about the selected inventory dataset and has multiple tabs as described in [Table 4-5](#tabs_of_the_dataset_properties_view_and_edit_windows_table).
+**Step 4-15: View Dataset Properties.** To see the properties (i.e., metadata) for an inventory dataset, click the checkbox in the **Select** column of the `Inventories to Process` table and then click `View`. The **Dataset Properties View** window will appear ([Figure 4-10](#dataset_properties_view_window_for_an_emissions_inventory)). The **Dataset Properties View**  window provides information about the selected inventory dataset and has multiple tabs as described in [Table 4-5](#tabs_of_the_dataset_properties_view_and_edit_windows_table).
 
 <a id=tabs_of_the_dataset_properties_view_and_edit_windows_table></a>
 **Table 4-5. Dataset Properties View Window Tabs**
@@ -403,25 +415,25 @@ History|Shows how the dataset has been used in the past
 Sources|Shows where the data came from and where it is stored in the database, if applicable
 QA|Shows QA summaries that have been made of the dataset (e.g., state summaries, county summaries)
 
-In addition to the different tabs, there are buttons at the bottom of the Data Properties window. The `Edit Properties` button displays the **Dataset Properties Editor** for *changeing* (as opposed to viewing) the properties of the Dataset. The `Edit Data` button displays the **Dataset Versions Editor** for editing the actual data of the dataset by adding new versions. The `Refresh` button updates the data on the **Dataset Properties View** window with the latest information available from the server. The `Export` button exports the dataset data to a file. The `Close` button closes the **Dataset Properties View** window.
+In addition to the different tabs, there are buttons at the bottom of the Data Properties window. The `Edit Properties` button displays the **Dataset Properties Editor** for *changing* (as opposed to viewing) the properties of the Dataset. The `Edit Data` button displays the **Dataset Versions Editor** for editing the actual data of the dataset by adding new versions. The `Refresh` button updates the data on the **Dataset Properties View** window with the latest information available from the server. The `Export` button exports the dataset data to a file. The `Close` button closes the **Dataset Properties View** window.
 
 <a id=dataset_properties_view_window_for_an_emissions_inventory></a>
 
 ![Dataset Properties View Window for an Emissions Inventory][dataset_properties_view_window_for_an_emissions_inventory]
 
 [dataset_properties_view_window_for_an_emissions_inventory]: images/Dataset_Properties_View_Window_for_an_Emissions_Inventory.png
-**Figure 4-8. Dataset Properties View Window.**
+**Figure 4-10. Dataset Properties View Window.**
 
 Close the **Dataset Properties View** window by clicking `Close`.
 
-**Step 4-15: View Inventory Data.** To view the inventory data itself (as opposed to just the metadata), check the **Select** checkbox next to an inventory file in the `Inventories to Process` table in the **Inventories** tab of the **Edit Control Strategy** window and click the `View Data` button. A Data Viewer window will appear that shows the actual data for the selected inventory ([Figure 4-9](#data_viewer_for_an_emissions_inventory)). The data shown here are different from the metadata in the Dataset Properties View window. *Note that the View Data button is a shortcut. The Data Viewer can also be brought up from the Data tab of the Dataset Properties Viewer.*
+**Step 4-16: View Inventory Data.** To view the inventory data itself (as opposed to just the metadata), check the **Select** checkbox next to an inventory file in the `Inventories to Process` table in the **Inventories** tab of the **Edit Control Strategy** window and click the `View Data` button. A Data Viewer window will appear that shows the actual data for the selected inventory ([Figure 4-11](#data_viewer_for_an_emissions_inventory)). The data shown here are different from the metadata in the Dataset Properties View window. *Note that the View Data button is a shortcut. The Data Viewer can also be brought up from the Data tab of the Dataset Properties Viewer.*
 
 <a id=data_viewer_for_an_emissions_inventory></a>
 
 ![Data Viewer for an Emissions Inventory][data_viewer_for_an_emissions_inventory]
 
 [data_viewer_for_an_emissions_inventory]: images/Data_Viewer_for_an_Emissions_Inventory.png
-**Figure 4-9. Data Viewer Display of an Emissions Inventory.**
+**Figure 4-11. Data Viewer Display of an Emissions Inventory.**
 
 As inventories can contain a lot of data, only the first 300 rows of an inventory are transfered from the server to the Data Viewer by default. The fields in the upper right corner of the window in the area labeled "**Current**" provide information about how many rows the inventory has, and which rows are currently visible. The **Data Viewer** works similarly to a web search engine that shows the results in pages, and the pagination arrows near the upper right corner of the window facilitate moving between pages of data. Use the pagination arrows in the upper right corner of the window to see how they work. Go to first record, go to previous page, give a specific record, go to next page, and go to last record.
 
@@ -434,12 +446,11 @@ If you enter a `Row Filter`, and then click `Apply`, the **Data Viewer** will fi
 
 Filter Purpose|SQL Where Clause
 --------------------------------------------------------------------------------|--------------------------------------------------------------------
-Filter on a particular set of SCCs|`scc like '101%' or scc like '102%'`
-Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<br/>`POLL = 'PM10' or POLL = 'PM2\_5'`
-
-Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37017)|`substring(REGION\_CD,1,2) in ('37')`
+Filter on a particular set of SCCs|`scc like '246%' or scc like '261%'`
+Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<br/>POLL = 'PM10-PRI' or POLL = 'PM25-PRI'`
+Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37017)|`substring(REGION\_CD,1,2) in ('37')` or REGION\_CD like '371' for only sources in NC with a county FIPS code that starts with 1.
 Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`REGION\_CD like '37%' and (poll = 'NOX' or poll = 'VOC')`
-[Examples of Row Filters (Data Viewer window) and Inventory Filters (Inventories tab of the Edit Control Strategy window)][examples_of_row_filters_table]
+
 
 Click `Close` to close the **Data Viewer** window.
 
@@ -450,7 +461,7 @@ Some control strategy algorithms (e.g., Apply Measures in Series) are designed t
 
 The fields in the `Filters` section of the **Inventories** tab of control whether the entire inventory is processed in the strategy or just a portion of it. The `Inventory Filter` field sets a general filter that can be entered using the same syntax as a Structured Query Language (SQL) "where clause". Any of the columns in the inventory can be used in the expression. Examples include: "\`SCC like '212%'\`" to limit the analysis to apply only to inventory records for which the SCC code starts with 212, and "\`FIPS like '06%' or FIPS like '07%'\`" to limit the strategy analysis to apply only to inventory records with Federal Information Processing Standards (FIPS) numeric state-county codes starting with 06 or 07. Additional examples of filters are shown in [Table 4-6](#examples_of_row_filters_table).
 
-Note that the Multi-Pollutant Max Emission Reduction strategy type the `Inventory Filter` has been moved from the **Inventories** tab to the **Constraints** tab. For the Multi-Pollutant Max Emission Reduction strategy it is possible to specify the `Inventory Filter` different for each target pollutant instead at the strategy level. Note that within the inventory filter, either upper or lower case may be used to refer to the column names and for the SQL keywords; the specified values within single quotes, however, are case sensitive (e.g., 'NOx' is different from 'NOX'). Adding an inventory filter will not have an effect on the strategy until the strategy is run.
+Note: for the Multi-Pollutant Max Emission Reduction strategy type the `Inventory Filter` has been moved from the **Inventories** tab to the **Constraints** tab. (you are currently viewing the Least Cost Curve Strategy at this point in the exercise, so the Inventory Filter is on the **Inventories** tab) For the Multi-Pollutant Max Emission Reduction strategy it is possible to specify the `Inventory Filter` differently for each target pollutant instead at the strategy level. Note that within the inventory filter, either upper or lower case may be used to refer to the column names and for the SQL keywords; the specified values within single quotes, however, are case sensitive (e.g., 'NOx' is different from 'NOX'). Adding an inventory filter will not have an effect on the strategy until the strategy is run.
 
 If an inventory filter includes only specific pollutants, then pollutants not specified by the filter will not be considered for the computation of co-impacts from a strategy. In addition, pollutants like EC and OC that are not traditionally included in input inventories will not be included in the results unless the inventory has been preprocessed to include EC and OC.
 
@@ -458,9 +469,9 @@ The `County Dataset` filter allows another way to filter the inventory. This fie
 
 *Note that only the records of the input inventories that pass both the inventory and county filters will be considered for control measure application.*
 
-**Step 4-16: Set Inventory Filters.** For this exercise, set the following on the **Inventories** tab:  `Inventory Filter`: **\`REGION_CD in ('45001', '45009', '45011')\`**. Note that specifying a list of counties using the `Inventory Filter` is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as shown in the next bullet). To control only a few counties, it is straightforward to use the `Inventory Filter`; to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the specifications of the control strategy (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
+**Step 4-17: Set Inventory Filters.** For this exercise, set the following on the **Inventories** tab:  `Inventory Filter`: **\`REGION_CD in ('37077', '37017', '37095')\`**. Note that specifying a list of counties using the `Inventory Filter` is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as shown in the next bullet). To control only a few counties, it is straightforward to use the `Inventory Filter`; to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the specifications of the control strategy (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
 
-**Step 4-17: View a County Dataset.** Examine the available county datasets by pulling down the `County Dataset` menu and selecting one of the datasets. After selecting a county dataset, examine the dataset properties by clicking `View`. Display the the actual county dataset data by clicking `View Data`. Select a version of the dataset using the `County Dataset Version` field, which shows the available versions of the selected dataset. This selection is required because the EMF can store multiple versions of each dataset.
+**Step 4-18: View a County Dataset.** Examine the available county datasets by pulling down the `County Dataset` menu and selecting one of the datasets. After selecting a county dataset, examine the dataset properties by clicking `View`. Display the the actual county dataset data by clicking `View Data`. Select a version of the dataset using the `County Dataset Version` field, which shows the available versions of the selected dataset. This selection is required because the EMF can store multiple versions of each dataset.
 
 For this example, set the `County Dataset` pull-down menu to **Not selected** before proceeding.
 
@@ -468,7 +479,7 @@ For this example, set the `County Dataset` pull-down menu to **Not selected** be
 
 ### Inputs on the Measures Tab
 
-The **Measures** tab appears on the Edit Control Strategy window for all types of strategies . The **Measures** tab sets the control measures to use in a strategy run. There are two mutually exclusive ways to select control measures for inclusion in the control strategy run. The default is to include measures according to their class (see the top half of [Figure 4-10](#measures_tab_of_edit_control_strategy_window)). Currently available classes are **Known** (i.e., already in use), **Emerging** (i.e., realistic, but in an experimental phase), **Hypothetical** (i.e., the specified data are hypothetical), **Obsolete** (i.e., no longer in use), and **Temporary** (controls that are used during the analysis only if the user was the creator of the control measure, therefore other users' temporary measures won't be considered during an analysis). By default, only **Known** measures will be included in the strategy run. The second way to specify measures for inclusion in a strategy run is to select a list of specific measures to consider using for the run. The use of these two methods is described in this section. To select additional classes of measures other than the default 'Known', **hold down the Ctrl key while clicking the desired classes of measures**. To start over with selecting classes, just click on a single class of measure without holding down the Ctrl key. Note that only the measures with the classes selected by the user will be included in the strategy run.
+The **Measures** tab appears on the Edit Control Strategy window for all types of strategies . The **Measures** tab sets the control measures to use in a strategy run. There are two mutually exclusive ways to select control measures for inclusion in the control strategy run. The default is to include measures according to their class (see the top half of [Figure 4-12](#measures_tab_of_edit_control_strategy_window)). Currently available classes are **Known** (i.e., already in use), **Emerging** (i.e., realistic, but in an experimental phase), **Hypothetical** (i.e., the specified data are hypothetical), **Obsolete** (i.e., no longer in use), and **Temporary** (controls that are used during the analysis only if the user was the creator of the control measure, therefore other users' temporary measures won't be considered during an analysis). By default, only **Known** measures will be included in the strategy run. The second way to specify measures for inclusion in a strategy run is to select a list of specific measures to consider using for the run. The use of these two methods is described in this section. To select additional classes of measures other than the default 'Known', **hold down the Ctrl key while clicking the desired classes of measures**. To start over with selecting classes, just click on a single class of measure without holding down the Ctrl key. Note that only the measures with the classes selected by the user will be included in the strategy run.
 
 <a id=measures_tab_of_edit_control_strategy_window></a>
 
@@ -476,18 +487,18 @@ The **Measures** tab appears on the Edit Control Strategy window for all types o
 
 [measures_tab_of_edit_control_strategy_window]: images/Measures_Tab_of_Edit_Control_Strategy_Window.png
 
-**Figure 4-10. Edit Control Strategy Measures Tab.**
+**Figure 4-12. Edit Control Strategy Measures Tab.**
 
-**Step 4-18: Select Control Measures by Class.** Click on one of the classes in the `Classes to Include` table and click `Save` to include all measures of a given class in a control strategy. To select multiple classes of measures, hold down the Ctrl key while clicking the desired classes of measures. To start over with selecting classes, just click on a single class of measure without holding down the Ctrl key. Note that only the measures with the classes selected by the user will be included in the strategy run.
+**Step 4-19: Select Control Measures by Class.** Click on one of the classes in the `Classes to Include` table and click `Save` to include all measures of a given class in a control strategy. To select multiple classes of measures, hold down the Ctrl key while clicking the desired classes of measures. To start over with selecting classes, just click on a single class of measure without holding down the Ctrl key. Note that only the measures with the classes selected by the user will be included in the strategy run.
 
-**Step 4-19: Select Specific Control Measures.** To select specific measures for inclusion in the strategy, click the `Add` button under the `Measures to Include` table to show the **Select Control Measures** window ([Figure 4-11](#dialog_to_add_specific_control_measures_to_a_strategy)). In this window, set a filter to find all measures with the same control technology. Use the checkboxes in the **Select** column to all of the measures to include in a control strategy. To select all of the measures shown in the **Select Control Measures** window, click the `Select All` button in the toolbar. Uncheck measures to exclude from a strategy. For this example, use the `Filter` to select all sources matching the following criteria: **Abbrev contains SNCR**.
+**Step 4-20: Select Specific Control Measures.** To select specific measures for inclusion in the strategy, click the `Add` button under the `Measures to Include` table to show the **Select Control Measures** window ([Figure 4-13](#dialog_to_add_specific_control_measures_to_a_strategy)). In this window, set a filter to find all measures with the same control technology. Use the checkboxes in the **Select** column to all of the measures to include in a control strategy. To select all of the measures shown in the **Select Control Measures** window, click the `Select All` button in the toolbar. Uncheck measures to exclude from a strategy. For this example, use the `Filter` to select all sources matching the following criteria: **Abbrev contains SNCR**.
 
 <a id=dialog_to_add_specific_control_measures_to_a_strategy></a>
 
 ![Dialog to Add Specific Control Measures to a Strategy][dialog_to_add_specific_control_measures_to_a_strategy]
 
 [dialog_to_add_specific_control_measures_to_a_strategy]: images/Dialog_to_Add_Specific_Control_Measures_to_a_Strategy.png
-**Figure 4-11. Select Control Measures Window.**
+**Figure 4-13. Select Control Measures Window.**
 
 * Specify an **Order** to control the order in which this group of measures is applied as compared to other groups of measures you have selected. This order of application is particularly relevant to the "Apply Measures in Series" strategy type. When running this type of strategy, since multiple measures can be applied to the sources, they will be applied in increasing numerical order (i.e., measures with order set to 1 will be applied before those with order set to 2).
 
@@ -496,7 +507,7 @@ The **Measures** tab appears on the Edit Control Strategy window for all types o
 * `Set RP%`: Overrides the values of Rule Penetration specified in the measure efficiency records. These two settings are useful for assessing the level of emissions reductions achieved assuming different levels of effectiveness and penetration for the measures. For example, setting the rule penetration to 75% assumes that 75% of the sources are applying the measure and would therefore result in 75% of the emissions reductions it would if it was 100%.
 * `Regions`: Sets a county dataset from the `Dataset` pull-down menu and a version of that dataset from the `Version` menu. By setting a `Region` the selected measures will only be applied to counties listed in the selected county dataset.
 
-After selecting some the specific measures and overrides using the **Select Control Measures** window, click `OK` to add the measures to the control strategy. The selected measures will appear on the **Measures** tab. The tab will now look similar to that shown in [Figure 4-12](#measures_tab_showing_specific_measures_to_include). Note that only the table of specific measures and their properties is shown, and the Classes to Include list is no longer shown. If desired, you may repeat the process of selecting specific measures to add new sets of measures to the list of measures to be used for the strategy. Each new group of measures selected can have different settings for the order, RE, RP, and Region.
+After selecting some the specific measures and overrides using the **Select Control Measures** window, click `OK` to add the measures to the control strategy. The selected measures will appear on the **Measures** tab. The tab will now look similar to that shown in [Figure 4-14](#measures_tab_showing_specific_measures_to_include). Note that only the table of specific measures and their properties is shown, and the Classes to Include list is no longer shown. If desired, you may repeat the process of selecting specific measures to add new sets of measures to the list of measures to be used for the strategy. Each new group of measures selected can have different settings for the order, RE, RP, and Region.
 
 
 <a id=measures_tab_showing_specific_measures_to_include></a>
@@ -504,19 +515,19 @@ After selecting some the specific measures and overrides using the **Select Cont
 ![Measures Tab Showing Specific Measures to Include][measures_tab_showing_specific_measures_to_include]
 
 [measures_tab_showing_specific_measures_to_include]: images/Measures_Tab_Showing_Specific_Measures_to_Include.png
-**Figure 4-12. Measures Tab with Selected Control Measures.**
+**Figure 4-14. Measures Tab with Selected Control Measures.**
 
-**Step 4-20: Editing Control Measures List.** Specific measures included in a control strategy can be changed by selecting the measure(s) to edit using the checkboxes in the **Select** column of the `Measures to Include` table in the **Measures** tab of the **Edit Control Strategy** window. Select the measures to change and click the `Edit` button. An **Editing Measures** window will appear that supports changes to the measure properties as they apply to the control strategy. Click `OK` to accept the edits or `Cancel` to reject the edits.
+**Step 4-21: Editing Control Measures List.** Specific measures included in a control strategy can be changed by selecting the measure(s) to edit using the checkboxes in the **Select** column of the `Measures to Include` table in the **Measures** tab of the **Edit Control Strategy** window. Select the measures to change and click the `Edit` button. An **Editing Measures** window will appear that supports changes to the measure properties as they apply to the control strategy. Click `OK` to accept the edits or `Cancel` to reject the edits.
 
-**Step 4-21: Removing Control Measures from a Strategy.** To remove specific measures from the list of measures to be included in a strategy run, check the corresponding **Select** checkboxes and then click `Remove`. Click `Yes` to confirm the removal of the selected measures from the control strategy.
+**Step 4-22: Removing Control Measures from a Strategy.** To remove specific measures from the list of measures to be included in a strategy run, check the corresponding **Select** checkboxes and then click `Remove`. Click `Yes` to confirm the removal of the selected measures from the control strategy.
 
-For this example, remove all of the individually selected measures by clicking the `Select All` button on the **Measures** tab toolbar and then clicking `Remove` and `Yes` when prompted. Make sure that **Emerging** and **Known** are both selected in the `Classes to Include` list. The Measures tab will again look like [Figure 4-10](#measures_tab_of_edit_control_strategy_window).
+For this example, remove all of the individually selected measures by clicking the `Select All` button on the **Measures** tab toolbar and then clicking `Remove` and `Yes` when prompted. Make sure that **Emerging** and **Known** are both selected in the `Classes to Include` list. The Measures tab will again look like [Figure 4-12](#measures_tab_of_edit_control_strategy_window).
 
 <a id=input_on_constraints_tab_section></a>
 
 ### Input on Constraints Tab
 
-The **Constraints** tab ([Figure 4-13](#constraints_tab_of_edit_control_strategy_window)) of the **Edit Control Strategy** window can be used to specify constraints for a control strategy to limit how control measures are assigned during the strategy run. For example, a strategy could be set up to not use any measures that cost more than $5,000 per ton (in 2013 dollars) for the target pollutant. Alternatively, a strategy could be defined to only use measures that reduce at least 1 ton of the target pollutant for the source. CoST evaluates the constraints while the source is being matched with the control measures. For example, the emission reduction achieved by applying a measure to a source is not known until the measure and its control efficiency have been selected. Thus, constraint calculations are dependent on both the inventory source and the measure being considered for application to the source. Note that the term "source" here refers to a single row of the emissions inventory, which for point sources is uniquely determined by FIPS, plant, point, stack, segment, and SCC, and for nonpoint sources is uniquely determined by FIPS and SCC. Sources should not be confused with "plants", each of which can contain many sources.
+The **Constraints** tab ([Figure 4-15](#constraints_tab_of_edit_control_strategy_window)) of the **Edit Control Strategy** window can be used to specify constraints for a control strategy to limit how control measures are assigned during the strategy run. For example, a strategy could be set up to not use any measures that cost more than $5,000 per ton (in 2013 dollars) for the target pollutant. Alternatively, a strategy could be defined to only use measures that reduce at least 1 ton of the target pollutant for the source. CoST evaluates the constraints while the source is being matched with the control measures. For example, the emission reduction achieved by applying a measure to a source is not known until the measure and its control efficiency have been selected. Thus, constraint calculations are dependent on both the inventory source and the measure being considered for application to the source. Note that the term "source" here refers to a single row of the emissions inventory, which for point sources is uniquely determined by FIPS, plant, point, stack, segment, and SCC, and for nonpoint sources is uniquely determined by FIPS and SCC. Sources should not be confused with "plants", each of which can contain many sources.
 
 [Table 4-7](#constraints_common_to_multiple_control_strategy_types_table) defines the constraints that are applicable to all strategy types. If the constraint values are not satisfied for a particular control measure and source combination, the measure under consideration will not be applied to the source, and CoST will look for another measure that satisfies all of the constraints.
 
@@ -532,7 +543,7 @@ Maximum 2013 Cost per Ton (\$/ton)|If specified, each control measure must have 
 Maximum 2013 Annualized Cost (\$/yr)|If specified, each control measure must have an annualized cost less than or equal to the specified annualized cost for each source and target pollutant. This cost is based on 2013 dollars.
 Minimum Percent Reduction Difference for Replacement Control (%)|If specified, each control measure must have a percent reduction in emissions with the new measure that is greater than or equal to the specified difference in order for the old control measure to be "replaced by" the new control measure. Incremental controls that add an additional device onto a previously controlled source are not yet supported by CoST except for the Apply Measures in Series strategy type, for which all controls are assumed to be independently applicable. In the event that a combination of two control devices is listed as a control measure (e.g., LNB+FGR) and the combined control efficiency provides an ample increase in the control efficiency over the original efficiency, that combination of the devices can still serve as a replacement control if the source already has a measure applied (e.g., LNB). In the future, instead of requiring an increase in the percent reduction, it may be more useful to specify a minimum additional percent reduction in remaining emissions (e.g., such as one might see when going from a 99% control measure to a 99.5% control measure).
 
-The constraints in [Table 4-7](#constraints_common_to_multiple_control_strategy_types_table) are available in the `All Strategy Types` section of the **Constraints** tab. The `Least Cost` section of the **Constraints** tab is used to specify constraints that are specific to the Least Cost strategy type. These constraints vary based on the type of algorithm selected. [Figure 4-13](#constraints_tab_of_edit_control_strategy_window) shows the constraints specific to the Least Cost strategy algorithm.
+The constraints in [Table 4-7](#constraints_common_to_multiple_control_strategy_types_table) are available in the `All Strategy Types` section of the **Constraints** tab. The `Least Cost` section of the **Constraints** tab is used to specify constraints that are specific to the Least Cost strategy type. These constraints vary based on the type of algorithm selected. [Figure 4-15](#constraints_tab_of_edit_control_strategy_window) shows the constraints specific to the Least Cost strategy algorithm.
 
 
 Details of algorithm-specific constraints for the Least Cost, Least Cost Curve, and Multi-Pollutant Maximum Emissions Reduction follow.
@@ -541,7 +552,7 @@ Details of algorithm-specific constraints for the Least Cost, Least Cost Curve, 
 
 Constraints for the Least Cost algorithm, include *either* a `Domain Wide Emissions Reduction` for the target pollutant in tons or a `Domain Wide Percent Reduction` in emissions of the target pollutant. When the strategy is run, CoST will attempt to satisfy the specified reduction using controls selected with the minimum cost. Note that after the strategy run is complete, CoST will fill in the value for the least cost constraint that was not originally specified.
 
-**Step 4-22: Set a Least Cost Constraint.**  Enter a `Domain Wide Percent Reduction(%)` of **15.0** for the `Least Cost` Constraint. Click `Save` to save the changes made to the strategy. Do not close the Edit Control Strategy window yet.
+**Step 4-23: Set a Least Cost Constraint.**  Enter a `Domain Wide Percent Reduction(%)` of **15.0** for the `Least Cost` Constraint. Click `Save` to save the changes made to the strategy. Do not close the Edit Control Strategy window yet.
 
 Note that if you were to click `Close` without saving the changes, a prompt will ask if you wish to close the window without saving the changes.
 
@@ -551,7 +562,7 @@ Note that if you were to click `Close` without saving the changes, a prompt will
 
 [constraints_tab_of_edit_control_strategy_window]: images/Constraints_Tab_of_Edit_Control_Strategy_Window.png
 
-**Figure 4-13. Edit Control Strategy Constraints Tab.**
+**Figure 4-15. Edit Control Strategy Constraints Tab.**
 
 ### Least Cost Curve Algorithm Constraints
 
@@ -564,18 +575,18 @@ The Least Cost Curve strategy uses all three constraints in an iterative control
 
 ### Multi-Pollutant Maximum Emissions Reduction Algorithm Constraints
 
-The Multi-Pollutant Maximum Emissions Reduction strategy type presents a different **Constraints** Tab than the other strategy types. Since this strategy type is running goals on numerous target pollutants (e.g. PM<sub>2.5</sub>, NO<sub>x</sub>, SO<sub>2</sub>), the constraints presented in [Table 4-7](#constraints_common_to_multiple_control_strategy_types_table) are combined with an inventory filtering capability (see the [Section on the Inputs to the Inventory Tab](#inputs_on_the_inventories_tab_section)) to allow for pollutant-specific constraints. The Multi-Pollutant strategy **Constraints** tab interface is shown in [Figure 4-14](#constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy).
+The Multi-Pollutant Maximum Emissions Reduction strategy type presents a different **Constraints** Tab than the other strategy types. Since this strategy type is running goals on numerous target pollutants (e.g. PM<sub>2.5</sub>, NO<sub>x</sub>, SO<sub>2</sub>), the constraints presented in [Table 4-7](#constraints_common_to_multiple_control_strategy_types_table) are combined with an inventory filtering capability (see the [Section on the Inputs to the Inventory Tab](#inputs_on_the_inventories_tab_section)) to allow for pollutant-specific constraints. The Multi-Pollutant strategy **Constraints** tab interface is shown in [Figure 4-16](#constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy).
 
 <a id=constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy></a>
 
 ![Constraints Tab (for Multi-Pollutant Maximum Emission Reduction strategy type) of Edit Control Strategy Window][constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy]
 
 [constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy]: images/Constraints_Tab_for_Multi_Pollutant_Maximum_Emission_Reduction_Strategy.png
-**Figure 4-14. Multi-Pollutant Strategy Constraints Tab.**
+**Figure 4-16. Multi-Pollutant Strategy Constraints Tab.**
 
 The first step in configuring a Multi-Pollutant Maximum Emissions Reduction strategy is to select the target pollutants from the `Target Pollutant` list on the **Summary** tab.  The pollutants selected from this list will appear in the table on the **Constraints** tab. Note that the order that the pollutants are added to the `Target Pollutant` list is important because it sets the order by which controls are applied in the multi-pollutant strategy.
 
-To set the constraints and filters for each pollutant, click the checkbox in the **Select** column next to a pollutant on the **Constraints** tab and click `Edit`. The **Edit Control Strategy Target Pollutant** window will appear for setting the constraints and filters to use as the control strategy for the selected pollutant. [Figure 4-15](#edit_target_pollutant_dialog_of_edit_control_strategy_window) shows an example **Edit Control Strategy Target Pollutant** window. The fields in the Edit Control Strategy Window include:
+To set the constraints and filters for each pollutant, click the checkbox in the **Select** column next to a pollutant on the **Constraints** tab and click `Edit`. The **Edit Control Strategy Target Pollutant** window will appear for setting the constraints and filters to use as the control strategy for the selected pollutant. [Figure 4-17](#edit_target_pollutant_dialog_of_edit_control_strategy_window) shows an example **Edit Control Strategy Target Pollutant** window. The fields in the Edit Control Strategy Window include:
 
 * `Minimum Emissions Reduction(tons)`: sets the minimum emissions reduction tonnage for a particular source (down to the plant+point+stack+segment level of specification); only control measures that meet this threshold will be considered for the strategy
 * `Minimum Control Efficiency(%)`: requires that control measures used in the strategy have a control efficiency greater than or equal to the specified percentage for a particular source and target pollutant
@@ -592,7 +603,7 @@ See [Table 4-7](constraints_common_to_multiple_control_strategy_types_table) for
 ![Edit Target Pollutant Dialog of Edit Control Strategy Window][edit_target_pollutant_dialog_of_edit_control_strategy_window]
 
 [edit_target_pollutant_dialog_of_edit_control_strategy_window]: images/Edit_Target_Pollutant_Dialog_of_Edit_Control_Strategy_Window.png
-**Figure 4-15. Multi-Pollutant Target Pollutant Window.**
+**Figure 4-17. Multi-Pollutant Target Pollutant Window.**
 
 <a id=Running4></a>
 
@@ -608,7 +619,7 @@ If the strategy runs successfully, one message will be displayed for each invent
 
 ### List Strategy Outputs
 
-**Step 5-3: List Control Strategy Run Outputs.** Once the strategy run completes, click on the **Outputs** tab in the **Edit Control Strategy** window and then click `Refresh` at the bottom of the window to see the outputs from the run listed in the `Output Datasets` table ([Figure 4-16](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy) and [Figure 4-17](#sample_outputs_tab_for_a_least_cost_curve_strategy)).
+**Step 5-3: List Control Strategy Run Outputs.** Once the strategy run completes, click on the **Outputs** tab in the **Edit Control Strategy** window and then click `Refresh` at the bottom of the window to see the outputs from the run listed in the `Output Datasets` table ([Figure 4-18](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy) and [Figure 4-19](#sample_outputs_tab_for_a_least_cost_curve_strategy)).
 
 CoST automatically generates three main outputs for successful strategy runs: **Strategy Detailed Result**, **Strategy Measure Summary**, and **Strategy County Summary**. Some strategy types also generate a **Strategy Messages** output. Least Cost and Least Cost Curve strategies generate a **Least Cost Control Measure Worksheet** that lists all of the available control measure options for each source in the inventories.
 
@@ -621,20 +632,20 @@ For additional details on the algorithms that are applied to assign measures to 
 ![Outputs Tab of Edit Control Strategy Window for Least Cost Strategy][outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy]
 
 [outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy]: images/Outputs_Tab_of_Edit_Control_Strategy_Window_for_Least_Cost_Strategy.png
-**Figure 4-16. Edit Control Strategy Outputs Window.**
+**Figure 4-18. Edit Control Strategy Outputs Window.**
 
 <a id=sample_outputs_tab_for_a_least_cost_curve_strategy></a>
 
 ![Sample Outputs Tab for a Least Cost Curve Strategy][sample_outputs_tab_for_a_least_cost_curve_strategy]
 
-[sample_outputs_tab_for_a_least_cost_curve_strategy]: images/Sample_Outputs_Tab_for_a_Least_Cost_Curve_Strategy.png
-**Figure 4-17. Least Cost Sample Outputs.**
+[sample_outputs_tab_for_a_least_cost_curve_strategy]: images/Dataset_Properties_Editor_Strategy.png
+**Figure 4-19. Dataset Properties Editor for Strategy Detailed Result.**
 
 ### Viewing and Editing Properties of the Strategy Outputs
 
 It is possible to perform a number of operations on the strategy outputs. These operations are described in this and the following subsections.
 
-**Step 5-4: View Control Strategy Run Outputs.** The most basic operation is to view the data of the output dataset using the **Data Viewer**. To do this, select one of the outputs on the **Outputs** tab, such as the **Strategy Detailed Result**, and then click `View Data`. (Note that the Strategy Detailed Result is the main output on which the Strategy County Summary and Strategy Measure Summary are based.) This will bring up the Data Viewer showing the contents of the Strategy Detailed Result ([Figure 4-18](#view_data_for_strategy_detailed_result)).
+**Step 5-4: View Control Strategy Run Outputs.** The most basic operation is to view the data of the output dataset using the **Data Viewer**. To do this, select one of the outputs on the **Outputs** tab, such as the **Strategy Detailed Result**, and then click `View Data`. (Note that the Strategy Detailed Result is the main output on which the Strategy County Summary and Strategy Measure Summary are based.) This will bring up the Data Viewer showing the contents of the Strategy Detailed Result ([Figure 4-20](#view_data_for_strategy_detailed_result)).
 
 The **Strategy Detailed Result** shows the abbreviation of the measure matched to each of the sources for all of the controlled sources, along with columns that identify each controlled source, information about the cost of applying the measures to the sources and the emissions reductions that resulted. The information computed includes the cost of application and the emissions reduced as a result. Enter a sort order (e.g., `annual_cost desc`) to have the rows sorted in a particular way.
 
@@ -643,13 +654,13 @@ The **Strategy Detailed Result** shows the abbreviation of the measure matched t
 ![View Data for Strategy Detailed Result][view_data_for_strategy_detailed_result]
 
 [view_data_for_strategy_detailed_result]: images/View_Data_for_Strategy_Detailed_Result.png
-**Figure 4-18. Strategy Detailed Result Outputs.**
+**Figure 4-20. Strategy Detailed Result Outputs.**
 
 Clear the entries in the `Sort Order` and `Row Filter` fields on the **Data Viewer** and click `Apply`, all of the data records will be presented in the order in which they appear in the database. More information about the columns included in the detailed result is given in [Table 4-9](#columns_in_the_strategy_detailed_result_table), which is discussed later in the [Strategy Detailed Result Section](#strategy_detailed_result_section).
 
 Click `Close` to exit from the **Data Viewer** when you are finished reviewing the **Strategy Detailed Result**.
 
-**Step 5-5: View Control Strategy Run Output Properties.** From the View/Edit Control Strategy **Outputs** tab, access the properties (metadata) of an output dataset (as opposed to the actual data contained in the output), by selecting an output (for this exercise, select the **Strategy Detailed Result**) on the **Outputs** tab of the **Edit Control Strategy** window and clicking the `Edit` button. This will bring up the**Dataset Properties Editor** for the output dataset ([Figure 4-19](#summary_tab_of_dataset_properties_editor)).
+**Step 5-5: View Control Strategy Run Output Properties.** From the View/Edit Control Strategy **Outputs** tab, access the properties (metadata) of an output dataset (as opposed to the actual data contained in the output), by selecting an output (for this exercise, select the **Strategy Detailed Result**) on the **Outputs** tab of the **Edit Control Strategy** window and clicking the `Edit` button. This will bring up the**Dataset Properties Editor** for the output dataset ([Figure 4-21](#summary_tab_of_dataset_properties_editor)).
 
 <a id=summary_tab_of_dataset_properties_editor></a>
 
@@ -657,20 +668,20 @@ Click `Close` to exit from the **Data Viewer** when you are finished reviewing t
 ![Summary Tab of Dataset Properties Editor][summary_tab_of_dataset_properties_editor]
 
 [summary_tab_of_dataset_properties_editor]: images/Summary_Tab_of_Dataset_Properties_Editor.png
-**Figure 4-19. Output Dataset Properties Window.**
+**Figure 4-21. Output Dataset Properties Window.**
 
 Notice that the tabs on the **Dataset Properties Editor** are the same as those on the **Dataset Properties Viewer** shown in [Figure 4-8](#dataset_properties_view_window_for_an_emissions_inventory). Editor mode allows many of the fields to be changed, where they could not be changed directly from in the Viewer mode. For example, change the name of the output by replacing the automatically generated name with a more meaningful one (e.g., **Least Cost 2017 VOC for Training Result**) and then click `Save`. Notice that unsaved edites are denoted with an asterisk in the title bar of the window.
 
-Examine the other tabs of the **Dataset Properties Editor** for the **Strategy Detailed Result** output. In particular see the **Keywords** tab, an example of which is shown in [Figure 4-20](#keywords_tab_of_dataset_properties_editor). For the **Strategy Detailed Result**, there are a number of keywords set in the `Keywords Specific to Dataset` section (in the lower part of window). These keywords correspond to the major parameters of the control strategy, such as the COST\_YEAR and the STRATEGY\_TYPE (these specific keywords are available in the list of keywords but are above the portion of the window shown in [Figure 4-20](#keywords_tab_of_dataset_properties_editor)). There are also keywords for the UNCONTROLLED\_EMISSIONS, the TOTAL\_EMISSION\_REDUCTION, and the ACTUAL\_PERCENT\_REDUCTION.
+Examine the other tabs of the **Dataset Properties Editor** for the **Strategy Detailed Result** output. In particular see the **Keywords** tab, an example of which is shown in [Figure 4-22](#keywords_tab_of_dataset_properties_editor). For the **Strategy Detailed Result**, there are a number of keywords set in the `Keywords Specific to Dataset` section (in the lower part of window). These keywords correspond to the major parameters of the control strategy, such as the COST\_YEAR and the STRATEGY\_TYPE  as shown in [Figure 4-22](#keywords_tab_of_dataset_properties_editor)). There are also keywords for the UNCONTROLLED\_EMISSIONS, the TOTAL\_EMISSION\_REDUCTION, and the ACTUAL\_PERCENT\_REDUCTION.
 
 <a id=keywords_tab_of_dataset_properties_editor></a>
 
 ![Keywords Tab of Dataset Properties Editor][keywords_tab_of_dataset_properties_editor]
 
 [keywords_tab_of_dataset_properties_editor]: images/Keywords_Tab_of_Dataset_Properties_Editor.png
-**Figure 4-20. Output Dataset Properties Keywords Tab.**
+**Figure 4-22. Output Dataset Properties Keywords Tab.**
 
-The keywords in the `Keywords Specific to Dataset Type` section (the upper part of window in [Figure 4-20](#keywords_tab_of_dataset_properties_editor)) typically contain directives on how to export the data or other data values that are the same for all datasets of the same type. Typically FF10 or ORL inventories will have some of these keywords.
+The keywords in the `Keywords Specific to Dataset Type` section (the upper part of window in [Figure 4-22](#keywords_tab_of_dataset_properties_editor)) typically contain directives on how to export the data or other data values that are the same for all datasets of the same type. Typically FF10 or ORL inventories will have some of these keywords.
 
 *Note that when the Dataset Properties Editor is open for a dataset no other users can edit that dataset.* Similarly, if a control strategy or control measure is open for *editing*, no other users can edit those items. Users will be able to view these items of the access permissions are set appropriately (see `Intended Use` setting on the **Summary** tab).
 
@@ -684,23 +695,23 @@ Strategy outputs, particularly **Strategy Detailed Results**, but also the input
 
 **Step 5-6: Selecting Control Strategy Summaries.** Select **Strategy Detailed Result** on the **Outputs** tab of the **Edit Control Strategy** window and then click `Summarize` to open the **QA** tab of the **Dataset Properties Editor**.
 
-To add a new summary from the list of predefined summary templates, click the `Add from Template` button to see a list of predefined QA Steps ([Figure 4-21](#summarizing_a_strategy_detailed_result)). To create summaries of interest, click the mouse button on the summaries to create. For this example, select **Summarize by Control Technology and Pollutant**, **Summarize by County and Pollutant**, **Summarize by Pollutant**. Select multiple summaries (as is illustrated in the figure) using Control-Click.  Click `OK` after selecting the summaries and the selected QA templates will be added to the table on the QA tab ([Figure 4-22](#available_qa_summaries_for_a_strategy_detailed_result)).
+To add a new summary from the list of predefined summary templates, click the `Add from Template` button to see a list of predefined QA Steps ([Figure 4-23](#summarizing_a_strategy_detailed_result)). To create summaries of interest, click the mouse button on the summaries to create. For this example, select **Summarize by Control Technology and Pollutant**, **Summarize by County and Pollutant**, **Summarize by Pollutant**. Select multiple summaries (as is illustrated in the figure) using Control-Click.  Click `OK` after selecting the summaries and the selected QA templates will be added to the table on the QA tab ([Figure 4-24](#available_qa_summaries_for_a_strategy_detailed_result)).
 
 <a id=summarizing_a_strategy_detailed_result></a>
 
 ![Summarizing a Strategy Detailed Result][summarizing_a_strategy_detailed_result]
 
 [summarizing_a_strategy_detailed_result]: images/Summarizing_a_Strategy_Detailed_Result.png
-**Figure 4-21. Add Predefined QA Steps Window.**
+**Figure 4-23. Add Predefined QA Steps Window.**
 
 <a id=available_qa_summaries_for_a_strategy_detailed_result></a>
 
 ![Available QA Summaries for a Strategy Detailed Result][available_qa_summaries_for_a_strategy_detailed_result]
 
 [available_qa_summaries_for_a_strategy_detailed_result]: images/Available_QA_Summaries_for_a_Strategy_Detailed_Result.png
-**Figure 4-22. Selected QA Summaries.**
+**Figure 4-24. Selected QA Summaries.**
 
-**Step 5-7: Running Control Strategy Summaries.** To run the QA summaries that are listed on the QA tab, first select the summaries of interest and then click `Edit`. The **Edit QA Step** window will appear ([Figure 4-23](#edit_qa_step_window_to_create_a_summary)). Do not edit anything in this window, just view the properties of the QA summary. Click `Run` at the bottom of the window to start the QA summary processing.
+**Step 5-7: Running Control Strategy Summaries.** To run the QA summaries that are listed on the QA tab, first select the summaries of interest and then click `Edit`. The **Edit QA Step** window will appear ([Figure 4-25](#edit_qa_step_window_to_create_a_summary)). Do not edit anything in this window, just view the properties of the QA summary. Click `Run` at the bottom of the window to start the QA summary processing.
 
 Monitor the progress of the QA step in the **Status** window at the bottom of the EMF main window. Once the run is complete, click the `Refresh` button to populate the `Output Name`, `Run Status`, and `Run Date` fields in the **Edit QA Step** window. *Note: as an alternative to clicking Run on several different windows, you can instead select a few summaries and click Run on the QA tab.*
 
@@ -709,18 +720,18 @@ Monitor the progress of the QA step in the **Status** window at the bottom of th
 ![Edit QA Step Window to Create a Summary][edit_qa_step_window_to_create_a_summary]
 
 [edit_qa_step_window_to_create_a_summary]: images/Edit_QA_Step_Window_to_Create_a_Summary.png
-**Figure 4-23. Edit QA Step Window.**
+**Figure 4-25. Edit QA Step Window.**
 
-**Step 5-8: Viewing Control Strategy Summaries.** To see summarized control strategy output, select a checkbox next to the summary of interest on the **QA** tab and click `View Results` to bring up the **View QA Step Results** window ([Figure 4-24](#view_qa_step_results_window)). Sort and filter the results in this window in the same way as the **Control Measure Manager** and **Control Strategy Manager**. For example, click on the **avg\_cost\_per\_ton** column header to sort on the cost per ton. You can also show the Top n or Bottom n rows using the second and third from the left toolbar buttons. The colorful toolbar buttons on the right support computing statistics, creating plots (if you have the R software package installed on your client machine), and saving the table and plot configurations.
+**Step 5-8: Viewing Control Strategy Summaries.** To see summarized control strategy output, select a checkbox next to the summary of interest on the **QA** tab and click `View Results` to bring up the **View QA Step Results** window ([Figure 4-26](#view_qa_step_results_window)). Sort and filter the results in this window in the same way as the **Control Measure Manager** and **Control Strategy Manager**. For example, click on the **avg\_cost\_per\_ton** column header to sort on the cost per ton. You can also show the Top n or Bottom n rows using the second and third from the left toolbar buttons. The colorful toolbar buttons on the right support computing statistics, creating plots (if you have the R software package installed on your client machine), and saving the table and plot configurations.
 
 <a id=view_qa_step_results_window></a>
 
 ![View QA Step Results Window][view_qa_step_results_window]
 
 [view_qa_step_results_window]: images/View_QA_Step_Results_Window.png
-**Figure 4-24. View QA Step Results Window.**
+**Figure 4-26. View QA Step Results Window.**
 
-**Step 5-9: Export Control Strategy Summary to Google Earth (KMZ).** If the summary has longitude and latitude information (e.g., a plant, state, or county summary), the EMF has an interface to create Google Earth-compatible Keyhole Markup Language Zipped (.kmz) files by choosing **Google Earth** from the `File` menu of the **View QA Step Results** window. The interface to create these files is shown in [Figure 4-25](#kmz_file_generator). Note that the following detailed result summaries have longitude and latitude:
+**Step 5-9: Export Control Strategy Summary to Google Earth (KMZ).** If the summary has longitude and latitude information (e.g., a plant, state, or county summary), the EMF has an interface to create Google Earth-compatible Keyhole Markup Language Zipped (.kmz) files by choosing **Google Earth** from the `File` menu of the **View QA Step Results** window. The interface to create these files is shown in [Figure 4-27](#kmz_file_generator). Note that the following detailed result summaries have longitude and latitude:
 
 * Summarize by U.S. County and Pollutant
 * Summarize by U.S. State and Pollutant
@@ -731,7 +742,7 @@ Monitor the progress of the QA step in the **Status** window at the bottom of th
 ![KMZ File Generator][kmz_file_generator]
 
 [kmz_file_generator]: images/KMZ_File_Generator.png
-**Figure 4-25. Google Earth KMZ file Generator.**
+**Figure 4-27. Google Earth KMZ file Generator.**
 
 In the **Create Google Earth file** window, select a `Label Column` that will be used to label the points in the .kmz file. This label will appear when hovering over a point in the Goggle Earth map. For a plant summary this would typically be plant\_name, for a county summary this would be county, for a state summary, this would be state\_name.
 
@@ -752,33 +763,33 @@ Click `Save` to save the settings of the Google Earth file `Properties` to a fil
 
 Close the **Create Google Earth file** window by clicking the `X` at the top right corner.
 
-**Step 5-10: Export Control Strategy Summaries to CSV.** From the **Edit QA Step** window ([Figure 4-23](#edit_qa_step_window_to_create_a_summary)) select a folder to export the results to by either typing a directory path in the `Export Folder` field, or by using the `Browse` button to select an output directory. Click the `Export` button and the **Export QA Step Result** will be written to the selected folder on the EMF server.
+**Step 5-10: Export Control Strategy Summaries to CSV.** From the **Edit QA Step** window ([Figure 4-25](#edit_qa_step_window_to_create_a_summary)) select a folder to export the results to by either typing a directory path in the `Export Folder` field, or by using the `Browse` button to select an output directory. Click the `Export` button and the **Export QA Step Result** will be written to the selected folder on the EMF server.
 
 ### Exporting the Strategy Outputs
 
-Return to the **Outputs** tab of the **Edit Control Strategy window** ([Figure 4-16](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)).
+Return to the **Outputs** tab of the **Edit Control Strategy window** ([Figure 4-18](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)).
 
 **Step 5-11: Export Control Strategy Outputs.** To export the strategy output datasets to the EMF server, enter a folder/directory name into the `Server Export Folder` field on the **Outputs** tab. Use the checkboxes to select one or more results to export from the `Output Datasets` table and click `Export`. The files will be written as ASCII files to the `Server Export Folder`. The resulting CSV files can be imported into a spreadsheet or other database software for analysis. *Note that the dataset must be exported to a location where the EMF application user has read/write access to the folder (e.g., the same directory as specified in the environment variable, `EMF_DATA_DIRECTORY`, in the EMF installation batch file).*
 
 ### Analyzing the Strategy Outputs
 
-It is possible to view the strategy results directly from the **Outputs** tab in a sortable, filterable table, similar to the table used by the View QA Step Results window ([Figure 4-24](#view_qa_step_results_window)).
+It is possible to view the strategy results directly from the **Outputs** tab in a sortable, filterable table, similar to the table used by the View QA Step Results window ([Figure 4-26](#view_qa_step_results_window)).
 
-**Step 5-12: Analyze Control Strategy Outputs in CoST.** Use the checkboxes to select one or more results to analyze from the `Output Datasets` table and click **Analyze** to show the **Analyze Control Strategy** window for the selected outputs. An example of a Strategy County Summary analysis is shown in [Figure 4-26](#analyze_control_strategy_window). The results in this window can be sorted, filtered, plotted, and summarized with statistics. An example of a Least Cost Curve Summary is shown in [Figure 4-27](#analyzing_a_least_cost_curve_output). Exit from the **Analyze Control Strategy** window using the `X` at the top of the window.
+**Step 5-12: Analyze Control Strategy Outputs in CoST.** Use the checkboxes to select one or more results to analyze from the `Output Datasets` table and click **Analyze** to show the **Analyze Control Strategy** window for the selected outputs. An example of a Strategy County Summary analysis is shown in [Figure 4-28](#analyze_control_strategy_window). The results in this window can be sorted, filtered, plotted, and summarized with statistics. An example of a Least Cost Curve Summary is shown in [Figure 4-29](#analyzing_a_least_cost_curve_output). Exit from the **Analyze Control Strategy** window using the `X` at the top of the window.
 
 <a id=analyze_control_strategy_window></a>
 
 ![Analyze Control Strategy Window][analyze_control_strategy_window]
 
 [analyze_control_strategy_window]: images/Analyze_Control_Strategy_Window.png
-**Figure 4-26. Control Strategy Analysis Window.**
+**Figure 4-28. Control Strategy Analysis Window.**
 
 <a id=analyzing_a_least_cost_curve_output></a>
 
 ![Analyzing a Least Cost Curve Output][analyzing_a_least_cost_curve_output]
 
 [analyzing_a_least_cost_curve_output]: images/Analyzing_a_Least_Cost_Curve_Output.png
-**Figure 4-27. Least Cost Curve Strategy Summary.**
+**Figure 4-29. Least Cost Curve Strategy Summary.**
 
 <a id=creating_a_controlled_emissions_inventory_section></a>
 
@@ -786,25 +797,25 @@ It is possible to view the strategy results directly from the **Outputs** tab in
 
 CoST can create a controlled emissions inventory that reflects the effects of the strategy by merging the detailed result with the original emissions inventory. Details on controlled inventories are discussed further in the [Controlled Emissions Inventory Section](#controlled_emissions_inventory_section).
 
-**Step 5-13: Creating a Controlled Inventory.** To create a controlled inventory, click the `Controlled Inventory` radio button on the **Outputs** tab of the **Edit Control Strategy** window ([Figure 4-16](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)) and select the **Strategy Detailed Result** in the `Output Datasets` table to enable the `Create` button. *Note that only creators of a strategy or the Administrator can create inventories from a strategy result.*
+**Step 5-13: Creating a Controlled Inventory.** To create a controlled inventory, click the `Controlled Inventory` radio button on the **Outputs** tab of the **Edit Control Strategy** window ([Figure 4-18](#outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy)) and select the **Strategy Detailed Result** in the `Output Datasets` table to enable the `Create` button. *Note that only creators of a strategy or the Administrator can create inventories from a strategy result.*
 
-Click `Create` to receive a prompt to **Enter a name prefix for the controlled inventories**; for this exercise, enter **training** and click the `OK` button. Cancelling this prompt will result in a controlled inventory with no name prefix. The status of the inventory creation will be shown in the Status window. Once the controlled inventory has been successfully created, for all but the Least Cost strategy types the name of the inventory will appear at the far right of the `Output Datasets` table in the row corresponding to the Strategy Detailed Result. For Least Cost strategy types, the controlled inventory will show up as rows in the `Output Datasets` table a "Controlled Inventory" **Result Type**. [Figure 4-28](#controlled_inventory_for_maximum_emissions_reduction_example) shows an example of where the controlled inventory name is located for a Maximum Emissions Reduction example strategy. [Figure 4-29](#controlled_inventory_for_least_cost_curve_example) shows an example of where the controlled inventories are located for a Least Cost example strategy.
+Click `Create` to receive a prompt to **Enter a name prefix for the controlled inventories**; for this exercise, enter **training** and click the `OK` button. Cancelling this prompt will result in a controlled inventory with no name prefix. The status of the inventory creation will be shown in the Status window. Once the controlled inventory has been successfully created, for all but the Least Cost strategy types the name of the inventory will appear at the far right of the `Output Datasets` table in the row corresponding to the Strategy Detailed Result. For Least Cost strategy types, the controlled inventory will show up as rows in the `Output Datasets` table a "Controlled Inventory" **Result Type**. [Figure 4-30](#controlled_inventory_for_maximum_emissions_reduction_example) shows an example of where the controlled inventory name is located for a Maximum Emissions Reduction example strategy. [Figure 4-31](#controlled_inventory_for_least_cost_curve_example) shows an example of where the controlled inventories are located for a Least Cost example strategy.
 
 <a id=controlled_inventory_for_maximum_emissions_reduction_example></a>
 
 ![Controlled Inventory for Maximum Emissions Reduction Example][controlled_inventory_for_maximum_emissions_reduction_example]
 
 [controlled_inventory_for_maximum_emissions_reduction_example]: images/Controlled_Inventory_for_Maximum_Emissions_Reduction_Example.png
-**Figure 4-28. Maximum Emissions Reduction Controlled Inventory Entry.**
+**Figure 4-30. Maximum Emissions Reduction Controlled Inventory Entry.**
 
 <a id=controlled_inventory_for_least_cost_curve_example></a>
 
 ![Controlled Inventory for Least Cost Curve Example][controlled_inventory_for_least_cost_curve_example]
 
 [controlled_inventory_for_least_cost_curve_example]: images/Controlled_Inventory_for_Least_Cost_Curve_Example.png
-**Figure 4-29. Least Cost Curve Controlled Inventory Entry.**
+**Figure 4-31. Least Cost Curve Controlled Inventory Entry.**
 
-**Step 5-14: Viewing a Controlled Inventory.** To view the data for a controlled inventory generated from all but the Least Cost strategy types, select the `Controlled Inventory` radio button and click `View Data` ([Figure 4-28](#controlled_inventory_for_maximum_emissions_reduction_example)). For Least Cost strategy types use the checkbox in the **Select** column of the `Output Datasets` table to select a controlled inventory, select the `Result` radio button, and click `View Data` ([Figure 4-29](#controlled_inventory_for_least_cost_curve_example)). The data for the controlled inventory dataset will appear in the **Data Viewer**.
+**Step 5-14: Viewing a Controlled Inventory.** To view the data for a controlled inventory generated from all but the Least Cost strategy types, select the `Controlled Inventory` radio button and click `View Data` ([Figure 4-30](#controlled_inventory_for_maximum_emissions_reduction_example)). For Least Cost strategy types use the checkbox in the **Select** column of the `Output Datasets` table to select a controlled inventory, select the `Result` radio button, and click `View Data` ([Figure 4-31](#controlled_inventory_for_least_cost_curve_example)). The data for the controlled inventory dataset will appear in the **Data Viewer**.
 
 To view the data for the input inventory that was merged with the **Strategy Detailed Result** to create the controlled inventory, select the `Input Inventory` radio button and click `View Data`.
 
@@ -1104,14 +1115,14 @@ This query is quite a bit more complex, but is still supported by the EMF QA ste
 * "Summarize by U.S. State and SMOKE Pollutant Name"
 * "Cost Curve"
 
-A plot created based the output of a Summarize by Control Technology and Pollutant summary is shown in [Figure 4-30](#control_technologies_used_within_a_least_cost_analysis).
+A plot created based the output of a Summarize by Control Technology and Pollutant summary is shown in [Figure 4-32](#control_technologies_used_within_a_least_cost_analysis).
 
 <a id=control_technologies_used_within_a_least_cost_analysis></a>
 
 ![Control Technologies used within a Least Cost Analysis][control_technologies_used_within_a_least_cost_analysis]
 
 [control_technologies_used_within_a_least_cost_analysis]: images/Control_Technologies_used_within_a_Least_Cost_Analysis.png
-**Figure 4-30. Control Technologies used within a Least Cost Analysis.**
+**Figure 4-32. Control Technologies used within a Least Cost Analysis.**
 
 When multiple datasets need to be considered in a summary (e.g., to compare two inventories), the EMF "QA Program" mechanism is used. The QA programs each have customized user interfaces that allow users to select the datasets to be used in the query. Some of the following QA programs may prove useful to CoST users:
 

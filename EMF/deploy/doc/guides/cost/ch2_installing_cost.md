@@ -26,14 +26,15 @@
 
 Because CoST is fully integrated within the EMF, installing CoST is the same as installing the EMF. There are two parts of the CoST/EMF system: a client and a server. For this guide, it is assumed that you need to install both the client and the server.
 
-In the CoST client-server system, client software that runs on a desktop computer is used to connect to a server running the CoST algorithms and database. The CoST/EMF client is a Java program that accesses Java and [PostgreSQL](http://www.postgresql.org) software running on the CoST/EMF server. CoST/EMF requires that a recent version of Java be installed on each user's computer. The EMF database server stores information related to emissions modeling, including emissions inventory datasets and a database of emissions control measures. When a control strategy is developed, new datasets and summaries of them are created within CoST, and controlled emissions inventories can optionally be generated. These emissions inventories can be exported from CoST and then used as inputs to the SMOKE modeling system, which prepares emissions data for use in the CMAQ model. A schematic of the CoST/EMF client-server system is shown in [Figure 2-1](#cost_emf_client_server_system).
+In the CoST client-server system, client software that runs on a desktop computer is used to connect to a server running the CoST algorithms and database. The CoST/EMF client is a Java program that accesses Java and [PostgreSQL](http://www.postgresql.org) software running on the CoST/EMF server. CoST/EMF requires that a recent version of Java be installed on each user's computer. The EMF database server stores information related to emissions modeling, including emissions inventory datasets and a database of emissions control measures. When a control strategy is developed, new datasets and summaries of them are created within CoST, and controlled emissions inventories can optionally be generated. These emissions inventories can be exported from CoST and then used as inputs to the SMOKE modeling system, which prepares emissions data for use in the CMAQ model. A schematic of the CoST/EMF client-server system is shown in [the next figure](#cost_emf_client_server). 
 
-<a id=cost_emf_client_server_system></a>
+<a id=cost_emf_client_server></a>
 
-![CoST/EMF Client-Server System][cost_emf_client_server_system]
+![EMF Client-Server System][cost_emf_client_server]
 
-[cost_emf_client_server_system]: images/CoST_EMF_Client_Server_System.png
-**Figure 2-1. CoST/EMF Client Server Schematic**
+[cost_emf_client_server]: images/CoST_EMF_Client_Server_System.png
+**Figure 2-1. EMF Client-Server System**
+
 
 <a id=Download2></a>
 
@@ -51,14 +52,16 @@ A\. Download the CoST Windows Installation zip file from the CMAS software downl
 
 B\. Unzip the downloaded file into a known folder location on a Windows machine.
 
-[Figure 2-2](#installation_package_zip_file_folder_and_file_structure) lists the batch file and the folders that are located in the install zip file; these are described below the figure.
+[The next figure](#installation_package) lists the batch file and the folders that are located in the install zip file; these are described below the figure.
 
-<a id=installation_package_zip_file_folder_and_file_structure></a>
 
-![Installation Package Zip File Folder and File Structure][installation_package_zip_file_folder_and_file_structure]
+<a id=installation_package></a>
 
-[installation_package_zip_file_folder_and_file_structure]: images/Installation_Package_Zip_File_Folder_and_File_Structure.png
-**Figure 2-2. CoST/EMF Installation Package Contents**
+![Installation Package Zip File Folder and File Structure][installation_package]
+
+[installation_package]: images/Installation_Package_Zip_File_Folder_and_File_Structure.png
+**Figure 2-2. Installation Package Zip File Folder and File Structure**
+
 
 * Install\_EMF.bat - bat file to install the EMF Client and Server
 * control\_measures - contains measures in the database (note: These are already installed)
@@ -78,19 +81,28 @@ Go to the `java_jre` directory and double click the executable file, `jre-8u51-w
 
 Follow the installation steps as illustrated in the following figures.
 
-![][java_setup_welcome]
+<a id=java_welcome></a>
 
-[java_setup_welcome]: images/Java_Setup_Welcome.png
+![Java Setup Welcome][java_welcome]
+
+[java_welcome]: images/Java_Setup_Welcome.png
+**Figure 2-3. Java Setup Welcome**
 
 Click `Install` to accept the license agreement and start the installation process.
 
-![][java_setup_progress]
+<a id=java_setup></a>
 
-[java_setup_progress]: images/Java_Setup_Progress.png
+![Java Setup Progress][java_setup]
 
-![][java_setup_complete]
+[java_setup]: images/Java_Setup_Progress.png
+**Figure 2-4. Java Setup Progress**
 
-[java_setup_complete]: images/Java_Setup_Complete.png
+<a id=java_complete></a>
+
+![Java Setup Complete][java_complete]
+
+[java_complete]: images/Java_Setup_Complete.png
+**Figure 2-5. Java Setup Complete**
 
 Click `Close` to finalize the installation process.
 
@@ -104,57 +116,80 @@ During the installation process, you'll be prompted to enter a database superuse
 
 Follow the installation steps as illustrated in the following figures.
 
-![][postgres_welcome]
+<a id=postgres_welcome></a>
+
+![Postgres Welcome][postgres_welcome]
 
 [postgres_welcome]: images/Postgres_Welcome.png
+**Figure 2-6. Postgres Welcome**
 
 Click `Next` to begin the installation process.
 
-![][postgres_installation_directory]
+<a id=postgres_installation></a>
 
-[postgres_installation_directory]: images/Postgres_Installation_Directory.png
+![Postgres Installation Directory][postgres_installation]
+
+[postgres_installation]: images/Postgres_Installation_Directory.png
+**Figure 2-7. Postgres Installation Directory**
 
 The default directory location is sufficient, click `Next` to continue to the next step. Remember this directory for later use in the installation process.
 
-![][postgres_data_directory]
+<a id=postgres_data></a>
 
-[postgres_data_directory]: images/Postgres_Data_Directory.png
+![Postgres Data Directory][postgres_data]
+
+[postgres_data]: images/Postgres_Data_Directory.png
+**Figure 2-8. Postgres Data Directory**
 
 The default location is sufficient, click `Next` to continue to the next step.
 
-![][postgres_password]
+<a id=postgres_password></a>
+
+![Postgres Password][postgres_password]
 
 [postgres_password]: images/Postgres_Password.png
+**Figure 2-9. Postgres Password**
 
 For this step, make sure you use the password that you set earlier in the installation, e.g., `postgres`. This password is also expected during a later step when installing the CoST database.
 
-![][postgres_port]
+<a id=postgres_port></a>
+
+![Postgres Port][postgres_port]
 
 [postgres_port]: images/Postgres_Port.png
+**Figure 2-10. Postgres Port**
 
 The default `Port` is sufficient, click `Next` to continue to the next step.
 
-![][postgres_locale]
+<a id=postgres_locale></a>
+
+![Postgres Locale][postgres_locale]
 
 [postgres_locale]: images/Postgres_Locale.png
+**Figure 2-11. Postgres Locale**
 
 The default `Locale` is sufficient, click `Next` to continue to the next step.
 
-![][postgres_ready_to_install]
+<a id=postgres_ready></a>
 
-[postgres_ready_to_install]: images/Postgres_Ready_to_Install.png
+![Postgres Ready to Install][postgres_ready]
+
+[postgres_ready]: images/Postgres_Ready_to_Install.png
+**Figure 2-12. Postgres Ready to Install**
 
 Click `Next` to install the PostgreSQL database server.
 
-![][postgres_installing]
+![Postgres Installing][postgres_installing]
 
 [postgres_installing]: images/Postgres_Installing.png
+**Figure 2-13. Postgres Installing**
 
 Click `Next` to finalize the PostgreSQL installation.
 
-![][postgres_complete]
+![Postgres Complete][postgres_complete]
 
 [postgres_complete]: images/Postgres_Complete.png
+**Figure 2-14. Postgres Complete**
 
 When you reach the end, uncheck the `Launch Stack Builder` option and click `Finish`.
 
@@ -166,51 +201,60 @@ The PostgreSQL database is now installed and ready for the CoST system database.
 
 Go to the `tomcat` directory and find the executable file, `apache-tomcat-7.0.63.exe`. Double click the file to install Tomcat. Follow the installation steps as illustrated in the following figures.
 
-![][tomcat_welcome]
+![Tomcat Welcome][tomcat_welcome]
 
 [tomcat_welcome]: images/Tomcat_Welcome.png
+**Figure 2-15. Tomcat Welcome**
 
 Click `Next` to begin the installation process.
 
-![][tomcat_license]
+![Tomcat License][tomcat_license]
 
 [tomcat_license]: images/Tomcat_License.png
+**Figure 2-16. Tomcat License**
 
 Click `I Agree` to continue to the next step.
 
-![][tomcat_components]
+![Tomcat Components][tomcat_components]
 
 [tomcat_components]: images/Tomcat_Components.png
+**Figure 2-17. Tomcat Components**
 
 Expand the `Tomcat` option and check the `Service Startup` and `Native` components and then click `Next`. Note that the required `Service Startup` option ensures that the application server is available on startup when the machine is rebooted.
 
-![][tomcat_options]
+![Tomcat Options][tomcat_options]
 
 [tomcat_options]: images/Tomcat_Options.png
+**Figure 2-18. Tomcat Options**
 
 The default settings are sufficient, click `Next` to continue to the next step.
 
-![][tomcat_jvm]
+![Tomcat JVM][tomcat_jvm]
 
 [tomcat_jvm]: images/Tomcat_JVM.png
+**Figure 2-19. Tomcat JVM**
 
 The default location is sufficient, click `Next` to continue to the next step.
 
-![][tomcat_install_location]
+![Tomcat Install Location][tomcat_install_location]
 
 [tomcat_install_location]: images/Tomcat_Install_Location.png
+**Figure 2-20. Tomcat Install Location**
+
 
 The default location is sufficient, click `Install` to install the Tomcat web server. Remember this folder for use in a later step of the installation process.
 
-![][tomcat_installing]
+![Tomcat Installing][tomcat_installing]
 
 [tomcat_installing]: images/Tomcat_Installing.png
+**Figure 2-21. Tomcat Installing**
 
 Once the program files have been installed click `Next` to finalize installation process.
 
-![][tomcat_complete]
+![Tomcat Complete][tomcat_complete]
 
 [tomcat_complete]: images/Tomcat_Complete.png
+**Figure 2-22. Tomcat Complete**
 
 When you reach the end, click `Finish`. The Tomcat application server is now installed and ready for the CoST system application. This CoST application will be installed in the next step.
 
@@ -236,9 +280,10 @@ Save, exit and double-click the file `Install_EMF.bat` to start the CoST/EMF ser
 
 *Note: This installation process can take around 30-40 minutes to finish.* During the installation process, you will be prompted once (see Figure below) to enter the PostgreSQL superuser password, e.g., `postgres`.
 
-![][cost_installation]
+![CoST Installation][cost_installation]
 
 [cost_installation]: images/CoST_Installation.png
+**Figure 2-23. CoST Installation**
 
 After the server installer completes, go to the directory containing the EMF client application; this was specified in the Install_EMF.bat file via the `EMF_CLIENT_DIRECTORY` variable. Edit the EMFClient.bat batch file to match your computer's settings:
 
@@ -253,20 +298,27 @@ set JAVA_EXE=C:\Program Files\Java\jre1.8.0\_51\bin\java
 Save and exit from the file `EMFClient.bat`.
 
 <a id=RunningCost2></a>
+>>>>>>> parent of 376088f... The method I used to put the images inline used html div tag, that doesn't allow the images to be visible in the browser in markdown.
 
 ## Running CoST and Logging into the EMF Server
 
 The CoST application can now be run by going to the EMF client directory and locating the `EMFClient.bat` file. Double click this file, and you will then be prompted to log in to the system. If the configuration was specified properly and the server is running, you should the following window.
 
-![Login to the Emissions Modeling Framework Window][login_to_the_emissions_modeling_framework_window]
+<a id=login_emf></a>
 
-[login_to_the_emissions_modeling_framework_window]: images/Login_to_the_Emissions_Modeling_Framework_Window.png
+![Login to the Emissions Modeling Framework Window][login_emf]
+
+[login_emf]: images/Login_to_the_Emissions_Modeling_Framework_Window.png
+**Figure 2-24. Login to the Emissions Modeling Framework Window**
 
 If you have never used the EMF before, click the `**`Register New User`**` button. You will then see the following window
 
-![Register New User Window][register_new_user_window]
+<a id=register_new_user></a>
 
-[register_new_user_window]: images/Register_New_User_Window.png
+![Register New User Window][register_new_user]
+
+[register_new_user]: images/Register_New_User_Window.png
+**Figure 2-25. Register New User Window**
 
 In the `Register New User` window, fill in your full name, affiliation, phone number, and email address. You may then select a username with at least three characters and enter a password with at least 8 characters and at least one digit and then click `OK`. Once your account has been created, the EMF main window should appear (see below).
 
@@ -276,9 +328,11 @@ If have logged into the EMF previously, enter your EMF username and password in 
 
 After successfully logging into CoST the main EMF window shown below will display.
 
-![EMF Main Window][emf_main_window]
+<a id=emf_main_window></a>
 
+![EMF Main Window][emf_main_window]
 [emf_main_window]: images/EMF_Main_Window.png
+**Figure 2-26. EMF Main Window**
 
 <a id=Upgrade2></a>
 
@@ -290,15 +344,19 @@ The CoST/EMF installation package includes the latest version of the CMDB. The i
 
 To install the CMDB in the EMF, first download the latest CMDB CSV file from the EPA website.  You must login to the EMF Client as Administrator to add to the CMDB to the CoST PostgreSQL database. After logging in as administrator select `Control Measures` from the `Manage` drop down menu at the top of the EMF Client window:
 
-![Manage Control Measures][manage_control_measures]
+<a id=manage_control_measures></a>
 
+![EMF Manage Control Measures][manage_control_measures]
 [manage_control_measures]: images/Manage_ControlMeasures.png
+**Figure 2-27. EMF Manage Control Measures**
 
 Click the `Import` button to see the Import Control Measures screen:
 
-![Import Control Measures][import_control_measures]
+<a id=import_control_measures></a>
 
+![EMF Import Control Measures][import_control_measures]
 [import_control_measures]: images/ImportControlMeasures.png
+**Figure 2-28. EMF Import Control Measures**
 
 Use the `Browse` button to find the CMDB CSV file downloaded from the EPA website. Select the file and click `OK`.
 
