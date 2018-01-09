@@ -40,7 +40,7 @@ This chapter is presented as a series of steps so that it may be used as part of
 
 ### Introduction to Control Strategies
 
-CoST automates the key steps for preparing control strategies. The purpose of developing control strategies is to answer questions about which sources can be controlled and how much the application of those controls might cost. For example, if the goal is to reduce NO<sub>x</sub> emissions for the Southeast U.S. in 2030 by 100,000 tons per year, CoST can help answer questions related to this goal, such as:
+CoST automates the key steps for preparing control strategies. The purpose of developing control strategies is to answer questions about which sources can be controlled and how much the application of those controls might reduce emissions and how much it might cost. For example, if the goal is to reduce NO<sub>x</sub> emissions for the Southeast U.S. in 2030 by 100,000 tons per year, CoST can help answer questions related to this goal, such as:
 
 * What is the **maximum emissions reduction** achievable for NO<sub>x</sub> (i.e., is my reduction goal less than the maximum possible reduction?), and what set of controls will achieve this reduction?
 * What set of controls can achieve the goal at the **least cost**?
@@ -48,26 +48,26 @@ CoST automates the key steps for preparing control strategies. The purpose of de
 * What **emissions reductions** for the target pollutant would be achieved?
 * What are the emission reductions or increases for **other pollutants** of interest?
 * What are the **engineering costs** of applying the controls for a specific strategy?
-* What **control measures** are available for specific source categories and pollutants, how much reduction does each one provide, and for what cost?
+* What **control measures** are available for specific source categories and pollutants, how much reduction does each one provide, and at what cost?
 
-A future goal for CoST is to be able to answer this question: What is the optimum method for achieving simultaneous targeted reductions for **multiple pollutants**?
+A future goal for CoST is to be able to answer this question: What is the optimum method for achieving simultaneously targeted reductions for **multiple pollutants**?
 
-CoST can help answer the above questions when users set up and run one or more control strategies. A diagram of the basic steps for running a control strategy is shown in [Figure 4-1](#basic_steps_for_running_a_control_strategy). As illustrated in that figure, the inputs to a control strategy consist of:
+CoST can help answer the above questions when users set up and run one or more control strategies. A diagram of the basic steps for running a control strategy is shown in [Figure 4-1](#basic_steps_for_running_a_control_strategy). As illustrated in the figure, the inputs to a control strategy consist of:
 
 * a set of parameters that control how the strategy is run
 * one or more emissions inventory datasets (that have already been loaded into the EMF)
 * filters to limit the sources included from those datasets
 * filters to limit which control measures are to be included in the strategy analysis
-* constraints that limit the application of measures to specific sources based on the resulting costs or emissions reduction achieved
+* constraints that limit the application of measures to specific sources based on the resulting costs or emissions reductions achieved
 
 <a id=basic_steps_for_running_a_control_strategy></a>
 
 ![Basic Steps for Running a Control Strategy][basic_steps_for_running_a_control_strategy]
 
 [basic_steps_for_running_a_control_strategy]: images/Basic_Steps_for_Running_a_Control_Strategy.png
-**Figure 4-1. Control Strategy Diagram.**
+**Figure 4-1. Control Strategy Diagram**
 
-After a control strategy run is complete, several outputs are associated with the strategy. The main CoST output for each control strategy is a table called the "**Strategy Detailed Result**". This table consists of emission source-control measure pairings, each of which contains information about the cost and emission reduction that would be achieved if the measure were to be applied to the source. If multiple inventories were processed by the strategy, then there will be one Strategy Result for *each* input inventory, unless the inventories were merged for a least cost run (as indicated in the 'Multiple Inventories' column [Table 4-1](#summary_of_strategy_algorithms_table)). Also, there will be at least one Strategy Detailed Result for each of the least cost iterations performed as part of a Least Cost Curve run. In addition to the Strategy Detailed Result, two other outputs are produced for each strategy run: the Strategy County Summary (which includes uncontrolled and controlled emissions), and the Strategy Measure Summary (which summarizes how control measures were applied for each sector-county-SCC-Pollutant combination). These three outputs are referred to in [Table 4-1](#summary_of_strategy_algorithms_table) as the 'Standard' outputs.
+After a control strategy run is complete, several outputs are associated with the strategy. The main CoST output for each control strategy is a table called the "**Strategy Detailed Result**." This table consists of emissions source-control measure pairings, each of which contains information about the cost and emissions reductions that would be achieved if the measure were to be applied to the source. If multiple inventories were processed by the strategy, then there will be one Strategy Result for *each* input inventory, unless the inventories were merged for a least cost run (as indicated in the 'Multiple Inventories' column [Table 4-1](#summary_of_strategy_algorithms_table)). Also, there will be at least one Strategy Detailed Result for each of the least cost iterations performed as part of a Least Cost Curve run. In addition to the Strategy Detailed Result, two other outputs are produced for each strategy run: the Strategy County Summary (which includes uncontrolled and controlled emissions), and the Strategy Measure Summary (which summarizes how control measures were applied for each sector-county-SCC-Pollutant combination). These three outputs are referred to in [Table 4-1](#summary_of_strategy_algorithms_table) as the 'Standard' outputs.
 
 The Strategy Detailed Result table itself can be summarized on-demand in many ways using predefined summary queries (e.g., by state, by county, by control technology). Users familiar with SQL can also define their own custom queries. The Strategy Detailed Result table can also be merged with the original input inventory, in an automated manner, to produce a *controlled emissions inventory* that reflects implementation of the strategy. The controlled emissions inventory includes information about the measures that have been applied to the controlled sources and can be directly input to the SMOKE modeling system to prepare air quality model-ready emissions data. Comments are placed at the top of the inventory file to indicate the strategy that produced it and the settings of the high-level parameters that were used to run the strategy.
 
