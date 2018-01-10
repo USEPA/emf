@@ -260,7 +260,6 @@ An **Edit Control Strategy** window for your newly created strategy will appear 
 ![Edit Control Tab Summary Window][edit_control_strategy_window]
 
 [edit_control_strategy_window]: images/Least_Cost_2017_NOx_for_Training.png
-
 **Figure 4-6. Edit Control Strategy Window**
 
 For this example, edit the following fields in the **Edit Control Strategy** window:
