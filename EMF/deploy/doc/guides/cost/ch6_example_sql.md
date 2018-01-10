@@ -14,9 +14,9 @@
 Filter Purpose|SQL Where Clause
 -------------------------------------------------------------------------|-----------------------------------------------------------------------------
 Filter on a particular set of SCCs|`scc like '101%' or scc like '102%'`
-Filter on a particular set of pollutants|`poll in ('PM10', 'PM2\_5')`<br/>*or*<br/>`POLL = 'PM10' or POLL = 'PM2\_5'`
+Filter on a particular set of pollutants|`poll in ('PM10-PRI', 'PM25-PRI')`<br/>*or*<br/>`POLL = 'PM10-PRI' or POLL = 'PM25-PRI'`
 Filter sources only in NC (State FIPS = 37), SC (45), and VA (51);<br/>note that FIPS column format is State + County FIPS code (e.g., 37001)|`substring(FIPS,1,2) in ('37', '45', '51')`
-Filter sources only in CA (06) and include only NO~x and VOC pollutants|`substring(fips,1,2) = '06' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`fips like '06%' and (poll = 'NOX' or poll = 'VOC')`
+Filter sources only in CA (06) and include only NOx and VOC pollutants|`substring(fips,1,2) = '06' and poll in ('NOX', 'VOC')` *or* `fips like '06%' and (poll = 'NOX' or poll = 'VOC')`
 
 
 <!-- BEGIN COMMENT -->

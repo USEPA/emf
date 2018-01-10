@@ -48,9 +48,9 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 8. Click `Done` on the Import Datasets window.
 
-9. After the Status window messages indicates that the import has completed, click `Refresh` on the **Dataset Manager** and to see the newly imported inventory dataset. The dataset could now be used as an input to a control strategy.
+9. After the Status window messages indicates that the import has completed, click `Refresh` on the **Dataset Manager** to see the newly imported inventory dataset. The dataset could now be used as an input to a control strategy.
 
-10. To import a list of counties to limit the counties used for a strategy analysis, set the `Show Datasets of Type` menu to **List of Counties** and then import the file following steps 3 through 9 above. Be sure that the list of counties file has at least two columns, with one of them labeled 'FIPS'.
+10. To import a list of counties to limit the counties used for a strategy analysis, set the `Show Datasets of Type` menu to **List of Counties** and then import the file following steps 3 through 9 above. Be sure that the list of counties file has at least two columns, with one of them labeled FIPS.
 
 The Dataset Manager includes the following controls:
 
@@ -84,9 +84,9 @@ For this exercise, an existing Least Cost Strategy will be modified to create a 
 
 * Did the Maximum Emissions Reduction strategy run slower or faster than the Least Cost?
 
-* How much more emissions reduction was achieved over the 50% level of reduction set in the Least Cost run in [Chapter 4](#ch4_control_strategy_manager.md)?
+* How many more emissions reductions were achieved over the 50% level of reduction set in the Least Cost run in [Chapter 4](#ch4_control_strategy_manager.md)?
 
-* How do the Average Cost per Ton and Total Cost differ between the 50% Least Cost reduction strategy and the Maximum Emissions Reduction available?
+* How do the Average Cost per Ton and Total Cost differ between the 50% Least Cost control reduction strategy and the Maximum Emissions Reduction available?
 
     *Hint: use the following columns of the **Control Strategy Manager** to answer this question.*
 
@@ -114,11 +114,11 @@ For this exercise, create a new control measure and then see what impact it has 
 
 4. `Copy` the Maximum Emissions Reduction strategy from the previous exercise to a new strategy.
 
-5. Set the new strategy to include **Hypothetical** measures in addition to **Known**.
+5. Set the new strategy to include **Hypothetical** measures in addition to **Known** measures.
 
 6. `Run` the new strategy.
 
-Based on the results of this strategy, **how much additional emissions reduction** were realized over the previous maximum reduction result if there was a control measure with a 95% CE available for sources with SCCs starting with 102?
+Based on the results of this strategy, **how many additional emissions reductions** were realized over the previous maximum reduction result if there was a control measure with a 95% CE available for sources with SCCs starting with 102?
 
 <a id=cobenefits></a>
 
@@ -132,7 +132,7 @@ For this exercise, run a control strategy that produces co-benefits for multiple
 
 3. Set the inventory to use to be the **Nonpoint** inventory imported in [Exercise 1](#importing_an_emissions_inventory_section).
 
-4. Set the `Target Pollutant` to **PM2_5**, then `Run` the strategy.
+4. Set the `Target Pollutant` to **PM25-PRI**, then `Run` the strategy.
 
 5. Once the run completes, summarize the **Strategy Detailed Result** by **Control Technology and Pollutant**.
 

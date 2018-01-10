@@ -1,10 +1,6 @@
-Title: Acronyms
-Author: C. Seppanen, UNC
-CSS: base.css
-
 # Acronyms [acronyms_chapter] #
 
--|-
+-----------|--------------------------------------------------------------
 AQM|Air Quality Model
 CE|Control Efficiency
 CMAQ|Community Multiscale Air Quality model
@@ -34,8 +30,8 @@ NSCR|Non-Selective Catalytic Reduction
 OC|Organic Carbon
 O&M|Operating and Maintenance
 ORL|One record per line
-PM10|Particulate matter with a diameter of 10 micrometers or less
-PM2_5|Particulate matter with a diameter of 2.5 micrometers or less
+PM10-PRI|Particulate matter with a diameter of 10 micrometers or less
+PM25-PRI|Particulate matter with a diameter of 2.5 micrometers or less
 PR|Percent Reduction
 RE|Rule Effectiveness
 RP|Rule Penetration
