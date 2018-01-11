@@ -57,14 +57,9 @@ In this chapter, you will learn how to:
 
 Begin by opening the Control Measure Manager and exploring the buttons and menus in the upper portion of the window.
 
-**Step 1-1: Open Control Measure Manager.** To open the Control Measure Manager, choose `Control Measures` from the `Manage` drop down menu on the EMF main window ([Figure 3-1](#manage_menu_of_emf_main_window)). The Control Measure Manager window will appear ([Figure 3-2](#control_measure_manager_before_control_measures_are_loaded)). When the window first appears, it will be empty. Notice that the window appears within the EMF main window.
+**Step 1-1: Open Control Measure Manager.** To open the Control Measure Manager, choose `Control Measures` from the `Manage` drop down menu on the EMF main window (@fig:1). The Control Measure Manager window will appear ([Figure 3-2](#control_measure_manager_before_control_measures_are_loaded)). When the window first appears, it will be empty. Notice that the window appears within the EMF main window.
 
-<a id=manage_menu_of_emf_main_window></a>
-
-![Manage Menu of EMF Main Window][manage_menu_of_emf_main_window]
-
-[manage_menu_of_emf_main_window]: images/Manage_Menu_of_EMF_Main_Window.png
-**Figure 3-1. EMF Manage Menu**
+![Manage Menu of EMF Main Window](images/Manage_Menu_of_EMF_Main_Window.png){#fig:1 }
 
 Notice the different parts of the Control Measure Manager window. There is a `Pollutant Filter` drop down menu at the top, a `Show Details` checkbox, a `Refresh` button, and a `Name or Abbr contains` dialog box. Below those buttons is a toolbar with buttons that operate on the data shown in the table below the toolbar, which by default is empty. There is another set of buttons and pull-down menus below the table. The functions of all of these buttons are discussed below.
 
