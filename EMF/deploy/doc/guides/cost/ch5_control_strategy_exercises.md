@@ -26,19 +26,15 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 3. Click the `Import` button to show the **Import Datasets** window.
 
-([Import Dataset Window Figure](#import_dataset_window)).
+<a id=import_dataset_window></a>
 
-![Import Dataset Window][import_dataset_window]
-
-[import_dataset_window]: images/Import_Datasets.png
+![Import Dataset Window](images/Import_Datasets.png){#fig:import_dataset_window}
 
 4. Click the `Browse` button and browse to the location of the inventory to import on the EMF server computer (e.g., C:\Users\Public\EMF_Data\inventories).
 
-([Browse Datasets Window Figure](#import_browse_window)).
+<a id=import_browse_window></a>
 
-![Import Browse Window][import_browse_window]
-
-[import_browse_window]: images/EMF_Import_Dataset_Server_Local.png
+![Import Browse Window](images/EMF_Import_Dataset_Server_Local.png){#fig:import_browse_window}
 
 5. Select the checkbox that corresponds to the inventory (e.g., 2017eh\_from\_nonpt\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37.csv) and then click `OK`.
 
@@ -63,11 +59,9 @@ The Dataset Manager includes the following controls:
 * `Purge` purges datasets that were removed from the system
 * `Close` closes the **Dataset Manager Window**
 
-([Export Dataset Window Figure](#export_window)).
+<a id=export_window></a>
 
-![Export Window][export_window]
-
-[export_window]: images/EMF_Export_Window.png
+![Export Window](images/EMF_Export_Window.png){#fig:export_window}
 
 <a id=running_max_emis_reduction></a>
 
@@ -146,17 +140,13 @@ For this exercise, run a control strategy that produces co-benefits for multiple
 
 8. Use the Cost Control Summary Function in the Control Strategy Manager Window to create a local spreadsheet summarizing the selected control strategies, including name, strategy type, and constraints, emission reductions and strategy costs.
 
-([Cobenefit Strategy Summary with Constraint Figure](#summary_spreadsheet)).
+<a id=summary_spreadsheet></a>
 
-![Summary Spreadsheet][summary_spreadsheet]
+![Summary Spreadsheet](images/cobenefit_strategy_summary.png){#fig:summary_spreadsheet}
 
-[summary_spreadsheet]: images/cobenefit_strategy_summary.png
+<a id=summary_spreadsheet></a>
 
-([Cobenefit Strategy Summary with No Constraints Figure](#summary_spreadsheet_no_constraints)).
-
-![Summary Spreadsheet No Constraints][summary_spreadsheet_no_constraints]
-
-[summary_spreadsheet_no_constraints]: images/cobenefit_strategy_summary_no_constraints.png
+![Summary Spreadsheet No Constraints](images/cobenefit_strategy_summary_no_constraints.png){#fig:summary_spreadsheet_no_constraints}
 
 9. Note that the summary spreadsheet with constraints was for a cost per ton value of 3000. The result was that no controls were applied, as they all cost more than that.  For the summary spreadsheet with no constraints, the cost of the controls is listed after the status (Completed), for a total value of $3,679,355 and a total emission reduction of 331.2 tons of PM2.5. 
 
