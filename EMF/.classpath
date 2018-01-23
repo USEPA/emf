@@ -85,7 +85,7 @@
 	<classpathentry kind="lib" path="lib/spring-expression-3.2.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-hibernate3-2.0.8.jar"/>
 	<classpathentry kind="lib" path="lib/spring-dao-2.0.8.jar"/>
-	<classpathentry kind="lib" path="lib/tomcat/tomcat-dbcp-7.0.50.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat/tomcat-dbcp.jar"/>
 	<classpathentry kind="lib" path="lib/spring-web-3.2.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/spring-jdbc-3.2.4.RELEASE.jar"/>
