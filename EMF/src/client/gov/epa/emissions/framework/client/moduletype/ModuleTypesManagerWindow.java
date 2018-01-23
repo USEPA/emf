@@ -428,19 +428,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             e.printStackTrace();
             // ignore
         }
-
-        JOptionPane.showMessageDialog(parentConsole, "Module Type Manager needs to be refreshed and all other windows must be closed.", "Warning", JOptionPane.OK_OPTION);
-        
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        try {
-            doRefresh();
-        } catch (Exception e) {
-            e.printStackTrace();
-            // ignore
-        }
-        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));        
-        
-        messagePanel.setMessage("Module Type Manager has been refreshed. Please close all other windows.");
     }
     
     private void doExportModuleTypes() {
