@@ -167,6 +167,10 @@ The inventory filter and county filter work differently for this control strateg
 
 The Multi-Pollutant Maximum Emissions Reduction strategy produces the three standard types of strategy outputs, including a Strategy Detailed Result for each input inventory.
 
+#### Tie-Breaking in Control Strategies
+
+Occasionally, two or more control measures can be tied when ranked by an individual control strategy. For example, in a Maximum Emissions Reduction Control Strategy, the control measure that achieves the maximum emissions reduction will be selected. If two measure achieve the same reduction, the measure with the lower overall cost will be selected. If both measures have the same emissions reduction AND the same cost, the control measure whose abbreviation comes first in the alphabet will be used.
+
 <a id=Managing4></a>
 
 ## Managing Control Strategies

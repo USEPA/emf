@@ -40,7 +40,7 @@ public class RetrieveEfficiencyRecord {
         effRecColumnMap.put("Rule Penetration", "er.rule_penetration");
         effRecColumnMap.put("Equation Type", "er.equation_type");
         effRecColumnMap.put("Capital Rec Fac", "er.cap_rec_factor");
-        effRecColumnMap.put("Discount Rate", "er.discount_rate");
+        effRecColumnMap.put("Interest Rate", "er.discount_rate");
         effRecColumnMap.put("Last Modifed By", "er.last_modified_by");
         effRecColumnMap.put("Last Modifed Date", "er.last_modified_time");
         effRecColumnMap.put("Details", "er.detail");

@@ -242,7 +242,7 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
         layoutGenerator.addLabelWidgetPair("Target Year:", inventoryYearTextField(), panel);
         layoutGenerator.addLabelWidgetPair("Region:", regions(), panel);
         layoutGenerator.addLabelWidgetPair("Target Pollutant:", pollutantsPanel, panel);
-        layoutGenerator.addLabelWidgetPair("Discount Rate (%):", discountRate(), panel);
+        layoutGenerator.addLabelWidgetPair("Interest Rate (%):", discountRate(), panel);
 
         JPanel middleLeftPanel = new JPanel(new SpringLayout());
 
@@ -286,10 +286,9 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
     
     private JComponent discountRate() {
 
-        this.discountRate = new DoubleTextField("discount rate", 1, 20, 16);
+        this.discountRate = new DoubleTextField("interest rate", 1, 20, 16);
         this.discountRate.setValue(this.controlStrategy.getDiscountRate() != null ? controlStrategy.getDiscountRate()
                 : 7.0);
-        this.discountRate.setToolTipText("This value is only used for point sources");
         this.discountRate.setEditable(false);
 
         return discountRate;
@@ -505,13 +504,13 @@ public class ViewControlStrategySummaryTab extends EmfPanel implements ViewContr
     private double checkDiscountRate() throws EmfException {
         // check to see that it's not empty
         if (discountRate.getText().trim().length() == 0)
-            throw new EmfException("Enter the Discount Rate as a percentage (e.g., 9 for 9% percent)");
+            throw new EmfException("Enter the Interest Rate as a percentage (e.g., 9 for 9% percent)");
 
         double value = verifier.parseDouble(discountRate.getText());
 
         // make sure the number makes sense...
         if (value < 1 || value > 20) {
-            throw new EmfException("Enter the Discount Rate as a percent between 1 and 20 (e.g., 7% is entered as 7)");
+            throw new EmfException("Enter the Interest Rate as a percent between 1 and 20 (e.g., 7% is entered as 7)");
         }
         return value;
 
