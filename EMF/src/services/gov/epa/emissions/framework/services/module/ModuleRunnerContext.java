@@ -39,7 +39,7 @@ class ModuleRunnerContext {
     public void start() {
         startDate = new Date();
         timeStamp = CustomDateFormat.format_HHMMSSSS(startDate);
-        userTimeStamp = task.getUser().getUsername() + "_" + timeStamp;
+        userTimeStamp = task.getUser().getUsername().toLowerCase() + "_" + timeStamp;
         // Generate random password by choosing 30 * 5 = 150 bits from a cryptographically
         // secure random bit generator and encoding them in base-32.
         // 128 bits is considered to be cryptographically strong.
