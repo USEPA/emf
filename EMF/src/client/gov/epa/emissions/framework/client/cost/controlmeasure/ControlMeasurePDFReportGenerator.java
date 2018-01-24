@@ -75,6 +75,8 @@ public class ControlMeasurePDFReportGenerator {
     public static final Font REGULAR_FONT = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
 
     public static final Format COST_FORMAT = new DecimalFormat("$#,##0");
+    
+    public static final Format EFF_FORMAT = new DecimalFormat("###.####");
 
     public static final BaseColor COLORED_BORDER = BaseColor.BLACK;
 
@@ -866,8 +868,8 @@ public class ControlMeasurePDFReportGenerator {
                 valueCell.setPadding(padding);
                 refYrCPTList.add(valueCell);
 
-                valueCell = new PdfPCell(new Phrase(this.getDoubleAsString(efficiencyRecord.getEfficiency()),
-                        REGULAR_FONT));
+                valueCell = new PdfPCell(new Phrase(this.getDoubleAsStringSpecial(
+                        efficiencyRecord.getEfficiency(), N_A_STRING, EFF_FORMAT), REGULAR_FONT));
                 valueCell.setHorizontalAlignment(valueHAlign);
                 valueCell.setVerticalAlignment(valueVAlign);
                 valueCell.setBorderColor(borderColor);
