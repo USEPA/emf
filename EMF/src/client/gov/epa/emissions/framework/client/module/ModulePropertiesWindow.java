@@ -342,7 +342,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         moduleType = moduleTypeVersion.getModuleType();
         moduleName.setText(module.getName());
         moduleDescription.setText(module.getDescription());
-        moduleDescription.setText(module.getTagsText());
+        moduleTags.setText(module.getTagsText());
         moduleCreator.setText(module.getCreator().getName());
         moduleCreationDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getCreationDate()));
         moduleLastModifiedDate.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(module.getLastModifiedDate()));
