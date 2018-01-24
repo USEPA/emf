@@ -259,7 +259,7 @@ target_pollutant := 1;
 	-- uncontrolled emission 100 / (1 - 0.9) = 1000 tons giving a and then applying new control gives 950 tons reduced giving a 95% control
 	remaining_emis_sql := 
 		'( case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then -- add on control
-			' || emis_sql || ' * ' || percent_reduction_sql || ' / 100.0 
+			(' || emis_sql || ' * (1.0 - ' || percent_reduction_sql || ' / 100.0))
 		else -- replacement control
 			(' || uncontrolled_emis_sql || ' * (1.0 - ' || percent_reduction_sql || ' / 100.0))
 		end )';
