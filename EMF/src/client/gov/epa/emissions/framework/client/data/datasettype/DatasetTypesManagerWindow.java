@@ -53,6 +53,8 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
     private EmfConsole parentConsole;
 
     private EmfSession session;
+    
+    private Button editButton, newButton, removeButton;
 
     public DatasetTypesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
         super("Dataset Type Manager", new Dimension(700, 350), desktopManager);
@@ -152,21 +154,21 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
                 editDatasetTypes();
             }
         };
-        SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
+        editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
 
         Action createAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 createDatasetType();
             }
         };
-        Button newButton = new NewButton(createAction);
+        newButton = new NewButton(createAction);
         
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 removeDatasetType();
             }
         };
-        Button removeButton = new RemoveButton(removeAction);
+        removeButton = new RemoveButton(removeAction);
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(viewButton);
@@ -307,6 +309,11 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
 //                    this.parentContainer.setCursor(null); //turn off the wait cursor
 //                    this.parentContainer.
                     ComponentUtility.enableComponents(parentContainer, true);
+                    if (!session.user().isAdmin()){
+                        editButton.setEnabled(false);
+                        newButton.setEnabled(false);
+                        removeButton.setEnabled(false);
+                    }
                     this.parentContainer.setCursor(null); //turn off the wait cursor
                 }
             }
