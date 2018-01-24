@@ -65,6 +65,7 @@ DECLARE
 	fixed_operation_maintenance_cost_expression text;
 	variable_operation_maintenance_cost_expression text;
 	annualized_capital_cost_expression text;
+	computed_ctl_cost_per_ton_expression text;
 	computed_cost_per_ton_expression text;
 	actual_equation_type_expression text;
 
@@ -477,6 +478,7 @@ BEGIN
 		fixed_operation_maintenance_cost_expression(cost_expressions),
 		variable_operation_maintenance_cost_expression(cost_expressions),
 		annualized_capital_cost_expression(cost_expressions),
+		computed_ctl_cost_per_ton_expression(cost_expressions),
 		computed_cost_per_ton_expression(cost_expressions),
 		actual_equation_type_expression(cost_expressions)
 	from public.get_cost_expressions(
@@ -501,6 +503,7 @@ BEGIN
 		fixed_operation_maintenance_cost_expression,
 		variable_operation_maintenance_cost_expression,
 		annualized_capital_cost_expression,
+		computed_ctl_cost_per_ton_expression,
 		computed_cost_per_ton_expression,
 		actual_equation_type_expression;
 
@@ -607,6 +610,7 @@ BEGIN
 		annualized_capital_cost,
 		total_capital_cost,
 		annual_cost,
+		ctl_ann_cost_per_ton,
 		ann_cost_per_ton,
 		annualized_capital_cost_3pct,
 		annual_cost_3pct,
@@ -620,6 +624,7 @@ BEGIN
 		inv_rule_pen,
 		inv_rule_eff,
 		final_emissions,
+		ctl_emis_reduction,
 		emis_reduction,
 		inv_emissions,
 		input_emis,
@@ -671,6 +676,7 @@ select
 	annualized_capital_cost,
 	capital_cost,
 	ann_cost,
+	computed_ctl_cost_per_ton,
 	computed_cost_per_ton,
 	annualized_capital_cost_3pct,
 	ann_cost_3pct,
@@ -684,6 +690,7 @@ select
 	rpen,
 	reff,
 	final_emissions,
+	ctl_emis_reduction,
 	emis_reduction,
 	inv_emissions,
 	input_emis,
@@ -742,6 +749,7 @@ select
 			' || annualized_capital_cost_expression || '  as annualized_capital_cost,
 			' || capital_cost_expression || ' as capital_cost,
 			' || annual_cost_expression || ' as ann_cost,
+			' || computed_ctl_cost_per_ton_expression || '  as computed_ctl_cost_per_ton,
 			' || computed_cost_per_ton_expression || '  as computed_cost_per_ton,
 
 --3pct discount rate costs
@@ -757,11 +765,12 @@ select
 			coalesce(inv_ovr.ceff, inv.' || inv_ceff_expression || ') as ceff,
 			' || case when not is_point_table and not is_flat_file_inventory then 'coalesce(inv_ovr.rpen, inv.rpen)' else '100' end || ' as rpen,
 			' || case when not is_flat_file_inventory then 'coalesce(inv_ovr.reff, inv.reff)' else '100' end || ' as reff,
-			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - ' || percent_reduction_sql || ' / 100) as final_emissions,
-			' || emis_sql || ' - case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - ' || percent_reduction_sql || ' / 100) as emis_reduction,
+			' || remaining_emis_sql || ' as final_emissions,
+			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end - ' || remaining_emis_sql || ' as ctl_emis_reduction,
+			' || emis_sql || ' - ' || remaining_emis_sql || ' as emis_reduction,
 			' || emis_sql || ' as inv_emissions,
 			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end as input_emis,
-			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - ' || percent_reduction_sql || ' / 100) as output_emis,
+			' || remaining_emis_sql || ' as output_emis,
 			substr(inv.' || fips_expression || ', 1, 2) as fipsst,
 			substr(inv.' || fips_expression || ', 3, 3) as fipscty,
 			' || case when has_sic_column = false then 'null::character varying' else 'inv.sic' end || ' as sic,

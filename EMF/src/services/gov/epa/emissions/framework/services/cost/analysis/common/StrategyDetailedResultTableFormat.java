@@ -80,6 +80,7 @@ public class StrategyDetailedResultTableFormat implements TableFormat {
         cols.add(new Column("SEGMENT", types.stringType(20), 20, new StringFormatter(20)));
 
         cols.add(new Column("Annual_Cost", types.realType(), new RealFormatter()));
+        cols.add(new Column("Ctl_Ann_Cost_per_Ton", types.realType(), new RealFormatter()));
         cols.add(new Column("Ann_Cost_per_Ton", types.realType(), new RealFormatter()));
         cols.add(new Column("Annual_Oper_Maint_Cost", types.realType(), new RealFormatter()));
         cols.add(new Column("Annual_Variable_Oper_Maint_Cost", types.realType(), new RealFormatter()));
@@ -100,6 +101,7 @@ public class StrategyDetailedResultTableFormat implements TableFormat {
         cols.add(new Column("Inv_Rule_Pen", types.realType(), new RealFormatter()));
         cols.add(new Column("Inv_Rule_Eff", types.realType(), new RealFormatter()));
         cols.add(new Column("Final_emissions", types.realType(), new RealFormatter()));
+        cols.add(new Column("Ctl_Emis_Reduction", types.realType(), new RealFormatter()));
         cols.add(new Column("Emis_Reduction", types.realType(), new RealFormatter()));
         cols.add(new Column("Inv_emissions", types.realType(), new RealFormatter()));
         cols.add(new Column("Apply_Order", types.intType(), new IntegerFormatter(), "DEFAULT 1"));

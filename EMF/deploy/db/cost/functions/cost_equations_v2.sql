@@ -21,6 +21,7 @@ CREATE OR REPLACE FUNCTION public.get_cost_expressions(
 	OUT fixed_operation_maintenance_cost_expression text, 
 	OUT variable_operation_maintenance_cost_expression text, 
 	OUT annualized_capital_cost_expression text, 
+	OUT computed_ctl_cost_per_ton_expression text, 
 	OUT computed_cost_per_ton_expression text, 
 	OUT actual_equation_type_expression text)  AS $$
 DECLARE
@@ -3551,6 +3552,15 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 			end 
 		' else '
 	' end || ')';
+
+	computed_ctl_cost_per_ton_expression := 
+	'case 
+		when coalesce((' || emis_reduction_sql || '), 0) <> 0 then 
+			(' || annual_cost_expression || ')
+			/*annual_cost*/
+			/ (' || emis_reduction_sql || ')
+		else null::double precision
+	end';
 
 	computed_cost_per_ton_expression := 
 	'case 
