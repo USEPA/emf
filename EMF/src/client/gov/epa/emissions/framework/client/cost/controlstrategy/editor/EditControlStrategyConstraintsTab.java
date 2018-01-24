@@ -394,7 +394,7 @@ for (ControlStrategyTargetPollutant selectedTargetPollutant : selectedTargetPoll
         emisReduction.setText(constraint != null ? (constraint.getMaxEmisReduction() != null ? constraint.getMaxEmisReduction() + "" : "") : "");
         emisReduction.setToolTipText("Enter the sources target pollutant minimum emission reduction (in tons).  The control measure must be able to control greater than or equal to this tonnage.");
         changeables.addChangeable(emisReduction);
-        layoutGenerator.addLabelWidgetPair("Minimum Emissions Reduction (tons)", emisReduction, panel);
+        layoutGenerator.addLabelWidgetPair("Minimum Effective Emissions Reduction (tons)", emisReduction, panel);
 
         contrlEff = new TextField("control efficiency", 10);
         contrlEff.setText(constraint != null ? (constraint.getMaxControlEfficiency() != null ? constraint.getMaxControlEfficiency() + "" : "") : "");
@@ -406,7 +406,7 @@ for (ControlStrategyTargetPollutant selectedTargetPollutant : selectedTargetPoll
         costPerTon.setText(constraint != null ? (constraint.getMinCostPerTon() != null ? constraint.getMinCostPerTon() + "" : "") : "");
         costPerTon.setToolTipText("Enter the sources target pollutant maximum cost per ton.  The control measure must be have a cost per ton less than or equal to this cost per ton.");
         changeables.addChangeable(costPerTon);
-        layoutGenerator.addLabelWidgetPair("Maximum Cost per Ton ($/ton) [in Strategy Cost Year dollars]", costPerTon, panel);
+        layoutGenerator.addLabelWidgetPair("Maximum Effective Cost per Ton ($/ton) [in Strategy Cost Year dollars]", costPerTon, panel);
 
         annCost = new TextField("annual cost", 10);
         annCost.setText(constraint != null ? (constraint.getMinAnnCost() != null ? constraint.getMinAnnCost() + "" : "") : "");
