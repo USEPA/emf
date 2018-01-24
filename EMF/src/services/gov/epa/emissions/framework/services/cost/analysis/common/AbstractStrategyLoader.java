@@ -346,7 +346,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
             if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
         }
         
-        String query = "SELECT count(1) as record_count, sum(Annual_Cost) as total_cost, " 
+        String query = "SELECT count(1) as record_count, round(sum(Annual_Cost)::numeric,2) as total_cost, " 
             + (controlStrategy.getTargetPollutant() == null || controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)
                     ? "null::double precision" 
                     : "sum(case when poll LIKE '%" + pollToMatch + "%' then Emis_Reduction else null::double precision end)"

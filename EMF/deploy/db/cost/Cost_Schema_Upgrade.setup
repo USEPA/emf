@@ -1929,3 +1929,7 @@ UPDATE emf.equation_types
    SET equation = REPLACE(equation, 'Capital Coat', 'Capital Cost');
 UPDATE emf.equation_types
    SET equation = REPLACE(equation, 'Annual Cost = Annual Cost = ', 'Annual Cost = ');
+
+-- 01/23/2017 Update cost columns to double precision
+ALTER TABLE emf.control_strategies ALTER COLUMN total_cost TYPE double precision;
+ALTER TABLE emf.strategy_results ALTER COLUMN total_cost TYPE double precision;
