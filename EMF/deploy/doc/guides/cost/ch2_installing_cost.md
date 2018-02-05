@@ -234,7 +234,7 @@ The CoST application can now be run by going to the EMF client directory and loc
 
 ![Login to the Emissions Modeling Framework Window](images/Login_to_the_Emissions_Modeling_Framework_Window.png){#fig:login_emf}
 
-If you have never used the EMF before, click the `**`Register New User`**` button. You will then see the following window
+If you have never used the EMF before, click the `**`Register New User`**` button. You will then see the following window:
 
 <a id=register_new_user></a>
 
@@ -256,7 +256,7 @@ After successfully logging into CoST the main EMF window shown below will displa
 
 ## (Optional) Upgrade the Control Measures Database (CMDB)
 
-The Control Measures Database includes all of the emissions control technology information, emissions reductions, and associated costs used by U.S. EPA for developing emissions control strategies for stationary sources. The latests CMDB is available from [EPA CoST Website](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution).
+The CMDB includes all of the emissions control technology information, emissions reductions, and associated costs used by the EPA for developing emissions control strategies for stationary sources. The latest CMDB is available from the [EPA CoST Website](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution).
 
 The CoST/EMF installation package includes the latest version of the CMDB. The instructions here are provided to guide the upgrade of an existing EMF installation with a new version of the CMDB.
 

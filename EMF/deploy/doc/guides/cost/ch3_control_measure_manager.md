@@ -33,7 +33,7 @@ The Control Measure Manager has the following major features:
 
 * Facilitates storing and maintaining control measure data
 * Shows minimum, maximum, and average control efficiency, cost per ton (based on year 2013 values), and average rule effectiveness and rule penetration
-* Displays other control measure attributes (e.g., abbreviation, major pollutant, source group, equipment life, emission inventory sectors, class)
+* Displays other control measure attributes (e.g., abbreviation, major pollutant, source group, equipment life, emissions inventory sectors, class)
 * Allows import of control measure information into the system from CSV files
 * Enables export of control measure to CSV files
 
@@ -88,7 +88,7 @@ The control measure abbreviation is a set of characters that is a *short-hand* f
 
 **Step 1-5: Examine Control Measure Details.** Scroll to the right to examine the detail columns that are available in the Control Measure Manager. *Note that you may move the columns around by grabbing the column's header with your mouse and dragging them. You may also change their widths as desired.* You can also resize the Control Measure Manager window within the EMF Main Window as desired, such as to make the entire window wider so that you can see more columns.
 
-**Step 1-6: View Measure Name.**  After you scroll to the right in the window, if you hover your mouse over one of the columns other than `Name`, you will see that the name of the measure corresponding to the row you are on will appear briefly as a "tooltip". This is so that you can tell what the name of the measure is even if has scrolled off the window.
+**Step 1-6: View Measure Name.**  After you scroll to the right in the window, if you hover your mouse over one of the columns other than `Name`, you will see that the name of the measure corresponding to the row you are on will appear briefly as a "tooltip". This is so that you can tell what the name of the measure is even if it has scrolled off the window.
 
 The columns shown on the Control Measure Manager with brief descriptions are shown in Table {@tbl:control_measure_manager_columns_table}. The control measures table supports sorting and filtering the data. Tables of this same type are used many places throughout CoST and the EMF.
 
@@ -100,8 +100,8 @@ Select|This column will allow the user to view, edit, or copy the measure by cli
 Name|A unique name for the measure.
 Abbreviation|A unique abbreviation for the measure.
 Pollutant|A pollutant (e.g., NO<sub>x</sub>, PM10-PRI) that the measure might control. Note that any pollutant-specific information in the row is for this pollutant.
-Max, Min, and Avg CE|Maximum, minimum, and average control efficiencies for the specified pollutant, aggregated across all locales, effective dates, and source sizes.
-Max, Min, and Avg CPT|Maximum, minimum, and average cost per ton for the specified pollutant aggregated across all locales, effective dates, and source sizes.
+Avg, Min, and Max CE|Average, minimum, and maximum control efficiencies for the specified pollutant, aggregated across all locales, effective dates, and source sizes.
+Avg, Min, and Max CPT|Average, minimum, and maximum cost per ton for the specified pollutant aggregated across all locales, effective dates, and source sizes.
 Avg Rule Eff.|Average rule effectiveness aggregated across all efficiency records for the specified pollutant.
 Avg Rule Pen.|Average rule penetration aggregated across all efficiency records for the specified pollutant.
 Control Technology|The control technology that is used for the measure (e.g., Low NO~x burner, Onroad Retrofit).
@@ -161,7 +161,7 @@ To unselect all of the measures, click the `Clear all the selections` button: <i
 
 Click the `Show/Hide columns` button again and scroll down through the list of columns at the top of the dialog to see others that are farther down the list. To select multiple columns to show or hide, click on the first column name of interest, hold down the shift key, then click a second column name to select the intervening columns, and then click the `Show` button or the `Hide` button to either show or hide those columns.
 
-To select columns that are not next to each other, hold down the control key and click on the columns that you want to select; when you are finished selecting click `Show `or `Hide`. The remaining buttons on the dialog are not used frequently: (a) `Invert` will invert the selection of highlighted columns. (b) The `Add Criteria`/`Delete Criteria` Filter section at the bottom can be used to locate columns when there are hundreds of column names, but there are no tables that large used in CoST.
+To select columns that are not next to each other, hold down the control key and click on the columns that you want to select; when you are finished selecting click `Show` or `Hide`. The remaining buttons on the dialog are not used frequently: (a) `Invert` will invert the selection of highlighted columns. (b) The `Add Criteria`/`Delete Criteria` Filter section at the bottom can be used to locate columns when there are hundreds of column names, but there are no tables that large used in CoST.
 
 **Step 1-14: Format Columns.** Click the `Format Columns` button, <img src="images/Format_Button.png"/>, to open the Format Columns dialog and examine the options for controlling how data in the table are shown. For example, check the checkboxes in the `Format?` column for one or more of the column names **"Avg CE"**, **"Min CE"**, and **"Max CE"** (note that you may first need to unhide the columns if you hid them in the previous step). Because these columns are all numeric, some controls used to format numbers will appear in the lower right corner.
 
@@ -232,7 +232,7 @@ If the cost or control efficiency varies over region or time, it is possible to 
 
 ![Efficiencies Tab of View Control Measure Window](images/Efficiencies_Tab_of_View_Control_Measure_Window.png){#fig:efficiencies_tab_of_view_control_measure_window}
 
-The `Row Limit` and `Row Filter` fields are helpful when there are hundreds of efficiency records (e.g., some data may be county specific and available for multiple pollutants). The `Row Limit` is the maximum number of records that will be displayed on the page. For example, if there were thousands of records, it could take a long time to transfer all of those data from the server, so by default only 100 records will be transferred if the Row Limit is set to 100.
+The `Row Limit` and `Row Filter` fields are helpful when there are hundreds of efficiency records (e.g., some data may be county specific and available for multiple pollutants). The `Row Limit` is the maximum number of records that will be displayed on the page. For example, if there were several hundred records, it could take a long time to transfer all of those data from the server, so by default only 100 records will be transferred if the Row Limit is set to 100.
 
 **Step 2-5: Apply a Row Filter to Control Measure Efficiencies.** To apply a `Row Filter` to the control efficiencies, enter `Pollutant='PM10-PRI'` into the text field and then click `Apply` to display only the record for PM10-PRI. The `Row Filter` follows the syntax of a Structured Query Language (SQL) 'WHERE' clause. Note that the filter may not seem necessary in this particular example that only has a few records, but if this measure had entries for every county and pollutant, as do some mobile measures, then the filter is useful for limiting the number records displayed. If desired, you may try some other filters with this measure, such as:
 
@@ -280,9 +280,6 @@ Maximum Emissions|The upper limit of emissions from the inventory for the contro
 Rule Effectiveness|The ability of a regulatory program to achieve all the emissions reductions that could have been achieved by full compliance with the applicable regulations at all sources at all times. A rule effectiveness of 100% means that all sources are fully complying at all times. Rule effectiveness can sometimes vary by locale.
 Rule Penetration|The percent of sources that are required to implement the control measure. Rule penetration might vary over time as a new rule is "phased in" gradually, and can sometimes vary by locale.
 Equation Type|The type of cost equation to use.
-Capital Recovery Factor|The capital recovery factor to use. *Applicable only for equation-based annualized costs.*
-Interest Rate|The interest rate used to compute the capital recovery factor. *Applicable only for equation-based annualized costs.*
-Incremental CPT(Based on specified cost year dollars)|The cost to reduce a ton of the specified pollutant, when applied on top of an existing measure at an emissions source.
 Minimum Capacity (MW)| The minimum capacity for the control measure (megawatts).
 Maximum Capacity (MW)| The maximum capacity for the control measure (megawatts).
 Last Modified By|The last user to modify the efficiency record.
@@ -313,7 +310,7 @@ As an alternative to using a simple 'cost per ton of pollutant reduced' value to
 
 **Step 2-8: View the Control Measure Equations.** Click on the `Equations` tab on the View Control Measure window to see information associated with the cost equations for the selected measure. An example of this tab is shown in Figure {@fig:equations_tab_of_view_control_measure_window}. If the measure does not use a cost equation, this tab will be blank. The table at the bottom of the `Equations` tab shows the **Equation Type** (the same type is repeated in every row), in addition to the **Variable Name** and **Value** for that variable. The fields of the `Equations` tab are shown in [Table 3-4](#control_measure_equations_tab_table).
 
-Each type of equation uses a different set of variables. CoST supports fifteen different types of cost equations. Additional types of equations may be added in the future. For more information on the equations and their input variables, see the [Documentation of Cost Equations in the EPA's Control Strategy Tool (CoST)](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution). The appropriate form of the equation will be used in conjunction with the specified values to compute the total cost of applying the measure to the source for the specified pollutant and cost year.
+Each type of equation uses a different set of variables. CoST supports fourteen different types of cost equations. Additional types of equations may be added in the future. For more information on the equations and their input variables, see the [Documentation of Cost Equations in the EPA's Control Strategy Tool (CoST)](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution). The appropriate form of the equation will be used in conjunction with the specified values to compute the total cost of applying the measure to the source for the specified pollutant and cost year.
 
 Do not click `Close` after examining the Equations tab as this will close the View Control Measure window, which we will use for the next step.
 
@@ -428,7 +425,7 @@ Click the `Add` button under the `Sectors` list to add another sector for the me
 
 **Step 4-5: Setting Months for a Control Measure.** Adding and removing `Months` to which a control measure applies works similarly to adding and removing sectors. For this exercise, specify some particular months to which the measure should apply (e.g., **March**, **April**, and **May**).
 
-*Note: the feature of setting specific months for which a measure applies is effective only when applying measures to monthly emission inventories. Specifying months in this way is not effective when applying measures to annual emission inventories.*
+*Note: the feature of setting specific months for which a measure applies is effective only when applying measures to monthly emissions inventories. Specifying months in this way is not effective when applying measures to annual emissions inventories.*
 
 To set the months back to All Months, select all of the months in the `Months` list by clicking on the first month, scrolling to the last month in the list, and using **shift-click** with your mouse to select all  of the months in the list. Click `Remove` to remove specific months and to set the measure to be applicable to all months.
 
