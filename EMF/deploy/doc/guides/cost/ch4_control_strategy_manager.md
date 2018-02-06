@@ -942,21 +942,21 @@ Table: Example of Strategy Messages Output. {#tbl:example_of_strategy_messages_o
 
 <a id=example_of_strategy_measure_summary_data_table></a>
 
-SECTOR|FIPS|SCC|POLL|CONTROL_MEASURE_ABBREV|CONTROL_MEASURE|CONTROL_TECHNOLOGY|SOURCE_GROUP|ANNUAL_COST|AVG_ANN_COST_PER_TON|EMIS_REDUCTION
+SECTOR|FIPS|SCC|POLL|CONTROL MEASURE ABBREV|CONTROL MEASURE|CONTROL TECHNOLOGY|SOURCE GROUP|ANNUAL COST|AVG ANN COST PER TON|EMIS REDUCTION
 -----------|--------|--------------|------|-------------|----------------------------------------------|-------------------------|--------------|---------|--------|-----------
-ptnonipm|37001|10200906|PM10|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
-ptnonipm|37001|10200906|PM2\_5|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
-ptnonipm|37001|30500311|PM10|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
-ptnonipm|37001|30500311|PM2\_5|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |2.0939
-ptnonipm|37001|30501110|PM10|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$110|$147|0.7498
-ptnonipm|37001|30501110|PM2\_5|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |0.2605
+ptnonipm|37001|10200906|PM10-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
+ptnonipm|37001|10200906|PM25-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
+ptnonipm|37001|30500311|PM10-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
+ptnonipm|37001|30500311|PM25-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |2.0939
+ptnonipm|37001|30501110|PM10-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$110|$147|0.7498
+ptnonipm|37001|30501110|PM25-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |0.2605
 
 Table: Example of Strategy Measure Summary Data. {#tbl:example_of_strategy_measure_summary_data_table}
 
 
 <a id=example_of_strategy_county_summary_data_table></a>
 
-SECTOR|FIPS|POLL|INPUT_EMIS|EMIS_REDUCTION|REMAINING_EMIS|PCT_RED|ANNUAL_COST|ANNUAL_OPER_MAINT_COST|ANNUALIZED_CAPITAL_COST|TOTAL_CAPITAL_COST|AVG_ANN_COST_PER_TON
+SECTOR|FIPS|POLL|INPUT EMIS|EMIS REDUCTION|REMAINING EMIS|PCT RED|ANNUAL COST|ANNUAL OPER MAINT COST|ANNUALIZED CAPITAL COST|TOTAL CAPITAL COST|AVG ANN COST PER TON
 ------------|-------|------|-----------|-----|--------|---------|-----------|-----------|----------|----------|----------
 ptnonipm|37001|VOC|313.8724| |313.8724| | | | | | |
 ptnonipm|37001|PM25-PRI|33.4717|33.2505|0.2212|99.3391| | | | | |

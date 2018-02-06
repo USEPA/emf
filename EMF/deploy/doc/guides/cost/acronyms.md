@@ -1,5 +1,6 @@
-# Acronyms [acronyms_chapter] #
+# Acronyms
 
+Abbreviation| Definition
 -----------|--------------------------------------------------------------
 AQM|Air Quality Model
 CE|Control Efficiency

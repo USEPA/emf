@@ -126,7 +126,7 @@ Table: Control Measure Manager Columns. {#tbl:control_measure_manager_columns_ta
 
 **Step 1-9: Multi-Column Sort.** To perform a multicolumn sort, click the sort button <img src="images/Sort_Button.png"/> and then click `Add` to add an additional column to sort by (e.g., `Name`). Notice that you can control whether the sort is **Ascending** and whether it is **Case Sensitive**. Click `OK` once you have made your selection. The data should now be sorted according to the column(s) you specified.
 
-**Step 1-10: Apply Filters to Control Measure Table.** To use a filter to limit the measures shown, click the button on the toolbar that looks like a filter: <img src="images/Filter_Button.png"/>. When you do this the "Filter Rows" dialog appears (Figure: {@fig:filter_rows_dialog}).
+**Step 1-10: Apply Filters to Control Measure Table.** To use a filter to limit the measures shown, click the button on the toolbar that looks like a filter <img src="images/Filter_Button.png"/>. When you do this the "Filter Rows" dialog appears (Figure {@fig:filter_rows_dialog}).
 
 - Enter a criterion for the filter by clicking `Add Criteria`.
 - Click in the cell under "Column Name" to make a pull-down menu appear, from which you may choose a column to filter on (e.g., **Name**).
@@ -149,11 +149,11 @@ Open the filter dialog again by clicking the `Filter rows` button. Set `Match us
 
 **Step 1-11: Remove Filters from the Control Measures Table.** Open the filter dialog again by clicking the `Filter rows` button. Remove one of criteria by clicking somewhere in one of the rows shown on the Filter Dialog and then clicking `Delete Criteria`. Now click `OK` to have the less stringent filter take effect.
 
-**Step 1-12: Select and Unselect Control Measures.** To select all of the control measures that meet your filter criteria, click the `Select All` button on the toolbar: <img src="images/Select_All_Button.png"/>. You will see that the checkboxes in the `Select` column are now all filled with checks. You may select or deselect individual measures by clicking their checkboxes in the `Select` column. In the next subsection, we will discuss operations that can be performed on selected measures, such as viewing them and exporting their data.
+**Step 1-12: Select and Unselect Control Measures.** To select all of the control measures that meet your filter criteria, click the `Select All` button on the toolbar <img src="images/Select_All_Button.png"/>. You will see that the checkboxes in the `Select` column are now all filled with checks. You may select or deselect individual measures by clicking their checkboxes in the `Select` column. In the next subsection, we will discuss operations that can be performed on selected measures, such as viewing them and exporting their data.
 
-To unselect all of the measures, click the `Clear all the selections` button: <img src="images/Clear_All_Button.png"/> and you will see that all of the checks in the `Select` column are now removed.
+To unselect all of the measures, click the `Clear all the selections` button <img src="images/Clear_All_Button.png"/> and you will see that all of the checks in the `Select` column are now removed.
 
-**Step 1-13: Show/Hide Columns.** To hide some of the columns that are shown in the table, click the `Show/Hide columns` button: <img src="images/Show_Hide_Button.png"/>. On the Show/Hide Columns dialog that appears (similar to the one shown in Figure {@fig:show_hide_columns_dialog}, uncheck some of the checkboxes in the `Show?` column and then click `OK`. The columns you unchecked will no longer display in the control measures table.
+**Step 1-13: Show/Hide Columns.** To hide some of the columns that are shown in the table, click the `Show/Hide columns` button <img src="images/Show_Hide_Button.png"/>. On the Show/Hide Columns dialog that appears (similar to the one shown in Figure {@fig:show_hide_columns_dialog}, uncheck some of the checkboxes in the `Show?` column and then click `OK`. The columns you unchecked will no longer display in the control measures table.
 
 <a id=show_hide_columns_dialog></a>
 
@@ -171,11 +171,11 @@ Change the `Font` to **Arial**, the `Style` to **Bold**, the `Size` to **14**, t
 
 ![Format Columns Dialog](images/Format_Columns_Dialog.png){#fig:format_columns_dialog}
 
-**Step 1-15: Reset Control Measures Table.** To remove sort criteria, row and column filters, and formatting, click the `Reset` button: <img src="images/Reset_Button.png"/> in the Control Measure Manager window.
+**Step 1-15: Reset Control Measures Table.** To remove sort criteria, row and column filters, and formatting, click the `Reset` button <img src="images/Reset_Button.png"/> in the Control Measure Manager window.
 
 **Step 1-16: Mouse Hover Tooltip.** If you are unsure of what a button does when using CoST, place your cursor over the button and wait; in many cases, a small piece of text called a **"tooltip"** will appear. For example, place your cursor over one of the buttons on the Control Measure Manager window and hold it still. You will see a tooltip describing what the button does. Many of the buttons and fields used in CoST have tooltips to clarify what they do or what type of data should be entered.
 
-**Step 1-17: Update Control Measures List.** If you wish to retrieve an updated set of control measures data from the CoST server, click the `Refresh` button: <img src="images/Refresh_Button.png"/> at the upper right portion of the Control Measure Manager. Note that this will also reset any special formatting that you have specified, but any sort and filter settings will be preserved.
+**Step 1-17: Update Control Measures List.** If you wish to retrieve an updated set of control measures data from the CoST server, click the `Refresh` button <img src="images/Refresh_Button.png"/> at the upper right portion of the Control Measure Manager. Note that this will also reset any special formatting that you have specified, but any sort and filter settings will be preserved.
 
 <a id=Viewing3></a>
 
@@ -401,7 +401,7 @@ View the contents of the copied measure by selecting the checkbox next to the me
 Only control measures created by the current CoST user can be edited through the Control Measure Manager. CoST Administrators can edit all of the measures in the CMDB.
 
 **Step 4-1: Find a Control Measure to Edit.** First, click the `Clear all the selections` button to
-unselect any previously selected measures: <img src="images/Clear_All_Button.png"/>. For this exercise, find the measure created using the copy button ([Section 3](#Copying3)) in the Control Measure Manager and check the corresponding select box in the **Select** column. Click `Edit` to edit the data for the control measure. The Edit Control Measure window will appear Figure {@fig:summary_tab_of_edit_control_measure_window}.
+unselect any previously selected measures <img src="images/Clear_All_Button.png"/>. For this exercise, find the measure created using the copy button ([Section 3](#Copying3)) in the Control Measure Manager and check the corresponding select box in the **Select** column. Click `Edit` to edit the data for the control measure. The Edit Control Measure window will appear Figure {@fig:summary_tab_of_edit_control_measure_window}.
 
 <a id=summary_tab_of_edit_control_measure_window></a>
 
