@@ -64,7 +64,7 @@ CoST can help answer the above questions when users set up and run one or more c
 
 ![Basic Steps for Running a Control Strategy](images/Basic_Steps_for_Running_a_Control_Strategy.png){#fig:basic_steps_for_running_a_control_strategy}
 
-After a control strategy run is complete, several outputs are associated with the strategy. The main CoST output for each control strategy is a table called the "**Strategy Detailed Result**." This table consists of emissions source-control measure pairings, each of which contains information about the cost and emissions reductions that would be achieved if the measure were to be applied to the source. If multiple inventories were processed by the strategy, then there will be one Strategy Result for *each* input inventory, unless the inventories were merged for a least cost run (as indicated in the 'Multiple Inventories' column Table {@tbl:summary_of_strategy_algorithms_table}). Also, there will be at least one Strategy Detailed Result for each of the least cost iterations performed as part of a Least Cost Curve run. In addition to the Strategy Detailed Result, two other outputs are produced for each strategy run: the Strategy County Summary (which includes uncontrolled and controlled emissions), and the Strategy Measure Summary (which summarizes how control measures were applied for each sector-county-SCC-Pollutant combination). These three outputs are referred to in Table {@tbl:summary_of_strategy_algorithms_table} as the 'Standard' outputs.
+After a control strategy run is complete, several outputs are associated with the strategy. The main CoST output for each control strategy is a table called the "**Strategy Detailed Result**." This table consists of emissions source-control measure pairings, each of which contains information about the cost and emissions reductions that would be achieved if the measure were to be applied to the source. If multiple inventories were processed by the strategy, then there will be one Strategy DetailedResult for *each* input inventory, unless the inventories were merged for a least cost run (as indicated in the 'Multiple Inventories' column Table {@tbl:summary_of_strategy_algorithms_table}). Also, there will be at least one Strategy Detailed Result for each of the least cost iterations performed as part of a Least Cost Curve run. In addition to the Strategy Detailed Result, two other outputs are produced for each strategy run: the Strategy County Summary (which includes uncontrolled and controlled emissions), and the Strategy Measure Summary (which summarizes how control measures were applied for each sector-county-SCC-Pollutant combination). These three outputs are referred to in Table {@tbl:summary_of_strategy_algorithms_table} as the 'Standard' outputs.
 
 The Strategy Detailed Result table itself can be summarized in many ways using predefined summary queries (e.g., by state, by county, by control technology). Users familiar with SQL can also define their own custom queries. The Strategy Detailed Result table can also be merged with the original input inventory, in an automated manner, to produce a *controlled emissions inventory* that reflects implementation of the strategy. The controlled emissions inventory includes information about the measures that have been applied to the controlled sources and can be directly input to the SMOKE modeling system to prepare air quality model-ready emissions data. Comments are placed at the top of the inventory file to indicate the strategy that produced it and the settings of the high-level parameters that were used to run the strategy.
 
@@ -110,7 +110,7 @@ The three standard types of outputs are generated after a successful strategy ru
 
 ### Least Cost Control Strategy
 
-The Least Cost control strategy type assigns measures to emissions sources to achieve a specified percent reduction or absolute reduction of a target pollutant for sources in a specified geographic region while incurring the minimum possible annualized cost. This algorithm is similar to the maximum emissions reduction control strategy in that only a single measure is applied to each source. For example, one measure might be selected for a source when trying to reduce the target pollutant by 20%. However, if you were trying to obtain a 40% reduction of the target pollutant, another more expensive measure that achieves a higher level of control might be selected for the same source to meet the targeted level of reduction. If multiple inventories are specified as inputs to a Least Cost control strategy, they are automatically merged into one EMF dataset as an ORL Merged dataset type. This allows the multiple inventory sectors to be considered simultaneously during a single Least Cost run. Note that the merged inventory dataset will be truncated and repopulated at the start of each strategy run, to ensure that the most up-to-date inventory data is included in the run.
+The Least Cost control strategy type assigns measures to emissions sources to achieve a specified percent reduction or absolute reduction of a target pollutant for sources in a specified geographic region while incurring the minimum possible annualized cost. This algorithm is similar to the maximum emissions reduction control strategy in that only a single measure is applied to each source. For example, one measure might be selected for a source when trying to reduce the target pollutant by 20%. However, if you were trying to obtain a 40% reduction of the target pollutant, another more expensive measure that achieves a higher level of control might be selected for the same source to meet the targeted level of reduction. If multiple inventories are specified as inputs to a Least Cost control strategy, they are automatically merged into one EMF dataset as an ORL Merged dataset type. This allows the multiple inventory sectors to be considered simultaneously during a single Least Cost run. Note that the merged inventory dataset will be truncated and repopulated at the start of each strategy run, to ensure that the most up-to-date inventory data are included in the run.
 
 The Least Cost control strategy automatically creates the same three standard output datasets, but it also creates an additional output dataset called the Least Cost Control Measure Worksheet. This output is a table of all possible emissions source-control measure pairings (for sources and measures that meet the respective filters specified for the strategy), each of which contains information about the cost and emissions reductions achieved if the measure was to be applied to the source. Examples of these tables are given in [Section 6](#Outputs4). This dataset will be used to help generate ***a single*** Strategy Detailed Result (no matter how many input inventories were processed) once the optimization process has been performed to achieve the desired reduction. This dataset has the all of the same columns as the Strategy Detailed Result (see Table {@tbl:columns_in_the_strategy_detailed_result_table}), in addition to the following columns:
 
@@ -120,7 +120,7 @@ The Least Cost control strategy automatically creates the same three standard ou
 marginal cost = annual cost (for specified cost year) / emissions reductions (tons)
 ```
 
-Note that cost equations are used to compute the annual cost, when applicable and all required input data is available. For target pollutant source-control pair records, the annual cost will be the total of the annual costs for the target pollutant and any costs associated with co-pollutant reductions.
+Note that cost equations are used to compute the annual cost, when applicable and all required input data are available. For target pollutant source-control pair records, the annual cost will be the total of the annual costs for the target pollutant and any costs associated with co-pollutant reductions.
 
 * **status**: This column contains a flag that helps determine which source-control records should be actively considered during the strategy run.
 * **cum\_annual\_cost**: This column contains the cumulative annual cost for the source and all preceding sources that have been included in the strategy (i.e., for which status is null). This is only specified for target pollutant sources, but it also includes costs associated with co-pollutant reductions.
@@ -202,7 +202,7 @@ By default, the strategies are shown using a descending sort on the last modifie
 
 **Step 3-2: Sort Control Strategies.** To sort the control strategies on the total cost of the strategy, click on the heading of the **Total Cost** column and the rows will re-sort so that the most expensive strategies will be shown at the top. Click on the **Total Cost** column header again to reverse the sort.
 
-**Step 3-3: Filter Control Strategies.** To see only strategies that were run with a specific target pollutant, click the `Filter` button (<img src="images/Filter_Button.png"/>) on the Control Strategy Manager toolbar. When the **Filter Rows** window appears enter a criterion for the filter by clicking `Add Criteria`. Click in the cell under **Column Name** and choose **Target Pollutant**. Change the operation by clicking in the cell under **Operation**. For this example select **contains** as the desired **Operation**. Enter the pollutant of interest in the **Value** cell. Enter **PM25-PRI** in the **Value** cell for this example.
+**Step 3-3: Filter Control Strategies.** To see only strategies that were run with a specific target pollutant, click the `Filter` button <img src="images/Filter_Button.png"/> on the Control Strategy Manager toolbar. When the **Filter Rows** window appears enter a criterion for the filter by clicking `Add Criteria`. Click in the cell under **Column Name** and choose **Target Pollutant**. Change the operation by clicking in the cell under **Operation**. For this example select **contains** as the desired **Operation**. Enter the pollutant of interest in the **Value** cell. Enter **PM25-PRI** in the **Value** cell for this example.
 
 *Note that the filter values are case-sensitive* (e.g., "NOx" will not match a filter value of "NOX"). After applying the filter criterion above, the **Filter Rows** window will look like Figure {@fig:filter_rows_to_show_only_strategies_targeting_nox}.
 
@@ -210,9 +210,9 @@ By default, the strategies are shown using a descending sort on the last modifie
 
 ![Filter Rows to Show Only Strategies Targeting PM25-PRI](images/Filter_Rows_to_Show_Only_Strategies_Targeting_NOx.png){#fig:filter_rows_to_show_only_strategies_targeting_nox}
 
-Click `OK` and the Control Strategy Manager will show only strategies that targeted PM2\_5.
+Click `OK` and the Control Strategy Manager will show only strategies that targeted PM25-PRI.
 
-After reviewing the information available on the Control Strategy Manager for PM2_5 measures, click the `Reset` button (<img src="images/Reset_Button.png"/>) to remove the filter and sort criteria.
+After reviewing the information available on the Control Strategy Manager for PM25-PRI measures, click the `Reset` button <img src="images/Reset_Button.png"/> to remove the filter and sort criteria.
 
 For more information on performing sorting, filtering, formatting, and other operations on the table that shows the control strategies used for the Control Strategy Manager, refer to the [Introduction to the Control Measure Manager ](./ch3_control_measure_manager.md#Intro3).
 
@@ -240,7 +240,7 @@ A control strategy creator and an EMF Administrator can remove control strategie
 
 **Step 3-6: Create New Control Strategies.**  To create a new control strategy, click the `New` button in the Control Strategy Manager. The **Create New Control Strategy** window will appear with a text box to name the new strategy. Enter a name that is different from any of the existing control strategies (e.g., **Least Cost 2017 NOx Example**) and then click `OK`.
 
-An **Edit Control Strategy** window for your newly created strategy will appear (Figure {@fig:edit_control_strategy_window}). The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section](#inputs_to_control_strategies_section).
+An **Edit Control Strategy** window for your newly created strategy will appear in Figure {@fig:edit_control_strategy_window}. The window has five tabs: Summary, Inventories, Measures, Constraints, and Outputs. This window and how to fill in the information on these tabs is discussed in more detail in [Section 4](#Inputs4).
 
 <a id=edit_control_strategy_window></a>
 
@@ -265,7 +265,7 @@ If the new strategy does not appear in the Control Strategy Manager, first click
 Tab|Description
 --------------------|-------------------------------------------------------------------------------------------------------------
 Summary|Shows you high-level information about the strategy, such as its Name and the Target Pollutant.
-Inventories|From which you can specify the emission inventories to use as input to the strategy and filters for those inventories.
+Inventories|From which you can specify the emissions inventories to use as input to the strategy and filters for those inventories.
 Measures|Allows you to specify the classes of measures to include in the strategy, or select specific measures to include.
 Constraints|Allows you to specify constraints for the strategy, such as a maximum cost per ton.
 Outputs|Shows the results from the strategy after it has been run.
@@ -304,13 +304,13 @@ Optionally set the name of the geographic `Region` to which the strategy is to b
 
 **Step 4-5: Set the Target Pollutant.** The target pollutant is the pollutant of primary interest for emissions reductions from the control strategy. The Least Cost and Maximum Emissions Reduction algorithms will apply reductions to the target pollutant. For the Multi-Pollutant Maximum Emissions Reduction strategy, one or more pollutants must be selected from the `Target Pollutant` pull-down menu.
 
-Note that reductions of pollutants other than the selected target pollutant (e.g., PM<sub>10</sub>, PM<sub>2.5</sub>, elemental carbon [EC], organic carbon [OC]) will be included in strategy results if those pollutants both appear in the inventories input to the strategy and they are affected by measures applied as part of the strategy. These pollutants are sometimes referred to as "co-impact pollutants", because the impact on the emissions could be either a reduction (i.e., a benefit) or an increase (i.e., a disbenefit).
+Note that reductions of pollutants other than the selected target pollutant (e.g., PM<sub>10</sub>-PRI, PM<sub>2.5</sub>-PRI, elemental carbon [EC], organic carbon [OC]) will be included in strategy results if those pollutants both appear in the inventories input to the strategy and they are affected by measures applied as part of the strategy. These pollutants are sometimes referred to as "co-impact pollutants", because the impact on the emissions could be either a reduction (i.e., a benefit) or an increase (i.e., a disbenefit).
 
 If **Multi-Pollutant Maximum Emissions Reduction** is selected from the `Type of Analysis` pull-down menu, set the `Target Pollutant` using the `Set` button next to this field to select from a list of pollutants to use for the strategy.  Select the pollutants to include in the strategy from the pollutant list using Control-Click.
 
 For this Least Cost example, use the pull-down menu to set `Target Pollutant` to VOC.
 
-**Step 4-6: Set the Interest Rate.** The Interest Rate (i.e., interest rate) is used in the calculation of the annualized capital cost for control measures when appropriate data are available. For this example, set the `Interest Rate` to **7.0**. Note that the interest rate typically does not affect strategies for area or mobile sources.
+**Step 4-6: Set the Interest Rate.** The Interest Rate is used in the calculation of the annualized capital cost for control measures when appropriate data are available. For this example, set the `Interest Rate` to **7.0**. Note that the interest rate typically does not affect strategies for area or mobile sources.
 
 **Step 4-7: Use Cost Equations.** When the `Use Cost Equations` checkbox is checked, cost equations will be included in the strategy run; otherwise only cost per ton-related (CPT) cost estimates will be used. For this exercise, leave `Use Cost Equations` checked to use the Least Cost equations selected as the `Type of Analysis` in Step 2-9.
 
@@ -357,7 +357,7 @@ CoST/EMF supports both one-record-per-line (ORL) and flat file (FF10) inventory 
 
 **Step 4-11: Add an Inventory to Control Strategy.** To add one or more inventories to the `Inventories to Process` table for the control strategy, click the `Add` button on the **Inventories** tab. From the **Select Datasets** window that appears, use the `Choose a dataset type` pull-down menu to select the type of inventory to add (e.g., Flat File 2010 Nonpoint). The file browser will display the inventories of the specified type (Figure {@fig:selecting_inventory_datasets_for_a_control_strategy}). If there are many inventories in the list, narrow down the list (e.g., to find inventories for 2017) by entering a search string in the `Dataset name contains` field and pressing the `Enter` key on your keyboard.
 
-To select an inventory to use for the strategy from the **Select Datasets** window, click on the name of the inventory in the table. For this exercise, after choosing **Flat File 2010 Nonpoint** from the `Choose a dataset type` pull-down menu, select **2017eh\_from\_nonpoint\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37** and then click `OK`. The inventory file will then be displyed in the `Inventories to Process` window of the **Inventories** tab.
+To select an inventory to use for the strategy from the **Select Datasets** window, click on the name of the inventory in the table. For this exercise, after choosing **Flat File 2010 Nonpoint** from the `Choose a dataset type` pull-down menu, select **2017eh\_from\_nonpoint\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37** and then click `OK`. The inventory file will then be displayed in the `Inventories to Process` window of the **Inventories** tab.
 
 <a id=selecting_inventory_datasets_for_a_control_strategy></a>
 
@@ -402,7 +402,7 @@ Close the **Dataset Properties View** window by clicking `Close`.
 
 ![Data Viewer for an Emissions Inventory](images/Data_Viewer_for_an_Emissions_Inventory.png){#fig:data_viewer_for_an_emissions_inventory}
 
-As inventories can contain a lot of data, so only the first 300 rows of an inventory are transferred from the server to the Data Viewer by default. The fields in the upper right corner of the window in the area labeled "**Current**" provide information about how many rows the inventory has, and which rows are currently visible. The **Data Viewer** works similarly to a web search engine that shows the results in pages, and the pagination arrows near the upper right corner of the window facilitate moving between pages of data. Use the pagination arrows in the upper right corner of the window to see how they work. Go to first record, go to previous page, give a specific record, go to next page, and go to last record.
+Inventories can contain a lot of data, so only the first 300 rows of an inventory are transferred from the server to the Data Viewer by default. The fields in the upper right corner of the window in the area labeled "**Current**" provide information about how many rows the inventory has, and which rows are currently visible. The **Data Viewer** works similarly to a web search engine that shows the results in pages, and the pagination arrows near the upper right corner of the window facilitate moving between pages of data. Use the pagination arrows in the upper right corner of the window to see how they work. Go to first record, go to previous page, give a specific record, go to next page, and go to last record.
 
 The data sorting can be controlled by entering a comma-separated list of columns in the `Sort Order` field and then clicking `Apply`. Note that a descending sort order can be specified by following the column name with "desc" (e.g., "ANN\_VALUE desc, REGION_CD" will sort by decreasing annual emissions and then by county).
 
@@ -413,9 +413,9 @@ If you enter a `Row Filter`, and then click `Apply`, the **Data Viewer** will fi
 Filter Purpose|SQL Where Clause
 --------------------------------------------------------------------------------|--------------------------------------------------------------------
 Filter on a particular set of SCCs|`scc like '246%' or scc like '261%'`
-Filter on a particular set of pollutants|`poll in ('PM10-PRI', 'PM25-PRI')`<br/>*or*<br/>POLL = 'PM10-PRI' or POLL = 'PM25-PRI'`
-Filter sources only in NC (REGION\_CD = 37) ;<br/>note that REGION\_CD column format is State + County FIPS code (e.g., 37017)|`substring(REGION\_CD,1,2) in ('37')` or REGION\_CD like '371' for only sources in NC with a county FIPS code that starts with 1.
-Filter sources only in NC (37) and include only NO~x and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')`<br/>*or*<br/>`REGION\_CD like '37%' and (poll = 'NOX' or poll = 'VOC')`
+Filter on a particular set of pollutants|`poll in ('PM10-PRI', 'PM25-PRI')` *or* POLL = 'PM10-PRI' or POLL = 'PM25-PRI'`
+Filter sources only in NC (REGION\_CD = 37); note that REGION\_CD column format is State + County FIPS code (e.g., 37017)|`substring(REGION\_CD,1,2) in ('37')` or REGION\_CD like '371' for only sources in NC with a county FIPS code that starts with 1.
+Filter sources only in NC (37) and include only NOx and VOC pollutants|`substring(REGION\_CD,1,2) = '37' and poll in ('NOX', 'VOC')` *or* `REGION\_CD like '37%' and (poll = 'NOX' or poll = 'VOC')`
 
 Table: Row Filter Examples. {#tbl:examples_of_row_filters_table}
 
@@ -437,7 +437,7 @@ The `County Dataset` filter allows another way to filter the inventory. This fie
 
 *Note that only the records of the input inventories that pass both the inventory and county filters will be considered for control measure application.*
 
-**Step 4-17: Set Inventory Filters.** For this exercise, set the following on the **Inventories** tab:  `Inventory Filter`: **\REGION_CD in ('37077', '37017', '37095')\**. Note that specifying a list of counties using the `Inventory Filter` is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as shown in the next bullet). To control only a few counties, it is straightforward to use the `Inventory Filter`; to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the specifications of the control strategy (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
+**Step 4-17: Set Inventory Filters.** For this exercise, set the following on the **Inventories** tab:  `Inventory Filter`: REGION_CD in ('37077', '37017', '37095'). Note that specifying a list of counties using the `Inventory Filter` is an alternative to specifying a county dataset that has a list of counties to consider controlling in the strategy (as shown in the next bullet). To control only a few counties, it is straightforward to use the `Inventory Filter`; to control more than a few counties, the county dataset method is recommended. In addition, many types of Inventory Filters can be specified using other fields of the inventory depending on the specifications of the control strategy (e.g., `SCC like '231%'`, or `ANN_VALUE>5`).
 
 **Step 4-18: View a County Dataset.** Examine the available county datasets by pulling down the `County Dataset` menu and selecting one of the datasets. After selecting a county dataset, examine the dataset properties by clicking `View`. Display the actual county dataset data by clicking `View Data`. Select a version of the dataset using the `County Dataset Version` field, which shows the available versions of the selected dataset. This selection is required because the EMF can store multiple versions of each dataset.
 
@@ -485,7 +485,7 @@ For this example, remove all of the individually selected measures by clicking t
 
 ### Input on Constraints Tab
 
-The **Constraints** tab (Figure {@fig:constraints_tab_of_edit_control_strategy_window}) of the **Edit Control Strategy** window can be used to specify constraints for a control strategy to limit how control measures are assigned during the strategy run. For example, a strategy could be set up to not use any measures that cost more than $5,000 per ton (in 2013 dollars) for the target pollutant. Alternatively, a strategy could be defined to only use measures that reduce at least 1 ton of the target pollutant for the source. CoST evaluates the constraints while the source is being matched with the control measures. For example, the emission reduction achieved by applying a measure to a source are not known until the measure and its control efficiency have been selected. Thus, constraint calculations are dependent on both the inventory source and the measure being considered for application to the source. Note that the term "source" here refers to a single row of the emissions inventory, which for point sources is uniquely determined by FIPS, plant, point, stack, segment, and SCC, and for nonpoint sources is uniquely determined by FIPS and SCC. Sources should not be confused with "plants", each of which can contain many sources.
+The **Constraints** tab (Figure {@fig:constraints_tab_of_edit_control_strategy_window}) of the **Edit Control Strategy** window can be used to specify constraints for a control strategy to limit how control measures are assigned during the strategy run. For example, a strategy could be set up to not use any measures that cost more than $5,000 per ton (in 2013 dollars) for the target pollutant. Alternatively, a strategy could be defined to only use measures that reduce at least 1 ton of the target pollutant for the source. CoST evaluates the constraints while the source is being matched with the control measures. For example, the emissions reductions achieved by applying a measure to a source are not known until the measure and its control efficiency have been selected. Thus, constraint calculations are dependent on both the inventory source and the measure being considered for application to the source. Note that the term "source" here refers to a single row of the emissions inventory, which for point sources is uniquely determined by FIPS, plant, point, stack, segment, and SCC, and for nonpoint sources is uniquely determined by FIPS and SCC. Sources should not be confused with "plants", each of which can contain many sources.
 
 Table {@tbl:constraints_common_to_multiple_control_strategy_types_table} defines the constraints that are applicable to all strategy types. If the constraint values are not satisfied for a particular control measure and source combination, the measure under consideration will not be applied to the source, and CoST will look for another measure that satisfies all of the constraints.
 
@@ -522,17 +522,17 @@ Note that if you were to click `Close` without saving the changes, a prompt will
 
 When **Least Cost Curve** is selected from the `Type of Analysis` pull-down menu on the **Summary** tab three constraints settings are available in the `Least Cost Curve` section of the **Constraints** tab: `Domain-wide Percent Reduction Increment (%)`: increment for subsequent least cost runs to iterate on until the end percent reduction is reached.  `Domain-wide Percent Reduction Start (%)`: target emissions reduction for the first least cost run; and `Domain-wide Percent Reduction End (%)`: final emissions reduction target of the emissions reductions for the incremental least cost runs.
 
-The Least Cost Curve strategy uses all three constraints in an iterative control run. First it will run the least cost strategy with the percent reduction specified as the value of **Domain-wide Percent Reduction Start (%)**. It will then add the **Domain-wide Percent Reduction Increment (%)** to the starting percent value and will run the least cost strategy at that value (i.e., starting value + increment). It will continue running strategies for each increment until it reaches the value of **Domain-wide Percent Reduction End**. Note that it may not be possible to achieve some of the selected percent reductions, in which case CoST will generate the same result for that increment as the Maximum Emissions Reduction would generate.
+The Least Cost Curve strategy uses all three constraints in an iterative control run. First it will run the least cost strategy with the percent reduction specified as the value of **Domain-wide Percent Reduction Start (%)**. It will then add the **Domain-wide Percent Reduction Increment (%)** to the starting percent value and will run the least cost strategy at that value (i.e., starting value + increment). It will continue running strategies for each increment until it reaches the value of **Domain-wide Percent Reduction End (%)**. Note that it may not be possible to achieve some of the selected percent reductions, in which case CoST will generate the same result for that increment as the Maximum Emissions Reduction control strategy run would generate.
 
 ### Multi-Pollutant Maximum Emissions Reduction Algorithm Constraints
 
-The Multi-Pollutant Maximum Emissions Reduction control strategy type presents a different **Constraints** Tab than the other control strategy types. Since this strategy type is running goals on numerous target pollutants (e.g. PM<sub>2.5</sub>, NO<sub>x</sub>, SO<sub>2</sub>), the constraints presented in Table {@tbl:constraints_common_to_multiple_control_strategy_types_table} are combined with an inventory filtering capability (see the [Section on the Inputs to the Inventory Tab](#inputs_on_the_inventories_tab_section)) to allow for pollutant-specific constraints. The Multi-Pollutant control strategy **Constraints** tab interface is shown in Figure {@fig:constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy}.
+The Multi-Pollutant Maximum Emissions Reduction control strategy type presents a different **Constraints** Tab than the other control strategy types. Since this strategy type is running goals on numerous target pollutants (e.g. PM<sub>2.5</sub>-PRI, NO<sub>x</sub>, SO<sub>2</sub>), the constraints presented in Table {@tbl:constraints_common_to_multiple_control_strategy_types_table} are combined with an inventory filtering capability (see the [Section on the Inputs to the Inventory Tab](#inputs_on_the_inventories_tab_section)) to allow for pollutant-specific constraints. The Multi-Pollutant control strategy **Constraints** tab interface is shown in Figure {@fig:constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy}.
 
 <a id=constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy></a>
 
 ![Constraints Tab (for Multi-Pollutant Maximum Emission Reduction strategy type) of Edit Control Strategy Window](images/Constraints_Tab_for_Multi_Pollutant_Maximum_Emission_Reduction_Strategy.png){#fig:constraints_tab_for_multi_pollutant_maximum_emission_reduction_strategy}
 
-The first step in configuring a Multi-Pollutant Maximum Emissions Reduction strategy is to select the target pollutants from the `Target Pollutant` list on the **Summary** tab.  The pollutants selected from this list will appear in the table on the **Constraints** tab. Note that the order the pollutants are added to the `Target Pollutant` list is important because it sets the order by which controls are applied in the multi-pollutant strategy.
+The first step in configuring a Multi-Pollutant Maximum Emissions Reduction control strategy is to select the target pollutants from the `Target Pollutant` list on the **Summary** tab.  The pollutants selected from this list will appear in the table on the **Constraints** tab. Note that the order the pollutants are added to the `Target Pollutant` list is important because it sets the order by which controls are applied in the multi-pollutant strategy.
 
 To set the constraints and filters for each pollutant, click the checkbox in the **Select** column next to a pollutant on the **Constraints** tab and click `Edit`. The **Edit Control Strategy Target Pollutant** window will appear for setting the constraints and filters to use as the control strategy for the selected pollutant. Figure {@fig:edit_target_pollutant_dialog_of_edit_control_strategy_window} shows an example **Edit Control Strategy Target Pollutant** window. The fields in the Edit Control Strategy Window include:
 
@@ -582,7 +582,7 @@ For additional details on the algorithms that are applied to assign measures to 
 
 ### Viewing and Editing Properties of the Strategy Outputs
 
-It is possible to perform a number of operations on the strategy outputs. These operations are described in thissubsection and the following subsections.
+It is possible to perform a number of operations on the strategy outputs. These operations are described in this subsection and the following subsections.
 
 **Step 5-4: View Control Strategy Run Outputs.** The most basic operation is to view the data of the output dataset using the **Data Viewer**. To do this, select one of the outputs on the **Outputs** tab, such as the **Strategy Detailed Result**, and then click `View Data`. (Note that the Strategy Detailed Result is the main output on which the Strategy County Summary and Strategy Measure Summary are based.) This will bring up the Data Viewer showing the contents of the Strategy Detailed Result (Figure {@fig:view_data_for_strategy_detailed_result}).
 
@@ -743,7 +743,6 @@ As noted earlier, the Strategy Detailed Result is the primary output from runnin
 
 * `Stack Flow Rate (cfs)`: from the emissions inventory
 * `Capital Annual Ratio`: from the control measure efficiency record
-* `Interest Rate (%)`: from the control measure efficiency record
 * `Equipment Life (yrs)`: from the control measure efficiency record
 * `Boiler Capacity (MW)`: from the design capacity column of the inventory; units are obtained from the design\_capacity\_unit\_numerator and design\_capacity\_unit\_denominator columns from the inventory. Note that boiler capacity is often blank in inventories, so special steps may need to be taken to fill in this information.
 
@@ -793,26 +792,26 @@ PLANTID|For point sources, the plant ID for the source from the inventory.
 POINTID|For point sources, the point ID for the source from the inventory.
 STACKID|For point sources, the stack ID for the source from the inventory.
 SEGMENT|For point sources, the segment for the source from the inventory.
-ANNUAL\_COST (\$)|The total annual cost (including both capital and O&M) required to keep the measure on the source for a year.<br/>*a. Default Approach (used when there is no cost equation, or when inputs to cost equation are not available):*<br/>Annual Cost = Emission Reduction (tons) x Reference Yr Cost Per Ton (\$/tons in 2013 Dollars) x Cost Yr GDP IPD / Reference Yr GDP IPD<br/>*b. Approach when Using Type 8 Cost Equation:*<br/>If Stack Flow Rate >= 5.0 cfm Then<br/>Annual Cost = (Annualized Capital Cost + 0.04 x Capital Cost + O&M Cost)<br/>Else<br/>Annual Cost = Default Annualized Cost Per Ton x Emission Reduction (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANN\_COST\_PER\_TON (\$/ton)|The annual cost (both capital and O&M) to reduce one ton of the pollutant.<br/>Ann\_Cost\_Per\_Ton = Annual Cost (\$) / Emissions Reductions (tons)
-ANNUAL\_OPER\_MAINT\_COST (\$)|The annual cost to operate and maintain the measure once it has been installed on the source.<br/>*a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available):*<br/>(Annual Cost - Annualized Capital Cost)<br/>Note: if the capital recovery factor was not specified for the measure, it would not be possible to compute Annualized Capital Cost or Annual O&M Costs<br/>*b. Approach when Using Type 8 Cost Equation:*<br/>If Stack Flow Rate >= 5.0 cfm Then<br/>= O&M Control Cost Factor x Stack Flow Rate (cfm) x Cost Yr GDP IPD / Reference Yr GDP IPD<br/>Else<br/>= Default O&M Cost Per Ton Factor x Emission Reduction (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANNUAL\_VARIABLE\_OPER\_MAINT\_COST (\$)|The annual variable cost to operate and maintain the measure once it has been installed on the source.<br/>*a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available):*<br/>= blank (not calculated, no default approach available)<br/>*b. Approach when Using Type 10 Cost Equation:*<br/>= variable\_operation\_maintenance\_cost\_multiplier x design\_capacity x 0.85 x annual\_avg\_hours\_per\_year x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANNUAL\_FIXED\_OPER\_MAINT\_COST (\$)|The annual fixed cost to operate and maintain the measure once it has been installed on the source.<br/>*a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available):*<br/>= blank (not calculated, no default approach available)<br/>*b. Approach when Using Type 10 Cost Equation:*<br/>= design\_capacity x 1000 x fixed\_operation\_maintenance\_cost\_multiplier x (250 / design\_capacity) ^ fixed\_operation\_maintenance\_cost\_exponent x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANNUALIZED\_CAPITAL\_COST (\$)|The annualized cost of installing the measure on the source assuming a particular interest rate and equipment life.<br/>Annualized\_Capital\_Cost = Total Capital Cost x Capital Recovery Factor (CRF)<br/>Note: if the CRF can not be calculated for the measure, it is not possible to compute the ACC or the breakdown of costs between capital and O&M costs.<br/>CRF = (Discount Rate x (1 + Discount Rate)^Equipment Life) / ((Discount Rate + 1) ^Equipment Life - 1)
-TOTAL\_CAPITAL\_COST (\$)|The total cost to install a measure on a source.<br/>*a. Default Approach (used when there is no cost equation or cost equation inputs are not available):*<br/>TCC = Emission Reduction (tons) x Reference Yr Cost Per Ton (\$/tons in 2013 Dollars) x Capital Annualized Ratio x Cost Yr GDP IPD / Reference Yr GDP IPD<br/>*b. Approach when Using Type 8 Cost Equation:*<br/>If Stack Flow Rate >= 5.0 cfm Then<br/>TCC = Capital Control Cost Factor x Stack Flow Rate (cfm) x Cost Yr GDP IPD / Reference Yr GDP IPD<br/>Else<br/>TCC = Default Capital Cost Per Ton x Emission Reductions (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
+ANNUAL\_COST (\$)|The total annual cost (including both capital and O&M) required to keep the measure on the source for a year. *a. Default Approach (used when there is no cost equation, or when inputs to cost equation are not available): *Annual Cost = Emissions Reductions (tons) x Reference Yr Cost Per Ton (\$/tons in 2013 Dollars) x Cost Yr GDP IPD / Reference Yr GDP IPD. *b. Approach when Using Type 8 Cost Equation:*If Stack Flow Rate >= 5.0 cfm Then Annual Cost = (Annualized Capital Cost + 0.04 x Capital Cost + O&M Cost) Else Annual Cost = Default Annualized Cost Per Ton x Emissions Reductions (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
+ANN\_COST\_PER\_TON (\$/ton)|The annual cost (both capital and O&M) to reduce one ton of the pollutant. Ann\_Cost\_Per\_Ton = Annual Cost (\$) / Emissions Reductions (tons)
+ANNUAL\_OPER\_MAINT\_COST (\$)|The annual cost to operate and maintain the measure once it has been installed on the source. *a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available): *(Annual Cost - Annualized Capital Cost) Note: if the capital recovery factor was not specified for the measure, it would not be possible to compute Annualized Capital Cost or Annual O&M Costs. *b. Approach when Using Type 8 Cost Equation: *If Stack Flow Rate >= 5.0 cfm Then = O&M Control Cost Factor x Stack Flow Rate (cfm) x Cost Yr GDP IPD / Reference Yr GDP IPD Else = Default O&M Cost Per Ton Factor x Emissions Reductions (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
+ANNUAL\_VARIABLE\_OPER\_MAINT\_COST (\$)|The annual variable cost to operate and maintain the measure once it has been installed on the source. *a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available): *= blank (not calculated, no default approach available). *b. Approach when Using Type 10 Cost Equation: * = variable\_operation\_maintenance\_cost\_multiplier x design\_capacity x 0.85 x annual\_avg\_hours\_per\_year x Cost Yr GDP IPD / Reference Yr GDP IPD
+ANNUAL\_FIXED\_OPER\_MAINT\_COST (\$)|The annual fixed cost to operate and maintain the measure once it has been installed on the source. *a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available): = blank (not calculated, no default approach available) *b. Approach when Using Type 10 Cost Equation:* = design\_capacity x 1000 x fixed\_operation\_maintenance\_cost\_multiplier x (250 / design\_capacity) ^ fixed\_operation\_maintenance\_cost\_exponent x Cost Yr GDP IPD / Reference Yr GDP IPD
+ANNUALIZED\_CAPITAL\_COST (\$)|The annualized cost of installing the measure on the source assuming a particular interest rate and equipment life. Annualized\_Capital\_Cost = Total Capital Cost x Capital Recovery Factor (CRF) Note: if the CRF can not be calculated for the measure, it is not possible to compute the ACC or the breakdown of costs between capital and O&M costs. CRF = (Interest Rate x (1 + Interest Rate)^Equipment Life) / ((Interest Rate + 1) ^Equipment Life - 1)
+TOTAL\_CAPITAL\_COST (\$)|The total cost to install a measure on a source. *a. Default Approach (used when there is no cost equation or cost equation inputs are not available): *TCC = Emissions Reductions (tons) x Reference Yr Cost Per Ton (\$/tons in 2013 Dollars) x Capital Annualized Ratio x Cost Yr GDP IPD / Reference Yr GDP IPD *b. Approach when Using Type 8 Cost Equation: *If Stack Flow Rate >= 5.0 cfm Then TCC = Capital Control Cost Factor x Stack Flow Rate (cfm) x Cost Yr GDP IPD / Reference Yr GDP IPD Else TCC = Default Capital Cost Per Ton x Emissions Reductions (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
 CONTROL\_EFF (%)|The control efficiency of the measure being applied, stored in the measure efficiency record.
 RULE\_PEN (%)|The rule penetration of the measure being applied, stored in the measure efficiency record, but could be overridden as a strategy setting (see the [Section on the Inputs to the Meaures Tab](#inputs_on_the_measures_tab_section)).
 RULE\_EFF (%)|The rule effectiveness of the measure being applied, stored in the measure efficiency record, but could be overridden as a strategy setting (see the [Section on the Inputs to the Meaures Tab](#inputs_on_the_measures_tab_section)).
-PERCENT\_REDUCTION (%)|The percent by which the emissions from the source are reduced after the control measure has been applied.<br/>Percent reduction = Control Efficiency (%) x Rule Penetration (%) / 100 x Rule Effectiveness (%) / 100
+PERCENT\_REDUCTION (%)|The percent by which the emissions from the source are reduced after the control measure has been applied. Percent reduction = Control Efficiency (%) x Rule Penetration (%) / 100 x Rule Effectiveness (%) / 100
 ADJ\_FACTOR|The factor that was applied by a control program to adjust the emissions to the target year.
 INV\_CTRL\_EFF (%)|The control efficiency for the existing measure on the source, found in the emissions inventory.
 INV\_RULE\_PEN (%)|The rule penetration for the existing measure on the source, found in the emissions inventory.
 INV\_RULE\_EFF (%)|The rule effectiveness for the existing measure on the source, found in the emissions inventory.
-FINAL\_EMISSIONS (tons)|The final emissions that result from the source being controlled.<br/>= Annual Emissions (tons) - Emissions Reductions (tons)
-EMIS\_REDUCTION (tons)|The emissions reduced (in tons) as a result of applying the control measure to the source.<br/>Emissions reduction = Annual Emission (tons) x Percent Reduction (%) / 100
+FINAL\_EMISSIONS (tons)|The final emissions that result from the source being controlled. = Annual Emissions (tons) - Emissions Reductions (tons)
+EMIS\_REDUCTION (tons)|The emissions reduced (in tons) as a result of applying the control measure to the source. Emissions reductions = Annual Emission (tons) x Percent Reduction (%) / 100
 INV\_EMISSIONS (tons)|The annual emissions, found in the emissions inventory. Note that if the starting inventory had average-day emissions, the average-day value is annualized and the resulting value is shown here. This is necessary to properly compute the costs of the measure.
 APPLY\_ORDER|If multiple measures are applied to the same source, this is a numeric value noting the order of application for this specific control measure. The first control to be applied will have a value of 1 for this field, the second will have a value of 2, and so on.
-INPUT\_EMIS (tons)|The emissions that still exist for the source after prior control measures have been applied. Usually this is the same as INV\_EMISSIONS (see above), but for the "Apply Measures In Series" strategy type, in which multiple measures are applied to the same source, this is the emissions that are from the source after all prior control measures have been applied.
+INPUT\_EMIS (tons)|The emissions that still exist for the source after prior control measures have been applied. Usually this is the same as INV\_EMISSIONS (see above), but for the "Apply Measures In Series" strategy type, in which multiple measures are applied to the same source, this is the emissions from the source after all prior control measures have been applied.
 OUTPUT\_EMIS (tons)|The emissions that still exist for the source after the current and all prior control measures have been applied. Usually this is the same as FINAL\_EMISSIONS (see above), but for the "Apply Measures In Series" strategy type, in which multiple measures are applied to the same source, this is the emissions from the source after the current and all prior control measures have been applied.
 FIPSST|The two-digit FIPS state code.
 FIPSCTY|The three-digit FIPS county code.
@@ -829,20 +828,20 @@ CONTROL\_PROGRAM|The control program that was applied to produce this record.
 XLOC|The longitude for the source, found in the emissions inventory for point sources; for nonpoint inventories the county centroid is used. This is useful for mapping purposes.
 YLOC|The latitude for the source, found in the emissions inventory for point sources; for nonpoint inventories the county centroid is used. This is useful for mapping purposes.
 PLANT|The plant name from the emissions inventory (or county name for nonpoint sources).
-REPLACEMENT\_ADDON|Indicates whether the measure was a replacement or an add-on control.<br/>A = Add-On Control<br/>R = Replacement Control
+REPLACEMENT\_ADDON|Indicates whether the measure was a replacement or an add-on control. A = Add-On Control, R = Replacement Control
 EXISTING\_MEASURE\_ABBREVIATION|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure abbreviation that was on the source.
 EXISTING\_PRIMARY\_DEVICE\_TYPE\_CODE|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure primary device type code that was on the source.
 STRATEGY\_NAME|The name of the control strategy that produced the detailed result.
 CONTROL\_TECHNOLOGY|Indicates the control technology of the control measure.
 SOURCE\_GROUP|Indicates the source group of the control measure.
 COMMENT|Information about this record and how it was produced; this information is either created automatically by the system or entered by the user.
-RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
+RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
 Table: Columns in the Strategy Detailed Result. {#tbl:columns_in_the_strategy_detailed_result_table}
 
 ### Strategy Measure Summary
 
-The Strategy Measure Summary output dataset is a table of emission reduction and cost values aggregated by the emissions sector (i.e., an emissions inventory sector), state/county FIPS code, SCC, pollutant, and control measure. This table contains information only for sources that were controlled during the strategy run. It is generated by running a SQL statement that aggregates the data from the Strategy Detailed Result according to the five categories just listed. The annual cost and emissions reductions are calculated by summing all costs and emissions reductions for the specified grouping (sector, FIPS, SCC, pollutant, and control measure). The average annual cost per ton is calculated by dividing the total annual costs by the total emissions reductions for each measure. The columns contained in this summary and the formulas used to compute their values are shown in Table {@tbl:columns_in_the_strategy_measure_summary_table}. An example Strategy Measure Summary is shown in Table {@tbl:example_of_strategy_measure_summary_data_table}.
+The Strategy Measure Summary output dataset is a table of emissions reductions and cost values aggregated by the emissions sector (i.e., an emissions inventory sector), state/county FIPS code, SCC, pollutant, and control measure. This table contains information only for sources that were controlled during the strategy run. It is generated by running a SQL statement that aggregates the data from the Strategy Detailed Result according to the five categories just listed. The annual cost and emissions reductions are calculated by summing all costs and emissions reductions for the specified grouping (sector, FIPS, SCC, pollutant, and control measure). The average annual cost per ton is calculated by dividing the total annual costs by the total emissions reductions for each measure. The columns contained in this summary and the formulas used to compute their values are shown in Table {@tbl:columns_in_the_strategy_measure_summary_table}. An example Strategy Measure Summary is shown in Table {@tbl:example_of_strategy_measure_summary_data_table}.
 
 <a id=columns_in_the_strategy_measure_summary_table></a>
 
@@ -857,18 +856,18 @@ CONTROL\_MEASURE|The control measure name
 CONTROL\_TECHNOLOGY|The control technology that is used for the measure (e.g., Low NOx burner, Onroad Retrofit).
 SOURCE\_GROUP|The group of sources to which the measure applies (e.g., Fabricated Metal Products - Welding).
 ANNUAL\_COST|The total annual cost for all sources that use this measure. This is calculated by summing all source annual costs that use this measure
-AVG\_ANN\_COST\_PER\_TON|The average annual cost per ton (\$/ton). This is calculated by dividing the total annual cost by the total emission reduction for all sources for this measure
+AVG\_ANN\_COST\_PER\_TON|The average annual cost per ton (\$/ton). This is calculated by dividing the total annual cost by the total emissions reductions for all sources for this measure
 INPUT\_EMIS|The total of emissions from all sources entering the control measure. This is calculated by summing the input emissions for all sources that were controlled by this measure
-EMIS\_REDUCTION|The total reduction in emission in tons for all sources for this control measure
+EMIS\_REDUCTION|The total reduction in emissions in tons for all sources for this control measure
 PCT\_RED|The percent reduction (%) for all sources controlled by this measure. This is calculated by dividing the total emissions reductions by the total input emissions.
-RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
+RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
 Table: Columns in the Strategy Measure Summary. {#tbl:columns_in_the_strategy_measure_summary_table}
 
 
 ### Strategy County Summary
 
-The Strategy County Summary output dataset is a table of emission reduction and cost values aggregated by emissions sector, county, and pollutant. This dataset includes all of the emissions inventory sources regardless of whether they were controlled. If there is more than one inventory included in the control strategy inputs, then all inventories and their associated Strategy Detailed Results are merged and aggregated in this summary. The columns that compose this summary are shown in Table {@tbl:columns_in_the_strategy_county_summary_table}. An example Strategy County Summary is shown in Table {@tbl:example_of_strategy_county_summary_data_table}.
+The Strategy County Summary output dataset is a table of emissions reductions and cost values aggregated by emissions sector, county, and pollutant. This dataset includes all of the emissions inventory sources regardless of whether they were controlled. If there is more than one inventory included in the control strategy inputs, then all inventories and their associated Strategy Detailed Results are merged and aggregated in this summary. The columns that compose this summary are shown in Table {@tbl:columns_in_the_strategy_county_summary_table}. An example Strategy County Summary is shown in Table {@tbl:example_of_strategy_county_summary_data_table}.
 
 <a id=columns_in_the_strategy_county_summary_table></a>
 
@@ -928,23 +927,23 @@ STATUS|The status type of the message. The possible values: Warning - a possible
 CONTROL\_PROGRAM|The control program for the strategy run; this is populated only when using the "Project Future Year Inventory" strategy type.
 MESSAGE|Text describing the strategy issue.
 MESSAGE\_TYPE INVENTORY PACKET\_FIPS PACKET\_SCC PACKET\_PLANTID PACKET\_POINTID PACKET\_STACKID PACKET\_SEGMENT PACKET\_POLL PACKET\_SIC PACKET\_MACT PACKET\_NAICS PACKET\_COMPLIANCE\_DATE|Reserved columns used for another strategy type that was not part of this training exercise.
-RECORD\_ID<br/>VERSION<br/>DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
+RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
 Table: Columns in the Strategy Messages Output. {#tbl:columns_in_the_strategy_messages_output_table}
 
 <a id=example_of_strategy_messages_output_table></a>
 
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
-------|----------|------------|-----|------|---|----------|------------|---|-------------------------------------------
-42049|30900201|420490009|942|S942|1|PM2\_5|Warning| |Negative emission reduction (-1693.9)
+--------|------------|--------------|-----|------|---|----------|------------|---|--------------------------
+42049|30900201|420490009|942|S942|1|PM25-PRI|Warning| |Negative emission reduction (-1693.9)
+
 
 Table: Example of Strategy Messages Output. {#tbl:example_of_strategy_messages_output_table}
 
-
 <a id=example_of_strategy_measure_summary_data_table></a>
 
-SECTOR|FIPS|SCC|POLL|CONTROL\_MEASURE\_ABBREV|CONTROL\_MEASURE|CONTROL\_TECHNOLOGY|SOURCE\_GROUP|ANNUAL\_COST|AVG\_ANN\_COST\_PER\_TON|EMIS\_REDUCTION
----------|------|-----------|------|-------------|----------------------------------------------|-------------------------|--------------|---------|--------|-----------
+SECTOR|FIPS|SCC|POLL|CONTROL_MEASURE_ABBREV|CONTROL_MEASURE|CONTROL_TECHNOLOGY|SOURCE_GROUP|ANNUAL_COST|AVG_ANN_COST_PER_TON|EMIS_REDUCTION
+-----------|--------|--------------|------|-------------|----------------------------------------------|-------------------------|--------------|---------|--------|-----------
 ptnonipm|37001|10200906|PM10|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
 ptnonipm|37001|10200906|PM2\_5|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
 ptnonipm|37001|30500311|PM10|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
@@ -957,13 +956,13 @@ Table: Example of Strategy Measure Summary Data. {#tbl:example_of_strategy_measu
 
 <a id=example_of_strategy_county_summary_data_table></a>
 
-SECTOR|FIPS|POLL|INPUT\_EMIS|EMIS\_REDUCTION|REMAINING\_EMIS|PCT\_RED|ANNUAL\_COST|ANNUAL\_OPER\_MAINT\_COST|ANNUALIZED\_CAPITAL\_COST|TOTAL\_CAPITAL\_COST|AVG\_ANN\_COST\_PER\_TON
+SECTOR|FIPS|POLL|INPUT_EMIS|EMIS_REDUCTION|REMAINING_EMIS|PCT_RED|ANNUAL_COST|ANNUAL_OPER_MAINT_COST|ANNUALIZED_CAPITAL_COST|TOTAL_CAPITAL_COST|AVG_ANN_COST_PER_TON
 ------------|-------|------|-----------|-----|--------|---------|-----------|-----------|----------|----------|----------
 ptnonipm|37001|VOC|313.8724| |313.8724| | | | | | |
-ptnonipm|37001|PM2\_5|33.4717|33.2505|0.2212|99.3391| | | | | |
+ptnonipm|37001|PM25-PRI|33.4717|33.2505|0.2212|99.3391| | | | | |
 ptnonipm|37001|NH3|6.9128| |6.9128| | | | | | |
 ptnonipm|37001|NOX|146.2904| |146.2904| | | | | | |
-ptnonipm|37001|PM10|51.0928|50.7019|0.3909|99.2349|$865,430|$746,831|$83,300|$882,489|$22,363
+ptnonipm|37001|PM10-PRI|51.0928|50.7019|0.3909|99.2349|$865,430|$746,831|$83,300|$882,489|$22,363
 ptnonipm|37001|SO2|54.3864| |54.3864| | | | | | |
 
 Table: Example of Strategy County Summary Data. {#tbl:example_of_strategy_county_summary_data_table}
