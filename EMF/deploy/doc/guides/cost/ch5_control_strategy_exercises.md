@@ -26,19 +26,15 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 3. Click the `Import` button to show the **Import Datasets** window.
 
-([Import Dataset Window Figure](#import_dataset_window)).
+<a id=import_dataset_window></a>
 
-![Import Dataset Window][import_dataset_window]
-
-[import_dataset_window]: images/Import_Datasets.png
+![Import Dataset Window](images/Import_Datasets.png){#fig:import_dataset_window}
 
 4. Click the `Browse` button and browse to the location of the inventory to import on the EMF server computer (e.g., C:\Users\Public\EMF_Data\inventories).
 
-([Browse Datasets Window Figure](#import_browse_window)).
+<a id=import_browse_window></a>
 
-![Import Browse Window][import_browse_window]
-
-[import_browse_window]: images/EMF_Import_Dataset_Server_Local.png
+![Import Browse Window](images/EMF_Import_Dataset_Server_Local.png){#fig:import_browse_window}
 
 5. Select the checkbox that corresponds to the inventory (e.g., 2017eh\_from\_nonpt\_2011NEIv2\_NONPOINT\_20141108\_09mar2015\_v0\_FIPS\_37.csv) and then click `OK`.
 
@@ -48,9 +44,9 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 8. Click `Done` on the Import Datasets window.
 
-9. After the Status window messages indicates that the import has completed, click `Refresh` on the **Dataset Manager** and to see the newly imported inventory dataset. The dataset could now be used as an input to a control strategy.
+9. After the Status window messages indicates that the import has completed, click `Refresh` on the **Dataset Manager** to see the newly imported inventory dataset. The dataset could now be used as an input to a control strategy.
 
-10. To import a list of counties to limit the counties used for a strategy analysis, set the `Show Datasets of Type` menu to **List of Counties** and then import the file following steps 3 through 9 above. Be sure that the list of counties file has at least two columns, with one of them labeled 'FIPS'.
+10. To import a list of counties to limit the counties used for a strategy analysis, set the `Show Datasets of Type` menu to **List of Counties** and then import the file following steps 3 through 9 above. Be sure that the list of counties file has at least two columns, with one of them labeled FIPS.
 
 The Dataset Manager includes the following controls:
 
@@ -63,11 +59,9 @@ The Dataset Manager includes the following controls:
 * `Purge` purges datasets that were removed from the system
 * `Close` closes the **Dataset Manager Window**
 
-([Export Dataset Window Figure](#export_window)).
+<a id=export_window></a>
 
-![Export Window][export_window]
-
-[export_window]: images/EMF_Export_Window.png
+![Export Window](images/EMF_Export_Window.png){#fig:export_window}
 
 <a id=running_max_emis_reduction></a>
 
@@ -84,9 +78,9 @@ For this exercise, an existing Least Cost Strategy will be modified to create a 
 
 * Did the Maximum Emissions Reduction strategy run slower or faster than the Least Cost?
 
-* How much more emissions reduction was achieved over the 50% level of reduction set in the Least Cost run in [Chapter 4](#ch4_control_strategy_manager.md)?
+* How many more emissions reductions were achieved over the 50% level of reduction set in the Least Cost run in [Chapter 4](#ch4_control_strategy_manager.md)?
 
-* How do the Average Cost per Ton and Total Cost differ between the 50% Least Cost reduction strategy and the Maximum Emissions Reduction available?
+* How do the Average Cost per Ton and Total Cost differ between the 50% Least Cost control reduction strategy and the Maximum Emissions Reduction available?
 
     *Hint: use the following columns of the **Control Strategy Manager** to answer this question.*
 
@@ -114,11 +108,11 @@ For this exercise, create a new control measure and then see what impact it has 
 
 4. `Copy` the Maximum Emissions Reduction strategy from the previous exercise to a new strategy.
 
-5. Set the new strategy to include **Hypothetical** measures in addition to **Known**.
+5. Set the new strategy to include **Hypothetical** measures in addition to **Known** measures.
 
 6. `Run` the new strategy.
 
-Based on the results of this strategy, **how much additional emissions reduction** were realized over the previous maximum reduction result if there was a control measure with a 95% CE available for sources with SCCs starting with 102?
+Based on the results of this strategy, **how many additional emissions reductions** were realized over the previous maximum reduction result if there was a control measure with a 95% CE available for sources with SCCs starting with 102?
 
 <a id=cobenefits></a>
 
@@ -132,7 +126,7 @@ For this exercise, run a control strategy that produces co-benefits for multiple
 
 3. Set the inventory to use to be the **Nonpoint** inventory imported in [Exercise 1](#importing_an_emissions_inventory_section).
 
-4. Set the `Target Pollutant` to **PM2_5**, then `Run` the strategy.
+4. Set the `Target Pollutant` to **PM25-PRI**, then `Run` the strategy.
 
 5. Once the run completes, summarize the **Strategy Detailed Result** by **Control Technology and Pollutant**.
 
@@ -146,17 +140,13 @@ For this exercise, run a control strategy that produces co-benefits for multiple
 
 8. Use the Cost Control Summary Function in the Control Strategy Manager Window to create a local spreadsheet summarizing the selected control strategies, including name, strategy type, and constraints, emission reductions and strategy costs.
 
-([Cobenefit Strategy Summary with Constraint Figure](#summary_spreadsheet)).
+<a id=summary_spreadsheet></a>
 
-![Summary Spreadsheet][summary_spreadsheet]
+![Summary Spreadsheet](images/cobenefit_strategy_summary.png){#fig:summary_spreadsheet}
 
-[summary_spreadsheet]: images/cobenefit_strategy_summary.png
+<a id=summary_spreadsheet></a>
 
-([Cobenefit Strategy Summary with No Constraints Figure](#summary_spreadsheet_no_constraints)).
-
-![Summary Spreadsheet No Constraints][summary_spreadsheet_no_constraints]
-
-[summary_spreadsheet_no_constraints]: images/cobenefit_strategy_summary_no_constraints.png
+![Summary Spreadsheet No Constraints](images/cobenefit_strategy_summary_no_constraints.png){#fig:summary_spreadsheet_no_constraints}
 
 9. Note that the summary spreadsheet with constraints was for a cost per ton value of 3000. The result was that no controls were applied, as they all cost more than that.  For the summary spreadsheet with no constraints, the cost of the controls is listed after the status (Completed), for a total value of $3,679,355 and a total emission reduction of 331.2 tons of PM2.5. 
 
