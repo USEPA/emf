@@ -63,7 +63,7 @@ public class SCCTableData extends AbstractTableData {
 
     public String[] columns() {
         if (lightVersion != null && lightVersion)
-            return new String[] { "SCC", "% capacity", "description" };
+            return new String[] { "SCC", "combustion efficiency", "description" };
         return new String[] { "SCC", "description", "sector","ei_category","scc_l1","scc_l2","scc_l3","scc_l4","last_inventory_year","map_to","created_date","revised_date","option_group","option_set","short_name"};
     }
 
