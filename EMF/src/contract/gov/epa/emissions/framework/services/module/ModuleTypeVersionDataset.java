@@ -319,7 +319,8 @@ public class ModuleTypeVersionDataset implements Serializable {
 
         // skip qaStepTemplates
         
-        if (!localDatasetType.getCreationDate().equals(importedDatasetType.getCreationDate())) { // should not happen but it's OK
+        if (localDatasetType.getCreationDate() != null &&
+            !localDatasetType.getCreationDate().equals(importedDatasetType.getCreationDate())) { // should not happen but it's OK
             differences.append(String.format("%sWARNING: Local dataset type \"%s\" creation date (%s) differs from imported dataset type creation date (%s).\n",
                                              indent, localDatasetType.getName(),
                                              CustomDateFormat.format_MM_DD_YYYY_HH_mm(localDatasetType.getCreationDate()),
@@ -327,7 +328,8 @@ public class ModuleTypeVersionDataset implements Serializable {
             // result = false;
         }
 
-        if (!localDatasetType.getLastModifiedDate().equals(importedDatasetType.getLastModifiedDate())) { // should not happen but it's OK
+        if (localDatasetType.getLastModifiedDate() != null &&
+            !localDatasetType.getLastModifiedDate().equals(importedDatasetType.getLastModifiedDate())) { // should not happen but it's OK
             differences.append(String.format("%sWARNING: Local dataset type \"%s\" last modified date (%s) differs from imported dataset type last modified date (%s).\n",
                                              indent, localDatasetType.getName(),
                                              CustomDateFormat.format_MM_DD_YYYY_HH_mm(localDatasetType.getLastModifiedDate()),
