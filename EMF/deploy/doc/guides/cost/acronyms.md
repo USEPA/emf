@@ -24,7 +24,7 @@ GUI|Graphical User Interface
 HEID|Health and Environmental Impacts Division (of EPA)
 IE|Institute for the Environment (University of North Carolina)
 IPD|Implicit Price Deflator
-LNB|Low NO~x Burner
+LNB|Low NOx Burner
 NAICS|North American Industry Classification System
 NEI|National Emissions Inventory
 NSCR|Non-Selective Catalytic Reduction

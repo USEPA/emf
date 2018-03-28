@@ -104,7 +104,7 @@ Avg, Min, and Max CE|Average, minimum, and maximum control efficiencies for the 
 Avg, Min, and Max CPT|Average, minimum, and maximum cost per ton for the specified pollutant aggregated across all locales, effective dates, and source sizes.
 Avg Rule Eff.|Average rule effectiveness aggregated across all efficiency records for the specified pollutant.
 Avg Rule Pen.|Average rule penetration aggregated across all efficiency records for the specified pollutant.
-Control Technology|The control technology that is used for the measure (e.g., Low NO~x burner, Onroad Retrofit).
+Control Technology|The control technology that is used for the measure (e.g., Low NOx burner, Onroad Retrofit).
 Source Group|The group of sources to which the measure applies (e.g., Fabricated Metal Products - Welding).
 Equipment Life|Expected lifetime (in years) of the equipment used for the measure.
 Sectors|An emissions inventory sector or set of the EPA's emissions inventory sectors to which the measure applies (e.g., ptipm, afdust, nonpoint). A sector represents a broad group of similar emissions sources.
