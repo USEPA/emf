@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
@@ -110,7 +111,9 @@ public class ModuleTypesExportImport implements Serializable {
             return;
         datasetType.setId(0);
         datasetType.setCreator(null);
-        datasetType.setKeyVals(null);
+        for (KeyVal keyVal : datasetType.getKeyVals()) {
+            keyVal.getKeyword().setId(0);
+        }
         datasetType.setQaStepTemplates(null);
         datasetType.setLockDate(null);
         datasetType.setLockOwner(null);
