@@ -646,6 +646,15 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             if (cols != null) 
                 dao.validateDatasetTypeIndicesKeyword(type, cols);
             
+            // create keywords if needed
+            if (type.getKeyVals().length > 0) {
+                KeywordsDAO keywordsDAO = new KeywordsDAO();
+                for (KeyVal keyVal : type.getKeyVals()) {
+                    Keyword added = keywordsDAO.add(keyVal.getKeyword(), session);
+                    keyVal.setKeyword(added);
+                }
+            }
+            
             dao.add(type, session);
         } catch (Exception e) {
             LOG.error("Could not add DatasetType", e);
