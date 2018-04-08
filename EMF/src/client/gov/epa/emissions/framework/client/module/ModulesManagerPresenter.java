@@ -87,7 +87,7 @@ public class ModulesManagerPresenter {
     }
 
     public ConcurrentSkipListMap<Integer, LiteModule> getLiteModules() {
-        return session.getLiteModules();
+        return session.getFreshLiteModules();
     }
 
     public Module getModule(int id) throws EmfException {
