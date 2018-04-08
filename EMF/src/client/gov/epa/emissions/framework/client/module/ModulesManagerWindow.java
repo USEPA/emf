@@ -401,6 +401,8 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                     messagePanel.setError("Failed to get module (ID = " + moduleId + "): " + e.getMessage());
                     return;
                 }
+                if (module == null)
+                    continue;
                 if (!module.getCreator().equals(session.user())) {
                     messagePanel.setError("Cannot delete module \"" + module.getName() + "\" because you did not create it.");
                     return;
