@@ -96,18 +96,6 @@ public class ModuleTypeVersionPropertiesPresenter {
         ModuleTypeVersionParameterConnectionPresenter presenter = new ModuleTypeVersionParameterConnectionPresenter(session, view, this.view);
         presenter.doDisplay();
     }
-    
-    public Module obtainLockedModule(Module module) throws EmfException {
-        return session.moduleService().obtainLockedModule(session.user(), module.getId());
-    }
-    
-    public Module releaseLockedModule(Module module) throws EmfException {
-        return session.moduleService().releaseLockedModule(session.user(), module.getId());
-    }
-
-    public Module updateModule(Module module) throws EmfException {
-        return session.moduleService().updateModule(module);
-    }
 
     public void displayAddTagsView(AddTagsView view) throws Exception {
         AddTagsPresenter presenter = new AddTagsPresenter(view, session);
