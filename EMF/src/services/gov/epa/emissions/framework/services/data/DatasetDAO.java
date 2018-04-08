@@ -471,9 +471,14 @@ public class DatasetDAO {
 
         return list.get(0);
     }
-
+    
     public EmfDataset getDataset(Session session, int id) {
-        session.clear(); // to clear the cached objects in session if any
+        return getDataset(session, id, true);
+    }
+
+    public EmfDataset getDataset(Session session, int id, boolean clearSession) {
+        if (clearSession)
+            session.clear(); // to clear the cached objects in session if any
         Criterion statusCrit = Restrictions.ne("status", "Deleted"); // FIXME: to be deleted after dataset removed
         // from db
         Criterion idCrit = Restrictions.eq("id", new Integer(id));

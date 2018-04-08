@@ -857,7 +857,7 @@ public class ModuleServiceImpl implements ModuleService {
                             }
                             if (historyDataset == null || historyDataset.getDatasetId() == null) continue;
                             
-                            EmfDataset emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId());
+                            EmfDataset emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId(), false);
                             if (emfDataset != null && !datasets.contains(emfDataset)) {
                                 try {
                                     // check if any modules besides the one to be deleted use this dataset as input
