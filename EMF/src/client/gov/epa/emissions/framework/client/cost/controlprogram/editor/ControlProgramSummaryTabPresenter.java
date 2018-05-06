@@ -46,6 +46,7 @@ public class ControlProgramSummaryTabPresenter  implements ControlProgramTabPres
         types.add(session.getLightDatasetType("Allowable Packet Extended"));
         types.add(session.getLightDatasetType("Control Packet"));
         types.add(session.getLightDatasetType("Control Packet Extended"));
+        types.add(session.getLightDatasetType("Facility Closure Extended"));
         types.add(session.getLightDatasetType("Plant Closure (CSV)"));
         types.add(session.getLightDatasetType("Projection Packet"));
         types.add(session.getLightDatasetType("Projection Packet Extended"));

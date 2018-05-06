@@ -157,7 +157,12 @@ DECLARE
 	nov_cont_packet_percent_reduction_sql character varying;
 	dec_cont_packet_percent_reduction_sql character varying;
 
-
+	cp_fips_expression character varying(64) := 'fips';
+	cp_plantid_expression character varying(64) := 'plantid';
+	cp_pointid_expression character varying(64) := 'pointid';
+	cp_stackid_expression character varying(64) := 'stackid';
+	cp_segment_expression character varying(64) := 'segment';
+	
 	is_monthly_source_sql character varying := 'coalesce(jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value) is not null';
 	is_annual_source_sql character varying := 'coalesce(jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value) is null and ann_value is not null';
 	is_control_packet_extended_format boolean := false;
@@ -436,6 +441,18 @@ BEGIN
 			and ''12/31/' || inventory_year || '''::timestamp without time zone between cp.start_date and coalesce(cp.end_date, ''12/31/' || inventory_year || '''::timestamp without time zone)
 		order by processing_order'
 	LOOP
+		-- see if closure data is in the extended format
+		is_control_packet_extended_format := public.check_table_for_columns(control_program.table_name, 'region_cd', ',');
+
+		-- if closure data is in the extended format, change the column names to the newer format
+		IF is_control_packet_extended_format THEN
+			cp_fips_expression := 'region_cd';
+			cp_plantid_expression := 'facility_id';
+			cp_pointid_expression := 'unit_id';
+			cp_stackid_expression := 'rel_point_id';
+			cp_segment_expression := 'process_id';
+		END IF;
+		
 		-- apply plant closure control program
 		IF control_program.type = 'Plant Closure' THEN
 
@@ -524,12 +541,12 @@ BEGIN
 			FROM emissions.' || inv_table_name || ' inv
 
 				inner join emissions.' || control_program.table_name || ' pc
-				on pc.fips = inv.' || fips_expression || '
+				on pc.' || cp_fips_expression || ' = inv.' || fips_expression || '
 				' || case when is_point_table then '
-				and pc.plantid = inv.' || plantid_expression || '
-				and coalesce(pc.pointid, inv.' || pointid_expression || ') = inv.' || pointid_expression || '
-				and coalesce(pc.stackid, inv.' || stackid_expression || ') = inv.' || stackid_expression || '
-				and coalesce(pc.segment, inv.' || segment_expression || ') = inv.' || segment_expression || '
+				and pc.' || cp_plantid_expression || ' = inv.' || plantid_expression || '
+				and coalesce(pc.' || cp_pointid_expression || ', inv.' || pointid_expression || ') = inv.' || pointid_expression || '
+				and coalesce(pc.' || cp_stackid_expression || ', inv.' || stackid_expression || ') = inv.' || stackid_expression || '
+				and coalesce(pc.' || cp_segment_expression || ', inv.' || segment_expression || ') = inv.' || segment_expression || '
 				' else '' end || '
 
 				-- only keep if before cutoff date
@@ -543,10 +560,10 @@ BEGIN
 
 			where 	' || '(' || public.build_version_where_filter(input_dataset_id, input_dataset_version, 'inv') || ')' || coalesce(' and ' || public.alias_filter(inv_filter, inv_table_name, 'inv'::character varying(64)), '') || coalesce(county_dataset_filter_sql, '') || '
 				' || case when not is_point_table then '
-				and pc.plantid is null
-				and pc.pointid is null
-				and pc.stackid is null
-				and pc.segment is null
+				and pc.' || cp_plantid_expression || ' is null
+				and pc.' || cp_pointid_expression || ' is null
+				and pc.' || cp_stackid_expression || ' is null
+				and pc.' || cp_segment_expression || ' is null
 				' else '
 				' end || '';
 

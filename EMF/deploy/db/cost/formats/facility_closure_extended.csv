@@ -1,0 +1,13 @@
+"name","type","default value","mandatory","description","formatter","constraints","width","spaces","fixformat start","fixformat end"
+COUNTRY_CD,VARCHAR(4),"",false,"","","",4,0,0,0
+REGION_CD,VARCHAR(6),"",false,"","","",6,0,0,0
+FACILITY_ID,VARCHAR(20),"",false,"","","",20,0,0,0
+UNIT_ID,VARCHAR(20),"",false,"","","",20,0,0,0
+REL_POINT_ID,VARCHAR(20),"",false,"","","",20,0,0,0
+PROCESS_ID,VARCHAR(20),"",false,"","","",20,0,0,0
+FACILITY_NAME,VARCHAR(80),"",false,"","","",80,0,0,0
+TRIBAL_CODE,VARCHAR(3),"",false,"","","",3,0,0,0
+SCC,VARCHAR(12),"",false,"","","",12,0,0,0
+POLL,VARCHAR(20),"",false,"","","",20,0,0,0
+EFFECTIVE_DATE,VARCHAR(10),"",false,"","","",10,0,0,0
+COMMENT,VARCHAR(512),"",false,"","","",512,0,0,0

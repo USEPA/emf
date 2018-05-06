@@ -247,14 +247,24 @@ public class StrategyTask extends AbstractCheckMessagesStrategyTask {
         String tableName = emissionTableName(dataset);
         String qualifiedTableName = qualifiedEmissionTableName(dataset);
         if (controlProgram.getControlProgramType().getName().equals(ControlProgramType.plantClosure)) {
-            indexTable(tableName, "fips,plantid,pointid,stackid,segment", "comp");
-            indexTable(tableName, "fips", "fips");
-            indexTable(tableName, "plantid", "plantid");
-            indexTable(tableName, "pointid", "pointid");
-            indexTable(tableName, "segment", "segment");
-            indexTable(tableName, "stackid", "stackid");
+            if (dataset.getDatasetType().getName().equals("Plant Closure (CSV)")) {
+                indexTable(tableName, "fips,plantid,pointid,stackid,segment", "comp");
+                indexTable(tableName, "fips", "fips");
+                indexTable(tableName, "plantid", "plantid");
+                indexTable(tableName, "pointid", "pointid");
+                indexTable(tableName, "segment", "segment");
+                indexTable(tableName, "stackid", "stackid");
 
-            analyzeTable(qualifiedTableName);
+                analyzeTable(qualifiedTableName);
+            } else if (dataset.getDatasetType().getName().equals("Facility Closure Extended")) {
+                indexTable(tableName, "region_cd", "region_cd");
+                indexTable(tableName, "facility_id", "facility_id");
+                indexTable(tableName, "unit_id", "unit_id");
+                indexTable(tableName, "rel_point_id", "rel_point_id");
+                indexTable(tableName, "process_id", "process_id");
+
+                analyzeTable(qualifiedTableName);
+            }
         } else if (controlProgram.getControlProgramType().getName().equals(ControlProgramType.projection)) {
             if (dataset.getDatasetType().getName().equals(DatasetType.projectionPacket)) {
                 indexTable(tableName, "fips,plantid,pointid,stackid,segment,scc,poll,sic,mact", "comp");

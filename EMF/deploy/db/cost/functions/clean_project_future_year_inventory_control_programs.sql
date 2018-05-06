@@ -280,21 +280,25 @@ vacuum analyze emissions.ds_deletions_2005_1050880615;
 					;';
 
 		-- look at the projection control program table format (make sure all the right columns are in the table)
-		ELSIF control_program.type = 'Plant Closure' and control_program.dataset_type = 'Plant Closure Extended' THEN
+		ELSIF control_program.type = 'Plant Closure' and control_program.dataset_type = 'Facility Closure Extended' THEN
 
 			execute 
 				'update emissions.' || control_program.table_name || '
-				set FACILITY_ID = case when FACILITY_ID is null or trim(FACILITY_ID) = ''0'' or trim(FACILITY_ID) = ''-9'' or trim(FACILITY_ID) = '''' then null::character varying(15) else FACILITY_ID end,
-					UNIT_ID = case when UNIT_ID is null or trim(UNIT_ID) = ''0'' or trim(UNIT_ID) = ''-9'' or trim(UNIT_ID) = '''' then null::character varying(15) else UNIT_ID end,
-					REL_POINT_ID = case when REL_POINT_ID is null or trim(REL_POINT_ID) = ''0'' or trim(REL_POINT_ID) = ''-9'' or trim(REL_POINT_ID) = '''' then null::character varying(15) else REL_POINT_ID end,
-					PROCESS_ID = case when PROCESS_ID is null or trim(PROCESS_ID) = ''0'' or trim(PROCESS_ID) = ''-9'' or trim(PROCESS_ID) = '''' then null::character varying(15) else PROCESS_ID end,
+				set FACILITY_ID = case when FACILITY_ID is null or trim(FACILITY_ID) = ''0'' or trim(FACILITY_ID) = ''-9'' or trim(FACILITY_ID) = '''' then null::character varying(20) else FACILITY_ID end,
+					UNIT_ID = case when UNIT_ID is null or trim(UNIT_ID) = ''0'' or trim(UNIT_ID) = ''-9'' or trim(UNIT_ID) = '''' then null::character varying(20) else UNIT_ID end,
+					REL_POINT_ID = case when REL_POINT_ID is null or trim(REL_POINT_ID) = ''0'' or trim(REL_POINT_ID) = ''-9'' or trim(REL_POINT_ID) = '''' then null::character varying(20) else REL_POINT_ID end,
+					PROCESS_ID = case when PROCESS_ID is null or trim(PROCESS_ID) = ''0'' or trim(PROCESS_ID) = ''-9'' or trim(PROCESS_ID) = '''' then null::character varying(20) else PROCESS_ID end,
 					REGION_CD = case when REGION_CD is null or trim(REGION_CD) = ''0'' or trim(REGION_CD) = ''-9'' or trim(REGION_CD) = '''' then null::character varying(6) else REGION_CD end,
+					scc = case when scc is null or trim(scc) = ''0'' or trim(scc) = ''-9'' or trim(scc) = '''' then null::character varying(12) else scc end,
+					poll = case when poll is null or trim(poll) = ''0'' or trim(poll) = ''-9'' or trim(poll) = '''' then null::character varying(20) else poll end,
 					effective_date = case when effective_date is null or trim(effective_date) = ''0'' or trim(effective_date) = ''-9'' or trim(effective_date) = '''' then null::character varying(10) else effective_date end 
 				where trim(FACILITY_ID) in (''0'',''-9'','''')
 					or trim(UNIT_ID) in (''0'',''-9'','''')
 					or trim(REL_POINT_ID) in (''0'',''-9'','''')
 					or trim(PROCESS_ID) in (''0'',''-9'','''')
 					or trim(REGION_CD) in (''0'',''-9'','''')
+					or trim(scc) in (''0'',''-9'','''')
+					or trim(poll) in (''0'',''-9'','''')
 					or trim(effective_date) in (''0'',''-9'','''')
 					;';
 
