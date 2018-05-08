@@ -1,0 +1,54 @@
+Running run_sptool.pl
+
+
+Created cmaq_ae6_vbs_svoc schema in sptoolv4_0 database
+Granted permissions on cmaq_ae6_vbs_svoc schema
+Set path successfully to cmaq_ae6_vbs_svoc schema
+Input tables created in cmaq_ae6_vbs_svoc schema
+Starting run_control file import
+Getting control values from control file
+control variables: MECH_BASIS = AE6
+control variables: RUN_TYPE = VBS
+control variables: AQM = CMAQ
+control variables: OUTPUT = PM
+control variables: SPLITS_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gspro.AE6_CMAQ.VBS_SVOC.2017Feb10.txt
+Completed run_control file import
+
+Imported run control file RUNCTL in cmaq_ae6_vbs_svoc schema
+NOTICE:  ======== Speciation Tool v4.0 ========
+NOTICE:    
+NOTICE:  Type of Output is  PM 
+NOTICE:  Type of run is CRITERIA with VBS 
+NOTICE:  Mechanism basis is  AE6 
+NOTICE:  ERROR review and correct   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
+NOTICE:  ERROR: Mechanism contains species that are missing from species table (tbl_species).
+NOTICE:  ERROR:           SPECIES ID  626
+NOTICE:  ERROR:           SPECIES ID  797
+NOTICE:  ERROR:           SPECIES ID  699
+NOTICE:  ERROR:           SPECIES ID  613
+NOTICE:  ERROR:           SPECIES ID  784
+NOTICE:  ERROR:           SPECIES ID  2669
+NOTICE:  ERROR:           SPECIES ID  488
+NOTICE:  ERROR:           SPECIES ID  292
+NOTICE:  ERROR:           SPECIES ID  694
+NOTICE:  ERROR:           SPECIES ID  715
+NOTICE:  ERROR:           SPECIES ID  329
+NOTICE:  ERROR:           SPECIES ID  525
+NOTICE:  ERROR:           SPECIES ID  669
+NOTICE:  ERROR:           SPECIES ID  526
+NOTICE:  ERROR:           SPECIES ID  696
+NOTICE:  ERROR:           SPECIES ID  795
+NOTICE:  ERROR:           SPECIES ID  2668
+NOTICE:  ERROR review and correct   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+
+Completed PM splits calculations
+
+NOTICE:   Preparing output tables ... 
+NOTICE:      ...rename output AQM pollutants 
+
+Completed output preparations
+SUMMARY:  Number of profiles generated in run cmaq_ae6_vbs_svoc is 0 
+
+Completed writing the output files for run cmaq_ae6_vbs_svoc 
+Finished run_sptool.pl
+

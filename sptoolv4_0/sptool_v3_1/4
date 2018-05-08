@@ -1,0 +1,79 @@
+#!/bin/csh -f
+#PBS -j oe
+#PBS -r n
+
+limit stacksize unlimited
+
+## EMF Command line client -- source environment variables needed and setup EMF JAVACMDLINE to java executable and EMF_PYTHON to python cmd line
+setenv EMF_CLIENT false
+
+## Job run file for job: VOC_CMAQ_CB05_integrate
+
+## EMF specific variables
+setenv EMF_JOBID "57742"
+setenv EMF_JOBNAME "VOC_CMAQ_CB05_integrate"
+setenv EMF_USER "callen05"
+setenv EMF_SCRIPTDIR "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a"
+setenv EMF_SCRIPTNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/VOC_CMAQ_CB05_integrate_Create_CB6CMAQ_MOVES_integration_95335a_20171114135629.csh"
+setenv EMF_LOGNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/logs/VOC_CMAQ_CB05_integrate_Create_CB6CMAQ_MOVES_integration_95335a_20171114135629.log"
+setenv EMF_JOBKEY "57742_1510685789580"
+
+## Inputs -- for all regions, all sectors and all jobs
+setenv INVTABLE "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/invtable_hapcap_cb05soa_MOVES_HAPs_11jun2013_v0.txt"
+setenv PROC_FILE "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/profile_process_combined_27aug2014_v1.csv"
+setenv MECHANISMPM "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/mech_pm_ae5_ae6_09nov2012_v0.csv"
+
+
+
+
+## Inputs -- all regions and  all sector and job (VOC CMAQ_CB05 integrate (All sectors, All regions))
+setenv TOX_FILE "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/tbl_tox_moves_haps_11jun2013_v1.csv"
+
+
+
+
+## Parameters -- from Case summary 
+setenv CASE "Create_CB6CMAQ_MOVES_integration_95335a"
+setenv MODEL_LABEL "Speciation Tool4.0"
+setenv EMF_AQM "SMOKE"
+setenv EMF_SPC "CB6CMAQ"
+setenv PARENT_CASE "Create_CB6CMAQ_MOVES_integration"
+
+## Parameters -- from job tab
+
+## Parameters -- all regions, all sectors, all jobs 
+setenv PERL_DBI "Pg"
+setenv SPTOOL_VER "4.0"
+setenv POSTGRES_BIN "/usr/bin"
+setenv EMF_QUEUE_OPTIONS "-A  naaqs_di  -q workq -W group_list=romo -W umask=022"
+setenv PROJ_ROOT "/work/EMIS/tools/speciation_emf/runs_speciate4_5"
+setenv INSTALL "/work/EMIS/tools/speciation_emf/sptoolv4_0"
+setenv EMF_LOGGERPYTHONDIR "$PROJ_ROOT/$CASE/case_logs"
+setenv SPTOOL_DB "cb6cmaq"
+setenv SPTOOL_SRC_HOME "$INSTALL/src"
+setenv OUTPUT "VOC"
+setenv AQM "CMAQ"
+
+
+
+
+## Parameters -- all regions, all sectors, job (VOC CMAQ_CB05 integrate)
+setenv SCHEMA_SUFFIX "integrate"
+setenv RUN_TYPE "INTEGRATE"
+setenv MECH_BASIS "CB6CMAQ"
+setenv CNV_OUT "$PROJ_ROOT/$CASE/out/gscnv_${CASE}_integrate.txt"
+setenv SPLITS_OUT "$PROJ_ROOT/$CASE/out/gspro_${CASE}_integrate.txt"
+
+
+
+
+## job executable
+$EMF_CLIENT -k $EMF_JOBKEY -x $SPTOOL_SRC_HOME/run_sptool.pl -m "Running top level script for job: VOC_CMAQ_CB05_integrate"
+$SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB ${CASE}_${SCHEMA_SUFFIX}
+if ( $status != 0 ) then
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Failed' -m "ERROR running Job: $EMF_JOBNAME" -t 'e' 
+	 exit(1)
+else
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Completed' -m "Completed job: $EMF_JOBNAME"
+endif
+

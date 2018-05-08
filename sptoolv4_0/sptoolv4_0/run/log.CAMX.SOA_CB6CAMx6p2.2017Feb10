@@ -1,0 +1,52 @@
+Running run_sptool.pl
+
+
+Created camx6p2_soa_cb6 schema in sptoolv4_0 database
+Granted permissions on camx6p2_soa_cb6 schema
+Set path successfully to camx6p2_soa_cb6 schema
+Input tables created in camx6p2_soa_cb6 schema
+Starting run_control file import
+Getting control values from control file
+control variables: MECH_BASIS = SOA_CB6CAMX6P2
+control variables: RUN_TYPE = CRITERIA
+control variables: AQM = CAMX
+control variables: OUTPUT = VOC
+control variables: SPLITS_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gspro.SOA_CB6.CAMx6p2.2017Feb10.txt
+control variables: CNV_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gscnv.SOA_CB6.CAMx6p2.2017Feb10.txt
+Completed run_control file import
+
+Imported run control file RUNCTL in camx6p2_soa_cb6 schema
+NOTICE:  ======== Speciation Tool v4.0 ========
+NOTICE:    
+NOTICE:  Type of Output is  VOC 
+NOTICE:  AQM is  CAMX 
+NOTICE:  Type of run is  CRITERIA 
+NOTICE:  Mechanism basis is  SOA_CB6CAMX6P2 
+NOTICE:  Profile Tolerance is  5 
+NOTICE:  ... establishing mechanism
+NOTICE:  ... establishing profile weights
+NOTICE:    
+NOTICE:  WARNING - Missing molecular weights. These components dropped:
+NOTICE:  WARNING - Missing molecular weights. End List
+NOTICE:    
+NOTICE:  ...renormalizing profile weights
+NOTICE:  ...calculating moles per gram emissions
+NOTICE:  ...calculating mole percent
+NOTICE:  ...calculating moles per mole emissions
+NOTICE:  ...summing on AQM pollutant
+NOTICE:  ...calculating mole weight percent
+NOTICE:  ...calculating average molecular weight by species
+NOTICE:  ...calculating average molecular weight by AQM
+Completed splits calculations
+
+NOTICE:   Preparing output tables ... 
+NOTICE:      ...completed nonHAP
+NOTICE:      ...rename output AQM pollutants 
+
+Completed output preparations
+SUMMARY:  Number of profiles generated in run camx6p2_soa_cb6 is 0 
+
+Error - no data in conversion factor table at /sol/work/EMIS/tools/sptool/sptoolv4_0/src/write_outputs.pl line 327.
+Completed writing the output files for run camx6p2_soa_cb6 
+Finished run_sptool.pl
+

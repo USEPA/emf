@@ -1,0 +1,6 @@
+mech_basis,SAPRC07T
+run_type,CRITERIA
+AQM,CMAQ
+output,VOC
+splits_out,/sol/work/EMIS/tools/sptool/sptoolv4_0/CB6CMAQ_NATA/out/gspro.saprc07t_criteria.CMAQ.2017Mar01.txt
+cnv_out,/sol/work/EMIS/tools/sptool/sptoolv4_0/CB6CMAQ_NATA/out/gscnv.saprc07t_criteria.CMAQ.2017Mar01.txt

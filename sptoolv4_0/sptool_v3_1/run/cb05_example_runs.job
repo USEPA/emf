@@ -1,0 +1,17 @@
+#!/bin/csh -f
+
+echo " "
+echo "==================================================================================="
+printf "              CB05 notoxics CAMx "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB criteria_camx runctl_cb05_criteria_tog_camx.txt
+date
+
+echo " "
+echo "==================================================================================="
+printf "              CB05 NOintegrate CAMx "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB nointegrate_camx runctl_cb05_nointegrate_camx.txt
+date
+
+

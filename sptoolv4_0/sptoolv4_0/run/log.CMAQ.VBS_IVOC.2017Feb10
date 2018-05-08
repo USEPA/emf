@@ -1,0 +1,54 @@
+Running run_sptool.pl
+
+
+Created cmaq_vbs_ivoc schema in sptoolv4_0 database
+Granted permissions on cmaq_vbs_ivoc schema
+Set path successfully to cmaq_vbs_ivoc schema
+Input tables created in cmaq_vbs_ivoc schema
+Starting run_control file import
+Getting control values from control file
+control variables: MECH_BASIS = CB6
+control variables: RUN_TYPE = VBS
+control variables: AQM = CMAQ
+control variables: OUTPUT = VOC
+control variables: SPLITS_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gspro.CB6.VBS_IVOC.CMAQ.2017Feb10.txt
+control variables: CNV_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gscnv.CB6.VBS_IVOC.CMAQ.2017Feb10.txt
+Completed run_control file import
+
+Imported run control file RUNCTL in cmaq_vbs_ivoc schema
+NOTICE:  ======== Speciation Tool v4.0 ========
+NOTICE:    
+NOTICE:  Type of Output is  VOC 
+NOTICE:  AQM is  CMAQ 
+NOTICE:  Type of run is  VBS 
+NOTICE:  Mechanism basis is  CB6 
+NOTICE:  Profile Tolerance is  5 
+NOTICE:  ... establishing mechanism
+NOTICE:  ... establishing profile weights
+NOTICE:    
+NOTICE:  WARNING - Missing molecular weights. These components dropped:
+NOTICE:  WARNING - Missing molecular weights. End List
+NOTICE:    
+NOTICE:  ...renormalizing profile weights
+NOTICE:  ...calculating moles per gram emissions
+NOTICE:  ...calculating mole percent
+NOTICE:  ...calculating moles per mole emissions
+NOTICE:  ...summing on AQM pollutant
+NOTICE:  ...calculating mole weight percent
+NOTICE:  ...calculating average molecular weight by species
+NOTICE:  ...calculating average molecular weight by AQM
+Completed splits calculations
+
+NOTICE:   Preparing output tables ... 
+NOTICE:      ...completed nonHAP
+NOTICE:      ...completed 100 percent active toxics
+NOTICE:      ...completed VOC-to-VOC
+NOTICE:      ...rename output AQM pollutants 
+
+Completed output preparations
+SUMMARY:  Number of profiles generated in run cmaq_vbs_ivoc is 0 
+
+Error - no data in conversion factor table at /sol/work/EMIS/tools/sptool/sptoolv4_0/src/write_outputs.pl line 327.
+Completed writing the output files for run cmaq_vbs_ivoc 
+Finished run_sptool.pl
+

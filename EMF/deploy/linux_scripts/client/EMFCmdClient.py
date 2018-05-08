@@ -161,7 +161,7 @@ if __name__ =="__main__":
     ## if not create it and make it rwx for owner and group
     if not os.path.isdir(logDir):
         os.mkdir(logDir)
-        os.chmod(logDir,0775)
+        os.chmod(logDir,0777)
         
         
     ## test if first time through, ie. the log file exists

@@ -1,0 +1,7 @@
+#  CB05 case, no toxics
+
+mech_basis,SAPRC07T
+run_type,CRITERIA
+AQM,CMAQ
+
+output, VOC

@@ -1,0 +1,5 @@
+name,type,default value,mandatory,description,formatter,constraints,width,spaces,fixformat start,fixformat end
+aq_model,VARCHAR(10),"",true,"","","",10,0,0,0
+mechanism,VARCHAR(20),"",true,"","","",20,0,0,0
+eminv_poll,VARCHAR(20),"",true,"","","",20,0,0,0
+aqm_poll,VARCHAR(20),"",true,"","","",20,0,0,0

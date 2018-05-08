@@ -1,0 +1,67 @@
+#!/bin/csh -f
+#PBS -j oe
+#PBS -r n
+
+limit stacksize unlimited
+
+## EMF Command line client -- source environment variables needed and setup EMF JAVACMDLINE to java executable and EMF_PYTHON to python cmd line
+setenv EMF_CLIENT false
+
+## Job run file for job: Create_database
+
+## EMF specific variables
+setenv EMF_JOBID "54082"
+setenv EMF_JOBNAME "Create_database"
+setenv EMF_USER "callen05"
+setenv EMF_SCRIPTDIR "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ"
+setenv EMF_SCRIPTNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/Create_database_Initialize_Spec4_5_Profiles_CB6CMAQ_20180104110629.csh"
+setenv EMF_LOGNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/logs/Create_database_Initialize_Spec4_5_Profiles_CB6CMAQ_20180104110629.log"
+setenv EMF_JOBKEY "54082_1515081989298"
+
+## Inputs -- for all regions, all sectors and all jobs
+
+
+
+
+## Inputs -- all regions and  all sector and job (Create database (All sectors, All regions))
+
+
+
+
+## Parameters -- from Case summary 
+setenv CASE "Initialize_Spec4_5_Profiles_CB6CMAQ"
+setenv MODEL_LABEL "Speciation Tool3.0"
+setenv EMF_AQM "SMOKE"
+setenv EMF_SPC "CB6CMAQ"
+setenv PARENT_CASE "Initialize_Master_Speciate4_4_CB6e51"
+
+## Parameters -- from job tab
+
+## Parameters -- all regions, all sectors, all jobs 
+setenv POSTGRES_BIN "/usr/bin"
+setenv INSTALL "/work/EMIS/tools/sptool/sptool_v3"
+setenv PROJ_ROOT "/work/EMIS/tools/speciation_emf/runs_speciate4_5"
+setenv EMF_LOGGERPYTHONDIR "$PROJ_ROOT/$CASE/case_logs"
+setenv SPTOOL_DB "cb6cmaq"
+setenv SPTOOL_USER "sptool"
+setenv SPTOOL_PWD "sptool"
+setenv SPTOOL_SRC_HOME "$INSTALL/src_model_v3"
+
+
+
+
+## Parameters -- all regions, all sectors, job (Create database)
+
+
+
+
+## job executable
+$EMF_CLIENT -k $EMF_JOBKEY -x $INSTALL/init_db_emf.v3.csh -m "Running top level script for job: Create_database"
+$INSTALL/init_db_emf.v3.csh 
+if ( $status != 0 ) then
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Failed' -m "ERROR running Job: $EMF_JOBNAME" -t 'e' 
+	 exit(1)
+else
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Completed' -m "Completed job: $EMF_JOBNAME"
+endif
+

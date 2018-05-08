@@ -1,0 +1,38 @@
+Running run_sptool.pl
+
+
+Created cmaq_ae6 schema in sptoolv4_0 database
+Granted permissions on cmaq_ae6 schema
+Set path successfully to cmaq_ae6 schema
+Input tables created in cmaq_ae6 schema
+Starting run_control file import
+Getting control values from control file
+control variables: MECH_BASIS = AE6
+control variables: RUN_TYPE = CRITERIA
+control variables: AQM = CMAQ
+control variables: OUTPUT = PM
+control variables: SPLITS_OUT = /disk43/sptool/wa4_02.2016/outputs/gspro.AE6.CMAQ.2017Jan11.txt
+Completed run_control file import
+
+Imported run control file RUNCTL in cmaq_ae6 schema
+NOTICE:  ======== Speciation Tool v4.0 ========
+NOTICE:    
+NOTICE:  Type of Output is  PM 
+NOTICE:  Type of run is  CRITERIA 
+NOTICE:  Mechanism basis is  AE6 
+NOTICE:  ...establishing mechanism
+NOTICE:  ...establishing profile weights
+NOTICE:  ...calculating weight percent sum of mechanism compounds
+NOTICE:  ...completed generating PM profiles
+
+Completed PM splits calculations
+
+NOTICE:   Preparing output tables ... 
+NOTICE:      ...rename output AQM pollutants 
+
+Completed output preparations
+SUMMARY:  Number of profiles generated in run cmaq_ae6 is 125 
+
+Completed writing the output files for run cmaq_ae6 
+Finished run_sptool.pl
+
