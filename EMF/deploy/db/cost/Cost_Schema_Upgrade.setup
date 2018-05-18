@@ -1943,3 +1943,8 @@ UPDATE emf.control_measure_properties
   FROM (SELECT id, (ROW_NUMBER() OVER (PARTITION BY control_measure_id ORDER BY list_index)) - 1 AS list_index
           FROM emf.control_measure_properties) newvals
  WHERE newvals.id = control_measure_properties.id;
+ 
+ -- 05/18/2018 Update cost equation descriptions
+ UPDATE emf.equation_types
+   SET equation = REPLACE(equation, ' x Combustion Efficiency', '')
+ WHERE equation LIKE '% x Combustion Efficiency%';
