@@ -7,6 +7,8 @@ import gov.epa.emissions.framework.ui.AbstractEditableTableData;
 import gov.epa.emissions.framework.ui.EditableRow;
 import gov.epa.emissions.framework.ui.RowSource;
 
+import java.text.Format;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +23,7 @@ public class CMEquationsTableData extends AbstractEditableTableData {
     }
 
     private List<EditableRow> createRows(ControlMeasureEquation[] equations) {
+        Format format = new DecimalFormat("##########.####");
         rows = new ArrayList<EditableRow>();
         for (ControlMeasureEquation equation : equations) {
             //add Pollutant
@@ -37,29 +40,29 @@ public class CMEquationsTableData extends AbstractEditableTableData {
             for (EquationTypeVariable equationTypeVariable : equationTypeVariables) {
                 equationTypeVariable.setEquationType(equation.getEquationType());
                 if (equationTypeVariable.getFileColPosition() == 1) {
-                    equationTypeVariable.setValue(equation.getValue1() != null ? equation.getValue1() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue1() != null ? format.format(equation.getValue1()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 2) {
-                    equationTypeVariable.setValue(equation.getValue2() != null ? equation.getValue2() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue2() != null ? format.format(equation.getValue2()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 3) {
-                    equationTypeVariable.setValue(equation.getValue3() != null ? equation.getValue3() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue3() != null ? format.format(equation.getValue3()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 4) {
-                    equationTypeVariable.setValue(equation.getValue4() != null ? equation.getValue4() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue4() != null ? format.format(equation.getValue4()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 5) {
-                    equationTypeVariable.setValue(equation.getValue5() != null ? equation.getValue5() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue5() != null ? format.format(equation.getValue5()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 6) {
-                    equationTypeVariable.setValue(equation.getValue6() != null ? equation.getValue6() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue6() != null ? format.format(equation.getValue6()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 7) {
-                    equationTypeVariable.setValue(equation.getValue7() != null ? equation.getValue7() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue7() != null ? format.format(equation.getValue7()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 8) {
-                    equationTypeVariable.setValue(equation.getValue8() != null ? equation.getValue8() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue8() != null ? format.format(equation.getValue8()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 9) {
-                    equationTypeVariable.setValue(equation.getValue9() != null ? equation.getValue9() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue9() != null ? format.format(equation.getValue9()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 10) {
-                    equationTypeVariable.setValue(equation.getValue10() != null ? equation.getValue10() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue10() != null ? format.format(equation.getValue10()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 11) {
-                    equationTypeVariable.setValue(equation.getValue11() != null ? equation.getValue11() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue11() != null ? format.format(equation.getValue11()) : "");
                 } else if (equationTypeVariable.getFileColPosition() == 12) {
-                    equationTypeVariable.setValue(equation.getValue12() != null ? equation.getValue12() + "" : "");
+                    equationTypeVariable.setValue(equation.getValue12() != null ? format.format(equation.getValue12()) : "");
                 }
                 rows.add(row(equation.getEquationType(), equationTypeVariable));
             }

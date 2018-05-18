@@ -77,6 +77,8 @@ public class ControlMeasurePDFReportGenerator {
     public static final Format COST_FORMAT = new DecimalFormat("$#,##0");
     
     public static final Format EFF_FORMAT = new DecimalFormat("###.####");
+    
+    public static final Format EQ_FORMAT = new DecimalFormat("##########.####");
 
     public static final BaseColor COLORED_BORDER = BaseColor.BLACK;
 
@@ -550,40 +552,40 @@ public class ControlMeasurePDFReportGenerator {
                     String value = "";
                     switch (equationTypeVariable.getFileColPosition()) {
                     case 1:
-                        value = this.getDoubleAsString(equation.getValue1(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue1(), "", EQ_FORMAT);
                         break;
                     case 2:
-                        value = this.getDoubleAsString(equation.getValue2(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue2(), "", EQ_FORMAT);
                         break;
                     case 3:
-                        value = this.getDoubleAsString(equation.getValue3(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue3(), "", EQ_FORMAT);
                         break;
                     case 4:
-                        value = this.getDoubleAsString(equation.getValue4(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue4(), "", EQ_FORMAT);
                         break;
                     case 5:
-                        value = this.getDoubleAsString(equation.getValue5(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue5(), "", EQ_FORMAT);
                         break;
                     case 6:
-                        value = this.getDoubleAsString(equation.getValue6(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue6(), "", EQ_FORMAT);
                         break;
                     case 7:
-                        value = this.getDoubleAsString(equation.getValue7(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue7(), "", EQ_FORMAT);
                         break;
                     case 8:
-                        value = this.getDoubleAsString(equation.getValue8(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue8(), "", EQ_FORMAT);
                         break;
                     case 9:
-                        value = this.getDoubleAsString(equation.getValue9(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue9(), "", EQ_FORMAT);
                         break;
                     case 10:
-                        value = this.getDoubleAsString(equation.getValue10(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue10(), "", EQ_FORMAT);
                         break;
                     case 11:
-                        value = this.getDoubleAsString(equation.getValue11(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue11(), "", EQ_FORMAT);
                         break;
                     case 12:
-                        value = this.getDoubleAsString(equation.getValue12(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue12(), "", EQ_FORMAT);
                         break;
 
                     default:
