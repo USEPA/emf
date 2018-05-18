@@ -30,14 +30,14 @@ public class PostgresCOPYExport {
             windowsOS = true;
     }
 
-    public void export(String selectQuery, String filePath) throws ExporterException {
+    public void export(String selectQuery, String filePath, boolean forceQuote) throws ExporterException {
         Connection connection = null;
 
         try {
             File dataFile = new File(filePath);
             createNewFile(dataFile);
 
-            String exportQuery = getWriteQueryString(filePath, selectQuery);
+            String exportQuery = getWriteQueryString(filePath, selectQuery, forceQuote);
 
             log.warn(exportQuery);
 
@@ -66,9 +66,12 @@ public class PostgresCOPYExport {
         statement.close();
     }
 
-    private String getWriteQueryString(String filePath, String query) {
-        String columnsNeedingQuotes = getNeedQuotesCols(query);
-        String withClause = " WITH HEADER NULL '' CSV" + (columnsNeedingQuotes.length() > 0 ? " FORCE QUOTE " + columnsNeedingQuotes : "");
+    private String getWriteQueryString(String filePath, String query, boolean forceQuote) {
+        String withClause = " WITH HEADER NULL '' CSV";
+        if (forceQuote) {
+            String columnsNeedingQuotes = getNeedQuotesCols(query);
+            withClause += (columnsNeedingQuotes.length() > 0 ? " FORCE QUOTE " + columnsNeedingQuotes : "");
+        }
 
         return "COPY (" + query + ") to '" + putEscape(filePath) + "'" + withClause;
     }

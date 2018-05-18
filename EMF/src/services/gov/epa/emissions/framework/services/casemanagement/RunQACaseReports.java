@@ -353,7 +353,7 @@ public class RunQACaseReports implements Runnable {
         try {
             localFile = new File(tempQAFilePath());
 
-            postgresCOPYExport.export(this.reportSQL, localFile.getAbsolutePath());
+            postgresCOPYExport.export(this.reportSQL, localFile.getAbsolutePath(), true);
         
             setStatus("Completed running QA case Reports.  Report was exported to " + localFile.getAbsolutePath() + ".  Total lines in report: " + countLines(localFile));
         

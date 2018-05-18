@@ -120,7 +120,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), false);
         
 //        PrintWriter equationWriter = openExportFile("_equations.csv");
 //        CMEquationFileFormat fileFormat = new CMEquationFileFormat();
@@ -235,7 +235,7 @@ public class ControlMeasuresExporter implements Exporter {
             + "     on cmc.id = m.cm_class_id "
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation";
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), true);
         
 /*        PrintWriter summaryWriter = openExportFile("_summary.csv");
         CMSummaryFileFormat fileFormat = new CMSummaryFileFormat();
@@ -335,7 +335,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation, p.name";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), false);
 //        PrintWriter efficienciesWriter = openExportFile("_efficiencies.csv");
 //        CMEfficiencyFileFormatv3 fileFormat = new CMEfficiencyFileFormatv3();
 //        String[] colNames = fileFormat.cols();
@@ -413,7 +413,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation, scc.name";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), false);
 //        PrintWriter sccsWriter = openExportFile("_SCCs.csv");
 //        CMSCCsFileFormat fileFormat = new CMSCCsFileFormat();
 //        String[] colNames = fileFormat.cols();
@@ -448,7 +448,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where mr.control_measure_id in (" + idList + ") "
             + " order by r.id";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), true);
     }
 
     private void writePropertyFile() throws ExporterException {
@@ -472,7 +472,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation, mp.name";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), true);
     }
 
     private void addStatus(String message) {
