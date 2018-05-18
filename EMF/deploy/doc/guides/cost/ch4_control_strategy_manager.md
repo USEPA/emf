@@ -142,7 +142,7 @@ The types of outputs for a Least Cost Curve control strategy are the following:
 
 * **Strategy Detailed Result** datasets for each targeted percent reduction. Note that several results could have the same actual percent reduction if the targeted reduction exceeds the maximum available reduction. As with a Least Cost control strategy, the actual percent reduction may not exactly match the targeted reduction due to the discrete nature of applying specific controls to specific sources. CoST will ensure that each actual reduction is equal to or greater than the corresponding targeted reduction.
 * **Least Cost Control Measure Worksheet**: this output is the same as the worksheet produced for a regular Least Cost control strategy run. Note that the same worksheet is used for all targeted percent reductions and only the status column is updated to specify when measure-source combinations are included in the current strategy.
-* **Least Cost Curve Summary**: this output dataset contains a row with cost and emissions reductions information for each of the runs that was performed for the strategy. Rows are added to this output if additional strategy runs are performed (e.g., to examine different sections of the curve). The columns of this summary are: Poll, Uncontroll\_Emis (tons), Total\_Emis\_Reduction (tons), Target\_Percent\_Reduction, Actual\_Percent\_Reduction, Total\_Annual\_Cost, Average\_Ann\_Cost\_per\_Ton, Total\_Annual\_Oper\_Maint\_Cost, Total\_Annualized\_Capital\_Cost, Total\_Capital\_Cost. Here, the Uncontroll\_Emis column contains the emissions from the original input inventory with all existing controls backed out so that it represents the uncontrolled emissions. The columns starting with Total are computed by summing all of the values of the corresponding column in the Strategy Detailed Result for the pollutant specified in the Poll column. Examples of Least Cost Curve Summaries are given in Figure {@fig:analyzing_a_least_cost_curve_output} and Table {tbl:summary_of_strategy_algorithms_table}.
+* **Least Cost Curve Summary**: this output dataset contains a row with cost and emissions reductions information for each of the runs that was performed for the strategy. Rows are added to this output if additional strategy runs are performed (e.g., to examine different sections of the curve). The columns of this summary are: Poll, Uncontroll\_Emis (tons), Total\_Emis\_Reduction (tons), Target\_Percent\_Reduction, Actual\_Percent\_Reduction, Total\_Annual\_Cost, Average\_Ann\_Cost\_per\_Ton, Total\_Annual\_Oper\_Maint\_Cost, Total\_Annualized\_Capital\_Cost, Total\_Capital\_Cost. Here, the Uncontroll\_Emis column contains the emissions from the original input inventory with all existing controls backed out so that it represents the uncontrolled emissions. The columns starting with Total are computed by summing all of the values of the corresponding column in the Strategy Detailed Result for the pollutant specified in the Poll column. An example of a Least Cost Curve Summary is shown in Figure {@fig:analyzing_a_least_cost_curve_output}.
 * **Controlled Inventories**: these output datasets may optionally be created based on any of the Strategy Detailed Results that are available for the strategy. Thus, results corresponding to any of the targeted reductions may be processed by SMOKE and the resulting data used as an input to an air quality model. Note that for each targeted reduction, individual controlled inventories will be created for each of the input inventories.
 
 ### Annotate Inventory Control Strategy
@@ -248,7 +248,7 @@ An **Edit Control Strategy** window for your newly created strategy will appear 
 
 <a id=edit_control_strategy_window></a>
 
-![Edit Control Tab Summary Window](images/Least_Cost_2017_NOx_for_Training.png){fig:edit_control_strategy_window}
+![Edit Control Strategy Summary Tab](images/Least_Cost_2017_NOx_for_Training.png){#fig:edit_control_strategy_window}
 
 For this example, edit the following fields in the **Edit Control Strategy** window:
 
@@ -759,7 +759,7 @@ Cost ($) for a year of interest = (Cost for original cost year x GDP IPD for yea
 
 where the GDP IPD is the Gross Domestic Product.
 ```
-Implicit Price Deflator (IPD) available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](http://bea.gov/iTable/iTable.cfm?reqid=9&step=3&isuri=1&903=13#reqid=9&step=3&isuri=1&904=2013&903=13&906=a&905=2015&910=x&911=1). The current version used is dated November 24, 2015. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
+Implicit Price Deflator (IPD) available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from January 2017. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
 
 
 <a id=excerpt_from_the_gdplev_table_table></a>
@@ -769,10 +769,10 @@ Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD
 1980|44.377| |1990|66.773| |2000|81.887| |2010|101.221
 1981|48.520| |1991|68.996| |2001|83.754| |2011|103.311
 1982|51.530| |1992|70.569| |2002|85.039| |2012|105.214
-1983|53.565| |1993|72.248| |2003|86.735| |2013|106.929
-1984|55.466| |1994|73.785| |2004|89.120| |2014|108.686
-1985|57.240| |1995|75.324| |2005|91.988|
-1986|58.395| |1996|76.699| |2006|94.814|
+1983|53.565| |1993|72.248| |2003|86.735| |2013|106.913
+1984|55.466| |1994|73.785| |2004|89.120| |2014|108.828
+1985|57.240| |1995|75.324| |2005|91.988| |2015|109.998
+1986|58.395| |1996|76.699| |2006|94.814| |2016|111.446
 1987|59.885| |1997|78.012| |2007|97.337|
 1988|61.982| |1998|78.859| |2008|99.246|
 1989|64.392| |1999|80.065| |2009|100|

@@ -70,7 +70,7 @@ Notice the different parts of the Control Measure Manager window. There is a `Po
 ![Control Measure Manager before Control Measures are Loaded](images/Control_Measure_Manager_before_Control_Measures_are_Loaded.png){#fig:control_measure_manager_before_control_measures_are_loaded}
 
 
-**Step 1-2: Display Control Measures.** To display control measures from the CMDB in the Control Measure Manager window, select a pollutant from the `Pollutant Filter` pull-down menu at the upper left corner of the Control Measure Manager. For this example, use the scroll bar to find and select PM10-PRI. Information about any control measures that control the selected pollutant will appear in the Control Measure Manager window ([Figure 3-3](#control_measure_manager_with_control_measures)). The control measure **Name**, **Abbreviation**, **Pollutant**, **Sector**, and **Class** are shown in the window. Note that name of each control measure must be unique within the database, and that the control measures appear in a table in which the data can be sorted by clicking on the row headers.
+**Step 1-2: Display Control Measures.** To display control measures from the CMDB in the Control Measure Manager window, select a pollutant from the `Pollutant Filter` pull-down menu at the upper left corner of the Control Measure Manager. For this example, use the scroll bar to find and select PM10-PRI. Information about any control measures that control the selected pollutant will appear in the Control Measure Manager window (Figure {@fig:control_measure_manager_with_control_measures}). The control measure **Name**, **Abbreviation**, **Pollutant**, **Sector**, and **Class** are shown in the window. Note that name of each control measure must be unique within the database, and that the control measures appear in a table in which the data can be sorted by clicking on the row headers.
 
 The control measure abbreviation is a set of characters that is a *short-hand* for the control measure. Typically, the abbreviation should express the name of the control measure in an abbreviated form such that if someone is familiar with the abbreviation conventions, the person might be able to infer the name of the measure. Typically the first character of the measure denotes the major pollutant (e.g., 'P' for PM controls, 'N' for NO<sub>x</sub> controls, 'S' for SO<sub>2</sub> controls). The next few characters usually denote the control technology (e.g., 'ESP' for Electrostatic Precipitator, 'FFM' for fabric filter mechanical shaker). Abbreviations must be unique within the database (i.e., no two control measures can use the same abbreviation).
 
@@ -104,7 +104,7 @@ Avg, Min, and Max CE|Average, minimum, and maximum control efficiencies for the 
 Avg, Min, and Max CPT|Average, minimum, and maximum cost per ton for the specified pollutant aggregated across all locales, effective dates, and source sizes.
 Avg Rule Eff.|Average rule effectiveness aggregated across all efficiency records for the specified pollutant.
 Avg Rule Pen.|Average rule penetration aggregated across all efficiency records for the specified pollutant.
-Control Technology|The control technology that is used for the measure (e.g., Low NO~x burner, Onroad Retrofit).
+Control Technology|The control technology that is used for the measure (e.g., Low NOx burner, Onroad Retrofit).
 Source Group|The group of sources to which the measure applies (e.g., Fabricated Metal Products - Welding).
 Equipment Life|Expected lifetime (in years) of the equipment used for the measure.
 Sectors|An emissions inventory sector or set of the EPA's emissions inventory sectors to which the measure applies (e.g., ptipm, afdust, nonpoint). A sector represents a broad group of similar emissions sources.
@@ -250,7 +250,7 @@ Locale LIKE '37%'
 Pollutant IN ('EXH__CO', 'EXH__VOC', 'EXH__PM10-PRI')
 ```
 
-**Step 2-6: View an Efficiency Record in a Separate Window.** To see the data for an efficiency record in a separate window, check the checkbox in the **Select** row for the PM25-PRI efficiency record, and click `View`. A View Efficiency Record window will appear as shown in Figure {@fig:view_efficiency_record_window}. The fields of the efficiency record are shown in [Table 3-3](#control_measure_efficiency_record_table).
+**Step 2-6: View an Efficiency Record in a Separate Window.** To see the data for an efficiency record in a separate window, check the checkbox in the **Select** row for the PM25-PRI efficiency record, and click `View`. A View Efficiency Record window will appear as shown in Figure {@fig:view_efficiency_record_window}. The fields of the efficiency record are shown in Table {@tbl:control_measure_efficiency_record_table}.
 
 Notice that most of the fields in Figure {@fig:view_efficiency_record_window} are set using text fields. The `Ref Yr Cost Per Ton Reduced` is shown with a label because this value is automatically computed for the reference year (currently 2013) according to the cost year and the specified C`ost Per Ton Reduced`. Note that the cost per ton reduced should take into account the specified rule effectiveness and rule penetration, which can 'dilute' the effectiveness of the control measure, but are not taken into account when the `Ref Yr Cost Per Ton Reduced` is computed. Other fields that are labels are `Last Modified By` and `Last Modified Time`. These fields are automatically updated and tracked by CoST when someone edits the efficiency record, although editing is done from the Edit Efficiency Record window instead of the View Efficiency Record window.
 
@@ -261,7 +261,6 @@ Notice that most of the fields in Figure {@fig:view_efficiency_record_window} ar
 ![View Efficiency Record Window](images/View_Efficiency_Record_Window.png){#fig:view_efficiency_record_window}
 
 <a id=control_measure_efficiency_record_table></a>
-**Table 3-3. Efficiencies Record Window Contents.**
 
 Component|Description
 ------------------------------|------------------------------------------------------------------------------------------------------------------------
@@ -286,6 +285,9 @@ Last Modified By|The last user to modify the efficiency record.
 Last Modified Time|The last date and time a user modified the efficiency record.
 Details|Text that specifies information about the source of data for this row or reason they were changed.
 
+Table: Efficiencies Record Window Contents. {#tbl:control_measure_efficiency_record_table}
+
+
 When you are done examining the information on the View Efficiency Record Window, click `Close`.
 
 ### Control Measure SCCs
@@ -308,7 +310,7 @@ Do not click `Close` after examining the SCC list as this will close the View Co
 
 As an alternative to using a simple 'cost per ton of pollutant reduced' value to compute the cost of a control measure, an engineering cost equation can be specified. The cost equation will then be used to associate emissions control costs with a particular pollutant. The equation must be selected from a list of pre-specified equation types. The cost will be computed using the form of the equation specified on the equations tab, source-independent variables listed in the equations tab, and source-dependent variables from the emissions inventory (e.g., stack flow rate). Currently, only a single equation can be specified for any given measure.
 
-**Step 2-8: View the Control Measure Equations.** Click on the `Equations` tab on the View Control Measure window to see information associated with the cost equations for the selected measure. An example of this tab is shown in Figure {@fig:equations_tab_of_view_control_measure_window}. If the measure does not use a cost equation, this tab will be blank. The table at the bottom of the `Equations` tab shows the **Equation Type** (the same type is repeated in every row), in addition to the **Variable Name** and **Value** for that variable. The fields of the `Equations` tab are shown in [Table 3-4](#control_measure_equations_tab_table).
+**Step 2-8: View the Control Measure Equations.** Click on the `Equations` tab on the View Control Measure window to see information associated with the cost equations for the selected measure. An example of this tab is shown in Figure {@fig:equations_tab_of_view_control_measure_window}. If the measure does not use a cost equation, this tab will be blank. The table at the bottom of the `Equations` tab shows the **Equation Type** (the same type is repeated in every row), in addition to the **Variable Name** and **Value** for that variable. The fields of the `Equations` tab are shown in Table {@tbl:control_measure_equations_tab_table}.
 
 Each type of equation uses a different set of variables. CoST supports fourteen different types of cost equations. Additional types of equations may be added in the future. For more information on the equations and their input variables, see the [Documentation of Cost Equations in the EPA's Control Strategy Tool (CoST)](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution). The appropriate form of the equation will be used in conjunction with the specified values to compute the total cost of applying the measure to the source for the specified pollutant and cost year.
 
@@ -318,14 +320,15 @@ Do not click `Close` after examining the Equations tab as this will close the Vi
 
 ![Equations Tab of View Control Measure Window](images/Equations_Tab_of_View_Control_Measure_Window.png){#fig:equations_tab_of_view_control_measure_window}
 
-**Table 3-4. Efficiencies Record Window Contents.**
-
 Component|Description
 -------------------------------------|---------------------------------------------------------------------------------------------------------------
 Name|The name of the engineering cost equation type (e.g., Type 8).
 Description|The description of the engineering cost equation type (e.g., Non-EGU PM Cost Equation).
 Inventory Fields|The input parameters to the cost equations found in the inventory (e.g., stack velocity and temperature or design capacity).
 Equations|The cost equation definitions.
+
+Table: Control Measure Equations Tab Contents. {#tbl:control_measure_equations_tab_table}
+
 
 ### Control Measure Properties
 
@@ -335,7 +338,7 @@ Equations|The cost equation definitions.
 
 ![Properties Tab of View Control Measure Window](images/Properties_Tab_of_View_Control_Measure_Window.png){#fig:properties_tab_of_view_control_measure_window}
 
-**Step 2-10: View a Properties Record in a Separate Window.** To see the data for a property record in a separate window, check a checkbox in the **Select** column and click `View`. For example, select the `STEAM_PCT` property record and click `View`. Figure {@fig:view_property_record_window} shows the View Property Record window that will appear. The fields of the property record are shown in [Table 3-5](#control_measure_property_record_table).
+**Step 2-10: View a Properties Record in a Separate Window.** To see the data for a property record in a separate window, check a checkbox in the **Select** column and click `View`. For example, select the `STEAM_PCT` property record and click `View`. Figure {@fig:view_property_record_window} shows the View Property Record window that will appear. The fields of the property record are shown in Table {@tbl:control_measure_property_record_table}.
 
 Notice that most of the fields in Figure {@fig:view_property_record_window} are set using text fields. The `Category` is a free-form drop down, where an existing category could be used or a new one could be used by typing in the new category.
 
@@ -346,7 +349,6 @@ Do not click Close after examining the Properties tab as this will close the Vie
 ![View Property Record Window](images/View_Property_Record_Window.png){#fig:view_property_record_window}
 
 <a id=control_measure_property_record_table></a>
-**Table 3-5. Property Record Window Contents.**
 
 Component|Description
 -------------------------|----------------------------------------------------------------------------------------------------------------------------
@@ -356,6 +358,9 @@ Units|The units for the property (e.g., % for percentage).
 Data Type|If applicable, this defines the data type of the property (e.g., double precision/float for numeric values, or a varchar/string for textual information).
 DB Field Name|If specified, this is a placeholder to help identify the database field name from the particular data source reference that supplied the property information (e.g., an ancillary dataset has a steam percentage stored in the STEAM\_PCT table field/column).
 Value|The value of the property.
+
+Table: Property Record Window Contents. {#tbl:control_measure_property_record_table}
+
 
 ### Control Measure References
 
@@ -527,7 +532,7 @@ Edit the value for the property record as needed to reflect the new control meas
 
 <a id=references_tab_of_edit_control_measure_window></a>
 
-![References Tab of Edit Control Measure Window](images/References_Tab_of_Edit_Control_Measure_Window.png){fig:references_tab_of_edit_control_measure_window}
+![References Tab of Edit Control Measure Window](images/References_Tab_of_Edit_Control_Measure_Window.png){#fig:references_tab_of_edit_control_measure_window}
 
 To edit an existing reference record, check the corresponding checkbox in the **Select** column and click `Edit`. For example, click the box next to the **"MACTEC Engineering and Consulting..."** reference entry and then click `Edit`. The Edit Reference Record window will appear (Figure {@fig:edit_reference_record_window}).
 
@@ -557,7 +562,7 @@ Click **Save** at the bottom of the Edit Control Measure window to save the chan
 
 This section describes how to create new CoST control measures through the Control Measure Manager.
 
-**Step 5-1: Add a New Control Measure.** To create a new control measure, click `New` on the Control Measure Manager to display the New Control Measure window as shown in Figure {@fig:#summary_tab_of_edit_control_measure_window}, except with none of the control measure information filled in.
+**Step 5-1: Add a New Control Measure.** To create a new control measure, click `New` on the Control Measure Manager to display the New Control Measure window as shown in Figure {@fig:summary_tab_of_edit_control_measure_window}, except with none of the control measure information filled in.
 
 **Step 5-2: Adding a New Control Measure: Summary.** Enter a unique name (e.g., New PM10-PRI Control Measure) in the `Name` field and a unique abbreviation (e.g., PNCM) in the `Abbreviation` field for the control measure. You must also set the `Major Pollutant` (e.g., PM10-PRI) and `Class` (e.g., Known) and the `Date Reviewed` for the measure before the measure can be saved into the CMDB. For more information on the fields in the Summary tab, see [Section 2](#Viewing3) and [Section 4](#Editing3) above.
 
@@ -646,7 +651,7 @@ The **Status**, or **Downloads**, window is near the bottom of the EMF main wind
 
 Files in the exported format can also be imported into the CMDB. Control measures can only be imported to CoST/EMF by an Administrator.
 
-**Step 9-3: Import Control Measures.**  If logged in as Administrator, click the **Import** button on the Control Measure Manager to start importing measures. In the **Import Control Measures** window that appears ([Figure 3-28](#import_control_measures_dialog)), type or paste the name of the import `Folder`. You may also use the `Browse` button to browse to a folder containing the files to be imported and select the files directly from the browser. Alternatively, enter the folder name and then type in a **pattern** to specify the files, then click `Apply Pattern`. When using a pattern, an asterisk (\*) will be expanded to the available file names.
+**Step 9-3: Import Control Measures.**  If logged in as Administrator, click the **Import** button on the Control Measure Manager to start importing measures. In the **Import Control Measures** window that appears (Figure {@fig:import_control_measures_dialog}), type or paste the name of the import `Folder`. You may also use the `Browse` button to browse to a folder containing the files to be imported and select the files directly from the browser. Alternatively, enter the folder name and then type in a **pattern** to specify the files, then click `Apply Pattern`. When using a pattern, an asterisk (\*) will be expanded to the available file names.
 
 After selecting the files to import, click the `Import` button. Information about the status of the import will be shown in the **Status** section of the window. To see updates to the status of the import, click the `Refresh Import Status` button. Once the imports are complete, click the `Done` button. If the measures already existed in the database, the new data will replace the existing data.
 
