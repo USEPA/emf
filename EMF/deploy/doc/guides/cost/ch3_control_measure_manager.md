@@ -391,7 +391,7 @@ clicking the Reset button <img src="images/Reset_Button.png"/> on the toolbar of
 
 Next, uncheck the `Show Details` button at the top of the Control Measure Manager (to speed the data transfer) and set the `Pollutant Filter` at the top of the Control Measure Manager to the pollutant of interest. For this example select **NOx** and find the measure named **"Selective Non-Catalytic Reduction; ICI Boilers - Natural Gas"** (Abbreviation = **NSNCRIBNG**). *Hint: You may want to apply a filter to the manager to make it easier to find this specific measure.*
 
-Once you have found the measure to copy, check the corresponding checkbox in the **Select** column and then click the `Copy` button. CoST will create a new control measure called **"Copy of *the starting measure name your name unique #"**. A unique abbreviation will also be automatically generated for the measure.
+Once you have found the measure to copy, check the corresponding checkbox in the **Select** column and then click the `Copy` button. CoST will create a new control measure called **"Copy of [the starting measure name] [your name] [unique #]"**. A unique abbreviation will also be automatically generated for the measure.
 
 **Step 3-2: View the Copied Control Measure.** To see the new control measure in the Control Measure Manager, **Scroll** to the top of the window. If you do not see the measure, click the `Refresh` button at the top right of the Manager window to obtain updated data from the CoST server.
 
