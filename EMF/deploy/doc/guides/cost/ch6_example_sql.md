@@ -4,7 +4,7 @@
 
 <!-- END COMMENT -->
 
-# Example SQL Statements for Creating Row Filters
+# Example SQL Statements for Creating Row Filters {#Chapter6}
 
 Table {@tbl:examples_of_row_filters_and_inventory_filters_table} provides some examples of row filters that can be applied to inventory filters to target specific sources for use during strategy analyses.
 

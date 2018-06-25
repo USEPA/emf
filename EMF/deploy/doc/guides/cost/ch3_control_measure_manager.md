@@ -4,7 +4,7 @@
 
 <!-- END COMMENT -->
 
-# Control Measure Manager #
+# Control Measure Manager {#Chapter3}
 
 <!-- BEGIN COMMENT -->
 ## Contents
@@ -179,7 +179,7 @@ Change the `Font` to **Arial**, the `Style` to **Bold**, the `Size` to **14**, t
 
 <a id=Viewing3></a>
 
-## Viewing Data for an Existing Control Measure
+## Viewing Data for an Existing Control Measure {#Viewing3}
 
 In this section you will learn about viewing the detailed data for a control measure.
 
@@ -382,7 +382,7 @@ This concludes the exercises on examining existing control measures. Click `Clos
 
 <a id=Copying3></a>
 
-## Copying a Control Measure
+## Copying a Control Measure {#Copying3}
 
 One way to create a new control measure in CoST is to copy an existing control measure and then edit its data.
 
@@ -401,12 +401,12 @@ View the contents of the copied measure by selecting the checkbox next to the me
 
 <a id=Editing3></a>
 
-## Editing Control Measure Data
+## Editing Control Measure Data {#Editing3}
 
 Only control measures created by the current CoST user can be edited through the Control Measure Manager. CoST Administrators can edit all of the measures in the CMDB.
 
 **Step 4-1: Find a Control Measure to Edit.** First, click the `Clear all the selections` button to
-unselect any previously selected measures <img src="images/Clear_All_Button.png"/>. For this exercise, find the measure created using the copy button ([Section 3](#Copying3)) in the Control Measure Manager and check the corresponding select box in the **Select** column. Click `Edit` to edit the data for the control measure. The Edit Control Measure window will appear Figure {@fig:summary_tab_of_edit_control_measure_window}.
+unselect any previously selected measures <img src="images/Clear_All_Button.png"/>. For this exercise, find the measure created using the copy button (see [Copying a Control Measure](#Copying3)) in the Control Measure Manager and check the corresponding select box in the **Select** column. Click `Edit` to edit the data for the control measure. The Edit Control Measure window will appear Figure {@fig:summary_tab_of_edit_control_measure_window}.
 
 <a id=summary_tab_of_edit_control_measure_window></a>
 
@@ -444,7 +444,7 @@ To set the months back to All Months, select all of the months in the `Months` l
 
 ![Efficiencies Tab of Edit Control Measure Window](images/Efficiencies_Tab_of_Edit_Control_Measure_Window.png){#fig:efficiencies_tab_of_edit_control_measure_window}
 
-Scroll to the right to examine additional fields. Note that more of the fields are filled in for NOx than for the PM measure that you examined in [Section 2](#Viewing3). The additional data allows CoST to compute the capital and operating and maintenance (O&M) costs in addition to overall annualized costs when this measure is used in a control strategy.
+Scroll to the right to examine additional fields. Note that more of the fields are filled in for NOx than for the PM measure that you examined in [Viewing Data for an Existing Control Measure](#Viewing3). The additional data allows CoST to compute the capital and operating and maintenance (O\&M) costs in addition to overall annualized costs when this measure is used in a control strategy.
 
 To edit an efficiency record, check the checkbox in the **Select** column for the pollutant to edit and then click `Edit`. The Edit Efficiency Record window will appear Figure {@fig:edit_efficiency_record_window}.
 
@@ -564,11 +564,11 @@ This section describes how to create new CoST control measures through the Contr
 
 **Step 5-1: Add a New Control Measure.** To create a new control measure, click `New` on the Control Measure Manager to display the New Control Measure window as shown in Figure {@fig:summary_tab_of_edit_control_measure_window}, except with none of the control measure information filled in.
 
-**Step 5-2: Adding a New Control Measure: Summary.** Enter a unique name (e.g., New PM10-PRI Control Measure) in the `Name` field and a unique abbreviation (e.g., PNCM) in the `Abbreviation` field for the control measure. You must also set the `Major Pollutant` (e.g., PM10-PRI) and `Class` (e.g., Known) and the `Date Reviewed` for the measure before the measure can be saved into the CMDB. For more information on the fields in the Summary tab, see [Section 2](#Viewing3) and [Section 4](#Editing3) above.
+**Step 5-2: Adding a New Control Measure: Summary.** Enter a unique name (e.g., New PM10-PRI Control Measure) in the `Name` field and a unique abbreviation (e.g., PNCM) in the `Abbreviation` field for the control measure. You must also set the `Major Pollutant` (e.g., PM10-PRI) and `Class` (e.g., Known) and the `Date Reviewed` for the measure before the measure can be saved into the CMDB. For more information on the fields in the Summary tab, see [Viewing Data for an Existing Control Measure](#Viewing3) and [Editing Control Measure Data](#Editing3) above.
 
-**Step 5-3: Adding a New Control Measure: Efficiencies.**  Go to the `Efficiencies` tab of the New Control Measure window and add at least one efficiency record for the measure; otherwise it will have no effect on any emissions sources. The efficiencies tab for the new measure will look similar to Figure {@fig:efficiencies_tab_of_edit_control_measure_window}, except initially there will be no efficiency records. For more information on the data needed for efficiency records, see [Section 2](#Viewing3) and [Section 4](#Editing3). Add as many efficiency records as needed to describe the control efficiency and cost of the measure.
+**Step 5-3: Adding a New Control Measure: Efficiencies.**  Go to the `Efficiencies` tab of the New Control Measure window and add at least one efficiency record for the measure; otherwise it will have no effect on any emissions sources. The efficiencies tab for the new measure will look similar to Figure {@fig:efficiencies_tab_of_edit_control_measure_window}, except initially there will be no efficiency records. For more information on the data needed for efficiency records, see [Viewing Data for an Existing Control Measure](#Viewing3) and [Editing Control Measure Data](#Editing3). Add as many efficiency records as needed to describe the control efficiency and cost of the measure.
 
-**Step 5-4: Adding a New Control Measure: SCCs.**  Go to the `SCCs` tab of the New Control Measure window and add at least one SCC record for the measure; otherwise it will have no effect on any emissions sources. The SCC tab for the new measure will look similar to Figure {@fig:sccs_tab_of_edit_control_measure_window}, except initially there will be no SCC records.  Note that the same control efficiency and cost information must apply to all sources with SCCs listed on this tab, otherwise the information must be stored in a separate measure for the other SCCs. For more information on the data needed for SCCs, see [Section 2](#Viewing3) and [Section 4](#Editing3).
+**Step 5-4: Adding a New Control Measure: SCCs.**  Go to the `SCCs` tab of the New Control Measure window and add at least one SCC record for the measure; otherwise it will have no effect on any emissions sources. The SCC tab for the new measure will look similar to Figure {@fig:sccs_tab_of_edit_control_measure_window}, except initially there will be no SCC records.  Note that the same control efficiency and cost information must apply to all sources with SCCs listed on this tab, otherwise the information must be stored in a separate measure for the other SCCs. For more information on the data needed for SCCs, see [Viewing Data for an Existing Control Measure](#Viewing3) and [Editing Control Measure Data](#Editing3).
 
 **Step 5-5: Adding a New Control Measure: Equations.** To associate a cost equation with the new measure, go to the `Equations` tab and add an equation. The tab should look similar to the one shown in Figure {@fig:equations_tab_of_edit_control_measure_window}. Cost equations are optional. If you do not have a cost equation, cost per ton information from one or more of the efficiency records will be used to estimate the cost of applying the measure.
 

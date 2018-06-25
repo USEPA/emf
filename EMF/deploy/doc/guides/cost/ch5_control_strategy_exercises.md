@@ -10,13 +10,13 @@
 
 <!-- END COMMENT -->
 
-# Advanced Control Strategy Exercises #
+# Advanced Control Strategy Exercises {#Chapter5}
 
-This chapter includes advanced exercises for learning how to use different features of CoST. Users should complete the exercises in [Chapter 3](./ch3_control_measure_manager.md) and [Chapter 4](ch4_control_strategy_manager.md) before attempting the exercises in this chapter.  
+This chapter includes advanced exercises for learning how to use different features of CoST. Users should complete the exercises in [Chapter 3](#Chapter3) and [Chapter 4](#Chapter4) before attempting the exercises in this chapter.  
 
 <a id=importing_an_emissions_inventory></a>
 
-## Exercise 1. Importing an Emissions Inventory (or County List File)
+## Exercise 1. Importing an Emissions Inventory (or County List File) {#importing_an_emissions_inventory}
 
 1. Choose `Datasets` from the **Manage** menu of the main EMF window.
 
@@ -69,7 +69,7 @@ The Dataset Manager includes the following controls:
 
 For this exercise, an existing Least Cost Strategy will be modified to create a Maximum Emissions Reductions strategy.
 
-1. From the Control Strategy Manager `Copy` the least cost strategy created in [Chapter 4](#ch4_control_strategy_manager.md) to a new strategy.
+1. From the Control Strategy Manager `Copy` the least cost strategy created in [Chapter 4](#Chapter4) to a new strategy.
 
 2. `Edit` the strategy and set the Type of Analysis to **Max Emissions Reduction**.
 
@@ -78,7 +78,7 @@ For this exercise, an existing Least Cost Strategy will be modified to create a 
 
 * Did the Maximum Emissions Reduction strategy run slower or faster than the Least Cost?
 
-* How many more emissions reductions were achieved over the 50% level of reduction set in the Least Cost run in [Chapter 4](#ch4_control_strategy_manager.md)?
+* How many more emissions reductions were achieved over the 50% level of reduction set in the Least Cost run in [Chapter 4](#Chapter4)?
 
 * How do the Average Cost per Ton and Total Cost differ between the 50% Least Cost control reduction strategy and the Maximum Emissions Reduction available?
 
@@ -124,7 +124,7 @@ For this exercise, run a control strategy that produces co-benefits for multiple
 
 2. Set the `Target Year` to **2020** and the `Strategy Type` to **Maximum Emissions Reduction**.
 
-3. Set the inventory to use to be the **Nonpoint** inventory imported in [Exercise 1](#importing_an_emissions_inventory_section).
+3. Set the inventory to use to be the **Nonpoint** inventory imported in [Exercise 1](#importing_an_emissions_inventory).
 
 4. Set the `Target Pollutant` to **PM25-PRI**, then `Run` the strategy.
 

@@ -4,7 +4,7 @@
 
 <!-- END COMMENT -->
 
-# References 
+# References {#Chapter7}
 
 Eyth, A.M., D. Del Vecchio, D. Yang, D. Misenheimer, D. Weatherhead, L. Sorrels, "Recent Applications of the Control Strategy Tool (CoST) within the Emissions Modeling Framework", 17th Annual Emissions Inventory Conference, Portland, OR, 2008.
 
