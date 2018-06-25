@@ -145,7 +145,7 @@ The PostgreSQL database is now installed and ready for the CoST system database.
 
 ## Install the Tomcat Web/Application Server
 
-Go to the `tomcat` directory and find the executable file, `apache-tomcat-8.5.28.exe`. Double click the file to install Tomcat. Follow the installation steps as illustrated in the figures: {@fig:tomcat_welcome}, {@fig:tomcat_license}.
+Go to the `tomcat` directory and find the executable file, `apache-tomcat-8.5.28.exe`. Double click the file to install Tomcat. Follow the installation steps as illustrated in the figures: {@fig:tomcat_welcome}, {@fig:tomcat_license}, {@fig:tomcat_components}, {@fig:tomcat_options}, {@fig:tomcat_jvm}, {@fig:tomcat_install_location}, {@fig:tomcat_installing}, {@fig:tomcat_complete}.
 
 <a id=tomcat></a>
 
@@ -191,7 +191,7 @@ When you reach the end, uncheck the box `Show Readme` and click `Finish`. The To
 
 ## Installing CoST
 
-Go to the root installation directory where the CoST/EMF zip file was installed and find the Install_EMF.bat executable file. Edit the bat file and change the following variables to match your computer's settings:
+Go to the root installation directory where the CoST/EMF zip file was installed and find the `Install_EMF.bat` executable file. Edit the bat file and change the following variables to match your computer's settings:
 
 ```
 SET EMF_CLIENT_DIRECTORY=C:\Users\Public\EMF
@@ -205,25 +205,25 @@ SET TOMCAT_DIR=C:\Program Files\Apache Software Foundation\Tomcat 8.5
 * `POSTGRESDIR` sets the location where the PostgreSQL application is installed.
 * `TOMCAT_DIR` sets the location where the Tomcat application is installed.
 
-Save your changes (if any), and exit the editor. Right-click the file `Install_EMF.bat` and select "Run as administrator" to start the CoST/EMF server installation.
+Save your changes (if any), and exit the editor. Right-click the file `Install_EMF.bat` and select "Run as administrator" to start the CoST/EMF server installation (Figure {@fig:install_emf_as_admin}).
 
 ![Install EMF as Administrator](images/Install_EMF_as_Administrator.png){#fig:install_emf_as_admin}
 
-You may see a pop-up from Windows Defender, preventing an unrecognized app from starting.
+You may see a pop-up from Windows Defender, preventing an unrecognized app from starting (Figure {@fig:windows_protection}).
 
 ![Windows Protection](images/Windows_Protection.png){#fig:windows_protection}
 
-Click the link labeled "More info", confirm the app listed is Install_EMF.bat, then click "Run anyway".
+Click the link labeled "More info", confirm the app listed is Install\_EMF.bat, then click "Run anyway" (Figure {@fig:windows_protection_run_anyway}).
 
 ![Windows Protection - More Info](images/Windows_Protection_Run_Anyway.png){#fig:windows_protection_run_anyway}
 
-*Note: This installation process can take around 30-40 minutes to finish.* During the installation process, you will be prompted once (see Figure below) to enter the PostgreSQL superuser password, e.g., `postgres`.
+*Note: This installation process can take around 30-40 minutes to finish.* During the installation process, you will be prompted once (see Figure {@fig:cost_installation}) to enter the PostgreSQL superuser password, e.g., `postgres`.
 
 <a id=cost_installation></a>
 
 ![CoST Installation](images/CoST_Installation.png){#fig:cost_installation}
 
-After the server installer completes, go to the directory containing the EMF client application; this was specified in the Install_EMF.bat file via the `EMF_CLIENT_DIRECTORY` variable (the default location is C:\Users\Public\EMF). Edit the EMFClient.bat batch file to match your computer's settings:
+After the server installer completes, go to the directory containing the EMF client application; this was specified in the `Install_EMF.bat` file via the `EMF_CLIENT_DIRECTORY` variable (the default location is C:\\Users\\Public\\EMF). Edit the `EMFClient.bat` batch file to match your computer's settings:
 
 ```
 set EMF_HOME=C:\Users\Public\EMF
@@ -231,7 +231,7 @@ set JAVA_EXE=C:\Program Files\Java\jre1.8.0_161\bin\java
 ```
 
 * `EMF_HOME` sets the location of EMF client application (set to be the same as `EMF_CLIENT_DIRECTORY` from the server installer above)
-* `JAVA_EXE` sets the location of Java runtime application (note that the directory is C:\Program Files\Java\jre1.8.0\_161\bin and java is the Java runtime application)
+* `JAVA_EXE` sets the location of Java runtime application (note that the directory is C:\\Program Files\\Java\\jre1.8.0\_161\\bin and java is the Java runtime application)
 
 Save and exit from the file `EMFClient.bat`.
 
@@ -239,13 +239,13 @@ Save and exit from the file `EMFClient.bat`.
 
 ## Running CoST and Logging into the EMF Server
 
-The CoST application can now be run by going to the EMF client directory and locating the `EMFClient.bat` file. Double click this file to start the EMF client. If Windows Defender prevents the app from starting, click the "More info" link, confirm the app listed is EMFClient.bat, then click "Run anyway". If the configuration was specified properly and the server is running, you should see the following window.
+The CoST application can now be run by going to the EMF client directory and locating the `EMFClient.bat` file. Double click this file to start the EMF client. If Windows Defender prevents the app from starting, click the "More info" link, confirm the app listed is EMFClient.bat, then click "Run anyway". If the configuration was specified properly and the server is running, you should see the EMF Login window (Figure {@fig:login_emf}).
 
 <a id=login_emf></a>
 
 ![Login to the Emissions Modeling Framework Window](images/Login_to_the_Emissions_Modeling_Framework_Window.png){#fig:login_emf}
 
-If you have never used the EMF before, click the `Register New User` button. You will then see the following window:
+If you have never used the EMF before, click the `Register New User` button. You will then see the following window (Figure {@fig:register_new_user}):
 
 <a id=register_new_user></a>
 
@@ -253,11 +253,11 @@ If you have never used the EMF before, click the `Register New User` button. You
 
 In the `Register New User` window, fill in your full name, affiliation, phone number, and email address. You may then select a username with at least three characters and enter a password with at least 8 characters and at least one digit and then click `OK`. Once your account has been created, the EMF main window should appear (see below).
 
-If have logged into the EMF previously, enter your EMF username and password in the `Login to the Emissions Modeling Framework` window and click `Log In`. The following EMF main window will appear on your screen
+If have logged into the EMF previously, enter your EMF username and password in the `Login to the Emissions Modeling Framework` window and click `Log In`.
 
 *Note: The administrator EMF login name is `admin`, with a password `admin12345`*.
 
-After successfully logging into CoST the main EMF window shown below will display.
+After successfully logging into CoST the main EMF window (Figure {@fig:emf_main_window}) will display.
 
 <a id=emf_main_window></a>
 
@@ -271,19 +271,19 @@ The CMDB includes all of the emissions control technology information, emissions
 
 The CoST/EMF installation package includes the latest version of the CMDB. The instructions here are provided to guide the upgrade of an existing EMF installation with a new version of the CMDB.
 
-To install the CMDB in the EMF, first download the latest CMDB CSV file from the EPA website.  You must login to the EMF Client as Administrator to add to the CMDB to the CoST PostgreSQL database. After logging in as administrator select `Control Measures` from the `Manage` drop down menu at the top of the EMF Client window:
+To install the CMDB in the EMF, first download the latest CMDB CSVs file from the EPA website.  You must login to the EMF Client as Administrator to add to the CMDB to the CoST PostgreSQL database. After logging in as administrator select `Control Measures` from the `Manage` drop down menu at the top of the EMF Client window (Figure {@fig:manage_control_measures}):
 
 <a id=manage_control_measures></a>
 
 ![EMF Manage Control Measures](images/Manage_ControlMeasures.png){#fig:manage_control_measures}
 
-Click the `Import` button to see the Import Control Measures screen:
+Click the `Import` button to see the Import Control Measures screen (Figure {@fig:import_control_measures}):
 
 <a id=import_control_measures></a>
 
 ![EMF Import Control Measures](images/ImportControlMeasures.png){#fig:import_control_measures}
 
-Use the `Browse` button to find the CMDB CSV file downloaded from the EPA website. Select the file and click `OK`.
+Use the `Browse` button to find the CMDB CSV files downloaded from the EPA website. Select the file and click `OK`.
 
 Click `Import` to add the EPA CMDB to the CoST/EMF database.
 
@@ -297,21 +297,21 @@ To remove the CoST installation package, go to the root directory where the EMF/
 
 ## Troubleshooting
 
-Confirm that Tomcat is running. From the Start menu, find and open the application named `Monitor Tomcat`. Check that the Service Status is listed as Started. If Tomcat is not running, click the Start button to start the service.
+Confirm that Tomcat is running. From the Start menu, find and open the application named `Monitor Tomcat` (shown in Figure {@fig:tomcat_properties}). Check that the Service Status is listed as Started. If Tomcat is not running, click the Start button to start the service.
 
 ![Tomcat Properties](images/Tomcat_Properties.png){#fig:tomcat_properties}
 
-Confirm that the EMF web application was installed successfully. In Windows Explorer, navigate to the Tomcat installation directory; by default, this is C:\Program Files\Apache Software Foundation\Tomcat 8.5.
+Confirm that the EMF web application was installed successfully. In Windows Explorer, navigate to the Tomcat installation directory; by default, this is C:\\Program Files\\Apache Software Foundation\\Tomcat 8.5 (Figure {@fig:tomcat_webapps}).
 
 ![Tomcat Webapps Directory](images/Tomcat_Webapps.png){#fig:tomcat_webapps}
 
 Inside the Tomcat directory, open "webapps". You should see a file named `emf.war`, a directory named `emf`, a directory named `exports`, and a few other directories created by Tomcat. If you don't see a file named emf.war, then the installation process wasn't able to create it, most likely due to permissions issues. Make sure you run `Install_EMF.bat` as an administrator.
 
-Logs for Tomcat and the EMF server can be found in the "logs" folder inside the Tomcat installation directory (e.g. C:\Program Files\Apache Software Foundation\Tomcat 8.5). The file tomcat8-stdout.[date].log contains the console output from running the EMF server.
+Logs for Tomcat and the EMF server can be found in the "logs" folder inside the Tomcat installation directory (e.g. C:\\Program Files\\Apache Software Foundation\\Tomcat 8.5) (Figure {@fig:tomcat_logs}). The file tomcat8-stdout.[date].log contains the console output from running the EMF server.
 
 ![Tomcat Logs](images/Tomcat_Logs.png){#fig:tomcat_logs}
 
-When running the EMF client, a command prompt window shows any errors or messages. A normal startup of the EMF client is shown below:
+When running the EMF client, a command prompt window shows any errors or messages. A normal startup of the EMF client is shown in Figure {@fig:emf_client_command_window}:
 
 ![EMF Client Command Window](images/EMF_Client_Command_Window.png){#fig:emf_client_command_window}
 
