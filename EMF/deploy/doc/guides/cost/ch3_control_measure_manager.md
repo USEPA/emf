@@ -247,7 +247,7 @@ Here are some examples of other types of filters that illustrate other aspects o
 ```
 Pollutant <> 'PM10-PRI'
 Locale LIKE '37%'
-Pollutant IN ('EXH__CO', 'EXH__VOC', 'EXH__PM10-PRI')
+Pollutant IN ('CO', 'VOC', 'PM10-PRI')
 ```
 
 **Step 2-6: View an Efficiency Record in a Separate Window.** To see the data for an efficiency record in a separate window, check the checkbox in the **Select** row for the PM25-PRI efficiency record, and click `View`. A View Efficiency Record window will appear as shown in Figure {@fig:view_efficiency_record_window}. The fields of the efficiency record are shown in Table {@tbl:control_measure_efficiency_record_table}.
