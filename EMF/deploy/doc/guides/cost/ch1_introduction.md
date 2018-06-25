@@ -25,7 +25,7 @@ The CoST algorithms for developing control strategies include:
 
 The first five algorithms are typically used for point and area sources; the last one is usually used for mobile sources, for which most control techniques are independent of one another.
 
-This document provides information on how to use CoST to view and edit control measures and how to develop control strategies. This includes how to specify the input parameters to control strategies, how to run the strategies, and how to analyze the outputs from the strategies. This document was prepared using version 2.15 of CoST. For additional information on other aspects of CoST, please see the following independent documents:
+This document provides information on how to use CoST to view and edit control measures and how to develop control strategies. This includes how to specify the input parameters to control strategies, how to run the strategies, and how to analyze the outputs from the strategies. The screenshots and examples in this guide were prepared using version 2.15 of CoST. For additional information on other aspects of CoST, please see the following independent documents:
 
 * [Control Strategy Tool (CoST) Development Document](https://www3.epa.gov/ttn/ecas/docs/CoST_DevelopmentDoc_02-23-2016.pdf): describes the algorithms implemented in the software
 
