@@ -759,7 +759,7 @@ Cost ($) for a year of interest = (Cost for original cost year x GDP IPD for yea
 
 where the GDP IPD is the Gross Domestic Product.
 ```
-Implicit Price Deflator (IPD) available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from January 2017. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
+Implicit Price Deflator (IPD) available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from March 2018. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
 
 
 <a id=excerpt_from_the_gdplev_table_table></a>
@@ -770,10 +770,10 @@ Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD
 1981|48.520| |1991|68.996| |2001|83.754| |2011|103.311
 1982|51.530| |1992|70.569| |2002|85.039| |2012|105.214
 1983|53.565| |1993|72.248| |2003|86.735| |2013|106.913
-1984|55.466| |1994|73.785| |2004|89.120| |2014|108.828
-1985|57.240| |1995|75.324| |2005|91.988| |2015|109.998
-1986|58.395| |1996|76.699| |2006|94.814| |2016|111.446
-1987|59.885| |1997|78.012| |2007|97.337|
+1984|55.466| |1994|73.785| |2004|89.120| |2014|108.832
+1985|57.240| |1995|75.324| |2005|91.988| |2015|110.012
+1986|58.395| |1996|76.699| |2006|94.814| |2016|111.416
+1987|59.885| |1997|78.012| |2007|97.337| |2017|113.421
 1988|61.982| |1998|78.859| |2008|99.246|
 1989|64.392| |1999|80.065| |2009|100|
 
