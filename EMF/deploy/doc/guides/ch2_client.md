@@ -1,7 +1,3 @@
-Title: Desktop Client
-Author: C. Seppanen, UNC
-CSS: base.css
-
 # Desktop Client [client_chapter] #
 
 ## Requirements ##

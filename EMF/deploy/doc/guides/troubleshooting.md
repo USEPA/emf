@@ -1,7 +1,3 @@
-Title: Troubleshooting
-Author: C. Seppanen, UNC
-CSS: base.css
-
 # Troubleshooting #
 
 ## Client won't start ##

@@ -1,7 +1,3 @@
-Title: Dataset Quality Assurance
-Author: C. Seppanen, UNC
-CSS: base.css
-
 # Dataset Quality Assurance [qa_chapter] #
 
 ## Introduction ##

@@ -1,7 +1,3 @@
-Title: Datasets
-Author: C. Seppanen, UNC
-CSS: base.css
-
 # Datasets [datasets_chapter] #
 
 ## Introduction ##

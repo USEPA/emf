@@ -1,7 +1,3 @@
-Title: Overview of the EMF
-Author: C. Seppanen, UNC
-CSS: base.css
-
 # Overview of the EMF [overview_chapter] #
 
 ## Introduction ##

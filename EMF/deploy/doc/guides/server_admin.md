@@ -1,7 +1,3 @@
-Title: Server Administration
-Author: C. Seppanen, UNC
-CSS: base.css
-
 # Server Administration [server_chapter] #
 
 ## Components ##
