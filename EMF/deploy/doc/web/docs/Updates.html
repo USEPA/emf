@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EMF updates</title>
+<link rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+
+<body>
+<div id="border">
+  <div id="container">
+    <div id="header">
+      <p>Emissions Modeling Framework</p>
+    </div>
+    <div id="content">
+      <h2>EMF update log</h2>
+      <p><a href="Enhancements.html">Deployment release notes</a></p>
+      <table>
+        <tr>
+          <th style="width: 15%">Date</th>
+          <th style="width: 15%">Product</th>
+          <th style="width: 70%">Description of Update</th>
+        </tr>
+        <tr>
+          <td>6/24/2018</td>
+          <td>CMAS package</td>
+          <td>Posted all-in-one package with EMF v3.1</td>
+        </tr>
+        <tr>
+          <td>5/17/2018</td>
+          <td>EPA installation</td>
+          <td>Installed v3.1 on server, updated client download (includes updated epa-commons.jar), database functions/data updated:
+            <ul>
+              <li style="line-height: 1em">clean_project_future_year_inventory_control_programs.sql</li>
+              <li style="line-height: 1em">populate_project_future_year_inventory_strategy_messages.sql</li>
+              <li style="line-height: 1em">run_project_future_year_inventory.sql</li>
+              <li style="line-height: 1em">validate_project_future_year_inventory_control_programs.sql</li>
+              <li style="line-height: 1em">update_gdplev_values.sql</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>3/14/2018</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Deleted 67 unused source groups (previously used by now-purged obsolete measures)</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>3/8/2018</td>
+          <td>CMAS package</td>
+          <td>Updated EMF v3.0 package with new Install_EMF.bat script, and new database dump with changes from March 6th</td>
+        </tr>
+        <tr>
+          <td>3/8/2018</td>
+          <td>EPA installation</td>
+          <td>Set blank dataset type creation and last modification dates to '2000-01-01 00:00:00' to fix module type import problems</td>
+        </tr>
+        <tr>
+          <td>3/6/2018</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Deleted old control measure property records</li>
+              <li style="line-height: 1em">Updated cost equation descriptions</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>2/28/2018</td>
+          <td>CMAS package</td>
+          <td>Posted all-in-one package with EMF v3.0</td>
+        </tr>
+        <tr>
+          <td>2/15/2018</td>
+          <td>EMF installer</td>
+          <td>Updated installer to send User-Agent when downloading files</td>
+        </tr>
+        <tr>
+          <td>2/14/2017</td>
+          <td>EPA installation</td>
+          <td>Installed v3.0 on server, updated client download (includes updated epa-commons.jar), database functions updated:
+            <ul>
+              <li style="line-height: 1em">apply_cap_measures_on_hap_pollutants.sql</li>
+              <li style="line-height: 1em">cost_equations_v2.sql</li>
+              <li style="line-height: 1em">get_remaining_emis_expression.sql</li>
+              <li style="line-height: 1em">populate_least_cost_strategy_detailed_result.sql</li>
+              <li style="line-height: 1em">populate_least_cost_strategy_worksheet.sql</li>
+              <li style="line-height: 1em">run_max_emis_red_strategy.sql</li>
+              <li style="line-height: 1em">run_multi_pollutant_max_emis_red_strategy_finalize.sql</li>
+              <li style="line-height: 1em">run_multi_pollutant_max_emis_red_strategy.sql</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>2/14/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Updated equipment life values for 29 control measures</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>12/19/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Removed incremental cost-per-ton values</li>
+              <li style="line-height: 1em">Removed capital recovery factor values</li>
+              <li style="line-height: 1em">Removed discount rate values</li>
+              <li style="line-height: 1em">Removed various control measure property values</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>10/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Removed unused source groups</li>
+              <li style="line-height: 1em">Purged obsolete point sector control measures, and temporary measures</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>9/25/2017</td>
+          <td>CMAS package</td>
+          <td>Posted all-in-one package with EMF v2.15</td>
+        </tr>
+        <tr>
+          <td>9/7/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">For several PM measures, removed control efficiency records with effective dates of 1/1/2020 and updated control efficiency values</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>8/2017</td>
+          <td>EPA installation</td>
+          <td>Deployed EMF version 3.0b to the EPA EMF server on August 24th.<br>
+            Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Updated the description for control measure NDSCRSWIN</li>
+              <li style="line-height: 1em">Reassigned control measure equation parameters for PM2_5 and PM10 to PM25-PRI and PM10-PRI</li>
+              <li style="line-height: 1em">Removed control efficiency records with old effective dates</li>
+              <li style="line-height: 1em">Removed special characters from control measure property values</li>
+              <li style="line-height: 1em">Updated control efficiencies and equipment life values for some NOx measures</li>
+              <li style="line-height: 1em">Updated control measures using equation types 1, 12, and 13 based on CSRA default cost/ton work</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>7/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Purged obsolete onroad and nonroad control measures, and old temporary measures</li>
+              <li style="line-height: 1em">Changed abbreviation of control measure NCATCFGMFT (had been CATCFGMFT)</li>
+              <li style="line-height: 1em">Removed special characters from source group names</li>
+              <li style="line-height: 1em">Reassigned control measure major pollutants to PM25-PRI and PM10-PRI, instead of PM2_5 and PM10</li>
+              <li style="line-height: 1em">Removed duplicate control efficiency records for PM2_5 and PM10</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>6/27/2017</td>
+          <td>EPA installation</td>
+          <td>Installed v2.14 on server, updated client download (includes updated epa-commons.jar), database functions updated:
+            <ul>
+              <li style="line-height: 1em">cost_equations_v2.sql</li>
+            </ul>
+            Database updates:
+            <ul>
+              <li style="line-height: 1em">Removed special characters from control measure names, descriptions, and references</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>3/20/2017</td>
+          <td>EPA installation</td>
+          <td>Installed v2.13 on server, updated client download (includes updated epa-commons.jar and new commons-fileupload-1.3.2.jar), database updates:
+            <ul>
+              <li style="line-height: 1em">Add MAX_FILE_UPLOAD_SIZE property</li>
+              <li style="line-height: 1em">Set DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE property to stop error messages in log file</li>
+              <li style="line-height: 1em">Set wants_email to false for users with bad email addresses</li> 
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>2/28/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Updated incremental parameters for 7 control measures using equation types 2 and 2a, so costs match non-replacement cost instead of null</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>2/22/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Replaced null parameters for control measures using equation types 2 and 2a with zeroes, to prevent null costs</li>
+              <li style="line-height: 1em">Updated implicit price deflators for 2013-2016 with latest data from BEA</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>2/14/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Marked OXY-Firing control measures as Obsolete</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>1/23/2017</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Updates to NOx non-EGU measures based on SRA recommendations from Dec. 2016</li>
+              <li style="line-height: 1em">15 new measures added (includes 4 measures previously marked as Obsolete)</li>
+              <li style="line-height: 1em">SCC assignments changed for 21 existing measures</li>
+              <li style="line-height: 1em">Control efficiencies updated for 4 measures</li>
+              <li style="line-height: 1em">Updated review date for all 99 measures reviewed by SRA</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>1/4/2017</td>
+          <td>EPA installation</td>
+          <td>Cosmetic updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Fixes for non-ASCII characters and truncated descriptions</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>11/23/2016</td>
+          <td>EPA installation</td>
+          <td>Updates to control measures database:
+            <ul>
+              <li style="line-height: 1em">Set date reviewed to 2016 for recently updated NOx non-EGU control measures</li>
+              <li style="line-height: 1em">Changed equipment life to 20 years and control efficiencies to 85% for selected ICI boilers; set date reviewed to 10/31/2016 and added reference for affected control measures</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>11/16/2016</td>
+          <td>EPA installation</td>
+          <td>Bulk update to mark remaining 44 Known nonroad control measures as Obsolete</td>
+        </tr>
+        <tr>
+          <td>09/22/2016</td>
+          <td>EPA installation</td>
+          <td>Installed v2.12 on server, updated client download, db functions updated:
+            <ul>
+              <li style="line-height: 1em">cost_equations_v2.sql</li>
+            </ul>
+            Database updates:
+            <ul>
+              <li style="line-height: 1em">Add value12 column to control_measure_equations</li>
+              <li style="line-height: 1em">Update Equation Type 2 definition</li>
+              <li style="line-height: 1em">Create Equation Type 2 variants: Type 2a and Type 2b</li>
+              <li style="line-height: 1em">Load ptnonipm control measures from nox_nonegu_20160713_*.csv</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>06/15/2016</td>
+          <td>EPA installation</td>
+          <td>Installed v2.11.1 on server (no change to emf.war), updated client download, db functions updated:
+            <ul>
+              <li style="line-height: 1em">populate_least_cost_strategy_worksheet.sql</li>
+              <li style="line-height: 1em">run_annotate_inventory.sql</li>
+              <li style="line-height: 1em">run_apply_measures_in_series_strategy.sql</li>
+              <li style="line-height: 1em">run_max_emis_red_strategy.sql</li>
+              <li style="line-height: 1em">run_multi_pollutant_max_emis_red_strategy.sql</li>
+              <li style="line-height: 1em">run_project_future_year_inventory.sql</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>06/06/2016</td>
+          <td>EPA installation</td>
+          <td>Installed v2.11 on server, updated client download, db functions updated:
+            <ul>
+              <li style="line-height: 1em">convert_design_capacity_to_mw.sql</li>
+              <li style="line-height: 1em">cost_equations_old_approach.sql</li>
+              <li style="line-height: 1em">cost_equations_v2.sql</li>
+              <li style="line-height: 1em">get_convert_design_capacity_expression.sql</li>
+              <li style="line-height: 1em">populate_least_cost_strategy_worksheet.sql</li>
+              <li style="line-height: 1em">run_annotate_inventory.sql</li>
+              <li style="line-height: 1em">run_apply_measures_in_series_strategy.sql</li>
+              <li style="line-height: 1em">run_max_emis_red_strategy.sql</li>
+              <li style="line-height: 1em">run_multi_pollutant_max_emis_red_strategy.sql</li>
+              <li style="line-height: 1em">run_project_future_year_inventory.sql</li>
+            </ul>
+            Database updates:
+            <ul>
+              <li style="line-height: 1em">Add min_capacity, max_capacity to control_measure_efficiencyrecords</li>
+              <li style="line-height: 1em">Add combustion_efficiency to control_measure_sccs</li>
+              <li style="line-height: 1em">Load ptipm control measures from ptipm_20160329_*.csv</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>05/17/2016</td>
+          <td>EMF installer</td>
+          <td>Changed EMF Download URL to cmascenter.org; added default temp directory for new installations</td>
+        </tr>
+        <tr>
+          <td>02/07/2016</td>
+          <td>CMAS package</td>
+          <td>Posted all-in-one package with EMF v2.10</td>
+        </tr>
+        <tr>
+          <td>01/28/2016</td>
+          <td>EPA installation</td>
+          <td>Installed v2.10 on server, updated client download, db functions updated:
+            <ul>
+              <li style="line-height: 1em">cost_equations_v2.sql</li>
+              <li style="line-height: 1em">cost_equations_old_approach.sql</li>
+              <li style="line-height: 1em">populate_least_cost_strategy_worksheet.sql</li>
+              <li style="line-height: 1em">run_annotate_inventory.sql</li>
+              <li style="line-height: 1em">run_apply_measures_in_series_strategy.sql</li>
+              <li style="line-height: 1em">run_max_emis_red_strategy.sql</li>
+              <li style="line-height: 1em">run_multi_pollutant_max_emis_red_strategy.sql</li>
+              <li style="line-height: 1em">run_multi_pollutant_max_emis_red_strategy_finalize.sql</li>
+              <li style="line-height: 1em">run_project_future_year_inventory.sql</li>
+              <li style="line-height: 1em">get_least_cost_worksheet_emis_reduction.sql</li>
+              <li style="line-height: 1em">narrow_in_on_least_cost_target.sql</li>
+            </ul>
+            Database updates:
+            <ul>
+              <li style="line-height: 1em">Loaded new reference.gdplev data (deflator_gdp)</li>
+              <li style="line-height: 1em">Recalculated control_measure_efficiencyrecords.ref_yr_cost_per_ton</li>
+              <li style="line-height: 1em">Recalculated aggregrated_efficiencyrecords so cost per ton values use ref_yr_cost_per_ton</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>12/03/2015</td>
+          <td>EPA installation</td>
+          <td>Bulk update to change control measure class from Known to Obsolete for 468 outdated control measures</td>
+        </tr>
+        <tr>
+          <td>11/18/2015</td>
+          <td>CMAS package</td>
+          <td>Updated reference year cost per ton values stored in the emf.control_measure_efficiencyrecords table to match EPA's values.</td>
+        </tr>
+        <tr>
+          <td>10/21/2015</td>
+          <td>CMAS package</td>
+          <td>Added records to emf.equation_type_variables table and updated emf.control_measure_equations variable values in default database. Fixed path separator in client EMFPrefs.txt file. Create exports directory in Tomcat webapps directory during installation (fixes local download function).</td>
+        </tr>
+        <tr>
+          <td>10/06/2015</td>
+          <td>EPA installation</td>
+          <td>Bulk update to change control measure class from Known to Obsolete for 421 outdated control measures</td>
+        </tr>
+        <tr>
+          <td>09/24/2015</td>
+          <td>CMAS package</td>
+          <td>Added public.projection_shapefiles table to default database included in package (fixes errors exporting QA step results)</td>
+        </tr>
+        <tr>
+          <td>09/23/2015</td>
+          <td>EMF installer</td>
+          <td>Posted new version of EMF client installer package: improved preference file handling, increase memory in batch file, remove Java directory</td>
+        </tr>
+        <tr>
+          <td>09/09/2015</td>
+          <td>CMAS package</td>
+          <td>Posted all-in-one package with EMF v2.9.1; contains stationary and nonroad control measures posted 08/06/2015</td>
+        </tr>
+        <tr>
+          <td>09/08/2015</td>
+          <td>EPA installation</td>
+          <td>Installed v2.9.1 on server, updated client download, db functions updated:
+            <ul>
+              <li style="line-height: 1em">cost_equations_v2.sql</li>
+              <li style="line-height: 1em">create_projected_future_year_inventory.sql</li>
+              <li style="line-height: 1em">populate_least_cost_strategy_worksheet.sql</li>
+              <li style="line-height: 1em">run_multi_pollutant_max_emis_red_strategy_finalize.sql</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="footer">
+      <p><a title="back to top" href="#border">back to top</a> </p>
+    </div>
+  </div>
+</div>
+</body>
+
+</html>

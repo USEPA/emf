@@ -1,260 +1,170 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta name="generator" content="Bluefish 1.3.7" >
-<title>Emission Modeling Framework Installation
-Instructions</title>
+<title>Emissions Modeling Framework Installation Instructions</title>
 <link rel="stylesheet" type="text/css" href="css/style.css" />
-
+<style type="text/css">
+li {
+  padding-bottom: 15px;
+}
+</style>
 </head>
+
 <body>
-<div id="border">	
-	<div id="container">
-		<div id="header">
-				<p>Emission Modeling Framework Installation  </p>
-		</div>
-		<div id="content">
-			<p>The EMF is currently undergoing beta testing with a specific group of testers.
-				The EMF client is downloadable from this page for existing EPA users, but the
-				EMF server is not currently available to the public.  
-			</p>
-			
-			<p>If you would like to be notified in the event of a broader EMF release, please
-				contact Alison Eyth of EPA's Emissions Inventory and Analysis Group at
-				919-541-2478.  
-			</p>
-			
-			<p>If you have questions about the content posted on this website related to the
-				EMF, please contact the UNC EMF technical contact person: azubrow(at)unc.edu.
-			</p>
-			
-			<h2>Instructions last updated 12/04/2009 </h2>
-			<h2><a class = "otherLink" name="contents" id="contents">Contents</a></h2>
-			<ol>
-				<li><strong>Windows</strong></li>
-					<ol>
-						<li><a href="#client_windows">Client installation using Installer</a></li>
-						<li><a href="#manualupdate_windows">Manual client update</a></li>
-					
-					</ol>
-				<li><strong>Linux</strong></li>
-					<ol>
-						<li><a href="#manual_linux">Manual client installation</a></li>
-						<li><a href="#manualupdate_linux">Manual client update</a></li>
-			
-					</ol>
-			
-				<li><strong>Documentation</strong></li>
-					<ol>
-						<li><a href="#NewFunctionality">New Functionality</a></li>
-						<li><a href="#filecatalog">Additional Documentation</a></li>
-			
-					</ol>
-			
-			
-			
-			</ol>
-			<br>
-			
-			
-			<!-- Windows info -->
-			<hr size="3">
-			<h2> <a class = "otherLink"  id="client_windows">Windows Client Installation using Installer </a></h2>
-			<ol>
-			<li>The EMF client runs best under Java 6. Before running the
-			installer or the client, please download and install the latest<b>Java
-			Runtime Environment 6</b> (e.g. JRE 6u18) from <a href=
-			"http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</a></li><br>
-			<li>Download the <a href=
-			"./emfinst.exe">EMF
-			Installer Executable (emfinst.exe)</a></li><br>
-			<li>Double click on emfinst.exe to run the installer.
-			<ul type=disc>
-			<li>First, the installer will expand the zipped compressed file
-			onto your hard-disk. The default location is C:\emfinst. This is a
-			very small installation of the installer software only, and does
-			not require much disk space.</li>
-			<li>Once the expansion is complete, the installer program will
-			start.</li>
-			</ul>
-			</li><br>
-			<li>In the EMF Client Installer window, fill in the fields. You may
-			click Browse to help you choose any local directories. Examples of
-			filled-in fields are the following:
-			<ul type=disc>
-			<li><b>EMF Download
-			URL:</b> http://www.ie.unc.edu/cempd/projects/emf/install</li>
-			<li><b>Java Home Directory:</b> C:\Program
-			Files\Java\jre1.6.0_18</li>
-			<li><b>Input File Directory:</b> /orchid/share</li>
-			<li><b>Output File Directory:</b> /orchid/share</li>
-			<li><b>Client Home Directory:</b> C:\Program Files\EMFClient</li>
-			<li><b>Server
-			Address:</b> http://emf.ie.unc.edu:8080/emf/services</li>
-			</ul>
-			<b> NOTES: (1) The "EMF Download URL" should match the above example to 
-			    get an EMF client consistent with the current EPA's server. (2) The 
-			    "Server Address" will need to match the URL of your EMF server. (3)
-				The "Input File Directory" and "Output File Directory" should be directories on the
-				remote EMF server, not on your local client's machine - the
-				installer will warn you if they don't exist on your client machine,
-				you can ignore that warning and continue with the installation. 
-			</b>
-			</li><br>
-			<li>Click <b>Install</b>.</li><br>
-			<li>If you already have the client installed, you will be prompted
-			about whether you wish to Update or Reinstall. Update will download
-			only changed files, and Reinstall will download all files. In most
-			cases, you can Update, but if things do not seem to be working
-			properly you can try to Reinstall.</li><br>
-			<li>The installer will provide feedback on the files it is
-			downloading. The latest list of installation files is available
-			from <a href=
-			"http://www.ie.unc.edu/cempd/projects/emf/install/files.txt">files.txt</a></li><br>
-			<li>When the installation is finished, click Done.</li>
-			</ol>
-			<p>Note: A file containing the preferences (i.e. stored settings)
-				for the installer called EMFUserInstallPrefs.ini is stored in your
-				user home directory (usually C:\Documents and
-				Settings\yourusername), and a file containing the EMF preferences
-				called EMFPrefs.txt in the same directory.
-			</p>
-			<div align="right"><a href="#contents">contents</a></div>
-			<hr align="left" width="50%">
-			
-			<h2><a class = "otherLink"  id="manualupdate_windows">Manual Windows Client Update</a></h2>
-			<p>We recommend that the you use the Installer to update your EMFClient.  If you <i>must</i>
-				perform a manual update, there are usually only a few files updated between versions. 
-				Replace the following files on your system:</p>
-			<ul type=disc>
-				<li><a href="http://www.ie.unc.edu/cempd/projects/emf/install/emf-client.jar">emf-client.jar</a>
-					goes in the <b>top</b> directory of your EMF client installation.
-				</li>
-				<li><a href= "http://www.ie.unc.edu/cempd/projects/emf/install/lib/epa-commons.jar">epa-commons.jar</a>
-					goes in the <b>lib</b> directory under your EMF client installation</li>
-				<li><a href= "http://www.ie.unc.edu/cempd/projects/emf/install/lib/analysis-engine.jar">
-					analysis-engine.jar</a> goes in the <b>lib</b> directory under your 				EMF client installation</li>
-			</ul>
-			
-			<hr size="3">
-			
-			<!-- Linuz Info starts here -->
-			<h2> <a class = "otherLink"  id="manual_linux">Linux Manual Client Installation </a> </h2>
-			<p> 
-				The EMF client can be installed on either the same computer as the EMF server 
-				or a different computer. In addition, the OS of the client and the server do 
-				not need to be the same.  The following easy steps should get a EMF client
-				up and running on a Linux machine:
-				</p>
-			<ol>
-				<li>
-					<p>Download and install the latest <a href="http://java.sun.com/javase/downloads/index.jsp">Java Runtime Environment 6 </a> 
-					(e.g. JRE 6u1). See <a href="#java_linux">Java Details</a>.
-					</p>
-				</li>
-				<li>
-				<p>Download and untar <a href="ftp://ftp.unc.edu/pub/empd/emf/EMFClient.tar.gz">
-				EMF Client (EMFClient.tar.gz)
-				</p>
-				</a>
-				</li>
-				<li><p>Modify the preference file <em>EMFPrefs.txt</em>. NOTE:
-				the input and output file directories should be directories on the
-				remote EMF server, not on your local client's machine.  Examples of 
-				fields to modify and potential values:</p></li>
-				<pre>
-				local.input.drive=/home/emf/data/
-				remote.input.drive=/home/emf/data/
-				local.output.drive=/home/emf/data/
-				remote.output.drive=/home/emf/data/
-				default.input.folder=input
-				default.output.folder=output
-				server.address=http://emf.ie.unc.edu:8080/emf/services
-				</pre>
-				<li><p>Copy the preference file to your home directory.  If you decide
-				to place it somewhere else and/or rename it, you will need to 
-				make sure the EMF client script reflects these changes.</p></li>
-				<li><p>Modify the <em>EMFClient.sh</em> or <em>EMFClient.csh</em> script (depending on your shell).
-				For the bash shell, you would modify the top of the <em>EMFClient.sh</em>
-				to reflect your system:</p></li>
-				<pre>
-				EMF_HOME=~/EMFClient
-				JAVA_HOME=/usr/local/java/jre1.6.0_07
-				PREF_FILE=~/EMFPrefs.txt
-				TOMCAT_SERVER=http://emf.ie.unc.edu:8080
-				</pre>
-				<li><p>Start the EMF client (remember to use the correct script for your SHELL):</p></li>
-				<pre>./EMFClient.sh &</pre>
-				<li><p>If you want to setup an EMF client icon, right click on the desktop, 
-				then click <em>Create Launcher</em>.  Set the name to "EMF Client" and browse to
-				the shell script for the Command.  There is an icon in the EMFClient directory.</p></li>
-			</ol>
-			
-			<div align="right"><a href="#contents">contents</a></div>
-			<hr align="left" width="50%">
-			
-			<h2 id="manualupdate_linux">Linux Manual Client Update</h2>
-			<p>There are usually only a few files updated between versions. To
-			perform a manual update, replace the files on your system with the
-			following files:</p>
-			<ul type=disc>
-			<li><a href=
-			"http://www.ie.unc.edu/cempd/projects/emf/install/emf-client.jar">emf-client.jar</a>
-			goes in the <b>top</b> directory of your EMF client
-			installation.</li>
-			<li><a href=
-			"http://www.ie.unc.edu/cempd/projects/emf/install/lib/epa-commons.jar">epa-commons.jar</a>
-			goes in the <b>lib</b> directory under your EMF client
-			installation</li>
-			<li><a href=
-			"http://www.ie.unc.edu/cempd/projects/emf/install/lib/analysis-engine.jar">
-			analysis-engine.jar</a> goes in the <b>lib</b> directory under your
-			EMF client installation</li>
-			</ul>
-			
-			<hr size="3">
-			
-			<h2> <a class = "otherLink"  id="NewFunctionality">New Functionality</a></h2>
-			<p>These are documents describing the latest functionality</p>
-			<ul>
-				<li>
-					<a href="./docs/EMF_New_Functionality_Dec1_Case_NameContains.pdf">Functionality added 01Dec09</a> - Name contains filter for Case Manager and copying Jobs, Inputs, and Parameters
-				</li>
-				<li>
-					<a href="./docs/EMF_New_Functionality_Nov3_Advanced_search_edit_versions.pdf">Functionality added 03Nov09</a> - Advanced dataset search and Enhanced version metadata
-				</li>
-			
-			
-			
-			</ul>
- 				<a href="./docs/Enhancements.html">Deployment Updates</a>
-			
-			
-			<div align="right"><a href="#contents">contents</a></div>
-			
-			<hr size="3">
-			<h2><a class = "otherLink"  id="filecatalog">Additional Documentation</a></h2>
-			<p>These are additional documents pertaining to the EMF</p>
-			<ul>
-			<li>
-					<a href="./docs/EMF_QA_Training_Notes.doc">EMF QA Training Notes Document</a>
-				</li>
-				<li>
-					<a href="./docs/EMF_Sensitivity_Tool_User_Instructions_v4mrh.doc">EMF Sensitivity Tool User Instructions</a>
-				</li>
-				<li>
-					<a href="./docs/CoST_UsersGuide_Sept_17.doc">Control Strategy Tool (CoST) Users Guide Document</a>
-				</li>
-				<li>
-					<a href="http://www.ie.unc.edu/cempd/projects/mims/spatial/srgtool/SurrogateToolUserGuide.v3.6.htm">Surrogate Tool User Guide (v3.6) Website</a>
-				</li> 
-			</ul>
-			</ul>
-			<div align="right"><a href="#contents">contents</a></div>
-		</div>
-			<div id="footer">			<p><a title="back to top" href="#border">back to top</a> </p>		</div>
-		
-		</div>
+<div id="border">  
+  <div id="container">
+    <div id="header">
+      <p>Emissions Modeling Framework</p>
+    </div>
+    <div id="content">
+      <h2>Installation instructions for EPA users</h2>
+      
+      <p>Instructions last updated 5/17/2016</p>
+      
+      <h3>EMF client installation on Windows</h3>
+      <ol>
+      <li><p style="margin-bottom: 10px">The EMF client requires Java 7 or 8 to run. If you're not sure if Java is installed on your computer or what version you have, follow <a href="https://www.java.com/en/download/help/version_manual.xml#jcpl" target="_blank">these instructions</a> to locate the Java Control Panel.</p>
+      <p style="margin-bottom: 0">If you need to install Java, download it from <a href="https://java.com/en/download/windows_offline.jsp" target="_blank">https://java.com/en/download/windows_offline.jsp</a> and follow the instructions in the installer program. You will need Administrator privileges to install Java.</p></li>
+
+      <li>Download and save the EMF installation package <a href="emfinst.zip">emfinst.zip</a>.</li>
+
+      <li>In Windows Explorer, navigate to your downloads directory. Right-click emfinst.zip, select Extract All..., and then click the <strong>Extract</strong> button.</li>
+
+      <li style="padding-bottom: 0">
+      <p style="margin-bottom: 10px">If your user account has Administrator privileges, double-click on emfinst.exe inside the archive. Otherwise, right-click on emfinst.exe and select "Run as administrator".</p>
+      <p style="margin-bottom: 10px">You can install the EMF client as a non-administrator user. In the steps below, make sure to choose file locations in your user directory (i.e. C:\Users\username). Also, the final step of the installer tries to create a shortcut in the Start Menu. You'll see an error message "Installation failed", but the EMF client will have installed successfully.</p>
+
+      <ul style="margin-bottom: 0">
+      <li>When you run emfinst.exe, you may see a security warning because the publisher could not be verified. Click <strong>Run</strong> to continue.</li>
+      
+      <li>First, the EMF Client Installer Extractor will run. On the introduction screen, click <strong>Next</strong>.</li>
+      
+      <li>You will need to set the directory where the EMF installer will be extracted. The default location is C:\Program Files\EMF Client Installer. If you are not an administrator or don't want to put the installer in Program Files, you can choose a location in your home directory like C:\Users\username\EMF Client Installer.</li>
+      
+      <li>Click <strong>Next</strong> to extract the installer. Once complete, the EMF installer program will start automatically.</li>
+      </ul>
+      </li>
+
+      <li>When the EMF Client Installer launches, you will see a window with various directory locations and settings. You will need to set values for the <strong>Client Home Directory</strong> and the <strong>Local Temp Directory</strong>. Each field is described below.
+      <table style="padding-top: 10px; font-size: 13px">
+        <tr>
+          <th>Field Name</th>
+          <th style="text-align: left">Description and Field Value</th>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            EMF Download URL
+          </td>
+          <td style="padding-bottom: 10px">
+            URL for downloading and updating EMF client software; do not change<br>
+            <code>https://www.cmascenter.org/emf/install/</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            Server Import Directory
+          </td>
+          <td style="padding-bottom: 10px">
+            EMF server-side data file import directory; this directory is on the EPA EMF server<br>
+            <code>/oaqps/share/import</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            Server Export Directory
+          </td>
+          <td style="padding-bottom: 10px">
+            EMF server-side data file export directory; this directory is on the EPA EMF server<br>
+            <code>/oaqps/share/export</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            Java Home Directory
+          </td>
+          <td style="padding-bottom: 10px">
+            Java Runtime Environment (JRE) install home directory; automatically set based on where Java is installed on your computer<br>
+            <code>C:\Program Files\Java\jre1.8.0_51</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            R Bin Directory
+          </td>
+          <td style="padding-bottom: 10px">
+            R bin directory; R is not required but can be used to create plots<br>
+            <code>C:\Program Files\R\rw2000\bin</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            Client Home Directory
+          </td>
+          <td style="padding-bottom: 10px">
+            Directory where the EMF client software will be installed; example locations shown below<br>
+            <code>C:\Program Files\EMF Client</code><br>
+            <code>C:\Users\username\EMF Client</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            Local Temp Directory
+          </td>
+          <td style="padding-bottom: 10px">
+            Directory for locally downloaded files<br>
+            <code>C:\Users\username\AppData\Local\Temp</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            Server Address
+          </td>
+          <td style="padding-bottom: 10px">
+            EMF service site URL; do not change<br>
+            <code>http://sage.nesc.epa.gov:8080/emf/services</code>
+          </td>
+        </tr>
+        <tr>
+          <td style="white-space: nowrap; vertical-align: top; padding-right: 10px">
+            Output Preferences File
+          </td>
+          <td style="padding-bottom: 10px">
+            Automatically created file where EMF preferences are stored; not editable<br>
+            <code>C:\Users\username\EMFPrefs.txt</code>
+          </td>
+        </tr>
+      </table>
+      </li>
+
+      <li>Click <strong>Install</strong> and then <strong>Yes</strong> to continue.</li>
+
+      <li>The installer will provide feedback on the files it is
+      downloading. The latest list of installation files is available
+      from <a href="files.txt">files.txt</a></li>
+
+      <li>When the installation is finished, click <strong>Done</strong>. If you're running the installer as a non-administrator user, you'll see an error message "Installation failed". This is OK, just close the error pop-up and click <strong>Done</strong>.</li>
+
+      <li>To launch the EMF client, navigate to the Client Home Directory you selected during the installation process (e.g. C:\Program Files\EMF Client or C:\Users\username\EMF Client). Double-click the batch file named EMFClient.</li>
+      </ol>
+      
+      <h3>Updating the EMF client</h3>
+      <p>When an update of the EMF client is available, you'll be notified when you start the EMF client. For a list of recent EMF updates, visit the <a href="docs/Enhancements.html">EMF deployment updates</a> page.</p>
+      <ol>
+      <li>To download the update, navigate to the extraction folder you selected in Step 4 (e.g. C:\Program Files\EMF Client Installer). If you installed the EMF client as an Administrator, right-click the batch file named runinstaller and select "Run as administrator". Otherwise, double-click runinstaller.bat to launch the EMF Client Installer.</li>
+
+      <li>Click <strong>Install</strong> and then <strong>Yes</strong> to continue.</li>
+
+      <li>You will be prompted
+			about whether you want to Update or Reinstall. Update will download
+			only changed files, and Reinstall will download all files. Select Update and click <strong>OK</strong>.</li>
+
+			<li>After checking for updates, you'll see a list of files that will be updated or deleted. Click <strong>Update</strong> to download the changes. If no updates are available, the Update button won't be enabled.</li>
+      </ol>
+    </div>
+    <div id="footer">
+      <p><a title="back to top" href="#border">back to top</a></p>
+    </div>
+  </div>
 </div>
 
 </body>
