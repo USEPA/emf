@@ -35,3 +35,11 @@ h2, h3 {
 h1, h2, h3, h4 {
   font-family: Helvetica, Arial, sans-serif;
 }
+
+p.subtitle {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+p {
+  line-height: 1.5em;
+}
