@@ -62,17 +62,17 @@ ORL Onroad Inventory (MBINV)|Onroad mobile emissions inventory in ORL format|[SM
 ORL Point Inventory (PTINV)|Point emissions inventory in ORL format|[SMOKE documentation][ORLPTANN]
 : Inventory Dataset Types {#tbl:inventory_dataset_types_table}
 
-[FF10ACT]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s07.html#d0e42597 {target="_blank"}
-[FF10NPANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s04.html#d0e40611 {target="_blank"}
-[FF10NPDAY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s02.html#d0e39848 {target="_blank"}
-[FF10PTANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s10.html#d0e44906 {target="_blank"}
-[FF10PTDAY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s08.html#d0e43056 {target="_blank"}
-[ORLFRDAY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s08.html#sect_input_ptday_fireemis {target="_blank"}
-[ORLFRANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s10.html#sect_input_ptinv_fire {target="_blank"}
-[ORLNPANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s04.html#d0e40916 {target="_blank"}
-[ORLNRANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s04.html#d0e41291 {target="_blank"}
-[ORLMBANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s07.html#d0e42407 {target="_blank"}
-[ORLPTANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s10.html#d0e46055 {target="_blank"}
+[FF10ACT]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s05.html#d0e39111 {target="_blank"}
+[FF10NPANN]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s04.html#d0e37919 {target="_blank"}
+[FF10NPDAY]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s02.html#d0e37477 {target="_blank"}
+[FF10PTANN]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s08.html#sect_input_ptinv_ff10 {target="_blank"}
+[FF10PTDAY]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s06.html#sect_input_ptday_ff10 {target="_blank"}
+[ORLFRDAY]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s06.html#sect_input_ptday_fireemis {target="_blank"}
+[ORLFRANN]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s08.html#sect_input_ptinv_fire {target="_blank"}
+[ORLNPANN]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s04.html#d0e38224 {target="_blank"}
+[ORLNRANN]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s04.html#d0e38599 {target="_blank"}
+[ORLMBANN]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s05.html#d0e38921 {target="_blank"}
+[ORLPTANN]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s02s08.html#d0e40766 {target="_blank"}
 
 #### Common Reference Data Dataset Types ####
 
@@ -91,17 +91,17 @@ SIC Descriptions (Line-based)|List of SIC codes and descriptions|[SMOKE document
 Surrogate Descriptions (SRGDESC)|List of surrogate codes and descriptions|[SMOKE documentation][SRGDESC]
 : Reference Data Dataset Types {#tbl:reference_dataset_types_table}
 
-[COSTCY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10s02.html {target="_blank"}
-[GRIDDESC]: http://www.baronams.com/products/ioapi/GRIDDESC.html {target="_blank"}
-[HOLIDAYS]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s03s03.html {target="_blank"}
-[INVTABLE]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10s03.html {target="_blank"}
-[MACTDESC]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10s04.html {target="_blank"}
-[NAICSDESC]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10s05.html {target="_blank"}
-[ORISDESC]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10s07.html {target="_blank"}
-[PSTK]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s09s03.html#sect_input_pstk {target="_blank"}
-[SCCDESC]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10s09.html {target="_blank"}
-[SICDESC]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10s10.html {target="_blank"}
-[SRGDESC]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s04.html#sect_input_srgdesc {target="_blank"}
+[COSTCY]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10s02.html {target="_blank"}
+[GRIDDESC]: https://www.cmascenter.org/ioapi/documentation/all_versions/html/GRIDDESC.html {target="_blank"}
+[HOLIDAYS]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s03s03.html {target="_blank"}
+[INVTABLE]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10s04.html {target="_blank"}
+[MACTDESC]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10s05.html {target="_blank"}
+[NAICSDESC]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10s06.html {target="_blank"}
+[ORISDESC]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10s08.html {target="_blank"}
+[PSTK]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s09s03.html#sect_input_pstk {target="_blank"}
+[SCCDESC]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10s10.html {target="_blank"}
+[SICDESC]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10s12.html {target="_blank"}
+[SRGDESC]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s04.html#sect_input_srgdesc {target="_blank"}
 
 #### Common Emissions Modeling Cross-Reference and Factors Dataset Types ####
 
@@ -119,15 +119,15 @@ Temporal Cross Reference (A/M/PTREF)|Cross-reference data to match inventory sou
 Temporal Profile (A/M/PTPRO)|Factors to allocate inventory emissions to hourly estimates|[SMOKE documentation][AMPTPRO]
 : Emissions Modeling Dataset Types {#tbl:emissions_modeling_dataset_types_table}
 
-[ARTOPNT]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s10.html#sect_input_artopnt {target="_blank"}
-[GSPRO_COMBO]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s05s03.html {target="_blank"}
-[GSREF]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s05s04.html {target="_blank"}
-[GSPRO]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s05s02.html {target="_blank"}
-[AMGREF]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s04s03.html {target="_blank"}
-[GSCNV]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s05.html#sect_input_gscnv {target="_blank"}
+[ARTOPNT]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s10.html#sect_input_artopnt {target="_blank"}
+[GSPRO_COMBO]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s05s03.html {target="_blank"}
+[GSREF]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s05s04.html {target="_blank"}
+[GSPRO]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s05s02.html {target="_blank"}
+[AMGREF]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s04s03.html {target="_blank"}
+[GSCNV]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s05.html#sect_input_gscnv {target="_blank"}
 [AMGPRO]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s04s02.html {target="_blank"}
-[AMPTREF]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s03s02.html {target="_blank"}
-[AMPTPRO]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s03.html#sect_input_amptpro {target="_blank"}
+[AMPTREF]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s03s02.html {target="_blank"}
+[AMPTPRO]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s03.html#sect_input_amptpro {target="_blank"}
 
 #### Common Growth and Controls Dataset Types ####
 
@@ -148,12 +148,12 @@ Strategy Measure Summary|Output from CoST|Not available
 Strategy Messages (CSV)|Output from CoST|Not available
 : Growth and Controls Dataset Types {#tbl:growth_dataset_types_table}
 
-[ALLOW]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s06.html#sect_input_gcntl_allowable {target="_blank"}
-[ALLOWEXT]: http://www.cmascenter.org/emf/allowable_packet_extended_flex_file_format.csv {target="_blank"}
-[CONTROL]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s06.html#sect_input_gcntl_control {target="_blank"}
-[CONTROLEXT]: http://www.cmascenter.org/emf/control_packet_extended_flex_file_format.csv {target="_blank"}
-[PROJ]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s06.html#sect_input_gcntl_projection {target="_blank"}
-[PROJEXT]: http://www.cmascenter.org/emf/projection_packet_extended_flex_file_format.csv {target="_blank"}
+[ALLOW]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s06.html#sect_input_gcntl_allowable {target="_blank"}
+[ALLOWEXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/allowable_packet_extended_flex_file_format.csv {target="_blank"}
+[CONTROL]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s06.html#sect_input_gcntl_control {target="_blank"}
+[CONTROLEXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/control_packet_extended_flex_file_format.csv {target="_blank"}
+[PROJ]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s06.html#sect_input_gcntl_projection {target="_blank"}
+[PROJEXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/projection_packet_extended_flex_file_format.csv {target="_blank"}
 
 ## The Dataset Manager ##
 

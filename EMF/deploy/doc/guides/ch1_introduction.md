@@ -6,7 +6,7 @@ The Emissions Modeling Framework (EMF) is a software system designed to solve ma
 
 This User's Guide focuses on the data management and analysis capabilities of the EMF. The EMF also contains a [Control Strategy Tool (CoST)][] for developing future year and controlled emissions inventories and is capable of driving SMOKE to develop CMAQ inputs. 
 
-[Control Strategy Tool (CoST)]: http://www.cmascenter.org/help/model_docs/emf_cost/2.5.1/CoST_UsersGuide_2012-08-01_Final.pdf {target="_blank"}
+[Control Strategy Tool (CoST)]: https://www.cmascenter.org/cost/documentation/3.1/html/ {target="_blank"}
 
 Many types of data are involved in the emissions modeling process including: 
 
