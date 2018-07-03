@@ -6,7 +6,7 @@ The EMF server consists of a database, file storage, and the server application 
 
 The database server is PostgreSQL version 9.2 or later. For ShapeFile export, you will need the PostGIS module installed.
 
-The server application is a Java executable that runs in the Apache Tomcat servlet container. You will need Apache Tomcat 6.0 or later.
+The server application is a Java executable that runs in the Apache Tomcat servlet container. You will need Apache Tomcat 8.0 or later.
 
 The server components can run on Windows, Linux, or Mac OS X.
 
