@@ -47,7 +47,6 @@ Dataset types can be added, edited, or deleted by EMF administrators. In this se
 
 Dataset Type Name|Description|Link to File Format
 -|-|-
-Day-Specific Point Inventory (PTDAY)|Point day-specific emissions inventory in EMS-95 format|[SMOKE documentation][EMSPTDAY]
 Flat File 2010 Activity|Onroad mobile activity data (VMT, VPOP, speed) in Flat File 2010 (FF10) format|[SMOKE documentation][FF10ACT]
 Flat File 2010 Activity Nonpoint|Nonpoint activity data in FF10 format|Same format as Flat File 2010 Activity
 Flat File 2010 Activity Point|Point activity data in FF10 format|Not available
@@ -55,11 +54,6 @@ Flat File 2010 Nonpoint|Nonpoint or nonroad emissions inventory in FF10 format|[
 Flat File 2010 Nonpoint Daily|Nonpoint or nonroad day-specific emissions inventory in FF10 format|[SMOKE documentation][FF10NPDAY]
 Flat File 2010 Point|Point emissions inventory in FF10 format|[SMOKE documentation][FF10PTANN]
 Flat File 2010 Point Daily|Point day-specific emissions inventory in FF10 format|[SMOKE documentation][FF10PTDAY]
-IDA Activity|Onroad mobile activity data in IDA format|[SMOKE documentation][IDAACT]
-IDA Mobile|Onroad mobile emissions inventory in IDA format|[SMOKE documentation][IDAMBANN]
-IDA Nonpoint/Nonroad|Nonpoint or nonroad emissions inventory in IDA format|[SMOKE documentation][IDANPANN]
-IDA Point|Point emissions inventory in IDA format|[SMOKE documentation][IDAPTANN]
-Individual Hour-Specific Point Inventory|Point hour-specific emissions inventory in EMS-95 format|[SMOKE documentation][EMSPTHR]
 ORL Day-Specific Fires Data Inventory (PTDAY)|Day-specific fires inventory|[SMOKE documentation][ORLFRDAY]
 ORL Fire Inventory (PTINV)|Wildfire and prescribed fire inventory|[SMOKE documentation][ORLFRANN]
 ORL Nonpoint Inventory (ARINV)|Nonpoint emissions inventory in ORL format|[SMOKE documentation][ORLNPANN]
@@ -68,17 +62,11 @@ ORL Onroad Inventory (MBINV)|Onroad mobile emissions inventory in ORL format|[SM
 ORL Point Inventory (PTINV)|Point emissions inventory in ORL format|[SMOKE documentation][ORLPTANN]
 : Inventory Dataset Types {#tbl:inventory_dataset_types_table}
 
-[EMSPTDAY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s08.html#d0e42868 {target="_blank"}
 [FF10ACT]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s07.html#d0e42597 {target="_blank"}
 [FF10NPANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s04.html#d0e40611 {target="_blank"}
 [FF10NPDAY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s02.html#d0e39848 {target="_blank"}
 [FF10PTANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s10.html#d0e44906 {target="_blank"}
 [FF10PTDAY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s08.html#d0e43056 {target="_blank"}
-[IDAACT]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s07.html#d0e41836 {target="_blank"}
-[IDAMBANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s07.html#d0e41948 {target="_blank"}
-[IDANPANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s04.html#d0e40382 {target="_blank"}
-[IDAPTANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s10.html#d0e45481 {target="_blank"}
-[EMSPTHR]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s09.html#d0e43473 {target="_blank"}
 [ORLFRDAY]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s08.html#sect_input_ptday_fireemis {target="_blank"}
 [ORLFRANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s10.html#sect_input_ptinv_fire {target="_blank"}
 [ORLNPANN]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s02s04.html#d0e40916 {target="_blank"}
