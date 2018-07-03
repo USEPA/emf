@@ -1,4 +1,4 @@
-# Server Administration [server_chapter] #
+# Server Administration # {#sec:server_chapter}
 
 ## Components ##
 

@@ -4,7 +4,7 @@
 
 **Problem:**
 
-On startup, an error message is displayed like [Figure](#client_startup_error):
+On startup, an error message is displayed like [@Fig:client_startup_error]:
 
 "The EMF client was not able to contact the server due to this error:
 
@@ -14,9 +14,7 @@ or
 
 (504)Server denies connection.
 
-![Error Starting the EMF Client][client_startup_error]
-
-[client_startup_error]: images/client_startup_error.png
+![Error Starting the EMF Client](images/client_startup_error.png){#fig:client_startup_error}
 
 **Solution:**
 
@@ -24,7 +22,7 @@ The EMF client application was not able to connect to the EMF server. This could
 
 If you are connecting to a remote EMF server, first check your computer's network connection by loading a page like [google.com](http://google.com) in your web browser. You must have a working network connection to use the EMF client.
 
-Next, check the server location in the EMF client start up script C:\EMF_State\EMFClient.bat. Look for the line
+Next, check the server location in the EMF client start up script C:\\EMF_State\\EMFClient.bat. Look for the line
 
 `set TOMCAT_SERVER=http://<server location>:8080`
 
@@ -32,11 +30,9 @@ You can directly connect to the EMF server by loading
 
 `http://<server location>:8080/emf/services`
 
-in your web browser. You should see a response similar to [Figure](#emf_server_response).
+in your web browser. You should see a response similar to [@Fig:emf_server_response].
 
-![EMF Server Response][emf_server_response]
-
-[emf_server_response]: images/emf_server_response.png
+![EMF Server Response](images/emf_server_response.png){#fig:emf_server_response}
 
 If you can't connect to the EMF server or don't get a response, then the EMF server may not be running. Contact the EMF server administrator for further help.
 

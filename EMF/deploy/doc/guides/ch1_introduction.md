@@ -1,4 +1,4 @@
-# Overview of the EMF [overview_chapter] #
+# Overview of the EMF # {#sec:overview_chapter}
 
 ## Introduction ##
 
@@ -6,7 +6,7 @@ The Emissions Modeling Framework (EMF) is a software system designed to solve ma
 
 This User's Guide focuses on the data management and analysis capabilities of the EMF. The EMF also contains a [Control Strategy Tool (CoST)][] for developing future year and controlled emissions inventories and is capable of driving SMOKE to develop CMAQ inputs. 
 
-[Control Strategy Tool (CoST)]: http://www.cmascenter.org/help/model_docs/emf_cost/2.5.1/CoST_UsersGuide_2012-08-01_Final.pdf target="_blank"
+[Control Strategy Tool (CoST)]: http://www.cmascenter.org/help/model_docs/emf_cost/2.5.1/CoST_UsersGuide_2012-08-01_Final.pdf {target="_blank"}
 
 Many types of data are involved in the emissions modeling process including: 
 
@@ -38,24 +38,20 @@ The EMF helps with these issues by using a client-server system where emissions 
 
 ## EMF Components ##
 
-A typical installation of the EMF system is illustrated in [Figure](#client_server_simple). In this case, a group of users shares a single EMF server with multiple local machines running the client application. The EMF server consists of a database, file storage, and the server application which handles requests from the clients and communicates with the database. The client application runs on each user's computer and provides a graphical interface for interacting with the emissions modeling data stored on the server (see [Chapter](#client_chapter)). Each user has his or her own username and password for accessing the EMF server. Some users will have administrative privileges which allow them to access additional system data such as managing users or dataset types.
+A typical installation of the EMF system is illustrated in [@Fig:client_server_simple]. In this case, a group of users shares a single EMF server with multiple local machines running the client application. The EMF server consists of a database, file storage, and the server application which handles requests from the clients and communicates with the database. The client application runs on each user's computer and provides a graphical interface for interacting with the emissions modeling data stored on the server (see [@Sec:client_chapter]). Each user has his or her own username and password for accessing the EMF server. Some users will have administrative privileges which allow them to access additional system data such as managing users or dataset types.
 
-![Typical EMF client-server setup][client_server_simple]
-
-[client_server_simple]: images/client_server_simple.png
+![Typical EMF client-server setup](images/client_server_simple.png){#fig:client_server_simple}
 
 For a simpler setup, all of the EMF components can be run on a single machine: database, server application, and client application. With this "all-in-one" setup, the emissions data would generally not be shared between multiple users.
 
 ## Basic Workflow ##
 
-[Figure](#data_workflow) illustrates the basic workflow of data in the EMF system.
+[@Fig:data_workflow] illustrates the basic workflow of data in the EMF system.
 
-![Data workflow in EMF system][data_workflow]
+![Data workflow in EMF system](images/data_workflow.png){#fig:data_workflow}
 
-[data_workflow]: images/data_workflow.png
+Emissions modeling data files are imported into the EMF system where they are represented as **datasets** (see [@Sec:datasets_chapter]). The EMF supports many different types of data files including emissions inventories, allocation factors, cross-reference files, and reference data. Each dataset matches a **dataset type** which defines the format of the data to be loaded from the file ([@Sec:dataset_types_section]). In addition to the raw data values, the EMF stores various metadata about each dataset including the time period covered, geographic region, the history of the data, and data usage in model runs or QA analysis.
 
-Emissions modeling data files are imported into the EMF system where they are represented as **datasets** (see [Chapter](#datasets_chapter)). The EMF supports many different types of data files including emissions inventories, allocation factors, cross-reference files, and reference data. Each dataset matches a **dataset type** which defines the format of the data to be loaded from the file ([Section](#dataset_types_section)). In addition to the raw data values, the EMF stores various metadata about each dataset including the time period covered, geographic region, the history of the data, and data usage in model runs or QA analysis.
+Once your data is stored as a dataset, you can review and edit the dataset's properties ([@Sec:dataset_properties_section]) or the data itself ([@Sec:viewing_data_section]) using the EMF client. You can also run **QA steps** on a dataset or set of datasets to extract summary information, compare datasets, or convert the data to a different format (see [@Sec:qa_chapter]).
 
-Once your data is stored as a dataset, you can review and edit the dataset's properties ([Section](#dataset_properties_section)) or the data itself ([Section](#viewing_data_section)) using the EMF client. You can also run **QA steps** on a dataset or set of datasets to extract summary information, compare datasets, or convert the data to a different format (see [Chapter](#qa_chapter)).
-
-You can export your dataset to a file and download it to your local computer ([Section](#exporting_datasets_section)). You can also export reports that you create with QA steps for further analysis in a spreadsheet program or to create charts ([Section](#export_qa_results_section)).
+You can export your dataset to a file and download it to your local computer ([@Sec:exporting_datasets_section]). You can also export reports that you create with QA steps for further analysis in a spreadsheet program or to create charts ([@Sec:export_qa_results_section]).
