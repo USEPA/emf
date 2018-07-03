@@ -56,32 +56,7 @@ To update Java, click the tab labeled Update in the Java Control Panel (see [@Fi
 
 ## Installing the EMF Client ##
 
-The following instructions are specific to the MARAMA EMF installation.
-
-To get started, please contact MARAMA to request the EMF client package. Click on the folder named EMF\_State. You should see a page similar to [@Fig:dropbox_folder].
-
-![EMF Client Folder on Dropbox](images/dropbox_folder.png){#fig:dropbox_folder}
-
-In the top right corner of the window, click the Download button and choose "Download as .zip". Once the file EMF\_State.zip has finished downloading, open the zip file and drag the folder EMF\_State to your C: drive. You want to end up with the directory C:\\EMF\_State as shown in [@Fig:emf_state_folder]. You may need administrator privileges to drag the folder to the C: drive.
-
-![EMF Client Folder on Windows](images/emf_state_folder.png){#fig:emf_state_folder}
-
-Next, determine the location where Java is installed on your computer. Depending on the version of your operating system and which version of Java you have, the location might be:
-
-* C:\\Program Files\\Java\\jre6\\bin\\java
-* C:\\Program Files\\Java\\jre7\\bin\\java
-* C:\\Program Files (x86)\\Java\\jre6\\bin\\java
-* C:\\Program Files (x86)\\Java\\jre7\\bin\\java
-
-If the location of your Java executable is anything other than C:\\Program Files\\Java\\jre6\\bin\\java, you will need to edit the EMFClient.bat file in the C:\\EMF\_State directory. Right click on the EMFClient.bat file and select Edit to open the file in Notepad. You should see a file like [@Fig:edit_emfclient_bat].
-
-![Editing EMFClient.bat File](images/edit_emfclient_bat.png){#fig:edit_emfclient_bat}
-
-Find the line 
-
-`set JAVA_EXE=C:\Program Files\Java\jre6\bin\java`
-
-and update the location to match your Java installation. Save the file and close Notepad.
+How you install the EMF client depends on which EMF server you will be connecting to. To download and install an all-in-one package that includes all the EMF components, please visit [https://www.cmascenter.org/cost/](https://www.cmascenter.org/cost/). Other users should contact their EMF server administrators for instructions on downloading and installing the EMF client.
 
 To launch the EMF client, double-click the file named EMFClient.bat. You may see a security warning similar to [@Fig:security_warning]. Uncheck the box labeled "Always ask before opening this file" to avoid the warning in the future.
 
