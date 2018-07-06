@@ -1,13 +1,8 @@
-Title: Inventory Projection Using the Emissions Modeling Framework
-Author: C. Seppanen, UNC
-CSS: base.css
-XHTML XSLT: xhtml-toc-h2-proj.xslt
-
-# Inventory Projection using the EMF #
+# Inventory Projection #
 
 ## Introduction ##
 
-The inventory projection process involves taking a base year inventory and projecting it to a future year inventory based on expected future activity levels and emissions controls. Within the [Emissions Modeling Framework][EMF User's Guide] (EMF), inventory projection is accomplished using the "Project Future Year Inventory" (PFYI) strategy in the [Control Strategy Tool][CoST User's Guide] (CoST) module. The Project Future Year Inventory control strategy matches a set of user-defined Control Programs to selected emissions inventories to estimate the emissions reductions in the target future year specified by the user. The output of the PFYI strategy can be used to generate a future year emissions inventory.
+The inventory projection process involves taking a base year inventory and projecting it to a future year inventory based on expected future activity levels and emissions controls. Within the EMF, inventory projection is accomplished using the "Project Future Year Inventory" (PFYI) strategy in the Control Strategy Tool (CoST) module. The Project Future Year Inventory control strategy matches a set of user-defined Control Programs to selected emissions inventories to estimate the emissions reductions in the target future year specified by the user. The output of the PFYI strategy can be used to generate a future year emissions inventory.
 
 Control programs are used to describe the expected changes to the base year inventory in the future. The data includes plant closure information, control measures and their associated emissions impacts, growth or reduction factors to account for changes in activity levels, and other adjustments to emissions such as caps or replacements.
 
@@ -21,19 +16,13 @@ Estimates emissions reductions and costs for the same year as the input inventor
 More concerned with cost estimates incurred by applying different control measures|Minimal support for cost estimates; primary focus is emissions changes
 Matches sources with control measures from the Control Measure Database (CMDB)|Matches sources to data contained in user-created Control Programs
 
-This document will detail the "Project Future Year Inventory" control strategy available in CoST. More information on general use of EMF and CoST is available at:
+This section will detail the "Project Future Year Inventory" control strategy available in CoST. More information on general use of CoST is available in the [CoST User's Guide][].
 
-* [EMF User's Guide][]
-* [CoST User's Guide][]
+[CoST User's Guide]: https://www.cmascenter.org/cost/documentation/3.1/CoST%20User's%20Guide/ {target="_blank"}
 
-[EMF User's Guide]: http://www.cmascenter.org/emf/internal/guide.html target="_blank"
-[CoST User's Guide]: http://www.cmascenter.org/help/model_docs/emf_cost/2.5.1/CoST_UsersGuide_2012-08-01_Final.pdf target="_blank"
+[@Fig:projection_workflow] shows the various datasets and processing steps used for inventory projection within the EMF.
 
-[Figure](#projection_workflow) shows the various datasets and processing steps used for inventory projection within the EMF.
-
-![Data workflow for inventory projection][projection_workflow]
-
-[projection_workflow]: images/projection_workflow.png
+![Data workflow for inventory projection](images/projection_workflow.png){#fig:projection_workflow}
 
 One or more base year inventories are imported into the EMF as inventory datasets. Files containing the control program data such as plant closures, growth or reduction factors (projection data), controls, and caps and replacements (allowable data) are also imported as datasets.
 
@@ -106,9 +95,9 @@ An Allowable Control Program is used to apply caps on inventory emissions or rep
 
 ### Control Program Datasets ###
 
-Each Control Program is associated with a dataset. [Table](#control_program_type_table) lists the EMF dataset types corresponding to each Control Program type. The Control Program datasets were designed to be compatible with the [SMOKE GCNTL (growth and controls) input file][smoke_gcntl] which uses the term "packet" to refer to the different types of control program data; the same term is used in the EMF.
+Each Control Program is associated with a dataset. [@Tbl:control_program_type_table] lists the EMF dataset types corresponding to each Control Program type. The Control Program datasets were designed to be compatible with the [SMOKE GCNTL (growth and controls) input file][smoke_gcntl] which uses the term "packet" to refer to the different types of control program data; the same term is used in the EMF.
 
-[smoke_gcntl]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s06.html target="_blank"
+[smoke_gcntl]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s06.html#sect_input_gcntl {target="_blank"}
 
 Control Program Type|Dataset Types
 -|-
@@ -116,9 +105,9 @@ Allowable|Allowable Packet, Allowable Packet Extended
 Control|Control Packet, Control Packet Extended
 Plant Closure|Plant Closure Packet (CSV)
 Projection|Projection Packet, Projection Packet Extended
-[Control Program Types and Datasets][control_program_type_table]
+: Control Program Types and Datasets {#tbl:control_program_type_table}
 
-The dataset formats named with "Extended" add additional options beyond the SMOKE-based formats. These extended formats use the same source information fields as Flat File 2010 inventories and also support monthly factors in addition to annual values. [Table](#ext_format_mapping_table) shows how the column names map between the extended and non-extended dataset formats.
+The dataset formats named with "Extended" add additional options beyond the SMOKE-based formats. These extended formats use the same source information fields as Flat File 2010 inventories and also support monthly factors in addition to annual values. [@Tbl:ext_format_mapping_table] shows how the column names map between the extended and non-extended dataset formats.
 
 Extended Format Column Name|Non-Extended Format Column Name|Description
 -|-|-
@@ -128,28 +117,26 @@ UNIT\_ID|POINTID|Point ID for point sources
 REL\_POINT\_ID|STACKID|Stack ID for point sources
 PROCESS\_ID|SEGMENT|Segment for point sources
 MACT|REG\_CD|Maximum Achievable Control Technology (MACT) code
-[Extended Format Mapping][ext_format_mapping_table]
+: Extended Format Mapping {#tbl:ext_format_mapping_table}
 
-The file formats for each control program dataset are listed in [Appendix A: Control Program Dataset Formats](#appendix_a).
+The file formats for each control program dataset are listed in [@Sec:appendix_a].
 
 #### Source Matching Hierarchy ####
 
 When building Control Program dataset records, you can use various combinations of source matching information depending on the level of specificity needed. For example, you could create a projection factor that applies to all sources with a particular SCC in the inventory regardless of geographic location. In this case, the SCC code would be specified but the region code would be left blank. If you need a different factor for particular regions, you can add additional records that specify both the SCC and region code with the more specific factor.
 
-When matching the Control Program dataset records to inventory sources, more specific matches will be used over less specific ones. In the case of ties, a defined hierarchy is used to rank the matches. This hierarchy is listed in [Appendix B: Control Program Source Matching Hierarchy](#appendix_b).
+When matching the Control Program dataset records to inventory sources, more specific matches will be used over less specific ones. In the case of ties, a defined hierarchy is used to rank the matches. This hierarchy is listed in [@Sec:appendix_b].
 
 ### Control Program Manager ###
 
-The main interface for creating and editing Control Programs is the Control Program Manager. To open the Control Program Manager, select **Control Programs** from the main **Manage** menu at the top of the EMF window. A list of existing control programs is displayed as shown in [Figure](#cp_manager).
+The main interface for creating and editing Control Programs is the Control Program Manager. To open the Control Program Manager, select **Control Programs** from the main **Manage** menu at the top of the EMF window. A list of existing control programs is displayed as shown in [@Fig:cp_manager].
 
-![Control Program Manager][cp_manager]
+![Control Program Manager](images/cp_manager.png){#fig:cp_manager}
 
-[cp_manager]: images/cp_manager.png
-
-[Table](#control_program_manager_columns_table) describes each column in the Control Program Manager window.
+[@Tbl:control_program_manager_columns_table] describes each column in the Control Program Manager window.
 
 Column|Description
--|-
+-|----
 Name|A unique name or label for the control program.
 Type|The type of this control program. Options are Allowable, Control, Plant Closure, or Projection.
 Start|The start date of the control program. Used when selecting control programs to apply in a strategy's target year.
@@ -157,32 +144,30 @@ Last Modified|The most recent date and time when the control program was modifie
 End|The end date of the control program. Used when selecting control programs to apply in a strategy's target year. If not specified, N/A will be displayed.
 Dataset|The name of the dataset associated with the control program.
 Version|The version of the associated dataset that the control program will use.
-[Control Program Manager Columns][control_program_manager_columns_table]
+: Control Program Manager Columns {#tbl:control_program_manager_columns_table}
 
-Using the Control Program Manager, you can select the control programs you want to work with by clicking the checkboxes in the Select column and then perform various actions related to those control programs. [Table](#control_program_manager_actions_table) lists the buttons along the bottom of the Control Program Manager window and describes the action for each button.
+Using the Control Program Manager, you can select the control programs you want to work with by clicking the checkboxes in the Select column and then perform various actions related to those control programs. [@Tbl:control_program_manager_actions_table] lists the buttons along the bottom of the Control Program Manager window and describes the action for each button.
 
 Command|Description
--|-
+-|----
 View|Not currently active.
 Edit|Opens an Edit Control Program window for each of the selected control programs.
 New|Opens a New Control Program window to create a new control program.
 Remove|Deletes the selected control programs. Only the control program's creator or an EMF administrator can delete a control program.
 Copy|Creates a copy of each selected control program with a unique name.
 Close|Closes the Control Program Manager window.
-[Control Program Manager Actions][control_program_manager_actions_table]
+: Control Program Manager Actions {#tbl:control_program_manager_actions_table}
 
 ### Creating a New Control Program ###
 
-From the Control Program Manager, click the **New** button at the bottom of the window. The window to create a new control program is displayed as shown in [Figure](#cp_new).
+From the Control Program Manager, click the **New** button at the bottom of the window. The window to create a new control program is displayed as shown in [@Fig:cp_new].
 
-![New Control Program window][cp_new]
+![New Control Program window](images/cp_new.png){#fig:cp_new}
 
-[cp_new]: images/cp_new.png
-
-On the Summary tab, you can enter the details of the control program. [Table](#control_program_summary_table) describes each field.
+On the Summary tab, you can enter the details of the control program. [@Tbl:control_program_summary_table] describes each field.
 
 Field|Description
--|-
+-|----
 Name|Enter a unique name or label for this control program; required.
 Description|Enter a description of the control program; optional.
 Start Date|The start date for the control program formatted as MM/DD/YYYY; required. When running a Project Future Year Inventory strategy, only control programs whose start date falls within the strategy's Target Year will be considered.
@@ -191,21 +176,17 @@ Last Modified Date|Last modification date and time of the control program; autom
 Creator|The EMF user who created the control program; automatically set by the EMF.
 Type of Control Program|Select from the list of four control program types: Allowable, Control, Plant Closure, or Projection; required.
 Dataset Type|Select the dataset type corresponding to the dataset you want to use for this control program.
-Dataset|Click the **Select** button to open the dataset selection window as shown in [Figure](#cp_dataset_selection). Only datasets matching the selected dataset type are displayed. Select the dataset you want to use for this Control Program and click the **OK** button. You can use the **Dataset name contains** search box to narrow down the list of datasets if needed.
+Dataset|Click the **Select** button to open the dataset selection window as shown in [@Fig:cp_dataset_selection]. Only datasets matching the selected dataset type are displayed. Select the dataset you want to use for this Control Program and click the **OK** button. You can use the **Dataset name contains** search box to narrow down the list of datasets if needed.
 Version|After you've selected the dataset, the Version pull-down lists the available versions of the dataset with the default version selected. You can select a different version of the dataset if appropriate.
-[Control Program Summary Tab][control_program_summary_table]
+: Control Program Summary Tab {#tbl:control_program_summary_table}
 
-![Control Program dataset selection][cp_dataset_selection]
+![Control Program dataset selection](images/cp_dataset_selection.png){#fig:cp_dataset_selection}
 
-[cp_dataset_selection]: images/cp_dataset_selection.png
+[@Fig:cp_new_complete] shows the New Control Program window with the data fields filled out. Once you've finished entering the details of the new control program, click the **Save** button to save the control program.
 
-[Figure](#cp_new_complete) shows the New Control Program window with the data fields filled out. Once you've finished entering the details of the new control program, click the **Save** button to save the control program.
+![New Control Program window with data entered](images/cp_new_complete.png){#fig:cp_new_complete}
 
-![New Control Program window with data entered][cp_new_complete]
-
-[cp_new_complete]: images/cp_new_complete.png
-
-Once a dataset has been selected for a control program, the **View Data** and **View** buttons to the right of the dataset name will open the Data Viewer or Dataset Properties View for the selected dataset.
+Once a dataset has been selected for a control program, the **View Data** and **View** buttons to the right of the dataset name will open the Data Viewer ([@Fig:data_viewer]) or Dataset Properties View ([@Sec:dataset_properties_section]) for the selected dataset.
 
 #### Control Measures and Technologies ####
 
@@ -213,33 +194,25 @@ The Measures and Technologies tabs in the Edit Control Program window are only u
 
 When a Control-type control program is used in a Project Future Year Inventory control strategy, CoST will try to match each applied control packet record to a control measure in the Control Measure Database in order to estimate associated costs. You can specify a list of probable control measures or control technologies when you define the control program to limit the potential matches.
 
-In the Edit Control Program window, the Measures tab ([Figure](#cp_measures_tab)) lets you specify the control measures to include.
+In the Edit Control Program window, the Measures tab ([@Fig:cp_measures_tab]) lets you specify the control measures to include.
 
-![Control measures associated with a control program][cp_measures_tab]
+![Control measures associated with a control program](images/cp_measures_tab.png){#fig:cp_measures_tab}
 
-[cp_measures_tab]: images/cp_measures_tab.png
+Click the **Add** button to open the Select Control Measures window. As shown in [@Fig:cp_select_measures], the Select Control Measures window lists all the defined control measures including the control measure's name, abbreviation, and major pollutant.
 
-Click the **Add** button to open the Select Control Measures window. As shown in [Figure](#cp_select_measures), the Select Control Measures window lists all the defined control measures including the control measure's name, abbreviation, and major pollutant.
-
-![Select Control Measures for Control Program][cp_select_measures]
-
-[cp_select_measures]: images/cp_select_measures.png
+![Select Control Measures for Control Program](images/cp_select_measures.png){#fig:cp_select_measures}
 
 You can use the filtering and sorting options to find the control measures of interest. Select the control measures you want to add then click the **OK** button to add the control measures to the Control Program and return to the Edit Control Program window.
 
 To remove control measures, select the appropriate control measures, then click the **Remove** button.
 
-The Technologies tab in the Edit Control Program window ([Figure](#cp_technologies_tab)) allows you to specify particular control technologies associated with the control program.
+The Technologies tab in the Edit Control Program window ([@Fig:cp_technologies_tab]) allows you to specify particular control technologies associated with the control program.
 
-![Control technologies associated with a control program][cp_technologies_tab]
+![Control technologies associated with a control program](images/cp_technologies_tab.png){#fig:cp_technologies_tab}
 
-[cp_technologies_tab]: images/cp_technologies_tab.png
+Click the **Add** button to open the Select Control Technologies window. As shown in [@Fig:cp_select_technologies], the Select Control Technologies window lists all the defined control technologies by name and description.
 
-Click the **Add** button to open the Select Control Technologies window. As shown in [Figure](#cp_select_technologies), the Select Control Technologies window lists all the defined control technologies by name and description.
-
-![Select Control Technologies for Control Program][cp_select_technologies]
-
-[cp_select_technologies]: images/cp_select_technologies.png
+![Select Control Technologies for Control Program](images/cp_select_technologies.png){#fig:cp_select_technologies}
 
 You can use the filtering and sorting options to find the control technologies of interest. Select the control technologies you want to add then click the **OK** button to add the control technologies to the Control Program and return to the Edit Control Program window.
 
@@ -247,28 +220,22 @@ To remove control technologies, select the appropriate control technologies, the
 
 ## Creating a Project Future Year Inventory Control Strategy ##
 
-To create a Project Future Year Inventory Control Strategy, first open the Control Strategy Manager by selecting **Control Strategies** from the main **Manage** menu. [Figure](#cs_manager) shows the Control Strategy Manager window.
+To create a Project Future Year Inventory Control Strategy, first open the Control Strategy Manager by selecting **Control Strategies** from the main **Manage** menu. [@Fig:cs_manager] shows the Control Strategy Manager window.
 
-![Control Strategy Manager][cs_manager]
+![Control Strategy Manager](images/cs_manager.png){#fig:cs_manager}
 
-[cs_manager]: images/cs_manager.png
+Click the **New** button to start creating the control strategy. You will first be prompted to enter a unique name for the control strategy as shown in [@Fig:cs_new_name].
 
-Click the **New** button to start creating the control strategy. You will first be prompted to enter a unique name for the control strategy as shown in [Figure](#cs_new_name).
-
-![New control strategy name][cs_new_name]
-
-[cs_new_name]: images/cs_new_name.png
+![New control strategy name](images/cs_new_name.png){#fig:cs_new_name}
 
 Almost all of the strategy parameters for the Project Future Year Inventory strategy have the same meaning and act in the same way as they do for the Maximum Emissions Reduction strategy, such as cost year, inventory filter, and county dataset. This section focuses on parameters or inputs that differ for the Project Future Year Inventory strategy type.
 
 ### Summary Information ###
 
 The Summary tab displays high-level parameters about the control strategy 
-([Figure](#pfyi_summary_tab)).
+([@Fig:pfyi_summary_tab]).
 
-![Project Future Year Inventory Summary tab][pfyi_summary_tab]
-
-[pfyi_summary_tab]: images/pfyi_summary_tab.png
+![Project Future Year Inventory Summary tab](images/pfyi_summary_tab.png){#fig:pfyi_summary_tab}
 
 Parameters of interest for the Project Future Year Inventory strategy:
 
@@ -284,17 +251,13 @@ The Project Future Year Inventory strategy can use inventories in the following 
 
 ### Control Programs ###
 
-The Programs tab in the Edit Control Strategy window is used to select which control programs should be considered in the strategy. [Figure](#pfyi_programs_tab) shows the Programs tab for an existing control strategy.
+The Programs tab in the Edit Control Strategy window is used to select which control programs should be considered in the strategy. [@Fig:pfyi_programs_tab] shows the Programs tab for an existing control strategy.
 
-![Project Future Year Inventory Programs tab][pfyi_programs_tab]
+![Project Future Year Inventory Programs tab](images/pfyi_programs_tab.png){#fig:pfyi_programs_tab}
 
-[pfyi_programs_tab]: images/pfyi_programs_tab.png
+Click the **Add** button to bring up the Select Control Programs window as shown in [@Fig:pfyi_select_programs].
 
-Click the **Add** button to bring up the Select Control Programs window as shown in [Figure](#pfyi_select_programs).
-
-![Select Control Programs for PFYI strategy][pfyi_select_programs]
-
-[pfyi_select_programs]: images/pfyi_select_programs.png
+![Select Control Programs for PFYI strategy](images/pfyi_select_programs.png){#fig:pfyi_select_programs}
 
 In the Select Control Programs window, you can select which control programs to use in your PFYI control strategy. The table displays the name, control program type, and description for all defined control programs. You can use the filter and sorting options to help find the control programs you are interested in. Select the checkbox next to each control program to add and then click the **OK** button to return to the Programs tab.
 
@@ -304,15 +267,13 @@ More than one of the same type of control program can be added to a strategy. Fo
 
 ### Constraints ###
 
-[Figure](#pfyi_constraints_tab) shows the Constraints tab for a Project Future Year Inventory strategy. The only constraint used by PFYI strategies is a strategy-specific constraint named Minimum Percent Reduction Difference for Predicting Controls (%). This constraint determines whether a predicted control measure has a similar percent reduction to the percent reduction specified in the Control Program Control Packet.
+[@Fig:pfyi_constraints_tab] shows the Constraints tab for a Project Future Year Inventory strategy. The only constraint used by PFYI strategies is a strategy-specific constraint named Minimum Percent Reduction Difference for Predicting Controls (%). This constraint determines whether a predicted control measure has a similar percent reduction to the percent reduction specified in the Control Program Control Packet.
 
-![Project Future Year Inventory Constraints tab][pfyi_constraints_tab]
-
-[pfyi_constraints_tab]: images/pfyi_constraints_tab.png
+![Project Future Year Inventory Constraints tab](images/pfyi_constraints_tab.png){#fig:pfyi_constraints_tab}
 
 ## Running the Control Strategy ##
 
-To run the Project Future Year Inventory control strategy, click the **Run** button at the bottom of the Edit Control Strategy window. The EMF will begin running the strategy. Check the Status window to monitor the status of the run.
+To run the Project Future Year Inventory control strategy, click the **Run** button at the bottom of the Edit Control Strategy window. The EMF will begin running the strategy. Check the Status window ([@Sec:status_window_section]) to monitor the status of the run.
 
 ### Control Program Application Order ###
 
@@ -331,21 +292,19 @@ The Control analysis is dependent on the Projection analysis; likewise, the Allo
 
 The main output for each control strategy is a table called the Strategy Detailed Result. This dataset consists of pairings of emission sources and control programs, each of which contains information about the emission adjustment that would be achieved if the control program were to be applied to the source, along with the cost of application. The Strategy Detailed Result table can be used with the original input inventory to produce, in an automated manner, a controlled emissions inventory that reflects implementation of the strategy; this inventory includes information about the control programs that have been applied to the controlled sources. The controlled inventory can then be directly input to the SMOKE modeling system to prepare air quality model-ready emissions data. In addition, comments are placed at the top of the inventory file to indicate the strategy that produced it and the settings of the high-level parameters that were used to run the strategy.
 
-The columns in the Strategy Detailed Result dataset are described in [Appendix C: Control Strategy Output Dataset Formats](#appendix_c), [Table](#strategy_detailed_result_columns_table).
+The columns in the Strategy Detailed Result dataset are described in [@Sec:appendix_c], [@Tbl:strategy_detailed_result_columns_table].
 
 ### Strategy Messages ###
 
 In additional to the Strategy Detailed Result dataset, CoST automatically generates a Strategy Messages dataset. The Strategy Messages output provides useful information that is gathered while the strategy is running. This output can store ERROR and WARNING types of messages. If an ERROR is encountered during the prerun validation process, the strategy run will be canceled and the user can peruse this dataset to see what problems the strategy has (e.g., duplicate packet records).
 
-The columns in the Strategy Messages dataset are described in [Appendix C: Control Strategy Output Dataset Formats](#appendix_c), [Table](#strategy_messages_columns_table).
+The columns in the Strategy Messages dataset are described in [@Sec:appendix_c], [@Tbl:strategy_messages_columns_table].
 
 ## Creating Future Year Inventories ##
 
-After the Project Future Year Inventory control strategy has been run, you can create a future year emissions inventory. From the Outputs tab, select the Strategy Detailed Result for the base year inventory and select the **Controlled Inventory** radio button as shown in [Figure](#cs_create_inv).
+After the Project Future Year Inventory control strategy has been run, you can create a future year emissions inventory. From the Outputs tab, select the Strategy Detailed Result for the base year inventory and select the **Controlled Inventory** radio button as shown in [@Fig:cs_create_inv].
 
-![Creating a future year inventory][cs_create_inv]
-
-[cs_create_inv]: images/cs_create_inv.png
+![Creating a future year inventory](images/cs_create_inv.png){#fig:cs_create_inv}
 
 Click the **Create** button to begin creating the future year inventory. Monitor the Status window for messages and to see when the process is complete.
 
@@ -379,56 +338,54 @@ CoST also populates several additional columns toward the end of the ORL and Fla
 
 * TOTAL COST: The total cost for the source across all measures that have been applied to the source.
 
-## Appendix A: Control Program Dataset Formats [appendix_a] ##
+## Control Program Dataset Formats ## {#sec:appendix_a}
 
 ### Plant Closure Packet ###
 
-The format of the Plant Closure Packet described in [Table](#plant_closure_format_table) is based on the CSV format. The first row of this dataset file must contain the column header definition as defined in Line 1 of [Table](#plant_closure_format_table). All the columns specified here must be included in the dataset import file.
+The format of the Plant Closure Packet described in [@Tbl:plant_closure_format_table] is based on the CSV format. The first row of this dataset file must contain the column header definition as defined in Line 1 of [@Tbl:plant_closure_format_table]. All the columns specified here must be included in the dataset import file.
 
 Line|Position|Description
--|-|-
+-|-|--------
 1|A..H|Column header definition - must contain the following columns: fips,plantid,pointid,stackid,segment,plant,effective\_date,reference
 2+|A|Country/State/County code, required
- |B|Plant Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |C|Point Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |D|Stack Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |E|Segment for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |F|Plant name or description, for point sources, optional; leave blank for nonpoint inventories
- |G|Effective Date, the effective date for the plant closure to take place. When the closure effective cutoff is after this effective date, the plant will not be closed. A blank value is assumed to mean that the sources matched from this record will be closed regardless. The strategy target year is the year used in the closure effective cutoff date check. See [Section](#effective_date_section) for more information.
- |H|Reference, contains reference information for closing the plant
-[Plant Closure Packet Data Format][plant_closure_format_table]
+||B|Plant Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||C|Point Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||D|Stack Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||E|Segment for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||F|Plant name or description, for point sources, optional; leave blank for nonpoint inventories
+||G|Effective Date, the effective date for the plant closure to take place. When the closure effective cutoff is after this effective date, the plant will not be closed. A blank value is assumed to mean that the sources matched from this record will be closed regardless. The strategy target year is the year used in the closure effective cutoff date check. See [@Sec:effective_date_section] for more information.
+||H|Reference, contains reference information for closing the plant
+: Plant Closure Packet Data Format {#tbl:plant_closure_format_table}
 
 ### Projection Packet ###
 
-The format of the Projection Packet ([Table](#projection_format_table)) is based on the SMOKE file format as defined in the [SMOKE User's Manual][PROJ]. One modification was made to enhance this packet's use in CoST: the unused SMOKE column at position K is now used to store the NAICS code.
-
-[PROJ]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s06.html#sect_input_gcntl_projection target="_blank"
+The format of the Projection Packet ([@Tbl:projection_format_table]) is based on the SMOKE file format as defined in the [SMOKE User's Manual][PROJ]. One modification was made to enhance this packet's use in CoST: the unused SMOKE column at position K is now used to store the NAICS code.
 
 Line|Position|Description
--|-|-
+-|-|--------
 1|A|/PROJECTION \<4-digit from year\> \<4-digit to year\>/
 2+|A|# Header entry. Header is defined by the # as the first character on the line
 3+|A|Country/State/County code, or Country/state code with blank for county, or zero (or blank or -9) for all Country/State/County or Country/state codes
- |B|8 or 10-digit SCC, optional, blank, zero, or -9 if not a SCC-specific projection
- |C|Projection factor [enter number on fractional basis; e.g., enter 1.2 to increase emissions by 20%]
- |D|Pollutant , blank, zero, or -9 if not a pollutant-specific projection
- |E|Standard Industrial Category (SIC), optional, blank, zero, or -9 if not a SIC- specific projection
- |F|Maximum Achievable Control Technology (MACT) code, optional, blank, zero, or -9 if not a MACT-specific projection
- |G|Plant Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |H|Point Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |I|Stack Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |J|Segment for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |K|North American Industry Classification (NAICS) Code, optional; blank, zero, or -9 if not a NAICS-specific projection
- |L|Characteristic 5 (blank for ORL inventory input format), optional
+||B|8 or 10-digit SCC, optional, blank, zero, or -9 if not a SCC-specific projection
+||C|Projection factor [enter number on fractional basis; e.g., enter 1.2 to increase emissions by 20%]
+||D|Pollutant , blank, zero, or -9 if not a pollutant-specific projection
+||E|Standard Industrial Category (SIC), optional, blank, zero, or -9 if not a SIC- specific projection
+||F|Maximum Achievable Control Technology (MACT) code, optional, blank, zero, or -9 if not a MACT-specific projection
+||G|Plant Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||H|Point Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||I|Stack Id for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||J|Segment for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||K|North American Industry Classification (NAICS) Code, optional; blank, zero, or -9 if not a NAICS-specific projection
+||L|Characteristic 5 (blank for ORL inventory input format), optional
 3|A|/END/
-[Projection Packet Data Format][projection_format_table]
+: Projection Packet Data Format {#tbl:projection_format_table}
 
 ### Projection Packet Extended ###
 
-The format of the Projection Packet Extended ([Table](#projection_ext_format_table)) dataset is not based on the SMOKE format. It is based on the EMF Flexible File Format, which is based on the CSV-based format. This new format uses column names that are aligned with the Flat File 2010 dataset types in the EMF system. The format also supports monthly projection factors in addition to annual projection factors. For example, instead of using the FIPS code, the new format uses the REGION\_CD column, and instead of PLANTID the new format uses FACILITY\_ID. The appropriate mapping between the old and new formats is described in [Table](#ext_format_mapping_table). The new format also contains additional columns that will be used in the future to help further enhance the inventory source matching capabilities, these include COUNTRY\_CD, TRIBAL\_CODE, CENSUS\_TRACT\_CD, SHAPE\_ID, and EMIS\_TYPE.
+The format of the Projection Packet Extended ([@Tbl:projection_ext_format_table]) dataset is not based on the SMOKE format. It is based on the EMF Flexible File Format, which is based on the CSV-based format. This new format uses column names that are aligned with the Flat File 2010 dataset types in the EMF system. The format also supports monthly projection factors in addition to annual projection factors. For example, instead of using the FIPS code, the new format uses the REGION\_CD column, and instead of PLANTID the new format uses FACILITY\_ID. The appropriate mapping between the old and new formats is described in [@Tbl:ext_format_mapping_table]. The new format also contains additional columns that will be used in the future to help further enhance the inventory source matching capabilities, these include COUNTRY\_CD, TRIBAL\_CODE, CENSUS\_TRACT\_CD, SHAPE\_ID, and EMIS\_TYPE.
 
 Column|Description
--|-
+-|----
 Country\_cd|Country code, optional; currently not used in matching process
 Region\_cd|State/county code, or state code with blank for county, or zero (or blank or -9) for all state/county or state codes
 Facility\_id|Facility ID (aka Plant ID in ORL format) for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
@@ -450,48 +407,46 @@ Feb\_proj\_factor|Analogous to the January projections factor, above.
 ...|...
 Dec\_proj\_factor|The projection factor used to adjust the monthly December emission of the inventory (the dec\_value column of the FF10 inventory). The number is stored as a fraction rather than a percentage; e.g., enter 1.2 to increase emissions by 20% (double precision).<br/>If no December projection factor is specified, the annual projection factor value will be used as a default.<br/>The monthly-specific projection factor fields are not used on the older ORL inventory formats; only the annual projection factor field will be used on these older formats.
 Comment|Information about this record and how it was produced and entered by the user.
-[Projection Packet Extended Data Format][projection_ext_format_table]
+: Projection Packet Extended Data Format {#tbl:projection_ext_format_table}
 
 ### Control Packet ###
 
-The format of the Control Packet ([Table](#control_format_table)) is based on the SMOKE file format as defined in the [SMOKE User's Manual][CONTROL]. Several modifications were made to enhance the packet's use in CoST:
+The format of the Control Packet ([@Tbl:control_format_table]) is based on the SMOKE file format as defined in the [SMOKE User's Manual][CONTROL]. Several modifications were made to enhance the packet's use in CoST:
 
 1. The unused SMOKE column at position D is now used to store the primary control measure abbreviation; if one is specified, this measure is used on any source that was matched with those control packet entries.
 2. The unused SMOKE column at position P is used to store the compliance date the control can be applied to sources.
 3. The unused SMOKE column at position Q is used to store the NAICS code.
 
-[CONTROL]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s06.html#sect_input_gcntl_control target="_blank"
-
 Line|Position|Description
--|-|-
+-|-|--------
 1|A|/CONTROL/
 2+|A|# Header entry. Header is indicated by use of "#" as the first character on the line.
 3+|A|Country/state/county code, or country/state code with blank for county, or zero (or blank or -9) for all country/state/county or country/state codes
- |B|8- or 10-digit SCC, optional; blank, zero, or -9 if not an SCC-specific control
- |C|Pollutant; blank, zero, or -9 if not a pollutant-specific control
- |D|Primary control measure abbreviation; blank, zero, or -9 applies to all measure in the Control Measure Database
- |E|Control efficiency; value should be a percent (e.g., enter 90 for a 90% control efficiency)
- |F|Rule effectiveness; value should be a percent (e.g., enter 50 for a 50% rule effectiveness)
- |G|Rule penetration rate; value should be a percent (e.g., enter 80 for a 80% rule penetration)
- |H|Standard Industrial Category (SIC); optional, blank, zero, or -9 if not an SIC- specific control
- |I|Maximum Achievable Control Technology (MACT) code; optional, blank, zero, or -9 if not a MACT-specific control
- |J|Application control flag:<br/>Y = control is applied to inventory<br/>N = control will not be used
- |K|Replacement flag:<br/>A = control is applied in addition to any controls already on source<br/>R = control replaces any controls already on the source
- |L|Plant ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |M|Point ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |N|Stack ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |O|Segment for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |P|Compliance Date. The compliance date on which a control can be applied to sources; prior to this date, the control will not be applied. A blank value is assumed to mean that the control is within the compliance date and the sources matched from this record will be controlled regardless. The strategy target year is the year that is used in the control compliance cutoff date check. See [Section](#effective_date_section) for more information.
- |Q|North American Industry Classification (NAICS) Code, optional; blank, zero, or -9 if not a NAICS-specific control
+||B|8- or 10-digit SCC, optional; blank, zero, or -9 if not an SCC-specific control
+||C|Pollutant; blank, zero, or -9 if not a pollutant-specific control
+||D|Primary control measure abbreviation; blank, zero, or -9 applies to all measure in the Control Measure Database
+||E|Control efficiency; value should be a percent (e.g., enter 90 for a 90% control efficiency)
+||F|Rule effectiveness; value should be a percent (e.g., enter 50 for a 50% rule effectiveness)
+||G|Rule penetration rate; value should be a percent (e.g., enter 80 for a 80% rule penetration)
+||H|Standard Industrial Category (SIC); optional, blank, zero, or -9 if not an SIC- specific control
+||I|Maximum Achievable Control Technology (MACT) code; optional, blank, zero, or -9 if not a MACT-specific control
+||J|Application control flag:<br/>Y = control is applied to inventory<br/>N = control will not be used
+||K|Replacement flag:<br/>A = control is applied in addition to any controls already on source<br/>R = control replaces any controls already on the source
+||L|Plant ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||M|Point ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||N|Stack ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||O|Segment for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||P|Compliance Date. The compliance date on which a control can be applied to sources; prior to this date, the control will not be applied. A blank value is assumed to mean that the control is within the compliance date and the sources matched from this record will be controlled regardless. The strategy target year is the year that is used in the control compliance cutoff date check. See [@Sec:effective_date_section] for more information.
+||Q|North American Industry Classification (NAICS) Code, optional; blank, zero, or -9 if not a NAICS-specific control
 4|A|/END/
-[Control Packet Data Format][control_format_table]
+: Control Packet Data Format {#tbl:control_format_table}
 
 ### Control Packet Extended ###
 
-The format of the Control Packet Extended ([Table](#control_ext_format_table)) dataset is not based on the SMOKE format. It is based on the EMF Flexible File Format, which is based on the CSV-based format. This new format uses column names that are aligned with the Flat File 2010 dataset types in the EMF system. The format also contains additional columns that will be used in the future to help further enhance the inventory source matching capabilities: COUNTRY\_CD, TRIBAL\_CODE, CENSUS\_TRACT\_CD, SHAPE\_ID, and EMIS\_TYPE.
+The format of the Control Packet Extended ([@Tbl:control_ext_format_table]) dataset is not based on the SMOKE format. It is based on the EMF Flexible File Format, which is based on the CSV-based format. This new format uses column names that are aligned with the Flat File 2010 dataset types in the EMF system. The format also contains additional columns that will be used in the future to help further enhance the inventory source matching capabilities: COUNTRY\_CD, TRIBAL\_CODE, CENSUS\_TRACT\_CD, SHAPE\_ID, and EMIS\_TYPE.
 
 Column|Description
--|-
+-|----
 Country\_cd|Country code, optional; currently not used in matching process
 Region\_cd|State/county code, or state code with blank for county, or zero (or blank or -9) for all state/county or state codes
 Facility\_id|Facility ID (aka Plant ID in ORL format) for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
@@ -507,7 +462,7 @@ Poll|Pollutant;, blank, zero, or -9 if not a pollutant-specific control
 Reg\_code|Regulatory code (aka Maximum Achievable Control Technology code), optional; blank, zero, or -9 if not a regulatory code-specific control
 SIC|Standard Industrial Category (SIC), optional; blank, zero, or -9 if not an SIC-specific control
 NAICS|North American Industry Classification (NAICS) code, optional; blank, zero, or -9 if not a NAICS-specific control
-Compliance\_Date|Compliance Date. The compliance date on which a control can be applied to sources; prior to this date, the control will not be applied. A blank value is assumed to mean that the control is within the compliance date and the sources matched from this record will be controlled regardless. The strategy target year is the year used in the control compliance cutoff date check. See [Section](#effective_date_section) for more information.
+Compliance\_Date|Compliance Date. The compliance date on which a control can be applied to sources; prior to this date, the control will not be applied. A blank value is assumed to mean that the control is within the compliance date and the sources matched from this record will be controlled regardless. The strategy target year is the year used in the control compliance cutoff date check. See [@Sec:effective_date_section] for more information.
 Application\_control|Application control flag:<br/>Y = control is applied to inventory<br/>N = control will not be used
 Replacement|Replacement flag:<br/>A = control is applied in addition to any controls already on source<br/>R = control replaces any controls already on the source
 Pri\_cm\_abbrev|Primary control measure abbreviation (from the Control Measure Database) that defines the control packet record
@@ -517,55 +472,53 @@ Feb\_pctred|Analogous to the January percent reduction, above.
 ...|...
 Dec\_pctred|The percent reduction of the control to apply to the monthly December emission factor (the dec\_value column of the FF10 inventory).<br/>If no December percent reduction is specified, the annual percent reduction value will be used as a default.<br/>The monthly-specific percent reduction fields are not used on the older ORL inventory formats; only the annual percent reduction field will be used on these older formats.
 Comment|Information about this record and how it was produced and entered by the user.
-[Control Extended Packet Data Format][control_ext_format_table]
+: Control Extended Packet Data Format {#tbl:control_ext_format_table}
 
 ### Allowable Packet ###
 
-The format of the Allowable Packet ([Table](#allowable_format_table)) is based on the SMOKE file format as defined in the [SMOKE User's Manual][ALLOW]. Two modifications were made to enhance this packet's use in CoST:
+The format of the Allowable Packet ([@Tbl:allowable_format_table]) is based on the SMOKE file format as defined in the [SMOKE User's Manual][ALLOW]. Two modifications were made to enhance this packet's use in CoST:
 
 1. The unused SMOKE column at position L is now used to store the compliance date that the cap or replacement emission value can be applied to a source.
 2. The unused SMOKE column at position M is used to store the NAICS code.
 
-[ALLOW]: http://www.cmascenter.org/smoke/documentation/3.5.1/html/ch08s06.html#sect_input_gcntl_allowable target="_blank"
-
 Line|Position|Description
--|-|-
+-|-|--------
 1|A|/ALLOWABLE/
 2+|A|# Header entry. Header is indicated by use of "#" as the first character on the line.
 3+|A|Country/state/county code, or country/state code with blank for county, or zero (or blank or -9) for all country/state/county or country/state codes
- |B|8- or 10-digit SCC, optional; blank, zero, or -9 if not an SCC-specific cap or replacement
- |C|Pollutant; blank, zero, or -9 if not a pollutant-specific control; in most cases, the cap or replacement value will be a pollutant-specific value, and that pollutant's name needs to be placed in this column
- |D|Control factor (no longer used by SMOKE or CoST; enter -9 as placeholder)
- |E|Allowable emissions cap value (tons/day) (required if no "replace" emissions are given)
- |F|Allowable emissions replacement value (tons/day) (required if no "cap" emissions are given)
- |G|Standard Industrial Category (SIC), optional; blank, zero, or -9 if not an SIC- specific cap or replacement
- |H|Plant ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
- |I|Point ID for point sources, optional; blank, zero, or -9 if not specified, leave blank for nonpoint inventories
- |J|Stack ID for point sources, optional; blank, zero, or -9 if not specified, leave blank for nonpoint inventories
- |K|Segment for point sources, optional; blank, zero, or -9 if not specified, leave blank for nonpoint inventories
- |L|Compliance Date. The compliance date on which a cap or replacement entry can be applied to sources; prior to this date, the cap or replacement will not be applied. A blank value is assumed to mean that the cap or replacement is within the compliance date and is available for analysis. See [Section](#effective_date_section) for more information.
- |M|North American Industry Classification (NAICS) Code, optional; blank, zero, or -9 if not a NAICS-specific projection
+||B|8- or 10-digit SCC, optional; blank, zero, or -9 if not an SCC-specific cap or replacement
+||C|Pollutant; blank, zero, or -9 if not a pollutant-specific control; in most cases, the cap or replacement value will be a pollutant-specific value, and that pollutant's name needs to be placed in this column
+||D|Control factor (no longer used by SMOKE or CoST; enter -9 as placeholder)
+||E|Allowable emissions cap value (tons/day) (required if no "replace" emissions are given)
+||F|Allowable emissions replacement value (tons/day) (required if no "cap" emissions are given)
+||G|Standard Industrial Category (SIC), optional; blank, zero, or -9 if not an SIC- specific cap or replacement
+||H|Plant ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+||I|Point ID for point sources, optional; blank, zero, or -9 if not specified, leave blank for nonpoint inventories
+||J|Stack ID for point sources, optional; blank, zero, or -9 if not specified, leave blank for nonpoint inventories
+||K|Segment for point sources, optional; blank, zero, or -9 if not specified, leave blank for nonpoint inventories
+||L|Compliance Date. The compliance date on which a cap or replacement entry can be applied to sources; prior to this date, the cap or replacement will not be applied. A blank value is assumed to mean that the cap or replacement is within the compliance date and is available for analysis. See [@Sec:effective_date_section] for more information.
+||M|North American Industry Classification (NAICS) Code, optional; blank, zero, or -9 if not a NAICS-specific projection
 4|A|/END/
-[Allowable Data Format][allowable_format_table]
+: Allowable Data Format {#tbl:allowable_format_table}
 
-### Effective and Compliance Date Handling [effective_date_section] ###
+### Effective and Compliance Date Handling ### {#sec:effective_date_section}
 
 For control programs that use an effective date (plant closures) or compliance date (controls), CoST uses the control strategy target year to build a cutoff date to use when determining which programs are in effect. To specify the month and day of the cutoff date (used in combination with the target year), there are two EMF system-level properties. These properties are stored in the emf.properties table and are named `COST_PROJECT_FUTURE_YEAR_EFFECTIVE_DATE_CUTOFF_MONTHDAY` (for effective dates) and `COST_PROJECT_FUTURE_YEAR_COMPLIANCE_DATE_CUTOFF_MONTHDAY` (for compliance dates). To set a cutoff month/day of October 1, the property value would be "10/01".
 
 For a strategy with a target year of 2020 and an effective cutoff month/day of 10/01, the closure effective cutoff date is 10/01/2020.
 
 Closure Record Effective Date|Outcome
--|-
+-|---
 07/01/2013|Effective date is before the cutoff date so all sources matching this record will be closed
 blank|All sources matching this record will be closed
 11/15/2020|Effective date is after the cutoff date so matching sources will not be closed
 
-## Appendix B: Control Program Source Matching Hierarchy [appendix_b] ##
+## Control Program Source Matching Hierarchy ## {#sec:appendix_b}
 
-[Table](#control_packet_hierarchy_table) lists the source matching  combinations, the inventory types the matching criteria can be used for, and the Control Program Packet Types that can use these criteria.
+[@Tbl:control_packet_hierarchy_table] lists the source matching  combinations, the inventory types the matching criteria can be used for, and the Control Program Packet Types that can use these criteria.
 
 Ranking|Matching Combination|Inventory Types|Control Program Types
--|-|-|-
+-|---|-|---
 1|Country/State/County code, plant ID, point ID, stack ID, segment, 8-digit SCC code, pollutant|point|allowable, control, projection, plant closure
 2|Country/State/County code, plant ID, point ID, stack ID, segment, pollutant|point|allowable, control, projection, plant closure
 3|Country/State/County code, plant ID, point ID, stack ID, pollutant|point|allowable, control, projection, plant closure
@@ -627,14 +580,14 @@ Ranking|Matching Combination|Inventory Types|Control Program Types
 59|Country/State code, pollutant|point, nonpoint, onroad, nonroad|allowable, control, projection
 60|Country/State code|point, nonpoint, onroad, nonroad|allowable, control, projection, plant closure
 61|Pollutant|point, nonpoint, onroad, nonroad|allowable, control, projection
-[Control Packet Source Matching Hierarchy][control_packet_hierarchy_table]
+: Control Packet Source Matching Hierarchy {#tbl:control_packet_hierarchy_table}
 
-## Appendix C: Control Strategy Output Dataset Formats [appendix_c] ##
+## Control Strategy Output Dataset Formats ## {#sec:appendix_c}
 
 ### Strategy Detailed Result ###
 
 Column|Description
--|-
+-|----
 SECTOR|The source sector specified for the input inventory dataset.
 CM\_ABBREV|For Plant Closure Packets, this column will be set to “PLTCLOSURE”.<br/><br/>For Projection Packets, this column will be set to “PROJECTION”.<br/><br/>For Control Packets, this column will be set to the abbreviation of the control measure that was applied to the source, if it was explicitly specified in the packet, or it could be the predicted measure abbreviation as found in the CMDB. If no measure can be found, then it will be set to “UNKNOWNMSR”.<br/><br/>For Allowable Packets, this column will be set to the predicted abbreviation of the control measure that was applied to the source. If no measure can be found, then it will be set “UNKNOWNMSR”.
 POLL|The pollutant for the source, found in the inventory
@@ -701,12 +654,12 @@ FEB\_PCT\_RED|Same as defined for the jan\_pct\_red field but for February
 ...|...
 DEC\_PCT\_RED|Same as defined for the jan\_pct\_red field but for December
 COMMENT|Information about this record and how it was produced; this can be either created automatically by the system or entered by the user.
-[Columns in the Strategy Detailed Result][strategy_detailed_result_columns_table]
+: Columns in the Strategy Detailed Result {#tbl:strategy_detailed_result_columns_table}
 
 ### Strategy Messages ###
 
 Column|Description
--|-
+-|----
 Fips|The state and county FIPS code for the source, found in the inventory
 Scc|The SCC code for the source, found in the inventory
 PlantId|For point sources, the plant/facility ID for the source, found in the inventory
@@ -732,4 +685,4 @@ Packet\_naics|The NAICS code for the source, found in the control program packet
 Packet\_compliance\_effective\_date|The compliance or effective date, found in the control program packet. The compliance date is used in the Control Packet; the effective date is used in the Plant Closure Packet
 Packet\_replacement|Indicates whether the packet identifies a replacement versus an add-on control, found in the control program packet
 Packet\_annual\_monthly|Indicates whether the packet is monthly based or annual based
-[Columns in the Strategy Messages Dataset][strategy_messages_columns_table]
+: Columns in the Strategy Messages Dataset {#tbl:strategy_messages_columns_table}
