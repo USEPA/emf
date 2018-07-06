@@ -363,7 +363,7 @@ The Sources tab of the Dataset Properties Editor ([@Fig:dataset_properties_sourc
 
 ![Sources for External Dataset](images/dataset_properties_sources_external.png){#fig:dataset_properties_sources_external}
 
-### QA ###
+### QA ### {#sec:dataset_properties_qa_section}
 
 The QA tab of the Dataset Properties Editor ([@Fig:dataset_properties_qa_nonroad]) shows the QA steps that have been run using the dataset. See [@Sec:qa_chapter] for more information about setting up and running QA steps.
 

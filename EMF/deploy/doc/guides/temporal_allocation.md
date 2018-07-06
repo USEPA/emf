@@ -1,9 +1,4 @@
-Title: Temporal Allocation Using the Emissions Modeling Framework
-Author: C. Seppanen, UNC
-CSS: base.css
-XHTML XSLT: xhtml-toc-h2-tempalloc.xslt
-
-# Temporal Allocation Using the EMF #
+# Temporal Allocation #
 
 ## Introduction ##
 
@@ -11,59 +6,43 @@ The temporal allocation module in the Emissions Modeling Framework allows you to
 
 ## Creating a Temporal Allocation Run ##
 
-Under the main Manage menu, select Temporal Allocation to open the Temporal Allocation Manager. The Temporal Allocation Manager window will list existing temporal allocations as shown in [Figure](#manager).
+Under the main Manage menu, select Temporal Allocation to open the Temporal Allocation Manager. The Temporal Allocation Manager window will list existing temporal allocations as shown in [@Fig:manager].
 
-![Temporal Allocation Manager window][manager]
+![Temporal Allocation Manager window](images/tempalloc/manager.png){#fig:manager}
 
-[manager]: images/tempalloc/manager.png
+From the Temporal Allocation Manager, click the New button. The Edit Temporal Allocation window will open with the Summary tab selected ([@Fig:new_summary]).
 
-From the Temporal Allocation Manager, click the New button. The Edit Temporal Allocation window will open with the Summary tab selected ([Figure](#new_summary)).
-
-![Summary tab for new temporal allocation][new_summary]
-
-[new_summary]: images/tempalloc/new_summary.png
+![Summary tab for new temporal allocation](images/tempalloc/new_summary.png){#fig:new_summary}
 
 In the Edit Temporal Allocation window, the four tabs labeled Summary, Inventories, Time Period, and Profiles are used to enter the temporal allocation inputs. This information can be entered in any order; this guide goes through the tabs in order.
 
 ### Summary Tab ###
 
-On the Summary tab, enter a unique name for the temporal allocation. You can optionally enter a description and select a project. The EMF will automatically set the last modified date and creator. [Figure](#new_summary_edited) shows the Summary tab with details of the new temporal allocation entered.
+On the Summary tab, enter a unique name for the temporal allocation. You can optionally enter a description and select a project. The EMF will automatically set the last modified date and creator. [@Fig:new_summary_edited] shows the Summary tab with details of the new temporal allocation entered.
 
-![New temporal allocation with summary information entered][new_summary_edited]
+![New temporal allocation with summary information entered](images/tempalloc/new_summary_edited.png){#fig:new_summary_edited}
 
-[new_summary_edited]: images/tempalloc/new_summary_edited.png
+You can click the Save button from any tab in the Edit Temporal Allocation window to save the information you have entered. If you don't enter a unique name, an error message will be displayed at the top of the window as shown in [@Fig:new_summary_dup_name].
 
-You can click the Save button from any tab in the Edit Temporal Allocation window to save the information you have entered. If you don't enter a unique name, an error message will be displayed at the top of the window as shown in [Figure](#new_summary_dup_name).
+![Temporal allocation with duplicate name](images/tempalloc/new_summary_dup_name.png){#fig:new_summary_dup_name}
 
-![Temporal allocation with duplicate name][new_summary_dup_name]
+If you enter or update information and then try to close the edit window without saving, you will be asked if you would like to discard your changes. The prompt is shown in [@Fig:tempalloc_discard_changes].
 
-[new_summary_dup_name]: images/tempalloc/new_summary_dup_name.png
-
-If you enter or update information and then try to close the edit window without saving, you will be asked if you would like to discard your changes. The prompt is shown in [Figure](#discard_changes).
-
-![Discard changes prompt][discard_changes]
-
-[discard_changes]: images/tempalloc/discard_changes.png
+![Discard changes prompt](images/tempalloc/discard_changes.png){#fig:tempalloc_discard_changes}
 
 When your temporal allocation is successfully saved, a confirmation message is displayed at the top of the window.
 
-![Successfully saved temporal allocation][new_summary_saved]
-
-[new_summary_saved]: images/tempalloc/new_summary_saved.png
+![Successfully saved temporal allocation](images/tempalloc/new_summary_saved.png){#fig:new_summary_saved}
 
 ### Inventories Tab ###
 
-The Inventory tab of the Edit Temporal Allocation lists the inventories that will be processed by the temporal allocation. For a new temporal allocation, the list is initially empty as shown in [Figure](#new_inventories).
+The Inventory tab of the Edit Temporal Allocation lists the inventories that will be processed by the temporal allocation. For a new temporal allocation, the list is initially empty as shown in [@Fig:new_inventories].
 
-![Inventories tab for new temporal allocation][new_inventories]
+![Inventories tab for new temporal allocation](images/tempalloc/new_inventories.png){#fig:new_inventories}
 
-[new_inventories]: images/tempalloc/new_inventories.png
+Click the Add button to select inventory datasets. A Select Datasets window will appear with the list of supported dataset types ([@Fig:select_datasets]).
 
-Click the Add button to select inventory datasets. A Select Datasets window will appear with the list of supported dataset types ([Figure](#select_datasets)).
-
-![Select Datasets window][select_datasets]
-
-[select_datasets]: images/tempalloc/select_datasets.png
+![Select Datasets window](images/tempalloc/select_datasets.png){#fig:select_datasets}
 
 The temporal allocation module supports the following inventory dataset types:
 
@@ -76,47 +55,35 @@ The temporal allocation module supports the following inventory dataset types:
 * Flat File 2010 Point Daily
 * Flat File 2010 Nonpoint Daily
 
-Use the *Choose a dataset type* pull-down menu to select the dataset type you are interested in. A list of matching datasets will be displayed in the window as shown in [Figure](#select_datasets_list).
+Use the *Choose a dataset type* pull-down menu to select the dataset type you are interested in. A list of matching datasets will be displayed in the window as shown in [@Fig:select_datasets_list].
 
-![Datasets matching selected dataset type][select_datasets_list]
+![Datasets matching selected dataset type](images/tempalloc/select_datasets_list.png){#fig:select_datasets_list}
 
-[select_datasets_list]: images/tempalloc/select_datasets_list.png
+You can use the *Dataset name contains* field to filter the list of datasets as shown in [@Fig:select_datasets_filtered].
 
-You can use the *Dataset name contains* field to filter the list of datasets as shown in [Figure](#select_datasets_filtered).
+![Filtered datasets matching selected dataset type](images/tempalloc/select_datasets_filtered.png){#fig:select_datasets_filtered}
 
-![Filtered datasets matching selected dataset type][select_datasets_filtered]
+Click on the dataset names to select the datasets you want to add and then click the OK button. [@Fig:select_datasets_selected] shows the Select Datasets window with one dataset selected.
 
-[select_datasets_filtered]: images/tempalloc/select_datasets_filtered.png
+![Dataset selected to add](images/tempalloc/select_datasets_selected.png){#fig:select_datasets_selected}
 
-Click on the dataset names to select the datasets you want to add and then click the OK button. [Figure](#select_datasets_selected) shows the Select Datasets window with one dataset selected.
+Your selected datasets will be displayed in the Inventories tab of the Edit Temporal Allocation window ([@Fig:new_inventories_list]).
 
-![Dataset selected to add][select_datasets_selected]
+![Inventories added to temporal allocation](images/tempalloc/new_inventories_list.png){#fig:new_inventories_list}
 
-[select_datasets_selected]: images/tempalloc/select_datasets_selected.png
+The module will automatically use the default version of each dataset. To change the dataset version, check the box next to the inventory and then click the Set Version button. A Set Version dialog will be displayed for each selected inventory as shown in [@Fig:set_version].
 
-Your selected datasets will be displayed in the Inventories tab of the Edit Temporal Allocation window ([Figure](#new_inventories_saved)).
+![Set version for selected inventory](images/tempalloc/set_version.png){#fig:set_version}
 
-![Inventories added to temporal allocation][new_inventories_list]
+To remove an inventory dataset, check the box next to the dataset and then click the Remove button. The View Properties button will open the Dataset Properties View [@Sec:dataset_properties_section] for each selected dataset and the View Data button opens the Data Viewer ([@Fig:data_viewer]).
 
-[new_inventories_list]: images/tempalloc/new_inventories_list.png
+The Inventories tab also allows you to specify an inventory filter to apply to the input inventories. This is a general filter mechanism to reduce the total number of sources to be processed in the temporal allocation run. [@Fig:new_inventories_filter] shows an inventory filter that will match sources in Wake County, North Carolina and only consider CO emissions from the inventory.
 
-The module will automatically use the default version of each dataset. To change the dataset version, check the box next to the inventory and then click the Set Version button. A Set Version dialog will be displayed for each selected inventory as shown in [Figure](#set_version).
-
-![Set version for selected inventory][set_version]
-
-[set_version]: images/tempalloc/set_version.png
-
-To remove an inventory dataset, check the box next to the dataset and then click the Remove button. The View Properties button will open the Dataset Properties View for each selected dataset and the View Data button opens the Data Viewer.
-
-The Inventories tab also allows you to specify an inventory filter to apply to the input inventories. This is a general filter mechanism to reduce the total number of sources to be processed in the temporal allocation run. [Figure](#new_inventories_filter) shows an inventory filter that will match sources in Wake County, North Carolina and only consider CO emissions from the inventory.
-
-![Inventory filtering][new_inventories_filter]
-
-[new_inventories_filter]: images/tempalloc/new_inventories_filter.png
+![Inventory filtering](images/tempalloc/new_inventories_filter.png){#fig:new_inventories_filter}
 
 #### Annual vs. Monthly Input ####
 
-The temporal allocation module can process annual and monthly data from ORL and FF10 datasets. To determine if a given ORL inventory contains annual totals or monthly average-day values, the temporal allocation module first looks at the time period stored for the inventory dataset. (These dates are set using the Dataset Properties Editor and are shown in the Time Period Start and Time Period End fields on the Summary tab.) If the dataset's start and end dates are within the same month, then the inventory is treated as monthly data.
+The temporal allocation module can process annual and monthly data from ORL and FF10 datasets. To determine if a given ORL inventory contains annual totals or monthly average-day values, the temporal allocation module first looks at the time period stored for the inventory dataset. (These dates are set using the Dataset Properties Editor [see [@Sec:dataset_properties_section]] and are shown in the Time Period Start and Time Period End fields on the Summary tab.) If the dataset's start and end dates are within the same month, then the inventory is treated as monthly data.
 
 As a fallback from using the dataset time period settings, the module also looks at the dataset's name. If the dataset name contains the month name or abbreviation like "\_january" or "\_jan", then the dataset is treated as monthly data.
 
@@ -124,11 +91,9 @@ For FF10 inventories, the temporal allocation module will check if the inventory
 
 ### Time Period Tab ###
 
-The Time Period tab of the Edit Temporal Allocation window is used to set the desired output resolution and time period. [Figure](#new_time_period) shows the Time Period tab for the new temporal allocation.
+The Time Period tab of the Edit Temporal Allocation window is used to set the desired output resolution and time period. [@Fig:new_time_period] shows the Time Period tab for the new temporal allocation.
 
-![Time period tab for new temporal allocation][new_time_period]
-
-[new_time_period]: images/tempalloc/new_time_period.png
+![Time period tab for new temporal allocation](images/tempalloc/new_time_period.png){#fig:new_time_period}
 
 The temporal allocation module supports the following resolutions:
 
@@ -142,65 +107,53 @@ The temporal allocation module supports the following resolutions:
 
 To set the time period for the temporal allocation, enter the start and end dates in the fields labeled Time Period Start and Time Period End. The dates should be formatted as MM/DD/YYYY. For example, to set the time period as May 1, 2008 thorugh October 31, 2008, enter "05/01/2008" in the Time Period Start text field and enter "10/31/2008" in the Time Period End text field. For monthly output, only the year and month of the time period dates will be used.
 
-In [Figure](#new_time_period_edited), the output resolution has been set to Episodic weekend average and the time period is June 1, 2011 through August 31, 2011.
+In [@Fig:new_time_period_edited], the output resolution has been set to Episodic weekend average and the time period is June 1, 2011 through August 31, 2011.
 
-![Time period tab with information entered][new_time_period_edited]
-
-[new_time_period_edited]: images/tempalloc/new_time_period_edited.png
+![Time period tab with information entered](images/tempalloc/new_time_period_edited.png){#fig:new_time_period_edited}
 
 ### Profiles Tab ###
 
 The Profiles tab of the Edit Temporal Allocation window is used to select the temporal cross-reference dataset and various profile datasets. The cross-reference dataset is used to assign temporal allocation profiles to each source in the inventory. A profile dataset contains factors to estimate emissions for different temporal resolutions. For example, a year-to-month profile will have 12 factors, one for each month of the year.
 
-When editing a new temporal allocation, no datasets are selected initially as shown in [Figure](#new_profiles).
+When editing a new temporal allocation, no datasets are selected initially as shown in [@Fig:new_profiles].
 
-![Profiles tab for new temporal allocation][new_profiles]
+![Profiles tab for new temporal allocation](images/tempalloc/new_profiles.png){#fig:new_profiles}
 
-[new_profiles]: images/tempalloc/new_profiles.png
-
-The Cross-Reference Dataset pull-down menu is automatically populated with datasets of type "Temporal Cross Reference (CSV)". The format of this dataset is described in [Section](#input_formats).
+The Cross-Reference Dataset pull-down menu is automatically populated with datasets of type "Temporal Cross Reference (CSV)". The format of this dataset is described in [@Sec:input_formats].
 
 For annual input, year-to-month profiles are needed. The Year-To-Month Profile Dataset pull-down menu lists datasets of type "Temporal Profile Monthly (CSV)".
 
 For daily or episodic output, the inventory data will need estimates of daily data. The temporal allocation module supports using week-to-day profiles or month-to-day profiles. The Week-To-Day Profile Dataset pull-down menu lists available datasets of type "Temporal Profile Weekly (CSV)". The Month-to-Day Profile Dataset pull-down shows datasets of type "Temporal Profile Daily (CSV)".
 
-The formats of the various profile datasets are described in [Section](#input_formats).
+The formats of the various profile datasets are described in [@Sec:input_formats].
 
-[Figure](#new_profiles_edited) shows the Profiles tab with cross-reference, year-to-month profile, and week-to-day profile datasets selected.
+[@Fig:new_profiles_edited] shows the Profiles tab with cross-reference, year-to-month profile, and week-to-day profile datasets selected.
 
-![Profiles tab with datasets selected][new_profiles_edited]
-
-[new_profiles_edited]: images/tempalloc/new_profiles_edited.png
+![Profiles tab with datasets selected](images/tempalloc/new_profiles_edited.png){#fig:new_profiles_edited}
 
 For each dataset, the default version will be selected automatically. The Version pull-down menu lists available versions for each dataset if you want to use a non-default version.
 
-The View Properties button will open the Dataset Properties View for the associated dataset. The View Data button opens the Data Viewer.
+The View Properties button will open the Dataset Properties View ([@Sec:dataset_properties_section]) for the associated dataset. The View Data button opens the Data Viewer ([@Fig:data_viewer]).
 
 ### Output Tab ###
 
-The Output tab will display the result datasets created when you run a temporal allocation. For a new temporal allocation, this window is empty as shown in [Figure](#new_output).
+The Output tab will display the result datasets created when you run a temporal allocation. For a new temporal allocation, this window is empty as shown in [@Fig:new_output].
 
-![Output tab for new temporal allocation][new_output]
-
-[new_output]: images/tempalloc/new_output.png
+![Output tab for new temporal allocation](images/tempalloc/new_output.png){#fig:new_output}
 
 ## Running a Temporal Allocation ##
 
 All temporal allocation runs are started from the Edit Temporal Allocation window. To run a temporal allocation, first open the Temporal Allocation Manager window from the main Manage menu. Check the box next to the temporal allocation you want to run and then click the Edit button.
 
-![Select temporal allocation to run in Temporal Allocation Manager][manager_selected]
-
-[manager_selected]: images/tempalloc/manager_selected.png
+![Select temporal allocation to run in Temporal Allocation Manager](images/tempalloc/manager_selected.png){#fig:manager_selected}
 
 The Edit Temporal Allocation window will open for the temporal allocation you selected. Click the Run button at the bottom of the window to start running the temporal allocation.
 
-![Run button in the Edit Temporal Allocation window][run_summary]
-
-[run_summary]: images/tempalloc/new_summary_edited.png
+![Run button in the Edit Temporal Allocation window](images/tempalloc/new_summary_edited.png){#fig:run_summary}
 
 ### Error Messages ###
 
-If any problems are detected, an error message is displayed at the top of the Edit Temporal Allocation window (see [Figure](#run_error) for an example). The following requirements must be met before a temporal allocation can be run:
+If any problems are detected, an error message is displayed at the top of the Edit Temporal Allocation window (see [@Fig:run_error] for an example). The following requirements must be met before a temporal allocation can be run:
 
 * At least one inventory must be selected.
 * The output resolution must be selected.
@@ -213,19 +166,15 @@ If any problems are detected, an error message is displayed at the top of the Ed
     * A year-to-month profile dataset must be selected.
     * Either a week-to-day or month-to-day profile dataset must be selected.
 
-![Temporal allocation run error][run_error]
-
-[run_error]: images/tempalloc/run_error.png
+![Temporal allocation run error](images/tempalloc/run_error.png){#fig:run_error}
 
 ### Run Steps and Status Messages ###
 
-After starting the run, you'll see a message at the top of the Edit Temporal Allocation window as shown in [Figure](#run_started).
+After starting the run, you'll see a message at the top of the Edit Temporal Allocation window as shown in [@Fig:run_started].
 
-![Temporal allocation run started][run_started]
+![Temporal allocation run started](images/tempalloc/run_started.png){#fig:run_started}
 
-[run_started]: images/tempalloc/run_started.png
-
-The EMF Status window will display updates as the temporal allocation is run. There are several steps in running a temporal allocation. First, any existing outputs for the temporal allocation are removed, indexes are created for the inventory datasets to speed up processing in the database, and the cross-reference dataset is cleaned to make sure the data is entered in a standard format.
+The EMF Status window ([@Sec:status_window_section]) will display updates as the temporal allocation is run. There are several steps in running a temporal allocation. First, any existing outputs for the temporal allocation are removed, indexes are created for the inventory datasets to speed up processing in the database, and the cross-reference dataset is cleaned to make sure the data is entered in a standard format.
 
 Next, monthly totals and monthly average-day values are calculated from the input inventory data. The monthly values are stored in the monthly result output dataset which uses the "Temporal Allocation Monthly Result" dataset type. For annual input data, the year-to-month profiles are used to estimate monthly values. For monthly data from FF10 inventories, a monthly average-day value is calculated by dividing the monthly total value by the number of days in the month. For monthly data from ORL inventories, the monthly total is calculated by multiplying the monthly average-day value by the number of days in the month.
 
@@ -235,39 +184,31 @@ Instead of month-to-day profiles, week-to-day profiles can be used. Week-to-day 
 
 If the temporal allocation resolution is episodic totals or average-day, an episodic result dataset is created using the dataset type "Temporal Allocation Episodic Result". This dataset will contain episodic totals and average-day values for the sources in the inventory. This values are calculated by summing the appropriate daily values and then dividing by the number of days to calculate the average-day values.
 
-Once the temporal allocation has finished running, a status message "Finished Temporal Allocation run." will be displayed. [Figure](#run_status) shows the Status window after the temporal allocation has finished running.
+Once the temporal allocation has finished running, a status message "Finished Temporal Allocation run." will be displayed. [@Fig:run_status] shows the Status window after the temporal allocation has finished running.
 
-![Status messages for completed temporal allocation run][run_status]
-
-[run_status]: images/tempalloc/run_status.png
+![Status messages for completed temporal allocation run](images/tempalloc/run_status.png){#fig:run_status}
 
 The Summary tab of the Edit Temporal Allocation window includes an overview of the run listing the status (Running, Finished, or Failed) and the start and completion date for the most recent run.
 
-![Summary tab after temporal allocation is run][run_finished]
-
-[run_finished]: images/tempalloc/run_finished.png
+![Summary tab after temporal allocation is run](images/tempalloc/run_finished.png){#fig:run_finished}
 
 ### Run Outputs ###
 
 The Output tab of the Edit Temporal Allocation window will show the three result datasets from the run - monthly, daily, and episodic results. 
 
-![Output tab after temporal allocation is run][run_output]
+![Output tab after temporal allocation is run](images/tempalloc/run_output.png){#fig:run_output}
 
-[run_output]: images/tempalloc/run_output.png
+From the Output tab, you can select any of the result datasets and click the View Properties button to open the Dataset Properties View window ([@Sec:dataset_properties_section]) for the selected dataset.
 
-From the Output tab, you can select any of the result datasets and click the View Properties button to open the Dataset Properties View window for the selected dataset.
-
-![Dataset Properties View for episodic result dataset][view_output_dataset]
-
-[view_output_dataset]: images/tempalloc/output_dataset.png
+![Dataset Properties View for episodic result dataset](images/tempalloc/output_dataset.png){#fig:view_output_dataset}
 
 You can also access the result datasets from the Dataset Manager.
 
-The View Data button will open the Data Viewer window for the selected dataset. Clicking the Summarize button will open the QA tab of the Dataset Properties Editor window.
+The View Data button will open the Data Viewer window ([@Fig:data_viewer]) for the selected dataset. Clicking the Summarize button will open the QA tab of the Dataset Properties Editor window ([@Sec:dataset_properties_qa_section]).
 
-You can use QA steps to analyze the result datasets. The formats of the three types of result datasets are described in [Section](#output_formats).
+You can use QA steps to analyze the result datasets; see [@Sec:qa_chapter] for information on creating and running QA steps. The formats of the three types of result datasets are described in [@Sec:output_formats].
 
-## Input Dataset Formats [input_formats] ##
+## Input Dataset Formats ## {#sec:input_formats}
 
 ### Temporal Cross Reference (CSV) ###
 
@@ -327,11 +268,11 @@ Column|Name|Type|Description
 33|DAY31|REAL|Temporal factor for day 31 of month
 34|COMMENT|TEXT|Comments (optional; must be double quoted)
 
-## Output Dataset Formats [output_formats] ##
+## Output Dataset Formats ## {#sec:output_formats}
 
 ### Column Naming ###
 
-The temporal allocation output datasets may contain sources from ORL or FF10 inventories. These two sets of inventory formats don't use consistent names for the source characteristic columns. The temporal allocation formats use the ORL column names. [Table](#column_mapping_table) shows how the column names map between FF10 and ORL inventories.
+The temporal allocation output datasets may contain sources from ORL or FF10 inventories. These two sets of inventory formats don't use consistent names for the source characteristic columns. The temporal allocation formats use the ORL column names. [@Tbl:column_mapping_table] shows how the column names map between FF10 and ORL inventories.
 
 FF10 Column Name|ORL Column Name|Description
 -|-|-
@@ -340,12 +281,12 @@ FACILITY\_ID|PLANTID|Plant ID for point sources
 UNIT\_ID|POINTID|Point ID for point sources
 REL\_POINT\_ID|STACKID|Stack ID for point sources
 PROCESS\_ID|SEGMENT|Segment for point sources
-[Column Name Mapping][column_mapping_table]
+: Column Name Mapping {#tbl:column_mapping_table}
 
 ### Temporal Allocation Monthly Result ###
 
 Column|Description
--|-
+-|----
 SCC|The source SCC from the inventory
 FIPS|The source FIPS code from the inventory
 PLANTID|For point sources, the plant ID/facility ID from the inventory
@@ -362,14 +303,12 @@ AVG\_DAY\_EMIS (tons/day)|The average-day emissions for the source and pollutant
 INV\_RECORD\_ID|The record number from the input inventory for this source
 INV\_DATASET\_ID|The numeric ID of the input inventory dataset
 
-![Example monthly result data][monthly_result]
-
-[monthly_result]: images/tempalloc/monthly_result.png
+![Example monthly result data](images/tempalloc/monthly_result.png){#fig:monthly_result}
 
 ### Temporal Allocation Daily Result ###
 
 Column|Description
--|-
+-|----
 SCC|The source SCC from the inventory
 FIPS|The source FIPS code from the inventory
 PLANTID|For point sources, the plant ID/facility ID from the inventory
@@ -385,14 +324,12 @@ TOTAL\_EMIS (tons/day)|The total emissions for the source and pollutant for the 
 INV\_RECORD\_ID|The record number from the input inventory for this source
 INV\_DATASET\_ID|The numeric ID of the input inventory dataset
 
-![Example daily result data][daily_result]
-
-[daily_result]: images/tempalloc/daily_result.png
+![Example daily result data](images/tempalloc/daily_result.png){#fig:daily_result}
 
 ### Temporal Allocation Episodic Result ###
 
 Column|Description
--|-
+-|----
 SCC|The source SCC from the inventory
 FIPS|The source FIPS code from the inventory
 PLANTID|For point sources, the plant ID/facility ID from the inventory
@@ -406,14 +343,12 @@ AVG\_DAY\_EMIS (tons/day)|The average-day emissions for the source and pollutant
 INV\_RECORD\_ID|The record number from the input inventory for this source
 INV\_DATASET\_ID|The numeric ID of the input inventory dataset
 
-![Example episodic result data][episodic_result]
-
-[episodic_result]: images/tempalloc/episodic_result.png
+![Example episodic result data](images/tempalloc/episodic_result.png){#fig:episodic_result}
 
 ### Temporal Allocation Messages ###
 
 Column|Description
--|-
+-|----
 SCC|The source SCC from the inventory
 FIPS|The source FIPS code from the inventory
 PLANTID|For point sources, the plant ID/facility ID from the inventory

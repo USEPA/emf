@@ -149,7 +149,7 @@ Various windows in the EMF client application have Refresh buttons, usually in e
 
 You will also need to use the Refresh button if you have made changes and return to a previously opened window. For example, suppose you select a dataset in the Dataset Manager and edit the dataset's name as described in [@Sec:dataset_properties_section]. When you save your changes, the previously opened Dataset Manager window won't automatically display the updated name. If you close and re-open the Dataset Manager, the dataset's name will be refreshed; otherwise, you can click the Refresh button to update the display.
 
-### Status Window ###
+### Status Window ### {#sec:status_window_section}
 
 Many actions in the EMF are run on the server. For example, when you run a QA step, the client application on your computer sends a message to the server to start running the step. Depending on the type of QA step, this processing can take a while and so the client will allow you to do other work while it periodically checks with the server to find out the status of your request. These status checks are displayed in the Status Window shown in [@Fig:status_window].
 
