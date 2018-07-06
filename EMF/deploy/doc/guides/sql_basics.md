@@ -1,34 +1,23 @@
-Title: SQL Basics for the Emissions Modeling Framework
-Author: C. Seppanen, UNC
-CSS: base.css
-XHTML XSLT: xhtml-toc-h2-sql.xslt
+# Why Learn SQL to Use the EMF? #
 
-# SQL Basics for the EMF #
+The Emissions Modeling Framework (EMF) stores emissions and other data in a relational database. Data files are imported into the database as datasets and the raw data from the files is stored in database tables. Using the EMF client, you can work with this data using built-in tools for viewing and editing the data. [@Fig:data_viewer] shows the Data Viewer window for an inventory dataset. This interface displays the rows and columns of the underlying database table where the dataset is stored.
 
-## Why Learn SQL to Use the EMF? ##
+![Data viewer for an inventory dataset](images/data_viewer.png){#fig:data_viewer}
 
-The Emissions Modeling Framework stores emissions and other data in a relational database. Data files are imported into the database as datasets and the raw data from the files is stored in database tables. Using the EMF client, you can work with this data using built-in tools for viewing and editing the data. [Figure](#data_viewer) shows the Data Viewer window for an inventory dataset. This interface displays the rows and columns of the underlying database table where the dataset is stored.
+Because the data is stored in database tables, we can use Structured Query Language (SQL) to filter, sort, or analyze the data. In the Data Viewer window shown in [@Fig:data_viewer], snippets of SQL are used to specify the order the records are sorted in (Sort Order) and the filtering applied to limit the particular records displayed (Row Filter).
 
-![Data viewer for an inventory dataset][data_viewer]
+The EMF also allows you to add QA steps to a dataset. One type of QA step lets you write your own SQL query to retrieve and summarize the dataset. Using SQL, you can select particular records of interest, grab data from other tables like region descriptions or pollutant information, or sum up emissions by SCC, region, pollutant, etc. [@Fig:sql_qa_step] shows the SQL query used for a QA step associated with an ORL point inventory dataset. This QA step produces a county-level summary of the inventory along with county and state names, pollutant descriptions, and county coordinates.
 
-[data_viewer]: images/sql/data_viewer.png
-
-Because the data is stored in database tables, we can use Structured Query Language (SQL) to filter, sort, or analyze the data. In the Data Viewer window shown in [Figure](#data_viewer), snippets of SQL are used to specify the order the records are sorted in (Sort Order) and the filtering applied to limit the particular records displayed (Row Filter).
-
-The EMF also allows you to add QA steps to a dataset. One type of QA step lets you write your own SQL query to retrieve and summarize the dataset. Using SQL, you can select particular records of interest, grab data from other tables like region descriptions or pollutant information, or sum up emissions by SCC, region, pollutant, etc. [Figure](#sql_qa_step) shows the SQL query used for a QA step associated with an ORL point inventory dataset. This QA step produces a county-level summary of the inventory along with county and state names, pollutant descriptions, and county coordinates.
-
-![Custom SQL for an ORL point inventory QA step][sql_qa_step]
-
-[sql_qa_step]: images/sql/sql_qa_step.png
+![Custom SQL for an ORL point inventory QA step](images/sql_qa_step.png){#fig:sql_qa_step}
 
 In this guide, we'll discuss the fundamentals of database tables, explain how to build SQL queries, and cover the special syntax that the EMF adds for working with EMF datasets and QA steps.
 
-## Database Tables ##
+# Database Tables #
 
 The EMF database is made up of many tables each of which stores columns and rows of data. A simplified example table is shown below:
 
 country (text)|state (text)|pollutant (text)|annual_emissions (numeric)
--|-|-
+-|-|-|-
 US|Georgia|NO|10.428
 US|Kentucky|NO|6.3878
 US|North Carolina|NO|41.835
@@ -44,7 +33,7 @@ Each table in the database has a unique name which is assigned by the EMF. For o
 
 The full EMF database contains many tables. Each dataset is imported into its own table based on the dataset type. When building queries for a given dataset, you will need to know the columns the dataset contains and the type of data in each column.
 
-## Querying Data ##
+# Querying Data #
 
 In this section, we'll work through the basics of a SQL `SELECT` query. You would use this type of query when creating SQL-based QA steps for a dataset.
 
@@ -56,7 +45,7 @@ The following example is a query that returns all the rows in the *state_emissio
     ORDER BY annual_emissions
 
 country|state|pollutant|annual_emissions
--|-|-
+-|-|-|-
 US|Kentucky|CO|140.25
 US|Georgia|CO|246.21
 US|South Carolina|CO|434.39
@@ -66,7 +55,7 @@ US|North Carolina|CO|730.01
 
 After the `SELECT` command, we list which columns from the table we want to output. In our example, we've used the asterisk (`*`) to grab all the columns of the table. This is equivalent to writing `SELECT country, state, pollutant, annual_emissions FROM state_emissions ...`.
 
-Besides listing the column names, you can also include different expressions in the `SELECT` list to create calculated columns. For example, we can divide the annual emissions value by 365 to compute the average day value as shown in the query below. [Section](#calculated_columns) has more information on calculated columns.
+Besides listing the column names, you can also include different expressions in the `SELECT` list to create calculated columns. For example, we can divide the annual emissions value by 365 to compute the average day value as shown in the query below. [@Sec:calculated_columns] has more information on calculated columns.
 
     SELECT country, state, pollutant, annual_emissions, 
            annual_emissions / 365 AS avg_day
@@ -75,7 +64,7 @@ Besides listing the column names, you can also include different expressions in 
     ORDER BY avg_day
 
 country|state|pollutant|annual_emissions|avg_day
--|-|-
+-|-|-|-|-
 US|Kentucky|CO|140.25|0.3842
 US|Georgia|CO|246.21|0.6745
 US|South Carolina|CO|434.39|1.190
@@ -83,43 +72,43 @@ US|North Carolina|CO|730.01|2.000
 
 In this example, we used the `AS` option to label the average day emissions column **avg_day**.
 
-The next portion of the query (`FROM state_emissions`) indicates which table we want to get the data from, in this case the *state_emissions* table. When building queries for EMF tables, special keywords are available to refer to a dataset's table name. This syntax is discussed in [Section](#emf_syntax).
+The next portion of the query (`FROM state_emissions`) indicates which table we want to get the data from, in this case the *state_emissions* table. When building queries for EMF tables, special keywords are available to refer to a dataset's table name. This syntax is discussed in [@Sec:emf_syntax].
 
-The `WHERE` clause is used to match rows in the database table to return. If we did not include a `WHERE` clause, our query would return all the rows in the database table. [Section](#where_clause) has more information about the `WHERE` clause.
+The `WHERE` clause is used to match rows in the database table to return. If we did not include a `WHERE` clause, our query would return all the rows in the database table. [@Sec:where_clause] has more information about the `WHERE` clause.
 
 We've included the `ORDER BY` option in our query. This specifies how the results should be sorted. When using `ORDER BY`, the default behavior is to sort the values in ascending order (smallest to biggest). To use descending order, add the keyword `DESC` like so: `ORDER BY annual_emissions DESC`.
 
 Note that the SQL keywords (i.e. `SELECT`, `FROM`, `WHERE`, etc.) are not case sensitive. We'll use capital case in our examples for clarity. Also, line breaks and indentations within the queries are not meaningful.
 
-### SELECT DISTINCT ###
+## SELECT DISTINCT ##
 
 By default, the output from the `SELECT` statement includes all the records that were matched. To only return the unique records, add the keyword `DISTINCT` before the list of column names. Suppose we want a list of all the pollutants in our *state_emissions* table. Initially we might try a query like the following:
 
     SELECT pollutant
     FROM state_emissions
 
-pollutant|
--|
-NO|
-NO|
-NO|
-NO|
-CO|
-CO|
-CO|
-CO|
+|pollutant|
+|-|
+|NO|
+|NO|
+|NO|
+|NO|
+|CO|
+|CO|
+|CO|
+|CO|
 
 This query returned just the **pollutant** column from each row in the table. A more useful output would give us just the unique pollutants. Adding the `DISTINCT` keyword gives us what we're looking for.
 
     SELECT DISTINCT pollutant
     FROM state_emissions
 
-pollutant|
--|
-NO|
-CO|
+|pollutant|
+|-|
+|NO|
+|CO|
 
-### LIMIT Option ###
+## LIMIT Option ##
 
 By default, all records are returned from the `SELECT` statement. The `LIMIT` option can be used to limit how many records are returned. The following query uses the `ORDER BY` option along with `LIMIT` to return the top 3 records.
 
@@ -130,17 +119,17 @@ By default, all records are returned from the `SELECT` statement. The `LIMIT` op
     LIMIT 3
 
 country|state|pollutant|annual_emissions
--|-|-
+-|-|-|-
 US|North Carolina|CO|730.01
 US|South Carolina|CO|434.39
 US|Georgia|CO|246.21
 
-## WHERE Clause Options [where_clause] ##
+# WHERE Clause Options ## {#sec:where_clause}
 
 The `WHERE` clause determines which rows in the database should be returned in the results. Usually you will be comparing text or numeric values in the database table to your filtering requirements. For example, you may want records for a specific state or SCC. Or you may want emissions values that exceed a particular value. There are several operators that you can use when building the `WHERE` clause.
 
 Operator|Description|Examples
--|-|-
+-|--|---
 `=`|Equal to|`state = 'Georgia'`, `annual_emissions = 100`
 `!=` or `<>`|Not equal to|`pollutant != 'NO'`
 `>`|Greater than|`annual_emissions > 10`
@@ -152,15 +141,15 @@ Operator|Description|Examples
 `ILIKE`|Match a character string (case-insensitive)|`state ILIKE 'geo%'`
 `NOT LIKE`|Inverse of LIKE|`state NOT LIKE 'Geo%'`
 `IN`|Match one or more of a set of values|`state IN ('Georgia', 'Kentucky')`; equivalent to `state = 'Georgia' OR state = 'Kentucky'`
-[WHERE Clause Operators][where_clause_operators_table]
+: WHERE Clause Operators {#tbl:where_clause_operators_table}
 
-As shown in the examples in [Table](#where_clause_operators_table), text values are enclosed in single quotes. Numeric values are not quoted.
+As shown in the examples in [@Tbl:where_clause_operators_table], text values are enclosed in single quotes. Numeric values are not quoted.
 
-### Pattern Matching ###
+## Pattern Matching ##
 
 The `LIKE` and `ILIKE` operators match records based on the supplied argument (i.e. `state LIKE 'Geo%'`). The argument is a pattern that can contain wildcard characters; an underscore (`_`) matches any single character while a percent sign (`%`) matches any sequence of zero or more characters.
 
-### Multiple Criteria ###
+## Multiple Criteria ##
 
 You can combine multiple criteria together using `AND` and `OR`. The following query matches rows where the pollutant is CO and the annual emissions value is greater than 300.
 
@@ -170,7 +159,7 @@ You can combine multiple criteria together using `AND` and `OR`. The following q
     AND annual_emissions > 300
 
 country|state|annual_emissions|pollutant
--|-|-
+-|-|-|-
 US|North Carolina|730.01|CO
 US|South Carolina|434.39|CO
 
@@ -189,7 +178,7 @@ US|Kentucky|140.25|CO
 US|North Carolina|730.01|CO
 US|South Carolina|434.39|CO
 
-### Complex Expressions ###
+## Complex Expressions ##
 
 If you are combining multiple criteria and mixing `AND` and `OR` options, it's good practice to use parentheses to group criteria in the `WHERE` clause. For example, if we want to retrieve CO emissions for North and South Carolina, we would construct our query like so:
 
@@ -223,7 +212,7 @@ In SQL, the `AND` operator has precedence over the `OR` operator meaning the `AN
     WHERE (pollutant = 'CO' AND state = 'North Carolina') 
     OR state = 'South Carolina'
 
-## Calculated Columns [calculated_columns] ##
+# Calculated Columns ## {#sec:calculated_columns}
 
 In addition to column names, you can also include expressions in the `SELECT` list to create calculated columns. A previous example showed calculating average day emissions using `annual_emissions / 365 AS avg_day`.
 
@@ -240,19 +229,19 @@ Operator/Function|Description
 `LN(value)`|natural logarithm
 `LOG(value)`|base 10 logarithm
 `SQRT(value)`|square root
-[Operators and Functions for Numeric Values][numeric_operators_table]
+: Operators and Functions for Numeric Values {#tbl:numeric_operators_table}
 
 For string fields, there are a variety of useful functions for concatenating/appending fields, converting to and from upper and lowercase, and extracting substrings.
 
 Function|Description|Example|Example Result
--|-|-|-
+--|--|--|-
 `string || string`|String concatenation|`country || ' ' || state`|US Georgia
 `LENGTH(string)`|Number of characters in string|`LENGTH(state)`|7
 `LOWER(string)`|Convert string to lower case|`LOWER(state)`|georgia
 `SUBSTR(string, starting position, length)`|Extract substring from string|`SUBSTR(state, 1, 2)`|Ge
- | |`SUBSTR(state, 3, 3)`|org
+|||`SUBSTR(state, 3, 3)`|org
 `UPPER(string)`|Convert string to upper case|`UPPER(state)`|GEORGIA
-[Functions for String Values][string_functions_table]
+: Functions for String Values {#tbl:string_functions_table}
 
 These functions can also be used in the `WHERE` clause. For example, we could match state names that start with "North" or "South" using the `SUBSTR` function.
 
@@ -269,7 +258,7 @@ US|South Carolina|434.39|CO
 
 This query could also be written using `WHERE state LIKE 'North%' OR state LIKE 'South%'`.
 
-## Aggregate Functions ##
+# Aggregate Functions #
 
 Besides returning individual rows from database tables, you can use SQL to aggregate data from multiple rows. Some common aggregate functions are `SUM`, `AVG` (average), `MAX` (maximum), and `MIN` (minimum).
 
@@ -297,7 +286,7 @@ country|pollutant|country_total
 US|CO|1550.86
 US|NO|86.6508
 
-## Fully Qualified Column Names and Table Aliases ##
+# Fully Qualified Column Names and Table Aliases #
 
 In our examples so far, we haven't used the fully qualified column names. A fully qualified column name includes the table name as shown in the query below:
 
@@ -316,9 +305,9 @@ Using the full table name throughout a query can become burdensome. Table aliase
     WHERE e.pollutant = 'CO'
     ORDER BY e.annual_emissions
 
-## Relationships to Other Tables ##
+# Relationships to Other Tables #
 
-So far, our example queries have retrieved data from one table. Using SQL, we can combine records from other tables in the database. In the EMF, you will often use information from additional tables to annotate the data in a dataset. For example, there are reference tables which contain state and county names corresponding to FIPS codes, SCC descriptions, and pollutant information. Several reference tables are described in [Section](#reference_tables).
+So far, our example queries have retrieved data from one table. Using SQL, we can combine records from other tables in the database. In the EMF, you will often use information from additional tables to annotate the data in a dataset. For example, there are reference tables which contain state and county names corresponding to FIPS codes, SCC descriptions, and pollutant information. Several reference tables are described in [@Sec:reference_tables].
 
 Suppose we have a table of state information named *state_reference*. Note that our *state_reference* table doesn't have the same four states as the *state_emissions* table.
 
@@ -359,7 +348,7 @@ What if we want all the records from *state_emissions* in our results with whate
     AND r.state = e.state
 
 country|state|capital|pollutant|annual_emissions
--|-|-
+-|-|-|-|-
 US|Georgia|Atlanta|NO|10.428
 US|Georgia|Atlanta|CO|246.21
 US|Kentucky|Frankfort|NO|6.3878
@@ -380,7 +369,7 @@ When using `LEFT JOIN`, it's important to pay attention to the order that the ta
     AND r.state = e.state
 
 country|state|capital|pollutant|annual_emissions
--|-|-
+-|-|-|-|-
 NULL|NULL|Montgomery|NULL|NULL
 US|Georgia|Atlanta|NO|10.428
 US|Georgia|Atlanta|CO|246.21
@@ -389,13 +378,11 @@ US|Kentucky|Frankfort|CO|140.25
 US|North Carolina|Raleigh|NO|41.835
 US|North Carolina|Raleigh|CO|730.01
 
-In addition to `JOIN` and `LEFT JOIN`, SQL supports `RIGHT JOIN` and `OUTER JOIN`. In [Figure](#join_types), the blue shaded area represents the output of each type of join in terms of tables A and B. In the EMF, you can use all four types of joins but in practice, most of the queries used in the EMF use `LEFT JOIN`.
+In addition to `JOIN` and `LEFT JOIN`, SQL supports `RIGHT JOIN` and `OUTER JOIN`. In [@Fig:join_types], the blue shaded area represents the output of each type of join in terms of tables A and B. In the EMF, you can use all four types of joins but in practice, most of the queries used in the EMF use `LEFT JOIN`.
 
-![Types of SQL joins][join_types]
+![Types of SQL joins](images/join_types.png){#fig:join_types}
 
-[join_types]: images/sql/join_types.png
-
-### Dealing with NULL Values Using COALESCE ###
+## Dealing with NULL Values Using COALESCE ##
 
 NULL values can cause unexpected output when combined with other values. For example, concatenating anything with NULL produces NULL. Suppose we want to create a calculated column with the capital city and state.
 
@@ -432,11 +419,11 @@ Frankfort, Kentucky|CO|140.25
 Raleigh, North Carolina|CO|730.01
 Unknown, South Carolina|CO|434.39
 
-## EMF-Specific Syntax [emf_syntax] ##
+# EMF-Specific Syntax ## {#sec:emf_syntax}
 
 The EMF provides custom extensions to SQL to make it easier to refer to specific database tables.
 
-### `$TABLE[1] e` ###
+## `$TABLE[1] e` ##
 
 When writing a QA step query, the `$TABLE[1] e` syntax is used to refer to the data table for the specific dataset. `e` is the table alias that can be used throughout the query. This alias must be a single character and must always be set (even if the rest of the query doesn't use it).
 
@@ -456,11 +443,11 @@ Instead, we can use the `$TABLE[1]` syntax in the QA step query. The EMF will au
 
 This syntax makes it easy to copy QA step queries between datasets. As long as the dataset has the same column names and types as used in the query (i.e. **region_cd**, **scc**, **poll**, and **ann_value**), this query can directly be reused. Datasets with the same dataset type (e.g., "Flat File 2010 Point" or "ORL Nonroad Inventory (ARINV)") will use the same column names and types. When switching between FF10 and ORL inventories, the names of columns will differ. For example, FF10 datasets have a **region_cd** column while ORL datasets have a **fips** column.
 
-### `$DATASET_TABLE["dataset name", 1] a` ###
+## `$DATASET_TABLE["dataset name", 1] a` ##
 
-The `$DATASET_TABLE["dataset name", 1] a` tag can be used to refer to a different dataset from a QA step query. `"dataset name"` is the name of the other dataset enclosed in double quotes. The default version of the dataset will be used in the query. For more information on dataset versions, see [Chapter 3. Datasets][] in the EMF User's Guide. `a` is a single character table alias that can be used throughout the query.
+The `$DATASET_TABLE["dataset name", 1] a` tag can be used to refer to a different dataset from a QA step query. `"dataset name"` is the name of the other dataset enclosed in double quotes. The default version of the dataset will be used in the query. For more information on dataset versions, see [Sec. 3 - Datasets][] in the EMF User's Guide. `a` is a single character table alias that can be used throughout the query.
 
-[Chapter 3. Datasets]: https://www.cmascenter.org/emf/internal/guide.html#datasets_chapter target="_blank"
+[Sec. 3 - Datasets]: https://www.cmascenter.org/cost/documentation/3.1/EMF%20User's%20Guide/#sec:datasets_chapter {target="_blank"}
 
 This syntax allows you to join datasets together for comparison or annotation purposes. For example, the following fictionalized query shows how an annual inventory (`$TABLE[1]`) could be joined with a corresponding monthly inventory named "jan_monthly_inventory" to produce a report with annual and monthly totals by pollutant.
 
@@ -472,19 +459,19 @@ This syntax allows you to join datasets together for comparison or annotation pu
 	AND j.scc = e.scc
 	GROUP BY e.pollutant
 
-### `$DATASET_TABLE_VERSION["dataset name", 1, version_num] a` ###
+## `$DATASET_TABLE_VERSION["dataset name", 1, version_num] a` ##
 
 `$DATASET_TABLE_VERSION["dataset name", 1, version_num] a` is similar to `$DATASET_TABLE` except that you can indicate the specific version of the dataset to use. If you are working with a new version of a dataset (i.e. not the default version), then you'll use the `$DATASET_TABLE_VERSION` tag in order to specify the particular version you are using.
 
-### `$DATASET_QASTEP["dataset name", "QA step name"] a` ###
+## `$DATASET_QASTEP["dataset name", "QA step name"] a` ##
 
 The `$DATASET_QASTEP["dataset name", "QA step name"] a` tag is used to refer to the output from another QA step. For a QA step that's associated with the same dataset, you can use "CURRENT_DATASET" instead of specifying the dataset name. This syntax may be helpful if you are performing a complicated QA procedure where the results of one step will be used or combined with another step.
 
-## EMF Reference Tables [reference_tables] ##
+# EMF Reference Tables ## {#sec:reference_tables}
 
 This section describes some of the reference tables provided with the EMF. Some columns have been omitted.
 
-### reference.fips ###
+## reference.fips ##
 
 Column Name|Type|Sample Value
 -|-|-
@@ -523,7 +510,7 @@ level_of_cbsa|character (30)|Metropolitan Statistical Area
 metropolitan_division_title|character (255)| |
 csa_name|character (255)|Montgomery-Alexander City, AL
 
-### reference.invtable ###
+## reference.invtable ##
 
 Column Name|Type|Sample Value
 -|-|-
@@ -543,14 +530,14 @@ units|character (16)|tons/yr
 descrptn|character (40)|Benzene
 casdesc|character (40)| |
 
-### reference.scc ###
+## reference.scc ##
 
 Column Name|Type|Sample Value
--|-|-
+-|-|---
 scc|character (11)|10100101
 scc_description|character (248)|External Combustion Boilers;Electric Generation;Anthracite Coal;Pulverized Coal
 
-### reference.scc_codes ###
+## reference.scc_codes ##
 
 Column Name|Type|Sample Value
 -|-|-
