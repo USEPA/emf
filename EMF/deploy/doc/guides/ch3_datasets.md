@@ -27,7 +27,7 @@ The dataset type defines the format of the data file as seen in the File Format 
 Keyword-value pairs can be used to give the EMF more information about a dataset type. [@Tbl:dataset_type_keywords_table] lists some of the keywords available. [@Sec:dataset_properties_keywords_section] provides more information about using and adding keywords.
 
 Keyword|Description|Example
--|-
+--|---|-
 EXPORT\_COLUMN\_LABEL|Indicates if columns labels should be included when exporting the data to a file|FALSE
 EXPORT\_HEADER\_COMMENTS|Indicates if header comments should be included when exporting the data to a file|FALSE
 EXPORT\_INLINE\_COMMENTS|Indicates if inline comments should be included when exporting the data to a file|FALSE

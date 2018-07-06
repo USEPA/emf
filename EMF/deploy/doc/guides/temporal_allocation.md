@@ -213,7 +213,7 @@ You can use QA steps to analyze the result datasets; see [@Sec:qa_chapter] for i
 ### Temporal Cross Reference (CSV) ###
 
 Column|Name|Type|Description
--|-
+-|--|--|------
 1|SCC|VARCHAR(20)|Source Category Code (optional; enter zero for entry that is not SCC-specific)
 2|FIPS|VARCHAR(12)|Country/state/county code (optional)
 3|PLANTID|VARCHAR(20)|Plant ID/facility ID (optional - applies to point sources only; leave blank for entry that is not facility-specific)
@@ -228,7 +228,7 @@ Column|Name|Type|Description
 ### Temporal Profile Monthly (CSV) ###
 
 Column|Name|Type|Description
--|-
+-|-|-|-
 1|PROFILE_ID|VARCHAR(15)|Monthly temporal profile ID
 2|JANUARY|REAL|Temporal factor for January
 3|FEBRUARY|REAL|Temporal factor for February
@@ -242,7 +242,7 @@ Column|Name|Type|Description
 ### Temporal Profile Weekly (CSV) ###
 
 Column|Name|Type|Description
--|-
+-|-|-|-
 1|PROFILE_ID|VARCHAR(15)|Weekly temporal profile ID
 2|MONDAY|REAL|Temporal factor for Monday
 3|TUESDAY|REAL|Temporal factor for Tuesday
@@ -256,7 +256,7 @@ Column|Name|Type|Description
 ### Temporal Profile Daily (CSV) ###
 
 Column|Name|Type|Description
--|-
+-|-|-|-
 1|PROFILE_ID|VARCHAR(15)|Daily temporal profile ID
 2|MONTH|INTEGER|Calendar month
 3|DAY1|REAL|Temporal factor for day 1 of month
