@@ -119,7 +119,6 @@ Description|A textual description of the applicability of the measure and any ot
 
 Table: Control Measure Manager Columns. {#tbl:control_measure_manager_columns_table}
 
-
 **Step 1-7: Sort Control Measures.** To sort based on data in one of the columns, click on the column header. For example, to sort based on the average control efficiency of the measure click on the column header for the "Avg CE" column. The table will now be sorted by the values of "Avg CE" in descending order. *Notice that information about the currently specified sort is reflected in the line just below the table.*
 
 **Step 1-8: Reverse Sort.** Click on the header of the "Avg CE" column a second time, the sort order will be reversed.
@@ -237,15 +236,15 @@ The `Row Limit` and `Row Filter` fields are helpful when there are hundreds of e
 **Step 2-5: Apply a Row Filter to Control Measure Efficiencies.** To apply a `Row Filter` to the control efficiencies, enter `Pollutant='PM10-PRI'` into the text field and then click `Apply` to display only the record for PM10-PRI. The `Row Filter` follows the syntax of a Structured Query Language (SQL) 'WHERE' clause. Note that the filter may not seem necessary in this particular example that only has a few records, but if this measure had entries for every county and pollutant, as do some mobile measures, then the filter is useful for limiting the number records displayed. If desired, you may try some other filters with this measure, such as:
 
 ```
-Pollutant like 'PM%'
-Pollutant='PM10-PRI'
+Pollutant LIKE 'PM%'
+Pollutant = 'PM10-PRI'
 Control Efficiency > 95
 ```
 
 Here are some examples of other types of filters that illustrate other aspects of the syntax, although they may not all be applicable to this particular measure:
 
 ```
-Pollutant <> 'PM10-PRI'
+Pollutant != 'PM10-PRI'
 Locale LIKE '37%'
 Pollutant IN ('CO', 'VOC', 'PM10-PRI')
 ```
@@ -286,7 +285,6 @@ Last Modified Time|The last date and time a user modified the efficiency record.
 Details|Text that specifies information about the source of data for this row or reason they were changed.
 
 Table: Efficiencies Record Window Contents. {#tbl:control_measure_efficiency_record_table}
-
 
 When you are done examining the information on the View Efficiency Record Window, click `Close`.
 
@@ -329,7 +327,6 @@ Equations|The cost equation definitions.
 
 Table: Control Measure Equations Tab Contents. {#tbl:control_measure_equations_tab_table}
 
-
 ### Control Measure Properties
 
 **Step 2-9: View the Control Measure Properties.** Click on the `Properties` tab on the View Control Measure window to see the data that are available from this tab. Each row in the Properties tab corresponds to a different "property record" in the database. A property record allows for generic information to be stored about the control measures (e.g., metadata). The control measures example in Figure {@fig:properties_tab_of_view_control_measure_window} shows property information that happened to be archived from the AirControlNET software when the measures were transferred into the CMDB.
@@ -360,7 +357,6 @@ DB Field Name|If specified, this is a placeholder to help identify the database 
 Value|The value of the property.
 
 Table: Property Record Window Contents. {#tbl:control_measure_property_record_table}
-
 
 ### Control Measure References
 
