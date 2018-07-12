@@ -824,7 +824,7 @@ SOURCE\_ID|The record number from the input inventory for this source.
 INPUT\_DS\_ID|The numeric ID of the input inventory dataset (for bookkeeping purposes). If multiple inventories were merged to create the inventory (as can be done for Least Cost control strategies), this ID is that of the merged inventory.
 CS\_ID|The numeric ID of the control strategy.
 CM\_ID|The numeric ID of the control measure.
-EQUATION TYPE|The control measure equation that was used during the cost calculations.
+EQUATION\_TYPE|The control measure equation that was used during the cost calculations.
 ORIGINAL\_DATASET\_ID|The numeric ID of the original input inventory dataset, even if a merged inventory was used for the computation of the strategy, as can be done for Least Cost control strategies.
 SECTOR|The emissions inventory sector specified for the input inventory (text, not an ID number; e.g., ptnonipm for the point non-IPM sector)
 CONTROL\_PROGRAM|The control program that was applied to produce this record.
@@ -895,7 +895,7 @@ ANNUAL\_OPER\_MAINT\_COST|The total annual O&M costs for the county. This is cal
 ANNUALIZED\_CAPITAL\_COST|The total annualized capital costs for the county. This is calculated by summing the annualized capital costs for the county
 TOTAL\_CAPITAL\_COST|The total capital costs for the county. This is calculated by summing the total capital costs for the county
 AVG\_ANN\_COST\_PER\_TON|The average annual cost per ton (\$/ton). This is calculated by dividing the total annual cost by the total emission reduction for the county.
-RECORD\_ID\_VERSION\_DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
+RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
 Table: Columns in the Strategy County Summary. {#tbl:columns_in_the_strategy_county_summary_table}
 
