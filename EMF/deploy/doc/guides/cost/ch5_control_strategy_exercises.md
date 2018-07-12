@@ -30,7 +30,7 @@ In many cases, it will be necessary to import an emissions inventory into the EM
 
 ![Import Dataset Window](images/Import_Datasets.png){#fig:import_dataset_window}
 
-4. Click the `Browse` button and browse to the location of the inventory to import on the EMF server computer (e.g., C:\Users\Public\EMF_Data\inventories).
+4. Click the `Browse` button and browse to the location of the inventory to import on the EMF server computer (e.g., C:\\Users\\Public\\EMF_Data\\inventories).
 
 <a id=import_browse_window></a>
 
