@@ -195,7 +195,7 @@ Column|Description
 -|---
 Name|Shows the name of the control strategy.
 Last Modified|Shows the date and time on which the strategy was last changed.
-Run Status|Gives information about the strategy run. Possible options are:<br/>Not started - the strategy run has never been started;<br/>Waiting - a run has been requested, but it is waiting because other strategies are running;<br/>Running - the strategy is currently running;<br/>Finished - the strategy run completed successfully;<br/>Failed - the strategy run started, but failed due to a problem.
+Run Status|Gives information about the strategy run. Possible options are:<br/>`\\`{=latex}Not started - the strategy run has never been started;<br/>`\\`{=latex}Waiting - a run has been requested, but it is waiting because other strategies are running;<br/>`\\`{=latex}Running - the strategy is currently running;<br/>`\\`{=latex}Finished - the strategy run completed successfully;<br/>`\\`{=latex}Failed - the strategy run started, but failed due to a problem.
 Inv Year|Shows the year of the emissions inventory that the strategy will process.
 
 Table: Control Strategy Manager Table. {#tbl:key_columns_of_the_control_strategy_manager_table}

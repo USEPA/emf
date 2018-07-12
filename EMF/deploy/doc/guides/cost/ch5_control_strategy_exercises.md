@@ -84,10 +84,10 @@ For this exercise, an existing Least Cost Strategy will be modified to create a 
 
     *Hint: use the following columns of the **Control Strategy Manager** to answer this question.*
 
-    **Least Cost Strategy Total Cost:**<br/>
+    **Least Cost Strategy Total Cost:**<br/>`\\`{=latex}
     **Least Cost Strategy Average CPT:**
 
-    **Max. Emissions Red Total Cost:**<br/>
+    **Max. Emissions Red Total Cost:**<br/>`\\`{=latex}
     **Max. Emissions Red Average CPT:**
 
 * What are some of the SCCs for sources that had control measures applied in the result, but had a control efficiency of less than 90%? [It is important to note these because they may provide opportunities for controls...] *Hint: Examine the Strategy Detailed Result and apply a filter for CONTROL_EFF<90 to find the applicable rows:*
