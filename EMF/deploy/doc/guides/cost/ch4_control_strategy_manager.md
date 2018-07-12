@@ -88,7 +88,7 @@ Some of the key aspects of each of the strategy types are summarized in Table {@
 <a id=summary_of_strategy_algorithms_table></a>
 
 Strategy Type|Multiple Inventories|Typical Sectors|Measure Assignment|Outputs
-----------------------------|-----------------------|---------------------------------------------------|--------------------------|----------------
+-|-|-|-|-
 Annotate Inventory|Processed independently|Area, nonpoint|One per source|Standard
 Apply Measures in Series|Processed independently|Mobile: Onroad, nonroad|Multiple per source|Standard
 Least Cost|Will be merged|Area, nonpoint|One per source|Standard, Least Cost Control Measure Worksheet
@@ -192,7 +192,7 @@ The Control Strategy Manager shows all of the control strategies currently avail
 <a id=key_columns_of_the_control_strategy_manager_table></a>
 
 Column|Description
---------------------|---------------------------------------------------------------------------------------------------------------------------------
+-|---
 Name|Shows the name of the control strategy.
 Last Modified|Shows the date and time on which the strategy was last changed.
 Run Status|Gives information about the strategy run. Possible options are:<br/>Not started - the strategy run has never been started;<br/>Waiting - a run has been requested, but it is waiting because other strategies are running;<br/>Running - the strategy is currently running;<br/>Finished - the strategy run completed successfully;<br/>Failed - the strategy run started, but failed due to a problem.
@@ -267,7 +267,7 @@ If the new strategy does not appear in the Control Strategy Manager, first click
 <a id=tabs_of_the_edit_control_strategy_window_table></a>
 
 Tab|Description
---------------------|-------------------------------------------------------------------------------------------------------------
+-|---
 Summary|Shows you high-level information about the strategy, such as its Name and the Target Pollutant.
 Inventories|From which you can specify the emissions inventories to use as input to the strategy and filters for those inventories.
 Measures|Allows you to specify the classes of measures to include in the strategy, or select specific measures to include.
@@ -328,13 +328,12 @@ For this Least Cost example, use the pull-down menu to set `Target Pollutant` to
 
 ### Fields Automatically Set by CoST {#fields_automatically_set_by_cost_section}
 
-
 Some fields of a control strategy that appear on the **Summary** tab are set automatically by the CoST software and are not specified by the user. Note that some of these summarize the results of the strategy analysis, so information for them is not available until after the strategy has been run. The automatically set fields are described in Table {@tbl:fields_on_the_control_strategy_summary_tab_automatically_set_by_cost_table}.
 
 <a id=fields_on_the_control_strategy_summary_tab_automatically_set_by_cost_table></a>
 
 Field|Description
-----------------------------------|------------------------------------------------------------------------------------------------------
+-|---
 Creator|The name of the person who created the strategy.
 Last Modified Date|The date and time when the strategy was last modified.
 Copied From|The name of the strategy that this strategy was copied from, if any.
@@ -380,7 +379,7 @@ To select an inventory to use for the strategy from the **Select Datasets** wind
 <a id=tabs_of_the_dataset_properties_view_and_edit_windows_table></a>
 
 Tab|Description
--------------|------------------------------------------------------------------------------------------------------------
+-|---
 Summary|Shows high-level properties of the dataset
 Data|Provides access to the actual inventory data so that you can view the data that will be used in the control strategy
 Keywords|Shows additional types of metadata not found on the Summary tab
@@ -494,7 +493,7 @@ Table {@tbl:constraints_common_to_multiple_control_strategy_types_table} defines
 <a id=constraints_common_to_multiple_control_strategy_types_table></a>
 
 Constraint Name|Constraint Description
--------------------------------------|---------------------------------------------------------------------------------------------------------------------
+-|----
 Minimum Emissions Reduction (tons)|If specified, requires each control measure to reduce the target pollutant by at least the specified minimum tonnage for a particular source (down to the plant+point+stack+segment level of specification); if the minimum tonnage reduction is not attainable, the measure will not be applied.
 Minimum Control Efficiency (%)|If specified, requires each control measure used in the strategy to have a control efficiency greater than or equal to the specified control efficiency for a particular source and target pollutant.
 Maximum 2013 Cost per Ton (\$/ton)|If specified, each control measure must have an annualized cost per ton less than or equal to the specified maximum annualized cost per ton for the target pollutant for each source. This cost is based on 2013 dollars.
@@ -763,7 +762,7 @@ Implicit Price Deflator (IPD) available from the United States Department of Com
 <a id=excerpt_from_the_gdplev_table_table></a>
 
 Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD
----------|-----------|----|-------|---------|---|-----------|------|-|-------------|-----------
+-|-|-|-|-|-|-|-|-|-|-
 1980|44.377| |1990|66.773| |2000|81.887| |2010|101.221
 1981|48.520| |1991|68.996| |2001|83.754| |2011|103.311
 1982|51.530| |1992|70.569| |2002|85.039| |2012|105.214
@@ -784,7 +783,7 @@ As indicated above, Table {@tbl:columns_in_the_strategy_detailed_result_table} p
 <a id=columns_in_the_strategy_detailed_result_table></a>
 
 Column|Description
--------------|--------------------------------------------------------------------------------------------------------
+-|---
 DISABLE|A true-false value that determines whether to disable the control represented on this line during the creation of a controlled inventory.
 CM\_ABBREV|The abbreviation for the control measure that was applied to the source.
 POLL|The pollutant for the source, found in the inventory.
@@ -848,7 +847,7 @@ The Strategy Measure Summary output dataset is a table of emissions reductions a
 <a id=columns_in_the_strategy_measure_summary_table></a>
 
 Column|Description
---------------------|-----------------------------------------------------------------------------------------------------------------------
+-|---
 SECTOR|The emissions inventory sector for the source (e.g., ptnonipm for the point non-IPM sector)
 FIPS|The state and county FIPS code for the source
 SCC|The SCC for the source
@@ -874,7 +873,7 @@ The Strategy County Summary output dataset is a table of emissions reductions an
 <a id=columns_in_the_strategy_county_summary_table></a>
 
 Column|Description
-------------------------------------------|------------------------------------------------------------------------------------------------------------------
+-|---
 SECTOR|The emissions inventory sector for the source (i.e., ptnonipm for the point non-IPM emissions sector)
 FIPS|The state and county FIPS code for the source
 POLL|The pollutant for the source
@@ -917,7 +916,7 @@ The columns of the Strategy Messages output are described in Table {@tbl:columns
 <a id=columns_in_the_strategy_messages_output_table></a>
 
 Column|Description
-------------------------------------------|--------------------------------------------------------------------------------------------------------------
+-|---
 FIPS|The state and county FIPS code for the source, found in the emissions inventory
 SCC|The SCC code for the source, found in the emissions inventory
 PLANTID|For point sources, the plant ID for the source from the emissions inventory.
@@ -936,16 +935,15 @@ Table: Columns in the Strategy Messages Output. {#tbl:columns_in_the_strategy_me
 <a id=example_of_strategy_messages_output_table></a>
 
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
---------|------------|--------------|-----|------|---|----------|------------|---|--------------------------
+-|-|-|-|-|-|-|-|-|-
 42049|30900201|420490009|942|S942|1|PM25-PRI|Warning| |Negative emission reduction (-1693.9)
-
 
 Table: Example of Strategy Messages Output. {#tbl:example_of_strategy_messages_output_table}
 
 <a id=example_of_strategy_measure_summary_data_table></a>
 
 SECTOR|FIPS|SCC|POLL|CONTROL MEASURE ABBREV|CONTROL MEASURE|CONTROL TECHNOLOGY|SOURCE GROUP|ANNUAL COST|AVG ANN COST PER TON|EMIS REDUCTION
------------|--------|--------------|------|-------------|----------------------------------------------|-------------------------|--------------|---------|--------|-----------
+-|-|-|-|-|-|-|-|-|-|-
 ptnonipm|37001|10200906|PM10-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
 ptnonipm|37001|10200906|PM25-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
 ptnonipm|37001|30500311|PM10-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
@@ -959,7 +957,7 @@ Table: Example of Strategy Measure Summary Data. {#tbl:example_of_strategy_measu
 <a id=example_of_strategy_county_summary_data_table></a>
 
 SECTOR|FIPS|POLL|INPUT EMIS|EMIS REDUCTION|REMAINING EMIS|PCT RED|ANNUAL COST|ANNUAL OPER MAINT COST|ANNUALIZED CAPITAL COST|TOTAL CAPITAL COST|AVG ANN COST PER TON
-------------|-------|------|-----------|-----|--------|---------|-----------|-----------|----------|----------|----------
+-|-|-|-|-|-|-|-|-|-|-|-
 ptnonipm|37001|VOC|313.8724| |313.8724| | | | | | |
 ptnonipm|37001|PM25-PRI|33.4717|33.2505|0.2212|99.3391| | | | | |
 ptnonipm|37001|NH3|6.9128| |6.9128| | | | | | |

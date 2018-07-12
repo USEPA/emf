@@ -95,7 +95,7 @@ The columns shown on the Control Measure Manager with brief descriptions are sho
 <a id="control_measure_manager_columns_table"></a>
 
 Column Name|Description
----------------------|--------------------------------------------------------------------------------------------------------------------------------
+-|----
 Select|This column will allow the user to view, edit, or copy the measure by clicking the corresponding button at the bottom of the manager window. These features will be discussed later in the training.
 Name|A unique name for the measure.
 Abbreviation|A unique abbreviation for the measure.
@@ -199,7 +199,7 @@ In this section you will learn about viewing the detailed data for a control mea
 <a id=control_measure_summary_tab_table></a>
 
 Component|Description
----------------------|--------------------------------------------------------------------------------------------------------------------------------
+-|----
 Name|A unique name that typically includes both the control technology used and the group of sources to which the measure applies.
 Description|A description of the applicability of the measure and any other relevant information.
 Abbreviation|A multi-character unique abbreviation that is used to assign the control measure to sources in the inventory. Ideally, the abbreviation should be somewhat readable so that the user has some idea of what type of measure it is from reading the abbreviation (e.g., the DESP in PDESPIBCL is short for 'Dry Electrostatic Precipitator, the IB is short for 'Industrial Boiler', and the CL is short for 'Coal').
@@ -262,7 +262,7 @@ Notice that most of the fields in Figure {@fig:view_efficiency_record_window} ar
 <a id=control_measure_efficiency_record_table></a>
 
 Component|Description
-------------------------------|------------------------------------------------------------------------------------------------------------------------
+-|----
 Pollutant|The pollutant for which this record applies (emissions are either decreased or increased). An asterisk appears beside this field because a value for it must be specified.
 Locale|A two-digit Federal Information Processing Standards (FIPS) state code, or a five-digit FIPS county code, to denote that the information on the row is relevant only for a particular state or county. If left blank, it is assumed to apply to all states and counties.
 Effective Date|The month, day, and year on which the record becomes effective. The system will find the record with the closest effective date that is less than or equal to the date of the analysis. If this is left blank, the record is assumed to apply to any date.
@@ -319,7 +319,7 @@ Do not click `Close` after examining the Equations tab as this will close the Vi
 ![Equations Tab of View Control Measure Window](images/Equations_Tab_of_View_Control_Measure_Window.png){#fig:equations_tab_of_view_control_measure_window}
 
 Component|Description
--------------------------------------|---------------------------------------------------------------------------------------------------------------
+-|----
 Name|The name of the engineering cost equation type (e.g., Type 8).
 Description|The description of the engineering cost equation type (e.g., Non-EGU PM Cost Equation).
 Inventory Fields|The input parameters to the cost equations found in the inventory (e.g., stack velocity and temperature or design capacity).
@@ -348,7 +348,7 @@ Do not click Close after examining the Properties tab as this will close the Vie
 <a id=control_measure_property_record_table></a>
 
 Component|Description
--------------------------|----------------------------------------------------------------------------------------------------------------------------
+-|----
 Name|The name of the property.
 Category|The category for the property (e.g., AirControlNET Properties, Cost Properties, or Control Efficiency Properties).
 Units|The units for the property (e.g., % for percentage).

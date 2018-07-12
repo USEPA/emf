@@ -1,7 +1,7 @@
 # Acronyms
 
 Abbreviation| Definition
------------|--------------------------------------------------------------
+-|----
 AQM|Air Quality Model
 CE|Control Efficiency
 CMAQ|Community Multiscale Air Quality model
