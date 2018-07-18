@@ -782,7 +782,10 @@ As indicated above, Table {@tbl:columns_in_the_strategy_detailed_result_table} p
 
 <a id=columns_in_the_strategy_detailed_result_table></a>
 
-`\begin{landscape}`{=latex}
+```{=latex}
+\newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
+\begin{landscape}
+```
 
 Column|Description
 -|---
@@ -842,7 +845,10 @@ RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking pr
 
 Table: Columns in the Strategy Detailed Result. {#tbl:columns_in_the_strategy_detailed_result_table}
 
-`\end{landscape}`{=latex}
+```{=latex}
+\end{landscape}
+\restoregeometry
+```
 
 ### Strategy Measure Summary
 
@@ -850,7 +856,10 @@ The Strategy Measure Summary output dataset is a table of emissions reductions a
 
 <a id=columns_in_the_strategy_measure_summary_table></a>
 
-`\begin{landscape}`{=latex}
+```{=latex}
+\newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
+\begin{landscape}
+```
 
 Column|Description
 -|---
@@ -871,7 +880,10 @@ RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking pr
 
 Table: Columns in the Strategy Measure Summary. {#tbl:columns_in_the_strategy_measure_summary_table}
 
-`\end{landscape}`{=latex}
+```{=latex}
+\end{landscape}
+\restoregeometry
+```
 
 ### Strategy County Summary
 
@@ -879,7 +891,10 @@ The Strategy County Summary output dataset is a table of emissions reductions an
 
 <a id=columns_in_the_strategy_county_summary_table></a>
 
-`\begin{landscape}`{=latex}
+```{=latex}
+\newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
+\begin{landscape}
+```
 
 Column|Description
 -|---
@@ -899,7 +914,10 @@ RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking pr
 
 Table: Columns in the Strategy County Summary. {#tbl:columns_in_the_strategy_county_summary_table}
 
-`\end{landscape}`{=latex}
+```{=latex}
+\end{landscape}
+\restoregeometry
+```
 
 <a id=controlled_emissions_inventory_section></a>
 
@@ -926,6 +944,11 @@ The columns of the Strategy Messages output are described in Table {@tbl:columns
 
 <a id=columns_in_the_strategy_messages_output_table></a>
 
+```{=latex}
+\newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
+\begin{landscape}
+```
+
 Column|Description
 -|---
 FIPS|The state and county FIPS code for the source, found in the emissions inventory
@@ -943,41 +966,61 @@ RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking pr
 
 Table: Columns in the Strategy Messages Output. {#tbl:columns_in_the_strategy_messages_output_table}
 
+```{=latex}
+\end{landscape}
+\restoregeometry
+```
+
 <a id=example_of_strategy_messages_output_table></a>
 
-`\begin{landscape}`{=latex}
+```{=latex}
+\newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
+\begin{landscape}
+```
 
 fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
--|-|-|-|-|-|-|-|-|-
+-|-|-|-|-|-|-|-|--|--
 42049|30900201|420490009|942|S942|1|PM25-PRI|Warning| |Negative emission reduction (-1693.9)
 
 Table: Example of Strategy Messages Output. {#tbl:example_of_strategy_messages_output_table}
 
-`\end{landscape}`{=latex}
+```{=latex}
+\end{landscape}
+\restoregeometry
+```
 
 <a id=example_of_strategy_measure_summary_data_table></a>
 
-`\begin{landscape}`{=latex}
+```{=latex}
+\newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
+\begin{landscape}
+```
 
-SECTOR|FIPS|SCC|POLL|CONTROL MEASURE ABBREV|CONTROL MEASURE|CONTROL TECHNOLOGY|SOURCE GROUP|ANNUAL COST|AVG ANN COST PER TON|EMIS REDUCTION
--|-|-|-|-|-|-|-|-|-|-
-ptnonipm|37001|10200906|PM10-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
-ptnonipm|37001|10200906|PM25-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type);(PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
-ptnonipm|37001|30500311|PM10-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
-ptnonipm|37001|30500311|PM25-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |2.0939
-ptnonipm|37001|30501110|PM10-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$110|$147|0.7498
-ptnonipm|37001|30501110|PM25-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type);(PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |0.2605
+SECTOR|FIPS|SCC|POLL|CONTROL MEASURE ABBREV|CONTROL MEASURE|CONTROL TECH.|SOURCE GROUP|ANNUAL COST|AVG ANN COST PER TON|EMIS REDUCTION
+--|-|--|-|--|--|--|--|--|--|--
+ptnonipm|37001|10200906|PM10-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type); (PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
+ptnonipm|37001|10200906|PM25-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type); (PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
+ptnonipm|37001|30500311|PM10-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type); (PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$446,026|$83,379|5.3494
+ptnonipm|37001|30500311|PM25-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type); (PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |2.0939
+ptnonipm|37001|30501110|PM10-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type); (PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other|$110|$147|0.7498
+ptnonipm|37001|30501110|PM25-PRI|PFFPJMIOR|Fabric Filter (Pulse Jet Type); (PM10) Mineral Products - Other|Fabric Filter (Pulse Jet Type)|Mineral Products - Other| | |0.2605
 
 Table: Example of Strategy Measure Summary Data. {#tbl:example_of_strategy_measure_summary_data_table}
 
-`\end{landscape}`{=latex}
+```{=latex}
+\end{landscape}
+\restoregeometry
+```
 
 <a id=example_of_strategy_county_summary_data_table></a>
 
-`\begin{landscape}`{=latex}
+```{=latex}
+\newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
+\begin{landscape}
+```
 
 SECTOR|FIPS|POLL|INPUT EMIS|EMIS REDUCTION|REMAINING EMIS|PCT RED|ANNUAL COST|ANNUAL OPER MAINT COST|ANNUALIZED CAPITAL COST|TOTAL CAPITAL COST|AVG ANN COST PER TON
--|-|-|-|-|-|-|-|-|-|-|-
+-|-|-|-|--|--|-|-|-|--|-|-
 ptnonipm|37001|VOC|313.8724| |313.8724| | | | | | |
 ptnonipm|37001|PM25-PRI|33.4717|33.2505|0.2212|99.3391| | | | | |
 ptnonipm|37001|NH3|6.9128| |6.9128| | | | | | |
@@ -987,7 +1030,10 @@ ptnonipm|37001|SO2|54.3864| |54.3864| | | | | | |
 
 Table: Example of Strategy County Summary Data. {#tbl:example_of_strategy_county_summary_data_table}
 
-`\end{landscape}`{=latex}
+```{=latex}
+\end{landscape}
+\restoregeometry
+```
 
 <a id=Summaries4></a>
 
