@@ -1016,7 +1016,10 @@ Note that the summaries "with Descriptions" have more information than the ones 
 Each of the summaries is created using a customized SQL syntax that is very similar to standard SQL, except that it includes some EMF-specific concepts that allow the queries to be defined generally and then applied to specific datasets as needed. An example of the customized syntax for the "Summarize by SCC and Pollutant" query is:
 
 ```SQL
-select SCC, POLL, sum(ann_emis) as ann_emis from $TABLE[1] e group by SCC, POLL order by SCC, POLL
+select SCC, POLL, sum(ann_emis) as ann_emis 
+from $TABLE[1] e 
+group by SCC, POLL 
+order by SCC, POLL
 ```
 
 Notice that the only difference between this and standard SQL is the use of the $TABLE[1] syntax. When this query is run, the $TABLE[1] portion of the query is replaced with the table name used to contain the data in the EMF. Note that most datasets have their own tables in the EMF schema, so you do not normally need to worry about selecting only the records for the specific dataset of interest. The customized syntax also has extensions to refer to another dataset and to refer to specific versions of other datasets using tokens other than $TABLE. For the purposes of this discussion, it is sufficient to note that these other extensions exist.
@@ -1024,7 +1027,20 @@ Notice that the only difference between this and standard SQL is the use of the 
 Some of the summaries are constructed using more complex queries that join information from other tables, such as the SCC descriptions, the pollutant descriptions (which are particularly useful for HAPs), and to account for any missing descriptions. For example, the syntax for the "Summarize by SCC and Pollutant with Descriptions" query is:
 
 ```SQL
-select e.SCC, coalesce(s.scc_description,'AN UNSPECIFIED DESCRIPTION')::character varying(248) as scc_description, e.POLL, coalesce(p.descrptn,'AN UNSPECIFIED DESCRIPTION')::character varying(11) as pollutant_code_desc, coalesce(p.name,'AN UNSPECIFIED SMOKE NAME')::character varying(11) as smoke_name,p.factor, p.voctog, p.species, coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis from $TABLE[1] e left outer join reference.invtable p on e.POLL=p.cas left outer join reference.scc s on e.SCC=s.scc group by e.SCC,e.POLL,p.descrptn,s.scc_description, p.name, p.factor,p.voctog, p.species order by e.SCC, p.name
+select e.SCC, 
+ coalesce(s.scc_description,'AN UNSPECIFIED DESCRIPTION')::character varying(248)
+ as scc_description, e.POLL, 
+ coalesce(p.descrptn,'AN UNSPECIFIED DESCRIPTION')::character varying(11)
+ as pollutant_code_desc, 
+ coalesce(p.name,'AN UNSPECIFIED SMOKE NAME')::character varying(11)
+ as smoke_name, p.factor, p.voctog, p.species, 
+ coalesce(sum(ann_emis), 0) as ann_emis, coalesce(sum(avd_emis), 0) as avd_emis 
+from $TABLE[1] e 
+left outer join reference.invtable p on e.POLL=p.cas 
+left outer join reference.scc s on e.SCC=s.scc 
+group by e.SCC,e.POLL,p.descrptn,s.scc_description, 
+ p.name, p.factor,p.voctog, p.species 
+order by e.SCC, p.name
 ```
 
 This query is quite a bit more complex, but is still supported by the EMF QA step processing system. In addition to summaries of the inventories, there are many summaries available for the Strategy Detailed Results output by control strategy runs and for some of the other CoST-related dataset types. Some of the summaries available for Strategy Detailed Results are as follows:
