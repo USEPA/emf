@@ -342,6 +342,17 @@ $if(logo)$
 $endif$
 $endif$
 
+% custom header and footer (needs to be here instead of metadata.yaml because of variables)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\pagenumbering{arabic}
+\lhead{\itshape $title$}
+\chead{}
+\rhead{\itshape{\nouppercase{\leftmark}}}
+\lfoot{v$version$}
+\cfoot{}
+\rfoot{\thepage}
+
 \begin{document}
 $if(title)$
 $if(beamer)$
@@ -372,6 +383,7 @@ $if(colorlinks)$
 $endif$
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
+\newpage
 }
 $endif$
 $endif$
