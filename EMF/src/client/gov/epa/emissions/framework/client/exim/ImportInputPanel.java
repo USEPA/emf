@@ -168,11 +168,15 @@ public class ImportInputPanel extends JPanel {
         name.setVisible(singleDataset);
     }
 
-    private void copyDatasetTypes(DatasetType[] allDatasetTypes, DatasetType[] allTypesWithMessage) {
-        allTypesWithMessage[0] = new DatasetType("Choose a type ...");
+    private DatasetType[] copyDatasetTypes(DatasetType[] allDatasetTypes) {
+        List<DatasetType> allTypesWithMessage = new ArrayList<DatasetType>();
+        allTypesWithMessage.add(new DatasetType("Choose a type ..."));
         for (int i = 0; i < allDatasetTypes.length; i++) {
-            allTypesWithMessage[i + 1] = allDatasetTypes[i];
+            if (!allDatasetTypes[i].getImporterClassName().isEmpty()) {
+                allTypesWithMessage.add(allDatasetTypes[i]);
+            }
         }
+        return allTypesWithMessage.toArray(new DatasetType[0]);
     }
 
     private JButton browseFileButton() {
@@ -368,8 +372,7 @@ public class ImportInputPanel extends JPanel {
                 try {
                     //make sure something didn't happen
                     DatasetType[] allDatasetTypes = get();
-                    DatasetType[] allTypesWithMessage = new DatasetType[allDatasetTypes.length + 1];
-                    copyDatasetTypes(allDatasetTypes, allTypesWithMessage);
+                    DatasetType[] allTypesWithMessage = copyDatasetTypes(allDatasetTypes);
 
                     datasetTypesModel = new DefaultComboBoxModel(allTypesWithMessage);
                     datasetTypesComboBox.setModel(datasetTypesModel);
