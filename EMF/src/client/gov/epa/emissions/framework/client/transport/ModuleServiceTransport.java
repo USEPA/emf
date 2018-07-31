@@ -231,6 +231,18 @@ public class ModuleServiceTransport implements ModuleService {
     }
 
     @Override
+    public synchronized Module getModule(String name) throws EmfException
+    {
+        EmfCall call = call();
+
+        call.setOperation("getModule");
+        call.addStringParam("name");
+        call.setReturnType(mappings.module());
+
+        return (Module) call.requestResponse(new Object[] { name });
+    }
+
+    @Override
     public synchronized Module addModule(Module module) throws EmfException
     {
         EmfCall call = call();

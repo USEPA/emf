@@ -48,6 +48,8 @@ public interface ModuleService {
     // Modules
 
     Module getModule(int moduleId) throws EmfException;
+
+    Module getModule(String name) throws EmfException;
     
     Module addModule(Module module) throws EmfException;
 

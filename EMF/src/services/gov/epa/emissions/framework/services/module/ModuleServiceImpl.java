@@ -686,6 +686,20 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
 
+    @Override
+    public synchronized Module getModule(String name) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            Module module = modulesDAO.getModule(name, session);
+            return module;
+        } catch (Exception e) {
+            LOG.error("Could not get Module \"" + name + "\"", e);
+            throw new EmfException("Could not get Module \"" + name + "\": " + e.getMessage());
+        } finally {
+            session.close(); 
+        }
+    }
+
     private Module updateModule(Module module, Session session) throws EmfException {
         Connection connection = null;
         Statement statement = null;
