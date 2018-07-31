@@ -34,6 +34,13 @@ public class ModuleDataset implements Serializable {
     public boolean isSet() {
         return (datasetId != null) || (datasetNamePattern != null);
     }
+    
+    public void prepareForExport() {
+        id = 0;
+        if (getModuleTypeVersionDataset().isModeOUT()) {
+            datasetId = null;
+        }
+    }
 
     public ModuleDataset deepCopy(Module newModule) {
         ModuleDataset newModuleDataset = new ModuleDataset();

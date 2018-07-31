@@ -1,21 +1,30 @@
 package gov.epa.emissions.framework.client.module;
 
+import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
+import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.ReusableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.login.LoginWindow;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionPropertiesWindow;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.Module;
+import gov.epa.emissions.framework.services.module.ModuleDataset;
+import gov.epa.emissions.framework.services.module.ModuleType;
 import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
-import gov.epa.emissions.framework.ui.MessagePanel;
+import gov.epa.emissions.framework.services.module.ModulesExportImport;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
@@ -26,14 +35,28 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -57,7 +80,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
     private JPanel tablePanel;
 
-    private MessagePanel messagePanel;
+    private SingleLineMessagePanel messagePanel;
 
     private EmfConsole parentConsole;
 
@@ -214,6 +237,20 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         };
         compareButton = new Button("Compare", compareAction);
         compareButton.setMnemonic(KeyEvent.VK_C);
+        
+        Action exportAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                exportModules();
+            }
+        };
+        Button exportButton = new Button("Export", exportAction);
+
+        Action importAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                importModules();
+            }
+        };
+        Button importButton = new Button("Import", importAction);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
@@ -229,6 +266,9 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         crudPanel.add(unlockButton);
         crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
         crudPanel.add(runButton);
+        crudPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        crudPanel.add(exportButton);
+        crudPanel.add(importButton);
 
         return crudPanel;
     }
@@ -498,6 +538,314 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         ModuleComparisonWindow view = new ModuleComparisonWindow(session, parentConsole, desktopManager, modules[0], modules[1]);
         presenter.displayModuleComparisonView(view);
+    }
+
+    private static void saveToXML(String filename, ModulesExportImport modulesExportImport) {
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(fos));
+        encoder.writeObject(modulesExportImport);
+        encoder.close();
+    }
+
+    private ModulesExportImport readFromXML(String filename) {
+        FileInputStream fis;
+        try {
+            fis = new FileInputStream(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(fis));
+        ModulesExportImport modulesExportImport = (ModulesExportImport)decoder.readObject();
+        decoder.close();
+        return modulesExportImport;
+    }
+    
+    private void exportModules() {
+        int[] selectedModuleIds = selectedModuleIds();
+        if (selectedModuleIds.length == 0) {
+            messagePanel.setMessage("Please select one or more modules to export");
+            return;
+        }
+        
+        List<Module> modulesList = new ArrayList<Module>();
+        Map<Integer, String> moduleDatasetNames = new HashMap<Integer, String>();
+        
+        for (int moduleId : selectedModuleIds) {
+            Module module = null;
+            try {
+                module = presenter.getModule(moduleId);
+            } catch (EmfException e) {
+                messagePanel.setError("Failed to get module (ID = " + moduleId + "): " + e.getMessage());
+                continue;
+            }
+            if (module == null)
+                continue;
+            
+            // skip composite modules for now
+            if (module.isComposite())
+                continue;
+            
+            modulesList.add(module);
+            
+            // build list of dataset names used by modules
+            for (ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
+                if (moduleDataset.getDatasetId() == null ||
+                    moduleDataset.getModuleTypeVersionDataset().isModeOUT()) continue;
+                
+                EmfDataset dataset = null;
+                try {
+                    dataset = session.dataService().getDataset(moduleDataset.getDatasetId());
+                } catch (EmfException ex) {
+                    continue;
+                }
+                moduleDatasetNames.put(moduleDataset.getDatasetId(), dataset.getName());
+            }
+        }
+        
+        if (modulesList.isEmpty())
+            return;
+        
+        JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showSaveDialog(this);
+        if (returnVal != JFileChooser.APPROVE_OPTION)
+            return;
+        
+        File file = fc.getSelectedFile();
+        String filename;
+        try {
+            filename = file.getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            messagePanel.setError("Failed to get export file full path: " + e.getMessage());
+            return;
+        }
+        
+        if (file.exists()) {
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (selection == JOptionPane.NO_OPTION) {
+                messagePanel.setMessage("Export cancelled.");
+                return;
+            }
+        }
+
+        ModulesExportImport modulesExportImport = new ModulesExportImport(modulesList, moduleDatasetNames);
+        modulesExportImport.setExportEmfServer(session.serviceLocator().getBaseUrl());
+        modulesExportImport.setExportEmfVersion(LoginWindow.EMF_VERSION);
+        modulesExportImport.setExportFileName(file.getName());
+        modulesExportImport.setExportUserName(session.user().getName());
+        modulesExportImport.setExportDate(new Date());
+        
+        modulesExportImport.prepareForExport();
+        
+        saveToXML(filename, modulesExportImport);
+        
+        String summary = String.format("Exported %d module%s to \"%s\".",
+                                       selectedModuleIds.length, (selectedModuleIds.length == 1) ? "" : "s",
+                                       file.getName());
+        messagePanel.setMessage(summary);
+    }
+    
+    // TODO move this to the server
+    private String findAvailableModuleName(String baseName) {
+        while (true) {
+            String availableName = "Imported " + baseName + " " + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
+            Module localModule = null;
+            try {
+                localModule = presenter.getModule(availableName);
+            } catch (EmfException e) {
+                // e.printStackTrace();
+            }
+            if (localModule == null) {
+                return availableName;
+            }
+            
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // e.printStackTrace();
+            }
+        }
+    }
+    
+    private void importModules() {
+        JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal != JFileChooser.APPROVE_OPTION)
+            return;
+
+        File file = fc.getSelectedFile();
+        String filename;
+        try {
+            filename = file.getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            messagePanel.setError("Failed to get import file full path: " + e.getMessage());
+            return;
+        }
+        
+        if (!file.exists()) {
+            messagePanel.setError("File \"" + filename + "\" doesn't exists.");
+            return;
+        }
+        
+        ModulesExportImport modulesExportImport = readFromXML(filename);
+        
+        String importEmfServer = session.serviceLocator().getBaseUrl();
+        String importEmfVersion = LoginWindow.EMF_VERSION;
+        String importFileName = file.getName();
+        User importUser = session.user();
+        Date importDate = new Date();
+
+        // TODO add export/import version compatibility table 
+        if (!modulesExportImport.getExportEmfVersion().equals(importEmfVersion)) {
+            String message = String.format("Can't import \"%s\": file version \"%s\" incompatible with local version \"%s\".",
+                                           importFileName, modulesExportImport.getExportEmfVersion(), importEmfVersion);
+            messagePanel.setError(message);
+            return;
+        }
+
+        String exportMessage = String.format("Exported from server \"%s\" version \"%s\" to \"%s\" by %s on %s.",
+                                             modulesExportImport.getExportEmfServer(), modulesExportImport.getExportEmfVersion(),
+                                             modulesExportImport.getExportFileName(), modulesExportImport.getExportUserName(),
+                                             CustomDateFormat.format_MM_DD_YYYY_HH_mm(modulesExportImport.getExportDate()));
+
+        String importMessage = String.format("Imported on server \"%s\" version \"%s\" from file \"%s\" by %s on %s.",
+                                             importEmfServer, importEmfVersion, importFileName, importUser.getName(),
+                                             CustomDateFormat.format_MM_DD_YYYY_HH_mm(importDate));
+        
+        String exportImportMessage = exportMessage + "\n" + importMessage;
+        
+        StringBuilder changeLog = new StringBuilder();
+        
+        int moduleAdditions = 0;
+        int moduleSkips = 0;
+        
+        for (Module importedModule : modulesExportImport.getModules()) {
+            String importedModuleName = importedModule.getName();
+            
+            // match module type by name
+            ModuleType localModuleType = null;
+            try {
+                localModuleType = presenter.getModuleType(importedModule.getModuleTypeVersion().getModuleType().getName());
+            } catch (EmfException e) {
+                // e.printStackTrace();
+            }
+            if (localModuleType == null) {
+                changeLog.append(String.format("Skipped module \"%s\" due to no matching module type.\n", importedModuleName));
+                moduleSkips++;
+                continue;
+            }
+            
+            // match module type version by version number and algorithm
+            ModuleTypeVersion localModuleTypeVersion = null;
+            for (ModuleTypeVersion moduleTypeVersion : localModuleType.getModuleTypeVersions().values()) {
+                if (importedModule.getModuleTypeVersion().getVersion() == moduleTypeVersion.getVersion() &&
+                    importedModule.getModuleTypeVersion().getAlgorithm().equals(moduleTypeVersion.getAlgorithm())) {
+                    localModuleTypeVersion = moduleTypeVersion;
+                    break;
+                }
+            }
+            if (localModuleTypeVersion == null) {
+                changeLog.append(String.format("Skipped module \"%s\" due to no matching module type version.\n", importedModuleName));
+                moduleSkips++;
+                continue;
+            }
+            
+            importedModule.setModuleTypeVersion(localModuleTypeVersion);
+            
+            // build unique module name if needed
+            Module localModule = null;
+            try {
+                localModule = presenter.getModule(importedModuleName);
+            } catch (EmfException e) {
+                // e.printStackTrace();
+            }
+            
+            if (localModule != null) {
+                String newModuleName = findAvailableModuleName(importedModuleName);
+                importedModule.setName(newModuleName);
+                localModule = null;
+            }
+            
+            // match module datasets by name, dataset type, and version number
+            for (ModuleDataset moduleDataset : importedModule.getModuleDatasets().values()) {
+                if (moduleDataset.getDatasetId() == null) {
+                    continue;
+                }
+                
+                String datasetName = modulesExportImport.getModuleDatasetNames().get(moduleDataset.getDatasetId());
+                EmfDataset localDataset = null;
+                try {
+                    localDataset = presenter.getDataset(datasetName);
+                } catch (EmfException e) {
+                    // e.printStackTrace();
+                }
+                if (localDataset == null) {
+                    moduleDataset.setDatasetId(null);
+                    continue;
+                }
+                
+                DatasetType moduleDatasetType = moduleDataset.getModuleTypeVersionDataset().getDatasetType();
+                if (moduleDatasetType.getId() != localDataset.getDatasetType().getId()) {
+                    moduleDataset.setDatasetId(null);
+                    continue;
+                }
+                
+                Version localVersion = null;
+                try {
+                    localVersion = presenter.getVersion(localDataset, moduleDataset.getVersion());
+                } catch (EmfException e) {
+                    // e.printStackTrack();
+                }
+                if (localVersion == null) {
+                    moduleDataset.setDatasetId(null);
+                    continue;
+                }
+                
+                moduleDataset.setDatasetId(localDataset.getId());
+            }
+            
+            try {
+                importedModule.prepareForImport(exportImportMessage, importUser, importDate);
+                localModule = presenter.addModule(importedModule);
+            } catch (EmfException e) {
+                e.printStackTrace();
+                messagePanel.setError("Failed to add imported module \"" + importedModuleName + "\": " + e.getMessage());
+                return;
+            }
+            
+            if (localModule == null) {
+                messagePanel.setError("Failed to add imported module \"" + importedModuleName + "\" to current server.");
+                return;
+            }
+            
+            if (localModule.getName().equals(importedModuleName)) {
+                changeLog.append(String.format("Imported module \"%s\" to current server.\n", importedModuleName));
+            } else {
+                changeLog.append(String.format("Imported module \"%s\" with modified name \"%s\" to current server.\n", 
+                                               importedModuleName, localModule.getName()));
+            }
+            moduleAdditions++;
+        }
+        
+        String summary = String.format("Imported %d module%s (%d skipped) from \"%s\".", 
+                                       moduleAdditions, (moduleAdditions == 1) ? "" : "s", moduleSkips, importFileName);
+        changeLog.append("\n" + summary + "\n");
+        showLargeMessage(summary, changeLog.toString());
+        
+        doRefresh();
+    }
+
+    private void showLargeMessage(String title, String message) {
+        // reusing implementation from ModuleTypeVersionPropertiesWindow
+        ModuleTypeVersionPropertiesWindow.showLargeMessage(messagePanel, title, message);
     }
 
     private int[] selectedModuleIds() {

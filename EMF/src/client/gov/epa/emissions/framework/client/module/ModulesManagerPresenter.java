@@ -1,14 +1,14 @@
 package gov.epa.emissions.framework.client.module;
 
+import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
+import gov.epa.emissions.framework.services.module.ModuleType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class ModulesManagerPresenter {
@@ -92,5 +92,25 @@ public class ModulesManagerPresenter {
 
     public Module getModule(int id) throws EmfException {
         return service().getModule(id);
+    }
+
+    public Module getModule(String name) throws EmfException {
+        return service().getModule(name);
+    }
+
+    public Module addModule(Module module) throws EmfException {
+        return session.moduleService().addModule(module);
+    }
+
+    public ModuleType getModuleType(String name) throws EmfException {
+        return service().getModuleType(name);
+    }
+
+    public EmfDataset getDataset(String name) throws EmfException {
+        return session.dataService().getDataset(name);
+    }
+
+    public Version getVersion(EmfDataset dataset, int version) throws EmfException {
+        return session.dataViewService().getVersion(dataset.getId(), version);
     }
 }

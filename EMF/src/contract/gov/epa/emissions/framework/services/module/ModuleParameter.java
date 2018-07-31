@@ -25,6 +25,10 @@ public class ModuleParameter implements Serializable {
     public boolean isSet() {
         return hasValue(); 
     }
+    
+    public void prepareForExport() {
+        id = 0;
+    }
 
     public ModuleParameter deepCopy(Module newModule) {
         ModuleParameter newModuleParameter = new ModuleParameter();

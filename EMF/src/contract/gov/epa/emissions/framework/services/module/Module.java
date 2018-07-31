@@ -452,6 +452,39 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         
         return compData;
     }
+    
+    public void prepareForExport() {
+        if (this.id == 0)
+            return;
+        this.id = 0;
+        this.creator = null;
+        this.project = null;
+        setLockDate(null);
+        setLockOwner(null);
+        
+        // skip module tags and history
+        this.tags.clear();
+        this.moduleHistory.clear();
+        
+        for (ModuleParameter parameter : moduleParameters.values()) {
+            parameter.prepareForExport();
+        }
+        for (ModuleDataset dataset : moduleDatasets.values()) {
+            dataset.prepareForExport();
+        }
+        
+        this.moduleTypeVersion.getModuleType().prepareForExport();
+        this.moduleTypeVersion.setModuleTypeVersionDatasets(new HashMap<String, ModuleTypeVersionDataset>());
+        this.moduleTypeVersion.setModuleTypeVersionParameters(new HashMap<String, ModuleTypeVersionParameter>());
+        this.moduleTypeVersion.setModuleTypeVersionRevisions(new ArrayList<ModuleTypeVersionRevision>());
+    }
+
+    public void prepareForImport(String exportImportMessage, User importUser, Date importDate) {
+        this.creator = importUser;
+        description = (description == null) ? "" : (description + "\n");
+        description += exportImportMessage;
+        lastModifiedDate = importDate;
+    }
 
     public boolean isComposite() {
         return (moduleTypeVersion != null) && moduleTypeVersion.isComposite();
