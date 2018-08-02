@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.cost.controlstrategy.editor;
 
 import gov.epa.emissions.commons.data.Dataset;
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
@@ -271,6 +272,13 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                     && !controlStrategyResults[0].getStrategyResultType().getName().equals(StrategyResultType.annotatedInventory))) {
                 messagePanel.setError("Please select at least one item that has a controlled inventory.");
                 return;
+            }
+            for (ControlStrategyResult result : controlStrategyResults) {
+                if (result.getStrategyResultType().getName().equals(StrategyResultType.detailedStrategyResult) &&
+                    result.getDetailedResultDataset().getDatasetType().getName().equals(DatasetType.strategyDetailedResult)) {
+                    messagePanel.setError("The Strategy Detailed Result is too old to create a controlled inventory. Re-run the control strategy.");
+                    return;
+                }
             }
             //see if selected items can produce a controlled inventory.
             boolean hasControllableInventory = false;
