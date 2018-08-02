@@ -386,7 +386,7 @@ BEGIN
 					last_source_apply_order, 
 					already_controlled_pollutant_ids)
 
-				select scc,fips,plantid,pointid,stackid,segment,
+				select scc,region_cd,facility_id,unit_id,rel_point_id,process_id,
 					coalesce(string_agg((dr.CM_Id || '''')::text, ''|''::text) OVER dr_source_window,''''::text) as cm_ids,
 					coalesce(max(dr.apply_order) OVER dr_source_window,0::integer) as last_source_apply_order,
 					coalesce(string_agg(p.id::text, ''|'') OVER dr_source_window,''''::text) as already_controlled_pollutant_ids
@@ -395,7 +395,7 @@ BEGIN
 					inner join emf.pollutants p
 					on p.name = dr.poll
 
-				WINDOW dr_source_window AS (PARTITION BY fips,scc,plantid,pointid,stackid,segment order by fips,scc,plantid,pointid,stackid,segment);';
+				WINDOW dr_source_window AS (PARTITION BY region_cd,scc,facility_id,unit_id,rel_point_id,process_id order by region_cd,scc,facility_id,unit_id,rel_point_id,process_id);';
 
 
 	EXECUTE 'CREATE INDEX source_fact_source ON source_fact USING btree (scc, fips, plantid, pointid, stackid, segment);';
@@ -599,11 +599,11 @@ BEGIN
 		cm_abbrev,
 		poll,
 		scc,
-		fips,
-		plantid, 
-		pointid, 
-		stackid, 
-		segment,
+		region_cd,
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id,
 		annual_oper_maint_cost,
 		annual_variable_oper_maint_cost,
 		annual_fixed_oper_maint_cost,
@@ -611,10 +611,10 @@ BEGIN
 		total_capital_cost,
 		annual_cost,
 		ctl_ann_cost_per_ton,
-		ann_cost_per_ton,
+		eff_ann_cost_per_ton,
 		annualized_capital_cost_3pct,
 		annual_cost_3pct,
-		ann_cost_per_ton_3pct,
+		eff_ann_cost_per_ton_3pct,
 		control_eff,
 		rule_pen,
 		rule_eff,
@@ -625,7 +625,7 @@ BEGIN
 		inv_rule_eff,
 		final_emissions,
 		ctl_emis_reduction,
-		emis_reduction,
+		eff_emis_reduction,
 		inv_emissions,
 		input_emis,
 		output_emis,
@@ -641,8 +641,8 @@ BEGIN
 		sector,
 		xloc,
 		yloc,
-		plant,
-		"comment",
+		facility,
+		"comments",
 		REPLACEMENT_ADDON,
 		EXISTING_MEASURE_ABBREVIATION,
 		EXISTING_PRIMARY_DEVICE_TYPE_CODE,

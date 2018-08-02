@@ -180,18 +180,18 @@ BEGIN
 		)
 	select 
 		' || strategy_messages_dataset_id || '::integer,
-		dr.fips,
+		dr.region_cd,
 		dr.scc,
-		dr.plantid, 
-		dr.pointid, 
-		dr.stackid, 
-		dr.segment, 
+		dr.facility_id, 
+		dr.unit_id, 
+		dr.rel_point_id, 
+		dr.process_id, 
 		dr.poll,
 		''Warning''::character varying(11) as status,
 		null::character varying(255) as control_program,
-		''Emission reduction is negative, '' || emis_reduction || ''.'' as "comment"
+		''Emission reduction is negative, '' || eff_emis_reduction || ''.'' as "comment"
 	from emissions.' || strategy_detailed_result_table_name || ' dr
-	where dr.emis_reduction < 0.0 
+	where dr.eff_emis_reduction < 0.0 
 		and dr.control_eff > 0.0
 		and ' || public.build_version_where_filter(strategy_detailed_result_dataset_id, 0, 'dr'::character varying(64));
 
@@ -366,12 +366,12 @@ BEGIN
 		)
 	select 
 		' || strategy_messages_dataset_id || '::integer,
-		dr.fips,
+		dr.region_cd,
 		dr.scc,
-		dr.plantid, 
-		dr.pointid, 
-		dr.stackid, 
-		dr.segment, 
+		dr.facility_id, 
+		dr.unit_id, 
+		dr.rel_point_id, 
+		dr.process_id, 
 		dr.poll,
 		''Warning''::character varying(11) as status,
 		''Source is missing engineering cost equations, '' || et.name || '' ['' || et.description || ''], inventory inputs; '' || et.inventory_fields || ''.  The default cost per ton approach was used instead for costing.'' as "comment"

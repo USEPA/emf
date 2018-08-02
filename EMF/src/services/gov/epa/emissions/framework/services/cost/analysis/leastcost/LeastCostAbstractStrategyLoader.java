@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.services.cost.analysis.leastcost;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
+import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
@@ -72,9 +73,11 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
     }
 
     private EmfDataset createResultDataset(double targetPctRedcution, EmfDataset inputDataset) throws EmfException {
+        DatasetType dsType = getControlStrategyDetailedResultDatasetType();
         return creator.addDataset("pct_" + targetPctRedcution + "_" + controlStrategy.getName(), 
-                inputDataset, getControlStrategyDetailedResultDatasetType(), 
-                detailedResultTableFormat, creator.detailedResultDescription(inputDataset));
+                inputDataset, dsType,
+                new VersionedTableFormat(dsType.getFileFormat(), dbServer.getSqlDataTypes()),
+                creator.detailedResultDescription(inputDataset));
     }
 
     protected ControlStrategyResult createStrategyResult(double targetPctRedcution, EmfDataset inputDataset, int inputDatasetVersion) throws EmfException {
@@ -314,13 +317,13 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
         if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
         
         String query = "select sum(annual_cost) as total_annual_cost, "
-            + "case when sum(emis_reduction) <> 0 then sum(annual_cost) / sum(emis_reduction) else null::double precision end as average_ann_cost_per_ton, "
+            + "case when sum(eff_emis_reduction) <> 0 then sum(annual_cost) / sum(eff_emis_reduction) else null::double precision end as average_ann_cost_per_ton, "
             + "sum(annual_oper_maint_cost) as Total_Annual_Oper_Maint_Cost, "
             + "sum(annualized_capital_cost) as Total_Annualized_Capital_Cost, "
             + "sum(total_capital_cost) as Total_Capital_Cost, "
             + "case when " + uncontrolledEmis + " <> 0 then " + emisReduction + " / " + uncontrolledEmis + " * 100 else null::double precision end as Target_Percent_Reduction, " 
-            + "case when " + uncontrolledEmis + " <> 0 then sum(emis_reduction) / " + uncontrolledEmis + " * 100 else null::double precision end as Actual_Percent_Reduction, "
-            + "sum(emis_reduction) as Total_Emis_Reduction " 
+            + "case when " + uncontrolledEmis + " <> 0 then sum(eff_emis_reduction) / " + uncontrolledEmis + " * 100 else null::double precision end as Actual_Percent_Reduction, "
+            + "sum(eff_emis_reduction) as Total_Emis_Reduction " 
             + "FROM " + qualifiedEmissionTableName(dataset)
             + " where poll='%" + pollToMatch + "%'"
             + " group by poll";
