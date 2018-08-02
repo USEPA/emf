@@ -1948,3 +1948,456 @@ UPDATE emf.control_measure_properties
  UPDATE emf.equation_types
    SET equation = REPLACE(equation, ' x Combustion Efficiency', '')
  WHERE equation LIKE '% x Combustion Efficiency%';
+ 
+ -- 08/01/2018 Set up keywords and QA steps for new Control Strategy Detailed Result Extended dataset type
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'Control Strategy Detailed Result Extended') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'Control Strategy Detailed Result Extended')) as list_index,
+  (select id from emf.keywords where "name" = 'EXPORT_INLINE_COMMENTS') as keyword_id,
+  'false' as "value", 'EXPORT_INLINE_COMMENTS' as kwname;
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'Control Strategy Detailed Result Extended') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'Control Strategy Detailed Result Extended')) as list_index,
+  (select id from emf.keywords where "name" = 'EXPORT_HEADER_COMMENTS') as keyword_id,
+  'false' as "value", 'EXPORT_HEADER_COMMENTS' as kwname;
+insert into emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, "value", kwname)
+select (select id from emf.dataset_types where "name" = 'Control Strategy Detailed Result Extended') as dataset_type_id,
+  (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_keywords where dataset_type_id = (select id from emf.dataset_types where "name" = 'Control Strategy Detailed Result Extended')) as list_index,
+  (select id from emf.keywords where "name" = 'EXPORT_SUFFIX') as keyword_id,
+  '.csv' as "value", 'EXPORT_SUFFIX' as kwname;
+
+-- Cost Curve - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Cost Curve', 1, 'select poll, 
+	coalesce(eff_ann_cost_per_ton,0) as eff_ann_cost_per_ton, 
+	coalesce(incremental_cost_per_ton,0) as inc_cost_per_ton, 
+	coalesce(cumulative_emis_reduction,0) as cum_emis_reduction, 
+	coalesce(incremental_emis_reduction,0) as inc_emis_reduction, 
+	coalesce(cumulative_annual_cost,0) as cum_annual_cost, 
+	coalesce(incremental_annual_cost,0) as inc_annual_cost, 
+	case when coalesce(incremental_emis_reduction, 0) != 0 then incremental_cost_Per_ton / incremental_emis_reduction else 0.0 end as slope, 
+	case when coalesce((select sum(eff_emis_reduction) from $TABLE[1] e where e.poll = tbl.poll), 0) != 0 then cumulative_emis_reduction / (select sum(eff_emis_reduction) from $TABLE[1] e where e.poll = tbl.poll) else null end as pct_emis_red
+from (
+select poll, 
+	d.eff_ann_cost_per_ton, 
+
+	(select sum(e.eff_emis_reduction) 
+	from $TABLE[1] e
+	where coalesce(e.eff_ann_cost_per_ton,0) <= coalesce(d.eff_ann_cost_per_ton,0)
+	) as cumulative_emis_reduction,
+
+	coalesce(eff_ann_cost_per_ton,0) - 
+	coalesce((select distinct on (coalesce(f.eff_ann_cost_per_ton,0)) f.eff_ann_cost_per_ton 
+		from $TABLE[1] f
+		where coalesce(f.eff_ann_cost_per_ton,0) < coalesce(d.eff_ann_cost_per_ton,0)
+		order by coalesce(f.eff_ann_cost_per_ton,0) desc
+		limit 1),0) as incremental_cost_Per_ton,
+
+	coalesce((select sum(e.eff_emis_reduction) 
+	from $TABLE[1] e
+	where coalesce(e.eff_ann_cost_per_ton,0) <= coalesce(d.eff_ann_cost_per_ton,0)
+	), 0) - 
+	coalesce((select sum(e.eff_emis_reduction) 
+	from $TABLE[1] e
+	where coalesce(e.eff_ann_cost_per_ton,0) <= coalesce((
+		select distinct on (coalesce(f.eff_ann_cost_per_ton,0)) f.eff_ann_cost_per_ton 
+		from $TABLE[1] f
+		where coalesce(f.eff_ann_cost_per_ton,0) < coalesce(d.eff_ann_cost_per_ton,0)
+		order by coalesce(f.eff_ann_cost_per_ton,0) desc
+		limit 1
+		),0)),0) as incremental_emis_reduction,
+
+	(select sum(e.annual_cost) 
+	from $TABLE[1] e
+	where coalesce(e.eff_ann_cost_per_ton,0) <= coalesce(d.eff_ann_cost_per_ton,0)
+	) as cumulative_annual_cost,
+
+	coalesce((select sum(e.annual_cost) 
+	from $TABLE[1] e
+	where coalesce(e.eff_ann_cost_per_ton,0) <= coalesce(d.eff_ann_cost_per_ton,0)
+	), 0) - 
+	coalesce((select sum(e.annual_cost) 
+	from $TABLE[1] e
+	where coalesce(e.eff_ann_cost_per_ton,0) <= coalesce((
+		select distinct on (coalesce(f.eff_ann_cost_per_ton,0)) f.eff_ann_cost_per_ton 
+		from $TABLE[1] f
+		where coalesce(f.eff_ann_cost_per_ton,0) < coalesce(d.eff_ann_cost_per_ton,0)
+		order by coalesce(f.eff_ann_cost_per_ton,0) desc
+		limit 1
+		),0)),0) as incremental_annual_cost
+
+from $TABLE[1] d
+WHERE 1 = 1
+group by poll, d.eff_ann_cost_per_ton) tbl
+order by poll, coalesce(eff_ann_cost_per_ton,0)', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Cost Curve');
+
+-- Summarize by Control Measure and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Control Measure and Pollutant', 1, 'select e.sector, 
+	cm.name as Measure_Name, 
+	e.cm_abbrev as Measure_Abbreviation, 
+	sg.name as Source_Group, 
+	ct.name as Control_Technology, 
+	e.POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(Annual_Cost) as Annual_Cost, 
+	sum(Inv_emissions) as Inv_emissions, 
+	sum(Final_emissions) as Final_emissions, 
+	sum(Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction
+from $TABLE[1] e 
+left outer join emf.control_measures cm 
+	on cm.abbreviation = e.cm_abbrev 
+left outer join emf.source_groups sg 
+	on sg.id = cm.source_group 
+left outer join emf.control_technologies ct 
+	on ct.id = cm.control_technology 
+group by e.sector, 
+	cm.name, 
+	e.cm_abbrev, 
+	sg.name, 
+	ct.name, 
+	e.POLL 
+order by e.sector, 
+	cm.name, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by Control Measure and Pollutant');
+
+-- Summarize by Control Program, U.S. State and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Control Program, U.S. State and Pollutant', 1, 
+'select e.control_program, 
+	fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, 
+	e.POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton,
+	sum(e.Annual_Cost) as Annual_Cost, 
+	sum(e.Inv_emissions) as Inv_emissions, 
+	sum(e.Final_emissions) as Final_emissions, 
+	sum(e.Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction,
+	(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+	(fips.state_maxlat + fips.state_minlat) / 2 as latitude 
+from $TABLE[1] e 
+inner join reference.fips 
+	on fips.state_county_fips = e.region_cd 
+	and fips.country_num = ''0'' 
+group by e.control_program, 
+	fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, POLL, 
+	fips.state_maxlon, 
+	fips.state_minlon, 
+	fips.state_maxlat, 
+	fips.state_minlat 
+order by e.control_program, 
+	fips.state_name, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by Control Program, U.S. State and Pollutant');
+
+-- Summarize by Control Technology and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Control Technology and Pollutant', 1, 
+'select sector, 
+	ct.name as Control_Technology, 
+	e.POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(Annual_Cost) as Annual_Cost, 
+	sum(Inv_emissions) as Inv_emissions, 
+	sum(Final_emissions) as Final_emissions, 
+	sum(Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction
+from $TABLE[1] e 
+left outer join emf.control_measures cm 
+	on cm.abbreviation = e.cm_abbrev 
+left outer join emf.control_technologies ct 
+	on ct.id = cm.control_technology 
+group by sector, 
+	ct.name, 
+	e.POLL 
+order by sector, 
+	ct.name, 
+	e.POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by Control Technology and Pollutant');
+
+-- Summarize by County and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by County and Pollutant', 1, 
+'select sector, 
+	fips.state_county_fips as fips, 
+	fips.county, 
+	fips.state_name, 
+	fips.state_abbr, 
+	POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(e.Annual_Cost) as Annual_Cost, 
+	sum(e.Inv_emissions) as Inv_emissions, 
+	sum(e.Final_emissions) as Final_emissions, 
+	sum(e.Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction,
+	fips.centerlon as longitude,
+	fips.centerlat as latitude
+from $TABLE[1] e 
+inner join reference.fips 
+	on fips.state_county_fips = e.region_cd 
+where fips.country_num = ''0'' 
+group by sector, 
+	fips.state_county_fips, 
+	fips.county, 
+	fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, 
+	region_cd, 
+	POLL,
+	fips.centerlon, 
+	fips.centerlat
+order by sector, 
+	region_cd, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by County and Pollutant');
+
+-- Summarize by Facility and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Facility and Pollutant', 1, 
+'select region_cd, 
+	facility_id as facility_id, 
+	facility as facility_name, 
+	poll as pollutant, 
+	sum(inv_emissions) as Inv_emissions, 
+	sum(final_emissions) as annual_emissions, 
+	sum(eff_emis_reduction) as emissions_reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(eff_emis_reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction, 
+	avg(control_eff) as avg_control_efficiency, 
+	avg(rule_pen) as avg_rule_penetration, 
+	avg(rule_eff) as avg_rule_effectiveness, 
+	sum(annual_cost) as total_annual_cost, 
+	sum(annual_oper_maint_cost) as total_op_and_maint_cost, 
+	sum(annualized_capital_cost) as total_annualized_capital_cost, 
+	sum(total_capital_cost) as total_capital_cost, 
+	case when coalesce(sum(eff_emis_reduction),0) <> 0 then sum(annual_cost) / sum(eff_emis_reduction) else null end as avg_cost_per_ton,
+	avg(xloc) as longitude, 
+	avg(yloc) as latitude, 
+	public.concatenate_with_ampersand(distinct cm_abbrev) as measures
+from $TABLE[1] e
+group by region_cd,
+	facility_id,
+	facility,
+	poll
+order by region_cd, 
+	facility_id, 
+	facility,
+	poll', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by Facility and Pollutant');
+
+-- Summarize by Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Pollutant', 1, 
+'select POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(Annual_Cost) as Annual_Cost, 
+	sum(Inv_emissions) as Inv_emissions, 
+	sum(Final_emissions) as Final_emissions, 
+	sum(Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction
+from $TABLE[1] e 
+group by POLL 
+order by POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by Pollutant');
+
+-- Summarize by SCC and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by SCC and Pollutant', 1, 
+'select sector, 
+	SCC, 
+	POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(Annual_Cost) as Annual_Cost, 
+	sum(Inv_emissions) as Inv_emissions, 
+	sum(Final_emissions) as Final_emissions, 
+	sum(Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction
+from $TABLE[1] e 
+group by sector, 
+	SCC, 
+	POLL 
+order by sector, 
+	SCC, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by SCC and Pollutant');
+
+-- Summarize by Sector and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Sector and Pollutant', 1, 
+'select sector, 
+	POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(Annual_Cost) as Annual_Cost, 
+	sum(Inv_emissions) as Inv_emissions, 
+	sum(Final_emissions) as Final_emissions, 
+	sum(Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction
+from $TABLE[1] e 
+group by sector, 
+	POLL 
+order by sector, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by Sector and Pollutant');
+
+-- Summarize by Source Group and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by Source Group and Pollutant', 1, 
+'select sector, 
+	sg.name as Source_Group, 
+	e.POLL, 
+	case when coalesce(sum(e.Eff_Emis_Reduction),0) <> 0 then sum(e.Annual_Cost) / sum(e.Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(e.Annual_Cost) as Annual_Cost, 
+	sum(e.Inv_emissions) as Inv_emissions, 
+	sum(e.Final_emissions) as Final_emissions, 
+	sum(e.Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction
+from $TABLE[1] e 
+left outer join emf.control_measures cm 
+	on cm.abbreviation = e.cm_abbrev 
+left outer join emf.source_groups sg 
+	on sg.id = cm.source_group 
+group by sector, 
+	sg.name, 
+	e.POLL 
+order by sector, 
+	sg.name, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by Source Group and Pollutant');
+
+-- Summarize by State, SCC, and Control Technology - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by State, SCC, and Control Technology', 1, 
+'select e.sector, 
+	ct.name as Control_Technology, 
+	e.POLL, 
+	e.fipsst, 
+	fips.state_abbr, 
+	e.scc, 
+	case when coalesce(sum(e.Eff_Emis_Reduction),0) <> 0 then sum(e.Annual_Cost) / sum(e.Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(e.Annual_Cost) as Annual_Cost, 
+	sum(e.Inv_emissions) as Inv_emissions,
+	sum(e.Final_emissions) as Final_emissions, 
+	sum(e.Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions ),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction
+from $TABLE[1] e 
+left outer join emf.control_measures cm 
+	on cm.abbreviation = e.cm_abbrev 
+left outer join emf.control_technologies ct 
+	on ct.id = cm.control_technology 
+inner join reference.fips
+	on fips.fipsst = e.fipsst and 
+	fips.country_num = ''0''
+group by e.sector, 
+	ct.name, 
+	fips.state_abbr, 
+	e.POLL, 
+	e.fipsst, 
+	e.scc 
+order by e.sector, 
+	ct.name, 
+	e.POLL, 
+	e.fipsst, 
+	e.scc', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by State, SCC, and Control Technology');
+
+-- Summarize by U.S. County and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by U.S. County and Pollutant', 1, 
+'select e.sector, 
+	fips.state_county_fips as fips, 
+	fips.county, 
+	fips.state_name, 
+	fips.state_abbr, 
+	e.POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton,
+	sum(e.Annual_Cost) as Annual_Cost,
+	sum(e.Inv_emissions) as Inv_emissions, 
+	sum(e.Final_emissions) as Final_emissions, 
+	sum(e.Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction,
+	fips.centerlon as longitude, 
+	fips.centerlat as latitude 
+from $TABLE[1] e 
+inner join reference.fips 
+	on fips.state_county_fips = e.region_cd 
+where fips.country_num = ''0'' 
+group by sector, 
+	fips.state_county_fips, 
+	fips.county, 
+	fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, 
+	POLL, 
+	fips.centerlat, 
+	fips.centerlon 
+order by sector, 
+	fips.state_name, 
+	fips.county, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by U.S. County and Pollutant');
+
+-- Summarize by U.S. State and Pollutant - Control Strategy Detailed Result Extended
+insert into emf.dataset_types_qa_step_templates (dataset_type_id, list_index, name, qa_program_id, program_arguments, required, order_no, description)
+select dt.id, (select COALESCE(max(list_index) + 1, 0) from emf.dataset_types_qa_step_templates where dataset_type_id = dt.id) as list_index, 'Summarize by U.S. State and Pollutant', 1, 
+'select e.sector, 
+	fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, 
+	e.POLL, 
+	case when coalesce(sum(Eff_Emis_Reduction),0) <> 0 then sum(Annual_Cost) / sum(Eff_Emis_Reduction) else null end as avg_cost_per_ton, 
+	sum(e.Annual_Cost) as Annual_Cost, 
+	sum(e.Inv_emissions) as Inv_emissions, 
+	sum(e.Final_emissions) as Final_emissions, 
+	sum(e.Eff_Emis_Reduction) as Eff_Emis_Reduction, 
+	case when coalesce(sum(Inv_emissions),0) <> 0 then sum(Eff_Emis_Reduction) / sum(Inv_emissions) * 100 else null end as percent_reduction,
+	(fips.state_maxlon + fips.state_minlon) / 2 as longitude, 
+	(fips.state_maxlat + fips.state_minlat) / 2 as latitude  
+from $TABLE[1] e 
+inner join reference.fips 
+	on fips.state_county_fips = e.region_cd 
+where fips.country_num = ''0''
+group by sector, 
+	fips.state_name, 
+	fips.state_abbr, 
+	fips.fipsst, 
+	POLL, 
+	fips.state_maxlon, 
+	fips.state_minlon, 
+	fips.state_maxlat, 
+	fips.state_minlat 
+order by sector, 
+	fips.state_name, 
+	POLL', false, 1, ''
+from emf.dataset_types dt
+where name in ('Control Strategy Detailed Result Extended')
+	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by U.S. State and Pollutant');
