@@ -225,6 +225,20 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
     protected void doNew(Version[] versions) {
         clear();
 
+        // check if there is at least one existing final version
+        boolean hasFinal = false;
+        for (Version version : versions) {
+            if (version.isFinalVersion()) {
+                hasFinal = true;
+                break;
+            }
+        }
+        if (!hasFinal) {
+            JOptionPane.showMessageDialog(parentConsole, "This dataset has no existing versions that are marked as final.",
+                    "Can't Create New Version", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         NewVersionDialog dialog = new NewVersionDialog(dataset, versions, parentConsole);
         dialog.run();
 
