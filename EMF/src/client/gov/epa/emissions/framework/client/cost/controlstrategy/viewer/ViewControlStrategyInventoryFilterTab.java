@@ -273,7 +273,7 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
 
         filter = new TextArea("filter", value, 40, 2);
         filter
-                .setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_EMIS>5000 and SCC like '30300%')");
+                .setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_VALUE>5000 and SCC like '30300%')");
         filter.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(filter);
 

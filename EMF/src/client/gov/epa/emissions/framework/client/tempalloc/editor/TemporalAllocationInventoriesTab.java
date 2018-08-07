@@ -168,7 +168,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
         if (value == null) value = "";
         
         filter = new TextArea("filter", value, 40, 2);
-        filter.setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_EMIS>5000 and SCC like '30300%')");
+        filter.setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_VALUE>5000 and SCC like '30300%')");
         JScrollPane scrollPane = new JScrollPane(filter);
         changeablesList.addChangeable(filter);
         filter.setEditable(presenter.isEditing());
