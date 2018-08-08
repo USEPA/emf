@@ -484,6 +484,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         description = (description == null) ? "" : (description + "\n");
         description += exportImportMessage;
         lastModifiedDate = importDate;
+        isFinal = false;
     }
 
     public boolean isComposite() {
