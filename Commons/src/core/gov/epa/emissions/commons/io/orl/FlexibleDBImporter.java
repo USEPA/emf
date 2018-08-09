@@ -23,6 +23,8 @@ import gov.epa.emissions.commons.io.importer.Importer;
 import gov.epa.emissions.commons.io.importer.ImporterException;
 import gov.epa.emissions.commons.io.importer.ImporterPostProcess;
 import gov.epa.emissions.commons.io.importer.TemporalResolution;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,6 +45,8 @@ import java.util.List;
 import java.util.Random;
 
 public class FlexibleDBImporter implements Importer, ImporterPostProcess {
+    Log log = LogFactory.getLog(FlexibleDBImporter.class);
+
 
     private Dataset dataset;
 
@@ -187,6 +191,7 @@ public class FlexibleDBImporter implements Importer, ImporterPostProcess {
             // throw ex;
             // }
             // throw exc;
+            log.error(exc);
             throw new Exception(exc.getMessage());
         } finally {
             if ((headerFile != null) && headerFile.exists())
@@ -442,14 +447,14 @@ public class FlexibleDBImporter implements Importer, ImporterPostProcess {
         String[] tokens = record.getTokens();
         
         if (cols.length != tokens.length)
-            throw new ImporterException("Number of columns in the data doesn't match the file format " + "(expected:"
-                    + cols.length + " but was:" + tokens.length + "). Hint: correct typos or set keyword EXPORT_COLUMN_LABEL to false");
+            throw new ImporterException("Number of columns in the column header doesn't match the file format " + "(expected:"
+                    + cols.length + " but was:" + tokens.length + "). Hint: correct header typos or set \"Dataset Type\" keyword, EXPORT_COLUMN_LABEL, to false if there is no column header");
         for (int i = 0; i < cols.length; i++) {
             if (!cols[i].equalsIgnoreCase(tokens[i].trim()))
-                throw new ImporterException("columns in the data doesn't match columns in the file format " + "(expected:"
-                        + cols[i] + " but was:" + tokens[i] + "). Hint: correct typos or set keyword EXPORT_COLUMN_LABEL to false");
+                throw new ImporterException("A column in the column header doesn't match a column in the file format " + "(expected:"
+                        + cols[i] + " but was:" + tokens[i] + "). Hint: correct header typos or set \"Dataset Type\" keyword, EXPORT_COLUMN_LABEL, to false if there is no column header");
         }
-    } 
+    }
      
      private void checkDataLine() throws ImporterException{
       
