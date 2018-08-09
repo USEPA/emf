@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.data.QAProgram;
 import gov.epa.emissions.commons.data.QAStepTemplate;
+import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -62,14 +63,14 @@ public class EditableDatasetTypePresenterImpl implements EditableDatasetTypePres
         editable.disposeView();
     }
 
-    public void doSave(String name, String description, KeyVal[] keyVals, String sortOrder, QAStepTemplate[] templates) throws EmfException {
-        update(name, description, keyVals, sortOrder, templates);
+    public void doSave(String name, String description, KeyVal[] keyVals, String sortOrder, QAStepTemplate[] templates, Column[] columns) throws EmfException {
+        update(name, description, keyVals, sortOrder, templates, columns);
         type = service().updateDatasetType(type);
         closeView();
     }
 
     private void update(String name, String description, KeyVal[] keyVals, String sortOrder
-            , QAStepTemplate[] templates) throws EmfException {
+            , QAStepTemplate[] templates, Column[] columns) throws EmfException {
         type.setName(name);
         type.setDescription(description);
         type.setDefaultSortOrder(sortOrder);
@@ -78,6 +79,10 @@ public class EditableDatasetTypePresenterImpl implements EditableDatasetTypePres
         verifyDuplicates(keyVals);
         type.setKeyVals(keyVals);
         type.setLastModifiedDate(new Date());
+        if (type.getFileFormat() != null && columns != null) {
+            type.getFileFormat().setColumns(columns);
+        }
+
     }
 
     private void verifyDuplicates(KeyVal[] keyVals) throws EmfException {

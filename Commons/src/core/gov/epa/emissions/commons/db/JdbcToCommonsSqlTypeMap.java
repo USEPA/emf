@@ -28,4 +28,8 @@ public class JdbcToCommonsSqlTypeMap {
         return (String) map.get(new Integer(type));
     }
 
+    public Map getSqlTypeMap() {
+        return map;
+    }
+
 }

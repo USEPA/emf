@@ -51,6 +51,10 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
 
     private DatasetTypeKeywordsPanel keywordsPanel;
 
+    private EditableColumnTableData columnsTableData;
+
+    private DatasetTypeColumnsPanel columnsPanel;
+
     private DesktopManager desktopManager;
 
     private EditQAStepTemplatesPanel qaStepTemplatesPanel;
@@ -62,7 +66,7 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
     private JTable fileFormat;
 
     public EditableDatasetTypeWindow(EmfSession session, EmfConsole parent, DesktopManager desktopManager) {
-        super("Edit Dataset Type", new Dimension(620, 580), desktopManager);
+        super("Edit Dataset Type", new Dimension(750, 700), desktopManager);
 
         this.desktopManager = desktopManager;
         this.parent = parent;
@@ -129,15 +133,14 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         creator.add(new JLabel("Last Modified Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(mDate)));
         //layoutGenerator.addLabelWidgetPair("", creator, uPanel);
 
-        fileFormat = getFileFormat(type);
-
+//        fileFormat = getFileFormat(type);
+        JPanel fileFormat = createFileFormatPanel(type);
         JPanel fileFormatPanel = new JPanel(new BorderLayout());
         fileFormatPanel.setBorder(BorderFactory.createTitledBorder("File Format"));
 
         //add file format table, if applicable
         if (fileFormat !=null) {
-            fileFormat.setRowHeight(16);
-            fileFormatPanel.add(new JScrollPane(fileFormat), BorderLayout.CENTER);
+            fileFormatPanel.add(createFileFormatPanel(type), BorderLayout.CENTER);
         }else {
             TextField fileFomatTextArea =new TextField(""," No file format for view.  ",40);
             fileFomatTextArea.setEditable(false);
@@ -182,6 +185,22 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         }
         
         return new JTable(values, titles);
+    }
+
+    private JPanel createFileFormatPanel(DatasetType type) {
+        XFileFormat fileFormat = type.getFileFormat();
+        String importer = type.getImporterClassName();
+
+        if (importer == null || !importer.equalsIgnoreCase(DatasetType.FLEXIBLE_IMPORTER))
+            return null;
+
+        if (fileFormat == null )
+            return null;
+
+        columnsTableData = new EditableColumnTableData(type.getFileFormat().getColumns());
+        columnsPanel = new DatasetTypeColumnsPanel(columnsTableData, this, parent);
+        columnsPanel.setMinimumSize(new Dimension(80, 100));
+        return columnsPanel;
     }
 
     private JPanel createKeywordsPanel(DatasetType type, Keyword[] keywords) {
@@ -263,9 +282,11 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         try {
             keywordsPanel.commit();
             qaStepTemplatesPanel.commit();
+            if (columnsPanel != null) columnsPanel.commit();
             //DatasetType type;
-            presenter.doSave(name.getText(), description.getText(), keywordsTableData.sources(), sortOrder.getText()
-                    , qaStepTemplatesPanel.getQAStepTemps());
+            presenter.
+                    doSave(name.getText(), description.getText(), keywordsTableData.sources(), sortOrder.getText()
+                    , qaStepTemplatesPanel.getQAStepTemps(), (columnsPanel != null ? columnsTableData.sources() : null));
         } catch (EmfException e) {
             messagePanel.setError("Could not save: " + e.getMessage());
         }

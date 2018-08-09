@@ -343,6 +343,10 @@ public class DataCommonsDAO {
         addObject(format, session);
     }
 
+    public void update(XFileFormat format, Session session) {
+        hibernateFacade.updateOnly(format, session);
+    }
+
     public void add(Sector sector, Session session) {
         addObject(sector, session);
     }

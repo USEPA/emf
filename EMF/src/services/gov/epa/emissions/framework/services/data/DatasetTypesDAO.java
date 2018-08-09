@@ -99,7 +99,7 @@ public class DatasetTypesDAO {
             for (String columnList : keyVal[0].getValue().split("\\|")) {
                 for (String columnName : columnList.split("\\,")) {
                     if (!hasColName(cols, columnName))
-                        throw new EmfException("DatasetType keyword, INDICES, contains an invalid column name, " + columnName + ".");
+                        throw new EmfException("DatasetType keyword, INDICES, contains an missing column name, " + columnName + ".");
                 }
             }
         }

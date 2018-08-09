@@ -294,7 +294,12 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 ) 
                             throw new EmfException("DatasetType keyword, " + Dataset.inline_comment_char + ", contains an invalid inline comment delimiter, comma (,) or semi-colon (;).");
             }
-            
+
+            //update FileFormat
+            if (xFileFormat != null) {
+                dao.update(xFileFormat, session);
+            }
+
             DatasetType locked = dao.updateDatasetType(type, session);
 
             return locked;
@@ -685,7 +690,23 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 session.close();
         }
     }
-    
+
+    public synchronized XFileFormat updateFileFormat(XFileFormat format) throws EmfException {
+        Session session = sessionFactory.getSession();
+
+        try {
+            dao.update(format, session);
+            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), session);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("Could not add new XFileFormat " + format.getName(), e);
+            throw new EmfException("Could not add new XFileFormat " + format.getName() + ". " + e.getLocalizedMessage());
+        } finally {
+            if (session != null && session.isConnected())
+                session.close();
+        }
+    }
+
     // under construction
     public synchronized XFileFormat deleteFileFormat(XFileFormat format) throws EmfException {
         Session session = sessionFactory.getSession();
