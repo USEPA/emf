@@ -191,7 +191,7 @@ public class ManagedExportService {
         return prefix + name + "_" + date.toLowerCase() + versionString + suffix;
     }
     
-    private String getCleanPrefix(String prefix) {
+    public String getCleanPrefix(String prefix) {
         if (prefix == null) return "";
 
         String trimmed = prefix.trim().replace(" ", "_");

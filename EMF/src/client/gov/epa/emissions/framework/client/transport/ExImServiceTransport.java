@@ -177,4 +177,12 @@ public class ExImServiceTransport implements ExImService {
         call.request(new Object[] { user, datasetIds, versions, prefix, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose });
     }
 
+    public String getDatasetExportName(EmfDataset dataset, Version version, String prefix) throws EmfException {
+        call.setOperation("getDatasetExportName");
+        call.addParam("dataset", mappings.dataset());
+        call.addParam("version", mappings.version());
+        call.addStringParam("prefix");
+        call.setStringReturnType();
+        return (String) call.requestResponse(new Object[] { dataset, version, prefix });
+    }
 }
