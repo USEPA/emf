@@ -574,8 +574,18 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             return;
         }
         
+        String message = "Would you like to export the input datasets for the selected modules?";
+        JCheckBox download = new JCheckBox("Download files to local machine?", true);
+        String exportFolder = session.preferences().outputFolder();
+        String location = "If not downloaded, files will be exported to \"" + exportFolder + "\" on the server.";
+        Object[] contents = {message, download, location};
+        boolean exportDatasets = (JOptionPane.showConfirmDialog(parentConsole, contents, "Export Module Datasets",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION);
+
         List<Module> modulesList = new ArrayList<Module>();
-        Map<Integer, String> moduleDatasetNames = new HashMap<Integer, String>();
+        Map<Integer, Map<String, String>> moduleDatasetInfo = new HashMap<Integer, Map<String, String>>();
+        List<Integer> datasetIdsList = new ArrayList<Integer>();
+        List<Version> versionsList = new ArrayList<Version>();
         
         for (int moduleId : selectedModuleIds) {
             Module module = null;
@@ -599,13 +609,30 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 if (moduleDataset.getDatasetId() == null ||
                     moduleDataset.getModuleTypeVersionDataset().isModeOUT()) continue;
                 
+                // check if dataset has already been processed
+                if (moduleDatasetInfo.containsKey(moduleDataset.getDatasetId())) continue;
+                
                 EmfDataset dataset = null;
+                Version version = null;
+                String exportName = "";
                 try {
                     dataset = session.dataService().getDataset(moduleDataset.getDatasetId());
+                    version = session.eximService().getVersion(dataset, moduleDataset.getVersion());
+                    exportName = session.eximService().getDatasetExportName(dataset, version, "");
                 } catch (EmfException ex) {
                     continue;
                 }
-                moduleDatasetNames.put(moduleDataset.getDatasetId(), dataset.getName());
+                
+                Map<String, String> datasetInfo = new HashMap<String, String>();
+                datasetInfo.put("datasetName", dataset.getName());
+                datasetInfo.put("datasetTypeName", dataset.getDatasetTypeName());
+                datasetInfo.put("exportName", exportName);
+                moduleDatasetInfo.put(moduleDataset.getDatasetId(), datasetInfo);
+                
+                if (exportDatasets) {
+                    datasetIdsList.add(moduleDataset.getDatasetId());
+                    versionsList.add(version);
+                }
             }
         }
         
@@ -634,8 +661,26 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 return;
             }
         }
+        
+        if (exportDatasets && !datasetIdsList.isEmpty()) {
+            Integer[] datasetIds = new Integer[datasetIdsList.size()];
+            datasetIds = datasetIdsList.toArray(datasetIds);
+            Version[] versions = new Version[versionsList.size()];
+            versions = versionsList.toArray(versions);
+            try {
+                if (download.isSelected()) {
+                    session.eximService().downloadDatasets(session.user(), datasetIds, versions, "", "",
+                            null, null, "", "", "Exported with module");
+                } else {
+                    session.eximService().exportDatasetids(session.user(), datasetIds, versions, exportFolder, "", true,
+                            "", null, null, "", "", "Exported with module");
+                }
+            } catch (EmfException ex) {
+                // TODO
+            }
+        }
 
-        ModulesExportImport modulesExportImport = new ModulesExportImport(modulesList, moduleDatasetNames);
+        ModulesExportImport modulesExportImport = new ModulesExportImport(modulesList, moduleDatasetInfo);
         modulesExportImport.setExportEmfServer(session.serviceLocator().getBaseUrl());
         modulesExportImport.setExportEmfVersion(LoginWindow.EMF_VERSION);
         modulesExportImport.setExportFileName(file.getName());
@@ -646,9 +691,10 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         
         saveToXML(filename, modulesExportImport);
         
-        String summary = String.format("Exported %d module%s to \"%s\".",
+        String summary = String.format("Exported %d module%s to \"%s\". %s",
                                        selectedModuleIds.length, (selectedModuleIds.length == 1) ? "" : "s",
-                                       file.getName());
+                                       file.getName(),
+                                       (exportDatasets ? "Check the Status window for dataset export information." : ""));
         messagePanel.setMessage(summary);
     }
     
@@ -780,7 +826,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                     continue;
                 }
                 
-                String datasetName = modulesExportImport.getModuleDatasetNames().get(moduleDataset.getDatasetId());
+                String datasetName = modulesExportImport.getModuleDatasetInfo().get(moduleDataset.getDatasetId()).get("datasetName");
                 EmfDataset localDataset = null;
                 try {
                     localDataset = presenter.getDataset(datasetName);

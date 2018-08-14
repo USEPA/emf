@@ -15,16 +15,16 @@ public class ModulesExportImport implements Serializable {
     Date   exportDate;
     
     Module[] modules;
-    Map<Integer, String> moduleDatasetNames;
+    Map<Integer, Map<String, String>> moduleDatasetInfo;
 
     public ModulesExportImport() {
         modules = null;
-        moduleDatasetNames = new HashMap<Integer, String>();
+        moduleDatasetInfo = new HashMap<Integer, Map<String, String>>();
     }
     
-    public ModulesExportImport(List<Module> modulesList, Map<Integer, String> moduleDatasetNamesMap) {
+    public ModulesExportImport(List<Module> modulesList, Map<Integer, Map<String, String>> moduleDatasetInfo) {
         modules = modulesList.toArray(new Module[0]);
-        moduleDatasetNames = moduleDatasetNamesMap;
+        this.moduleDatasetInfo = moduleDatasetInfo;
     }
 
     public String getExportEmfServer() {
@@ -75,12 +75,12 @@ public class ModulesExportImport implements Serializable {
         this.modules = modules;
     }
 
-    public Map<Integer, String> getModuleDatasetNames() {
-        return moduleDatasetNames;
+    public Map<Integer, Map<String, String>> getModuleDatasetInfo() {
+        return moduleDatasetInfo;
     }
 
-    public void setModuleDatasetNames(Map<Integer, String> moduleDatasetNames) {
-        this.moduleDatasetNames = moduleDatasetNames;
+    public void setModuleDatasetInfo(Map<Integer, Map<String, String>> moduleDatasetInfo) {
+        this.moduleDatasetInfo = moduleDatasetInfo;
     }
     
     public void prepareForExport() {
