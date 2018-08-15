@@ -137,9 +137,10 @@ Allowable Packet|Allowable emissions cap or replacement values|[SMOKE documentat
 Allowable Packet Extended|Allowable emissions cap or replacement values; supports monthly values|[Download CSV][ALLOWEXT]
 Control Packet|Control efficiency, rule effectiveness, and rule penetration rate values|[SMOKE documentation][CONTROL]
 Control Packet Extended|Control percent reduction values; supports monthly values|[Download CSV][CONTROLEXT]
-Control Strategy Detailed Result|Output from CoST|Not available
+Control Strategy Detailed Result Extended|Output from CoST|[Download CSV][CSDREXT]
 Control Strategy Least Cost Control Measure Worksheet|Output from CoST|Not available
 Control Strategy Least Cost Curve Summary|Output from CoST|Not available
+Facility Closure Extended|Facility closure dates|[Download CSV][FACEXT]
 Projection Packet|Factors to grow emissions values into the past or future|[SMOKE documentation][PROJ]
 Projection Packet Extended|Projection factors; supports monthly values|[Download CSV][PROJEXT]
 Strategy County Summary|Output from CoST|Not available
@@ -152,6 +153,8 @@ Strategy Messages (CSV)|Output from CoST|Not available
 [ALLOWEXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/allowable_packet_extended_flex_file_format.csv {target="_blank"}
 [CONTROL]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s06.html#sect_input_gcntl_control {target="_blank"}
 [CONTROLEXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/control_packet_extended_flex_file_format.csv {target="_blank"}
+[CSDREXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/control_strategy_detailed_result_extended.csv {target="_blank"}
+[FACEXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/facility_closure_extended.csv {target="_blank"}
 [PROJ]: https://www.cmascenter.org/smoke/documentation/4.5/html/ch08s06.html#sect_input_gcntl_projection {target="_blank"}
 [PROJEXT]: https://raw.githubusercontent.com/USEPA-OAQPS/emf/master/EMF/deploy/db/cost/formats/projection_packet_extended_flex_file_format.csv {target="_blank"}
 

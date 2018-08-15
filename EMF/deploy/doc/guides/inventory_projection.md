@@ -4,7 +4,7 @@
 
 The inventory projection process involves taking a base year inventory and projecting it to a future year inventory based on expected future activity levels and emissions controls. Within the EMF, inventory projection is accomplished using the "Project Future Year Inventory" (PFYI) strategy in the Control Strategy Tool (CoST) module. The Project Future Year Inventory control strategy matches a set of user-defined Control Programs to selected emissions inventories to estimate the emissions reductions in the target future year specified by the user. The output of the PFYI strategy can be used to generate a future year emissions inventory.
 
-Control programs are used to describe the expected changes to the base year inventory in the future. The data includes plant closure information, control measures and their associated emissions impacts, growth or reduction factors to account for changes in activity levels, and other adjustments to emissions such as caps or replacements.
+Control programs are used to describe the expected changes to the base year inventory in the future. The data includes facility/plant closure information, control measures and their associated emissions impacts, growth or reduction factors to account for changes in activity levels, and other adjustments to emissions such as caps or replacements.
 
 The CoST module is primarily used to estimate emissions reductions and costs incurred by applying different sets of control measures to emissions sources in a given year. CoST allows users to choose from several different algorithms (Control Strategies) for matching control measures to emission sources. Control strategies include "Maximum Emissions Reduction" (what is the maximum emissions reduction possible regardless of cost?) and "Least Cost" (what combination of control measures achieves a targeted emissions reduction at the least cost?).
 
@@ -103,7 +103,7 @@ Control Program Type|Dataset Types
 -|-
 Allowable|Allowable Packet, Allowable Packet Extended
 Control|Control Packet, Control Packet Extended
-Plant Closure|Plant Closure Packet (CSV)
+Plant Closure|Plant Closure Packet (CSV), Facility Closure Extended
 Projection|Projection Packet, Projection Packet Extended
 : Control Program Types and Datasets {#tbl:control_program_type_table}
 
@@ -357,6 +357,26 @@ Line|Position|Description
 ||H|Reference, contains reference information for closing the plant
 : Plant Closure Packet Data Format {#tbl:plant_closure_format_table}
 
+### Facility Closure Extended ####
+
+The Facility Closure Extended format ([@Tbl:facility_closure_format_table]) is similar to the Plant Closure Packet but uses column names consistent with the Flat File 2010 inventories. The format also contains additional columns that may be used in the future to further enhance the inventory source matching capabilities: COUNTRY\_CD, TRIBAL\_CODE, SCC, and POLL.
+
+Column|Description
+-|----
+Country\_cd|Country code, optional; currently not used in matching process
+Region\_cd|State/county code, or state code with blank for county, or zero (or blank or -9) for all state/county or state codes
+Facility\_id|Facility ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+Unit\_id|Unit ID for point sources, optional; blank, zero,￼or -9 if not specified; leave blank for nonpoint inventories
+Rel\_point\_id|Release Point ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+Process\_id|Process ID for point sources, optional; blank, zero, or -9 if not specified; leave blank for nonpoint inventories
+Facility\_name|Facility name or description, for point sources, optional; leave blank for nonpoint inventories
+Tribal\_code|Tribal code, optional; currently not used in matching process
+SCC|8- or 10-digit SCC, optional; blank, zero, or -9 if not an SCC-specific closure; currently not used in matching process
+Poll|Pollutant name, optional; blank, zero, or -9 if not a pollutant-specific closure; currently not used in matching process
+Effective\_date|Effective Date, the effective date for the plant closure to take place. When the closure effective cutoff is after this effective date, the plant will not be closed. A blank value is assumed to mean that the sources matched from this record will be closed regardless. The strategy target year is the year used in the closure effective cutoff date check. See [@Sec:effective_date_section] for more information.
+Comment|Information about this record and how it was produced and entered by the user.
+: Facility Closure Extended Data Format {#tbl:facility_closure_format_table}
+
 ### Projection Packet ###
 
 The format of the Projection Packet ([@Tbl:projection_format_table]) is based on the SMOKE file format as defined in the [SMOKE User's Manual][PROJ]. One modification was made to enhance this packet's use in CoST: the unused SMOKE column at position K is now used to store the NAICS code.
@@ -592,13 +612,14 @@ SECTOR|The source sector specified for the input inventory dataset.
 CM\_ABBREV|For Plant Closure Packets, this column will be set to “PLTCLOSURE”.<br/><br/>For Projection Packets, this column will be set to “PROJECTION”.<br/><br/>For Control Packets, this column will be set to the abbreviation of the control measure that was applied to the source, if it was explicitly specified in the packet, or it could be the predicted measure abbreviation as found in the CMDB. If no measure can be found, then it will be set to “UNKNOWNMSR”.<br/><br/>For Allowable Packets, this column will be set to the predicted abbreviation of the control measure that was applied to the source. If no measure can be found, then it will be set “UNKNOWNMSR”.
 POLL|The pollutant for the source, found in the inventory
 SCC|The SCC code for the source, found in the inventory
-FIPS|The state and county FIPS code for the source, found in the inventory
-PLANTID|For point sources, the plant ID/facility ID for the source from the inventory.
-POINTID|For point sources, the point ID/unit ID for the source from the inventory.
-STACKID|For point sources, the stack ID/release point ID for the source from the inventory.
-SEGMENT|For point sources, the segment/process ID for the source from the inventory.
+REGION\_CD|The state and county FIPS code for the source, found in the inventory
+FACILITY\_ID|For point sources, the facility ID for the source from the inventory.
+UNIT\_ID|For point sources, the unit ID for the source from the inventory.
+REL\_POINT\_ID|For point sources, the release point ID for the source from the inventory.
+PROCESS\_ID|For point sources, the process ID for the source from the inventory.
 ANNUAL\_COST (\$)|The total annual cost (including both capital and operating and maintenance) required to keep the measure on the source for a year. Note that costs are adjusted to the strategy-defined “Cost Year” dollars.
-ANN\_COST\_PER\_TON (\$/ton)|The annual cost (both capital and operating and maintenance) to reduce one ton of the pollutant. Note that costs are adjusted to the strategy-defined “Cost Year” dollars.
+CTL\_ANN\_COST\_PER\_TON (\$/ton)|This field is not used for the strategy type and is left blank/null.
+EFF\_ANN\_COST\_PER\_TON (\$/ton)|The annual cost (both capital and operating and maintenance) to reduce one ton of the pollutant. Note that costs are adjusted to the strategy-defined “Cost Year” dollars.
 ANNUAL\_OPER\_MAINT\_COST (\$)|The annual cost to operate and maintain the measure once it has been installed on the source. Note that costs are adjusted to the strategy-defined “Cost Year” dollars.
 ANNUAL\_VARIABLE\_OPER\_MAINT\_COST (\$)|The annual variable cost to operate and maintain the measure once it has been installed on the source. Note that costs are adjusted to the strategy-defined “Cost Year” dollars.
 ANNUAL\_FIXED\_OPER\_MAINT\_COST (\$)|The annual fixed cost to operate and maintain the measure once it has been installed on the source. Note that costs are adjusted to the strategy-defined “Cost Year” dollars.
@@ -613,7 +634,8 @@ INV\_CTRL\_EFF (%)|The control efficiency for the existing measure on the source
 INV\_RULE\_PEN (%)|The rule penetration for the existing measure on the source, found in the inventory
 INV\_RULE\_EFF (%)|The rule effectiveness for the existing measure on the source, found in the inventory
 FINAL\_EMISSIONS (tons)|The final emissions amount that results from the source’s being adjusted by the various Control Program Packets. This is set by subtracting the emis\_reduction field by the inv\_emissions field.
-EMIS\_REDUCTION (tons)|This field is used to store the amount by which the emission was reduced for the particular Control Program Packet (Plant Closure, Projection, Control, or Allowable) that is being processed.
+CTL\_EMIS\_REDUCTION (tons)|This field is not used for the strategy type and is left blank/null.
+EFF\_EMIS\_REDUCTION (tons)|This field is used to store the amount by which the emission was reduced for the particular Control Program Packet (Plant Closure, Projection, Control, or Allowable) that is being processed.
 INV\_EMISSIONS (tons)|This field is used to store the beginning/input emission for the particular Control Program Packet (Plant Closure, Projection, Control, or Allowable) that is being processed.
 APPLY\_ORDER|This field stores the Control Program Action Code that is being used on the source. These codes indicate whether the Control Program is applying a Plant Closure, Projection, Control, or Allowable Packet.
 INPUT\_EMIS (tons)|This field is not used for the strategy type and is left blank/null.
@@ -632,7 +654,7 @@ SECTOR|This field is not used for the strategy type and is left blank/null.
 CONTROL\_PROGRAM|The control program that was applied to produce this record
 XLOC|The longitude for the source, found in the inventory for point sources, for nonpoint inventories the county centroid is used. This is useful for mapping purposes
 YLOC|The latitude for the source, found in the inventory for point sources, for nonpoint inventories the county centroid is used. This is useful for mapping purposes.
-PLANT|The plant name from the inventory (or county name for nonpoint sources)
+FACILITY|The facility name from the inventory (or county name for nonpoint sources)
 REPLACEMENT\_ADDON|Indicates whether the Control Packet was applying a replacement or an add-on control.<br/>A = Add-On Control<br/>R = Replacement Control<br/><br/>Note that this field will be used only when Control Packets are applied, not when any of the other packet types are applied.
 EXISTING\_MEASURE\_ABBREVIATION|This field is not used for the strategy type and is left blank/null.
 EXISTING\_PRIMARY\_DEVICE\_TYPE\_CODE|This field is not used for the strategy type and is left blank/null.
