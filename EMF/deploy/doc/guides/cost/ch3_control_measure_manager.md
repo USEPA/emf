@@ -270,16 +270,19 @@ Existing Measure Abbreviation|This field should be populated when the data on th
 Existing NEI Device Code|This is used in conjunction with Existing Measure and should specify the device code used in the NEI that corresponds to the currently installed device.
 Cost Year|The year for which the cost data are provided.
 Cost per Ton Reduced|The cost to reduce each ton of the specified pollutant.
-Capital to Annual Ratio|The ratio of capital costs to annual costs. *Applicable only for equation-based annualized costs.*
+Capital to Annual Ratio|The ratio of capital costs to annual costs.
 Ref Yr Cost per Ton Reduced|The cost per ton to reduce the pollutant in 2013 dollars.
 Control Efficiency|The [median] control efficiency (in units of percent reduction) that is achieved when the measure is applied to the source, exclusive of rule effectiveness and rule penetration. An asterisk is shown next to the field because a value for the field is required, whereas other fields are optional. Eventually, statistical distributions for percent reduction may be provided to facilitate uncertainty analysis. *Note that there are sometimes disbenefits for certain pollutants as a result of the control device, so control efficiency can be negative to indicate that the amount of a pollutant actually increased.*
 Minimum Emissions|The lower limit of emissions from the inventory required for the control measure to be applied.
 Maximum Emissions|The upper limit of emissions from the inventory for the control measure to be applied.
 Rule Effectiveness|The ability of a regulatory program to achieve all the emissions reductions that could have been achieved by full compliance with the applicable regulations at all sources at all times. A rule effectiveness of 100% means that all sources are fully complying at all times. Rule effectiveness can sometimes vary by locale.
 Rule Penetration|The percent of sources that are required to implement the control measure. Rule penetration might vary over time as a new rule is "phased in" gradually, and can sometimes vary by locale.
-Equation Type|The type of cost equation to use.
-Minimum Capacity (MW)| The minimum capacity for the control measure (megawatts).
-Maximum Capacity (MW)| The maximum capacity for the control measure (megawatts).
+Equation Type|Unused
+Capital Recovery Factor|Unused
+Interest Rate (%)|Unused
+Incremental CPT|Unused
+Minimum Capacity (MW)|The minimum capacity for the control measure (megawatts).
+Maximum Capacity (MW)|The maximum capacity for the control measure (megawatts).
 Last Modified By|The last user to modify the efficiency record.
 Last Modified Time|The last date and time a user modified the efficiency record.
 Details|Text that specifies information about the source of data for this row or reason they were changed.
