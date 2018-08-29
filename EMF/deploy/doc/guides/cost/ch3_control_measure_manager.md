@@ -253,7 +253,7 @@ Pollutant IN ('CO', 'VOC', 'PM10-PRI')
 
 Notice that most of the fields in Figure {@fig:view_efficiency_record_window} are set using text fields. The `Ref Yr Cost Per Ton Reduced` is shown with a label because this value is automatically computed for the reference year (currently 2013) according to the cost year and the specified C`ost Per Ton Reduced`. Note that the cost per ton reduced should take into account the specified rule effectiveness and rule penetration, which can 'dilute' the effectiveness of the control measure, but are not taken into account when the `Ref Yr Cost Per Ton Reduced` is computed. Other fields that are labels are `Last Modified By` and `Last Modified Time`. These fields are automatically updated and tracked by CoST when someone edits the efficiency record, although editing is done from the Edit Efficiency Record window instead of the View Efficiency Record window.
 
-*Note: The efficiency records must be unique according to the contents of the following fields:* Pollutant, Locale, Effective Date, Minimum Emissions, Maximum Emissions, and Existing Measure Abbreviation. This means that two records cannot have the same values for all of these fields.
+*Note: The efficiency records must be unique according to the contents of the following fields:* Pollutant, Locale, Effective Date, Existing Measure Abbreviation, Existing NEI Device Code, Minimum Emissions, Maximum Emissions, Minimum Capacity, and Maximum Capacity. This means that two records cannot have the same values for all of these fields.
 
 <a id=view_efficiency_record_window></a>
 
