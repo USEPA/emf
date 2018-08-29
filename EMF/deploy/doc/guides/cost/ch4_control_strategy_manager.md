@@ -116,9 +116,7 @@ The Least Cost control strategy automatically creates the same three standard ou
 
 * **marginal**: This column stores the marginal cost (dollars are given based on the specified cost year) for the source-measure record. This is calculated according to the following equation:
 
-```
 marginal cost = annual cost (for specified cost year) / emissions reductions (tons)
-```
 
 Note that cost equations are used to compute the annual cost, when applicable and all required input data are available. For target pollutant source-control pair records, the annual cost will be the total of the annual costs for the target pollutant and any costs associated with co-pollutant reductions.
 
@@ -597,7 +595,7 @@ Clear the entries in the `Sort Order` and `Row Filter` fields on the **Data View
 
 Click `Close` to exit from the **Data Viewer** when you are finished reviewing the **Strategy Detailed Result**.
 
-**Step 5-5: View Control Strategy Run Output Properties.** From the Edit Control Strategy **Outputs** tab, access the properties (metadata) of an output dataset (as opposed to the actual data contained in the output), by selecting an output (for this exercise, select the **Strategy Detailed Result**) on the **Outputs** tab of the **Edit Control Strategy** window and clicking the `Edit` button. This will bring up the**Dataset Properties Editor** for the output dataset (Figure {@fig:summary_tab_of_dataset_properties_editor}).
+**Step 5-5: View Control Strategy Run Output Properties.** From the Edit Control Strategy **Outputs** tab, access the properties (metadata) of an output dataset (as opposed to the actual data contained in the output), by selecting an output (for this exercise, select the **Strategy Detailed Result**) on the **Outputs** tab of the **Edit Control Strategy** window and clicking the `Edit` button. This will bring up the **Dataset Properties Editor** for the output dataset (Figure {@fig:summary_tab_of_dataset_properties_editor}).
 
 <a id=summary_tab_of_dataset_properties_editor></a>
 
@@ -742,21 +740,21 @@ This section provides details on the contents of each type of CoST output.
 
 As noted earlier, the Strategy Detailed Result is the primary output from running a control strategy. It is a table of emission source-control measure pairings, each of which contains information about the costs and emission reduction achieved for measures after they are applied to the sources. The contents of this table are described later in this subsection. When generating the Strategy Detailed Result table, some data are needed for CoST to calculate the values of some columns related to costs, such as:
 
-* `Stack Flow Rate (cfs)`: from the emissions inventory
-* `Capital Annual Ratio`: from the control measure efficiency record
+* `Capital to Annual Ratio`: from the control measure efficiency record
+* `Interest Rate`: from the control strategy
 * `Equipment Life (yrs)`: from the control measure efficiency record
+* `Stack Flow Rate (cfs)`: from the emissions inventory
 * `Boiler Capacity (MW)`: from the design capacity column of the inventory; units are obtained from the design\_capacity\_unit\_numerator and design\_capacity\_unit\_denominator columns from the inventory. Note that boiler capacity is often blank in inventories, so special steps may need to be taken to fill in this information.
 
-The stack flow rate provides information on the volume of effluent that requires treatment by the control device. The capital annual ratio is used to calculate the capital costs of a control device from an available O&M cost estimate for that device. The capital costs are the one-time costs to purchase and install the device, while the operating and maintenance (O&M) costs are those required to operate and maintain the device for each year. The interest rate and equipment life are used to compute the annualized capital costs for the device. The interest rate is an annual interest rate used to calculate the cost of borrowing money to purchase and install the control device. The annualized capital cost is computed based on the interest rate, and the costs are spread over the life of the equipment. The algorithms to compute these cost breakdowns vary based on whether the input data required to use a cost equation are available. This topic is described in further detail in Table {@tbl:columns_in_the_strategy_detailed_result_table}, which is given after an introductory discussion of cost concepts, below. The columns of the Strategy Detailed Result are also given in Table {@tbl:columns_in_the_strategy_detailed_result_table}.
+The capital to annual ratio is used to calculate the capital costs of a control device from an available O&M cost estimate for that device. The capital costs are the one-time costs to purchase and install the device, while the operating and maintenance (O&M) costs are those required to operate and maintain the device for each year. The interest rate and equipment life are used to compute the annualized capital costs for the device. The interest rate is an annual interest rate used to calculate the cost of borrowing money to purchase and install the control device. The annualized capital cost is computed based on the interest rate, and the costs are spread over the life of the equipment. The algorithms to compute these cost breakdowns vary based on whether the input data required to use a cost equation are available. This topic is described in further detail in Table {@tbl:columns_in_the_strategy_detailed_result_table}, which is given after an introductory discussion of cost concepts, below. The columns of the Strategy Detailed Result are also given in Table {@tbl:columns_in_the_strategy_detailed_result_table}.
 
 When cost data are provided for the control measures, the resulting costs are also specified in terms of a particular year. To compute the cost results for a control strategy, it is necessary to escalate or de-escalate the costs to the same year in order to adjust for inflation and to allow for consistency in comparing control strategy results. This is done with the following formula:
 
-```
 Cost ($) for a year of interest = (Cost for original cost year x GDP IPD for year of interest) / GDP IPD for original cost year
 
-where the GDP IPD is the Gross Domestic Product.
-```
-Implicit Price Deflator (IPD) available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from March 2018. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
+where the GDP IPD is the Gross Domestic Product Implicit Price Deflator.
+
+Implicit Price Deflator (IPD) values are available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from March 2018. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
 
 
 <a id=excerpt_from_the_gdplev_table_table></a>
@@ -793,31 +791,33 @@ DISABLE|A true-false value that determines whether to disable the control repres
 CM\_ABBREV|The abbreviation for the control measure that was applied to the source.
 POLL|The pollutant for the source, found in the inventory.
 SCC|The SCC for the source, found in the inventory.
-FIPS|The state and county FIPS code for the source, found in the inventory.
-PLANTID|For point sources, the plant ID for the source from the inventory.
-POINTID|For point sources, the point ID for the source from the inventory.
-STACKID|For point sources, the stack ID for the source from the inventory.
-SEGMENT|For point sources, the segment for the source from the inventory.
-ANNUAL\_COST (\$)|The total annual cost (including both capital and O&M) required to keep the measure on the source for a year. *a. Default Approach (used when there is no cost equation, or when inputs to cost equation are not available): *Annual Cost = Emissions Reductions (tons) x Reference Yr Cost Per Ton (\$/tons in 2013 Dollars) x Cost Yr GDP IPD / Reference Yr GDP IPD. *b. Approach when Using Type 8 Cost Equation:*If Stack Flow Rate >= 5.0 cfm Then Annual Cost = (Annualized Capital Cost + 0.04 x Capital Cost + O&M Cost) Else Annual Cost = Default Annualized Cost Per Ton x Emissions Reductions (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANN\_COST\_PER\_TON (\$/ton)|The annual cost (both capital and O&M) to reduce one ton of the pollutant. Ann\_Cost\_Per\_Ton = Annual Cost (\$) / Emissions Reductions (tons)
-ANNUAL\_OPER\_MAINT\_COST (\$)|The annual cost to operate and maintain the measure once it has been installed on the source. *a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available): *(Annual Cost - Annualized Capital Cost) Note: if the capital recovery factor was not specified for the measure, it would not be possible to compute Annualized Capital Cost or Annual O&M Costs. *b. Approach when Using Type 8 Cost Equation: *If Stack Flow Rate >= 5.0 cfm Then = O&M Control Cost Factor x Stack Flow Rate (cfm) x Cost Yr GDP IPD / Reference Yr GDP IPD Else = Default O&M Cost Per Ton Factor x Emissions Reductions (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANNUAL\_VARIABLE\_OPER\_MAINT\_COST (\$)|The annual variable cost to operate and maintain the measure once it has been installed on the source. *a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available): *= blank (not calculated, no default approach available). *b. Approach when Using Type 10 Cost Equation: * = variable\_operation\_maintenance\_cost\_multiplier x design\_capacity x 0.85 x annual\_avg\_hours\_per\_year x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANNUAL\_FIXED\_OPER\_MAINT\_COST (\$)|The annual fixed cost to operate and maintain the measure once it has been installed on the source. *a. Default Approach (used when there is no cost equation, or inputs to cost equation are not available): = blank (not calculated, no default approach available) *b. Approach when Using Type 10 Cost Equation:* = design\_capacity x 1000 x fixed\_operation\_maintenance\_cost\_multiplier x (250 / design\_capacity) ^ fixed\_operation\_maintenance\_cost\_exponent x Cost Yr GDP IPD / Reference Yr GDP IPD
-ANNUALIZED\_CAPITAL\_COST (\$)|The annualized cost of installing the measure on the source assuming a particular interest rate and equipment life. Annualized\_Capital\_Cost = Total Capital Cost x Capital Recovery Factor (CRF) Note: if the CRF can not be calculated for the measure, it is not possible to compute the ACC or the breakdown of costs between capital and O&M costs. CRF = (Interest Rate x (1 + Interest Rate)^Equipment Life) / ((Interest Rate + 1) ^Equipment Life - 1)
-TOTAL\_CAPITAL\_COST (\$)|The total cost to install a measure on a source. *a. Default Approach (used when there is no cost equation or cost equation inputs are not available): *TCC = Emissions Reductions (tons) x Reference Yr Cost Per Ton (\$/tons in 2013 Dollars) x Capital Annualized Ratio x Cost Yr GDP IPD / Reference Yr GDP IPD *b. Approach when Using Type 8 Cost Equation: *If Stack Flow Rate >= 5.0 cfm Then TCC = Capital Control Cost Factor x Stack Flow Rate (cfm) x Cost Yr GDP IPD / Reference Yr GDP IPD Else TCC = Default Capital Cost Per Ton x Emissions Reductions (tons) x Cost Yr GDP IPD / Reference Yr GDP IPD
+REGION\_CD|The state and county FIPS code for the source, found in the inventory.
+FACILITY\_ID|For point sources, the facility ID for the source from the inventory.
+UNIT\_ID|For point sources, the unit ID for the source from the inventory.
+REL\_POINT\_ID|For point sources, the release point ID for the source from the inventory.
+PROCESS\_ID|For point sources, the process ID for the source from the inventory.
+ANNUAL\_COST (\$)|The total annual cost (including both capital and O&M) required to keep the measure on the source for a year.<br/><br/>`\\`{=latex} *Default Approach* (used when there is no cost equation, or when inputs to cost equation are not available):<br/><br/>`\\`{=latex} Annual Cost = Control Emissions Reduction (tons) x Reference Yr CPT (\$/tons in 2013 Dollars) x Cost Yr GDP IPD / Reference Yr GDP IPD
+CTL\_ANN\_COST\_PER\_TON (\$/ton)|The annual cost (both capital and O&M) to reduce one ton of the pollutant.<br/><br/>`\\`{=latex} Control Annual CPT = Annual Cost (\$) / Control Emissions Reduction (tons)
+EFF\_ANN\_COST\_PER\_TON (\$/ton)|The effective annual cost (both capital and O&M) to reduce one ton of the pollutant.<br/><br/>`\\`{=latex} Effective Annual CPT = Annual Cost (\$) / Effective Emissions Reductions (tons)
+ANNUAL\_OPER\_MAINT\_COST (\$)|The annual cost to operate and maintain the measure once it has been installed on the source.<br/><br/>`\\`{=latex} *Default Approach* (used when there is no cost equation, or inputs to cost equation are not available):<br/><br/>`\\`{=latex} Annual O&M Cost = Annual Cost - Annualized Capital Cost
+ANNUAL\_VARIABLE\_OPER\_<wbr/>`\hspace{0pt}`{=latex}MAINT\_COST (\$)|The annual variable cost to operate and maintain the measure once it has been installed on the source. Only calculated when using a cost equation that specifies this cost.
+ANNUAL\_FIXED\_OPER\_MAINT\_<wbr/>`\hspace{0pt}`{=latex}COST (\$)|The annual fixed cost to operate and maintain the measure once it has been installed on the source. Only calculated when using a cost equation that specifies this cost.
+ANNUALIZED\_CAPITAL\_COST (\$)|The annualized cost of installing the measure on the source assuming a particular interest rate and equipment life.<br/><br/>`\\`{=latex} Annualized Capital Cost = Total Capital Cost x Capital Recovery Factor (CRF)<br/><br/>`\\`{=latex} Note: if the CRF can not be calculated for the measure, it is not possible to compute the annualized capital cost or the breakdown of costs between capital and O&M costs.<br/><br/>`\\`{=latex} CRF = (Interest Rate x (1 + Interest Rate)^Equipment Life) / ((Interest Rate + 1) ^Equipment Life - 1)
+TOTAL\_CAPITAL\_COST (\$)|The total cost to install a measure on a source.<br/><br/>`\\`{=latex} *Default Approach* (used when there is no cost equation or cost equation inputs are not available):<br/><br/>`\\`{=latex} Total Capital Cost = Annual Cost (\$) x Capital to Annual Ratio
 CONTROL\_EFF (%)|The control efficiency of the measure being applied, stored in the measure efficiency record.
 RULE\_PEN (%)|The rule penetration of the measure being applied, stored in the measure efficiency record, but could be overridden as a strategy setting (see [Inputs on the Measures Tab](#inputs_on_the_measures_tab_section)).
 RULE\_EFF (%)|The rule effectiveness of the measure being applied, stored in the measure efficiency record, but could be overridden as a strategy setting (see [Inputs on the Measures Tab](#inputs_on_the_measures_tab_section)).
-PERCENT\_REDUCTION (%)|The percent by which the emissions from the source are reduced after the control measure has been applied. Percent reduction = Control Efficiency (%) x Rule Penetration (%) / 100 x Rule Effectiveness (%) / 100
-ADJ\_FACTOR|The factor that was applied by a control program to adjust the emissions to the target year.
-INV\_CTRL\_EFF (%)|The control efficiency for the existing measure on the source, found in the emissions inventory.
-INV\_RULE\_PEN (%)|The rule penetration for the existing measure on the source, found in the emissions inventory.
-INV\_RULE\_EFF (%)|The rule effectiveness for the existing measure on the source, found in the emissions inventory.
-FINAL\_EMISSIONS (tons)|The final emissions that result from the source being controlled. = Annual Emissions (tons) - Emissions Reductions (tons)
-EMIS\_REDUCTION (tons)|The emissions reduced (in tons) as a result of applying the control measure to the source. Emissions reductions = Annual Emission (tons) x Percent Reduction (%) / 100
+PERCENT\_REDUCTION (%)|The percent by which the emissions from the source are reduced after the control measure has been applied.<br/><br/>`\\`{=latex} Percent Reduction = Control Efficiency (%) x Rule Penetration (%) x Rule Effectiveness (%)
+ADJ\_FACTOR|The factor that was applied by a control program to adjust the emissions to the target year. Only appicable to the "Project Future Year Inventory" strategy type.
+INV\_CTRL\_EFF (%)|The control efficiency for the existing measure on the source (if any), found in the emissions inventory. Used to calculate uncontrolled annual emissions.
+INV\_RULE\_PEN (%)|The rule penetration for the existing measure on the source (if any), found in the emissions inventory. Used to calculate uncontrolled annual emissions.
+INV\_RULE\_EFF (%)|The rule effectiveness for the existing measure on the source (if any), found in the emissions inventory. Used to calculate uncontrolled annual emissions.
+FINAL\_EMISSIONS (tons)|The final emissions that result from the source being controlled.<br/><br/>`\\`{=latex} Final Emissions = Inventory Annual Emissions (tons) - Effective Emissions Reductions (tons)
+CTL\_EMIS\_REDUCTION (tons)|The emissions reduction (in tons) as a result of applying the control measure to the source.<br/><br/>`\\`{=latex} Control Emissions Reduction = Uncontrolled Annual Emissions (tons) x Percent Reduction (%)
+EFF\_EMIS\_REDUCTION (tons)|The effective emissions reduction (in tons) as a result of applying the control measure to the source, taking into account the reduction achieved by the existing control (if any).<br/><br/>`\\`{=latex} Effective Emissions Reduction = Control Emissions Reduction - (Uncontrolled Annual Emissions - Inventory Annual Emissions)
 INV\_EMISSIONS (tons)|The annual emissions, found in the emissions inventory. Note that if the starting inventory had average-day emissions, the average-day value is annualized and the resulting value is shown here. This is necessary to properly compute the costs of the measure.
 APPLY\_ORDER|If multiple measures are applied to the same source, this is a numeric value noting the order of application for this specific control measure. The first control to be applied will have a value of 1 for this field, the second will have a value of 2, and so on.
-INPUT\_EMIS (tons)|The emissions that still exist for the source after prior control measures have been applied. Usually this is the same as INV\_EMISSIONS (see above), but for the "Apply Measures In Series" strategy type, in which multiple measures are applied to the same source, this is the emissions from the source after all prior control measures have been applied.
+INPUT\_EMIS (tons)|For strategy types other than "Apply Measures In Series", this is the INV\_EMISSIONS value with any existing control measure removed, i.e. uncontrolled annual emissions. For the "Apply Measures In Series" strategy type, in which multiple measures are applied to the same source, this is the emissions from the source after all prior control measures have been applied.<br/><br/>`\\`{=latex} Uncontrolled Annual Emissions = Inventory Annual Emissions / (1 - (Inv. Ctrl. Eff x Inv. Rule Pen. x Inv. Rule Eff.))
 OUTPUT\_EMIS (tons)|The emissions that still exist for the source after the current and all prior control measures have been applied. Usually this is the same as FINAL\_EMISSIONS (see above), but for the "Apply Measures In Series" strategy type, in which multiple measures are applied to the same source, this is the emissions from the source after the current and all prior control measures have been applied.
 FIPSST|The two-digit FIPS state code.
 FIPSCTY|The three-digit FIPS county code.
@@ -830,13 +830,13 @@ CM\_ID|The numeric ID of the control measure.
 EQUATION\_TYPE|The control measure equation that was used during the cost calculations.
 ORIGINAL\_DATASET\_ID|The numeric ID of the original input inventory dataset, even if a merged inventory was used for the computation of the strategy, as can be done for Least Cost control strategies.
 SECTOR|The emissions inventory sector specified for the input inventory (text, not an ID number; e.g., ptnonipm for the point non-IPM sector)
-CONTROL\_PROGRAM|The control program that was applied to produce this record.
+CONTROL\_PROGRAM|The control program that was applied to produce this record. Only appicable to the "Project Future Year Inventory" strategy type.
 XLOC|The longitude for the source, found in the emissions inventory for point sources; for nonpoint inventories the county centroid is used. This is useful for mapping purposes.
 YLOC|The latitude for the source, found in the emissions inventory for point sources; for nonpoint inventories the county centroid is used. This is useful for mapping purposes.
-PLANT|The plant name from the emissions inventory (or county name for nonpoint sources).
+FACILITY|The facility name from the emissions inventory (or county name for nonpoint sources).
 REPLACEMENT\_ADDON|Indicates whether the measure was a replacement or an add-on control. A = Add-On Control, R = Replacement Control
-EXISTING\_MEASURE\_ABBREVIATION|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure abbreviation that was on the source.
-EXISTING\_PRIMARY\_DEVICE\_TYPE\_CODE|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure primary device type code that was on the source.
+EXISTING\_MEASURE\_<wbr/>`\hspace{0pt}`{=latex}ABBREVIATION|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure abbreviation that was on the source.
+EXISTING\_PRIMARY\_DEVICE\_<wbr/>`\hspace{0pt}`{=latex}TYPE\_CODE|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure primary device type code that was on the source.
 STRATEGY\_NAME|The name of the control strategy that produced the detailed result.
 CONTROL\_TECHNOLOGY|Indicates the control technology of the control measure.
 SOURCE\_GROUP|Indicates the source group of the control measure.
