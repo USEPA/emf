@@ -213,8 +213,15 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     }
 
     private ComboBox typeOfAnalysis() throws EmfException {
-        StrategyType[] types = session.controlStrategyService().getStrategyTypes();
-        strategyTypeCombo = new ComboBox("Choose a strategy type", types);
+        StrategyType[] allTypes = session.controlStrategyService().getStrategyTypes();
+        ArrayList<StrategyType> types = new ArrayList<StrategyType>();
+        // filter out old strategy types from pull-down list
+        for (StrategyType type : allTypes) {
+            if (type.getName().equals("Annotate Inventory") ||
+                type.getName().equals("Apply Measures In Series")) continue;
+            types.add(type);
+        }
+        strategyTypeCombo = new ComboBox("Choose a strategy type", types.toArray(new StrategyType[0]));
         strategyTypeCombo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 StrategyType strategyType = (StrategyType)strategyTypeCombo.getSelectedItem();
