@@ -142,10 +142,6 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
         clearDataset = new Button("Clear Dataset", clearDatasetAction());
         buttonsPanel.add(new Label("   "));
         buttonsPanel.add(clearDataset);
-        
-        if (!moduleTypeVersionDataset.getIsOptional()) {
-            clearDataset.setEnabled(false);
-        }
 
         if (isOUT) {
             outputMethod = new ComboBox(new String[] {"New Dataset", "Replace Dataset"});
@@ -172,12 +168,13 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 outputMethod.setSelectedIndex(1);
                 if (dataset != null) {
                     datasetName.setText(dataset.getName());
+                    clearDataset.setEnabled(true);
                 } else {
                     datasetName.setText("");
+                    clearDataset.setEnabled(false);
                 }
                 datasetName.setEditable(false);
                 selectDataset.setEnabled(true);
-                clearDataset.setEnabled(false);
             }
             
         } else { // IN or INOUT
@@ -201,6 +198,9 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                     existingDatasetName.setText(""); // TODO handle exception
                     existingVersions = new String[]{};
                 }
+                clearDataset.setEnabled(true);
+            } else {
+                clearDataset.setEnabled(false);
             }
             layoutGenerator.addLabelWidgetPair("Existing Dataset:", existingDatasetName, contentPanel);
             rows++;
@@ -241,6 +241,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                 if ((dataset == null) || (dataset.getId() != datasets[0].getId())) {
                     dataset = datasets[0];
                     isDirty.setText("true");
+                    clearDataset.setEnabled(true);
                     if (isOUT) {
                         datasetName.setText(dataset.getName());
                     } else {
@@ -273,10 +274,15 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
     private void doClearDataset() {
         messagePanel.clear();
         dataset = null;
-        existingDatasetName.setText(""); // TODO handle exception
-        existingVersions = new String[]{};
-        existingVersion.resetModel(existingVersions);
+        if (isOUT) {
+            datasetName.setText("");
+        } else {
+            existingDatasetName.setText("");
+            existingVersions = new String[]{};
+            existingVersion.resetModel(existingVersions);
+        }
         isDirty.setText("true");
+        clearDataset.setEnabled(false);
     }
 
     private Action clearDatasetAction() {
@@ -306,12 +312,13 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             } else { // REPLACE
                 if (dataset != null) {
                     datasetName.setText(dataset.getName());
+                    clearDataset.setEnabled(true);
                 } else {
                     datasetName.setText("");
+                    clearDataset.setEnabled(false);
                 }
                 datasetName.setEditable(false);
                 selectDataset.setEnabled(true);
-                clearDataset.setEnabled(false);
             }
             if (oldOutputMethod != moduleDataset.getOutputMethod()) {
                 isDirty.setText("true");
@@ -362,19 +369,9 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                     messagePanel.setError(error.toString());
                     return false;
                 }
-            } else { // REPLACE
-                if (dataset == null) {
-                    messagePanel.setError("You must select a dataset.");
-                    return false;
-                }
             }
         } else { // IN or INOUT
-            if (dataset == null) {
-                if (!moduleTypeVersionDataset.getIsOptional()) {
-                    messagePanel.setError("You must select a dataset.");
-                    return false;
-                }
-            } else if (existingVersion.getSelectedIndex() <= 0) {
+            if (dataset != null && existingVersion.getSelectedIndex() <= 0) {
                 messagePanel.setError("You must select a dataset version.");
                 return false;
             }
@@ -392,8 +389,13 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
                         moduleDataset.setDatasetNamePattern(datasetName.getText());
                         moduleDataset.setOverwriteExisting(false);
                     } else { // REPLACE
-                        moduleDataset.setDatasetId(dataset.getId());
-                        moduleDataset.setVersion(0);
+                        if (dataset == null) {
+                            moduleDataset.setDatasetId(null);
+                            moduleDataset.setVersion(null);
+                        } else {
+                            moduleDataset.setDatasetId(dataset.getId());
+                            moduleDataset.setVersion(0);
+                        }
                         moduleDataset.setDatasetNamePattern(null);
                         moduleDataset.setOverwriteExisting(null);
                     }
