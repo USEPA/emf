@@ -128,6 +128,9 @@ public class PostgresTableDefinition implements TableDefinition {
                 else
                     queryString += " " + cols[i].constraints();
             }
+            if (cols[i].isMandatory()) {
+                queryString += " NOT NULL";
+            }
 
             queryString += ", ";
         }// for i
