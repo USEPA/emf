@@ -12,8 +12,7 @@ public class ModuleTypeVersionParameter implements Serializable {
     public static final String INOUT = "INOUT";
     public static final String OUT   = "OUT";
     
-    // By default, in PostgreSQL, NAMEDATALEN is 64 so the maximum identifier length is 63 bytes. 
-    public static final int MAX_NAME_LEN = 63; // NAMEDATALEN-1
+    public static final int MAX_NAME_LEN = 53;
 
     private int id;
 
