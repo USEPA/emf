@@ -1031,7 +1031,7 @@ abstract class ModuleRunner {
         // the default search path will be the new temporary schema followed by public
         String setupScript =
             // TODO use encrypted password
-            "CREATE USER ${temp_user} WITH CONNECTION LIMIT 1 UNENCRYPTED PASSWORD '${temp_password}';\n" +
+            "CREATE USER ${temp_user} WITH CONNECTION LIMIT 1 PASSWORD '${temp_password}';\n" +
             "GRANT CONNECT, TEMPORARY ON DATABASE \"EMF\" TO ${temp_user};\n" +
             "CREATE SCHEMA AUTHORIZATION ${temp_user};\n\n";
 
