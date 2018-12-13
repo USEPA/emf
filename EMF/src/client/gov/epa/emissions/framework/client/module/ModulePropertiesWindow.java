@@ -58,6 +58,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
@@ -71,6 +72,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -163,6 +166,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private SelectableSortFilterWrapper historyTable;
     private ModuleHistoryTableData historyTableData;
     private SelectAwareButton viewButton;
+    private boolean historyLoaded = false;
 
     // buttons
     Button statusButton;
@@ -406,6 +410,16 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private JTabbedPane tabbedPane() {
         tabbedPane = new JTabbedPane();
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                int selected = tabbedPane.getSelectedIndex();
+                if (selected != -1 && tabbedPane.getTitleAt(selected).equals("History")) {
+                    if (!historyLoaded) {
+                        refreshHistory();
+                    }
+                }
+            }
+        });
         summaryPanel = summaryPanel();
         datasetsPanel = datasetsPanel();
         parametersPanel = parametersPanel();
@@ -615,7 +629,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
 
     private JPanel historyPanel() {
         historyTablePanel = new JPanel(new BorderLayout());
-        historyTableData = new ModuleHistoryTableData(module.getModuleHistory());
+        historyTableData = new ModuleHistoryTableData(new ArrayList<History>());
         historyTable = new SelectableSortFilterWrapper(parentConsole, historyTableData, null);
         historyTablePanel.add(historyTable);
 
@@ -1344,9 +1358,10 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     }
 
     public void refreshHistory() {
-        historyTableData = new ModuleHistoryTableData(module.getModuleHistory());
+        historyTableData = new ModuleHistoryTableData(presenter.getHistoryForModule(module));
         historyTable.refresh(historyTableData);
         viewButton.setEnabled(!historyTableData.rows().isEmpty());
+        historyLoaded = true;
     }
 
     private void clear() {

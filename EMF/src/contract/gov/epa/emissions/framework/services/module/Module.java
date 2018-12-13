@@ -47,8 +47,8 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
     private Map<String, ModuleInternalDataset> moduleInternalDatasets;
 
     private Map<String, ModuleInternalParameter> moduleInternalParameters;
-
-    private List<History> moduleHistory;
+    
+    private History lastHistory;
 
     private Set<Tag> tags;
 
@@ -57,7 +57,6 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         moduleParameters = new HashMap<String, ModuleParameter>();
         moduleInternalDatasets = new HashMap<String, ModuleInternalDataset>();
         moduleInternalParameters = new HashMap<String, ModuleInternalParameter>();
-        moduleHistory = new ArrayList<History>();
         tags = new HashSet<Tag>();
         lock = new Mutex();
     }
@@ -464,7 +463,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
         
         // skip module tags and history
         this.tags.clear();
-        this.moduleHistory.clear();
+        this.lastHistory = null;
         
         for (ModuleParameter parameter : moduleParameters.values()) {
             parameter.prepareForExport();
@@ -713,28 +712,16 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
 
     // moduleHistory
 
-    public List<History> getModuleHistory() {
-        return moduleHistory;
+    public History getLastHistory() {
+        return lastHistory;
     }
-
-    public void setModuleHistory(List<History> moduleHistory) {
-        this.moduleHistory = moduleHistory;
+    
+    public void setLastHistory(History lastHistory) {
+        this.lastHistory = lastHistory;
     }
-
-    public void addModuleHistory(History history) {
-        history.setModule(this);
-        history.setRunId(this.moduleHistory.size() + 1);
-        this.moduleHistory.add(history);
-    }
-
-    public void clearModuleHistory() {
-        this.moduleHistory.clear();
-    }
-
+    
     public History lastHistory() {
-        if (moduleHistory.size() == 0)
-            return null;
-        return moduleHistory.get(moduleHistory.size() - 1);
+        return getLastHistory();
     }
 
     // tags

@@ -159,14 +159,24 @@ public class ModulesDAO {
         Criterion criterion = Restrictions.eq("name", name);
         @SuppressWarnings("rawtypes")
         List list = hibernateFacade.get(Module.class, criterion, session);
-        return (list == null || list.size() == 0) ? null : (Module) list.get(0);
+        Module result = null;
+        if (list != null && list.size() > 0) {
+            result = (Module) list.get(0);
+            result.setLastHistory(getLastHistory(result.getId(), session));
+        }
+        return result;
     }
 
     public Module getModule(int id, Session session) {
         Criterion criterion = Restrictions.eq("id", id);
         @SuppressWarnings("rawtypes")
         List list = hibernateFacade.get(Module.class, criterion, session);
-        return (list == null || list.size() == 0) ? null : (Module) list.get(0);
+        Module result = null;
+        if (list != null && list.size() > 0) {
+            result = (Module) list.get(0);
+            result.setLastHistory(getLastHistory(id, session));
+        }
+        return result;
     }
 
     public Module add(Module module, Session session) {
@@ -174,6 +184,13 @@ public class ModulesDAO {
         Integer id = (Integer)serializable;
         module.setId(id);
         return module;
+    }
+    
+    public History add(History history, Session session) {
+        Serializable serializable = hibernateFacade.add(history, session);
+        Integer id = (Integer)serializable;
+        history.setId(id);
+        return history;
     }
 
     public boolean canUpdate(Module module, Session session) {
@@ -204,5 +221,19 @@ public class ModulesDAO {
 
     public History currentHistory(int historyId, Session session) {
         return (History) hibernateFacade.current(historyId, History.class, session);
+    }
+    
+    @SuppressWarnings("rawtypes")
+    public List getHistoryForModule(int moduleId, Session session) {
+        Criterion criterion = Restrictions.eq("module.id", moduleId);
+        return hibernateFacade.get(History.class, criterion, Order.asc("runId"), session);
+    }
+    
+    public History getLastHistory(int moduleId, Session session) {
+        return (History) session.createCriteria(History.class)
+                .add(Restrictions.eq("module.id", moduleId))
+                .addOrder(Order.desc("id"))
+                .setMaxResults(1)
+                .uniqueResult();
     }
 }

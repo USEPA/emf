@@ -81,6 +81,12 @@ public interface ModuleService {
     
     Module[] getModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException;    // one level only
     Module[] getAllModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException; // all levels (recursive)
+    
+    // History
+    
+    History getHistory(int historyId) throws EmfException;
+    
+    History[] getHistoryForModule(int moduleId) throws EmfException;
 
     // modules and module types
     

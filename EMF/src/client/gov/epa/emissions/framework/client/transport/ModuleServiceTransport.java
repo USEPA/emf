@@ -7,6 +7,7 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
@@ -512,6 +513,28 @@ public class ModuleServiceTransport implements ModuleService {
         call.setReturnType(mappings.modules());
 
         return (Module[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+    }
+    
+    @Override
+    public History getHistory(int historyId) throws EmfException {
+        EmfCall call = call();
+        
+        call.setOperation("getHistory");
+        call.addIntegerParam("historyId");
+        call.setReturnType(mappings.history());
+        
+        return (History) call.requestResponse(new Object[] { new Integer(historyId) });
+    }
+
+    @Override
+    public History[] getHistoryForModule(int moduleId) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getHistoryForModule");
+        call.addIntegerParam("moduleId");
+        call.setReturnType(mappings.histories());
+
+        return (History[]) call.requestResponse(new Object[] { new Integer(moduleId) });
     }
 
     @Override

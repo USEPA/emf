@@ -860,7 +860,7 @@ public class ModuleServiceImpl implements ModuleService {
                         ModuleTypeVersionDataset mtvd = md.getModuleTypeVersionDataset();
                         if (!mtvd.isModeOUT()) continue; // only consider output datasets
                         
-                        for (History historyRecord : module.getModuleHistory()) {
+                        for (History historyRecord : (List<History>)modulesDAO.getHistoryForModule(moduleId, session)) {
                             HistoryDataset historyDataset = null;
                             String result = historyRecord.getResult();
                             // check that run was a success
@@ -1116,7 +1116,7 @@ public class ModuleServiceImpl implements ModuleService {
                 if (moduleDataset == null)
                     throw new EmfException("Failed to get module dataset (ID = " + moduleDatasetId + ")");
                 Module module = moduleDataset.getModule();
-                List<History> history = module.getModuleHistory();
+                List<History> history = modulesDAO.getHistoryForModule(module.getId(), session);
                 HistoryDataset historyDataset = null;
                 if (history.size() > 0) {
                     History lastHistory = history.get(history.size() - 1);
@@ -1286,6 +1286,26 @@ public class ModuleServiceImpl implements ModuleService {
     }
     
     @Override
+    public synchronized History getHistory(int historyId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        return modulesDAO.currentHistory(historyId, session);
+    }
+    
+    @Override
+    public synchronized History[] getHistoryForModule(int moduleId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List<History> list = modulesDAO.getHistoryForModule(moduleId, session);
+            return list.toArray(new History[0]);
+        } catch (Exception e) {
+            LOG.error("Could not get history for module (ID=" + moduleId + ")", e);
+            throw new EmfException("Could not get history for module (ID=" + moduleId + "): " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Override
     public synchronized LiteModule[] getLiteModules() throws EmfException {
         Session session = sessionFactory.getSession();
         try {
@@ -1340,7 +1360,7 @@ public class ModuleServiceImpl implements ModuleService {
                         continue nextModule;
                     }
                 }
-                for(History history : module.getModuleHistory()) {
+                for(History history : (List<History>)modulesDAO.getHistoryForModule(module.getId(), session)) {
                     for (HistoryDataset historyDataset : history.getHistoryDatasets().values()) {
                         if (historyDataset.getDatasetId() != null && historyDataset.getDatasetId() == datasetId) {
                             liteModules.add(modulesDAO.getLiteModule(module.getId(), session));

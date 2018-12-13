@@ -246,11 +246,7 @@ public class HistorySubmoduleDetailsWindow extends DisposableInteralFrame implem
     @Override
     public void doRefresh() throws EmfException {
         module = presenter.getModule(module.getId());
-        List<History> moduleHistory = module.getModuleHistory();
-        for(History newHistory : moduleHistory) {
-            if (newHistory.getRunId() == history.getRunId())
-                history = newHistory;
-        }
+        history = presenter.getHistory(history.getId());
         historySubmodule = history.getHistorySubmodules().get(historySubmodule.getSubmodulePath());
         refreshSummary();
         refreshScripts();

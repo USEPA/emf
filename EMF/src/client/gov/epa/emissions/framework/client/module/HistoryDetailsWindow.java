@@ -354,7 +354,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
     @Override
     public void doRefresh() throws EmfException {
         module = presenter.getModule(module.getId());
-        history = module.getModuleHistory().get(history.getRunId()-1);
+        history = presenter.getHistory(history.getId());
         refreshSummary();
         refreshDatasets();
         refreshParameters();

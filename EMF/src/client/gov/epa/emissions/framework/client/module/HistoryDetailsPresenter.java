@@ -5,6 +5,7 @@ import gov.epa.emissions.framework.client.meta.PropertiesView;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.HistoryDataset;
 import gov.epa.emissions.framework.services.module.Module;
 
@@ -58,5 +59,9 @@ public class HistoryDetailsPresenter {
     public void doDisplayHistorySubmoduleDetails(HistorySubmoduleDetailsView view) {
         HistorySubmoduleDetailsPresenter presenter = new HistorySubmoduleDetailsPresenter(session, view);
         presenter.doDisplay();
+    }
+    
+    public History getHistory(int historyId) throws EmfException {
+        return session.moduleService().getHistory(historyId);
     }
 }

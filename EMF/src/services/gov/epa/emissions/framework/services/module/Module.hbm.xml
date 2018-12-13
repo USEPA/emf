@@ -83,11 +83,6 @@
             <map-key column="parameter_path" type="string"/>
             <one-to-many class="gov.epa.emissions.framework.services.module.ModuleInternalParameter"/>
         </map>
-        <list name="moduleHistory" cascade="all" inverse="true" lazy="false" fetch="select">
-            <key column="module_id"/>
-            <list-index column="run_id" base="1"/>
-            <one-to-many class="gov.epa.emissions.framework.services.module.History"/>
-        </list>
         <set name="tags" table="modules_tags" schema="modules" inverse="false" lazy="false" fetch="select" cascade="all">
             <key>
                 <column name="module_id" not-null="true" />

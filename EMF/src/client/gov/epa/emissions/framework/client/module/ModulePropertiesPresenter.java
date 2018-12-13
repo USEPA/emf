@@ -1,5 +1,9 @@
 package gov.epa.emissions.framework.client.module;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.meta.PropertiesView;
 import gov.epa.emissions.framework.client.meta.PropertiesViewPresenter;
@@ -10,6 +14,7 @@ import gov.epa.emissions.framework.client.moduletype.RemoveTagsView;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataService;
 import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.module.ModuleType;
@@ -109,5 +114,13 @@ public class ModulePropertiesPresenter {
     public void displayRemoveTagsView(RemoveTagsView view) throws Exception {
         RemoveTagsPresenter presenter = new RemoveTagsPresenter(view, session);
         presenter.display();
+    }
+    
+    public List<History> getHistoryForModule(Module module) {
+        try {
+            return Arrays.asList(session.moduleService().getHistoryForModule(module.getId()));
+        } catch (EmfException e) {
+            return new ArrayList<History>();
+        }
     }
 }

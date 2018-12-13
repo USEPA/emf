@@ -285,6 +285,8 @@ public class DataMappings extends Mappings {
         array(call, ModuleTypeVersion[].class, moduleTypeVersions());
         array(call, ModuleTypeVersionSubmodule[].class, moduleTypeVersionSubmodules());
         
+        array(call, History[].class, histories());
+        
         array(call, ParameterType[].class, parameterTypes());
         array(call, Tag[].class, tags());
 
@@ -413,6 +415,10 @@ public class DataMappings extends Mappings {
 
     public QName moduleTypeVersionSubmodules() {
         return qname("ModuleTypeVersionSubmodules");
+    }
+    
+    public QName histories() {
+        return qname("Histories");
     }
 
     public QName parameterTypes() {

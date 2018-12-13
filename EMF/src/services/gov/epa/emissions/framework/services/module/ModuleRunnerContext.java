@@ -61,9 +61,12 @@ class ModuleRunnerContext {
         history.setStatus(History.STARTED);
         history.setCreator(getUser());
         history.setCreationDate(startDate);
-        
-        module.addModuleHistory(history);
-        module = getModulesDAO().updateModule(module, getSession());
+        if (module.lastHistory() != null) {
+            history.setRunId(module.lastHistory().getRunId() + 1);
+        } else {
+            history.setRunId(1);
+        }
+        getModulesDAO().add(history, getSession());
     }
     
     // public accessors
