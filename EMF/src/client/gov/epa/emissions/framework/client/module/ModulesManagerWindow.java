@@ -22,6 +22,7 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.History;
 import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
 import gov.epa.emissions.framework.services.module.ModulesExportImport;
@@ -319,7 +320,9 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             ViewMode viewMode = module.getIsFinal() ? ViewMode.VIEW : ViewMode.EDIT;
             if (viewMode == ViewMode.EDIT) {
                 try {
+                    History last = module.lastHistory();
                     module = session.moduleService().obtainLockedModule(session.user(), module.getId());
+                    module.setLastHistory(last);
                 } catch (EmfException e) {
                     messagePanel.setError("Failed to lock " + module.getName() + ": " + e.getMessage());
                     continue;
