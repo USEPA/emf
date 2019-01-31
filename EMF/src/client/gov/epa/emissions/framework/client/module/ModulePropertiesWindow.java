@@ -1377,10 +1377,13 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             return;
         }
         
-        History lastSelected = (History) selected.get(selected.size() - 1);
-        if (lastSelected.getId() == module.lastHistory().getId()) {
-            messagePanel.setMessage("Cannot delete most recent history record");
-            return;
+        // make sure the most recent history record is not deleted
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            History history = (History) iter.next();
+            if (history.getId() == module.lastHistory().getId()) {
+                messagePanel.setMessage("Cannot delete most recent history record");
+                return;
+            }
         }
         
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
