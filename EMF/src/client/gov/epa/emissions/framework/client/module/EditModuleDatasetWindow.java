@@ -147,7 +147,7 @@ public class EditModuleDatasetWindow extends DisposableInteralFrame implements E
             outputMethod = new ComboBox(new String[] {"New Dataset", "Replace Dataset"});
             outputMethod.addActionListener(selectOutputMethodActionListener());
             addChangeable(outputMethod);
-            layoutGenerator.addLabelWidgetPair("Output Mathod:", outputMethod, contentPanel);
+            layoutGenerator.addLabelWidgetPair("Output Method:", outputMethod, contentPanel);
             rows++;
 
             datasetName = new TextField("datasetName", 40);
