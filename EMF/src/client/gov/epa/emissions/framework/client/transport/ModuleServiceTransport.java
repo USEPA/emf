@@ -536,6 +536,16 @@ public class ModuleServiceTransport implements ModuleService {
 
         return (History[]) call.requestResponse(new Object[] { new Integer(moduleId) });
     }
+    
+    public void deleteHistory(int historyId) throws EmfException {
+        EmfCall call = call();
+        
+        call.setOperation("deleteHistory");
+        call.addIntegerParam("historyId");
+        call.setVoidReturnType();
+        
+        call.request(new Object[] { new Integer(historyId) });
+    }
 
     @Override
     public void releaseOrphanLocks() throws EmfException {

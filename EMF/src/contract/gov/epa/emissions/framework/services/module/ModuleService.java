@@ -87,6 +87,8 @@ public interface ModuleService {
     History getHistory(int historyId) throws EmfException;
     
     History[] getHistoryForModule(int moduleId) throws EmfException;
+    
+    void deleteHistory(int historyId) throws EmfException;
 
     // modules and module types
     

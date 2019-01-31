@@ -166,6 +166,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private SelectableSortFilterWrapper historyTable;
     private ModuleHistoryTableData historyTableData;
     private SelectAwareButton viewButton;
+    private SelectAwareButton deleteButton;
     private boolean historyLoaded = false;
 
     // buttons
@@ -1325,10 +1326,22 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         };
         viewButton = new SelectAwareButton("View", viewAction, historyTable, confirmDialog);
         viewButton.setEnabled(!historyTableData.rows().isEmpty());
+        
+        String deleteMessage = "Are you sure you want to delete the selected history records?";
+        ConfirmDialog confirmDelete = new ConfirmDialog(deleteMessage, "Warning", this);
+        
+        Action deleteAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                deleteHistory();
+            }
+        };
+        deleteButton = new SelectAwareButton("Delete", deleteAction, historyTable, 0, confirmDelete);
+        deleteButton.setEnabled(!historyTableData.rows().isEmpty() && viewMode == ViewMode.EDIT && session.user().isAdmin());
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         crudPanel.add(viewButton);
+        crudPanel.add(deleteButton);
         return crudPanel;
     }
 
@@ -1356,11 +1369,39 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
     private List selectedHistory() {
         return historyTable.selected();
     }
+    
+    private void deleteHistory() {
+        List selected = selectedHistory();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more history records");
+            return;
+        }
+        
+        History lastSelected = (History) selected.get(selected.size() - 1);
+        if (lastSelected.getId() == module.lastHistory().getId()) {
+            messagePanel.setMessage("Cannot delete most recent history record");
+            return;
+        }
+        
+        for (Iterator iter = selected.iterator(); iter.hasNext();) {
+            History history = (History) iter.next();
+            try {
+                presenter.deleteHistory(history);
+            } catch (Exception e) {
+                messagePanel.setError("Could not delete history record #" + history.getRunId() + ": " + e.getMessage());
+                break;
+            }
+        }
+        
+        refreshHistory();
+        messagePanel.setMessage("The selected history records have been deleted.");
+    }
 
     public void refreshHistory() {
         historyTableData = new ModuleHistoryTableData(presenter.getHistoryForModule(module));
         historyTable.refresh(historyTableData);
         viewButton.setEnabled(!historyTableData.rows().isEmpty());
+        deleteButton.setEnabled(!historyTableData.rows().isEmpty() && viewMode == ViewMode.EDIT && session.user().isAdmin());
         historyLoaded = true;
     }
 

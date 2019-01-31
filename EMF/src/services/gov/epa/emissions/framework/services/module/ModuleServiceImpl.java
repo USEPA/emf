@@ -1305,6 +1305,12 @@ public class ModuleServiceImpl implements ModuleService {
         }
     }
     
+    public synchronized void deleteHistory(int historyId) throws EmfException {
+        Session session = sessionFactory.getSession();
+        modulesDAO.removeHistory(historyId, session);
+        session.close();
+    }
+    
     @Override
     public synchronized LiteModule[] getLiteModules() throws EmfException {
         Session session = sessionFactory.getSession();

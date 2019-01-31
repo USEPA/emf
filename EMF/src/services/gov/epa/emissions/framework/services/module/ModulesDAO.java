@@ -154,6 +154,11 @@ public class ModulesDAO {
         }
         return historySubmodule;
     }
+    
+    public void removeHistory(int historyId, Session session) {
+        History history = currentHistory(historyId, session);
+        hibernateFacade.remove(history, session);
+    }
 
     public Module getModule(String name, Session session) {
         Criterion criterion = Restrictions.eq("name", name);

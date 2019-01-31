@@ -123,4 +123,8 @@ public class ModulePropertiesPresenter {
             return new ArrayList<History>();
         }
     }
+    
+    public void deleteHistory(History history) throws Exception {
+        session.moduleService().deleteHistory(history.getId());
+    }
 }
