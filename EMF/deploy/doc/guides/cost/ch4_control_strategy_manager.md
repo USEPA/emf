@@ -545,7 +545,7 @@ CoST automatically generates three main outputs for successful strategy runs: **
 
 For all types of strategies, CoST can generate a **Controlled Inventory** on-demand for any of the Strategy Detailed Result datasets. The types of outputs are discussed in more detail in [Outputs of Control Strategies](#Outputs4). Note that the output datasets are given unique names that include a timestamp indicating when the strategy was run, including the year, month, day, hour, and minute of the run. A description of how to rename output datasets is provided below.
 
-For additional details on the algorithms that are applied to assign measures to sources as part of a strategy run (other than the descriptions in [Introduction to Control Strategies](#Intro4)), please see the [Control Strategy Tool (CoST) Equations Document](https://www3.epa.gov/ttn/ecas/docs/CoST_Equations_Document_2016_03_15.pdf).
+For additional details on the algorithms that are applied to assign measures to sources as part of a strategy run (other than the descriptions in [Introduction to Control Strategies](#Intro4)), please see the [Control Strategy Tool (CoST) Equations Document](https://www.epa.gov/sites/production/files/2018-09/documents/cost_equations_documentation_0.pdf).
 
 <a id=outputs_tab_of_edit_control_strategy_window_for_least_cost_strategy></a>
 

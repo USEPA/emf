@@ -27,7 +27,7 @@ This document provides information on how to use CoST to view and edit control m
 
 * [Control Strategy Tool (CoST) Control Measures Database Documentation](https://www3.epa.gov/ttn/ecas/models/CoST_CMDB_Document_2010-06-09.pdf): describes the contents of the Control Measures Database
 
-* [Control Strategy Tool (CoST) Cost Equations Documentation](https://www3.epa.gov/ttn/ecas/docs/CoST_Equations_Document_2016_03_15.pdf): describes how CoST uses control measure engineering cost equations
+* [Control Strategy Tool (CoST) Cost Equations Documentation](https://www.epa.gov/sites/production/files/2018-09/documents/cost_equations_documentation_0.pdf): describes how CoST uses control measure engineering cost equations
 
 These documents, and additional information about CoST, can be found at the EPA website on [Cost Analysis Models/Tools for Air Pollution Regulations](https://www.epa.gov/economic-and-cost-analysis-air-pollution-regulations/cost-analysis-modelstools-air-pollution).
 

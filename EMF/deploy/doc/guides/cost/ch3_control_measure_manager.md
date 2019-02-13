@@ -497,7 +497,7 @@ The Select SCCs window will show only the SCCs that met the above criteria, such
 
 **Step 4-14: Add Control Measure Equation Data.**  To add equation information to a measure, click the `Add` button on the `Equations` tab. You will see a Select Equation Type dialog. Click the pull-down menu to see the available types of equations and select the desired equation type. For this exercise, select **Type 1 - EGU** and click `OK`. You will see that there are eight variables for this equation type. Note that the variables differ somewhat from the variables for the Type 13 equation shown in Figure {@fig:equations_tab_of_edit_control_measure_window}, and that the Type 1 equation is for NO<sub>x</sub> controls.
 
-Details on the types of cost equations and their variables are given in the [Documentation of Cost Equations in the EPA's Control Strategy Tool (CoST)](https://www3.epa.gov/ttn/ecas/docs/CoST_Equations_Document_2016_03_15.pdf).
+Details on the types of cost equations and their variables are given in the [Documentation of Cost Equations in the EPA's Control Strategy Tool (CoST)](https://www.epa.gov/sites/production/files/2018-09/documents/cost_equations_documentation_0.pdf).
 
 For this exercise, click the `Remove` button again and click `Yes` to confirm removal of the equation information. Click the `Add` button on the `Equations` tab and select **Type 13 - ICI Boiler Cost Equations**. Next, fill in the values for the variables as they are shown in Figure {@fig:equations_tab_of_edit_control_measure_window} by double clicking on the field corresponding to each value and then entering the appropriate information.
 
