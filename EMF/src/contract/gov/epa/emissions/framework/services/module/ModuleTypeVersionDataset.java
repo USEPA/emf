@@ -19,7 +19,7 @@ public class ModuleTypeVersionDataset implements Serializable {
     public static final String INOUT = "INOUT";
     public static final String OUT   = "OUT";
     
-    public static final int MAX_NAME_LEN = 45;
+    public static final int MAX_NAME_LEN = 58;
 
     private int id;
 

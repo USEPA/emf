@@ -882,7 +882,11 @@ abstract class ModuleRunner {
         viewName.setLength(0);
         viewDefinition.setLength(0);
         
-        String mode = moduleTypeVersionDataset.getMode().toLowerCase();
+        String mode = moduleTypeVersionDataset.getMode();
+        String modeAbbr = mode.toLowerCase().substring(0, 1);
+        if (mode.equals(ModuleTypeVersionDataset.INOUT)) {
+            modeAbbr = "io";
+        }
         
         TableFormat tableFormat = getTableFormat(moduleTypeVersionDataset, dbServer);
         Column[] columns = tableFormat.cols();
@@ -925,7 +929,7 @@ abstract class ModuleRunner {
         }
         
         if (emfDataset == null) {
-            viewName.append(moduleTypeVersionDataset.getPlaceholderName() + "_" + mode + "_table");
+            viewName.append(moduleTypeVersionDataset.getPlaceholderName() + "_" + modeAbbr + "t");
             
             viewDefinition.append("    CREATE TEMP TABLE " + viewName.toString() + "\n");
             viewDefinition.append("    (\n");
@@ -934,7 +938,7 @@ abstract class ModuleRunner {
             }
             viewDefinition.append("    );\n\n");
         } else {
-            viewName.append(moduleTypeVersionDataset.getPlaceholderName() + "_" + mode + "_view");
+            viewName.append(moduleTypeVersionDataset.getPlaceholderName() + "_" + modeAbbr + "v");
             
             int datasetId = emfDataset.getId();
             
@@ -962,8 +966,8 @@ abstract class ModuleRunner {
                                                 tableName,
                                                 versionWhereFilter));
             
-            if (!mode.equals(ModuleTypeVersionDataset.IN.toLowerCase())) {
-                viewDefinition.append(String.format("    CREATE RULE %s_insert AS ON INSERT TO %s\n" +
+            if (!mode.equals(ModuleTypeVersionDataset.IN)) {
+                viewDefinition.append(String.format("    CREATE RULE %si AS ON INSERT TO %s\n" +
                                                     "    DO INSTEAD\n" +
                                                     "    INSERT INTO %s\n" +
                                                     "        (%s, %s, %s)\n" +
