@@ -10,5 +10,4 @@ public interface DbColumn {
 
     boolean hasConstraints();
 
-    boolean isMandatory();
 }

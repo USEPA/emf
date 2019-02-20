@@ -864,9 +864,6 @@ abstract class ModuleRunner {
             colDesc.append(" ");
             colDesc.append(column.getConstraints());
         }
-        if (column.isMandatory() && colDesc.indexOf(" NOT NULL") == -1) {
-            colDesc.append(" NOT NULL");
-        }
         if (column.getDefaultValue() != null && column.getDefaultValue().trim().length() > 0) {
             colDesc.append(" DEFAULT ");
             colDesc.append(column.getDefaultValue());
