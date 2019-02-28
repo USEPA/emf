@@ -6,6 +6,7 @@ import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGr
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyView;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
+import gov.epa.emissions.framework.services.cost.ControlStrategyFilter;
 import gov.epa.emissions.framework.services.cost.LightControlMeasure;
 
 import java.io.File;
@@ -44,4 +45,6 @@ public interface ControlStrategiesManagerPresenter {
     void exportControlStrategyResults(List<ControlStrategy> strategies, String prefix) throws EmfException;
     
     void doDisplayStrategyGroups(StrategyGroupManagerView view) throws EmfException;
+
+    ControlStrategy[] doSearch(ControlStrategyFilter filter) throws EmfException;
 }

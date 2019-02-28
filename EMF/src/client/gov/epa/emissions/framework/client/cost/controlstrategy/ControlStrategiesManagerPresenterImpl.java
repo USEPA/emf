@@ -23,14 +23,16 @@ import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.preference.UserPreference;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
+import gov.epa.emissions.framework.services.cost.ControlStrategyFilter;
 import gov.epa.emissions.framework.services.cost.ControlStrategyService;
 import gov.epa.emissions.framework.services.cost.LightControlMeasure;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.RefreshObserver;
+import gov.epa.emissions.framework.ui.SearchObserver;
 
-public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, ControlStrategiesManagerPresenter {
+public class ControlStrategiesManagerPresenterImpl implements SearchObserver<ControlStrategyFilter, ControlStrategy>, RefreshObserver, ControlStrategiesManagerPresenter {
     private ControlStrategyManagerView view;
 
     private EmfSession session;
@@ -45,7 +47,7 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
     public void display() throws EmfException {
         view.observe(this);
         view.display(service().getControlStrategies());
-    }
+   }
 
     private ControlStrategyService service() {
         return session.controlStrategyService();
@@ -219,5 +221,10 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
     public void doDisplayStrategyGroups(StrategyGroupManagerView view) throws EmfException {
         StrategyGroupManagerPresenter presenter = new StrategyGroupManagerPresenter(session, view);
         presenter.display();
+    }
+
+    @Override
+    public ControlStrategy[] doSearch(ControlStrategyFilter filter) throws EmfException {
+        return service().searchControlStrategies(filter);
     }
 }

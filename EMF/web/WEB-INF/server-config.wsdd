@@ -525,10 +525,14 @@
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.commons.data.Reference"
 		qname="ns1:Reference" xmlns:ns1="urn:gov.epa.services.EmfService"/>
-		
+
 	<beanMapping
-		languageSpecificType="java:gov.epa.emissions.framework.services.cost.ControlStrategy"
-		qname="ns1:ControlStrategy" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+			languageSpecificType="java:gov.epa.emissions.framework.services.cost.ControlStrategy"
+			qname="ns1:ControlStrategy" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
+			languageSpecificType="java:gov.epa.emissions.framework.services.cost.ControlStrategyFilter"
+			qname="ns1:ControlStrategyFilter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.cost.ControlProgram"

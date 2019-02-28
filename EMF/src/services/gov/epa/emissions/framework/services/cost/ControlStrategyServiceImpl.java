@@ -759,6 +759,11 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
         }
     }
 
+    @Override
+    public synchronized ControlStrategy[] searchControlStrategies(ControlStrategyFilter filter) throws EmfException {
+        return new ControlStrategy[0];
+    }
+
     private synchronized void removeGroup(StrategyGroup group) throws EmfException {
         Session session = sessionFactory.getSession();
         try {

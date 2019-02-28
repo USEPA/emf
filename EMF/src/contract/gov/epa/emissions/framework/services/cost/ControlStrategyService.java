@@ -89,5 +89,6 @@ public interface ControlStrategyService extends EMFService {
     int isDuplicateGroupName(String name) throws EmfException;
 
     void removeStrategyGroups(int[] ids, User user) throws EmfException;
-    
+
+    ControlStrategy[] searchControlStrategies(ControlStrategyFilter filter) throws EmfException;
 }

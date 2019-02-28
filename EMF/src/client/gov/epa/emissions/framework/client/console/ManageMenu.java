@@ -18,6 +18,7 @@ import gov.epa.emissions.framework.client.cost.controlmeasure.ControlMeasuresMan
 import gov.epa.emissions.framework.client.cost.controlprogram.ControlProgramManagerView;
 import gov.epa.emissions.framework.client.cost.controlprogram.ControlProgramManagerWindow;
 import gov.epa.emissions.framework.client.cost.controlstrategy.ControlStrategyManagerView;
+import gov.epa.emissions.framework.client.cost.controlstrategy.ControlStrategyManagerView2;
 import gov.epa.emissions.framework.client.cost.controlstrategy.ControlStrategyManagerWindow;
 import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserView;
 import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserWindow;

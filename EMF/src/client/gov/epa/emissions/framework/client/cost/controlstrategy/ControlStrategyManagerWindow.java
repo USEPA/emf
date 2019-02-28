@@ -1,8 +1,9 @@
 package gov.epa.emissions.framework.client.cost.controlstrategy;
 
+import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.gui.*;
 import gov.epa.emissions.commons.gui.Button;
-import gov.epa.emissions.commons.gui.ConfirmDialog;
-import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
@@ -16,45 +17,36 @@ import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGr
 import gov.epa.emissions.framework.client.cost.controlstrategy.groups.StrategyGroupManagerWindow;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyView;
 import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewControlStrategyWindow;
+import gov.epa.emissions.framework.client.data.dataset.DatasetSearchWindow;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.preference.UserPreference;
+import gov.epa.emissions.framework.client.search.AdvancedSearchPresenter;
+import gov.epa.emissions.framework.client.search.AdvancedSearchView;
+import gov.epa.emissions.framework.client.search.AdvancedSearchWindow;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
-import gov.epa.emissions.framework.ui.MessagePanel;
-import gov.epa.emissions.framework.ui.RefreshButton;
-import gov.epa.emissions.framework.ui.RefreshObserver;
-import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
-import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
+import gov.epa.emissions.framework.services.cost.ControlStrategyFilter;
+import gov.epa.emissions.framework.ui.*;
 import gov.epa.mims.analysisengine.table.format.FormattedCellRenderer;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 import gov.epa.emissions.commons.CommonDebugLevel;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class ControlStrategyManagerWindow extends ReusableInteralFrame implements ControlStrategyManagerView,
-        RefreshObserver, Runnable {
+        RefreshObserver, SearchObserver<ControlStrategyFilter, ControlStrategy>, Runnable {
 
     private ControlStrategiesManagerPresenter presenter;
 
@@ -83,13 +75,15 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
     private static final List<String> COLUMN_NAMES_TO_FORMAT = new ArrayList<String>();
     
     private JFileChooser chooser;
-    
+
+    private TextField textFilter;
+
     static {
         COLUMN_NAMES_TO_FORMAT.add("Total Cost");
         COLUMN_NAMES_TO_FORMAT.add("Reduction (tons)");
         COLUMN_NAMES_TO_FORMAT.add("Average Cost Per Ton");
     }
-     
+
     public ControlStrategyManagerWindow(EmfConsole parentConsole, EmfSession session, DesktopManager desktopManager) {
         super("Control Strategy Manager", new Dimension(850, 400), desktopManager);
         
@@ -144,7 +138,52 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         this.populateThread = new Thread(this);
         populateThread.start();
     }
-    
+
+    @Override
+    public ControlStrategy[] doSearch(final ControlStrategyFilter modelFilter) {
+
+        // Long running methods ...
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        class SearchControlStrategyTask extends SwingWorker<ControlStrategy[], Void> {
+
+            private Container parentContainer;
+
+            public SearchControlStrategyTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+
+            // Main task. Executed in background thread. Don't update GUI here
+            @Override
+            public ControlStrategy[] doInBackground() throws EmfException  {
+
+                return presenter.doSearch(modelFilter);
+            }
+
+            // Executed in event dispatching thread
+            @Override
+            public void done() {
+                try {
+                    refresh(get());
+                } catch (InterruptedException e1) {
+//                    messagePanel.setError(e1.getMessage());
+//                    setErrorMsg(e1.getMessage());
+                } catch (ExecutionException e1) {
+//                    messagePanel.setError(e1.getCause().getMessage());
+//                    setErrorMsg(e1.getCause().getMessage());
+                } finally {
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new SearchControlStrategyTask(this).execute();
+
+
+        return new ControlStrategy[0];
+    }
+
     private void panelRefresh() {
         tablePanel.removeAll();
         tablePanel.add(table);
@@ -200,15 +239,77 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
     }
     
     private JPanel createTopPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-
+        JPanel msgRefreshPanel = new JPanel(new BorderLayout());
         messagePanel = new SingleLineMessagePanel();
-        panel.add(messagePanel, BorderLayout.CENTER);
-
+        msgRefreshPanel.add(messagePanel, BorderLayout.CENTER);
         Button button = new RefreshButton(this, "Refresh Control Strategies", messagePanel);
-        panel.add(button, BorderLayout.EAST);
+        msgRefreshPanel.add(button, BorderLayout.EAST);
+
+
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        textFilter = new gov.epa.emissions.commons.gui.TextField("textfilter", 10);
+        textFilter.setEditable(true);
+        textFilter.addActionListener(typeAction());
+
+        Button advButton = new Button("Advanced", new AbstractAction(){
+            public void actionPerformed(ActionEvent arg0) {
+                advancedSearch();
+                //notifyAdvancedSearch();
+            }
+        });
+        advButton.setToolTipText("Advanced search");
+
+        JPanel advPanel = new JPanel(new BorderLayout(5, 2));
+        JLabel jlabel = new JLabel("Name Contains:");
+        jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        advPanel.add(jlabel, BorderLayout.WEST);
+        advPanel.add(textFilter, BorderLayout.CENTER);
+        advPanel.add(advButton, BorderLayout.EAST);
+        advPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
+
+//        topPanel.add(getDSTypePanel("Show Datasets of Type:", dsTypesBox), BorderLayout.LINE_START);
+        topPanel.add(advPanel, BorderLayout.EAST);
+
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        panel.add(msgRefreshPanel);
+        panel.add(topPanel);
 
         return panel;
+    }
+
+    private void advancedSearch() {
+        AdvancedSearchWindow<ControlStrategyFilter, ControlStrategy> view = new AdvancedSearchWindow<ControlStrategyFilter, ControlStrategy>("Advanced Dataset Search", parentConsole, desktopManager, null);
+        AdvancedSearchPresenter<ControlStrategyFilter, ControlStrategy> presenter = new AdvancedSearchPresenter<ControlStrategyFilter, ControlStrategy>(session, ControlStrategy.class);
+
+        if (textFilter != null && textFilter.getText() != null && !textFilter.getText().trim().isEmpty())
+            view.setNameText(textFilter.getText().trim());
+
+        view.showUsers(true, AdvancedSearchView.ListSelectionType.SINGLE_SELECTION);
+        view.showDataTypes(true, AdvancedSearchView.ListSelectionType.SINGLE_SELECTION);
+        view.showDescription(true);
+        view.showName(true);
+        view.showCases(true, AdvancedSearchView.ListSelectionType.SINGLE_SELECTION);
+        view.showControlPrograms(true, AdvancedSearchView.ListSelectionType.SINGLE_SELECTION);
+        view.showKeywords(true, AdvancedSearchView.ListSelectionType.SINGLE_SELECTION);
+        view.showProjects(true, AdvancedSearchView.ListSelectionType.SINGLE_SELECTION);
+
+        presenter.doDisplay(view);
+
+//        view.observe(presenter);
+//        view.display();
+    }
+
+    private Action typeAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    doRefresh();
+                } catch (EmfException e1) {
+                    messagePanel.setError("something happened");
+                }
+            }
+        };
     }
 
     private JPanel createControlPanel() {
@@ -576,6 +677,5 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
     public void displayControlStrategyComparisonResult(String qaStepName, String exportedFileName) {
         AnalysisEngineTableApp app = new AnalysisEngineTableApp("View QA Step Results: " + qaStepName, new Dimension(500, 500), desktopManager, parentConsole);
         app.display(new String[] { exportedFileName });
-    }   
-
+    }
 }
