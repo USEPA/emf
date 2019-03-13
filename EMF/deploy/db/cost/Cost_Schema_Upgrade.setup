@@ -2411,3 +2411,8 @@ WHERE name = 'Excess O3 Control';
 UPDATE emf.control_measures
 SET cm_class_id = (SELECT id FROM emf.control_measure_classes WHERE name = 'Obsolete')
 WHERE abbreviation LIKE 'SICIRIB%';
+
+-- 03/13/2019 Remove 3pct columns from Strategy Detail Results dataset type
+DELETE FROM emf.fileformat_columns
+WHERE file_format_id = (SELECT id FROM emf.file_formats WHERE name = 'Control Strategy Detailed Result Extended')
+AND name IN ('annual_cost_3pct', 'eff_ann_cost_per_ton_3pct', 'annualized_capital_cost_3pct');

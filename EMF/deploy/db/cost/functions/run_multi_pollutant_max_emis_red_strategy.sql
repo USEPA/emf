@@ -69,12 +69,6 @@ DECLARE
 	computed_cost_per_ton_expression text;
 	actual_equation_type_expression text;
 
-	--store 3% Discount Rate Costs...
-	discount_rate_3pct double precision := 0.03;	--store as fraction
-	annual_cost_3pct_expression text;
-	annualized_capital_cost_3pct_expression text;
-	computed_cost_per_ton_3pct_expression text;
-
 	--support for flat file ds types...
 	dataset_type_name character varying(255) := '';
 	fips_expression character varying(64) := 'fips';
@@ -507,30 +501,6 @@ BEGIN
 		computed_cost_per_ton_expression,
 		actual_equation_type_expression;
 
-	-- get various costing sql expressions (based on 3% discount rate)
-	select annual_cost_expression(cost_expressions),
-		annualized_capital_cost_expression(cost_expressions),
-		computed_cost_per_ton_expression(cost_expressions)
-	from public.get_cost_expressions(
-		intControlStrategyId, -- int_control_strategy_id
-		intInputDatasetId, -- int_input_dataset_id
-		false, --use_override_dataset
-		'inv', --inv_table_alias character varying(64), 
-		'm', --control_measure_table_alias character varying(64), 
-		'et', --equation_type_table_alias character varying(64), 
-		'eq', --control_measure_equation_table_alias
-		'er', --control_measure_efficiencyrecord_table_alias
-		'csm', --control_strategy_measure_table_alias
-		'gdplev', --gdplev_table_alias
-		'inv_ovr', --inv_override_table_alias
-		'gdplev_incr', --gdplev_incr_table_alias
-		'scc'::character varying, --control_measure_sccs_table_alias
-		discount_rate_3pct
-		) as cost_expressions
-	into annual_cost_3pct_expression,
-		annualized_capital_cost_3pct_expression,
-		computed_cost_per_ton_3pct_expression;
-
 	EXECUTE '
 		CREATE TEMP TABLE inv_overrides (
 			record_id integer NOT NULL, 
@@ -612,9 +582,6 @@ BEGIN
 		annual_cost,
 		ctl_ann_cost_per_ton,
 		eff_ann_cost_per_ton,
-		annualized_capital_cost_3pct,
-		annual_cost_3pct,
-		eff_ann_cost_per_ton_3pct,
 		control_eff,
 		rule_pen,
 		rule_eff,
@@ -678,9 +645,6 @@ select
 	ann_cost,
 	computed_ctl_cost_per_ton,
 	computed_cost_per_ton,
-	annualized_capital_cost_3pct,
-	ann_cost_3pct,
-	computed_cost_per_ton_3pct,
 	efficiency,
 	rule_pen,
 	rule_eff,
@@ -751,11 +715,6 @@ select
 			' || annual_cost_expression || ' as ann_cost,
 			' || computed_ctl_cost_per_ton_expression || '  as computed_ctl_cost_per_ton,
 			' || computed_cost_per_ton_expression || '  as computed_cost_per_ton,
-
---3pct discount rate costs
-			' || annualized_capital_cost_3pct_expression || '  as annualized_capital_cost_3pct,
-			' || annual_cost_3pct_expression || ' as ann_cost_3pct,
-			' || computed_cost_per_ton_3pct_expression || '  as computed_cost_per_ton_3pct,
 
 			' || get_strategty_ceff_equation_sql || ' as efficiency,
 			' || case when measures_count > 0 then 'coalesce(csm.rule_penetration, er.rule_penetration)' else 'er.rule_penetration' end || ' as rule_pen,
