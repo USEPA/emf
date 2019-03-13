@@ -70,13 +70,13 @@ public class StrategyLeastCostCMWorksheetTableFormat implements TableFormat {
         cols.add(new Column("CM_Abbrev", types.stringType(CoSTConstants.CM_ABBREV_LEN), new StringFormatter(CoSTConstants.CM_ABBREV_LEN), "DEFAULT ''"));
         cols.add(new Column("Poll", types.stringType(20), new StringFormatter(20)));
         cols.add(new Column("SCC", types.stringType(12), new StringFormatter(12)));
-        cols.add(new Column("FIPS", types.stringType(6), new StringFormatter(6))); //after fips will add 4 more cols plantid, etc.
+        cols.add(new Column("REGION_CD", types.stringType(6), new StringFormatter(6))); //after fips will add 4 more cols plantid, etc.
  
         //new columns for point sources...
-        cols.add(new Column("PLANTID", types.stringType(20), 20, new StringFormatter(20)));
-        cols.add(new Column("POINTID", types.stringType(20), 20, new StringFormatter(20)));
-        cols.add(new Column("STACKID", types.stringType(20), 20, new StringFormatter(20)));
-        cols.add(new Column("SEGMENT", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("FACILITY_ID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("UNIT_ID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("REL_POINT_ID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("PROCESS_ID", types.stringType(20), 20, new StringFormatter(20)));
 
         cols.add(new Column("Annual_Cost", types.realType(), new RealFormatter()));
         cols.add(new Column("Ctl_Ann_Cost_per_Ton", types.realType(), new RealFormatter()));
@@ -131,7 +131,7 @@ public class StrategyLeastCostCMWorksheetTableFormat implements TableFormat {
 
         cols.add(new Column("XLOC", types.realType(), new RealFormatter()));
         cols.add(new Column("YLOC", types.realType(), new RealFormatter()));
-        cols.add(new Column("PLANT", types.stringType(255), 255, new StringFormatter(255)));
+        cols.add(new Column("FACILITY", types.stringType(255), 255, new StringFormatter(255)));
         cols.add(new Column("REPLACEMENT_ADDON", types.stringType(1), 1, new StringFormatter(1)));
         //cols.add(new Column("EXISTING_MEASURE_ABBREVIATION", types.stringType(10), 10, new StringFormatter(10))); // JIZHEN20110727
         cols.add(new Column("EXISTING_MEASURE_ABBREVIATION", types.stringType(CoSTConstants.CM_ABBREV_LEN), CoSTConstants.CM_ABBREV_LEN, new StringFormatter(CoSTConstants.CM_ABBREV_LEN)));
