@@ -2401,3 +2401,13 @@ order by sector,
 from emf.dataset_types dt
 where name in ('Control Strategy Detailed Result Extended')
 	and not exists (select 1 from emf.dataset_types_qa_step_templates qatemp where qatemp.dataset_type_id = dt.id and qatemp.name = 'Summarize by U.S. State and Pollutant');
+
+-- 03/13/2019 Fix control technology name
+UPDATE emf.control_technologies
+SET name = 'Excess O2 Control'
+WHERE name = 'Excess O3 Control';
+
+-- 03/13/2019 Mark control measures as obsolete
+UPDATE emf.control_measures
+SET cm_class_id = (SELECT id FROM emf.control_measure_classes WHERE name = 'Obsolete')
+WHERE abbreviation LIKE 'SICIRIB%';
