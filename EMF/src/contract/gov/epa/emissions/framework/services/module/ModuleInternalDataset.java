@@ -35,8 +35,8 @@ public class ModuleInternalDataset implements Serializable {
         return newModuleInternalDataset;
     }
 
-    public static boolean isValidDatasetNamePattern(String datasetNamePattern, final StringBuilder error) {
-        return ModuleDataset.isValidDatasetNamePattern(datasetNamePattern, error);
+    public static boolean isValidDatasetNamePattern(String datasetNamePattern, ModuleTypeVersion moduleTypeVersion, final StringBuilder error) {
+        return ModuleDataset.isValidDatasetNamePattern(datasetNamePattern, moduleTypeVersion, error);
     }
     
     public boolean isValid(final StringBuilder error) {
@@ -47,7 +47,7 @@ public class ModuleInternalDataset implements Serializable {
             if (!hasDatasetNamePattern) {
                 error.append(String.format("The dataset name pattern for internal placeholder '%s' has not been set.", placeholderPathNames));
                 return false;
-            } else if (!isValidDatasetNamePattern(datasetNamePattern, error)) {
+            } else if (!isValidDatasetNamePattern(datasetNamePattern, moduleTypeVersionDataset.getModuleTypeVersion(), error)) {
                 error.insert(0, String.format("The dataset name pattern for internal placeholder '%s' is invalid: ", placeholderPathNames));
                 return false;
             }

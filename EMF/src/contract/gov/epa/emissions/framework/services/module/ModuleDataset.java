@@ -68,7 +68,7 @@ public class ModuleDataset implements Serializable {
         }
     }
     
-    public static boolean isValidDatasetNamePattern(String datasetNamePattern, final StringBuilder error) {
+    public static boolean isValidDatasetNamePattern(String datasetNamePattern, ModuleTypeVersion moduleTypeVersion, final StringBuilder error) {
         error.setLength(0);
 
         // Important: keep the list of valid placeholders in sync with
@@ -95,6 +95,13 @@ public class ModuleDataset implements Serializable {
             return false; 
         }
         
+        // allow non-OUT parameters in the dataset name pattern, e.g. #{parameter-name}
+        for (ModuleTypeVersionParameter mtvParam : moduleTypeVersion.getModuleTypeVersionParameters().values()) {
+            if (!mtvParam.isModeOUT()) {
+                datasetNamePattern = replacePatternWithSpaces(datasetNamePattern, "#\\{\\s*" + mtvParam.getParameterName() + "\\s*\\}");
+            }
+        }
+        
         matcher = Pattern.compile("[^A-Za-z0-9 ~!@#$%^&*\\(\\)_\\-+=\\[\\]|:;,.<>?/]", Pattern.CASE_INSENSITIVE).matcher(datasetNamePattern);
         if (matcher.find()) {
             error.append(String.format("Invalid character %s at position %d.", matcher.group(), matcher.start()));
@@ -115,7 +122,7 @@ public class ModuleDataset implements Serializable {
             if (!hasDatasetNamePattern) {
                 error.append(String.format("The dataset name pattern for placeholder '%s' has not been set.", placeholderName));
                 return false;
-            } else if (!isValidDatasetNamePattern(datasetNamePattern, error)) {
+            } else if (!isValidDatasetNamePattern(datasetNamePattern, moduleTypeVersionDataset.getModuleTypeVersion(), error)) {
                 error.insert(0, String.format("The dataset name pattern for placeholder '%s' is invalid: ", placeholderName));
                 return false;
             }
@@ -182,7 +189,7 @@ public class ModuleDataset implements Serializable {
     public static boolean isSimpleDatasetName(String datasetNamePattern) {
         if (datasetNamePattern == null)
             return false;
-        String startPattern = "\\$\\{\\s*";
+        String startPattern = "[\\$#]\\{\\s*";
         String endPattern = "\\s*\\}";
         Matcher matcher = Pattern.compile(startPattern + ".*?" + endPattern, Pattern.CASE_INSENSITIVE).matcher(datasetNamePattern);
         return !matcher.find();

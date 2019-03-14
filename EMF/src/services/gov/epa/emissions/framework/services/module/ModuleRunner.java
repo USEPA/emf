@@ -491,6 +491,15 @@ abstract class ModuleRunner {
     protected static String getNewDatasetName(String datasetNamePattern, User user, Date date, History history) throws EmfException {
         String datasetName = replaceGlobalPlaceholders(datasetNamePattern, user, date, history);
         assertNoPlaceholders(datasetName, "$");
+        
+        // replace any non-OUT parameters with the input value
+        for (ModuleParameter parameter : history.getModule().getModuleParameters().values()) {
+            ModuleTypeVersionParameter mtvParam = parameter.getModuleTypeVersionParameter();
+            if (!mtvParam.isModeOUT()) {
+                datasetName = Pattern.compile("#\\{\\s*" + mtvParam.getParameterName() + "\\s*\\}", Pattern.CASE_INSENSITIVE)
+                                     .matcher(datasetName).replaceAll(parameter.hasValue() ? parameter.getValue() : "");
+            }
+        }
         return datasetName;
     }
 
