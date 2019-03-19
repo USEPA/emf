@@ -65,7 +65,7 @@ public class StrategyImpactSummaryTableFormat implements TableFormat {
     private Column[] baseCols() {
         List<Column> cols = new ArrayList<Column>();
 
-        cols.add(new Column("FIPS", types.stringType(6), new StringFormatter(6)));
+        cols.add(new Column("REGION_CD", types.stringType(6), new StringFormatter(6)));
         cols.add(new Column("RSM_SECTOR", types.stringType(128), 128, new StringFormatter(128)));
         cols.add(new Column("INV_SECTOR", types.stringType(128), 128, new StringFormatter(128)));
         cols.add(new Column("Poll", types.stringType(128), new StringFormatter(128)));

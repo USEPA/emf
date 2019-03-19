@@ -357,7 +357,7 @@ public abstract class AbstractStrategyTask implements Strategy {
     private void populateStrategyMeasureSummaryDataset(ControlStrategyResult[] results, ControlStrategyResult summaryResult) throws EmfException {
         if (results.length > 0) {
             
-            String sql = "INSERT INTO " + qualifiedEmissionTableName(summaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, fips, scc, poll, Control_Measure_Abbreviation, Control_Measure, Control_Technology, source_group, avg_ann_cost_per_ton, Annual_Cost, input_emis, Emis_Reduction, Pct_Red) " 
+            String sql = "INSERT INTO " + qualifiedEmissionTableName(summaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, region_cd, scc, poll, Control_Measure_Abbreviation, Control_Measure, Control_Technology, source_group, avg_ann_cost_per_ton, Annual_Cost, input_emis, Emis_Reduction, Pct_Red) " 
             + "select " + summaryResult.getDetailedResultDataset().getId() + ", 0, "
             + "summary.sector, "
             + "summary.fips, "
@@ -514,7 +514,7 @@ public abstract class AbstractStrategyTask implements Strategy {
 
             //SET work_mem TO '512MB';
             //NOTE:  Still need to  support mobile monthly files
-            String sql = "INSERT INTO " + qualifiedEmissionTableName(countySummaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, fips, poll, Input_Emis, Emis_Reduction, Remaining_Emis, Pct_Red, Annual_Cost, Annual_Oper_Maint_Cost, Annualized_Capital_Cost, Total_Capital_Cost, Avg_Ann_Cost_per_Ton) " 
+            String sql = "INSERT INTO " + qualifiedEmissionTableName(countySummaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, region_cd, poll, Input_Emis, Emis_Reduction, Remaining_Emis, Pct_Red, Annual_Cost, Annual_Oper_Maint_Cost, Annualized_Capital_Cost, Total_Capital_Cost, Avg_Ann_Cost_per_Ton) " 
             + "select " + countySummaryResult.getDetailedResultDataset().getId() + ", 0, "
                       + "sector, "
                       + "fips, "
