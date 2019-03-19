@@ -4,8 +4,7 @@ import gov.epa.emissions.commons.CommonsException;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
-
-import sun.misc.BASE64Encoder;
+import java.util.Base64;
 
 public class PasswordGenerator implements Serializable {
 
@@ -18,7 +17,7 @@ public class PasswordGenerator implements Serializable {
             md.update(textPassword.getBytes("UTF-8"));
 
             byte raw[] = md.digest();
-            String hash = (new BASE64Encoder()).encode(raw);
+            String hash = Base64.getEncoder().encodeToString(raw);
             return hash;
         } catch (Exception e) {
             throw new CommonsException(e.getMessage());
