@@ -367,10 +367,11 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
                     if (datasets.length ==1)
                         versions=new Version[]{(Version) version.getSelectedItem()};
                     
-                    if (!overwrite.isSelected())
-                        presenter.doExport(datasets, versions, folder.getText(), prefix.getText(), rowFilters, (filterDatasetVersionWidget.getDatasetVersions().length > 0 ? (DatasetVersion)filterDatasetVersionWidget.getDatasetVersions()[0] : null), filterDatasetJoinCondition.getText(), colOrders, purpose.getText(), false, download.isSelected());
-                    else
-                        presenter.doExport(datasets, versions, folder.getText(), prefix.getText(), rowFilters, (filterDatasetVersionWidget.getDatasetVersions().length > 0 ? (DatasetVersion)filterDatasetVersionWidget.getDatasetVersions()[0] : null), filterDatasetJoinCondition.getText(), colOrders, purpose.getText(), true, download.isSelected());
+                    presenter.doExport(datasets, versions, folder.getText(), prefix.getText(), rowFilters, 
+                            (filterDatasetVersionWidget.getDatasetVersions().length > 0 ? 
+                                    (DatasetVersion)filterDatasetVersionWidget.getDatasetVersions()[0] : null), 
+                            filterDatasetJoinCondition.getText(), colOrders, purpose.getText(), 
+                            overwrite.isSelected(), download.isSelected());
                     return null;
                 }
                 
@@ -388,7 +389,11 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
                         messagePanel.setError(e1.getMessage());
 //                        setErrorMsg(e1.getMessage());
                     } catch (ExecutionException e1) {
-                        messagePanel.setError(e1.getMessage());
+                        if (e1.getCause() != null) {
+                            messagePanel.setError(e1.getCause().getMessage());
+                        } else {
+                            messagePanel.setError(e1.getMessage());
+                        }
 //                        setErrorMsg(e1.getCause().getMessage());
                     } finally {
                         ComponentUtility.enableComponents(parentContainer, true);
