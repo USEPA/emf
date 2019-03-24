@@ -2416,3 +2416,8 @@ WHERE abbreviation LIKE 'SICIRIB%';
 DELETE FROM emf.fileformat_columns
 WHERE file_format_id = (SELECT id FROM emf.file_formats WHERE name = 'Control Strategy Detailed Result Extended')
 AND name IN ('annual_cost_3pct', 'eff_ann_cost_per_ton_3pct', 'annualized_capital_cost_3pct');
+
+-- 03/13/2019 Use CSV exporter for Strategy Messages instead of custom
+UPDATE emf.dataset_types
+SET exporter_classname = 'gov.epa.emissions.commons.io.csv.CSVExporter'
+WHERE name = 'Strategy Messages (CSV)';

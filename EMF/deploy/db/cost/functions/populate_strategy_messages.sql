@@ -167,12 +167,12 @@ BEGIN
 	 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		poll, 
 		status,
 		control_program,
@@ -199,13 +199,13 @@ BEGIN
 	execute 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
 		' || case when is_point_table then '
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		' else '' end || ' 
 		poll, 
 		status,
@@ -266,13 +266,13 @@ BEGIN
 	execute 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
 		' || case when is_point_table then '
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		' else '' end || ' 
 		poll, 
 		status,
@@ -354,12 +354,12 @@ BEGIN
 	 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		poll, 
 		status,
 		message
