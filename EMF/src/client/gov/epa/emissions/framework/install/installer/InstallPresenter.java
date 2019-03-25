@@ -107,7 +107,7 @@ public class InstallPresenter {
         if (userPreference.exists())
             return new InstallPreferences(userPreference);
         
-        InputStream templateInputStream = Object.class.getClass().getResource("/" + Constants.INSTALLER_PREFERENCES_FILE).openStream();
+        InputStream templateInputStream = this.getClass().getResource("/" + Constants.INSTALLER_PREFERENCES_FILE).openStream();
         
         return new InstallPreferences(templateInputStream);
     }

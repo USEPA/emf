@@ -153,7 +153,7 @@ public class Tools {
         if (userPreference.exists())
             return new InstallPreferences(userPreference);
 
-        InputStream templateInputStream = Object.class.getClass().getResource(
+        InputStream templateInputStream = Tools.class.getResource(
                 "/" + Constants.INSTALLER_PREFERENCES_FILE).openStream();
 
         return new InstallPreferences(templateInputStream);

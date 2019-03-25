@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 public class EmfImageTool {
 
     public static Image createImage(String path) {
-        URL imgURL = Object.class.getClass().getResource(path);
+        URL imgURL = EmfImageTool.class.getResource(path);
         if (imgURL != null) {
             return Toolkit.getDefaultToolkit().getImage(imgURL);
         }
@@ -17,7 +17,7 @@ public class EmfImageTool {
     }
     
     public static ImageIcon createImageIcon(String path) {
-        URL imgURL = Object.class.getClass().getResource(path);
+        URL imgURL = EmfImageTool.class.getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         }

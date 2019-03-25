@@ -67,7 +67,7 @@ public class InstallWindow extends JFrame implements InstallView {
 
     public InstallWindow() {
         super("EMF Client Installer -- " + Constants.VERSION);
-        super.setIconImage(Toolkit.getDefaultToolkit().getImage(Object.class.getClass().getResource("/logo.JPG")));
+        super.setIconImage(Toolkit.getDefaultToolkit().getImage(InstallWindow.class.getResource("/logo.JPG")));
     }
 
     public void initialize() {
