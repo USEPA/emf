@@ -15,6 +15,58 @@
 		<div id="content">
 			<h2>EMF deployments by reverse chronological date </h2>
 
+<strong>Deployment 25Mar2019 (v3.3):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Now requires Java 8 or higher</li>
+  <li>Updated to work with Java 9 and higher, which supports HiDPI displays on Windows</li>
+  <li>New version of the EMF Client Installer available to work with Java 9 and higher</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Removed out-of-date control strategy types (Annotate Inventory and Apply Measures In Series)</li>
+  <li>Removed fixed 3% interest rate calculations from control strategies</li>
+  <li>Relabeled columns in control strategy summaries and worksheets to match FF10 inventory terminology</li>
+  <li>Allow control strategies to be run even if the input inventories don't have sectors set</li>
+  </ul>
+</li>
+<li>Module system
+  <ul>
+  <li>Reduced the maximum length allowed for module dataset and parameter names to avoid truncation when running the module</li>
+  <li>Allow required module datasets to be unset</li>
+  <li>Added option for admin users to delete module history records</li>
+  <li>Reworked how the module history is fetched to speed up viewing and editing modules</li>
+  <li>Added option to use module parameters in dataset placeholder names</li>
+  <li>Updates to work with Postgres 10</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 16Aug2018 (v3.2):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Added ability for admin users to edit dataset type column defintions for Flexible File Format-based dataset types</li>
+  <li>Improved error messages displayed when importing datasets</li>
+  <li>Added new option to export and import non-composite modules</li>
+  <li>When exporting modules, added option to export all the input datasets associated with the selected modules</li>
+  <li>Removed dataset types that can't be imported from the Import Window dataset type pull-down menu</li>
+  <li>Added a message explaining why a new dataset version can't be created if there are no existing final versions of the dataset</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Created a new Control Strategy Detailed Result dataset type that uses column names consistent with the Flat File 2010 inventory formats</li>
+  <li>Added the term "effective" to emission reduction and annual cost per ton column names in the new strategy detailed result dataset type</li>
+  <li>Updated all control strategy types to output the new detailed result dataset type</li>
+  <li>Created QA step templates for the new detailed result dataset type based on the old dataset type</li>
+  <li>Added check to prevent users from trying to create controlled/projected inventories with old strategy detailed results datasets</li>
+  </ul>
+</li>
+</ul>
+
 <strong>Deployment 17May2018 (v3.1):</strong>
 <ul>
 <li>EMF
