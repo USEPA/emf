@@ -180,8 +180,8 @@ ${placeholder-name.table_name}|The name of the PostgreSQL table that holds the d
 ${placeholder-name.dataset_name}|The dataset name.|Input Options Dataset
 ${placeholder-name.dataset_id}|The dataset id.|156
 ${placeholder-name.version}|The version of the dataset as selected by the user.|2
-${placeholder-name.view}|The name of the temporary view created for this dataset table by the Module Runner.|input_options_dataset_in_view
-${placeholder-name}|Same as ${placeholder-name.view}.|input_options_dataset_in_view
+${placeholder-name.view}|The name of the temporary view created for this dataset table by the Module Runner.|input_options_dataset_iv
+${placeholder-name}|Same as ${placeholder-name.view}.|input_options_dataset_iv
 ${placeholder-name.mode}|The dataset mode: IN, INOUT, or OUT, where IN is an input dataset, INOUT is both an input and updated as output, and OUT is an output dataset.|IN
 ${placeholder-name.output_method}|The dataset output method (defined only when mode is OUT): NEW or REPLACE.|NEW
 ${placeholder-name.is_optional}|TRUE if the dataset is optional, FALSE if the dataset is required|TRUE
