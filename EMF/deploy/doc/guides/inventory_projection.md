@@ -682,29 +682,29 @@ COMMENT|Information about this record and how it was produced; this can be eithe
 
 Column|Description
 -|----
-Fips|The state and county FIPS code for the source, found in the inventory
-Scc|The SCC code for the source, found in the inventory
-PlantId|For point sources, the plant/facility ID for the source, found in the inventory
-PointId|For point sources, the point/unit ID for the source, found in the inventory
-StackId|For point sources, the stack/release point ID for the source, found in the inventory
-Segment|For point sources, the segment/process ID for the source, found in the inventory
-Poll|The pollutant for the source, found in the inventory
-Status|The status type. The possible values are listed below:<br/>Warning - description<br/>Error - description<br/>Informational - description
+region\_cd|The state and county FIPS code for the source, found in the inventory
+scc|The SCC code for the source, found in the inventory
+facility\_id|For point sources, the plant/facility ID for the source, found in the inventory
+unit\_id|For point sources, the point/unit ID for the source, found in the inventory
+rel\_point\_id|For point sources, the stack/release point ID for the source, found in the inventory
+process\_id|For point sources, the segment/process ID for the source, found in the inventory
+poll|The pollutant for the source, found in the inventory
+status|The status type. The possible values are listed below:<br/>Warning - description<br/>Error - description<br/>Informational - description
 control\_program|The control program for the strategy run; this is populated only when using the PFYI strategy type.
 message|The text describing the strategy problem.
 message\_type|Contains a high-level message-type category. Currently this is populated only when using the PFYI strategy type.<br/>The possible values are listed below:<br/>Inventory Level (or blank) - message has to do specifically with a problem with the inventory<br/>Packet Level - message has to do specifically with a problem with the packet record being applied to the inventory
 inventory|Identifies the inventory with the problem.
-Packet\_fips|The state and county FIPS/region code for the source, found in the control program packet
-Packet\_scc|The SCC code for the source, found in the control program packet
-Packet\_plantId|For point sources, the plant/facility ID for the source, found in the control program packet
-Packet\_pointId|For point sources, the point/unit ID for the source, found in the control program packet
-Packet\_stackId|For point sources, the stack/release point ID for the source, found in the control program packet
-Packet\_segment|For point sources, the segment/process ID for the source, found in the control program packet
-Packet\_poll|The pollutant for the source, found in the control program packet
-Packet\_sic|The SIC code for the source, found in the control program packet
-Packet\_mact|The MACT/regulatory code for the source, found in the control program packet
-Packet\_naics|The NAICS code for the source, found in the control program packet
-Packet\_compliance\_effective\_date|The compliance or effective date, found in the control program packet. The compliance date is used in the Control Packet; the effective date is used in the Plant Closure Packet
-Packet\_replacement|Indicates whether the packet identifies a replacement versus an add-on control, found in the control program packet
-Packet\_annual\_monthly|Indicates whether the packet is monthly based or annual based
+packet\_region\_cd|The state and county FIPS/region code for the source, found in the control program packet
+packet\_scc|The SCC code for the source, found in the control program packet
+packet\_facility\_id|For point sources, the plant/facility ID for the source, found in the control program packet
+packet\_unit\_id|For point sources, the point/unit ID for the source, found in the control program packet
+packet\_rel\_point\_id|For point sources, the stack/release point ID for the source, found in the control program packet
+packet\_process\_id|For point sources, the segment/process ID for the source, found in the control program packet
+packet\_poll|The pollutant for the source, found in the control program packet
+packet\_sic|The SIC code for the source, found in the control program packet
+packet\_mact|The MACT/regulatory code for the source, found in the control program packet
+packet\_naics|The NAICS code for the source, found in the control program packet
+packet\_compliance\_effective\_date|The compliance or effective date, found in the control program packet. The compliance date is used in the Control Packet; the effective date is used in the Plant Closure Packet
+packet\_replacement|Indicates whether the packet identifies a replacement versus an add-on control, found in the control program packet
+packet\_annual\_monthly|Indicates whether the packet is monthly based or annual based
 : Columns in the Strategy Messages Dataset {#tbl:strategy_messages_columns_table}

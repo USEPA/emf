@@ -840,7 +840,7 @@ The Strategy Measure Summary output dataset is a table of emissions reductions a
 Column|Description
 -|---
 SECTOR|The emissions inventory sector for the source (e.g., ptnonipm for the point non-IPM sector)
-FIPS|The state and county FIPS code for the source
+REGION\_CD|The state and county FIPS code for the source
 SCC|The SCC for the source
 POLL|The pollutant for the source
 CONTROL\_MEASURE\_ABBREV|The control measure abbreviation
@@ -875,7 +875,7 @@ The Strategy County Summary output dataset is a table of emissions reductions an
 Column|Description
 -|---
 SECTOR|The emissions inventory sector for the source (i.e., ptnonipm for the point non-IPM emissions sector)
-FIPS|The state and county FIPS code for the source
+REGION\_CD|The state and county FIPS code for the source
 POLL|The pollutant for the source
 UNCONTROLLED\_EMIS|The original inventory emissions for the county (in tons)
 EMIS\_REDUCTION|The total emissions reductions for the county (in tons)
@@ -927,17 +927,17 @@ The columns of the Strategy Messages output are described in Table {@tbl:columns
 
 Column|Description
 -|---
-FIPS|The state and county FIPS code for the source, found in the emissions inventory
+REGION\_CD|The state and county FIPS code for the source, found in the emissions inventory
 SCC|The SCC code for the source, found in the emissions inventory
-PLANTID|For point sources, the plant ID for the source from the emissions inventory.
-POINTID|For point sources, the point ID for the source from the emissions inventory.
-STACKID|For point sources, the stack ID for the source from the emissions inventory.
-SEGMENT|For point sources, the segment for the source from the emissions inventory.
+FACILITY\_ID|For point sources, the plant ID for the source from the emissions inventory.
+UNIT\_ID|For point sources, the point ID for the source from the emissions inventory.
+REL\_POINT\_ID|For point sources, the stack ID for the source from the emissions inventory.
+PROCESS\_ID|For point sources, the segment for the source from the emissions inventory.
 POLL|The pollutant for the source, found in the emissions inventory
 STATUS|The status type of the message. The possible values: Warning - a possible issue has been detected, but processing did not stop; Error - a problem occurred that caused the processing to stop; or Informational - it was desirable to communicate information to the user.
 CONTROL\_PROGRAM|The control program for the strategy run; this is populated only when using the "Project Future Year Inventory" strategy type.
 MESSAGE|Text describing the strategy issue.
-MESSAGE\_TYPE INVENTORY PACKET\_FIPS PACKET\_SCC PACKET\_PLANTID PACKET\_POINTID PACKET\_STACKID PACKET\_SEGMENT PACKET\_POLL PACKET\_SIC PACKET\_MACT PACKET\_NAICS PACKET\_COMPLIANCE\_DATE|Reserved columns used for another strategy type that was not part of this training exercise.
+MESSAGE\_TYPE INVENTORY PACKET\_REGION\_CD PACKET\_SCC PACKET\_FACILITY\_ID PACKET\_UNIT\_ID PACKET\_REL\_POINT\_ID PACKET\_PROCESS\_ID PACKET\_POLL PACKET\_SIC PACKET\_MACT PACKET\_NAICS PACKET\_COMPLIANCE\_DATE|Reserved columns used for another strategy type that was not part of this training exercise.
 RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
 Table: Columns in the Strategy Messages Output. {#tbl:columns_in_the_strategy_messages_output_table}
@@ -954,7 +954,7 @@ Table: Columns in the Strategy Messages Output. {#tbl:columns_in_the_strategy_me
 \begin{landscape}
 ```
 
-fips|scc|plantid|pointid|stackid|segment|poll|status|control_program|message
+region cd|scc|facility id|unit id|rel point id|process id|poll|status|control program|message
 -|-|-|-|-|-|-|-|--|--
 42049|30900201|420490009|942|S942|1|PM25-PRI|Warning| |Negative emission reduction (-1693.9)
 
@@ -972,7 +972,7 @@ Table: Example of Strategy Messages Output. {#tbl:example_of_strategy_messages_o
 \begin{landscape}
 ```
 
-SECTOR|FIPS|SCC|POLL|CONTROL MEASURE ABBREV|CONTROL MEASURE|CONTROL TECH.|SOURCE GROUP|ANNUAL COST|AVG ANN COST PER TON|EMIS REDUCTION
+SECTOR|REGION CD|SCC|POLL|CONTROL MEASURE ABBREV|CONTROL MEASURE|CONTROL TECH.|SOURCE GROUP|ANNUAL COST|AVG ANN COST PER TON|EMIS REDUCTION
 --|-|--|-|--|--|--|--|--|--|--
 ptnonipm|37001|10200906|PM10-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type); (PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood|$419,294|$12,862|32.6007
 ptnonipm|37001|10200906|PM25-PRI|PFFPJIBWD|Fabric Filter (Pulse Jet Type); (PM10) Industrial Boilers - Wood|Fabric Filter (Pulse Jet Type)|Industrial Boilers - Wood| | |19.5426
@@ -995,7 +995,7 @@ Table: Example of Strategy Measure Summary Data. {#tbl:example_of_strategy_measu
 \begin{landscape}
 ```
 
-SECTOR|FIPS|POLL|INPUT EMIS|EMIS REDUCTION|REMAINING EMIS|PCT RED|ANNUAL COST|ANNUAL OPER MAINT COST|ANNUALIZED CAPITAL COST|TOTAL CAPITAL COST|AVG ANN COST PER TON
+SECTOR|REGION CD|POLL|INPUT EMIS|EMIS REDUCTION|REMAINING EMIS|PCT RED|ANNUAL COST|ANNUAL OPER MAINT COST|ANNUALIZED CAPITAL COST|TOTAL CAPITAL COST|AVG ANN COST PER TON
 -|-|-|-|--|--|-|-|-|--|-|-
 ptnonipm|37001|VOC|313.8724| |313.8724| | | | | | |
 ptnonipm|37001|PM25-PRI|33.4717|33.2505|0.2212|99.3391| | | | | |
