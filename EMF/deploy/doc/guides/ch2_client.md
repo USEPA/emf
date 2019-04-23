@@ -6,9 +6,15 @@ The EMF client is a graphical desktop application written in Java. While it is p
 
 ### Checking Your Java Installation ###
 
-The EMF requires Java 7 or greater. The following instructions will help you check if you have Java installed on your Windows machine and what version is installed. If you need more details, please visit [How to find Java version in Windows](http://www.java.com/en/download/help/version_manual.xml) [java.com].
+The EMF requires Java 8 or greater. The following instructions will help you check if you have Java installed on your Windows machine and what version is installed. If you need more details, please visit [How to find Java version in Windows](http://www.java.com/en/download/help/version_manual.xml) [java.com].
 
-The latest version(s) of Java on your system will be listed as Java 7 with an associated Update number (eg. Java 7 Update 21). Older versions may be listed as Java(TM), Java Runtime Environment, Java SE, J2SE or Java 2.
+The latest version(s) of Java on your system will be listed as Java 8 with an associated Update number (eg. Java 8 Update 161). Older versions may be listed as Java(TM), Java Runtime Environment, Java SE, J2SE or Java 2.
+
+**Windows 10**
+
+1. Click the **Start** button.
+2. Scroll through the applications and programs listed until you see the **Java** folder.
+3. Click on the **Java** folder, then **About Java** to see the Java version.
 
 **Windows 8**
 
@@ -17,17 +23,9 @@ The latest version(s) of Java on your system will be listed as Java 7 with an as
 3. Click **Programs and Features**
 4. The installed Java version(s) are listed.
 
-**Windows 7 and Vista**
+[@Fig:about_java] shows the About Java window on Windows 10 with Java installed. The installed version of Java is Version 8 Update 161; this version does not need to be updated to run the EMF client.
 
-1. Click **Start**
-2. Select **Control Panel**
-3. Select **Programs**
-4. Click **Programs and Features**
-5. The installed Java version(s) are listed.
-
-[@Fig:programs_control_panel] shows the Programs and Features Control Panel on Windows 7 with Java installed. The installed version of Java is Version 7 Update 45; this version does not need to be updated to run the EMF client.
-
-![Programs and Features Control Panel](images/programs_control_panel.png){#fig:programs_control_panel}
+![About Java](images/about_java.png){#fig:about_java}
 
 ### Installing Java ###
 
@@ -35,11 +33,11 @@ If you need to install Java, please follow the instructions for [downloading and
 
 ### Updating Java ###
 
-If Java is installed on your computer but is not version 7 or greater, you will need to update your Java installation. Start by opening the Java Control Panel from the Windows Control Panel. [@Fig:java_control_panel] shows the Java Control Panel.
+If Java is installed on your computer but is not version 8 or greater, you will need to update your Java installation. Start by opening the Java Control Panel from the Windows Control Panel. [@Fig:java_control_panel] shows the Java Control Panel.
 
 ![Java Control Panel](images/java_control_panel.png){#fig:java_control_panel}
 
-Clicking the **About** button will display the Java version dialog seen in [@Fig:java_version]. In [@Fig:java_version], the installed version of Java is Version 7 Update 45. This version of Java does not need to be updated to run the EMF client.
+Clicking the **About** button will display the Java version dialog seen in [@Fig:java_version]. In [@Fig:java_version], the installed version of Java is Version 7 Update 45. This version of Java needs to be updated to run the EMF client.
 
 ![Java Version Dialog](images/java_version.png){#fig:java_version}
 
