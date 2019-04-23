@@ -447,7 +447,7 @@ This syntax makes it easy to copy QA step queries between datasets. As long as t
 
 The `$DATASET_TABLE["dataset name", 1] a` tag can be used to refer to a different dataset from a QA step query. `"dataset name"` is the name of the other dataset enclosed in double quotes. The default version of the dataset will be used in the query. For more information on dataset versions, see [Sec. 3 - Datasets][] in the EMF User's Guide. `a` is a single character table alias that can be used throughout the query.
 
-[Sec. 3 - Datasets]: https://www.cmascenter.org/cost/documentation/3.2/EMF%20User's%20Guide/#sec:datasets_chapter {target="_blank"}
+[Sec. 3 - Datasets]: https://www.cmascenter.org/cost/documentation/3.3/EMF%20User's%20Guide/#sec:datasets_chapter {target="_blank"}
 
 This syntax allows you to join datasets together for comparison or annotation purposes. For example, the following fictionalized query shows how an annual inventory (`$TABLE[1]`) could be joined with a corresponding monthly inventory named "jan_monthly_inventory" to produce a report with annual and monthly totals by pollutant.
 

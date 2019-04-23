@@ -18,7 +18,7 @@ Matches sources with control measures from the Control Measure Database (CMDB)|M
 
 This section will detail the "Project Future Year Inventory" control strategy available in CoST. More information on general use of CoST is available in the [CoST User's Guide][].
 
-[CoST User's Guide]: https://www.cmascenter.org/cost/documentation/3.2/CoST%20User's%20Guide/ {target="_blank"}
+[CoST User's Guide]: https://www.cmascenter.org/cost/documentation/3.3/CoST%20User's%20Guide/ {target="_blank"}
 
 [@Fig:projection_workflow] shows the various datasets and processing steps used for inventory projection within the EMF.
 
