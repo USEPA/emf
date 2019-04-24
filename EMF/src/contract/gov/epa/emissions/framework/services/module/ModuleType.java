@@ -57,14 +57,16 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         this.name = name;
     }
 
-    public void exportTypes(final Map<Integer, DatasetType> datasetTypesMap, final Map<Integer, ModuleType> moduleTypesMap, final List<ModuleType> moduleTypesList, final Map<Integer, ModuleType> moduleTypesInProgress) throws EmfException {
+    public void exportTypes(final Map<Integer, DatasetType> datasetTypesMap, final Map<Integer, ModuleType> moduleTypesMap, final List<ModuleType> moduleTypesList, final Map<Integer, ModuleType> moduleTypesInProgress, ModuleTypeVersion version) throws EmfException {
         if (moduleTypesInProgress.containsKey(id)) {
             throw new EmfException("Internal error: recursive dependencies between module types: \"" + name + "\".");
         }
         moduleTypesInProgress.put(id,  this);
         
         for (ModuleTypeVersion moduleTypeVersion : moduleTypeVersions.values()) {
-            moduleTypeVersion.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress);
+            if (version == null || version.getId() == moduleTypeVersion.getId()) {
+                moduleTypeVersion.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress);
+            }
         }
         
         if (!moduleTypesMap.containsKey(id)) {
@@ -168,13 +170,23 @@ public class ModuleType implements Serializable, Lockable, Comparable<ModuleType
         return result;
     }
 
-    public void prepareForExport() {
+    public void prepareForExport(ModuleTypeVersion version) {
         if (this.id == 0)
             return;
         this.id = 0;
         this.creator = null;
         setLockDate(null);
         setLockOwner(null);
+        if (version != null) {
+            Map<Integer, ModuleTypeVersion> versionToKeep = new HashMap<Integer, ModuleTypeVersion>();
+            for (ModuleTypeVersion moduleTypeVersion : this.moduleTypeVersions.values()) {
+                if (version.getId() == moduleTypeVersion.getId()) {
+                    versionToKeep.put(version.getVersion(), version);
+                    break;
+                }
+            }
+            setModuleTypeVersions(versionToKeep);
+        }
         for (ModuleTypeVersion moduleTypeVersion : this.moduleTypeVersions.values()) {
             moduleTypeVersion.prepareForExport();
         }

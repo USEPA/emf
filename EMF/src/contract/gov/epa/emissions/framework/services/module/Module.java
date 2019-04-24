@@ -472,7 +472,7 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
             dataset.prepareForExport();
         }
         
-        this.moduleTypeVersion.getModuleType().prepareForExport();
+        this.moduleTypeVersion.getModuleType().prepareForExport(null);
         this.moduleTypeVersion.setModuleTypeVersionDatasets(new HashMap<String, ModuleTypeVersionDataset>());
         this.moduleTypeVersion.setModuleTypeVersionParameters(new HashMap<String, ModuleTypeVersionParameter>());
         this.moduleTypeVersion.setModuleTypeVersionRevisions(new ArrayList<ModuleTypeVersionRevision>());

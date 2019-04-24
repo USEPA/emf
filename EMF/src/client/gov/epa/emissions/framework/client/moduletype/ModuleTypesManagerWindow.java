@@ -449,16 +449,48 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             messagePanel.setMessage("Please select one or more module types");
             return;
         }   
+        
+        // if only one module type is selected and that type has multiple versions,
+        // prompt for which version to export
+        ModuleTypeVersion selectedVersion = null;
+        if (selected.size() == 1) {
+            ModuleType moduleType = (ModuleType)selected.get(0);
+            
+            if (moduleType.getModuleTypeVersions().size() > 1) {
+                String separator = " - ";
+                
+                List<String> versionNamesList = new ArrayList<String>();
+                versionNamesList.add("All versions");
+                for (ModuleTypeVersion version : moduleType.getModuleTypeVersions().values()) {
+                    versionNamesList.add(version.getVersion() + separator + version.getName());
+                }
+                String[] versionNames = versionNamesList.toArray(new String[0]);
+        
+                String message = "Which version of '" + moduleType.getName() + "' do you want to export?";
+                String selectedVersionName = (String)JOptionPane.showInputDialog(parentConsole, message,
+                        "Select Module Type Version", JOptionPane.QUESTION_MESSAGE, null,
+                        versionNames, versionNames[0]);
+                if (selectedVersionName == null) {
+                    return;
+                }
+                if (selectedVersionName != "All versions") {
+                    Integer versionNumber = Integer.parseInt(selectedVersionName.split(separator)[0]);
+                    selectedVersion = moduleType.getModuleTypeVersions().get(versionNumber);
+                }
+            }
+        }
 
         Map<Integer, DatasetType> datasetTypesMap = new HashMap<Integer, DatasetType>();
         Map<Integer, ModuleType> moduleTypesMap = new HashMap<Integer, ModuleType>();
         List<ModuleType> moduleTypesList = new ArrayList<ModuleType>(); // in order of dependencies (most independent first, most dependent last)
+        List<ModuleTypeVersion> moduleTypeVersionsList = new ArrayList<ModuleTypeVersion>();
         Map<Integer, ModuleType> moduleTypesInProgress = new HashMap<Integer, ModuleType>();
 
         for(Object object : selected) {
             ModuleType moduleType = (ModuleType)object;
+            moduleTypeVersionsList.add(selectedVersion);
             try {
-                moduleType.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress);
+                moduleType.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress, selectedVersion);
             } catch (EmfException e) {
                 e.printStackTrace();
                 messagePanel.setError("Failed to export module type: " + e.getMessage());
@@ -489,7 +521,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
         }
 
-        ModuleTypesExportImport moduleTypesExportImport = new ModuleTypesExportImport(datasetTypesMap, moduleTypesList);
+        ModuleTypesExportImport moduleTypesExportImport = new ModuleTypesExportImport(datasetTypesMap, moduleTypesList, moduleTypeVersionsList);
         moduleTypesExportImport.setExportEmfServer(session.serviceLocator().getBaseUrl());
         moduleTypesExportImport.setExportEmfVersion(LoginWindow.EMF_VERSION);
         moduleTypesExportImport.setExportFileName(file.getName());

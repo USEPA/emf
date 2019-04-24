@@ -31,7 +31,7 @@ public class ModuleTypeVersionSubmodule implements Serializable {
             ModuleType compositeModuleType = compositeModuleTypeVersion.getModuleType();
             throw new EmfException("Internal error: recursive dependencies between module types: \"" + name + "\" and \"" + compositeModuleType.getName() + "\".");
         }
-        moduleType.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress);
+        moduleType.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress, null);
     }
     
     public boolean matchesImportedModuleTypeVersionSubmodule(String indent, final StringBuilder differences, ModuleTypeVersionSubmodule importedModuleTypeVersionSubmodule) {

@@ -21,15 +21,18 @@ public class ModuleTypesExportImport implements Serializable {
     
     DatasetType[] datasetTypes;
      ModuleType[]  moduleTypes; // in order of dependencies
+    ModuleTypeVersion[] versions;
     
     public ModuleTypesExportImport() {
         datasetTypes = null;
          moduleTypes = null;
+            versions = null;
     }
 
-    public ModuleTypesExportImport(Map<Integer, DatasetType> datasetTypesMap, List<ModuleType> moduleTypesList) {
+    public ModuleTypesExportImport(Map<Integer, DatasetType> datasetTypesMap, List<ModuleType> moduleTypesList, List<ModuleTypeVersion> versionsList) {
         datasetTypes = datasetTypesMap.values().toArray(new DatasetType[0]);
          moduleTypes = moduleTypesList.toArray(new ModuleType[0]);
+            versions = versionsList.toArray(new ModuleTypeVersion[0]);
     }
 
     public String getExportEmfServer() {
@@ -140,8 +143,10 @@ public class ModuleTypesExportImport implements Serializable {
         for (DatasetType datasetType : datasetTypes) {
             prepareForExport(datasetType);
         }
-        for (ModuleType moduleType : moduleTypes) {
-            moduleType.prepareForExport();
+        for (int i = 0; i < moduleTypes.length; i++) {
+            ModuleType moduleType = moduleTypes[i];
+            ModuleTypeVersion version = versions[i];
+            moduleType.prepareForExport(version);
         }
     }
 
