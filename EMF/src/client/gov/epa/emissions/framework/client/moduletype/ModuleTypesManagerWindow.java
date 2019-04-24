@@ -450,13 +450,13 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             return;
         }   
         
-        // if only one module type is selected and that type has multiple versions,
+        // if only one (non-composite) module type is selected and that type has multiple versions,
         // prompt for which version to export
         ModuleTypeVersion selectedVersion = null;
         if (selected.size() == 1) {
             ModuleType moduleType = (ModuleType)selected.get(0);
             
-            if (moduleType.getModuleTypeVersions().size() > 1) {
+            if (!moduleType.isComposite() && moduleType.getModuleTypeVersions().size() > 1) {
                 String separator = " - ";
                 
                 List<String> versionNamesList = new ArrayList<String>();
@@ -488,7 +488,6 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
 
         for(Object object : selected) {
             ModuleType moduleType = (ModuleType)object;
-            moduleTypeVersionsList.add(selectedVersion);
             try {
                 moduleType.exportTypes(datasetTypesMap, moduleTypesMap, moduleTypesList, moduleTypesInProgress, selectedVersion);
             } catch (EmfException e) {
@@ -496,6 +495,9 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
                 messagePanel.setError("Failed to export module type: " + e.getMessage());
                 return;
             }
+        }
+        for(int i = 0; i < moduleTypesList.size(); i++) {
+            moduleTypeVersionsList.add(selectedVersion);
         }
         
         JFileChooser fc = new JFileChooser();
