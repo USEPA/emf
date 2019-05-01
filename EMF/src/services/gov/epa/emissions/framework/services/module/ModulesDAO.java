@@ -2,23 +2,19 @@ package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
+import gov.epa.emissions.framework.services.basic.FilterField;
+import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
+import org.hibernate.transform.Transformers;
 
 public class ModulesDAO {
 
@@ -36,6 +32,53 @@ public class ModulesDAO {
     @SuppressWarnings("rawtypes")
     public List getLiteModules(Session session) {
         return hibernateFacade.getAll(LiteModule.class, Order.asc("name").ignoreCase(), session);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public List getLiteModules(Session session, BasicSearchFilter searchFilter) {
+
+        Criteria criteria = session.createCriteria(LiteModule.class, "lm")
+//                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                ;
+//                .setProjection(
+//                        Projections.distinct(Projections.projectionList().add(Projections.property("lm.id"))))
+//                .setResultTransformer(Transformers.aliasToBean(LiteModule.class));
+
+//        criteria.createAlias("lm.project", "project", CriteriaSpecification.LEFT_JOIN);
+//        criteria.createAlias("lm.creator", "creator", CriteriaSpecification.LEFT_JOIN);
+//        criteria.createAlias("lm.tags", "tag", CriteriaSpecification.LEFT_JOIN);
+//        criteria.createAlias("lm.liteModuleTypeVersion", "liteModuleTypeVersion", CriteriaSpecification.LEFT_JOIN);
+//        criteria.createAlias("liteModuleTypeVersion.liteModuleType", "liteModuleType", CriteriaSpecification.LEFT_JOIN);
+
+        if (StringUtils.isNotBlank(searchFilter.getFieldName())
+                && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
+            Criteria inCriteria = session.createCriteria(LiteModule.class, "lm")
+                    .setProjection(Property.forName("id"));
+            //                .setProjection(Projections.projectionList().add(Projections.property("lm.id")))
+            //                .setResultTransformer(Transformers.aliasToBean(Integer.class));
+            //                .setResultTransformer(Transformers.aliasToBean(LiteModule.class));
+            inCriteria.createAlias("lm.project", "project", CriteriaSpecification.LEFT_JOIN);
+            inCriteria.createAlias("lm.creator", "creator", CriteriaSpecification.LEFT_JOIN);
+            inCriteria.createAlias("lm.tags", "tag", CriteriaSpecification.LEFT_JOIN);
+            inCriteria.createAlias("lm.liteModuleTypeVersion", "liteModuleTypeVersion", CriteriaSpecification.LEFT_JOIN);
+            inCriteria.createAlias("liteModuleTypeVersion.liteModuleType", "liteModuleType", CriteriaSpecification.LEFT_JOIN);
+
+            SearchDAOUtility.buildSearchCriterion(inCriteria, new ModuleFilter(), searchFilter);
+
+            //get module ids to load from...
+            List<LiteModule> moduleIds = inCriteria.list();
+
+            if (moduleIds.size() > 0)
+                criteria
+                    .add(Property.forName("id").in(moduleIds));
+            else
+                criteria
+                    .add(Property.forName("id").eq((Object)null));
+        }
+
+        List<LiteModule> modules = criteria.list();
+
+        return modules;
     }
 
     public LiteModule getLiteModule(int id, Session session) {

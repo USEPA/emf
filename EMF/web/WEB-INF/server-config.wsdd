@@ -325,6 +325,10 @@
 		qname="ns1:Module" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 
 	<beanMapping
+			languageSpecificType="java:gov.epa.emissions.framework.services.basic.BasicSearchFilter"
+			qname="ns1:BasicSearchFilter" xmlns:ns1="urn:gov.epa.services.EmfService"/>
+
+	<beanMapping
 		languageSpecificType="java:gov.epa.emissions.framework.services.module.ModuleDataset"
 		qname="ns1:ModuleDataset" xmlns:ns1="urn:gov.epa.services.EmfService"/>
 

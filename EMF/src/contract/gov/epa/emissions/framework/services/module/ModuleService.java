@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.services.module;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 
 public interface ModuleService {
@@ -42,6 +43,8 @@ public interface ModuleService {
     // Lite Modules
 
     LiteModule[] getLiteModules() throws EmfException;
+
+    LiteModule[] getLiteModules(BasicSearchFilter searchFilter) throws EmfException;
 
     LiteModule[] getRelatedLiteModules(int datasetId) throws EmfException;
     

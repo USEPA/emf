@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.module.DatasetCreator;
 
 import gov.epa.emissions.framework.services.DbServerFactory;
@@ -1317,6 +1318,21 @@ public class ModuleServiceImpl implements ModuleService {
         try {
             @SuppressWarnings("unchecked")
             List<LiteModule> liteModules = modulesDAO.getLiteModules(session);
+            return liteModules.toArray(new LiteModule[]{});
+        } catch (Exception e) {
+            LOG.error("Could not get all lite modules", e);
+            throw new EmfException("Could not get all lite module: " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public synchronized LiteModule[] getLiteModules(BasicSearchFilter searchFilter) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            @SuppressWarnings("unchecked")
+            List<LiteModule> liteModules = modulesDAO.getLiteModules(session, searchFilter);
             return liteModules.toArray(new LiteModule[]{});
         } catch (Exception e) {
             LOG.error("Could not get all lite modules", e);

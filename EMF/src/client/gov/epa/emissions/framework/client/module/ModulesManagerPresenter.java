@@ -3,11 +3,9 @@ package gov.epa.emissions.framework.client.module;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.module.LiteModule;
-import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleService;
-import gov.epa.emissions.framework.services.module.ModuleType;
+import gov.epa.emissions.framework.services.module.*;
 
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -88,6 +86,10 @@ public class ModulesManagerPresenter {
 
     public ConcurrentSkipListMap<Integer, LiteModule> getLiteModules() {
         return session.getFreshLiteModules();
+    }
+
+    public LiteModule[] getLiteModules(BasicSearchFilter searchFilter) throws EmfException {
+        return service().getLiteModules(searchFilter);
     }
 
     public Module getModule(int id) throws EmfException {

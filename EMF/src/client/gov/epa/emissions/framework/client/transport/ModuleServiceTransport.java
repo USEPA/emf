@@ -6,16 +6,9 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.module.History;
-import gov.epa.emissions.framework.services.module.LiteModule;
-import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleService;
-import gov.epa.emissions.framework.services.module.ModuleType;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
-import gov.epa.emissions.framework.services.module.ParameterType;
-import gov.epa.emissions.framework.services.module.Tag;
+import gov.epa.emissions.framework.services.module.*;
 
 public class ModuleServiceTransport implements ModuleService {
 
@@ -206,6 +199,17 @@ public class ModuleServiceTransport implements ModuleService {
         call.setReturnType(mappings.liteModules());
 
         return (LiteModule[]) call.requestResponse(new Object[] {});
+    }
+
+    @Override
+    public LiteModule[] getLiteModules(BasicSearchFilter searchFilter) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getLiteModules");
+        call.addParam("searchFilter", mappings.basicSearchFilter());
+        call.setReturnType(mappings.liteModules());
+
+        return (LiteModule[]) call.requestResponse(new Object[] { searchFilter });
     }
 
 //    @Override

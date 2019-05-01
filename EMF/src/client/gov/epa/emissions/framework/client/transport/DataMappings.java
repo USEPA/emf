@@ -28,10 +28,7 @@ import gov.epa.emissions.commons.io.ColumnMetaData;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.services.basic.AccessLog;
-import gov.epa.emissions.framework.services.basic.EmfFileInfo;
-import gov.epa.emissions.framework.services.basic.FileDownload;
-import gov.epa.emissions.framework.services.basic.Status;
+import gov.epa.emissions.framework.services.basic.*;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.cost.ControlMeasureClass;
 import gov.epa.emissions.framework.services.cost.ControlMeasureEquation;
@@ -80,32 +77,7 @@ import gov.epa.emissions.framework.services.fast.FastRunInventory;
 import gov.epa.emissions.framework.services.fast.FastRunOutput;
 import gov.epa.emissions.framework.services.fast.FastRunOutputType;
 import gov.epa.emissions.framework.services.fast.Grid;
-import gov.epa.emissions.framework.services.module.History;
-import gov.epa.emissions.framework.services.module.HistoryDataset;
-import gov.epa.emissions.framework.services.module.HistoryInternalDataset;
-import gov.epa.emissions.framework.services.module.HistoryInternalParameter;
-import gov.epa.emissions.framework.services.module.HistoryParameter;
-import gov.epa.emissions.framework.services.module.HistorySubmodule;
-import gov.epa.emissions.framework.services.module.LiteModule;
-import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleDataset;
-import gov.epa.emissions.framework.services.module.ModuleInternalDataset;
-import gov.epa.emissions.framework.services.module.ModuleInternalParameter;
-import gov.epa.emissions.framework.services.module.ModuleParameter;
-import gov.epa.emissions.framework.services.module.LiteModuleType;
-import gov.epa.emissions.framework.services.module.LiteModuleTypeVersion;
-import gov.epa.emissions.framework.services.module.ModuleType;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnection;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionDatasetConnectionEndpoint;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnection;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameterConnectionEndpoint;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionParameter;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionRevision;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersionSubmodule;
-import gov.epa.emissions.framework.services.module.ParameterType;
-import gov.epa.emissions.framework.services.module.Tag;
+import gov.epa.emissions.framework.services.module.*;
 import gov.epa.emissions.framework.services.sms.SectorScenario;
 import gov.epa.emissions.framework.services.sms.SectorScenarioInventory;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;
@@ -155,6 +127,7 @@ public class DataMappings extends Mappings {
         bean(call, ModuleParameter.class,         moduleParameter());
         bean(call, ModuleInternalDataset.class,   moduleInternalDataset());
         bean(call, ModuleInternalParameter.class, moduleInternalParameter());
+        bean(call, BasicSearchFilter.class,       basicSearchFilter());
 
         bean(call, History.class,                  history());
         bean(call, HistoryDataset.class,           historyDataset());
@@ -291,9 +264,9 @@ public class DataMappings extends Mappings {
         array(call, Tag[].class, tags());
 
         array(call, Module[].class, modules());
+        array(call, ModuleFilter[].class, moduleFilters());
 
         array(call, LiteModule[].class, liteModules());
-        
         array(call, ExternalSource[].class, externalSources());
         array(call, InternalSource[].class, "InternalSources");
 
@@ -433,8 +406,16 @@ public class DataMappings extends Mappings {
         return qname("Modules");
     }
 
+    public QName moduleFilters() {
+        return qname("ModuleFilters");
+    }
+
     public QName liteModules() {
         return qname("LiteModules");
+    }
+
+    public QName filterFields() {
+        return qname("FilterFields");
     }
 
     public QName sector() {
@@ -567,6 +548,10 @@ public class DataMappings extends Mappings {
 
     public QName module() {
         return qname("Module");
+    }
+
+    public QName basicSearchFilter() {
+        return qname("BasicSearchFilter");
     }
 
     public QName moduleDataset() {

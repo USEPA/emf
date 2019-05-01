@@ -2,9 +2,9 @@ package gov.epa.emissions.framework.client.module;
 
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.commons.gui.*;
 import gov.epa.emissions.commons.gui.Button;
-import gov.epa.emissions.commons.gui.ConfirmDialog;
-import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
@@ -18,22 +18,16 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.login.LoginWindow;
 import gov.epa.emissions.framework.client.moduletype.ModuleTypeVersionPropertiesWindow;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
+import gov.epa.emissions.framework.services.basic.FilterField;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.module.Module;
-import gov.epa.emissions.framework.services.module.ModuleDataset;
-import gov.epa.emissions.framework.services.module.ModuleType;
-import gov.epa.emissions.framework.services.module.History;
-import gov.epa.emissions.framework.services.module.LiteModule;
-import gov.epa.emissions.framework.services.module.ModuleTypeVersion;
-import gov.epa.emissions.framework.services.module.ModulesExportImport;
+import gov.epa.emissions.framework.services.module.*;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.XMLDecoder;
@@ -53,13 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class ModulesManagerWindow extends ReusableInteralFrame implements ModulesManagerView, RefreshObserver {
 
@@ -76,6 +64,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     RemoveButton removeButton;
     Button runButton;
     Button compareButton;
+    private TextField simpleTextFilter;
 
     private JPanel layout;
 
@@ -86,6 +75,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     private EmfConsole parentConsole;
 
     private EmfSession session;
+    private ComboBox filterFieldsComboBox;
 
     public ModulesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
         super("Module Manager", new Dimension(1200, 800), desktopManager);
@@ -124,16 +114,67 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     }
 
     private JPanel createTopPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-
+        JPanel msgRefreshPanel = new JPanel(new BorderLayout());
         messagePanel = new SingleLineMessagePanel();
-        panel.add(messagePanel, BorderLayout.CENTER);
-
+        msgRefreshPanel.add(messagePanel, BorderLayout.CENTER);
         Button button = new RefreshButton(this, "Refresh Module Types", messagePanel);
-        panel.add(button, BorderLayout.EAST);
+        msgRefreshPanel.add(button, BorderLayout.EAST);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        simpleTextFilter = new TextField("textfilter", 10);
+        simpleTextFilter.setPreferredSize(new Dimension(360, 25));
+        simpleTextFilter.setEditable(true);
+        simpleTextFilter.addActionListener(simpleFilterTypeAction());
+
+
+        JPanel advPanel = new JPanel(new BorderLayout(5, 2));
+
+        //get table column names
+//        String[] columns = new String[] {"Module Name", "Composite?", "Final?", "Tags", "Project", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };//(new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>())).columns();
+
+        filterFieldsComboBox = new ComboBox("Select one", (new ModuleFilter()).getFilterFieldNames());
+        filterFieldsComboBox.setPreferredSize(new Dimension(180, 25));
+        filterFieldsComboBox.addActionListener(simpleFilterTypeAction());
+
+        advPanel.add(getDSTypePanel("Filter Fields:", filterFieldsComboBox), BorderLayout.LINE_START);
+        advPanel.add(simpleTextFilter, BorderLayout.EAST);
+//        advPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
+
+        topPanel.add(advPanel, BorderLayout.EAST);
+
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        panel.add(msgRefreshPanel);
+        panel.add(topPanel);
 
         return panel;
     }
+
+    private JPanel getDSTypePanel(String label, JComboBox box) {
+        JPanel panel = new JPanel(new BorderLayout(5, 2));
+        JLabel jlabel = new JLabel(label);
+        jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        panel.add(jlabel, BorderLayout.WEST);
+        panel.add(box, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));
+
+        return panel;
+    }
+
+    private Action simpleFilterTypeAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+//                DatasetType type = getSelectedDSType();
+//                try {
+//                    // count the number of datasets and do refresh
+//                    if (dsTypesBox.getSelectedIndex() > 0)
+                        doRefresh();
+//                } catch (EmfException e1) {
+////                    messagePanel.setError("Could not retrieve all modules " /*+ type.getName()*/);
+//                }
+            }
+        };
+    }
+
 
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
@@ -914,8 +955,14 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
     @Override
     public void doRefresh() {
-        ConcurrentSkipListMap<Integer, LiteModule> liteModules = presenter.getLiteModules();
-        boolean hasData = (liteModules != null) && !liteModules.isEmpty();
+        LiteModule[] liteModules = new LiteModule[0];
+        try {
+            BasicSearchFilter searchFilter = getBasicSearchFilter();
+            liteModules = presenter.getLiteModules(searchFilter);
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
+        boolean hasData = (liteModules != null) && !(liteModules.length == 0);
 
         // FIXME these settings are reverted somewhere else
         viewButton.setEnabled(hasData);
@@ -928,6 +975,17 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 
         table.refresh(new ModulesTableData(liteModules));
         panelRefresh();
+    }
+
+    private BasicSearchFilter getBasicSearchFilter() {
+
+        BasicSearchFilter searchFilter = new BasicSearchFilter();
+        String fieldName = (String)filterFieldsComboBox.getSelectedItem();
+        if (fieldName != null) {
+            searchFilter.setFieldName(fieldName);
+            searchFilter.setFieldValue(simpleTextFilter.getText());
+        }
+        return searchFilter;
     }
 
     @Override
