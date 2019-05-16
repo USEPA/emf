@@ -15,7 +15,7 @@ args = parser.parse_args()
 classpath = ''
 for file in os.listdir(os.path.join(args.client, 'lib')):
   if file.endswith('.jar'):
-    classpath += os.path.join(args.client, file) + ':'
+    classpath += os.path.join(args.client, 'lib', file) + ':'
 classpath += os.path.join(args.client, 'emf-client.jar')
 
 tree = ET.parse(args.xml)
