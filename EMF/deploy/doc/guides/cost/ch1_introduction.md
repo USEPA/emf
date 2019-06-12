@@ -25,7 +25,7 @@ This document provides information on how to use CoST to view and edit control m
 
 * [Control Strategy Tool (CoST) Development Document](https://www3.epa.gov/ttn/ecas/docs/CoST_DevelopmentDoc_02-23-2016.pdf): describes the algorithms implemented in the software
 
-* [Control Strategy Tool (CoST) Control Measures Database Documentation](https://www3.epa.gov/ttn/ecas/models/CoST_CMDB_Document_2010-06-09.pdf): describes the contents of the Control Measures Database
+<!-- * [Control Strategy Tool (CoST) Control Measures Database Documentation](https://www3.epa.gov/ttn/ecas/models/CoST_CMDB_Document_2010-06-09.pdf): describes the contents of the Control Measures Database -->
 
 * [Control Strategy Tool (CoST) Cost Equations Documentation](https://www.epa.gov/sites/production/files/2018-09/documents/cost_equations_documentation_0.pdf): describes how CoST uses control measure engineering cost equations
 
