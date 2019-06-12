@@ -8,7 +8,7 @@
 
 Table {@tbl:examples_of_row_filters_and_inventory_filters_table} provides some examples of row filters that can be applied to inventory filters to target specific sources for use during strategy analyses.
 
-<a id=examples_of_row_filters_and_inventory_filters_table></a>
+<a id=tbl:examples_of_row_filters_and_inventory_filters_table></a>
 
 Filter Purpose|SQL Where Clause
 -|-

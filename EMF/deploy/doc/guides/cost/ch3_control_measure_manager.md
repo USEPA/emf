@@ -92,7 +92,7 @@ The control measure abbreviation is a set of characters that is a *short-hand* f
 
 The columns shown on the Control Measure Manager with brief descriptions are shown in Table {@tbl:control_measure_manager_columns_table}. The control measures table supports sorting and filtering the data. Tables of this same type are used many places throughout CoST and the EMF.
 
-<a id="control_measure_manager_columns_table"></a>
+<a id="tbl:control_measure_manager_columns_table"></a>
 
 Column Name|Description
 -|----
@@ -196,7 +196,7 @@ In this section you will learn about viewing the detailed data for a control mea
 
 **Step 2-3: Examine Control Measure Summary.** The `Summary` tab of the View Control Measure window contains high-level summary information about the measure. Table {@tbl:control_measure_summary_tab_table} shows brief descriptions of the fields on this tab.
 
-<a id=control_measure_summary_tab_table></a>
+<a id="tbl:control_measure_summary_tab_table"></a>
 
 Component|Description
 -|----
@@ -259,7 +259,7 @@ Notice that most of the fields in Figure {@fig:view_efficiency_record_window} ar
 
 ![View Efficiency Record Window](images/View_Efficiency_Record_Window.png){#fig:view_efficiency_record_window}
 
-<a id=control_measure_efficiency_record_table></a>
+<a id="tbl:control_measure_efficiency_record_table"></a>
 
 Component|Description
 -|----
@@ -321,6 +321,8 @@ Do not click `Close` after examining the Equations tab as this will close the Vi
 
 ![Equations Tab of View Control Measure Window](images/Equations_Tab_of_View_Control_Measure_Window.png){#fig:equations_tab_of_view_control_measure_window}
 
+<a id="tbl:control_measure_equations_tab_table">
+
 Component|Description
 -|----
 Name|The name of the engineering cost equation type (e.g., Type 8).
@@ -348,7 +350,7 @@ Do not click Close after examining the Properties tab as this will close the Vie
 
 ![View Property Record Window](images/View_Property_Record_Window.png){#fig:view_property_record_window}
 
-<a id=control_measure_property_record_table></a>
+<a id="tbl:control_measure_property_record_table"></a>
 
 Component|Description
 -|----

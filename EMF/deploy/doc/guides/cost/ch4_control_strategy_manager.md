@@ -83,7 +83,7 @@ Once the inputs have been defined, the strategy can be run on the EMF server. Th
 
 Some of the key aspects of each of the strategy types are summarized in Table {@tbl:summary_of_strategy_algorithms_table}, and some additional information on each strategy type is provided in the following subsections.
 
-<a id=summary_of_strategy_algorithms_table></a>
+<a id="tbl:summary_of_strategy_algorithms_table"></a>
 
 Strategy Type|Multiple Inventories|Typical Sectors|Measure Assignment|Outputs
 -|-|-|-|-
@@ -165,7 +165,7 @@ The control strategies currently available within CoST are shown in the Control 
 
 The Control Strategy Manager shows all of the control strategies currently available within the CoST/EMF system in a sortable, filterable window. The columns shown in the window are Select, Name, Last Modified, Is Final, Run Status, Region, Target Pollutant, Total Cost, Reduction (tons), Average Cost Per Ton, Project, Strategy Type, Cost Year, Inventory Year, and Creator. Descriptions of some of the columns are given in Table {@tbl:key_columns_of_the_control_strategy_manager_table}. The remaining fields are described in detail in [Inputs to Control Strategies](#Inputs4).
 
-<a id=key_columns_of_the_control_strategy_manager_table></a>
+<a id="tbl:key_columns_of_the_control_strategy_manager_table"></a>
 
 Column|Description
 -|---
@@ -240,7 +240,7 @@ If the new strategy does not appear in the Control Strategy Manager, first click
 
 **Step 3-7: Edit Control Strategies.** Click the **Select** checkbox next to the new strategy (i.e., the strategy created in Step 3-6) and then click `Edit`. If you have permission to edit the strategy (i.e., you are its creator or an Administrator), the **Edit Control Strategy** window will appear with the **Summary** tab visible (Figure {@fig:summary_tab_of_edit_control_strategy_window}). Note that if you had selected multiple control strategies before clicking `Edit`, they each would have opened in their own window. The tabs on the Edit Control Strategy window are listed in Table {@tbl:tabs_of_the_edit_control_strategy_window_table}. The contents of these tabs are described in detail in [Inputs to Control Strategies](#Inputs4).
 
-<a id=tabs_of_the_edit_control_strategy_window_table></a>
+<a id="tbl:tabs_of_the_edit_control_strategy_window_table"></a>
 
 Tab|Description
 -|---
@@ -306,7 +306,7 @@ For this Least Cost example, use the pull-down menu to set `Target Pollutant` to
 
 Some fields of a control strategy that appear on the **Summary** tab are set automatically by the CoST software and are not specified by the user. Note that some of these summarize the results of the strategy analysis, so information for them is not available until after the strategy has been run. The automatically set fields are described in Table {@tbl:fields_on_the_control_strategy_summary_tab_automatically_set_by_cost_table}.
 
-<a id=fields_on_the_control_strategy_summary_tab_automatically_set_by_cost_table></a>
+<a id="tbl:fields_on_the_control_strategy_summary_tab_automatically_set_by_cost_table"></a>
 
 Field|Description
 -|---
@@ -352,7 +352,7 @@ To select an inventory to use for the strategy from the **Select Datasets** wind
 
 **Step 4-15: View Dataset Properties.** To see the properties (i.e., metadata) for an inventory dataset, click the checkbox in the **Select** column of the `Inventories to Process` table and then click `View`. The **Dataset Properties View** window will appear (Figure {@fig:dataset_properties_view_window_for_an_emissions_inventory}). The **Dataset Properties View**  window provides information about the selected inventory dataset and has multiple tabs as described in Table {@tbl:tabs_of_the_dataset_properties_view_and_edit_windows_table}.
 
-<a id=tabs_of_the_dataset_properties_view_and_edit_windows_table></a>
+<a id="tbl:tabs_of_the_dataset_properties_view_and_edit_windows_table"></a>
 
 Tab|Description
 -|---
@@ -387,7 +387,7 @@ The data sorting can be controlled by entering a comma-separated list of columns
 
 If you enter a `Row Filter`, and then click `Apply`, the **Data Viewer** will find rows that meet the specified criteria. Examples of the syntax for row filters are given in Table {@tbl:examples_of_row_filters_table}. See [Chapter 6](#Chapter6) for additional row filter examples.
 
-<a id=examples_of_row_filters_table></a>
+<a id="tbl:examples_of_row_filters_table"></a>
 
 Filter Purpose|SQL Where Clause
 -|-
@@ -464,7 +464,7 @@ The **Constraints** tab (Figure {@fig:constraints_tab_of_edit_control_strategy_w
 
 Table {@tbl:constraints_common_to_multiple_control_strategy_types_table} defines the constraints that are applicable to all strategy types. If the constraint values are not satisfied for a particular control measure and source combination, the measure under consideration will not be applied to the source, and CoST will look for another measure that satisfies all of the constraints.
 
-<a id=constraints_common_to_multiple_control_strategy_types_table></a>
+<a id="tbl:constraints_common_to_multiple_control_strategy_types_table"></a>
 
 Constraint Name|Constraint Description
 -|----
@@ -733,7 +733,7 @@ where the GDP IPD is the Gross Domestic Product Implicit Price Deflator.
 Implicit Price Deflator (IPD) values are available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from March 2018. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
 
 
-<a id=excerpt_from_the_gdplev_table_table></a>
+<a id="tbl:excerpt_from_the_gdplev_table_table"></a>
 
 Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD
 -|-|-|-|-|-|-|-|-|-|-
@@ -754,7 +754,7 @@ To facilitate the comparison of the costs of control measures with one another, 
 
 As indicated above, Table {@tbl:columns_in_the_strategy_detailed_result_table} provides details on the columns of the Strategy Detailed Result.
 
-<a id=columns_in_the_strategy_detailed_result_table></a>
+<a id="tbl:columns_in_the_strategy_detailed_result_table"></a>
 
 ```{=latex}
 \newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
@@ -830,7 +830,7 @@ Table: Columns in the Strategy Detailed Result. {#tbl:columns_in_the_strategy_de
 
 The Strategy Measure Summary output dataset is a table of emissions reductions and cost values aggregated by the emissions sector (i.e., an emissions inventory sector), state/county FIPS code, SCC, pollutant, and control measure. This table contains information only for sources that were controlled during the strategy run. It is generated by running a SQL statement that aggregates the data from the Strategy Detailed Result according to the five categories just listed. The annual cost and emissions reductions are calculated by summing all costs and emissions reductions for the specified grouping (sector, FIPS, SCC, pollutant, and control measure). The average annual cost per ton is calculated by dividing the total annual costs by the total emissions reductions for each measure. The columns contained in this summary and the formulas used to compute their values are shown in Table {@tbl:columns_in_the_strategy_measure_summary_table}. An example Strategy Measure Summary is shown in Table {@tbl:example_of_strategy_measure_summary_data_table}.
 
-<a id=columns_in_the_strategy_measure_summary_table></a>
+<a id="tbl:columns_in_the_strategy_measure_summary_table"></a>
 
 ```{=latex}
 \newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
@@ -865,7 +865,7 @@ Table: Columns in the Strategy Measure Summary. {#tbl:columns_in_the_strategy_me
 
 The Strategy County Summary output dataset is a table of emissions reductions and cost values aggregated by emissions sector, county, and pollutant. This dataset includes all of the emissions inventory sources regardless of whether they were controlled. If there is more than one inventory included in the control strategy inputs, then all inventories and their associated Strategy Detailed Results are merged and aggregated in this summary. The columns that compose this summary are shown in Table {@tbl:columns_in_the_strategy_county_summary_table}. An example Strategy County Summary is shown in Table {@tbl:example_of_strategy_county_summary_data_table}.
 
-<a id=columns_in_the_strategy_county_summary_table></a>
+<a id="tbl:columns_in_the_strategy_county_summary_table"></a>
 
 ```{=latex}
 \newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
@@ -918,7 +918,7 @@ The Strategy Messages output provides information gathered while the strategy is
 
 The columns of the Strategy Messages output are described in Table {@tbl:columns_in_the_strategy_messages_output_table}. An example Strategy Messages output is shown in Table {@tbl:example_of_strategy_messages_output_table}.
 
-<a id=columns_in_the_strategy_messages_output_table></a>
+<a id="tbl:columns_in_the_strategy_messages_output_table"></a>
 
 ```{=latex}
 \newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
@@ -947,7 +947,7 @@ Table: Columns in the Strategy Messages Output. {#tbl:columns_in_the_strategy_me
 \restoregeometry
 ```
 
-<a id=example_of_strategy_messages_output_table></a>
+<a id="tbl:example_of_strategy_messages_output_table"></a>
 
 ```{=latex}
 \newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
@@ -965,7 +965,7 @@ Table: Example of Strategy Messages Output. {#tbl:example_of_strategy_messages_o
 \restoregeometry
 ```
 
-<a id=example_of_strategy_measure_summary_data_table></a>
+<a id="tbl:example_of_strategy_measure_summary_data_table"></a>
 
 ```{=latex}
 \newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
@@ -988,7 +988,7 @@ Table: Example of Strategy Measure Summary Data. {#tbl:example_of_strategy_measu
 \restoregeometry
 ```
 
-<a id=example_of_strategy_county_summary_data_table></a>
+<a id="tbl:example_of_strategy_county_summary_data_table"></a>
 
 ```{=latex}
 \newgeometry{bottom=0.75in,top=0.75in,left=1in,right=1in}
