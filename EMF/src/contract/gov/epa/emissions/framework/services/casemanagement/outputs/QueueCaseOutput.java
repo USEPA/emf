@@ -33,6 +33,8 @@ public class QueueCaseOutput implements Serializable, Comparable<QueueCaseOutput
     
     private Date createDate;
     
+    private int targetVersion;
+    
     public Date getCreateDate() {
         return createDate;
     }
@@ -194,6 +196,7 @@ public class QueueCaseOutput implements Serializable, Comparable<QueueCaseOutput
         this.name = output.getName();
         this.remoteUser = output.getRemoteUser();
         this.status = output.getStatus();
+        this.targetVersion = output.getTargetVersion();
     }
     
     public CaseOutput convert2CaseOutput() {
@@ -209,6 +212,7 @@ public class QueueCaseOutput implements Serializable, Comparable<QueueCaseOutput
         newOutput.setMessage(this.message);
         newOutput.setRemoteUser(this.remoteUser);
         newOutput.setStatus(this.status);
+        newOutput.setTargetVersion(this.targetVersion);
         
         return newOutput;
     }
@@ -239,6 +243,14 @@ public class QueueCaseOutput implements Serializable, Comparable<QueueCaseOutput
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getTargetVersion() {
+        return targetVersion;
+    }
+
+    public void setTargetVersion(int targetVersion) {
+        this.targetVersion = targetVersion;
     }
 
 }

@@ -133,7 +133,8 @@ public class EMFCmdClient {
                 + "\n\t-F single file to register as a dataset"
                 + "\n\t-D path to the directory where files to register as datasets"
                 + "\n\t-P pattern of the files to register as datasets" + "\n\t-T dataset type" + "\n\t-N dataset name"
-                + "\n\t-O output name (optional, default to dataset name)");
+                + "\n\t-O output name (optional, defaults to dataset name)"
+                + "\n\t-V target dataset version (optional, defaults to 0)");
 
         System.out.println("\nOr:\toptions:\n" + "\n\t-f --file\tSend job messages directly from this file\n"
                 + "\n\t-n --line_number\tSending job messages should begin at this line number\n");
@@ -154,6 +155,7 @@ public class EMFCmdClient {
         int outputTypeIndex = args.indexOf("-T");
         int outputDatasetNameIndex = args.indexOf("-N");
         int outputNameIndex = args.indexOf("-O");
+        int outputDatasetVersionIndex = args.indexOf("-V");
         int relocationIndex = args.indexOf("-M");
 
         String authKey = (keyIndex < 0) ? "" : args.get(++keyIndex);
@@ -174,6 +176,7 @@ public class EMFCmdClient {
         String outputType = (outputTypeIndex < 0) ? "" : args.get(++outputTypeIndex);
         String outputDatasetName = (outputDatasetNameIndex < 0) ? "" : args.get(++outputDatasetNameIndex);
         String outputName = (outputNameIndex < 0) ? "" : args.get(++outputNameIndex);
+        int outputDatasetVersion = (outputDatasetVersionIndex < 0) ? 0 : Integer.parseInt(args.get(++outputDatasetVersionIndex));
 
         String loggerDir = System.getenv("EMF_LOGGERDIR");
         String jobName = createSafeName(System.getenv("EMF_JOBNAME"));
@@ -202,6 +205,7 @@ public class EMFCmdClient {
         output.setPath(fileFolder);
         output.setDatasetType(outputType);
         output.setPattern(filePattern);
+        output.setTargetVersion(outputDatasetVersion);
         // output = setOutputEmptyProp(output);
 
         if (loggerDir == null || loggerDir.isEmpty())

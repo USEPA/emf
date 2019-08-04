@@ -337,6 +337,7 @@ public class ManagedImportService {
         CaseOutput newOutput = new CaseOutput(oldOutput.getName());
         newOutput.setCaseId(oldOutput.getCaseId());
         newOutput.setJobId(oldOutput.getJobId());
+        newOutput.setTargetVersion(oldOutput.getTargetVersion());
 
         return newOutput;
     }

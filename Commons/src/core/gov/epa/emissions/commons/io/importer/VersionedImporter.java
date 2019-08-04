@@ -19,12 +19,19 @@ public class VersionedImporter implements Importer {
 
     private Date lastModifiedDate;
 
+    private int targetVersion;
+
     public VersionedImporter(Importer delegate, Dataset dataset, DbServer dbServer, Date lastModifiedDate) {
+        this(delegate, dataset, dbServer, lastModifiedDate, 0);
+    }
+
+    public VersionedImporter(Importer delegate, Dataset dataset, DbServer dbServer, Date lastModifiedDate, int targetVersion) {
         this.delegate = delegate;
         this.dataset = dataset;
         this.datasource = dbServer.getEmissionsDatasource(); 
         // completed: datasource is not used anywhere else except addVersionZeroEntryToVersionsTable
         this.lastModifiedDate = lastModifiedDate;
+        this.targetVersion = targetVersion;
     }
 
     //NOTE: need to access the importer to get external sources
@@ -35,7 +42,10 @@ public class VersionedImporter implements Importer {
     public void run() throws ImporterException {
         delegate.run();
         try {
-            addVersionZeroEntryToVersionsTable(datasource, dataset);
+            addVersionEntryToVersionsTable(datasource, dataset, 0);
+            if (targetVersion != 0) {
+                addVersionEntryToVersionsTable(datasource, dataset, targetVersion);
+            }
         } catch (Exception e) {
             throw new ImporterException("Could not add Version Zero entry to the Versions Table." + e.getMessage());
         }
@@ -49,7 +59,7 @@ public class VersionedImporter implements Importer {
         //        }
     }
 
-    private void addVersionZeroEntryToVersionsTable(Datasource datasource, Dataset dataset) throws Exception {
+    private void addVersionEntryToVersionsTable(Datasource datasource, Dataset dataset, int versionNum) throws Exception {
 
         String sql =
             "INSERT INTO emf.versions " +
@@ -61,9 +71,14 @@ public class VersionedImporter implements Importer {
             connection = datasource.getConnection();
             insertStatement = connection.prepareStatement(sql);
             insertStatement.setInt(1, dataset.getId());
-            insertStatement.setInt(2, 0);
-            insertStatement.setString(3, "Initial Version");
-            insertStatement.setString(4, "");
+            insertStatement.setInt(2, versionNum);
+            if (versionNum == 0) {
+                insertStatement.setString(3, "Initial Version");
+                insertStatement.setString(4, "");
+            } else {
+                insertStatement.setString(3, "Import Version");
+                insertStatement.setString(4, "0");
+            }
             insertStatement.setBoolean(5, true);
             insertStatement.setTimestamp(6, new Timestamp(lastModifiedDate.getTime()));
             insertStatement.setString(7, "");

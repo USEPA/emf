@@ -291,3 +291,6 @@ where dataset_id in (
 		where "external" = true
 	)
 );
+
+-- 07/15/2019 -- add desired version number for case outputs
+ALTER TABLE cases.output_queue ADD COLUMN target_version integer;

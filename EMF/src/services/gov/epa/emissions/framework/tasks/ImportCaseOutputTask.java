@@ -108,7 +108,7 @@ public class ImportCaseOutputTask extends Task {
         try {
             dbServer = dbServerFactory.getDbServer();
             ImporterFactory importerFactory = new ImporterFactory(dbServer);
-            Importer importer = importerFactory.createVersioned(dataset, path, files);
+            Importer importer = importerFactory.createVersioned(dataset, path, files, output.getTargetVersion());
             long startTime = System.currentTimeMillis();
 
             prepare(dbServer);
@@ -126,6 +126,16 @@ public class ImportCaseOutputTask extends Task {
             }
             version.setCreator(user);
             updateVersionNReleaseLock(version);
+            
+            // update target version of dataset if needed
+            if (output.getTargetVersion() != 0) {
+                version = version(dataset.getId(), output.getTargetVersion());
+                if (!dataset.isExternal()) {
+                    version.setNumberRecords(getNumOfRecords(dataset, version));
+                }
+                version.setCreator(user);
+                updateVersionNReleaseLock(version);
+            }
 
             numSeconds = (System.currentTimeMillis() - startTime) / 1000;
             complete("Imported");
