@@ -31,5 +31,6 @@ for dataset in root.findall(".//*[@property='moduleDatasetInfo']//*[@class='java
          'gov.epa.emissions.framework.client.EMFCmdClient', args.tomcat + '/emf/services', '-d',
          '-k', args.jobkey, '-F', os.path.join(args.data, datasetInfo['exportName']),
          '-T', "'" + datasetInfo['datasetTypeName'] + "'",
-         '-N', "'" + datasetInfo['datasetName'] + "'"]
+         '-N', "'" + datasetInfo['datasetName'] + "'",
+         '-V', datasetInfo['version']]
   os.system(' '.join(cmd))
