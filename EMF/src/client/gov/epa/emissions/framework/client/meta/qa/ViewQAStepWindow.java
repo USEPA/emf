@@ -195,7 +195,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         table = (table == null) ? "" : table;
         tableName = new TextField("tableName", table, 20);
         tableName.setEditable(false);
-        layoutGenerator.addLabelWidgetPair("Ouput Name:", tableName, panel);
+        layoutGenerator.addLabelWidgetPair("Output Name:", tableName, panel);
 
         creationStatusLabel = new JLabel();
         String tableCreationStatus = stepResult.getTableCreationStatus();
