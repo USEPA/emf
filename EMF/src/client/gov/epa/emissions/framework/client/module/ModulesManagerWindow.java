@@ -670,6 +670,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 Map<String, String> datasetInfo = new HashMap<String, String>();
                 datasetInfo.put("datasetName", dataset.getName());
                 datasetInfo.put("datasetTypeName", dataset.getDatasetTypeName());
+                datasetInfo.put("version", Integer.toString(version.getVersion()));
                 datasetInfo.put("exportName", exportName);
                 moduleDatasetInfo.put(moduleDataset.getDatasetId(), datasetInfo);
                 
