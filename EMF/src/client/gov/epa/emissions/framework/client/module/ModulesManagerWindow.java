@@ -642,10 +642,6 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             if (module == null)
                 continue;
             
-            // skip composite modules for now
-            if (module.isComposite())
-                continue;
-            
             modulesList.add(module);
             
             // build list of dataset names used by modules
@@ -825,6 +821,11 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             ModuleType localModuleType = null;
             try {
                 localModuleType = presenter.getModuleType(importedModule.getModuleTypeVersion().getModuleType().getName());
+                
+                // check that module type matches simple vs. composite
+                if (localModuleType.isComposite() != importedModule.isComposite()) {
+                    localModuleType = null;
+                }
             } catch (EmfException e) {
                 // e.printStackTrace();
             }
@@ -834,11 +835,12 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 continue;
             }
             
-            // match module type version by version number and algorithm
+            // match module type version by version number and algorithm (non-composite only)
             ModuleTypeVersion localModuleTypeVersion = null;
             for (ModuleTypeVersion moduleTypeVersion : localModuleType.getModuleTypeVersions().values()) {
                 if (importedModule.getModuleTypeVersion().getVersion() == moduleTypeVersion.getVersion() &&
-                    importedModule.getModuleTypeVersion().getAlgorithm().equals(moduleTypeVersion.getAlgorithm())) {
+                    (importedModule.isComposite() ||
+                     importedModule.getModuleTypeVersion().getAlgorithm().equals(moduleTypeVersion.getAlgorithm()))) {
                     localModuleTypeVersion = moduleTypeVersion;
                     break;
                 }

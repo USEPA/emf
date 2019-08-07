@@ -23,6 +23,30 @@ public class ModuleInternalDataset implements Serializable {
     private boolean keep;
     
     private String datasetNamePattern;
+    
+    public void prepareForExport() {
+        id = 0;
+        moduleTypeVersionDataset = null;
+    }
+    
+    public void prepareForImport() throws EmfException {
+        String placeholderPathPieces[] = placeholderPathNames.split(" / ");
+        if (placeholderPathPieces.length > 2) {
+            // TODO: handle nested composite module types
+            throw new EmfException("Can not import nested composite modules");
+        }
+        String typePlaceholderName = placeholderPathPieces[placeholderPathPieces.length - 1];
+        for (ModuleTypeVersionSubmodule submodule : compositeModule.getModuleTypeVersion().getModuleTypeVersionSubmodules().values()) {
+            if (submodule.getName().equals(placeholderPathPieces[0])) {
+                setModuleTypeVersionDataset(submodule.getModuleTypeVersion().getModuleTypeVersionDataset(typePlaceholderName));
+                setPlaceholderPath(submodule.getId() + "/" + typePlaceholderName);
+                break;
+            }
+        }
+        if (moduleTypeVersionDataset == null) {
+            throw new EmfException("Could not match internal dataset " + placeholderPathNames);
+        }
+    }
 
     public ModuleInternalDataset deepCopy(Module newCompositeModule) {
         ModuleInternalDataset newModuleInternalDataset = new ModuleInternalDataset();

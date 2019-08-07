@@ -472,18 +472,42 @@ public class Module implements Serializable, Lockable, Comparable<Module> {
             dataset.prepareForExport();
         }
         
+        if (this.isComposite()) {
+            for (ModuleInternalParameter parameter : moduleInternalParameters.values()) {
+                parameter.prepareForExport();
+            }
+            for (ModuleInternalDataset dataset : moduleInternalDatasets.values()) {
+                dataset.prepareForExport();
+            }
+        }
+        
         this.moduleTypeVersion.getModuleType().prepareForExport(null);
         this.moduleTypeVersion.setModuleTypeVersionDatasets(new HashMap<String, ModuleTypeVersionDataset>());
         this.moduleTypeVersion.setModuleTypeVersionParameters(new HashMap<String, ModuleTypeVersionParameter>());
         this.moduleTypeVersion.setModuleTypeVersionRevisions(new ArrayList<ModuleTypeVersionRevision>());
+        
+        if (this.isComposite()) {
+            this.moduleTypeVersion.setModuleTypeVersionDatasetConnections(new HashMap<String, ModuleTypeVersionDatasetConnection>());
+            this.moduleTypeVersion.setModuleTypeVersionParameterConnections(new HashMap<String, ModuleTypeVersionParameterConnection>());
+            this.moduleTypeVersion.setModuleTypeVersionSubmodules(new HashMap<String, ModuleTypeVersionSubmodule>());
+        }
     }
 
-    public void prepareForImport(String exportImportMessage, User importUser, Date importDate) {
+    public void prepareForImport(String exportImportMessage, User importUser, Date importDate) throws EmfException {
         this.creator = importUser;
         description = (description == null) ? "" : (description + "\n");
         description += exportImportMessage;
         lastModifiedDate = importDate;
         isFinal = false;
+        
+        if (this.isComposite()) {
+            for (ModuleInternalParameter parameter : moduleInternalParameters.values()) {
+                parameter.prepareForImport();
+            }
+            for (ModuleInternalDataset dataset : moduleInternalDatasets.values()) {
+                dataset.prepareForImport();
+            }
+        }
     }
 
     public boolean isComposite() {

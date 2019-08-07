@@ -2,6 +2,8 @@ package gov.epa.emissions.framework.services.module;
 
 import java.io.Serializable;
 
+import gov.epa.emissions.framework.services.EmfException;
+
 public class ModuleInternalParameter implements Serializable {
 
     private int id;
@@ -15,6 +17,30 @@ public class ModuleInternalParameter implements Serializable {
     private ModuleTypeVersionParameter moduleTypeVersionParameter;
     
     private boolean keep;
+    
+    public void prepareForExport() {
+        id = 0;
+        moduleTypeVersionParameter = null;
+    }
+    
+    public void prepareForImport() throws EmfException {
+        String parameterPathPieces[] = parameterPathNames.split(" / ");
+        if (parameterPathPieces.length > 2) {
+            // TODO: handle nested composite module types
+            throw new EmfException("Can not import nested composite modules");
+        }
+        String typeParameterName = parameterPathPieces[parameterPathPieces.length - 1];
+        for (ModuleTypeVersionSubmodule submodule : compositeModule.getModuleTypeVersion().getModuleTypeVersionSubmodules().values()) {
+            if (submodule.getName().equals(parameterPathPieces[0])) {
+                setModuleTypeVersionParameter(submodule.getModuleTypeVersion().getModuleTypeVersionParameter(typeParameterName));
+                setParameterPath(submodule.getId() + "/" + typeParameterName);
+                break;
+            }
+        }
+        if (moduleTypeVersionParameter == null) {
+            throw new EmfException("Could not match internal parameter " + parameterPathNames);
+        }
+    }
 
     public ModuleInternalParameter deepCopy(Module newCompositeModule) {
         ModuleInternalParameter newModuleInternalParameter = new ModuleInternalParameter();
