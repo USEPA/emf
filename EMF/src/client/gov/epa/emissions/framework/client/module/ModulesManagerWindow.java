@@ -868,8 +868,11 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
             
             // match module datasets by name, dataset type, and version number
+            int datasetMatches = 0;
+            int datasetsNotMatched = 0;
             for (ModuleDataset moduleDataset : importedModule.getModuleDatasets().values()) {
                 if (moduleDataset.getDatasetId() == null) {
+                    // dataset wasn't set at export
                     continue;
                 }
                 
@@ -882,12 +885,14 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 }
                 if (localDataset == null) {
                     moduleDataset.setDatasetId(null);
+                    datasetsNotMatched++;
                     continue;
                 }
                 
                 DatasetType moduleDatasetType = moduleDataset.getModuleTypeVersionDataset().getDatasetType();
                 if (moduleDatasetType.getId() != localDataset.getDatasetType().getId()) {
                     moduleDataset.setDatasetId(null);
+                    datasetsNotMatched++;
                     continue;
                 }
                 
@@ -899,10 +904,12 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 }
                 if (localVersion == null) {
                     moduleDataset.setDatasetId(null);
+                    datasetsNotMatched++;
                     continue;
                 }
                 
                 moduleDataset.setDatasetId(localDataset.getId());
+                datasetMatches++;
             }
             
             try {
@@ -926,6 +933,12 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                                                importedModuleName, localModule.getName()));
             }
             moduleAdditions++;
+            
+            if (datasetMatches > 0 || datasetsNotMatched > 0) {
+                changeLog.append(String.format("  %d dataset%s matched, %d dataset%s not matched\n",
+                                               datasetMatches, (datasetMatches == 1) ? "" : "s",
+                                               datasetsNotMatched, (datasetsNotMatched == 1) ? "" : "s"));
+            }
         }
         
         String summary = String.format("Imported %d module%s (%d skipped) from \"%s\".", 
