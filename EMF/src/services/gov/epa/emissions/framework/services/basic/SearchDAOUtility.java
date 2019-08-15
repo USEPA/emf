@@ -21,7 +21,7 @@ public class SearchDAOUtility {
                 && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
             FilterField filterField = searchFilterFields.getFilterFields().get(searchFilter.getFieldName());
             if (filterField.getFieldDataType().equals(String.class)) {
-                criteria.add(Restrictions.ilike(filterField.getAssociationPath(), searchFilter.getFieldValue()));
+                criteria.add(Restrictions.ilike(filterField.getAssociationPath(), "%" + searchFilter.getFieldValue() + "%"));
             } else if (filterField.getFieldDataType().equals(Integer.class)) {
                 try {
                     criteria.add(Restrictions.eq(filterField.getAssociationPath(), Integer.parseInt(searchFilter.getFieldValue())));
