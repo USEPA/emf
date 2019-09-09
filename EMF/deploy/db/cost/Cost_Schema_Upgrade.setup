@@ -2421,3 +2421,6 @@ AND name IN ('annual_cost_3pct', 'eff_ann_cost_per_ton_3pct', 'annualized_capita
 UPDATE emf.dataset_types
 SET exporter_classname = 'gov.epa.emissions.commons.io.csv.CSVExporter'
 WHERE name = 'Strategy Messages (CSV)';
+
+-- 07/15/2019 Use double precision for ref_yr_cost_per_ton column
+ALTER TABLE emf.control_measure_efficiencyrecords ALTER COLUMN ref_yr_cost_per_ton TYPE DOUBLE PRECISION;
