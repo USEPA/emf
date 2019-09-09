@@ -133,6 +133,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
 //        String[] columns = new String[] {"Module Name", "Composite?", "Final?", "Tags", "Project", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };//(new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>())).columns();
 
         filterFieldsComboBox = new ComboBox("Select one", (new ModuleFilter()).getFilterFieldNames());
+        filterFieldsComboBox.setSelectedIndex(1);
         filterFieldsComboBox.setPreferredSize(new Dimension(180, 25));
         filterFieldsComboBox.addActionListener(simpleFilterTypeAction());
 
