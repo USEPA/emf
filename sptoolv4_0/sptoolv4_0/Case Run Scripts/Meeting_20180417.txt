@@ -1,0 +1,66 @@
+Look at queue options, get rid of sol from dir
+Copy cases to test with
+Modify scripts that we've created.  -- sptool_load_shared_gas.v4.csh -- init_sptooldb_v4.0.csh
+queue options -- modify
+Client install directory parameter?
+
+CHANGE ALL JOBS to localhost and change qsub stuff
+Need to use correct emf job header input dataset...
+
+
+Job 1 Create Database:
+
+Add Parameters:
+SPTOOL_PWD
+SPTOOL_USER
+
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1528/logs/Create_database_1528_20180417133156.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1528/Create_database_1528_20180417133156.csh
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1528/logs/Create_database_1528_20180417134347.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1528/Create_database_1528_20180417134347.csh
+
+
+Job 2 Import shared data:
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1528/logs/Import_shared_data_1528_20180417141907.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1528/Import_shared_data_1528_20180417141907.csh
+
+
+Job 3 Import run-specific:
+
+Add Parameters:
+Changed SPTOOL_SRC_HOME = /work/EMIS/tools/speciation_emf/sptoolv4_0
+SPTOOL_PWD
+SPTOOL_USER
+
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180417142517.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180417142517.csh
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180417142814.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180417142814.csh
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180417143137.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180417143137.csh
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180417144312.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180417144312.csh
+
+
+Job 4 :
+
+Changed run job argument to $SPTOOL_DB ${SCHEMA_SUFFIX}_${CASE} from $SPTOOL_DB ${CASE}_${SCHEMA_SUFFIX}
+Was trying to create database schema name that starts with Case Id (${CASE}), not allowed!
+
+/garnet/oaqps/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/VOC_CMAQ_CB05_criteria_1527_20180417144442.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/VOC_CMAQ_CB05_criteria_1527_20180417144442.csh
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/VOC_CMAQ_CB05_criteria_1527_20180417145253.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/VOC_CMAQ_CB05_criteria_1527_20180417145253.csh
+
+
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/VOC_CMAQ_CB05_integrate_1527_20180417150058.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/VOC_CMAQ_CB05_integrate_1527_20180417150058.csh
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/VOC_CMAQ_CB05_nointegrate_1527_20180417150156.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/VOC_CMAQ_CB05_nointegrate_1527_20180417150156.csh
+
+
+
+
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418002940.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180418002940.csh >& /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418002940.log
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418094358.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180418094358.csh >& /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418094358.log
+
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418102128.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180418102128.csh >& /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418102128.log
+
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418110549.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180418110549.csh >& /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418110549.log
+
+
+EMF cmd client: python client starting:  Wed Apr 18 11:05:51 2018
+EMF cmd client: Python wrote csv file: Wed Apr 18 11:05:51 2018
+EMF cmd client: Not sending status info to EMF server: Wed Apr 18 11:05:51 2018
+EMF cmd client: Python client done Wed Apr 18 11:05:51 2018
+
+/work/EMIS/EMFClient/qsub_emf /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418131101.log /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/Import_run_specific_1527_20180418131101.csh >& /work/EMIS/tools/speciation_emf/runs_speciate4_5/1527/logs/Import_run_specific_1527_20180418131101.log

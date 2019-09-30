@@ -1,0 +1,7 @@
+#  CB05 case, no toxics
+
+mech_basis,CB05
+run_type,CRITERIA
+AQM,CMAQ
+
+output, STATIC 

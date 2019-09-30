@@ -35,7 +35,7 @@ public class ReferencesDAO {
 
     public List<Reference> getReferences(Session session, String textContains) {
         return session.createCriteria(Reference.class).add(
-                Restrictions.like("description", textContains.toLowerCase().trim(), MatchMode.ANYWHERE)).addOrder(
+                Restrictions.ilike("description", textContains.toLowerCase().trim(), MatchMode.ANYWHERE)).addOrder(
                 Order.asc("description")).list();
         // return session.createQuery(
         // "select new Reference(ref.id, ref.description) from Reference as ref where lower(ref.description) "

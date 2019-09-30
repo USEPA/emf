@@ -1,0 +1,14 @@
+---
+header-includes:
+
+# number figures by section
+- \numberwithin{figure}{section}
+- \numberwithin{table}{section}
+
+# keep images with text
+- \usepackage{float}
+- \floatplacement{figure}{H}
+
+# landscape tables
+- \usepackage{pdflscape}
+---

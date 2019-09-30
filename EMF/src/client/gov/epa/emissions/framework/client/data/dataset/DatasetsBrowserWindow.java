@@ -193,8 +193,8 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
 
         return panel;
     }
-    
- 
+
+
 
     public void notifyAdvancedSearch() {
         if (textFilter != null) {

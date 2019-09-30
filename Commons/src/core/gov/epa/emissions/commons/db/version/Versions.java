@@ -131,6 +131,18 @@ public class Versions {
         }
     }
     
+    public void delete(Version version, Session session) {
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.delete(version);
+            tx.commit();
+        } catch (HibernateException e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+    
     public void add(Object obj, Session session) {
         Transaction tx = null;
         try {

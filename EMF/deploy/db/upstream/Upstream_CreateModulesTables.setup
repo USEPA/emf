@@ -1,0 +1,77 @@
+﻿-- Table: modules.modules
+
+-- DROP TABLE modules.modules;
+
+CREATE TABLE modules.modules
+(
+  id serial NOT NULL PRIMARY KEY,
+  name character varying(255) NOT NULL UNIQUE,
+  description text,
+  module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  creator integer NOT NULL
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  creation_date timestamp without time zone,
+  last_mod_date timestamp without time zone,
+  is_final boolean NOT NULL DEFAULT FALSE,
+  lock_owner character varying(255),
+  lock_date timestamp without time zone,
+  project integer
+      REFERENCES emf.projects (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_datasets
+
+-- DROP TABLE modules.modules_datasets;
+
+CREATE TABLE modules.modules_datasets
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_name character varying(63) NOT NULL,
+  output_method character varying(16) CHECK (output_method IN ('NEW', 'REPLACE') ),
+  dataset_id integer
+      REFERENCES emf.datasets(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  version integer,
+  dataset_name_pattern character varying(255),
+  overwrite_existing boolean
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_datasets
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.modules_parameters
+
+-- DROP TABLE modules.modules_parameters;
+
+CREATE TABLE modules.modules_parameters
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_id integer NOT NULL
+      REFERENCES modules.modules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  parameter_name character varying(63) NOT NULL,
+  value character varying(256) NOT NULL
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_parameters
+  OWNER TO emf;

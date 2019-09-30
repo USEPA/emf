@@ -101,7 +101,7 @@ public class PostgresTableDefinition implements TableDefinition {
     }
 
     private String clean(String data) {
-        return (data).replace('-', '_');
+        return (data).replace(' ', '_').replace('-', '_');
     }
 
     public void createTable(String table, DbColumn[] cols) throws SQLException {

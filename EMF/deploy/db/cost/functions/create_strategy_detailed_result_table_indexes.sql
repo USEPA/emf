@@ -18,7 +18,7 @@ BEGIN
 			(source_id)';
 
 	-- create record_id btree index
-	IF length('record_id' || table_name) >= 63 - 10 THEN
+	IF length('record_id_' || table_name) >= 63 - 10 THEN
 		index_name := 'record_id_' || substr(table_name, 12, 63);
 	ELSE
 		index_name := 'record_id_' || table_name;
@@ -29,16 +29,16 @@ BEGIN
 			(record_id);
 		ALTER TABLE emissions.' || table_name || ' CLUSTER ON ' || index_name || ';';
 
-	-- create fips btree index
-	IF length('fips_' || table_name) >= 63 - 5 THEN
-		index_name := 'fips_' || substr(table_name, 7, 63);
+	-- create region_cd btree index
+	IF length('region_cd_' || table_name) >= 63 - 10 THEN
+		index_name := 'region_cd_' || substr(table_name, 12, 63);
 	ELSE
-		index_name := 'fips_' || table_name;
+		index_name := 'region_cd_' || table_name;
 	END IF;
 	execute 'CREATE INDEX ' || index_name || '
 			ON emissions.' || table_name || '
 			USING btree
-			(fips)';
+			(region_cd)';
 
 	-- create scc btree index
 	IF length('scc_' || table_name) >= 63 - 4 THEN
@@ -51,49 +51,49 @@ BEGIN
 			USING btree
 			(scc)';
 
-	-- create plantid btree index
-	IF length('plantid_' || table_name) >= 63 - 8 THEN
-		index_name := 'plantid_' || substr(table_name, 10, 63);
+	-- create facility_id btree index
+	IF length('facility_id_' || table_name) >= 63 - 12 THEN
+		index_name := 'facility_id_' || substr(table_name, 14, 63);
 	ELSE
-		index_name := 'plantid_' || table_name;
+		index_name := 'facility_id_' || table_name;
 	END IF;
 	execute 'CREATE INDEX ' || index_name || '
 			ON emissions.' || table_name || '
 			USING btree
-			(plantid)';
+			(facility_id)';
 
-	-- create pointid btree index
-	IF length('pointid_' || table_name) >= 63 - 8 THEN
-		index_name := 'pointid_' || substr(table_name, 10, 63);
+	-- create unit_id btree index
+	IF length('unit_id_' || table_name) >= 63 - 8 THEN
+		index_name := 'unit_id_' || substr(table_name, 10, 63);
 	ELSE
-		index_name := 'pointid_' || table_name;
+		index_name := 'unit_id_' || table_name;
 	END IF;
 	execute 'CREATE INDEX ' || index_name || '
 			ON emissions.' || table_name || '
 			USING btree
-			(pointid)';
+			(unit_id)';
 
-	-- create stackid btree index
-	IF length('stackid_' || table_name) >= 63 - 8 THEN
-		index_name := 'stackid_' || substr(table_name, 10, 63);
+	-- create rel_point_id btree index
+	IF length('rel_point_id_' || table_name) >= 63 - 13 THEN
+		index_name := 'rel_point_id_' || substr(table_name, 15, 63);
 	ELSE
-		index_name := 'stackid_' || table_name;
+		index_name := 'rel_point_id_' || table_name;
 	END IF;
 	execute 'CREATE INDEX ' || index_name || '
 			ON emissions.' || table_name || '
 			USING btree
-			(stackid)';
+			(rel_point_id)';
 
-	-- create segment btree index
-	IF length('segment_' || table_name) >= 63 - 8 THEN
-		index_name := 'segment_' || substr(table_name, 10, 63);
+	-- create process_id btree index
+	IF length('process_id_' || table_name) >= 63 - 11 THEN
+		index_name := 'process_id_' || substr(table_name, 13, 63);
 	ELSE
-		index_name := 'segment_' || table_name;
+		index_name := 'process_id_' || table_name;
 	END IF;
 	execute 'CREATE INDEX ' || index_name || '
 			ON emissions.' || table_name || '
 			USING btree
-			(segment)';
+			(process_id)';
 
 	-- create poll btree index
 	IF length('poll_' || table_name) >= 63 - 5 THEN

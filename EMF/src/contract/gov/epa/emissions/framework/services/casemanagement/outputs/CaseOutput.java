@@ -32,6 +32,8 @@ public class CaseOutput implements Serializable, Comparable<CaseOutput> {
 
     private String remoteUser;
 
+    private int targetVersion;
+
     public CaseOutput() {
         //
     }
@@ -235,6 +237,14 @@ public class CaseOutput implements Serializable, Comparable<CaseOutput> {
 
     public void setRemoteUser(String remoteUser) {
         this.remoteUser = remoteUser;
+    }
+
+    public int getTargetVersion() {
+        return targetVersion;
+    }
+
+    public void setTargetVersion(int targetVersion) {
+        this.targetVersion = targetVersion;
     }
 
     public boolean isEmpty() {

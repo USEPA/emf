@@ -167,12 +167,12 @@ BEGIN
 	 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		poll, 
 		status,
 		control_program,
@@ -180,18 +180,18 @@ BEGIN
 		)
 	select 
 		' || strategy_messages_dataset_id || '::integer,
-		dr.fips,
+		dr.region_cd,
 		dr.scc,
-		dr.plantid, 
-		dr.pointid, 
-		dr.stackid, 
-		dr.segment, 
+		dr.facility_id, 
+		dr.unit_id, 
+		dr.rel_point_id, 
+		dr.process_id, 
 		dr.poll,
 		''Warning''::character varying(11) as status,
 		null::character varying(255) as control_program,
-		''Emission reduction is negative, '' || emis_reduction || ''.'' as "comment"
+		''Emission reduction is negative, '' || eff_emis_reduction || ''.'' as "comment"
 	from emissions.' || strategy_detailed_result_table_name || ' dr
-	where dr.emis_reduction < 0.0 
+	where dr.eff_emis_reduction < 0.0 
 		and dr.control_eff > 0.0
 		and ' || public.build_version_where_filter(strategy_detailed_result_dataset_id, 0, 'dr'::character varying(64));
 
@@ -199,13 +199,13 @@ BEGIN
 	execute 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
 		' || case when is_point_table then '
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		' else '' end || ' 
 		poll, 
 		status,
@@ -226,7 +226,7 @@ BEGIN
 		''Warning''::character varying(11) as status,
 		null::character varying(255) as control_program,
 		poll || '' source record is missing CEFF, will use '' || 
-		(case when poll = ''PM10'' then ''PM25-PRI'' else ''PM10'' end) || '' CEFF,'' || 
+		(case when poll = ''PM10-PRI'' then ''PM25-PRI'' else ''PM10-PRI'' end) || '' CEFF,'' || 
 		coalesce(
 			case 
 				when coalesce(lagging_ceff,0.0) <> 0.0 then lagging_ceff 
@@ -254,7 +254,7 @@ BEGIN
 			from emissions.' || inv_table_name || ' a
 
 			where ' || inv_filter || '
-				and a.poll in (''PM10'',''PM25-PRI'')
+				and a.poll in (''PM10-PRI'',''PM25-PRI'')
 
 			WINDOW source_window AS (PARTITION BY ' || fips_expression || ' ,scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ' order by ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ')
 		) foo
@@ -266,13 +266,13 @@ BEGIN
 	execute 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
 		' || case when is_point_table then '
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		' else '' end || ' 
 		poll, 
 		status,
@@ -354,24 +354,24 @@ BEGIN
 	 'insert into emissions.' || strategy_messages_table_name || ' 
 		(
 		dataset_id, 
-		fips, 
+		region_cd, 
 		scc, 
-		plantid, 
-		pointid, 
-		stackid, 
-		segment, 
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id, 
 		poll, 
 		status,
 		message
 		)
 	select 
 		' || strategy_messages_dataset_id || '::integer,
-		dr.fips,
+		dr.region_cd,
 		dr.scc,
-		dr.plantid, 
-		dr.pointid, 
-		dr.stackid, 
-		dr.segment, 
+		dr.facility_id, 
+		dr.unit_id, 
+		dr.rel_point_id, 
+		dr.process_id, 
 		dr.poll,
 		''Warning''::character varying(11) as status,
 		''Source is missing engineering cost equations, '' || et.name || '' ['' || et.description || ''], inventory inputs; '' || et.inventory_fields || ''.  The default cost per ton approach was used instead for costing.'' as "comment"

@@ -172,11 +172,11 @@ public class TargetPollutantEditorDialog extends JDialog implements TargetPollut
             value = "";
         
         filter = new TextArea("filter", value, 32, 2);
-        filter.setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_EMIS>5000 and SCC like '30300%')");
+        filter.setToolTipText("Enter a filter that could be entered as a SQL where clause (e.g., ANN_VALUE>5000 and SCC like '30300%')");
         JScrollPane scrollPane = new JScrollPane(filter);
         changeables.addChangeable(filter);
         
-        layoutGenerator.addLabelWidgetPair("<html>Inventory Filter:<br/>(e.g., ANN_EMIS&gt;5000 and SCC like '30300%')</html>", scrollPane, panel);
+        layoutGenerator.addLabelWidgetPair("<html>Inventory Filter:<br/>(e.g., ANN_VALUE&gt;5000 and SCC like '30300%')</html>", scrollPane, panel);
 
         EmfDataset[] datasets = editControlStrategyPresenter.getDatasets( editControlStrategyPresenter.getDatasetType("List of Counties (CSV)") );
 //        String width = EmptyStrings.create(80);

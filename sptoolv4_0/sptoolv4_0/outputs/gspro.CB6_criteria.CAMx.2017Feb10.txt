@@ -1,0 +1,8 @@
+#SPTOOL_AQM          CAMX 
+#SPTOOL_CARBONS      sol/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_Speciate4_5_for_CB6v2/in/cb6_carbons_txt_06jan2012_v0.csv 
+#SPTOOL_GAS_PROFILES sol/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Speciate_4.5/in/speciate_4_5_profile_weights_06jun2016_29jun2016_v0.csv 
+#SPTOOL_INVTABLE     sol/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_Speciate4_5_for_CB6v2/in/invtable_hapcap_cb05soa_04nov2008_v6.txt 
+#SPTOOL_MECH         CB6 
+#SPTOOL_PROCESS      Not Applicable 
+#SPTOOL_RUN_TYPE     CRITERIA 
+#SPTOOL_STATIC       Not Applicable 

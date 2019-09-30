@@ -26,6 +26,8 @@ import gov.epa.emissions.framework.services.data.Note;
 import gov.epa.emissions.framework.services.data.NoteType;
 import gov.epa.emissions.framework.services.data.RegionType;
 import gov.epa.emissions.framework.services.editor.Revision;
+import gov.epa.emissions.framework.services.module.Module;
+import gov.epa.emissions.framework.services.module.ModuleType;
 
 public class DataCommonsServiceTransport implements DataCommonsService {
     private DataMappings mappings;

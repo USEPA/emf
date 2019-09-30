@@ -1,0 +1,8 @@
+#SPTOOL_AQM          CMAQ 
+#SPTOOL_CARBONS      Not Applicable 
+#SPTOOL_GAS_PROFILES Not Applicable 
+#SPTOOL_INVTABLE     sol/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_Speciate4_5_for_CB6v2/in/invtable_hapcap_cb05soa_04nov2008_v6.txt 
+#SPTOOL_MECH         AE6 
+#SPTOOL_PROCESS      Not Applicable 
+#SPTOOL_RUN_TYPE     CRITERIA 
+#SPTOOL_STATIC       Not Applicable 

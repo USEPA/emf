@@ -8,8 +8,7 @@ import gov.epa.emissions.framework.services.cost.data.SumEffRec;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import com.itextpdf.text.List;
+import java.util.List;
 
 public class AggregateEfficiencyRecordDAO {
 
@@ -62,7 +61,7 @@ public class AggregateEfficiencyRecordDAO {
     }
 
     public SumEffRec[] getAggregrateEfficiencyRecords(int controlMeasureId, DbServer dbServer) throws EmfException {
-        java.util.List<SumEffRec> list = new ArrayList<SumEffRec>();
+        List<SumEffRec> list = new ArrayList<SumEffRec>();
         String query = "select aer.pollutant_id, " +
         "p.name, " +
         "aer.max_efficiency, aer.min_efficiency, " +
@@ -160,5 +159,23 @@ public class AggregateEfficiencyRecordDAO {
                         : "") + ")";
 
         return query;
+    }
+    
+    public Pollutant[] getPollutants(DbServer dbServer) throws EmfException {
+        List<Pollutant> list = new ArrayList<Pollutant>();
+        String query = "SELECT pollutant_id, pollutants.name "
+                + "FROM emf.aggregrated_efficiencyrecords "
+                + "JOIN emf.pollutants ON pollutant_id = pollutants.id "
+                + "GROUP BY pollutant_id, pollutants.name "
+                + "ORDER BY pollutants.name";
+        try {
+            ResultSet rs = dbServer.getEmfDatasource().query().executeQuery(query);
+            while (rs.next()) {
+                list.add(new Pollutant(rs.getInt(1), rs.getString(2)));
+            }
+        } catch (SQLException e) {
+            throw new EmfException(e.getMessage());
+        }
+        return list.toArray(new Pollutant[0]);
     }
 }

@@ -1,0 +1,50 @@
+﻿INSERT INTO modules.module_types
+(name, description, lock_owner, lock_date, creation_date, last_mod_date, creator, default_version)
+VALUES
+('Volumes Module Type', 'Calculate production demand defined as total volume of E0 gasoline, ethanol, biodiesel, B0 diesel blendstocks', NULL, NULL, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0),
+('Crude Feedstock Allocation Module Type', 'Calculate volume of crude petroleum types with quantitative descriptors', NULL, NULL, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0),
+('Blendstock Fuels Module Type', 'Calculate total U.S. volume of each market fuel blendstocks defined by fuel properties', NULL, NULL, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0),
+('Refinery Capacity Module Type', 'Calculate volume of crude petroleum each facility processes', NULL, NULL, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0),
+('Refinery On-Site Emissions Module Type', 'Calculate the volumes of emissions by pollutant and facility', NULL, NULL, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0);
+
+INSERT INTO modules.module_types_versions
+(module_type_id, version, name, description, creation_date, last_mod_date, creator, base_version, algorithm, is_final)
+VALUES
+(1, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
+(2, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
+(3, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
+(4, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
+(5, 0, 'Initial Version', 'Initial version', '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, '-- TODO define the algorithm', FALSE),
+(5, 1, 'Second Version',  'Second version',  '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6, 0, E'-- TODO define the algorithm\n-- using the ${emission_factors_dataset} placeholder', FALSE);
+
+INSERT INTO modules.module_types_versions_datasets
+(module_type_version_id, placeholder_name, mode, dataset_type_id, description)
+VALUES
+(6, 'emission_factors_dataset', 'IN', 333, 'Emission factors dataset'),
+(6, 'inout_dataset', 'INOUT', 333, 'INOUT dataset'),
+(6, 'out_new_dataset', 'OUT', 333, 'OUT NEW dataset'),
+(6, 'out_replace_dataset', 'OUT', 333, 'OUT REPLACE dataset');
+
+INSERT INTO modules.module_types_versions_parameters
+(module_type_version_id, parameter_name, mode, sql_parameter_type, description)
+VALUES
+(6, 'year', 'IN', 'integer', 'Target year');
+
+INSERT INTO modules.module_types_versions_revisions
+(module_type_version_id, revision, description, creation_date, creator)
+VALUES
+(1, 0, 'Initial revision created on 2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6),
+(2, 0, 'Initial revision created on 2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6),
+(3, 0, 'Initial revision created on 2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6),
+(4, 0, 'Initial revision created on 2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6),
+(5, 0, 'Initial revision created on 2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6),
+(6, 0, 'Initial revision created on 2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', 6),
+(6, 1, 'Second revision created on 2011-10-28 17:51:27.076, no change', '2011-10-28 17:51:27.076', 6);
+
+INSERT INTO modules.modules
+(name, description, module_type_version_id, creator, creation_date, last_mod_date, is_final, lock_owner, lock_date)
+VALUES
+('Refinery On-Site Emissions January 2016', 'Calculate the volumes of emissions by pollutant and facility for January 2016', 5, 6, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', FALSE, NULL, NULL),
+('Refinery On-Site Emissions February 2016', 'Calculate the volumes of emissions by pollutant and facility for February 2016', 5, 6, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', FALSE, NULL, NULL),
+('Refinery On-Site Emissions March 2016', 'Calculate the volumes of emissions by pollutant and facility for March 2016', 5, 6, '2010-10-28 17:51:27.076', '2010-10-28 17:51:27.076', FALSE, NULL, NULL);
+

@@ -5,13 +5,9 @@ import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.data.QAProgram;
 import gov.epa.emissions.commons.data.QAStepTemplate;
+import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.data.datasettype.EditableDatasetTypePresenter;
-import gov.epa.emissions.framework.client.data.datasettype.EditableDatasetTypePresenterImpl;
-import gov.epa.emissions.framework.client.data.datasettype.EditableDatasetTypeView;
-import gov.epa.emissions.framework.client.data.datasettype.ViewableDatasetTypePresenterImpl;
-import gov.epa.emissions.framework.client.data.datasettype.ViewableDatasetTypeView;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
 import gov.epa.emissions.framework.services.qa.QAService;
@@ -122,6 +118,10 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
         QAStepTemplate step2 = new QAStepTemplate();
         QAStepTemplate[] getQAStepTemps = {step1, step2};
 
+        Column column1 = new Column();
+        Column column2 = new Column();
+        Column[] columns = {column1, column2};
+
         Mock type = mock(DatasetType.class);
         type.expects(once()).method("setName").with(same(name));
         type.expects(once()).method("setDescription").with(same(desc));
@@ -142,7 +142,7 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
         EditableDatasetTypePresenter presenter = new EditableDatasetTypePresenterImpl((EmfSession) session.proxy(),
                 (EditableDatasetTypeView) view.proxy(), null, typeProxy);
 
-        presenter.doSave(name, desc, keyVals, sortOrder, getQAStepTemps);
+        presenter.doSave(name, desc, keyVals, sortOrder, getQAStepTemps, columns);
     }
 
     public void testShouldFailWithErrorIfDuplicateKeywordsInKeyValsOnSave() {
@@ -160,7 +160,11 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
         QAStepTemplate step1 = new QAStepTemplate();
         QAStepTemplate step2 = new QAStepTemplate();
         QAStepTemplate[] getQAStepTemps = {step1, step2};
-        
+
+        Column column1 = new Column();
+        Column column2 = new Column();
+        Column[] columns = {column1, column2};
+
         Mock type = mock(DatasetType.class);
         type.expects(once()).method("setName").with(same(name));
         type.expects(once()).method("setDescription").with(same(desc));
@@ -170,7 +174,7 @@ public class EditableDatasetTypePresenterTest extends MockObjectTestCase {
                 ((DatasetType) type.proxy()));
 
         try {
-            presenter.doSave(name, desc, keyVals, sortOrder,getQAStepTemps);
+            presenter.doSave(name, desc, keyVals, sortOrder,getQAStepTemps, columns);
         } catch (EmfException e) {
             assertEquals("duplicate keyword: 'key1'", e.getMessage());
             return;

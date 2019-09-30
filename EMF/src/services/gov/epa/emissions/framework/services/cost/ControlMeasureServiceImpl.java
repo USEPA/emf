@@ -634,5 +634,11 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
             session.close();
         }
     }
+    
+    public Pollutant[] getMeasurePollutants() throws EmfException {
+        DbServer dbServer = dbServerFactory.getDbServer();
+        AggregateEfficiencyRecordDAO aerDao = new AggregateEfficiencyRecordDAO();
+        return aerDao.getPollutants(dbServer);
+    }
 
 }

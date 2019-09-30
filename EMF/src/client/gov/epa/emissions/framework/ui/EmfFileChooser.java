@@ -350,7 +350,6 @@ public class EmfFileChooser extends JComponent {
         }
 
         for (final FileDownload fileDownload : fileDownloads) {
-            System.out.printf("Selected file:" + fileDownload.getAbsolutePath() + " \n");
             try {
                 fileDownload.setProgress(0);
 

@@ -209,6 +209,7 @@ public class Download extends Thread {
     private HttpURLConnection getConnection(String name) throws IOException {
         URL url = new URL(urlbase + "/" + name);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestProperty("user-agent", "Mozilla/5.0");
         conn.connect();
 
         return conn;

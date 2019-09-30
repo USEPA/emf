@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.services.cost;
 
-import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.io.DeepCopy;
 import gov.epa.emissions.commons.io.ExporterException;
@@ -311,7 +310,6 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
         Session session = sessionFactory.getSession();
         try {
             ControlStrategy strategy = getById(controlStrategyId);
-            validateSectors(strategy);
             //get rid of for now, since we don't auto export anything
             //make sure a valid server-side export path was specified
             //validateExportPath(strategy.getExportDirectory());
@@ -359,21 +357,6 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             throw new EmfException(e.getMessage());
         } finally {
             session.close();
-        }
-    }
-
-    private void validateSectors(ControlStrategy strategy) throws EmfException {
-        ControlStrategyInputDataset[] inputDatasets = strategy.getControlStrategyInputDatasets();
-            //don't worry about for projection or None specified strategies...
-            if (strategy.getStrategyType() == null || strategy.getStrategyType().getName().equals(StrategyType.projectFutureYearInventory))
-                return;
-            
-        if (inputDatasets == null || inputDatasets.length == 0)
-            throw new EmfException("Input Dataset does not exist. ");
-        for (ControlStrategyInputDataset dataset : inputDatasets) {
-            Sector[] sectors = dataset.getInputDataset().getSectors();
-            if (sectors == null || sectors.length == 0)
-                throw new EmfException("Inventory, " + dataset.getInputDataset().getName() + ", is missing a sector.  Edit dataset to add sector.");
         }
     }
 

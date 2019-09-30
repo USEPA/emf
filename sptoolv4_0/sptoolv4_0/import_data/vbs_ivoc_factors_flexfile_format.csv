@@ -1,0 +1,5 @@
+name,type,default value,mandatory,description,formatter,constraints,width,spaces,fixformat start,fixformat end
+PROFILE_ID,VARCHAR(20),"",true,"","","",20,0,0,0
+cmaq_ivocname,VARCHAR(20),"",true,"","","",20,0,0,0
+camx_ivocname,VARCHAR(20),"",true,"","","",20,0,0,0
+nmogfraction,double precision,"",true,"","","",0,0,0,0

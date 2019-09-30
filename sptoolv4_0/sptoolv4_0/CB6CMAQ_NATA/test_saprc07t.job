@@ -1,0 +1,38 @@
+#!/bin/csh -fx
+#
+
+# Run the Speciation Tool
+# Perl input arguements:
+# 	SPTOOL_DB - Postgres database name
+# 	Scenario Name
+# 	Run control file
+
+set TODAY = `date +%Y%b%d`
+#set OUTDIR = /disk43/sptool/wa4_02.2016/outputs
+set OUTDIR = /sol/work/EMIS/tools/sptool/sptoolv4_0/CB6CMAQ_NATA/out
+#
+mkdir -p $OUTDIR
+
+
+echo " "
+echo "==================================================================================="
+printf "              CB6CMAQ criteria "
+date
+
+cat > RUNCTL << IEOF
+mech_basis,SAPRC07T
+run_type,CRITERIA
+AQM,CMAQ
+output,VOC
+splits_out,$OUTDIR/gspro.saprc07t_criteria.CMAQ.$TODAY.txt
+cnv_out,$OUTDIR/gscnv.saprc07t_criteria.CMAQ.$TODAY.txt
+IEOF
+
+setenv SPTOOL_USER sptool
+
+perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB saprc07t RUNCTL 
+#>& log.saprc07t_criteria.$TODAY
+date
+
+
+

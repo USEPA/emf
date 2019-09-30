@@ -1,0 +1,703 @@
+Running run_sptool.pl
+
+
+Created cmaq_vbs_ivoc schema in sptoolv4_0 database
+Granted permissions on cmaq_vbs_ivoc schema
+Set path successfully to cmaq_vbs_ivoc schema
+Input tables created in cmaq_vbs_ivoc schema
+Starting run_control file import
+Getting control values from control file
+control variables: MECH_BASIS = CB6
+control variables: RUN_TYPE = VBS
+control variables: AQM = CMAQ
+control variables: OUTPUT = VOC
+control variables: SPLITS_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gspro.CB6.VBS_IVOC.CMAQ.2017Feb16.txt
+control variables: CNV_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gscnv.CB6.VBS_IVOC.CMAQ.2017Feb16.txt
+Completed run_control file import
+
+Imported run control file RUNCTL in cmaq_vbs_ivoc schema
+NOTICE:  ======== Speciation Tool v4.0 ========
+NOTICE:    
+NOTICE:  Type of Output is  VOC 
+NOTICE:  AQM is  CMAQ 
+NOTICE:  Type of run is  VBS 
+NOTICE:  Mechanism basis is  CB6 
+NOTICE:  Profile Tolerance is  5 
+NOTICE:    
+NOTICE:  WARNING review vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
+NOTICE:  WARNING: CB6 mechanism undefined for the following species.
+NOTICE:           The following will be set to UNK if referenced.
+NOTICE:  WARNING:           SPECIES ID  2838 3-Methylcholanthrene
+NOTICE:  WARNING:           SPECIES ID  2839 Oxalate anion (or ethanedioic acid, ion; ethanedioate)
+NOTICE:  WARNING:           SPECIES ID  2840 Acetate anion
+NOTICE:  WARNING:           SPECIES ID  2841 Formate anion (formic acid, ion)
+NOTICE:  WARNING:           SPECIES ID  2847 Calcium Oxide
+NOTICE:  WARNING:           SPECIES ID  2848 Aluminum Oxide (or Alumina)
+NOTICE:  WARNING:           SPECIES ID  2849 Iron Oxide
+NOTICE:  WARNING:           SPECIES ID  2850 Potassium Carbonate
+NOTICE:  WARNING:           SPECIES ID  2851 Sodium Carbonate
+NOTICE:  WARNING:           SPECIES ID  2852 Magnesium Oxide
+NOTICE:  WARNING:           SPECIES ID  2853 Sulfur Trioxide
+NOTICE:  WARNING:           SPECIES ID  2854 Silica
+NOTICE:  WARNING:           SPECIES ID  2855 Titanium Oxide
+NOTICE:  WARNING:           SPECIES ID  2856 Lutetium
+NOTICE:  WARNING:           SPECIES ID  2857 Oleic Acid (or cis-9-Octadecenoic Acid)
+NOTICE:  WARNING:           SPECIES ID  2858 trans-Oleic acid (trans-9-Octadecenoic acid)
+NOTICE:  WARNING:           SPECIES ID  2859 2-Octadecenoic acid
+NOTICE:  WARNING:           SPECIES ID  2860 2-pentacosenoic acid
+NOTICE:  WARNING:           SPECIES ID  2861 Eicosanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2862 n-Octadecanol (or n-Octadecyl alcohol; 1-Octadecanol)
+NOTICE:  WARNING:           SPECIES ID  2863 1-Nonadecanol (or Nonadecyl alcohol)
+NOTICE:  WARNING:           SPECIES ID  2864 n-Eicosanol (or 1-Eicosanol; Arachic alcohol)
+NOTICE:  WARNING:           SPECIES ID  2865 Henicosanal
+NOTICE:  WARNING:           SPECIES ID  2866 Docosanal
+NOTICE:  WARNING:           SPECIES ID  2867 Tricosanal
+NOTICE:  WARNING:           SPECIES ID  2868 Tetracosanal
+NOTICE:  WARNING:           SPECIES ID  2869 Pentacosanal
+NOTICE:  WARNING:           SPECIES ID  2870 14-Methylhexadecanoic acid
+NOTICE:  WARNING:           SPECIES ID  2871 16-Methyloctadecanoic acid
+NOTICE:  WARNING:           SPECIES ID  2872 n-Docasanoic acid
+NOTICE:  WARNING:           SPECIES ID  2873 Heptacosanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2874 Methyl hexadecanoate (or Palmitic acid, methyl ester; n-Hexadecanoic acid methyl ester)
+NOTICE:  WARNING:           SPECIES ID  2875 Methyl 14-methylhexadecanoate
+NOTICE:  WARNING:           SPECIES ID  2876 Methyl nonadecanoate (or n-Nonadecanoic acid methyl ester)
+NOTICE:  WARNING:           SPECIES ID  2877 Methyl heneicosanoate (or Heneicosanoic acid, methyl ester)
+NOTICE:  WARNING:           SPECIES ID  2878 Methyl heptacosanoate
+NOTICE:  WARNING:           SPECIES ID  2879 Ethyl docosanoate
+NOTICE:  WARNING:           SPECIES ID  2880 Ethyl tetracosanoate
+NOTICE:  WARNING:           SPECIES ID  2881 9,12-Octadecenoic acid, methyl ester (or Methyl octadeca-9,12-dienoate; Methyl 9,12-octadecadienoate
+NOTICE:  WARNING:           SPECIES ID  2882 Methyl eicosenoate
+NOTICE:  WARNING:           SPECIES ID  2883 Methyl 2-docosenoate
+NOTICE:  WARNING:           SPECIES ID  2884 Behenic acid, methyl ester (or Methyl behenate; Methyl docosanoate; n-Docosanoic acid methyl ester)
+NOTICE:  WARNING:           SPECIES ID  2885 Methylparaben (or methyl 4-hydroxybenzoate; Benzoic acid, 4-hydroxy-, methyl ester)
+NOTICE:  WARNING:           SPECIES ID  2886 2-Phenylpropanoic acid (or -Methylphenylacetic acid; Hydratropic acid; -Methylbenzeneacetic acid)
+NOTICE:  WARNING:           SPECIES ID  2887 Matairesinol (or (3R,4R)-3,4-Bis(4-hydroxy-3-methoxybenzyl)dihydro-2(3H)-furanone; (R,R)-,-Bis(4-hyd
+NOTICE:  WARNING:           SPECIES ID  2888 Cinnamaldehyde (or (2E)-3-Phenylacrylaldehyde)
+NOTICE:  WARNING:           SPECIES ID  2889 Hydroxyquinol (or 1,2,4-Benzenetriol; 1,2,4-Trihydroxybenzene)
+NOTICE:  WARNING:           SPECIES ID  2890 Phloroglucinol (or phloroglucine; 1,3,5-trihydroxybenzene; 1,3,5-benzenetriol)
+NOTICE:  WARNING:           SPECIES ID  2891 Pyrogallol (or 1,2,3-Trihydroxybenzene; Pyrogallic acid)
+NOTICE:  WARNING:           SPECIES ID  2892 1,4-Naphthalenedione
+NOTICE:  WARNING:           SPECIES ID  2893 Methoxynaphthol (or 2-Methoxy-1-naphthol)
+NOTICE:  WARNING:           SPECIES ID  2894 1,43,6-Dianhydro-D-mannitol
+NOTICE:  WARNING:           SPECIES ID  2674 Trans-3-hexene; 3-methylcyclopentene
+NOTICE:  WARNING:           SPECIES ID  2675 2-methyl-2-hexene; cis-3-heptene
+NOTICE:  WARNING:           SPECIES ID  2676 3-methyl-trans-3-hexene; Trans-2-heptene
+NOTICE:  WARNING:           SPECIES ID  2677 1-methylcyclohexene; 4-methylheptane
+NOTICE:  WARNING:           SPECIES ID  2678 1-pentene; 2-butyne
+NOTICE:  WARNING:           SPECIES ID  2679 Cyclohexene; 3-methylhexane
+NOTICE:  WARNING:           SPECIES ID  2680 2,4,4-trimethyl-1-pentene; 2,3-dimethyl-2-pentene
+NOTICE:  WARNING:           SPECIES ID  2681 4-methyl-cis-2-pentene; 2-methylpentane (isohexane)
+NOTICE:  WARNING:           SPECIES ID  2682 2,3-dimethylheptane; 2-methyloctane
+NOTICE:  WARNING:           SPECIES ID  2683 Trans-1,3-dimethylcyclohexane; Cis-1,4-dimethylcyclohexane
+NOTICE:  WARNING:           SPECIES ID  2685 4-nonene
+NOTICE:  WARNING:           SPECIES ID  2686 Iridium
+NOTICE:  WARNING:           SPECIES ID  2687 Hydrated sulfate
+NOTICE:  WARNING:           SPECIES ID  2648 1-methylfluoranthene; 3-methylfluoranthene
+NOTICE:  WARNING:           SPECIES ID  2649 Picene
+NOTICE:  WARNING:           SPECIES ID  2650 Dibenzoa,hpyrene
+NOTICE:  WARNING:           SPECIES ID  2651 Heptatriacontane
+NOTICE:  WARNING:           SPECIES ID  2652 Octatriacontane
+NOTICE:  WARNING:           SPECIES ID  2653 Nonatriacontane
+NOTICE:  WARNING:           SPECIES ID  2654 2,3-dimethoxybenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2655 2,5-dimethoxybenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2656 3,5-dimethoxybenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2657 2,4-dimethoxybenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2658 Palustric acid
+NOTICE:  WARNING:           SPECIES ID  2660 Benzoafluoranthene
+NOTICE:  WARNING:           SPECIES ID  2661 Malonic acid (or 1,3-Propanedioic acid)
+NOTICE:  WARNING:           SPECIES ID  2662 Syringic acid
+NOTICE:  WARNING:           SPECIES ID  2663 Protactinium
+NOTICE:  WARNING:           SPECIES ID  2664 Erbium
+NOTICE:  WARNING:           SPECIES ID  2665 Platinum
+NOTICE:  WARNING:           SPECIES ID  2668 Particulate Water
+NOTICE:  WARNING:           SPECIES ID  2669 Particulate Non-Carbon Organic Matter
+NOTICE:  WARNING:           SPECIES ID  2670 Metal-bound Oxygen
+NOTICE:  WARNING:           SPECIES ID  2671 Other Unspeciated PM2.5
+NOTICE:  WARNING:           SPECIES ID  2672 Chromium(VI)
+NOTICE:  WARNING:           SPECIES ID  2374 1-Nonadecene
+NOTICE:  WARNING:           SPECIES ID  2375 1-Eicosene
+NOTICE:  WARNING:           SPECIES ID  2376 1-Heneicosene
+NOTICE:  WARNING:           SPECIES ID  2377 1-Docosene
+NOTICE:  WARNING:           SPECIES ID  2378 1-Tricosene
+NOTICE:  WARNING:           SPECIES ID  2379 1-Tetracosene
+NOTICE:  WARNING:           SPECIES ID  2380 1-Pentacosene
+NOTICE:  WARNING:           SPECIES ID  2381 1-Hexacosene
+NOTICE:  WARNING:           SPECIES ID  2382 1-Heptacosene
+NOTICE:  WARNING:           SPECIES ID  2383 1-Octacosene
+NOTICE:  WARNING:           SPECIES ID  2384 14-Methyl-hexadecanoic acid
+NOTICE:  WARNING:           SPECIES ID  2385 n-Hentriacontanoic acid
+NOTICE:  WARNING:           SPECIES ID  2386 n-Dotriacontanoic acid
+NOTICE:  WARNING:           SPECIES ID  2387 n-Tritriacontanoic acid
+NOTICE:  WARNING:           SPECIES ID  2388 n-Tetratriacontanoic acid
+NOTICE:  WARNING:           SPECIES ID  2389 n-Pentatriacontanoic acid
+NOTICE:  WARNING:           SPECIES ID  2390 n-Hexatriacontanoic acid
+NOTICE:  WARNING:           SPECIES ID  2391 10-Undecenoic acid
+NOTICE:  WARNING:           SPECIES ID  2392 Tetradecenoic acid
+NOTICE:  WARNING:           SPECIES ID  2393 Hexadecenoic acid
+NOTICE:  WARNING:           SPECIES ID  2394 Nonadecenoic acid
+NOTICE:  WARNING:           SPECIES ID  2395 Eicosenoic acid
+NOTICE:  WARNING:           SPECIES ID  2396 Heneicosenoic acid
+NOTICE:  WARNING:           SPECIES ID  2397 Docosenoic acid
+NOTICE:  WARNING:           SPECIES ID  2398 Tricosenoic acid
+NOTICE:  WARNING:           SPECIES ID  2399 Tetracosenoic acid
+NOTICE:  WARNING:           SPECIES ID  2400 Hexacosenoic acid
+NOTICE:  WARNING:           SPECIES ID  2401 Undecanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2402 Hexadecanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2403 Docosanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2404 Tetracosanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2405 Pentacosanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2406 Hexacosanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2407 Methyl heptadecanoate
+NOTICE:  WARNING:           SPECIES ID  2408 Methyl eicosanoate
+NOTICE:  WARNING:           SPECIES ID  2409 Heneicosanoic acid
+NOTICE:  WARNING:           SPECIES ID  2410 Methyl docosanoate
+NOTICE:  WARNING:           SPECIES ID  2411 Methyl tricosanoate
+NOTICE:  WARNING:           SPECIES ID  2412 Methyl tetracosanoate
+NOTICE:  WARNING:           SPECIES ID  2413 Methyl pentacosanoate
+NOTICE:  WARNING:           SPECIES ID  2414 Methyl hexacosanoate
+NOTICE:  WARNING:           SPECIES ID  2415 Methyl octacosanoate
+NOTICE:  WARNING:           SPECIES ID  2416 Methyl nonacosanoate
+NOTICE:  WARNING:           SPECIES ID  2417 Methyl triacontanoate
+NOTICE:  WARNING:           SPECIES ID  2418 Methyl hentriacontanoate
+NOTICE:  WARNING:           SPECIES ID  2419 Methyl dotriacontanoate
+NOTICE:  WARNING:           SPECIES ID  2420 Methyl tetratriacontanoate
+NOTICE:  WARNING:           SPECIES ID  2421 Methyl cis-9-octadecenoate
+NOTICE:  WARNING:           SPECIES ID  2422 Methyl trans-9-octadecenoate
+NOTICE:  WARNING:           SPECIES ID  2423 Methyl 9,12-octadecadienoate
+NOTICE:  WARNING:           SPECIES ID  2424 Methyl tetracosenoate
+NOTICE:  WARNING:           SPECIES ID  2425 Methyl hexacosenoate
+NOTICE:  WARNING:           SPECIES ID  2426 4-Vinylguaiacol
+NOTICE:  WARNING:           SPECIES ID  2427 Vanillic acid
+NOTICE:  WARNING:           SPECIES ID  2428 Methyl homovanillate
+NOTICE:  WARNING:           SPECIES ID  2429 Methoxyeugenol
+NOTICE:  WARNING:           SPECIES ID  2430 cis-Methoxy-iso-eugenol
+NOTICE:  WARNING:           SPECIES ID  2431 Methoxybenzenediols
+NOTICE:  WARNING:           SPECIES ID  2432 Hydroxyacetophenone
+NOTICE:  WARNING:           SPECIES ID  2433 3,4,5-Trimethoxybenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2434 Benzenepropanoic acid
+NOTICE:  WARNING:           SPECIES ID  2435 Diguaiacyl ethanes
+NOTICE:  WARNING:           SPECIES ID  2436 Syringyl guaiacyl ethane
+NOTICE:  WARNING:           SPECIES ID  2437 Disyringyl methane
+NOTICE:  WARNING:           SPECIES ID  2438 Disyringyl ethane
+NOTICE:  WARNING:           SPECIES ID  2439 2-Deoxomatairesinol
+NOTICE:  WARNING:           SPECIES ID  2440 Phenylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  2441 1-Naphthalenol (or 1-Naphthol; -Hydroxynaphthalene)
+NOTICE:  WARNING:           SPECIES ID  2442 2-naphthalenol (or -Naphthol; 2-Naphthol; -Hydroxynaphthalene)
+NOTICE:  WARNING:           SPECIES ID  2443 Methylnaphthol
+NOTICE:  WARNING:           SPECIES ID  2444 1,43,6-Dianhydro--D-glucopyranose
+NOTICE:  WARNING:           SPECIES ID  2445 Tetramethoxyisoflavone
+NOTICE:  WARNING:           SPECIES ID  2446 Dibenzofuranols
+NOTICE:  WARNING:           SPECIES ID  2447 Benzonaphthofurans
+NOTICE:  WARNING:           SPECIES ID  2448 Deisopropyldehydroabietic acid
+NOTICE:  WARNING:           SPECIES ID  2449 16-Nordehydroabietic acid
+NOTICE:  WARNING:           SPECIES ID  2450 Secodehydroabietic acids
+NOTICE:  WARNING:           SPECIES ID  2451 Levopimaric acid
+NOTICE:  WARNING:           SPECIES ID  2452 18-Norabieta-8,11,13-triene
+NOTICE:  WARNING:           SPECIES ID  2453 19-norabieta-4,8,11,13-tetraene
+NOTICE:  WARNING:           SPECIES ID  2454 18-norabieta-4(19),8,11,13-tetraene
+NOTICE:  WARNING:           SPECIES ID  2455 Dehydroabietane
+NOTICE:  WARNING:           SPECIES ID  2456 Methyl 6,8,11,13-abietatetraen-18-oate
+NOTICE:  WARNING:           SPECIES ID  2457 Methyl 8,11,13,15-abietatetraen-18-oate
+NOTICE:  WARNING:           SPECIES ID  2458 Methyl dehydroabietate
+NOTICE:  WARNING:           SPECIES ID  2459 Methyl abietate
+NOTICE:  WARNING:           SPECIES ID  2460 Methyl-7-oxodehydroabietate
+NOTICE:  WARNING:           SPECIES ID  2461 Stigmasta-3,5-dien-7-one
+NOTICE:  WARNING:           SPECIES ID  2462 Stigmasta-4,6-dien-3-one
+NOTICE:  WARNING:           SPECIES ID  2602 Heptadecane; Pristane
+NOTICE:  WARNING:           SPECIES ID  2603 C29-20S5a(H),14(H),17(H)-stigmastane
+NOTICE:  WARNING:           SPECIES ID  2604 Reactive gas-phase Mercury
+NOTICE:  WARNING:           SPECIES ID  2605 Nitrogen Monoxide (Nitric Oxide)
+NOTICE:  WARNING:           SPECIES ID  2606 Nitrogen Dioxide
+NOTICE:  WARNING:           SPECIES ID  2607 Nitrous acid
+NOTICE:  WARNING:           SPECIES ID  2617 Propylcyclopentane; Ethylcyclohexane
+NOTICE:  WARNING:           SPECIES ID  2463 Stigmastan-3-ol
+NOTICE:  WARNING:           SPECIES ID  2464 Stigmastan-3-one
+NOTICE:  WARNING:           SPECIES ID  2465 Beta-amyrone
+NOTICE:  WARNING:           SPECIES ID  2466 Alpha-amyrone
+NOTICE:  WARNING:           SPECIES ID  2467 Methyl indanones
+NOTICE:  WARNING:           SPECIES ID  2468 Delta-tocopherol; 8-methyltocol
+NOTICE:  WARNING:           SPECIES ID  2469 Beta-tocopherol; 5,8-dimethyltocol
+NOTICE:  WARNING:           SPECIES ID  2470 Gama-tocopherol; 7,8-dimethyltocol
+NOTICE:  WARNING:           SPECIES ID  2472 Benzobkjfluoranthene
+NOTICE:  WARNING:           SPECIES ID  2473 1-methylfluoranthene, C-methylpyrenefluoranthene
+NOTICE:  WARNING:           SPECIES ID  2475 Hexadecane & Norpristane
+NOTICE:  WARNING:           SPECIES ID  2476 8-abietic acid
+NOTICE:  WARNING:           SPECIES ID  2477 2,3 & 3,5-dimethylbenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2478 C28-20S5a(H),14(H),17(H)-ergostane
+NOTICE:  WARNING:           SPECIES ID  2479 C27-20R5a(H),14a(H),17a(H)-cholestane & C29-20S13(H),17a(H)-diasterane
+NOTICE:  WARNING:           SPECIES ID  2480 C29-20R5a(H),14a(H),17a(H)-stigmastane
+NOTICE:  WARNING:           SPECIES ID  2481 C27-20R5a(H),14(H)-cholestane
+NOTICE:  WARNING:           SPECIES ID  2482 C27-20R-13(H),17a(H)-diasterane
+NOTICE:  WARNING:           SPECIES ID  2483 17a(H),21(H)-22,29,30-Trisnorhopane
+NOTICE:  WARNING:           SPECIES ID  2484 17a(H),18a(H),21(H)-25,28,30-Trisnorhopane
+NOTICE:  WARNING:           SPECIES ID  2485 2,3,5 & I-trimethylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  2486 C-methylpyrene & methylfluoranthene
+NOTICE:  WARNING:           SPECIES ID  2487 Methylpyrenesfluoranthenes
+NOTICE:  WARNING:           SPECIES ID  2488 2-methylglutaric acid
+NOTICE:  WARNING:           SPECIES ID  2489 3-Methyladipic acid
+NOTICE:  WARNING:           SPECIES ID  2490 2,6-dimethoxybenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2491 Dodecanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2492 2,6-Dimethylbenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2493 3-Methylglutaric acid
+NOTICE:  WARNING:           SPECIES ID  2494 3,4-Dimethylbenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2495 2,4-Dimethylbenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2496 2,5-Dimethylbenzoic acid
+NOTICE:  WARNING:           SPECIES ID  2497 Myristoleic acid
+NOTICE:  WARNING:           SPECIES ID  2498 Trans-2-decenoic acid
+NOTICE:  WARNING:           SPECIES ID  2499 o-Toluic acid
+NOTICE:  WARNING:           SPECIES ID  2500 Maleic acid
+NOTICE:  WARNING:           SPECIES ID  2501 p-Toluic acid
+NOTICE:  WARNING:           SPECIES ID  2502 m-Toluic acid
+NOTICE:  WARNING:           SPECIES ID  2503 Salicylic acid
+NOTICE:  WARNING:           SPECIES ID  2504 Ergosterol
+NOTICE:  WARNING:           SPECIES ID  2505 Tetradecanedioic acid
+NOTICE:  WARNING:           SPECIES ID  2506 1-Nitrobenzoepyrene
+NOTICE:  WARNING:           SPECIES ID  2507  20S 24RS-Ethylcholestane
+NOTICE:  WARNING:           SPECIES ID  2508  20R 24R-Ethylcholestane
+NOTICE:  WARNING:           SPECIES ID  2509 2-nitroanthracene
+NOTICE:  WARNING:           SPECIES ID  2510 3-Nitrobenzoepyrene
+NOTICE:  WARNING:           SPECIES ID  2511 C19-tricyclic terpane
+NOTICE:  WARNING:           SPECIES ID  2512 C20-tricyclic terpane
+NOTICE:  WARNING:           SPECIES ID  2513 C21-tricyclic terpane
+NOTICE:  WARNING:           SPECIES ID  2514 C22-tricyclic terpane
+NOTICE:  WARNING:           SPECIES ID  2515 C21--sterane
+NOTICE:  WARNING:           SPECIES ID  2516 C21--sterane
+NOTICE:  WARNING:           SPECIES ID  2517 C22--sterane
+NOTICE:  WARNING:           SPECIES ID  2518 C23--dimethyl-a-butylpodocarpane
+NOTICE:  WARNING:           SPECIES ID  2519 C24--dimethyl-a-methylbutylpodocarpane
+NOTICE:  WARNING:           SPECIES ID  2520 C25-tricyclic terpane
+NOTICE:  WARNING:           SPECIES ID  2521 C26-tricyclic terpane
+NOTICE:  WARNING:           SPECIES ID  2522 C26-tricyclic triterpane-22R
+NOTICE:  WARNING:           SPECIES ID  2523 C26-tricyclic triterpane-22S
+NOTICE:  WARNING:           SPECIES ID  2524 C27-20S--cholestane
+NOTICE:  WARNING:           SPECIES ID  2525 C27--Trisnorhopane
+NOTICE:  WARNING:           SPECIES ID  2526 C27--Trisnorneohopane
+NOTICE:  WARNING:           SPECIES ID  2527 C27-tetracyclicterpane-22R
+NOTICE:  WARNING:           SPECIES ID  2528 C27-tetracyclicterpane-22S
+NOTICE:  WARNING:           SPECIES ID  2529 C28-20R--methylcholestane
+NOTICE:  WARNING:           SPECIES ID  2530 C28-20S--methylcholestane
+NOTICE:  WARNING:           SPECIES ID  2531 C28-20S--methylcholestane
+NOTICE:  WARNING:           SPECIES ID  2532 C28-20R-Ba-diasterane
+NOTICE:  WARNING:           SPECIES ID  2533 C28-20S-Ba-diasterane
+NOTICE:  WARNING:           SPECIES ID  2534 C29-20S-Ba-diasterane
+NOTICE:  WARNING:           SPECIES ID  2535 C28-aaB-Bisnorhopane
+NOTICE:  WARNING:           SPECIES ID  2536 C28-tetracyclicterpane-22R
+NOTICE:  WARNING:           SPECIES ID  2537 C28-tetracyclicterpane-22S
+NOTICE:  WARNING:           SPECIES ID  2538 C29-aB-Norneohopane
+NOTICE:  WARNING:           SPECIES ID  2539 C30-Tricyclicterpane-22R
+NOTICE:  WARNING:           SPECIES ID  2540 C30-Tricyclicterpane-22S
+NOTICE:  WARNING:           SPECIES ID  2541 C32-22R--bishomohopane
+NOTICE:  WARNING:           SPECIES ID  2542 C32-22S--bishomohopane
+NOTICE:  WARNING:           SPECIES ID  2543 C33-22R--trishomohopane
+NOTICE:  WARNING:           SPECIES ID  2544 C33-22S--trishomohopane
+NOTICE:  WARNING:           SPECIES ID  2545 C34-22R--tetrakishomohopane
+NOTICE:  WARNING:           SPECIES ID  2546 C34-22S--tetrakishomohopane
+NOTICE:  WARNING:           SPECIES ID  2547 C35-22R--pentakishomohopane
+NOTICE:  WARNING:           SPECIES ID  2548 C35-22S--pentakishomohopane
+NOTICE:  WARNING:           SPECIES ID  2549 Trisnorhopane
+NOTICE:  WARNING:           SPECIES ID  2550 c29 20R--ethylcholestane
+NOTICE:  WARNING:           SPECIES ID  2551 c28 20R--methylcholestane
+NOTICE:  WARNING:           SPECIES ID  2552 c29 20r--ethylcholestane
+NOTICE:  WARNING:           SPECIES ID  2553 22R-17a(H),21(H)-30-homohopane
+NOTICE:  WARNING:           SPECIES ID  2554 22S-17a(H),21(H)-30-homohopane
+NOTICE:  WARNING:           SPECIES ID  2555 4-Nitropyrene
+NOTICE:  WARNING:           SPECIES ID  2556 2-Nitrofluorene
+NOTICE:  WARNING:           SPECIES ID  2557 C27-20R5a(H),14a(H),17a(H)-cholestane
+NOTICE:  WARNING:           SPECIES ID  2558 20R--cholestane
+NOTICE:  WARNING:           SPECIES ID  2561 1-methoxy-2-Propanone
+NOTICE:  WARNING:           SPECIES ID  2565 2,2-Dimethylpropanal
+NOTICE:  WARNING:           SPECIES ID  2569 1,3-dimethyldibenzothiophene
+NOTICE:  WARNING:           SPECIES ID  2586 Particulate Mercury
+NOTICE:  WARNING:           SPECIES ID  2587 Oxidized Mercury
+NOTICE:  WARNING:           SPECIES ID  2588 Elemental Mercury
+NOTICE:  WARNING:           SPECIES ID  2298 Volatile Carbon
+NOTICE:  WARNING:           SPECIES ID  2302 Potassium ion
+NOTICE:  WARNING:           SPECIES ID  2303 Calcium ion
+NOTICE:  WARNING:           SPECIES ID  2340 abieta-6,8,11,13-tetraen-18-oic acid
+NOTICE:  WARNING:           SPECIES ID  2342 Iso-tritriacontane
+NOTICE:  WARNING:           SPECIES ID  2343 Ethylphenols
+NOTICE:  WARNING:           SPECIES ID  2344 Myosmine
+NOTICE:  WARNING:           SPECIES ID  2035 Cyclopenta-anthracenes
+NOTICE:  WARNING:           SPECIES ID  2060 Dimethylcyclobutanone
+NOTICE:  WARNING:           SPECIES ID  2147 Methyl C12 ester
+NOTICE:  WARNING:           SPECIES ID  2222 Pentenyne
+NOTICE:  WARNING:           SPECIES ID  2296 6,7-Dimethoxy-coumarin
+NOTICE:  WARNING:           SPECIES ID  292 Aluminum
+NOTICE:  WARNING:           SPECIES ID  294 Ammonia
+NOTICE:  WARNING:           SPECIES ID  296 Antimony
+NOTICE:  WARNING:           SPECIES ID  298 Arsenic
+NOTICE:  WARNING:           SPECIES ID  300 Barium
+NOTICE:  WARNING:           SPECIES ID  307 Bromine
+NOTICE:  WARNING:           SPECIES ID  328 Cadmium
+NOTICE:  WARNING:           SPECIES ID  329 Calcium
+NOTICE:  WARNING:           SPECIES ID  337 Chloride ion
+NOTICE:  WARNING:           SPECIES ID  347 Chromium
+NOTICE:  WARNING:           SPECIES ID  379 Cobalt
+NOTICE:  WARNING:           SPECIES ID  380 Copper
+NOTICE:  WARNING:           SPECIES ID  436 Total carbon
+NOTICE:  WARNING:           SPECIES ID  468 Gallium
+NOTICE:  WARNING:           SPECIES ID  477 Gold
+NOTICE:  WARNING:           SPECIES ID  487 Indium
+NOTICE:  WARNING:           SPECIES ID  488 Iron
+NOTICE:  WARNING:           SPECIES ID  519 Lanthanum
+NOTICE:  WARNING:           SPECIES ID  520 Lead
+NOTICE:  WARNING:           SPECIES ID  525 Magnesium
+NOTICE:  WARNING:           SPECIES ID  526 Manganese
+NOTICE:  WARNING:           SPECIES ID  528 Mercury
+NOTICE:  WARNING:           SPECIES ID  586 Molybdenum
+NOTICE:  WARNING:           SPECIES ID  612 Nickel
+NOTICE:  WARNING:           SPECIES ID  613 Nitrate
+NOTICE:  WARNING:           SPECIES ID  626 Organic carbon
+NOTICE:  WARNING:           SPECIES ID  649 Palladium
+NOTICE:  WARNING:           SPECIES ID  665 Phosphate
+NOTICE:  WARNING:           SPECIES ID  666 Phosphorus
+NOTICE:  WARNING:           SPECIES ID  669 Potassium
+NOTICE:  WARNING:           SPECIES ID  689 Rubidium
+NOTICE:  WARNING:           SPECIES ID  693 Selenium
+NOTICE:  WARNING:           SPECIES ID  694 Silicon
+NOTICE:  WARNING:           SPECIES ID  695 Silver
+NOTICE:  WARNING:           SPECIES ID  696 Sodium
+NOTICE:  WARNING:           SPECIES ID  697 Strontium
+NOTICE:  WARNING:           SPECIES ID  699 Sulfate
+NOTICE:  WARNING:           SPECIES ID  700 Sulfur
+NOTICE:  WARNING:           SPECIES ID  712 Thallium
+NOTICE:  WARNING:           SPECIES ID  714 Tin
+NOTICE:  WARNING:           SPECIES ID  715 Titanium
+NOTICE:  WARNING:           SPECIES ID  765 Uranium
+NOTICE:  WARNING:           SPECIES ID  767 Vanadium
+NOTICE:  WARNING:           SPECIES ID  777 Yttrium
+NOTICE:  WARNING:           SPECIES ID  778 Zinc
+NOTICE:  WARNING:           SPECIES ID  779 Zirconium
+NOTICE:  WARNING:           SPECIES ID  784 Ammonium
+NOTICE:  WARNING:           SPECIES ID  785 Sodium ion
+NOTICE:  WARNING:           SPECIES ID  788 Carbonate
+NOTICE:  WARNING:           SPECIES ID  789 Organic carbon II
+NOTICE:  WARNING:           SPECIES ID  790 Organic carbon III
+NOTICE:  WARNING:           SPECIES ID  791 Organic carbon IV
+NOTICE:  WARNING:           SPECIES ID  792 Pyrolyzed organic carbon
+NOTICE:  WARNING:           SPECIES ID  794 Elemental carbon I
+NOTICE:  WARNING:           SPECIES ID  795 Chlorine atom
+NOTICE:  WARNING:           SPECIES ID  796 Elemental carbon III
+NOTICE:  WARNING:           SPECIES ID  810 Bromine Atom
+NOTICE:  WARNING:           SPECIES ID  830 Sulfur dioxide
+NOTICE:  WARNING:           SPECIES ID  831 Hydrogen Sulfide
+NOTICE:  WARNING:           SPECIES ID  843 Sum of PM species
+NOTICE:  WARNING:           SPECIES ID  853 Benz(a)anthracene-7,12-dione
+NOTICE:  WARNING:           SPECIES ID  861 9,10-dihydrobenzo(a)pyrene-7(8H)-one
+NOTICE:  WARNING:           SPECIES ID  862 Benzanthrone; 7H-benzdeanthracen-7-one
+NOTICE:  WARNING:           SPECIES ID  865 2,3-Benzofluorene
+NOTICE:  WARNING:           SPECIES ID  866 5&6-methylchrysene
+NOTICE:  WARNING:           SPECIES ID  869 1,4-chrysenequinone
+NOTICE:  WARNING:           SPECIES ID  870 4H-cyclopenta(def)phenanthrene
+NOTICE:  WARNING:           SPECIES ID  872 Dibenz(ah+ac)anthracene or Dibenz(ah)anthracene + Dibenz(ac)anthracene
+NOTICE:  WARNING:           SPECIES ID  875 1,7-dimethylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  894 7-methylbenzo(a)pyrene
+NOTICE:  WARNING:           SPECIES ID  897 C-Methylpyrene
+NOTICE:  WARNING:           SPECIES ID  910 1,3-dinitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  911 1,3-dinitropyrene
+NOTICE:  WARNING:           SPECIES ID  912 1,5-dinitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  913 1,6-dinitropyrene
+NOTICE:  WARNING:           SPECIES ID  914 1,8-dinitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  915 1,8-dinitropyrene
+NOTICE:  WARNING:           SPECIES ID  916 1-nitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  917 1-nitropyrene
+NOTICE:  WARNING:           SPECIES ID  918 2,7-dinitrofluorene
+NOTICE:  WARNING:           SPECIES ID  919 2-nitrobiphenyl
+NOTICE:  WARNING:           SPECIES ID  920 2-nitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  921 3-nitrobiphenyl
+NOTICE:  WARNING:           SPECIES ID  922 3-nitrofluoranthene
+NOTICE:  WARNING:           SPECIES ID  923 3-nitrophenanthrene
+NOTICE:  WARNING:           SPECIES ID  924 4-nitrobiphenyl
+NOTICE:  WARNING:           SPECIES ID  925 4-nitrophenanthrene
+NOTICE:  WARNING:           SPECIES ID  926 6-nitrobenzapyrene
+NOTICE:  WARNING:           SPECIES ID  927 6-nitrochrysene
+NOTICE:  WARNING:           SPECIES ID  928 7-nitrobenz(a)anthracene
+NOTICE:  WARNING:           SPECIES ID  929 9,10-dinitroanthracene
+NOTICE:  WARNING:           SPECIES ID  930 9-nitroanthracene
+NOTICE:  WARNING:           SPECIES ID  931 9-nitrophenanthrene
+NOTICE:  WARNING:           SPECIES ID  932 G-Trimethylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  933 Abietic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  936 Azelaic acid-TMS (Nonanedioic acid)
+NOTICE:  WARNING:           SPECIES ID  938 1,2,4-butanetriol-TMS
+NOTICE:  WARNING:           SPECIES ID  939 Cholesterol-TMS , also noted as chlsrl
+NOTICE:  WARNING:           SPECIES ID  940 Cis-pinonic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  942 Dehydroabietic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  943 Docosanoic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  944 Eicosanoic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  945 Elaidic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  946 Glutaric acid-TMS
+NOTICE:  WARNING:           SPECIES ID  948 Henicosanoic acid
+NOTICE:  WARNING:           SPECIES ID  949 Heptanedioic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  953 Isophthalic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  955 Levoglucosan-TMS
+NOTICE:  WARNING:           SPECIES ID  960 Oleic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  963 Phthalic acid-TMS (1,2-Benzenedicarboxylic Acid)
+NOTICE:  WARNING:           SPECIES ID  964 Picolinic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  965 Sitosterol-TMS
+NOTICE:  WARNING:           SPECIES ID  971 Tetracosanoic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  972 Tricosanoic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  973 2-nitrofluoranthene
+NOTICE:  WARNING:           SPECIES ID  979 Butylated Hydroxytoluene
+NOTICE:  WARNING:           SPECIES ID  986 Nitrobap
+NOTICE:  WARNING:           SPECIES ID  988 Nitropyrene
+NOTICE:  WARNING:           SPECIES ID  989 C27-tetracyclic terpane
+NOTICE:  WARNING:           SPECIES ID  990 C28-tetracyclic terpane
+NOTICE:  WARNING:           SPECIES ID  993 17a(H),18a(H),21(H)-25,28,30-Trisnorhopane , also noted as aabtnh
+NOTICE:  WARNING:           SPECIES ID  994 17a(H),21(H)-22,29,30-Trisnorhopane , also noted as abtnh
+NOTICE:  WARNING:           SPECIES ID  999 17a(H),21(H)-Hopane , also noted as abhop
+NOTICE:  WARNING:           SPECIES ID  1000 17(H),21(H)-Hopane , also noted as bbhop
+NOTICE:  WARNING:           SPECIES ID  1004 22S-17(H),21(H)-Hopane , also noted as sabbhh
+NOTICE:  WARNING:           SPECIES ID  1005 22S-17a(H),21(H)-30,31-Bishomohopane , also noted as rabbhh
+NOTICE:  WARNING:           SPECIES ID  1006 22R-17a(H),21(H)-30,31-Bishomohopane
+NOTICE:  WARNING:           SPECIES ID  1008 22R-17a(H),21(H)-30,31,32-Trishomohopane
+NOTICE:  WARNING:           SPECIES ID  1010 C27-20S-13(H),17a(H)-diasterane , also noted as c27sds
+NOTICE:  WARNING:           SPECIES ID  1011 C27-20R-13(H),17(H)-diasterane , also noted as c27rds
+NOTICE:  WARNING:           SPECIES ID  1015 Caprolactone
+NOTICE:  WARNING:           SPECIES ID  1016 G-decanolactone
+NOTICE:  WARNING:           SPECIES ID  1017 C27-20R5a(H),14(H),17(H)-cholestane , also noted as c27rch
+NOTICE:  WARNING:           SPECIES ID  1019 C27-20R5a(H),14a(H),17a(H)-cholestane , also noted as c27rac
+NOTICE:  WARNING:           SPECIES ID  1021 1-Hexadecene
+NOTICE:  WARNING:           SPECIES ID  1022 C28-20R5a(H),14(H),17(H)-ergostane
+NOTICE:  WARNING:           SPECIES ID  1024 C28-20R5a(H),14a(H),17a(H)-ergostane
+NOTICE:  WARNING:           SPECIES ID  1025 C29-20S5a(H),14a(H),17a(H)-stigmastane
+NOTICE:  WARNING:           SPECIES ID  1026 C29-20R5a(H),14(H),17(H)-stigmastane
+NOTICE:  WARNING:           SPECIES ID  1027 Steroid-w , also noted as sterow
+NOTICE:  WARNING:           SPECIES ID  1044 4-formyl-guaiacol-TMS , also noted as f4gucl
+NOTICE:  WARNING:           SPECIES ID  1056 Me-succinic acid-TMS
+NOTICE:  WARNING:           SPECIES ID  1066 Sitostane
+NOTICE:  WARNING:           SPECIES ID  1120 G-nonanoic lactone (or 4-Hydroxynonanoic acid lactone; 4-Nonanolide; -Nonalacton; (3H)-Dihydro-5-pen
+NOTICE:  WARNING:           SPECIES ID  1123 Trans-2-heptenal
+NOTICE:  WARNING:           SPECIES ID  1127 7-Hexadecene
+NOTICE:  WARNING:           SPECIES ID  1166 Carbon dioxide
+NOTICE:  WARNING:           SPECIES ID  1174 Benzofluoranthenes
+NOTICE:  WARNING:           SPECIES ID  1183 Organic carbon I
+NOTICE:  WARNING:           SPECIES ID  1190 Elemental carbon II
+NOTICE:  WARNING:           SPECIES ID  1194 Undecanoic-g-lactone
+NOTICE:  WARNING:           SPECIES ID  1254 A-Methylbiphenyl
+NOTICE:  WARNING:           SPECIES ID  1257 A-MePyMeFl
+NOTICE:  WARNING:           SPECIES ID  1267 B-Methylbiphenyl
+NOTICE:  WARNING:           SPECIES ID  1269 B-methylphenanthrene
+NOTICE:  WARNING:           SPECIES ID  1270 B-Methylpyrene
+NOTICE:  WARNING:           SPECIES ID  1275 Benzo(b+j+k)fluoranthene
+NOTICE:  WARNING:           SPECIES ID  1280 B-MePyMeFl
+NOTICE:  WARNING:           SPECIES ID  1281 Benzonaphthothiophene
+NOTICE:  WARNING:           SPECIES ID  1289 C-Methylbiphenyl
+NOTICE:  WARNING:           SPECIES ID  1290 C-methylfluorene
+NOTICE:  WARNING:           SPECIES ID  1293 1-MeFl+C-MePyFl
+NOTICE:  WARNING:           SPECIES ID  1296 C-MePyMeFl
+NOTICE:  WARNING:           SPECIES ID  1312 D-MePyMeFl
+NOTICE:  WARNING:           SPECIES ID  1313 D-Trimethylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  1315 E-Methylpyrene
+NOTICE:  WARNING:           SPECIES ID  1317 2-ethyl-1-methylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  1321 F-Methylpyrene
+NOTICE:  WARNING:           SPECIES ID  1326 G-Methylpyrene
+NOTICE:  WARNING:           SPECIES ID  1328 H-Trimethylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  1352 1,2,8-trimethylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  1357 Nitro-benzo(a)anthracene
+NOTICE:  WARNING:           SPECIES ID  1387 18a(H),21(H)-22,29,30-Trisnorhopane
+NOTICE:  WARNING:           SPECIES ID  1390 17a(H),18a(H),21(H)-28,30-Bisnorhopane
+NOTICE:  WARNING:           SPECIES ID  1391 17a(H),21(H)-30-Norhopane , also noted as ab30nh
+NOTICE:  WARNING:           SPECIES ID  1392 17(H),21a(H)-30-Norhopane , also noted as ba30nh
+NOTICE:  WARNING:           SPECIES ID  1393 18a(H),21(H)-30-Norneohopane
+NOTICE:  WARNING:           SPECIES ID  1396 17(H),21a(H)-hopane , also noted as bahop
+NOTICE:  WARNING:           SPECIES ID  1397 22S-17a(H),21(H)-30-Homohopane , also noted as sabhhp
+NOTICE:  WARNING:           SPECIES ID  1398 22R-17a(H),21(H)-30-Homohopane , also noted as rabhhp
+NOTICE:  WARNING:           SPECIES ID  1402 22S-17a(H),21(H)-30,31,32-Trisomohopane
+NOTICE:  WARNING:           SPECIES ID  1407 C27-20S-13a(H),17(H)-diasterane
+NOTICE:  WARNING:           SPECIES ID  1408 C27-20R-13a(H),17(H)-diasterane
+NOTICE:  WARNING:           SPECIES ID  1409 C28-20S-13(H),17a(H)-diasterane
+NOTICE:  WARNING:           SPECIES ID  1410 C29-20R-13a(H),17(H)-diasterane
+NOTICE:  WARNING:           SPECIES ID  1411 C27-20S5a(H),14a(H)-cholestane
+NOTICE:  WARNING:           SPECIES ID  1413 C27-20S5a(H),14(H),17(H)-cholestane , also noted as c27sbc
+NOTICE:  WARNING:           SPECIES ID  1415 Ster45+40(cholestane)u
+NOTICE:  WARNING:           SPECIES ID  1416 C28-20S5a(H),14a(H),17a(H)-ergostane
+NOTICE:  WARNING:           SPECIES ID  1418 Ergostane , also noted as ergos
+NOTICE:  WARNING:           SPECIES ID  1423 Steroid-m , also noted as sterom
+NOTICE:  WARNING:           SPECIES ID  1437 4-ethyl-syringol-TMS , also noted as e4syrg
+NOTICE:  WARNING:           SPECIES ID  1438 4-ethyl-guaiacol-TMS , also noted as e4gucl
+NOTICE:  WARNING:           SPECIES ID  1460 Propylgyaiacol
+NOTICE:  WARNING:           SPECIES ID  2345 1,3-Dimethylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  2347 anteiso-Hentriacontane
+NOTICE:  WARNING:           SPECIES ID  2348 anteiso-Heptacosane
+NOTICE:  WARNING:           SPECIES ID  797 Elemental Carbon
+NOTICE:  WARNING:           SPECIES ID  2349 anteiso-Hexacosane
+NOTICE:  WARNING:           SPECIES ID  2350 anteiso-Nonacosane
+NOTICE:  WARNING:           SPECIES ID  2351 anteiso-Octacosane
+NOTICE:  WARNING:           SPECIES ID  2352 anteiso-Pentacosane
+NOTICE:  WARNING:           SPECIES ID  2353 anteiso-Tetracosane
+NOTICE:  WARNING:           SPECIES ID  2354 iso-Dotriacontane
+NOTICE:  WARNING:           SPECIES ID  2356 iso-Heptacosane
+NOTICE:  WARNING:           SPECIES ID  2357 iso-Hexacosane
+NOTICE:  WARNING:           SPECIES ID  2358 iso-Octacosane
+NOTICE:  WARNING:           SPECIES ID  2359 iso-Pentacosane
+NOTICE:  WARNING:           SPECIES ID  2360 iso-Tetracosane
+NOTICE:  WARNING:           SPECIES ID  2361 Linoleic acid, 9,12-Octadecadienoic acid (9Z,12Z)-
+NOTICE:  WARNING:           SPECIES ID  2362 Monopalmitin, Hexadecanoic acid, monoester with 1,2,3-propanetriol
+NOTICE:  WARNING:           SPECIES ID  2363 Monostearin, Glyceryl monostearate
+NOTICE:  WARNING:           SPECIES ID  2364 Hexatriacontane
+NOTICE:  WARNING:           SPECIES ID  2365 Pinonic acid
+NOTICE:  WARNING:           SPECIES ID  2366 Stigmasterol
+NOTICE:  WARNING:           SPECIES ID  2369 N-Methylolacrylamide
+NOTICE:  WARNING:           SPECIES ID  2370 Pentachloroethane
+NOTICE:  WARNING:           SPECIES ID  2371 Phosgene
+NOTICE:  WARNING:           SPECIES ID  2714 Trans-2-octene; Trans-1,2-dimethylcyclohexane
+NOTICE:  WARNING:           SPECIES ID  2739 Bromochloromethane
+NOTICE:  WARNING:           SPECIES ID  2742 3,5-Dimethoxyphenol
+NOTICE:  WARNING:           SPECIES ID  2743 Syringealdehyde
+NOTICE:  WARNING:           SPECIES ID  2744 1,2-Benzenedicarboxylic acid, 4-methyl-
+NOTICE:  WARNING:           SPECIES ID  2745 1,2,3-Benzenetricarboxylic Acid
+NOTICE:  WARNING:           SPECIES ID  2746 1,2,4-Benzenetricarboxylic Acid
+NOTICE:  WARNING:           SPECIES ID  2747 1,3,5-Benzenetricarboxylic Acid
+NOTICE:  WARNING:           SPECIES ID  2748 1,2,3,4-Benzenetetracaroboxylic Acid
+NOTICE:  WARNING:           SPECIES ID  2749 Galactosan (or 1,6-Anhydro-beta-D-galactose)
+NOTICE:  WARNING:           SPECIES ID  2750 1,6-anhydro-beta-D-mannopyranose (Mannosan)
+NOTICE:  WARNING:           SPECIES ID  2751 Glycerol monooleate (9-Octadecenoic acid (9Z)-, 2,3-dihydroxypropyl ester)
+NOTICE:  WARNING:           SPECIES ID  2752 1-Monostearin (Octadecanoic acid, 2,3-dihydroxypropyl ester)
+NOTICE:  WARNING:           SPECIES ID  2753 Cholestanol (Cholestan-3-ol, Dihydrocholesterol)
+NOTICE:  WARNING:           SPECIES ID  2765 1-Nitro-2-methylnaphthalene
+NOTICE:  WARNING:           SPECIES ID  2766 22S-17a(H),21b(H)-29-Homohopane
+NOTICE:  WARNING:           SPECIES ID  2767 22R-17a(H),21b(H)-29-Homohopane
+NOTICE:  WARNING:           SPECIES ID  2768 22S-17a(H),21b(H)-29,30-Bishomohopane
+NOTICE:  WARNING:           SPECIES ID  2769 22R-17a(H),21b(H)-29,30-Bishomohopane
+NOTICE:  WARNING:           SPECIES ID  2770 22R-17a(H),21b(H)-29,30,31-Trishomohopane
+NOTICE:  WARNING:           SPECIES ID  2772 Magnesium ion
+NOTICE:  WARNING:           SPECIES ID  2773 Heptachlor
+NOTICE:  WARNING:           SPECIES ID  2774 Aldrin
+NOTICE:  WARNING:           SPECIES ID  2775 Heptachlor epoxide
+NOTICE:  WARNING:           SPECIES ID  2776 Endosulfan
+NOTICE:  WARNING:           SPECIES ID  2777 2,2,5-Trichlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2778 2,4,5-Trichlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2779 2,4,4-Trichlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2780 2,2,5,5-Tetrachlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2781 2,2,3,5-Tetrachlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2782 2,2,4,5,5-Pentachlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2783 2,2,3,4,5,6-Hexachlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2784 2,2,4,4,5,5-Hexachlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2785 2,2,3,4,4,5,5-Heptachlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2786 Decachlorobiphenyl
+NOTICE:  WARNING:           SPECIES ID  2895 Coumarin (or 2H-1-Benzopyran-2-one; cis-o-Coumarinic acid lactone; o-Hydroxycinnamic acid lactone; B
+NOTICE:  WARNING:           SPECIES ID  2896 Methoxyhydroxycoumarin (or 4-Hydroxy-3-methoxy-2H-chromen-2-one)
+NOTICE:  WARNING:           SPECIES ID  2897 5-Acetoxymethyl-2-furaldehyde (or 5-Acetoxymethylfurfural; 5-formylfurfuryl acetate)
+NOTICE:  WARNING:           SPECIES ID  2898 16,17-Bisnordehydroabietic acid
+NOTICE:  WARNING:           SPECIES ID  2899 Secodehydroabietic acid
+NOTICE:  WARNING:           SPECIES ID  2900 19-Norabieta-8,11,13-triene
+NOTICE:  WARNING:           SPECIES ID  2901 Methyl deisopropyldehydroabietate (or Methyl ester of podocarpa-8,11,13-trien-19-oic acid; Methyl po
+NOTICE:  WARNING:           SPECIES ID  2902 Pimarinal (or Podocarp-8(14)-en-15-al, 13-methyl-13-vinyl-; Cryptopinon)
+NOTICE:  WARNING:           SPECIES ID  2903 Methyl 8,15-pimaradien-18-oate
+NOTICE:  WARNING:           SPECIES ID  2904 Methyl iso-pimarate (or Podocarp-7-en-15-oic acid, 13-methyl-13-vinyl-, methyl ester; Isopimaric aci
+NOTICE:  WARNING:           SPECIES ID  2905 Methyl 16,17-bisnordehydroabietate
+NOTICE:  WARNING:           SPECIES ID  2906 Dehydroabietal (or Dehydroabietic aldehyde; Podocarpa-8,11,13-trien-15-al, 13-isopropyl-; 1-Phenanth
+NOTICE:  WARNING:           SPECIES ID  2907 Juvabione (or 1-Cyclohexene-1-carboxylic acid, 4-(1,5-dimethyl-3-oxohexyl)-, methyl ester, (1R,4R)-(
+NOTICE:  WARNING:           SPECIES ID  2908 Todomatuic acid (or 4-(6-Methyl-4-oxo-2-heptanyl)-1-cyclohexene-1-carboxylic acid)
+NOTICE:  WARNING:           SPECIES ID  2909 Friedelin (or 3-friedelanone; A-Friedooleanan-3-one)
+NOTICE:  WARNING:           SPECIES ID  2910 trans-Methoxy-iso-eugenol
+NOTICE:  WARNING:           SPECIES ID  2911 7-Oxo-abieta-8,11,13,15-tetraen-18-oic acid
+NOTICE:  WARNING:           SPECIES ID  2912 Manoyl oxide (or (3R,4aS,6aR,10aR,10bS)-3,4a,7,7,10a-Pentamethyl-3-vinyldodecahydro-1H-benzofchromen
+NOTICE:  WARNING:           SPECIES ID  2913 18-Norisopimara-4(19),7,15-triene (or (13S)-18-Norpimara-4(19),7,15-triene;4aS,(+)-1,2,3,4,4a,4b,5,6
+NOTICE:  WARNING:           SPECIES ID  2914 Neoabietic acid (or (1R,4aR,4bS,10aR)-1,4a-Dimethyl-7-(propan-2-ylidene)-1,2,3,4,4a,4b,5,6,7,9,10,10
+NOTICE:  WARNING:           SPECIES ID  2915 Pinostrobin chalcone (or 2,6-Dihydroxy-4-methoxychalcone)
+NOTICE:  WARNING:           SPECIES ID  2916 Umbelliferone (or 2H-1-Benzopyran-2-one, 7-hydroxy-; Coumarin, 7-hydroxy-; Hydrangin)
+NOTICE:  WARNING:           SPECIES ID  2917 Monomethyl inositol
+NOTICE:  WARNING:           SPECIES ID  2918 Conidendrin (or (3aR,4S,9aR)-6-Hydroxy-4-(4-hydroxy-3-methoxyphenyl)-7-methoxy-3a,4,9,9a-tetrahydron
+NOTICE:  WARNING:           SPECIES ID  2919 Methyl-2-deoxomatairesinol
+NOTICE:  WARNING:           SPECIES ID  2920 Benzenetriols
+NOTICE:  WARNING:           SPECIES ID  2921 Ethyl hexacosanate
+NOTICE:  WARNING:           SPECIES ID  2922 20-Methyldocosanoic acid
+NOTICE:  WARNING:           SPECIES ID  2923 Octacosanal
+NOTICE:  WARNING:           SPECIES ID  2924 Hexacosanal
+NOTICE:  WARNING:           SPECIES ID  2925 Eicosanal
+NOTICE:  WARNING:           SPECIES ID  2926 1-Hydroxyheptadecane (or 1-Heptadecanol; Heptadecan-1-ol; Heptadecyl alcohol; Heptadecanol)
+NOTICE:  WARNING:           SPECIES ID  2927 1-triacontene
+NOTICE:  WARNING:           SPECIES ID  2928 Allobetul-2-ene (or 19,28-Epoxyolean-1-ene)
+NOTICE:  WARNING:           SPECIES ID  2929 Allobetulone (or (1R,4aR,6aR,6bR,8aR,12aR,12bR,14aR,14bS)-2,2,6a,6b,9,9,12a-heptamethylicosahydro-10
+NOTICE:  WARNING:           SPECIES ID  2930 Allobetulin (or (18)-19,28-Epoxyoleanan-3-ol)
+NOTICE:  WARNING:           SPECIES ID  2931 Betulin (or (3)-Lup-20(29)-ene-3,28-diol)
+NOTICE:  WARNING:           SPECIES ID  2932 Manool (or Labda-8(20),14-dien-13-ol)
+NOTICE:  WARNING:           SPECIES ID  2933 Dehydrojuvabione (or 1-Cyclohexene-1-carboxylic acid, 4-(1,5-dimethyl-3-oxo-4-hexenyl)-, methyl este
+NOTICE:  WARNING:           SPECIES ID  2934 1-Heneicosanol (or Henicosan-1-ol; Heneicosyl alcohol)
+NOTICE:  WARNING:           SPECIES ID  2935 Syringaresinol dimethyl ether (or Yangambin; (1S,3aR,4S,6aR)-1,4-Bis(3,4,5-trimethoxyphenyl)tetrahyd
+NOTICE:  WARNING:           SPECIES ID  2958 2,3,7,8-Tetrachlorodibenzo-p-dioxin (or 2,3,7,8-TCDD)
+NOTICE:  WARNING:           SPECIES ID  2959 1,2,3,7,8-Pentachlorodibenzo-p-dioxin (or 1,2,3,7,8-PeCDD)
+NOTICE:  WARNING:           SPECIES ID  2960 1,2,3,6,7,8-Hexachlorodibenzo-p-dioxin (or 1,2,3,6,7,8-HxCDD)
+NOTICE:  WARNING:           SPECIES ID  2961 1,2,3,7,8,9-Hexachlorodibenzo-p-dioxin (or 1,2,3,7,8,9-HxCDD)
+NOTICE:  WARNING:           SPECIES ID  2962 1,2,3,4,6,7,8-Heptachlorodibenzo-p-dioxin (or 1,2,3,4,6,7,8-HpCDD)
+NOTICE:  WARNING:           SPECIES ID  2963 1,2,3,4,6,7,8,9-Octachlorodibenzo-p-dioxin (or OCDD)
+NOTICE:  WARNING:           SPECIES ID  2964 2,3,7,8-Tetrachlorodibenzofuran (or 2,3,7,8-TCDF)
+NOTICE:  WARNING:           SPECIES ID  2965 1,2,3,7,8-Pentachlorodibenzofuran (or 1,2,3,7,8-PeCDF)
+NOTICE:  WARNING:           SPECIES ID  2966 2,3,4,7,8-Pentachlorodibenzofuran (or 2,3,4,7,8-PeCDF)
+NOTICE:  WARNING:           SPECIES ID  2967 1,2,3,4,7,8-Hexachlorodibenzofuran (or 1,2,3,4,7,8-HxCDF)
+NOTICE:  WARNING:           SPECIES ID  2968 1,2,3,6,7,8-Hexachlorodibenzofuran (or 1,2,3,6,7,8-HxCDF)
+NOTICE:  WARNING:           SPECIES ID  2969 1,2,3,7,8,9-Hexachlorodibenzofuran (or 1,2,3,7,8,9-HxCDF)
+NOTICE:  WARNING:           SPECIES ID  2970 2,3,4,6,7,8-Hexachlorodibenzofuran (or 2,3,4,6,7,8-HxCDF)
+NOTICE:  WARNING:           SPECIES ID  2971 1,2,3,4,6,7,8,9-Octachlorodibenzofuran (or OCDF)
+NOTICE:  WARNING:           SPECIES ID  2972 N-Nitroso-N-diphenylamine (or Benzenamine, N-nitroso-N-phenyl-)
+NOTICE:  WARNING:           SPECIES ID  2973 N-Nitrosodimethylamine (or Methanamine, N-methyl-N-nitroso-)
+NOTICE:  WARNING:           SPECIES ID  2974 N-Nitrosomorpholine (or Morpholine, 4-nitroso-)N-Nitrosomorpholine (or Morpholine, 4-nitroso-)
+NOTICE:  WARNING:           SPECIES ID  2975 22R-17a(H),21(H)-30,31,32-Trisomohopane
+NOTICE:  WARNING:           SPECIES ID  2976 Tetracontane
+NOTICE:  WARNING:           SPECIES ID  2977 1-Methyl-5-nitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  2978 2,7-Dinitro-9-fluorenone (or 2,7-dinitrofluoren-9-one)
+NOTICE:  WARNING:           SPECIES ID  2979 2-Nitrophenanthrene
+NOTICE:  WARNING:           SPECIES ID  2980 2-Nitropyrene
+NOTICE:  WARNING:           SPECIES ID  2981 1-Methyl-4-nitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  2982 2-Methyl-4-nitronaphthalene (or 3-Methyl-1-nitronaphthalene)
+NOTICE:  WARNING:           SPECIES ID  2983 5-Nitroacenaphthene (or 1,2-Dihydro-5-nitro-acenaphthylene; 5-Nan; 5-Nitronaphthalene ethylene)
+NOTICE:  WARNING:           SPECIES ID  2984 1-Methyl-6-nitronaphthalene
+NOTICE:  WARNING:           SPECIES ID  2985 Benzobfluorene
+NOTICE:  WARNING:           SPECIES ID  2986 Dibenzoa,epyrene (or Naphtho1,2,3,4-defchrysene)
+NOTICE:  WARNING:           SPECIES ID  2987 Dibenz(a,h)acridine or Dibenzo(a,h)acridine
+NOTICE:  WARNING:           SPECIES ID  2988 Dibenzo(a,i)pyrene or Dibenz(a,i)pyrene
+NOTICE:  WARNING:           SPECIES ID  2989 Dibenz(a,j)acridine or Dibenzo(a,j)acridine
+NOTICE:  WARNING:           SPECIES ID  2990 Dibenz(a,j)anthracene or Dibenzo(a,j)anthracene; 3,4,5,6-Dibenzanthracene
+NOTICE:  WARNING:           SPECIES ID  2991 Dibenzo(a,l)pyrene or Dibenzo(def,p)chrysene; 1,2,9,10-Dibenzopyrene
+NOTICE:  WARNING:           SPECIES ID  2992 Dibenzo(b,k)fluoranthene or Naphth(2,3-e)acephenanthrylene
+NOTICE:  WARNING:           SPECIES ID  2993 7H-Dibenzo(c,g)carbazole (or 3,4,5,6-Dibenzcarbazol)
+NOTICE:  WARNING:           SPECIES ID  2994 7,12-Dimethylbenz(a)anthracene (or 7,12-Dimethylbenzanthracene)
+NOTICE:  WARNING:           SPECIES ID  2995 4H-Cyclopentadefphenanthrene (or 4,5-Methylenephenanthrene)
+NOTICE:  WARNING:           SPECIES ID  2996 5-Methylchrysene5-Methylchrysene
+NOTICE:  WARNING:           SPECIES ID  2997 9-phenylanthracene
+NOTICE:  WARNING:           SPECIES ID  3041 Ruthenium
+NOTICE:  WARNING:           SPECIES ID  3042 Rhodium
+NOTICE:  WARNING review ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+NOTICE:    
+NOTICE:  ... establishing mechanism
+NOTICE:  ... establishing profile weights
+NOTICE:    
+NOTICE:  WARNING - Missing molecular weights. These components dropped:
+NOTICE:         profile 3139  species 338 wtpct 0.33000000 Chlorinated paraffin
+NOTICE:         profile 3179  species 617 wtpct 5.00000000 Nonylphenoxypoly(ethyleneoxy)ethanol (tergitol np-33) (triton(r) n-101)
+NOTICE:         profile 3184  species 617 wtpct 0.14000000 Nonylphenoxypoly(ethyleneoxy)ethanol (tergitol np-33) (triton(r) n-101)
+NOTICE:         profile 3187  species 617 wtpct 0.10000000 Nonylphenoxypoly(ethyleneoxy)ethanol (tergitol np-33) (triton(r) n-101)
+NOTICE:         profile 8500  species 2032 wtpct 0.01000000 Copper naphthenate
+NOTICE:         profile 8526  species 2032 wtpct 0.03000000 Copper naphthenate
+NOTICE:         profile 8528  species 2032 wtpct 0.14000000 Copper naphthenate
+NOTICE:         profile 8744  species 338 wtpct 0.22440000 Chlorinated paraffin
+NOTICE:         profile 8745  species 1745 wtpct 0.02800000 20R&S-5a(H),14B(H),17B(H)-sitostane
+NOTICE:         profile 95130  species 1275 wtpct 0.04599300 Benzo(b+j+k)fluoranthene
+NOTICE:         profile 95131  species 1275 wtpct 0.00274800 Benzo(b+j+k)fluoranthene
+NOTICE:         profile 95132  species 1275 wtpct 0.01209900 Benzo(b+j+k)fluoranthene
+NOTICE:         profile 95129  species 1275 wtpct 0.02063600 Benzo(b+j+k)fluoranthene
+NOTICE:  WARNING - Missing molecular weights. End List
+NOTICE:    
+NOTICE:  ...renormalizing profile weights
+NOTICE:  ...calculating moles per gram emissions
+NOTICE:  ...calculating mole percent
+NOTICE:  ...calculating moles per mole emissions
+NOTICE:  ...summing on AQM pollutant
+NOTICE:  ...calculating mole weight percent
+NOTICE:  ...calculating average molecular weight by species
+NOTICE:  ...calculating average molecular weight by AQM
+Completed splits calculations
+
+NOTICE:   Preparing output tables ... 
+NOTICE:      ...completed nonHAP
+NOTICE:      ...completed 100 percent active toxics
+NOTICE:      ...completed VOC-to-VOC
+NOTICE:      ...rename output AQM pollutants 
+
+Completed output preparations
+SUMMARY:  Number of profiles generated in run cmaq_vbs_ivoc is 2170 
+
+Completed writing the output files for run cmaq_vbs_ivoc 
+Finished run_sptool.pl
+

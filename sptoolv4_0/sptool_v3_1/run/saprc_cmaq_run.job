@@ -1,0 +1,22 @@
+#!/bin/csh -f
+
+echo " "
+echo "==================================================================================="
+printf "              SAPRC07 notoxics CMAQ "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB criteria_cmaq runctl_saprc07_criteria_tog_cmaq.txt
+date
+
+echo " "
+echo "==================================================================================="
+printf "              SAPRC07T notoxics CMAQ "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB criteria_cmaq runctl_saprc07t_criteria_tog_cmaq.txt
+date
+
+echo " "
+echo "==================================================================================="
+printf "              SAPRC99 notoxics CMAQ "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB criteria_cmaq runctl_saprc99_criteria_tog_cmaq.txt
+date

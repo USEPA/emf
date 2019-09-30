@@ -1,0 +1,136 @@
+﻿
+-- Table: modules.module_types
+
+-- DROP TABLE modules.module_types;
+
+CREATE TABLE modules.module_types
+(
+  id serial NOT NULL PRIMARY KEY,
+  name character varying(255) NOT NULL UNIQUE,
+  description text,
+  lock_owner character varying(255),
+  lock_date timestamp without time zone,
+  creation_date timestamp without time zone,
+  last_mod_date timestamp without time zone,
+  creator integer NOT NULL
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  default_version integer
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions
+
+-- DROP TABLE modules.module_types_versions;
+
+CREATE TABLE modules.module_types_versions
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_type_id integer NOT NULL
+      REFERENCES modules.module_types(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  version integer NOT NULL DEFAULT 0,
+  name character varying(255) NOT NULL,
+  description text,
+  creation_date timestamp without time zone,
+  last_mod_date timestamp without time zone,
+  creator integer
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  base_version integer NOT NULL DEFAULT 0,
+  algorithm text,
+  is_final boolean NOT NULL DEFAULT FALSE,
+  CONSTRAINT module_types_versions_ukey_1 UNIQUE (module_type_id, version),
+  CONSTRAINT module_types_versions_ukey_2 UNIQUE (module_type_id, name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_datasets
+
+-- DROP TABLE modules.module_types_versions_datasets;
+
+CREATE TABLE modules.module_types_versions_datasets
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_name character varying(63) NOT NULL, -- (NAMEDATALEN-1) for consistency -- could be larger if necessary
+  mode character varying(5) NOT NULL CHECK (mode IN ('IN', 'INOUT', 'OUT') ),
+  dataset_type_id integer NOT NULL
+      REFERENCES emf.dataset_types(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  description text,
+  is_optional boolean NOT NULL DEFAULT FALSE,
+  CONSTRAINT module_types_versions_datasets_ukey UNIQUE (module_type_version_id, placeholder_name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_datasets
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_parameters
+
+-- DROP TABLE modules.module_types_versions_parameters;
+
+CREATE TABLE modules.module_types_versions_parameters
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  parameter_name character varying(63) NOT NULL,      -- must be shorter than NAMEDATALEN (which is 64 by default)
+  mode character varying(5) NOT NULL CHECK (mode IN ('IN', 'INOUT', 'OUT') ),
+  sql_parameter_type character varying(256) NOT NULL, -- should be large enough
+  description text,
+  is_optional boolean NOT NULL DEFAULT FALSE,
+  CONSTRAINT module_types_versions_parameters_ukey UNIQUE (module_type_version_id, parameter_name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_parameters
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_revisions
+
+-- DROP TABLE modules.module_types_versions_revisions;
+
+CREATE TABLE modules.module_types_versions_revisions
+(
+  id serial NOT NULL PRIMARY KEY,
+  module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  revision integer NOT NULL DEFAULT 0,
+  description text,
+  creation_date timestamp without time zone,
+  creator integer
+      REFERENCES emf.users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT module_types_versions_revisions_ukey UNIQUE (module_type_version_id, revision)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_revisions
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------

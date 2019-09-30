@@ -1,0 +1,10 @@
+#!/bin/csh
+
+limit stacksize unlimited
+
+## EMF Command line client -- source environment variables needed and setup EMF JAVACMDLINE to java executable and EMF_PYTHON to python cmd line
+source /work/EMIS/EMFClient/EmfCmdClientEnv.csh
+source /work/EMIS/tools/sptool/sptoolv4_0/Assigns.sptool_epa 
+setenv EMF_JAVACMDLINE "$JAVA_EXE -DUSER_PREFERENCES=$PREF_FILE -DEMF_HOME=$EMF_HOME -classpath $CLASSPATH gov.epa.emissions.framework.client.EMFCmdClient $TOMCAT_SERVER/emf/services  -r 3"
+setenv EMF_CLIENT /work/EMIS/EMFClient/EMFCmdClient.py
+setenv EMF_MSGTIME 0

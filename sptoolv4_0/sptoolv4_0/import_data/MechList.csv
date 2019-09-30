@@ -1,0 +1,2 @@
+SAPRC07T,"Toxics version of SAPRC07 for CMAQ. Species names same as CMAQ version",Y,Mechanism added 2/2008. Assignments (especially carbon numbers) are preliminary and subject to change."
+CB05,"Carbon Bond version 5. Updated 11/15/14 to include CO and benzene and Sesquiterpene counter species for SOA in CMAQ 5.0.2",Y,Most of these assignments should match those ENVIRON exported the assignments from Spec4Asn-8-10-06.xls sent by Marc Houyoux in Spec4Asn-8-10-06(from Carter).zip."

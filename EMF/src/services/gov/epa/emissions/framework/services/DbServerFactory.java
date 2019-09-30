@@ -18,12 +18,12 @@ public class DbServerFactory {
     
     private DatabaseSetup databaseSetup;
 
-    //this is used when running in the tomcat enviroment
+    //this is used when running in the tomcat environment
     private DbServerFactory() {
         this.tomcatEnvironment = true;
     }
 
-    //this is used when running in the JUnit enviroment
+    //this is used when running in the JUnit environment
     public DbServerFactory(DatabaseSetup databaseSetup) {
         this.junitEnvironment = true;
         this.databaseSetup = databaseSetup;

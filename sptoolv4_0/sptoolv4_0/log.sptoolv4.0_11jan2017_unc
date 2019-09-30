@@ -1,0 +1,490 @@
+ 
+SPTOOL_SRC_HOME = /disk43/sptool/wa4_02.2016/src
+PERL_DBI = Pg
+New database: SPTOOL_DB = sptoolv4_0
+SPTOOL_USER = mjimenez
+PERL_BIN = /usr/bin
+POSTGRES_BIN = /usr/local/pgsql/bin
+CREATE DATABASE
+Database sptoolv4_0 created
+CREATE SCHEMA
+Shared schema created
+GRANT
+Create permissions granted on sptoolv4_0
+GRANT
+All permissions granted on shared schema
+Defining custom functions and initializing tables.  ...working
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Speciation Tool functions and tables successfully defined in sptoolv4_0.
+
+Importing mechanisms /disk43/sptool/wa4_02.2016/import_data/mechanism_forImport.26sep2016.csv
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/mechanism_forImport.26sep2016.csv...
+  1000 lines processed
+  2000 lines processed
+  3000 lines processed
+  4000 lines processed
+  5000 lines processed
+  6000 lines processed
+  7000 lines processed
+  8000 lines processed
+  9000 lines processed
+  10000 lines processed
+  11000 lines processed
+  12000 lines processed
+  13000 lines processed
+  14000 lines processed
+  15000 lines processed
+  16000 lines processed
+  17000 lines processed
+  18000 lines processed
+  19000 lines processed
+  20000 lines processed
+  21000 lines processed
+  22000 lines processed
+  23000 lines processed
+  24000 lines processed
+  25000 lines processed
+  26000 lines processed
+  27000 lines processed
+  28000 lines processed
+  29000 lines processed
+  30000 lines processed
+  31000 lines processed
+  32000 lines processed
+  33000 lines processed
+  34000 lines processed
+  35000 lines processed
+  36000 lines processed
+...finished, imported 36214 lines.
+
+Importing PM mechanisms /disk43/sptool/wa4_02.2016/import_data/mech_pm_ae5_ae6.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/mech_pm_ae5_ae6.txt...
+...finished, imported 23 lines.
+
+Importing mechanism descriptions /disk43/sptool/wa4_02.2016/import_data/mechanism_description.29jun2016.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/mechanism_description.29jun2016.txt...
+...finished, imported 13 lines.
+
+Importing inventory table /disk43/sptool/wa4_02.2016/import_data/invtable_hapcap_cb05soa_25may2011_v13.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/invtable_hapcap_cb05soa_25may2011_v13.txt...
+...finished, imported 694 lines.
+
+Importing carbons table /disk43/sptool/wa4_02.2016/import_data/carbons_30jun2016.csv
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/carbons_30jun2016.csv...
+...finished, imported 231 lines.
+
+Importing static profiles /disk43/sptool/wa4_02.2016/import_data/static_19aug07.csv
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/static_19aug07.csv...
+...finished, imported 496 lines.
+
+Importing gas profiles /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_gas_profiles_2016_0912.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_gas_profiles_2016_0912.txt...
+  1000 lines processed
+  2000 lines processed
+...finished, imported 2170 lines.
+
+Importing gas profile weights /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_gas_species_2016_0912.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_gas_species_2016_0912.txt...
+  1000 lines processed
+  2000 lines processed
+  3000 lines processed
+  4000 lines processed
+  5000 lines processed
+  6000 lines processed
+  7000 lines processed
+  8000 lines processed
+  9000 lines processed
+  10000 lines processed
+  11000 lines processed
+  12000 lines processed
+  13000 lines processed
+  14000 lines processed
+  15000 lines processed
+  16000 lines processed
+  17000 lines processed
+  18000 lines processed
+  19000 lines processed
+  20000 lines processed
+  21000 lines processed
+  22000 lines processed
+  23000 lines processed
+  24000 lines processed
+  25000 lines processed
+  26000 lines processed
+  27000 lines processed
+  28000 lines processed
+  29000 lines processed
+  30000 lines processed
+  31000 lines processed
+  32000 lines processed
+  33000 lines processed
+  34000 lines processed
+  35000 lines processed
+  36000 lines processed
+  37000 lines processed
+  38000 lines processed
+  39000 lines processed
+  40000 lines processed
+  41000 lines processed
+  42000 lines processed
+  43000 lines processed
+  44000 lines processed
+  45000 lines processed
+  46000 lines processed
+  47000 lines processed
+  48000 lines processed
+  49000 lines processed
+  50000 lines processed
+  51000 lines processed
+  52000 lines processed
+  53000 lines processed
+  54000 lines processed
+  55000 lines processed
+  56000 lines processed
+  57000 lines processed
+  58000 lines processed
+  59000 lines processed
+  60000 lines processed
+  61000 lines processed
+  62000 lines processed
+  63000 lines processed
+  64000 lines processed
+  65000 lines processed
+  66000 lines processed
+  67000 lines processed
+  68000 lines processed
+  69000 lines processed
+  70000 lines processed
+  71000 lines processed
+  72000 lines processed
+  73000 lines processed
+  74000 lines processed
+  75000 lines processed
+  76000 lines processed
+  77000 lines processed
+  78000 lines processed
+  79000 lines processed
+  80000 lines processed
+  81000 lines processed
+  82000 lines processed
+  83000 lines processed
+  84000 lines processed
+  85000 lines processed
+  86000 lines processed
+  87000 lines processed
+  88000 lines processed
+  89000 lines processed
+  90000 lines processed
+  91000 lines processed
+  92000 lines processed
+  93000 lines processed
+  94000 lines processed
+  95000 lines processed
+  96000 lines processed
+  97000 lines processed
+  98000 lines processed
+  99000 lines processed
+  100000 lines processed
+  101000 lines processed
+  102000 lines processed
+  103000 lines processed
+  104000 lines processed
+  105000 lines processed
+  106000 lines processed
+  107000 lines processed
+  108000 lines processed
+  109000 lines processed
+  110000 lines processed
+  111000 lines processed
+  112000 lines processed
+  113000 lines processed
+  114000 lines processed
+  115000 lines processed
+  116000 lines processed
+  117000 lines processed
+  118000 lines processed
+  119000 lines processed
+  120000 lines processed
+  121000 lines processed
+  122000 lines processed
+  123000 lines processed
+  124000 lines processed
+  125000 lines processed
+  126000 lines processed
+  127000 lines processed
+  128000 lines processed
+  129000 lines processed
+  130000 lines processed
+  131000 lines processed
+  132000 lines processed
+  133000 lines processed
+...finished, imported 133110 lines.
+
+Importing PM profiles /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_pm_profiles_2016_0912.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_pm_profiles_2016_0912.txt...
+  1000 lines processed
+  2000 lines processed
+  3000 lines processed
+...finished, imported 3774 lines.
+
+Importing PM profile weights /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_pm_species_2016_0912.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_pm_species_2016_0912.txt...
+  1000 lines processed
+  2000 lines processed
+  3000 lines processed
+  4000 lines processed
+  5000 lines processed
+  6000 lines processed
+  7000 lines processed
+  8000 lines processed
+  9000 lines processed
+  10000 lines processed
+  11000 lines processed
+  12000 lines processed
+  13000 lines processed
+  14000 lines processed
+  15000 lines processed
+  16000 lines processed
+  17000 lines processed
+  18000 lines processed
+  19000 lines processed
+  20000 lines processed
+  21000 lines processed
+  22000 lines processed
+  23000 lines processed
+  24000 lines processed
+  25000 lines processed
+  26000 lines processed
+  27000 lines processed
+  28000 lines processed
+  29000 lines processed
+  30000 lines processed
+  31000 lines processed
+  32000 lines processed
+  33000 lines processed
+  34000 lines processed
+  35000 lines processed
+  36000 lines processed
+  37000 lines processed
+  38000 lines processed
+  39000 lines processed
+  40000 lines processed
+  41000 lines processed
+  42000 lines processed
+  43000 lines processed
+  44000 lines processed
+  45000 lines processed
+  46000 lines processed
+  47000 lines processed
+  48000 lines processed
+  49000 lines processed
+  50000 lines processed
+  51000 lines processed
+  52000 lines processed
+  53000 lines processed
+  54000 lines processed
+  55000 lines processed
+  56000 lines processed
+  57000 lines processed
+  58000 lines processed
+  59000 lines processed
+  60000 lines processed
+  61000 lines processed
+  62000 lines processed
+  63000 lines processed
+  64000 lines processed
+  65000 lines processed
+  66000 lines processed
+  67000 lines processed
+  68000 lines processed
+  69000 lines processed
+  70000 lines processed
+  71000 lines processed
+  72000 lines processed
+  73000 lines processed
+  74000 lines processed
+  75000 lines processed
+  76000 lines processed
+  77000 lines processed
+  78000 lines processed
+  79000 lines processed
+  80000 lines processed
+  81000 lines processed
+  82000 lines processed
+  83000 lines processed
+  84000 lines processed
+  85000 lines processed
+  86000 lines processed
+  87000 lines processed
+  88000 lines processed
+  89000 lines processed
+  90000 lines processed
+  91000 lines processed
+  92000 lines processed
+  93000 lines processed
+  94000 lines processed
+  95000 lines processed
+  96000 lines processed
+  97000 lines processed
+  98000 lines processed
+  99000 lines processed
+  100000 lines processed
+  101000 lines processed
+  102000 lines processed
+  103000 lines processed
+  104000 lines processed
+  105000 lines processed
+  106000 lines processed
+  107000 lines processed
+  108000 lines processed
+  109000 lines processed
+  110000 lines processed
+  111000 lines processed
+  112000 lines processed
+  113000 lines processed
+  114000 lines processed
+  115000 lines processed
+  116000 lines processed
+  117000 lines processed
+  118000 lines processed
+  119000 lines processed
+  120000 lines processed
+  121000 lines processed
+  122000 lines processed
+  123000 lines processed
+  124000 lines processed
+  125000 lines processed
+  126000 lines processed
+  127000 lines processed
+  128000 lines processed
+  129000 lines processed
+  130000 lines processed
+  131000 lines processed
+  132000 lines processed
+  133000 lines processed
+  134000 lines processed
+  135000 lines processed
+  136000 lines processed
+  137000 lines processed
+  138000 lines processed
+  139000 lines processed
+  140000 lines processed
+  141000 lines processed
+  142000 lines processed
+  143000 lines processed
+  144000 lines processed
+  145000 lines processed
+  146000 lines processed
+  147000 lines processed
+  148000 lines processed
+  149000 lines processed
+  150000 lines processed
+  151000 lines processed
+  152000 lines processed
+  153000 lines processed
+  154000 lines processed
+  155000 lines processed
+  156000 lines processed
+  157000 lines processed
+  158000 lines processed
+  159000 lines processed
+  160000 lines processed
+  161000 lines processed
+...finished, imported 161851 lines.
+
+Importing species mapping /disk43/sptool/wa4_02.2016/import_data/aqm_poll_rename.csv
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/aqm_poll_rename.csv...
+...finished, imported 7 lines.
+
+Importing species properties /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_species_properties_2016_0912.txt
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/speciate4.5_exports/export_species_properties_2016_0912.txt...
+  1000 lines processed
+  2000 lines processed
+...finished, imported 2602 lines.
+
+Importing CAMx FCRS /disk43/sptool/wa4_02.2016/import_data/camx_fcrs.profile.lst
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/camx_fcrs.profile.lst...
+...finished, imported 11 lines.
+
+Importing VBS SVOC factors /disk43/sptool/wa4_02.2016/import_data/vbs_svoc.profile.26sep2016.csv
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/vbs_svoc.profile.26sep2016.csv...
+...finished, imported 125 lines.
+
+Importing VBS IVOC factors /disk43/sptool/wa4_02.2016/import_data/vbs_ivoc.profile.30aug2016.csv
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/vbs_ivoc.profile.30aug2016.csv...
+...finished, imported 370 lines.
+
+Importing IVOC species /disk43/sptool/wa4_02.2016/import_data/ivoc_species.csv
+
+Using transactions - import of data will abort on any error.
+Reading data from /disk43/sptool/wa4_02.2016/import_data/ivoc_species.csv...
+...finished, imported 6 lines.
+
+
+Speciation Tool shared data successfully imported
+
+Completed: Wed Jan 11 09:00:02 PST 2017
+

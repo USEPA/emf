@@ -1,0 +1,69 @@
+#!/bin/csh -f
+#PBS -j oe
+#PBS -r n
+
+limit stacksize unlimited
+
+## EMF Command line client -- source environment variables needed and setup EMF JAVACMDLINE to java executable and EMF_PYTHON to python cmd line
+setenv EMF_CLIENT false
+
+## Job run file for job: Import_shared_data
+
+## EMF specific variables
+setenv EMF_JOBID "54083"
+setenv EMF_JOBNAME "Import_shared_data"
+setenv EMF_USER "callen05"
+setenv EMF_SCRIPTDIR "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ"
+setenv EMF_SCRIPTNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/Import_shared_data_Initialize_Spec4_5_Profiles_CB6CMAQ_20180104110629.csh"
+setenv EMF_LOGNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/logs/Import_shared_data_Initialize_Spec4_5_Profiles_CB6CMAQ_20180104110629.log"
+setenv EMF_JOBKEY "54083_1515081989357"
+
+## Inputs -- for all regions, all sectors and all jobs
+
+
+
+
+## Inputs -- all regions and  all sector and job (Import shared data (All sectors, All regions))
+setenv PROFILES_GAS "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/in/speciate_4_5_09252016_gas_profiles_04jan2018_nf_v3.csv"
+setenv WEIGHTS_GAS "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/in/speciate_4_5_09252016_profile_weights_04jan2018_nf_v2.csv"
+setenv SPECIES_PROPERTIES "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/in/speciate_4_5_species_06jun2016_15mar2017_v3.csv"
+setenv SPECIES_MAP "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Initialize_Spec4_5_Profiles_CB6CMAQ/in/sptool_gas_specie_map_18oct2007_v2.csv"
+
+
+
+
+## Parameters -- from Case summary 
+setenv CASE "Initialize_Spec4_5_Profiles_CB6CMAQ"
+setenv MODEL_LABEL "Speciation Tool3.0"
+setenv EMF_AQM "SMOKE"
+setenv EMF_SPC "CB6CMAQ"
+setenv PARENT_CASE "Initialize_Master_Speciate4_4_CB6e51"
+
+## Parameters -- from job tab
+
+## Parameters -- all regions, all sectors, all jobs 
+setenv POSTGRES_BIN "/usr/bin"
+setenv INSTALL "/work/EMIS/tools/sptool/sptool_v3"
+setenv PROJ_ROOT "/work/EMIS/tools/speciation_emf/runs_speciate4_5"
+setenv EMF_LOGGERPYTHONDIR "$PROJ_ROOT/$CASE/case_logs"
+setenv SPTOOL_DB "cb6cmaq"
+setenv SPTOOL_SRC_HOME "$INSTALL/src_model_v3"
+
+
+
+
+## Parameters -- all regions, all sectors, job (Import shared data)
+
+
+
+
+## job executable
+$EMF_CLIENT -k $EMF_JOBKEY -x $INSTALL/sptool_load_shared_gas.v3.csh -m "Running top level script for job: Import_shared_data"
+$INSTALL/sptool_load_shared_gas.v3.csh 
+if ( $status != 0 ) then
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Failed' -m "ERROR running Job: $EMF_JOBNAME" -t 'e' 
+	 exit(1)
+else
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Completed' -m "Completed job: $EMF_JOBNAME"
+endif
+

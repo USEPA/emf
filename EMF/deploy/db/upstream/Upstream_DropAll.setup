@@ -1,0 +1,29 @@
+﻿DROP TABLE modules.modules_tags;
+DROP TABLE modules.module_types_tags;
+DROP TABLE modules.tags;
+
+DROP TABLE modules.history_internal_parameters;
+DROP TABLE modules.history_internal_datasets;
+DROP TABLE modules.history_submodules;
+DROP TABLE modules.history_parameters;
+DROP TABLE modules.history_datasets;
+DROP TABLE modules.history;
+
+DROP TABLE modules.modules_internal_parameters;
+DROP TABLE modules.modules_internal_datasets;
+DROP TABLE modules.modules_parameters;
+DROP TABLE modules.modules_datasets;
+DROP TABLE modules.modules;
+
+DROP TABLE modules.module_types_versions_connections_parameters;
+DROP TABLE modules.module_types_versions_connections_datasets;
+DROP TABLE modules.module_types_versions_submodules;
+DROP TABLE modules.module_types_versions_revisions;
+DROP TABLE modules.module_types_versions_parameters;
+DROP TABLE modules.module_types_versions_datasets;
+DROP TABLE modules.module_types_versions;
+DROP TABLE modules.module_types;
+
+DROP TABLE modules.parameter_types;
+
+DROP SCHEMA Modules;

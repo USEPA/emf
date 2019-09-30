@@ -46,12 +46,12 @@ public class InputDatasetSelectionPresenter {
     }
     
     public void refreshDatasets(DatasetType datasetType, String nameContaining) throws EmfException {
-        if ((lastDatasets!=null) && (lastDatasetType!=null) && datasetType.getName().equals(lastDatasetType.getName()) && (nameContaining.equals(lastNameContains)))
-        {
-            // nothing has changed since last time, so just refresh with the previously retrieved list
-            view.refreshDatasets(lastDatasets);
-        }    
-        else 
+//        if ((lastDatasets!=null) && (lastDatasetType!=null) && datasetType.getName().equals(lastDatasetType.getName()) && (nameContaining.equals(lastNameContains)))
+//        {
+//            // nothing has changed since last time, so just refresh with the previously retrieved list
+//            view.refreshDatasets(lastDatasets);
+//        }    
+//        else 
         {
             lastDatasets = session.dataService().getDatasets(datasetType.getId(), nameContaining);
             view.refreshDatasets(lastDatasets);      

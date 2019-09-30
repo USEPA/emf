@@ -1,0 +1,1857 @@
+Assignments of MOZART-T1 model species as of 2/16/17
+MECH=MOZT1
+FORMAT=2
+Compound_ID        MolWt  nC VOC ModSpec          Factor Description
+.
+C74-82-8          16.042   1  0  CH4               1.    methane
+C74-90-8          27.025   1  1  NROG              1.    hydrogen cyanide
+C630-08-0         28.010   1  0  CO                1.    carbon monoxide
+C50-00-0          30.026   1  1  CH2O              1.    formaldehyde
+C74-89-5          31.057   1  1  NROG              1.    methylamine
+C67-56-1          32.042   1  1  CH3OH             1.    methyl alcohol
+C75-13-8          43.025   1  1  NOASN             0.    isocyanate (isocyanic acid?)
+C64-18-6          46.025   1  1  HCOOH             1.    formic acid
+C60-34-4          46.072   1  1  NROG              1.    Monomethyl Hydrazine
+C74-93-1          48.107   1  1  NROG              1.    methyl mercaptan
+C74-87-3          50.488   1  1  NROG              1.    methyl chloride
+C75-10-5          52.023   1  0  NROG              1.    difluoromethane {hfc-32}
+C57-13-6          60.055   1  1  NOASN             0.    urea
+C463-58-1         60.075   1  1  NROG              1.    carbonyl sulfide
+C624-91-9         61.040   1  1  NROG              1.    Methyl Nitrite
+C75-52-5          61.040   1  1  NROG              1.    nitromethane
+C2171-96-2        62.143   1  1  NOASN             0.    Methoxysilane
+C593-70-4         68.478   1  0  NROG              1.    chlorofluoromethane {hcfc-31}
+C75-46-7          70.014   1  0  NROG              1.    trifluoromethane (f-23)
+C75-15-0          76.141   1  1  NROG              1.    carbon disulfide
+C75-09-2          84.933   1  0  NROG              1.    dichloromethane {methylene chloride}
+C75-45-6          86.468   1  0  NROG              1.    chlorodifluoromethane (f-22)
+C75-73-0          88.004   1  0  NROG              1.    tetrafluoromethane {carbon tetrafluoride} {r 14}
+C74-83-9          94.939   1  1  NROG              1.    methyl bromide
+C75-44-5          98.916   1  1  NROG              1.    phosgene (ccl2o)
+C75-72-9         104.459   1  1  NROG              1.    chlorotrifluoromethane (f-13)
+C67-66-3         119.378   1  1  NROG              1.    chloroform
+C75-71-8         120.914   1  0  NROG              1.    dichlorodifluoromethane (f-12)
+C75-69-4         137.368   1  0  NROG              1.    trichlorofluoromethane
+C74-88-4         141.939   1  1  NROG              1.    Iodomethane
+C56-23-5         153.823   1  1  NROG              1.    carbon tetrachloride
+C2163-80-6       161.952   1  1  NVOL              1.    monosodium acid methanearsonate
+C75-27-4         163.829   1  1  NROG              1.    bromodichloromethane
+C76-06-2         164.375   1  1  NROG              1.    chloropicrin
+C74-95-3         173.835   1  1  NROG              1.    methylene bromide
+C124-48-1        208.280   1  1  NROG              1.    chlorodibromomethane
+C75-25-2         252.731   1  1  NROG              1.    bromoform
+C558-13-4        331.627   1  1  NROG              1.    carbon tetrabromide
+C74-84-0          30.069   2  0  C2H6              1.    ethane
+C74-86-2          26.037   2  1  C2H2              1.    acetylene
+C74-85-1          28.053   2  1  C2H4              1.    ethylene
+C75-05-8          41.052   2  1  NROG              1.    acetonitrile
+C593-67-9         43.068   2  1  C3H6              1.    vinylamine
+C75-07-0          44.053   2  1  CH3CHO            1.    acetaldehyde
+C75-21-8          44.053   2  1  NROG              1.    ethylene oxide
+C75-04-7          45.084   2  1  BIGALK            1.    ethylamine
+C124-40-3         45.084   2  1  BIGALK            1.    dimethylamine
+C64-17-5          46.068   2  1  C2H5OH            1.    ethyl alcohol
+C115-10-6         46.068   2  1  NROG              1.    dimethyl ether
+C353-36-6         48.060   2  0  NROG              1.    ethylfluoride {hfc-161}
+C107-16-4         57.051   2  1  NROG              1.    hydroxyacetonitrile
+C107-22-2         58.036   2  1  GLYOXAL           1.    glyoxal
+C141-46-8         60.052   2  1  GLYALD            1.    glycolaldehyde
+C64-19-7          60.052   2  1  CH3COOH           1.    acetic acid
+C107-31-3         60.052   2  0  NROG              1.    methyl formate
+C107-15-3         60.098   2  1  BIGALK            1.    ethylene diamine
+C141-43-5         61.083   2  1  C3H8              1.    ethanolamine
+C107-21-1         62.068   2  1  NROG              1.    ethylene glycol
+C75-18-3          62.134   2  1  BIGALK            1.    dimethyl sulfide
+C75-08-1          62.134   2  1  NROG              1.    ethyl mercaptan
+C75-01-4          62.498   2  1  NROG              1.    vinyl chloride
+C75-00-3          64.514   2  1  NROG              1.    ethyl chloride
+C75-37-6          66.050   2  0  NROG              1.    1,1-difluoroethane (hfc-152a)
+C556-61-6         73.117   2  1  NROG              1.    methyl isothiocyanate
+C298-12-4         74.035   2  1  CH3COOH           1.    Glyoxylic Acid
+C79-24-3          75.067   2  1  NROG              1.    nitroethane
+C79-14-1          76.051   2  1  NROG              1.    glycolic acid {hydroxyacetic acid}
+C79-21-0          76.051   2  1  CH3COOOH          1.    peroxyacetic acid
+C67-68-5          78.133   2  1  NROG              1.    dimethyl sulfoxide
+C107-20-0         78.498   2  1  NROG              1.    chloroacetaldehyde
+C1615-75-4        82.505   2  0  NROG              1.    1-chloro-1-fluoroethane {hcfc-151a}
+C420-46-2         84.040   2  0  NROG              1.    1,1,1-trifluoroethane {hfc-143a}
+C144-62-7         90.035   2  1  CH3COOH           1.    oxalic acid
+C624-92-0         94.199   2  1  NROG              1.    dimethyl disulfide
+C156-60-5         96.943   2  1  NROG              1.    trans-1,2-dichloroethene
+C156-59-2         96.943   2  1  NROG              1.    cis-1,2-dichloroethene
+C75-35-4          96.943   2  1  NROG              1.    1,1-dichloroethene {vinylidene chloride}
+C107-06-2         98.959   2  1  NROG              1.    ethylene dichloride
+C75-34-3          98.959   2  1  NROG              1.    1,1-dichloroethane
+C75-68-3         100.495   2  0  NROG              1.    1-chloro-1,1-difluoroethane {hcfc-142b}
+C811-97-2        102.031   2  0  NROG              1.    1,1,1,2-tetrafluoroethane {hfc-134a}
+C359-35-3        102.031   2  0  NROG              1.    1,1,2,2-tetrafluoroethane {hfc-134}
+C74-96-4         108.965   2  1  NROG              1.    Ethyl Bromide
+C1717-00-6       116.950   2  0  NROG              1.    1,1-dichloro-1-fluoroethane {hcfc-141b}
+C354-33-6        120.021   2  0  NROG              1.    pentafluoroethane {hfc-125}
+C79-01-6         131.388   2  1  NROG              1.    trichloroethylene (tce)
+C79-00-5         133.404   2  1  NROG              1.    1,1,2-trichloroethane
+C71-55-6         133.404   2  0  NROG              1.    1,1,1-trichloroethane
+C2837-89-0       136.476   2  0  NROG              1.    2-chloro-1,1,1,2-tetrafluoroethane {hcfc-124}
+C76-16-4         138.012   2  0  NROG              1.    hexafluoroethane {f-116}
+C306-83-2        152.931   2  0  NROG              1.    1,1,1-trifluoro-2,2-dichloroethane {hcfc-123}
+C354-23-4        152.931   2  0  NROG              1.    1,2-dichloro-1,1,2-trifluoroethane {hcfc-123a}
+C76-15-3         154.466   2  0  NROG              1.    chloropentafluoroethane (f115)
+C127-18-4        165.833   2  0  NROG              1.    perchloroethylene
+C79-34-5         167.849   2  1  NROG              1.    1,1,2,2-tetrachloroethane
+C76-14-2         170.921   2  0  NROG              1.    1,2-dichloro-1,1,2,2-tetrafluoroethane {cfc-114}
+C76-13-1         187.376   2  0  NROG              1.    1,1,2-trichloro-1,2,2-trifluoroethane (CFC-113)
+C106-93-4        187.861   2  1  NROG              1.    ethylene dibromide
+C3252-43-5       198.844   2  1  NOASN             0.    dibromoacetonitrile
+C76-11-9         203.830   2  1  NROG              1.    difluorotetrachloroethane {f-112}
+C67-72-1         236.739   2  1  NROG              1.    hexachloroethane
+C75-19-4          42.080   3  1  NROG              1.    cyclopropane
+C74-98-6          44.096   3  1  C3H8              1.    propane
+C74-99-7          40.064   3  1  C2H4              1.    1-propyne
+C463-49-0         40.064   3  1  BIGENE            1.    1,2-propadiene
+C115-07-1         42.080   3  1  C3H6              1.    propylene
+C107-13-1         53.063   3  1  BIGENE            1.    acrylonitrile
+C107-02-8         56.063   3  1  BIGENE            0.500 acrolein (2-propenal)
+C123-38-6         58.079   3  1  BIGALK            1.    propionaldehyde
+C67-64-1          58.079   3  0  CH3COCH3          1.    acetone
+C75-56-9          58.079   3  1  C3H8              1.    propylene oxide
+C503-30-0         58.079   3  1  NROG              1.    Trimethylene Oxide (1,3-epoxypropane)
+C75-31-0          59.110   3  1  C3H8              1.    isopropylamine
+C75-50-3          59.110   3  1  C3H8              1.    trimethyl amine
+C67-63-0          60.095   3  1  CH3COCH3          1.    isopropyl alcohol
+C71-23-8          60.095   3  1  CH3COCH3          1.    n-propyl alcohol
+C79-06-1          71.078   3  1  NOASN             0.    acrylamide
+C78-98-8          72.063   3  1  CH3COCHO          1.    methyl glyoxal
+C79-10-7          72.063   3  1  BIGENE            1.    acrylic acid
+C68-12-2          73.094   3  1  NROG              1.    dimethyl formamide
+C79-09-4          74.079   3  1  CH3COOH           1.    propionic acid
+C116-09-6         74.079   3  1  HYAC              1.    Hydroxy Acetone (Acetol)
+C79-20-9          74.079   3  0  NROG              1.    methyl acetate
+C109-94-4         74.079   3  1  NROG              1.    Ethyl Formate
+C646-06-0         74.079   3  1  GLYALD            1.    1,3-dioxolane
+C78-96-6          75.110   3  1  NROG              1.    monoisopropanolamine {1-amino-2-propanol}
+C109-83-1         75.110   3  1  NROG              1.    2-Methylaminoethanol
+C109-87-5         76.094   3  1  CH3OH             1.    dimethoxymethane (methylal)
+C109-86-4         76.094   3  1  C2H5OH            1.    2-methoxyethanol {methyl cellosolve} {egme}
+C57-55-6          76.094   3  1  NROG              1.    propylene glycol
+C107-05-1         76.525   3  1  NROG              1.    allyl chloride
+C540-54-5         78.541   3  1  NROG              1.    1-chloropropane
+C127-17-3         88.062   3  1  NROG              1.    Pyruvic acid
+C79-46-9          89.093   3  1  CH3COCH3          1.    2-nitropropane
+C108-03-2         89.093   3  1  CH3COCH3          1.    1-nitropropane
+C50-21-5          90.078   3  1  NROG              1.    Lactic Acid
+C96-26-4          90.078   3  1  HYAC              1.    dihydroxyacetone
+C616-38-6         90.078   3  0  NROG              1.    Dimethyl carbonate
+C56-81-5          92.094   3  1  NROG              1.    glycerol
+C420-56-4         92.187   3  1  NROG              1.    trimethylfluorosilane
+C78-95-5          92.524   3  1  NROG              1.    chloroacetone
+C106-89-8         92.524   3  1  NROG              1.    epichlorohydrin
+C1712-64-7       105.093   3  1  ALKNIT            1.    isopropyl nitrate
+C96-24-2         110.539   3  1  NROG              1.    Glycerol alpha-monochlorohydrin
+C10061-01-5      110.970   3  1  NROG              1.    cis-1,3-dichloropropene
+C10061-02-6      110.970   3  1  NROG              1.    trans-1,3-dichloropropene
+C78-87-5         112.986   3  1  NROG              1.    1,2-dichloropropane
+C26638-19-7      112.986   3  1  NROG              1.    propylene dichloride
+C142-28-9        112.986   3  1  NROG              1.    1,3-Dichloropropane
+C1645-83-6       114.042   3  1  NROG              1.    trans 1,3,3,3-tetrafluoropropene 
+C754-12-1        114.042   3  1  NROG              1.    2,3,3,3-tetrafluoropropene
+C106-94-5        122.992   3  1  NROG              1.    n-Propyl Bromide
+C6317-18-6       130.191   3  1  NOASN             0.    methylene bis(thiocyanate)
+C460-73-1        134.048   3  0  NROG              1.    1,1,1,3,3-pentafluoropropane {hfc-245fa}
+C431-31-2        134.048   3  0  NROG              1.    1,1,1,2,3-pentafluoropropane {hfc-245eb}
+C679-86-7        134.048   3  0  NROG              1.    1,1,2,2,3-pentafluoropropane {hfc-245ca}
+C24270-66-4      134.048   3  0  NROG              1.    1,1,2,3,3-pentafluoropropane {hfc-245ea}
+C431-63-0        152.038   3  0  NROG              1.    1,1,1,2,3,3-hexafluoropropane {hfc-236ea}
+C690-39-1        152.038   3  0  NROG              1.    1,1,1,3,3,3-hexafluoropropane {hfc-236fa}
+C128-03-0        159.315   3  1  NVOL              1.    dimethylcarbamodithioic acid, potassium salt
+C76-38-0         164.966   3  1  NOASN             0.    methoxyflurane
+C1071-83-6       169.073   3  1  NVOL              1.    glyphosate
+C431-89-0        170.029   3  0  NROG              1.    1,1,1,2,3,3,3-heptafluoropropane (HFC 227ea)
+C375-03-1        188.044   3  0  NROG              1.    1,1,1,2,2,3,3-heptafluoro-3-methoxy-propane (n-C3F7OCH3 or HFE-7000)
+C507-55-1        202.938   3  0  NROG              1.    1,3-dichloro-1,1,2,2,3-pentafluoropropane {hcfc-225cb}
+C422-56-0        202.938   3  0  NROG              1.    3,3-dichloro-1,1,1,2,2-pentafluoropropane {hcfc-225ca}
+C10222-01-2      241.869   3  1  NOASN             0.    2,2-dibromo-3-nitrilopropionamide
+C287-23-0         56.106   4  1  BIGALK            1.    Cyclobutane
+C106-97-8         58.122   4  1  BIGALK            1.    n-butane
+C75-28-5          58.122   4  1  BIGALK            1.    2-methylpropane; isobutane
+C460-12-8         50.059   4  1  C2H2              1.    1,3-butadiyne
+C689-97-4         52.075   4  1  BIGENE            1.    vinylacetylene
+C106-99-0         54.090   4  1  BIGENE            1.    1,3-butadiene
+C107-00-6         54.090   4  1  C2H2              1.    1-butyne (ethylacetylene)
+C590-19-2         54.090   4  1  BIGENE            1.    1,2-butadiene {methylallene}
+C503-17-3         54.090   4  1  C2H2              1.    2-butyne
+C106-98-9         56.106   4  1  BIGENE            1.    1-butene
+C115-11-7         56.106   4  1  BIGENE            1.    2-methylpropene (isobutene)
+C590-18-1         56.106   4  1  BIGENE            1.    cis-2-butene
+C624-64-6         56.106   4  1  BIGENE            1.    trans-2-butene
+C126-98-7         67.089   4  1  NOASN             0.    methacrylonitrile
+C110-00-9         68.074   4  1  TOLUENE           1.    furan
+C109-74-0         69.105   4  1  NROG              1.    butyronitrile
+C78-82-0          69.105   4  1  NROG              1.    Isobutyronitrile
+C1191-95-3        70.090   4  1  CH3COCH3          1.    Cyclobutanone
+C78-85-3          70.090   4  1  MACR              1.    2-methyl-2-propenal (methacrolein)
+C78-94-4          70.090   4  1  MVK               1.    Methylvinyl ketone
+C4170-30-3        70.090   4  1  BIGENE            1.    crotonaldehyde
+C1191-99-7        70.090   4  1  TOLUENE           1.    2,3-dihydrofuran
+C123-72-8         72.106   4  1  BIGALK            1.    butyraldehyde
+C78-84-2          72.106   4  1  BIGALK            1.    isobutyraldehyde
+C78-93-3          72.106   4  1  MEK               1.    methyl ethyl ketone (mek) (2-butanone)
+C106-88-7         72.106   4  1  BIGALK            1.    1,2-epoxybutane
+C109-99-9         72.106   4  1  BIGALK            1.    tetrahydrofuran
+C513-42-8         72.106   4  1  BIGENE            1.    Methally alcohol
+C109-89-7         73.137   4  1  BIGALK            1.    diethylamine
+C109-73-9         73.137   4  1  BIGALK            1.    n-Butylamine
+C75-64-9          73.137   4  1  BIGALK            1.    tert-butyl amine
+C75-65-0          74.122   4  1  NROG              1.    tert-butyl alcohol
+C71-36-3          74.122   4  1  BIGALK            1.    n-butyl alcohol
+C78-92-2          74.122   4  1  BIGALK            1.    sec-butyl alcohol
+C78-83-1          74.122   4  1  BIGALK            1.    isobutyl alcohol
+C60-29-7          74.122   4  1  BIGALK            1.    ethyl ether
+C110-02-1         84.140   4  1  NROG              1.    Thiophene
+C431-03-8         86.089   4  1  MEK               1.    Biacetyl
+SP4-1824          86.089   4  1  CH3COCHO          1.    2-oxobutanal; ethyl glyoxal
+C40364-84-9       86.089   4  1  BIGENE            1.    Hydroxy Methacrolein (2-(Hydroxymethyl)-2-propenal)
+C96-48-0          86.089   4  1  NROG              1.    gamma- butyrolactone
+C96-33-3          86.089   4  1  BIGENE            1.    methyl acrylate
+C108-05-4         86.089   4  1  BIGENE            1.    vinyl acetate
+C79-41-4          86.089   4  1  CH3COOH           1.    methyacrylic acid
+C96-29-7          87.120   4  1  NROG              1.    methyl ethyl ketoxime
+C127-19-5         87.120   4  1  NROG              1.    dimethylacetamide
+C110-91-8         87.120   4  1  NROG              1.    morpholine (tetrahydro-1,4-oxazin)
+C107-92-6         88.105   4  1  CH3COOH           1.    butanoic acid
+C79-31-2          88.105   4  1  CH3COOH           1.    isobutyric acid
+C5878-19-3        88.105   4  1  NROG              1.    Methoxy Acetone
+C513-86-0         88.105   4  1  MEK               1.    3-Hydroxy-2-butanone
+C554-12-1         88.105   4  1  NROG              1.    Methyl Propionate
+C141-78-6         88.105   4  1  NROG              1.    ethyl acetate
+C625-55-8         88.105   4  1  NROG              1.    Isopropyl Formate
+C110-74-7         88.105   4  1  NROG              1.    n-Propyl Formate
+C123-91-1         88.105   4  1  BIGALK            1.    1,4-dioxane
+C75-76-3          88.224   4  1  NROG              1.    tetramethylsilane
+C126-99-8         88.536   4  1  NROG              1.    chloroprene (2-chloro-1,3-butadiene)
+C96-20-8          89.136   4  1  BIGALK            1.    2-amino-1-butanol
+C108-01-0         89.136   4  1  BIGALK            1.    n,n-dimethylethanolamine
+C124-68-5         89.136   4  1  BIGALK            1.    2-amino-2-methyl-1-propanol
+C110-63-4         90.121   4  1  BIGALK            1.    1,4-butanediol
+C1320-67-8        90.121   4  1  BIGALK            1.    3-methoxy-1-propanol
+C110-80-5         90.121   4  1  BIGALK            1.    2-ethoxyethanol {cellosolve} {egee}
+C107-98-2         90.121   4  1  NROG              1.    propylene glycol methyl ether {1-methoxy-2-propanol}
+C513-85-9         90.121   4  1  BIGALK            1.    2,3-Butanediol
+C1589-47-5        90.121   4  1  BIGALK            1.    2-methoxy-1-propanol
+C584-03-2         90.121   4  1  BIGALK            1.    1,2-butanediol
+C107-88-0         90.121   4  1  BIGALK            1.    1,3-butanediol
+C534-15-6         90.121   4  1  BIGALK            1.    1,1-dimethoxy ethane
+C110-71-4         90.121   4  1  BIGALK            1.    1,2-Dimethoxyethane
+C109-69-3         92.567   4  1  NROG              1.    1-chlorobutane
+C108-31-6         98.057   4  1  BIGENE            1.    maleic anhydride
+C123-56-8         99.088   4  1  NOASN             0.    succinimide
+C108-32-7        102.089   4  0  NROG              1.    propylene carbonate
+C108-24-7        102.089   4  1  NROG              1.    acetic anhydride
+C111-40-0        103.166   4  1  NROG              1.    diethylenetriamine
+C547-64-8        104.105   4  1  NROG              1.    Methyl lactate
+C111-41-1        104.151   4  1  NROG              1.    N-(2-Hydroxyethyl)ethylenediamine
+2C4-ONO2         119.119   4  1  ALKNIT            1.    2-butyl nitrate
+C929-06-6        105.136   4  1  NROG              1.    diglycolamine (2-(2-aminoethoxy)ethanol)
+C111-42-2        105.136   4  1  NROG              1.    diethanolamine
+C111-46-6        106.120   4  1  NROG              1.    diethylene glycol (2,2'-oxybisethanol)
+C2682-20-4       115.154   4  1  NROG              1.    2-methyl-4-isothiazolin-3-one
+C59-89-2         116.119   4  1  NROG              1.    n-nitrosomorpholine
+C110-15-6        118.088   4  1  NROG              1.    Succinic acid-TMS
+C543-29-3        119.119   4  1  ALKNIT            1.    isobutyl nitrate
+C1871-57-4       124.996   4  1  NROG              1.    2-(Chloromethyl)-3-Chloro-Propene
+C6915-15-7       134.087   4  1  CH3COOH           1.    malic acid
+C1185-55-3       136.222   4  1  NROG              1.    methyltrimethoxysilane
+C109-65-9        137.018   4  1  NROG              1.    n-Butyl Bromide
+C406-58-6        148.075   4  0  NROG              1.    1,1,1,3,3-pentafluorobutane {hfc-365mfc}
+C26172-55-4      149.599   4  1  NROG              1.    5-chloro-2-methyl-4-isothiazolin-3-one
+C64-67-5         154.185   4  1  NROG              1.    Diethyl Sulfate
+C62-73-7         220.976   4  1  NROG              1.    dichlorovos
+C6156-78-1       245.087   4  1  NVOL              1.    manganese (ii) acetate, tetrahydrate
+C287-92-3         70.133   5  1  BIGALK            1.    cyclopentane
+C109-66-0         72.149   5  1  BIGALK            1.    n-pentane
+C78-78-4          72.149   5  1  BIGALK            1.    2-methyl-butane
+C463-82-1         72.149   5  1  BIGALK            1.    2,2-dimethylpropane
+C2206-23-7        66.101   5  1  BIGENE            1.    3-Penten-1-yne
+C542-92-7         66.101   5  1  BIGENE            1.    1,3-cyclopentadiene
+C78-79-5          68.117   5  1  ISOP              1.    isoprene
+C591-95-7         68.117   5  1  BIGENE            1.    1,2-Pentadiene
+C591-93-5         68.117   5  1  BIGENE            1.    1,4-pentadiene
+C627-19-0         68.117   5  1  BIGENE            1.    1-pentyne
+C598-25-4         68.117   5  1  BIGENE            1.    3-Methyl-1,2-Butadiene
+C142-29-0         68.117   5  1  BIGENE            1.    cyclopentene
+C2004-70-8        68.117   5  1  BIGENE            1.    trans-1,3-pentadiene
+C504-60-9         68.117   5  1  BIGENE            1.    piperylene {1,3-pentadiene} (mixed isomers)
+C1574-41-0        68.117   5  1  BIGENE            1.    cis 1,3-pentadiene
+C109-67-1         70.133   5  1  BIGENE            1.    1-pentene
+C563-45-1         70.133   5  1  BIGENE            1.    3-methyl-1-butene
+C627-20-3         70.133   5  1  BIGENE            1.    cis-2-pentene
+C563-46-2         70.133   5  1  BIGENE            1.    2-methyl-1-butene
+C513-35-9         70.133   5  1  BIGENE            1.    2-methyl-2-butene
+C646-04-8         70.133   5  1  BIGENE            1.    trans-2-pentene
+C110-86-1         79.100   5  1  BENZENE           1.    pyridine
+C16529-56-9       81.116   5  1  NROG              1.    2-methyl-3-butenenitrile
+C534-22-5         82.101   5  1  XYLENES           1.    2-methyl furan
+C930-27-8         82.101   5  1  XYLENES           1.    3-methyl furan
+C120-92-3         84.116   5  1  MEK               1.    Cyclopentanone
+C115-18-4         86.132   5  1  MBO               1.    2-methyl-3-buten-2-ol
+C590-86-3         86.132   5  1  MEK               1.    isovaleraldehyde (3-methylbutanal)
+C630-19-3         86.132   5  1  MEK               1.    2,2-Dimethylpropanal (pivaldehyde)
+C110-62-3         86.132   5  1  MEK               1.    n-pentanal (n-valeraldehyde)
+C96-17-3          86.132   5  1  MEK               1.    2-Methylbutyraldehyde
+C96-22-0          86.132   5  1  MEK               1.    diethyl ketone
+C563-80-4         86.132   5  1  MEK               1.    Methyl Isopropyl Ketone
+C107-87-9         86.132   5  1  MEK               1.    methyl propyl ketone (2-pentanone)
+C96-41-3          86.132   5  1  BIGALK            1.    Cyclopentanol
+C142-68-7         86.132   5  1  BIGALK            1.    Tetrahydropyran
+C96-47-9          86.132   5  1  BIGALK            1.    Alpha-Methyltetrahydrofuran (2-methyl tetrahydrofuran)
+C1634-04-4        88.148   5  1  BIGALK            1.    methyl t-butyl ether (mtbe)
+C75-85-4          88.148   5  1  BIGALK            1.    2-methyl-2-butanol; t-amyl alcohol
+C137-32-6         88.148   5  1  BIGALK            1.    2-methyl-1-butanol
+C71-41-0          88.148   5  1  BIGALK            1.    n-pentanol
+C6032-29-7        88.148   5  1  BIGALK            1.    2-Pentanol (sec amyl alcohol)
+C123-51-3         88.148   5  1  BIGALK            1.    isoamyl alcohol (3-methyl-1-butanol)
+C584-02-1         88.148   5  1  BIGALK            1.    3-Pentanol (diethyl carbinol)
+C628-28-4         88.148   5  1  BIGALK            1.    Methyl n-Butyl Ether
+C625-54-7         88.148   5  1  BIGALK            1.    ethyl isopropyl ether
+C598-75-4         88.148   5  1  BIGALK            1.    3-methyl-2-butanol
+C98-01-1          96.084   5  1  TOLUENE           1.    2-furfural
+C98-00-0          98.100   5  1  TOLUENE           1.    furfuryl alcohol
+C872-50-4         99.131   5  1  NROG              1.    1-methyl-2-pyrrolidinone
+C626-96-0        100.116   5  1  BIGALD2           1.    oxopentanal
+C111-30-8        100.116   5  1  BIGALD2           1.    glutaraldehyde
+C123-54-6        100.116   5  1  MEK               1.    2,4-pentanedione
+UNS-ISO-PROD     100.116   5  1  HYDRALD           1.    Unspecified C5 unsaturated carbonyl isoprene product
+C140-88-5        100.116   5  1  BIGENE            1.    ethyl acrylate
+C80-62-6         100.116   5  1  BIGENE            1.    methyl methacrylate
+C51200-87-4      101.147   5  1  NROG              1.    4,4-Dimethyloxazolidine
+C503-74-2        102.132   5  1  CH3COOH           1.    3-Methylbutanoic acid
+C547-63-7        102.132   5  1  NROG              1.    methyl isobutyrate
+C105-37-3        102.132   5  1  NROG              1.    Ethyl Propionate
+C623-42-7        102.132   5  1  NROG              1.    Methyl Butyrate
+C592-84-7        102.132   5  1  NROG              1.    n-Butyl Formate
+C108-21-4        102.132   5  1  NROG              1.    isopropyl acetate
+C109-60-4        102.132   5  1  NROG              1.    propyl acetate
+C97-99-4         102.132   5  1  BIGALK            1.    tetrahydro-2-furanmethanol
+C77-76-9         104.148   5  1  BIGALK            1.    dimethoxypropane
+C111-35-3        104.148   5  1  BIGALK            1.    3-Ethoxy-1-propanol (Propylene glycol, monoethyl ether)
+C2517-43-3       104.148   5  1  BIGALK            1.    3-Methoxy-1-Butanol
+C2807-30-9       104.148   5  1  BIGALK            1.    ethylene glycol propyl ether {2-propoxyethanol}
+C1569-02-4       104.148   5  1  BIGALK            1.    1-ethoxy-2-propanol
+C26447-28-9      112.083   5  1  TOLUENE           1.    Furancarboxylic acid
+C1121-07-9       113.115   5  1  NROG              1.    2,5-Pyrrolidinedione, 1-methyl-  (N-Methylsuccinimide)
+C51729-83-0      118.131   5  1  NROG              1.    Methyl Isopropyl carbonate
+C97-64-3         118.131   5  1  NROG              1.    Ethyl lactate
+C110-49-6        118.131   5  1  NROG              1.    methyl cellosolve acetate
+C115-70-8        119.162   5  1  NROG              1.    2-amino-2-ethyl-1,3-propanediol
+C111-77-3        120.147   5  1  NROG              1.    methyl carbitol {2-(2-methoxyethoxy)ethanol} {degme}
+C2782-91-4       132.227   5  1  NROG              1.    tetramethylthiourea
+C115-77-5        136.146   5  1  NVOL              1.    pentaerythritol
+C2768-02-7       148.232   5  1  NOASN             0.    vinyltrimethoxysilane
+SI2OMEOH         164.350   5  1  NROG              1.    Hydroxymethyldisiloxane
+C60-51-5         229.257   5  1  NROG              1.    dimethoate
+C32718-18-6      241.470   5  1  NOASN             0.    2,4-imidazolidinedione, bromochloro-5,5-dimethyl
+C163702-07-6     250.062   5  0  NROG              1.    1,1,1,2,2,3,3,4,4-nonafluoro-4-methoxy-butane {c4f9och3}
+C163702-08-7     250.062   5  0  NROG              1.    2-(fl2methoxymethyl)-1,1,1,2,3,3,3-fl7propane {(cf3)2cfcf2och3}
+C138495-42-8     252.053   5  0  NROG              1.    1,1,1,2,3,4,4,5,5,5-decafluoropentane {hfc-43-10mee}
+C77-47-4         272.772   5  1  NROG              1.    hexachlorocyclopentadiene
+C678-26-2        288.034   5  0  NROG              1.    perfluoropentane
+C3638-35-5        84.159   6  1  BIGALK            1.    Isopropyl Cyclopropane
+C96-37-7          84.159   6  1  BIGALK            1.    methylcyclopentane
+C110-82-7         84.159   6  1  BIGALK            1.    cyclohexane
+C110-54-3         86.175   6  1  BIGALK            1.    n-hexane
+C107-83-5         86.175   6  1  BIGALK            1.    2-methylpentane
+C96-14-0          86.175   6  1  BIGALK            1.    3-methylpentane
+C75-83-2          86.175   6  1  BIGALK            1.    2,2-dimethylbutane
+C79-29-8          86.175   6  1  BIGALK            1.    2,3-dimethylbutane
+C71-43-2          78.112   6  1  BENZENE           1.    benzene
+C96-39-9          80.128   6  1  BIGENE            1.    1-Methyl-1,3-cyclopentadiene
+3727-31-9         80.128   6  1  BIGENE            1.    2-Methyl-1,3-cyclopentadiene
+C693-02-7         82.144   6  1  BIGENE            1.    1-hexyne
+C592-42-7         82.144   6  1  BIGENE            1.    1,5-hexadiene
+C42296-74-2       82.144   6  1  BIGENE            1.    hexadiene
+C7319-00-8        82.144   6  1  BIGENE            1.    Trans 1,4-Hexadiene
+C592-45-0         82.144   6  1  BIGENE            1.    1,4-hexadiene
+C763-30-4         82.144   6  1  BIGENE            1.    2-methyl-1,4-pentadiene
+C1120-62-3        82.144   6  1  BIGENE            1.    3-methylcyclopentene
+C110-83-8         82.144   6  1  BIGENE            1.    cyclohexene
+C693-89-0         82.144   6  1  BIGENE            1.    1-methylcyclopentene
+C1759-81-5        82.144   6  1  BIGENE            1.    4-Methylcyclopentene
+C592-48-3         82.144   6  1  BIGENE            1.    1,3-hexadiene
+C5194-51-4        82.144   6  1  BIGENE            1.    trans,trans-2,4-hexadiene
+C20237-34-7       82.144   6  1  BIGENE            1.    Trans 1,3-Hexadiene
+C558-37-2         84.159   6  1  BIGENE            1.    3,3-dimethyl-1-butene
+C760-20-3         84.159   6  1  BIGENE            1.    3-methyl-1-pentene
+C691-37-2         84.159   6  1  BIGENE            1.    4-methyl-1-pentene
+C592-41-6         84.159   6  1  BIGENE            1.    1-hexene
+C763-29-1         84.159   6  1  BIGENE            1.    2-methyl-1-pentene
+C674-76-0         84.159   6  1  BIGENE            1.    4-methyl-trans-2-pentene
+C7642-09-3        84.159   6  1  BIGENE            1.    cis-3-hexene
+C7688-21-3        84.159   6  1  BIGENE            1.    cis-2-hexene
+C691-38-3         84.159   6  1  BIGENE            1.    4-methyl-cis-2-pentene
+C4461-48-7        84.159   6  1  BIGENE            1.    4-methyl-2-pentene
+C760-21-4         84.159   6  1  BIGENE            1.    2-ethyl-1-butene
+C563-78-0         84.159   6  1  BIGENE            1.    2,3-dimethyl-1-butene
+C922-62-3         84.159   6  1  BIGENE            1.    3-methyl-cis-2-pentene
+C616-12-6         84.159   6  1  BIGENE            1.    3-methyl-trans-2-pentene
+C13269-52-8       84.159   6  1  BIGENE            1.    trans-3-hexene
+C4050-45-7        84.159   6  1  BIGENE            1.    trans-2-hexene
+C563-79-1         84.159   6  1  BIGENE            1.    2,3-dimethyl-2-butene
+C625-27-4         84.159   6  1  BIGENE            1.    2-methyl-2-pentene
+C62-53-3          93.126   6  1  XYLENES           1.    aniline {aminobenzene}
+C108-95-2         94.111   6  1  PHENOL            1.    phenol (carbolic acid)
+C142-83-6         96.127   6  1  BIGENE            1.    2,4-hexadienal
+C625-86-5         96.127   6  1  XYLENES           1.    2,5-dimethyl furan
+C3208-16-0        96.127   6  1  XYLENES           1.    2-ethyl furan
+C3710-43-8        96.127   6  1  XYLENES           1.    2,4-dimethyl furan
+C6789-80-6        98.143   6  1  BIGENE            1.    cis-3-hexenal
+C108-94-1         98.143   6  1  MEK               1.    cyclohexanone
+C1192-14-9        98.143   6  1  MEK               1.    2,2-dimethyl cyclobutanone
+C141-79-7         98.143   6  1  MEK               1.    mesityl oxide (2-methyl-2-penten-4-one)
+C6728-26-3        98.143   6  1  BIGENE            1.    trans-2-Hexenal
+C111-49-9         99.174   6  1  NROG              1.    hexamethyleneimine
+C108-91-8         99.174   6  1  BIGALK            1.    cyclohexamine
+C66-25-1         100.159   6  1  BIGALK            1.    hexanal (hexanaladehyde)
+C75-97-8         100.159   6  1  MEK               1.    Methyl t-Butyl Ketone (Pinacolin)
+C591-78-6        100.159   6  1  MEK               1.    methyl n-butyl ketone
+C108-10-1        100.159   6  1  MEK               1.    methyl isobutyl ketone
+C589-38-8        100.159   6  1  MEK               1.    3-hexanone; ethyl n-propyl ketone
+C108-93-0        100.159   6  1  BIGALK            1.    cyclohexanol
+C4798-44-1       100.159   6  1  BIGENE            1.    1-hexenol
+C928-96-1        100.159   6  1  BIGENE            1.    cis-3-hexen-1-ol
+C121-44-8        101.190   6  1  BIGALK            1.    triethylamine
+C111-26-2        101.190   6  1  BIGALK            1.    n-Hexylamine
+C108-18-9        101.190   6  1  BIGALK            1.    Bis(Isopropyl)amine
+C994-05-8        102.175   6  1  BIGALK            1.    t-amylmethylether (tame)
+C637-92-3        102.175   6  1  BIGALK            1.    ethyl t-butyl ether
+C626-93-7        102.175   6  1  BIGALK            1.    2-Hexanol
+C108-11-2        102.175   6  1  BIGALK            1.    4-methyl-2-pentanol (methyl isobutyl carbinol)
+C111-27-3        102.175   6  1  BIGALK            1.    1-hexanol (n-hexanol)
+C111-43-3        102.175   6  1  BIGALK            1.    Di n-Propyl Ether
+C628-81-9        102.175   6  1  BIGALK            1.    Ethyl n-Butyl Ether
+C108-20-3        102.175   6  1  BIGALK            1.    diisopropyl ether
+C4553-62-2       108.141   6  1  NROG              1.    methyl glutaronitrile
+C123-31-9        110.111   6  1  PHENOL            1.    Hydroquinone
+C108-46-3        110.111   6  1  XYLENES           1.    Resorcinol
+C120-80-9        110.111   6  1  PHENOL            1.    1,2-Benzenediol
+SP4-1820         110.111   6  1  TOLUENE           1.    2-methylfuraldehyde
+C88-12-0         111.142   6  1  NROG              1.    n-vinyl-2-pyrrolidinone
+C280-57-9        112.173   6  1  BIGALK            1.    1,4-Diazabicyclo[2.2.2]octane
+C108-90-7        112.557   6  1  NROG              1.    chlorobenzene
+C105-60-2        113.158   6  1  NROG              1.    caprolactam
+SP4-1751         114.142   6  1  BIGALK            1.    5-ethyldihydro-2(3H)-furanone
+C97-63-2         114.142   6  1  BIGENE            1.    Ethyl methacrylate
+C123-42-2        116.158   6  1  HYAC              1.    diacetone alcohol (4-hydroxy-4-methyl-2-pentanone)
+C540-88-5        116.158   6  1  NROG              1.    t-butyl acetate
+C598-98-1        116.158   6  1  NROG              1.    Methyl Pivalate
+C106-36-5        116.158   6  1  BIGALK            1.    n-Propyl Propionate
+C123-86-4        116.158   6  1  BIGALK            1.    n-butyl acetate
+C110-19-0        116.158   6  1  BIGALK            1.    isobutyl acetate
+C105-54-4        116.158   6  1  BIGALK            1.    Ethyl Butyrate
+C105-46-4        116.158   6  1  BIGALK            1.    s-Butyl Acetate
+C766-20-1        116.158   6  1  BIGALK            1.    2,4-dimethyl-1,3-dioxane
+C142-62-1        116.158   6  1  CH3COOH           1.    n-Hexanoic acid
+C624-24-8        116.158   6  1  BIGALK            1.    methyl pentanoate; methyl valerate
+C124-09-4        116.205   6  1  BIGALK            1.    hexamethylenediamine
+C100-37-8        117.189   6  1  BIGALK            1.    diethyl aminoethanol
+C56539-66-3      118.174   6  1  BIGALK            1.    3-methyl-3-methoxy-1-butanol
+C6920-22-5       118.174   6  1  NROG              1.    1,2-Dihydroxy Hexane
+C111-76-2        118.174   6  1  NROG              1.    butyl cellosolve {2-butoxyethanol} {egbe}
+C30136-13-1      118.174   6  1  BIGALK            1.    n-propoxypropanol
+C107-41-5        118.174   6  1  NROG              1.    hexylene glycol (2-methylpentane-2,4-diol)
+C1569-01-3       118.174   6  1  NROG              1.    propylene glycol n-propyl ether
+C629-14-1        118.174   6  1  NROG              1.    ethylene glycol diethyl ether; 1,2-diethoxyethane
+C105-57-7        118.174   6  1  BIGALK            1.    acetal (1,1-diethoxyethane)
+C10215-30-2      118.174   6  1  BIGALK            1.    2-Propoxy-1-propanol
+C98-92-0         122.125   6  1  NOASN             0.    nicotinamide
+C59-67-6         123.109   6  1  TOLUENE           1.    Niacin
+C98-95-3         123.109   6  1  NROG              1.    nitrobenzene
+C7085-85-0       125.125   6  1  NROG              1.    ethyl cyanoacrylate
+C67-47-0         126.110   6  1  BIGENE            1.    2-Furancarboxaldehyde, 5-(hydroxymethyl)-
+C2044-64-6       129.157   6  1  NROG              1.    N,N-Dimethylacetoacetamide
+C140-31-8        129.203   6  1  NROG              1.    N-aminoethylpiperazine
+C2918-23-2       130.142   6  1  BIGENE            1.    hydroxypropyl acrylate
+C868-77-9        130.142   6  1  BIGENE            1.    Hydroxyethyl methacrylate
+C56-18-8         131.219   6  1  BIGALK            1.    iminobispropylamine
+C84540-57-8      132.158   6  1  NROG              1.    methoxypropanol acetate
+C108-65-6        132.158   6  1  NROG              1.    propylene glycol monomethyl ether acetate {2-(1-methoxy)propyl acetate}
+C111-15-9        132.158   6  1  NROG              1.    2-ethoxyethyl acetate {cellosolve acetate}
+C70657-70-4      132.158   6  1  NROG              1.    2-methoxypropyl acetate 
+C110-97-4        133.189   6  1  BIGALK            1.    Diisopropanolamine
+C110-98-5        134.174   6  1  BIGALK            1.    diisopropylene glycol; 1,1'-oxydipropan-2-ol
+C111-90-0        134.174   6  1  BIGALK            1.    carbitol {degee} {2-(2-ethoxyethoxy)ethanol}
+C88-75-5         139.109   6  1  NOASN             0.    2-Nitrophenol
+C124-04-9        146.141   6  1  CH3COOH           1.    adipic acid
+C106-65-0        146.141   6  1  BIGALK            1.    dimethyl succinate (dimethyl butaneoate)
+C111-55-7        146.141   6  1  NROG              1.    Ethylene Glycol Diacetate
+C112-24-3        146.234   6  1  NVOL              1.    triethylene tetramine
+C541-73-1        147.002   6  1  NROG              1.    1,3-dichlorobenzene {m-dichlorobenzene}
+C106-46-7        147.002   6  1  NROG              1.    p-dichlorobenzene
+C95-50-1         147.002   6  1  NROG              1.    o-dichlorobenzene
+C102-71-6        149.188   6  1  NVOL              1.    triethanolamine
+C112-27-6        150.173   6  1  BIGALK            1.    triethylene glycol
+C590-00-1        150.217   6  1  NVOL              1.    potassium sorbate
+C107-46-0        162.378   6  0  NROG              1.    Hexamethyldisiloxane
+C122-52-1        166.155   6  1  NVOL              1.    triethyl phosphite
+C13822-56-5      179.290   6  1  NOASN             0.    3-Aminopropyltrimethoxysilane
+C120-82-1        181.447   6  1  NROG              1.    1,2,4-trichlorobenzene
+C392-56-3        186.055   6  1  NROG              1.    hexafluorobenzene
+C526-95-4        196.155   6  1  NVOL              1.    Gluconic Acid
+C95-95-4         197.446   6  1  NROG              1.    2,4,5-trichlorophenol
+C1331-14-2       207.014   6  1  NROG              1.    2,2-dichloronitroaniline
+C634-66-2        215.892   6  1  NROG              1.    1,2,3,4-tetrachlorobenzene
+C541-05-9        222.462   6  0  NROG              1.    hexamethylcyclotrisiloxane
+C38641-94-0      228.183   6  1  NVOL              1.    glyphosate, isopropylamine salt (Roundup)
+C301-12-2        246.285   6  1  NVOL              1.    oxydemeton-methyl
+C584-48-5        247.003   6  1  NROG              1.    bromodinitrobenzene
+C1817-73-8       262.018   6  1  NROG              1.    bromodinitroaniline {2,4-dinitro-6-bromoaniline}
+C163702-05-4     264.089   6  0  NROG              1.    1-ethoxy-1,1,2,2,3,3,4,4,4-nonafluorobutane {c4f9oc2h5}
+C163702-06-5     264.089   6  0  NROG              1.    2-(ethoxy2flmethyl)-1,1,1,2,3,3,3-fl7propane {(cf3)2cfcf2oc2h5}
+C118-74-1        284.782   6  1  NROG              1.    hexachlorobenzene
+C82-68-8         295.335   6  1  NROG              1.    pentachloronitrobenzene
+C355-42-0        338.042   6  0  NROG              1.    perfluorohexane
+C25655-41-8      364.951   6  1  NVOL              1.    polyvinylpyrrolidone-iodine complex
+C1638-26-2        98.186   7  1  BIGALK            1.    1,1-dimethylcyclopentane
+C2532-58-3        98.186   7  1  BIGALK            1.    cis-1,3-dimethylcyclopentane
+C1759-58-6        98.186   7  1  BIGALK            1.    trans-1,3-dimethylcyclopentane
+C2452-99-5        98.186   7  1  BIGALK            1.    1,2-dimethylcyclopentane
+C1192-18-3        98.186   7  1  BIGALK            1.    cis-1-2-dimethylcyclopentane
+C822-50-4         98.186   7  1  BIGALK            1.    trans-1-2-dimethylcyclopentane
+C1640-89-7        98.186   7  1  BIGALK            1.    ethylcyclopentane
+C108-87-2         98.186   7  1  BIGALK            1.    methylcyclohexane
+C291-64-5         98.186   7  1  BIGALK            1.    Cycloheptane
+C562-49-2        100.202   7  1  BIGALK            1.    3,3-dimethylpentane
+C590-35-2        100.202   7  1  BIGALK            1.    2,2-dimethylpentane
+C464-06-2        100.202   7  1  BIGALK            1.    2,2,3-trimethylbutane
+C108-08-7        100.202   7  1  BIGALK            1.    2,4-dimethylpentane
+C142-82-5        100.202   7  1  BIGALK            1.    n-heptane
+C591-76-4        100.202   7  1  BIGALK            1.    2-methylhexane
+C565-59-3        100.202   7  1  BIGALK            1.    2,3-dimethylpentane
+C589-34-4        100.202   7  1  BIGALK            1.    3-methylhexane
+C617-78-7        100.202   7  1  BIGALK            1.    3-ethylpentane
+C108-88-3         92.138   7  1  TOLUENE           1.    toluene
+C30640-46-1       94.154   7  1  BIGENE            1.    methylcyclohexadiene
+C3070-53-9        96.170   7  1  BIGENE            1.    1,6-heptadiene
+C36566-80-0       96.170   7  1  BIGENE            1.    2-Methyl-3-hexyne
+C591-47-9         96.170   7  1  BIGENE            1.    4-Methyl Cyclohexene
+C1541-23-7        96.170   7  1  BIGENE            1.    1,5-heptadiene
+C4049-81-4        96.170   7  1  BIGENE            1.    2-methyl-1,5-hexadiene
+C591-49-1         96.170   7  1  BIGENE            1.    1-methyl cyclohexene
+C765-47-9         96.170   7  1  BIGENE            1.    1,2-dimethylcyclopentene
+C2146-38-5        96.170   7  1  BIGENE            1.    1-ethyl cyclopentene
+C694-35-9         96.170   7  1  BIGENE            1.    3-ethylcyclopentene
+C28823-42-9       96.170   7  1  BIGENE            1.    3-methyl-2,4-hexadiene
+C3404-73-7        98.186   7  1  BIGENE            1.    3,3-dimethyl-1-pentene
+C7385-78-6        98.186   7  1  BIGENE            1.    3,4-dimethyl-1-pentene
+C3404-61-3        98.186   7  1  BIGENE            1.    3-methyl-1-hexene
+C592-76-7         98.186   7  1  BIGENE            1.    1-heptene
+C594-56-9         98.186   7  1  BIGENE            1.    2,3,3-trimethyl-1-butene
+C2213-32-3        98.186   7  1  BIGENE            1.    2,4-dimethyl-1-pentene
+C3404-72-6        98.186   7  1  BIGENE            1.    2,3-dimethyl-1-pentene
+C6094-02-6        98.186   7  1  BIGENE            1.    2-methyl-1-hexene
+C3404-71-5        98.186   7  1  BIGENE            1.    2-ethyl-1-pentene
+C7357-93-9        98.186   7  1  BIGENE            1.    2-ethyl-3-methyl-1-butene
+C4038-04-4        98.186   7  1  BIGENE            1.    3-ethyl-1-pentene
+C3769-23-1        98.186   7  1  BIGENE            1.    4-methyl-1-hexene
+C3524-73-0        98.186   7  1  BIGENE            1.    5-methyl-1-hexene
+C762-63-0         98.186   7  1  BIGENE            1.    4,4-dimethyl-cis-2-pentene
+C690-08-4         98.186   7  1  BIGENE            1.    Trans 4,4-dimethyl-2-Pentene
+C3683-22-5        98.186   7  1  BIGENE            1.    4-methyl-trans-2-hexene
+C7642-10-6        98.186   7  1  BIGENE            1.    cis-3-heptene
+C6443-92-1        98.186   7  1  BIGENE            1.    cis-2-heptene
+C14686-13-6       98.186   7  1  BIGENE            1.    trans-2-heptene
+C26232-98-4       98.186   7  1  BIGENE            1.    4,4-dimethyl-2-pentene
+C3404-62-4        98.186   7  1  BIGENE            1.    5-methyl-cis-2-hexene
+C7385-82-2        98.186   7  1  BIGENE            1.    5-methyl-trans-2-hexene
+C20710-38-7       98.186   7  1  BIGENE            1.    3-methyl-trans-2-hexene
+C816-79-5         98.186   7  1  BIGENE            1.    3-ethyl-2-pentene
+C4914-89-0        98.186   7  1  BIGENE            1.    3-methyl-cis-3-hexene
+C3899-36-3        98.186   7  1  BIGENE            1.    3-methyl-trans-3-hexene
+C625-65-0         98.186   7  1  BIGENE            1.    2,4-dimethyl-2-pentene
+C2738-19-4        98.186   7  1  BIGENE            1.    2-methyl-2-hexene
+C10574-36-4       98.186   7  1  BIGENE            1.    3-methyl-cis-2-hexene
+C10574-37-5       98.186   7  1  BIGENE            1.    2,3-dimethyl-2-pentene
+C24910-63-2       98.186   7  1  BIGENE            1.    3,4-dimethyl-2-pentene
+C692-24-0         98.186   7  1  BIGENE            1.    2-methyl-trans-3-hexene
+C14686-14-7       98.186   7  1  BIGENE            1.    trans-3-heptene
+C4914-91-4        98.186   7  1  BIGENE            1.    3,4-dimethyl-cis-2-pentene
+C15840-60-5       98.186   7  1  BIGENE            1.    2-methyl-cis-3-hexene
+C3404-55-5        98.186   7  1  BIGENE            1.    trans 4-methyl-2-hexene
+T3M2-C6E          98.186   7  1  BIGENE            1.    trans 3-methyl-2-hexene
+C100-52-7        106.122   7  1  BZALD             1.    benzaldehyde
+C100-61-8        107.153   7  1  XYLENES           1.    4-methylaniline
+C95-48-7         108.138   7  1  CRESOL            1.    o-cresol (2-methyl-benzenol)
+C108-39-4        108.138   7  1  CRESOL            1.    m-cresol (3-methyl-benzenol)
+C106-44-5        108.138   7  1  CRESOL            1.    p-cresol (4-methyl-benzenol)
+C100-66-3        108.138   7  1  TOLUENE           1.    methoxybenzene; anisole
+C100-51-6        108.138   7  1  BZALD             1.    benzyl alcohol
+C4313-03-5       110.154   7  1  BIGENE            1.    trans, trans-2,4-heptadienal
+C502-42-1        112.170   7  1  MEK               1.    cycloheptanone
+C24332-22-7      112.170   7  1  BIGENE            1.    4-Hepten-2-one
+C2463-63-0       112.170   7  1  BIGENE            1.    2-heptenal
+C925-54-2        114.185   7  1  BIGALK            1.    2-methyl-hexanal
+C111-71-7        114.185   7  1  BIGALK            1.    Heptanal
+C565-80-0        114.185   7  1  MEK               1.    Di-Isopropyl Ketone
+C7379-12-6       114.185   7  1  MEK               1.    2-methyl-3-hexanone
+C2550-21-2       114.185   7  1  MEK               1.    3-Methyl-2-Hexanone
+C110-43-0        114.185   7  1  MEK               1.    methyl amyl ketone
+C110-12-3        114.185   7  1  MEK               1.    methyl isoamyl ketone
+C919-94-8        116.201   7  1  MEK               1.    4,4-Dimethyl-3-oxahexane
+C10143-23-4      116.201   7  1  BIGALK            1.    dimethylpentanol (2,3-dimethyl-1-pentanol)
+C111-70-6        116.201   7  1  BIGALK            1.    1-heptanol
+C103-71-9        119.121   7  1  NROG              1.    phenyl isocyanate
+SP4-1835A        122.121   7  1  BZALD             1.    o-Hydroxybenzaldehyde (Salicylylaldehyde)
+C65-85-0         122.121   7  1  CH3COOH           1.    benzoic acid
+C90-05-1         124.137   7  1  CRESOL            1.    2-Methoxyphenol
+C95-71-6         124.137   7  1  CRESOL            1.    2-methylbenzene-1,4-diol
+C100-44-7        126.583   7  1  NROG              1.    benzyl chloride
+C95-49-8         126.583   7  1  NROG              1.    o-chlorotoluene
+SP4-1752         128.169   7  1  BIGALK            1.    5-propyldihydro-2(3H)-furanone
+C141-32-2        128.169   7  1  BIGENE            1.    n-butyl acrylate
+C106-63-8        128.169   7  1  BIGENE            1.    isobutyl acrylate {2-propenoic acid}
+C590-01-2        130.185   7  1  BIGALK            1.    Butyl Propionate
+C123-92-2        130.185   7  1  BIGALK            1.    isoamyl acetate (3-methylbutyl acetate)
+C628-63-7        130.185   7  1  BIGALK            1.    amyl acetate
+C624-41-9        130.185   7  1  BIGALK            1.    2-methyl-1-butyl acetate
+C105-66-8        130.185   7  1  BIGALK            1.    n-Propyl Butyrate
+C111-14-8        130.185   7  1  BIGALK            1.    n-Heptanoic acid
+C106-70-7        130.185   7  1  BIGALK            1.    methyl hexanoate
+C57018-52-7      132.201   7  1  NROG              1.    propyleneglycol-t-butylether{1-(1,1,-dimethylethoxy)-2-propanol}
+C94023-15-1      132.201   7  1  BIGALK            1.    2-tert-Butoxy-1-propanol
+S2-99485         132.201   7  1  BIGALK            1.    2-Butoxy-1-propanol
+C5131-66-8       132.201   7  1  BIGALK            1.    propylene glycol butyl ether {1-butoxy-2-propanol}
+C95-16-9         135.186   7  1  NROG              1.    benzothiazole
+C99-08-1         137.136   7  1  TOLUENE           1.    m-nitrotoluene
+C88-72-2         137.136   7  1  TOLUENE           1.    2-nitrotoluene
+C98-88-4         140.567   7  1  NROG              1.    Benzoyl chloride
+C3287-99-8       143.614   7  1  NVOL              1.    benzylamine hydrochloride
+C98-08-8         146.110   7  1  NROG              1.    Benzotrifluoride
+C6482-34-4       146.184   7  1  NROG              1.    Diisopropyl carbonate
+C763-69-9        146.184   7  1  NROG              1.    ethyl-3-ethoxypropionate
+C6881-94-3       148.200   7  1  BIGALK            1.    2-(2-Propoxyethoxy) ethanol
+DPRGOME          148.200   7  1  BIGALK            1.    Dipropylene Glycol Methyl Ether isomer (1-methoxy-2-[2-hydroxypropoxy]-propane)
+C13588-28-8      148.200   7  1  BIGALK            1.    2-(2-methoxypropoxy)-1-propanol (dipropylene glycol methyl ether isomer)
+C1119-40-0       160.168   7  1  NROG              1.    pentanedioic acid, dimethyl ester (dimethyl glutarate)
+C623-84-7        160.168   7  1  NROG              1.    1,2-Propylene glycol diacetate
+C112-35-6        164.200   7  1  NROG              1.    2-[2-(2-Methoxyethoxy) ethoxy] ethanol
+C149-91-7        170.120   7  1  NVOL              1.    Gallic acid
+C98-56-6         180.555   7  0  NROG              1.    parachlorobenzotrifluoride {pcbtf}
+C121-14-2        182.134   7  1  TOLUENE           1.    2,4-Dinitrotoluene
+C4253-34-3       220.252   7  1  NOASN             0.    Methyltriacetoxysilane
+C6221-55-2       110.197   8  1  BIGALK            1.    bicyclo[3.2.1] Octane
+C694-72-4        110.197   8  1  BIGALK            1.    cis-bicyclo[3.3.0]octane
+C16747-50-5      112.213   8  1  BIGALK            1.    1,1-methylethylcyclopentane
+C4259-00-1       112.213   8  1  BIGALK            1.    1,1,2-trimethylcyclopentane
+C4516-69-2       112.213   8  1  BIGALK            1.    1,1,3-trimethylcyclopentane
+C590-66-9        112.213   8  1  BIGALK            1.    1,1-dimethylcyclohexane
+123TMCC5         112.213   8  1  BIGALK            1.    1,2,3-trimethylcyclopentane
+C2815-58-9       112.213   8  1  BIGALK            1.    1,2,4-trimethylcyclopentane
+1M3ECC5          112.213   8  1  BIGALK            1.    1-methyl-3-ethylcyclopentane
+C2040-96-2       112.213   8  1  BIGALK            1.    propylcyclopentane
+C638-04-0        112.213   8  1  BIGALK            1.    cis-1,3-dimethylcyclohexane
+C2207-03-6       112.213   8  1  BIGALK            1.    trans-1,3-dimethylcyclohexane
+C2207-04-7       112.213   8  1  BIGALK            1.    trans-1,4-dimethylcyclohexane
+C6876-23-9       112.213   8  1  BIGALK            1.    trans-1,2-dimethylcyclohexane
+C2207-01-4       112.213   8  1  BIGALK            1.    cis-1,2-dimethylcyclohexane
+C1678-91-7       112.213   8  1  BIGALK            1.    ethylcyclohexane
+C292-64-8        112.213   8  1  BIGALK            1.    Cyclooctane
+C19374-46-0      112.213   8  1  BIGALK            1.    cis,trans,cis-1,2,3-trimethyl Cyclopentane
+C18679-30-6      112.213   8  1  BIGALK            1.    cis,trans,cis-1,2,4-trimethyl Cyclopentane
+C624-29-3        112.213   8  1  BIGALK            1.    cis-1,4-dimethylcyclohexane
+C2613-69-6       112.213   8  1  BIGALK            1.    cis-1,cis-2,3-trimethylcyclopentane
+S2-91037         112.213   8  1  BIGALK            1.    cis-1,cis-2,4-trimethylcyclopentane
+C15890-40-1      112.213   8  1  BIGALK            1.    cis-1,trans-2,3-trimethylcyclopentane
+S2-91031         112.213   8  1  BIGALK            1.    cis-1,trans-2,4-trimethylcyclopentane
+C930-89-2        112.213   8  1  BIGALK            1.    cis-1-ethyl-2-methylcyclopentane
+C2613-66-3       112.213   8  1  BIGALK            1.    cis-1-methyl-3-ethylcyclopentane
+C3875-51-2       112.213   8  1  BIGALK            1.    isopropylcyclopentane
+C4850-28-6       112.213   8  1  BIGALK            1.    trans-1,2-cis-4-trimethylcyclopentane
+S2-91032         112.213   8  1  BIGALK            1.    trans-1,cis-2,3-trimethylcyclopentane
+C2613-65-2       112.213   8  1  BIGALK            1.    trans-1-methyl-3-ethylcyclopentane
+C930-90-5        112.213   8  1  BIGALK            1.    trans-2-ethylmethylcyclopentane
+C540-84-1        114.229   8  1  BIGALK            1.    2,2,4-trimethylpentane
+C594-82-1        114.229   8  1  BIGALK            1.    2,2,3,3-Tetramethyl Butane
+C560-21-4        114.229   8  1  BIGALK            1.    2,3,3-trimethylpentane
+C563-16-6        114.229   8  1  BIGALK            1.    3,3-dimethylhexane
+C590-73-8        114.229   8  1  BIGALK            1.    2,2-dimethylhexane
+C564-02-3        114.229   8  1  BIGALK            1.    2,2,3-trimethylpentane
+C565-75-3        114.229   8  1  BIGALK            1.    2,3,4-trimethylpentane
+C111-65-9        114.229   8  1  BIGALK            1.    n-octane
+C592-13-2        114.229   8  1  BIGALK            1.    2,5-dimethylhexane
+C592-27-8        114.229   8  1  BIGALK            1.    2-methylheptane
+C584-94-1        114.229   8  1  BIGALK            1.    2,3-dimethylhexane
+C589-43-5        114.229   8  1  BIGALK            1.    2,4-dimethylhexane
+C589-81-1        114.229   8  1  BIGALK            1.    3-methylheptane
+C589-53-7        114.229   8  1  BIGALK            1.    4-methylheptane
+C583-48-2        114.229   8  1  BIGALK            1.    3,4-dimethylhexane
+C609-26-7        114.229   8  1  BIGALK            1.    2-methyl-3-ethylpentane
+C619-99-8        114.229   8  1  BIGALK            1.    3-ethylhexane
+C1067-08-9       114.229   8  1  BIGALK            1.    3-methyl-3-ethylpentane
+C100-42-5        104.149   8  1  XYLENES           1.    styrene
+C100-41-4        106.165   8  1  TOLUENE           1.    ethylbenzene
+C108-38-3        106.165   8  1  XYLENES           1.    m-xylene
+C95-47-6         106.165   8  1  XYLENES           1.    o-xylene
+C106-42-3        106.165   8  1  XYLENES           1.    p-xylene
+C100-40-3        108.181   8  1  BIGENE            1.    4-vinylcyclohexene
+Sx-003           108.181   8  1  BIGENE            1.    1,3,5-octatriene
+C32073-03-3      110.197   8  1  BIGENE            1.    octyne (1-octyne)
+C51065-64-6      110.197   8  1  BIGENE            1.    methylheptyne (6-methyl-2-heptyne)
+C1674-10-8       110.197   8  1  BIGENE            1.    1,2-Dimethyl Cyclohexene
+C99363-12-9      110.197   8  1  BIGENE            1.    1,2,4-trimethylcyclopentene
+C3200-65-5       110.197   8  1  BIGENE            1.    trans-1,2,3,4-Tetramethyl-1-cyclobutene
+Sx-002           110.197   8  1  BIGENE            1.    2,4-dimethyl-1,3-hexadiene
+C1002-33-1       110.197   8  1  BIGENE            1.    1,3-octadiene
+C85893-67-0      110.197   8  1  BIGENE            1.    2,3,4-trimethyl 1,3-pentadiene
+C13151-05-8      112.213   8  1  BIGENE            1.    4-methyl-1-heptene
+C111-66-0        112.213   8  1  BIGENE            1.    1-octene
+C1632-16-2       112.213   8  1  BIGENE            1.    2-ethyl-1-hexene
+C1647-08-1       112.213   8  1  BIGENE            1.    4,4-Dimethyl-1-hexene
+C107-39-1        112.213   8  1  BIGENE            1.    2,4,4-trimethyl-1-pentene
+C3404-56-6       112.213   8  1  BIGENE            1.    4-methyl-2-heptene
+C7642-15-1       112.213   8  1  BIGENE            1.    Cis-4-Octene
+C13389-42-9      112.213   8  1  BIGENE            1.    trans-2-octene
+C7642-04-8       112.213   8  1  BIGENE            1.    cis-2-octene
+C15870-10-7      112.213   8  1  BIGENE            1.    2-methyl-1-heptene
+C111823-35-9     112.213   8  1  BIGENE            1.    3-Methyl-2-Isopropyl-1-Butene
+C107-40-4        112.213   8  1  BIGENE            1.    2,4,4-trimethyl-2-pentene (beta diisobutylene)
+C3404-78-2       112.213   8  1  BIGENE            1.    2,5-dimethylhex-2-ene
+C690-93-7        112.213   8  1  BIGENE            1.    Trans 2,2-Dimethyl 3-Hexene
+C692-70-6        112.213   8  1  BIGENE            1.    Trans 2,5-Dimethyl 3-Hexene
+C14919-01-8      112.213   8  1  BIGENE            1.    trans-3-octene
+C14850-23-8      112.213   8  1  BIGENE            1.    trans-4-octene
+C627-97-4        112.213   8  1  BIGENE            1.    2-methyl-2-heptene
+C7145-20-2       112.213   8  1  BIGENE            1.    2,3-Dimethyl-2-Hexene
+C120-72-9        117.148   8  1  TOLUENE           1.    Indole
+C271-89-6        118.133   8  1  TOLUENE           1.    2,3-benzofuran
+C2628-17-3       120.149   8  1  TOLUENE           1.    4-vinylphenol 
+C620-23-5        120.149   8  1  BZALD             1.    m-tolualdehyde
+C529-20-4        120.149   8  1  BZALD             1.    o-tolualdehyde
+C104-87-0        120.149   8  1  BZALD             1.    p-tolualdehyde {4-methylbenzaldehyde}
+C98-86-2         120.149   8  1  MEK               1.    acetophenone (Phenyl methyl ketone)
+C105-67-9        122.164   8  1  CRESOL            1.    2,4-dimethyl phenol
+C526-75-0        122.164   8  1  CRESOL            1.    2,3-dimethyl phenol
+C95-87-4         122.164   8  1  CRESOL            1.    2,5-dimethyl phenol
+C576-26-1        122.164   8  1  CRESOL            1.    2,6-dimethyl phenol
+C90-00-6         122.164   8  1  CRESOL            1.    2-Ethylphenol
+C95-65-8         122.164   8  1  CRESOL            1.    3,4-dimethyl phenol
+C60-12-8         122.164   8  1  CRESOL            1.    beta-phenethyl alcohol 
+C108-68-9        122.164   8  1  CRESOL            1.    3,5-dimethyl phenol
+C85794-10-1      126.196   8  1  BIGALK            1.    2,3,4-trimethylcyclopentanone
+C107-54-0        126.196   8  1  BIGENE            1.    3,5-dimethyl-1-hexyne-3-ol
+C110-93-0        126.196   8  1  BIGENE            1.    methyl heptenone
+C124-13-0        128.212   8  1  BIGALK            1.    octanal
+C123-05-7        128.212   8  1  BIGALK            1.    2-ethyl hexanal
+C111-13-7        128.212   8  1  BIGALK            1.    2-Octanone
+C1004-29-1       128.212   8  1  BIGALK            1.    2-butyltetrahydrofuran
+C37027-60-4      128.212   8  1  BIGENE            1.    3-Butoxy-1-butene
+C7212-53-5       130.228   8  1  BIGALK            1.    5-methyl-1-heptanol
+C104-76-7        130.228   8  1  BIGALK            1.    2-ethyl-1-hexanol
+C111-87-5        130.228   8  1  BIGALK            1.    1-octanol
+C4128-31-8       130.228   8  1  BIGALK            1.    2-Octanol
+C628-55-7        130.228   8  1  BIGALK            1.    Di-Isobutyl Ether
+C589-62-8        130.228   8  1  BIGALK            1.    4-Octanol
+C142-96-1        130.228   8  1  BIGALK            1.    dibutyl ether
+C20296-29-1      130.228   8  1  BIGALK            1.    3-Octanol
+C622-58-2        133.147   8  1  NROG              1.    Para Toluene Isocyanate
+C93-58-3         136.148   8  1  TOLUENE           1.    methyl benzoate
+C103-82-2        136.148   8  1  TOLUENE           1.    Phenylacetic Acid
+C118-90-1        136.148   8  1  TOLUENE           1.    2-methylbenzoic acid
+C99-04-7         136.148   8  1  TOLUENE           1.    3-methylbenzoic acid
+C99-94-5         136.148   8  1  TOLUENE           1.    4-methylbenzoic acid
+SX-027           138.164   8  1  TOLUENE           1.    1-Hydroxy-2-methoxy-4-methyl benzene
+C93-51-6         138.164   8  1  TOLUENE           1.    2-methoxy-4-methylphenol
+C501-94-0        138.164   8  1  TOLUENE           1.    4-hydroxy benzeneethanol
+C122-99-6        138.164   8  1  TOLUENE           1.    2-phenoxyethanol
+SP4-1748         142.196   8  1  TOLUENE           1.    5-butyldihydro-2(3H)-furanone
+C1708-82-3       142.196   8  1  BIGENE            1.    cis-3-hexenyl acetate
+C97-88-1         142.196   8  1  BIGENE            1.    butyl methacrylate
+C97-86-9         142.196   8  1  BIGENE            1.    Isobutyl methacrylate
+C97-85-8         144.211   8  1  BIGALK            1.    isobutyl isobutyrate
+C624-54-4        144.211   8  1  BIGALK            1.    n-pentyl propionate
+4MC5-ACT         144.211   8  1  BIGALK            1.    4-Methylpentyl Acetate
+C142-92-7        144.211   8  1  BIGALK            1.    n-Hexyl Acetate
+23MC4ACT         144.211   8  1  BIGALK            1.    2,3-Dimethylbutyl Acetate
+3MC5-ACT         144.211   8  1  BIGALK            1.    3-Methylpentyl Acetate
+2MC5-ACT         144.211   8  1  BIGALK            1.    2-Methylpentyl Acetate
+C108-84-9        144.211   8  1  BIGALK            1.    methyl amyl acetate (4-methyl-2-pentanol acetate)
+C109-21-7        144.211   8  1  BIGALK            1.    n-Butyl Butyrate
+C149-57-5        144.211   8  1  BIGALK            1.    2-ethylhexanoic acid
+C123-66-0        144.211   8  1  BIGALK            1.    ethylhexanoate (ethyl n-hexanoate)
+S1-43475         144.211   8  1  BIGALK            1.    methylethylpentanoate
+C124-07-2        144.211   8  1  BIGALK            1.    n-Octanoic acid
+C106-73-0        144.211   8  1  BIGALK            1.    methyl heptanoate
+C144-19-4        146.227   8  1  BIGALK            1.    2,2,4-Trimethyl-1,3-Pentanediol
+C94-96-2         146.227   8  1  BIGALK            1.    2-Ethyl-1,3-hexanediol
+C112-25-4        146.227   8  1  BIGALK            1.    2-Hexyloxyethanol
+C107-47-1        146.294   8  1  NOASN             0.    Di-T-Butyl Sulfide
+C85-44-9         148.116   8  1  TOLUENE           1.    phthalic anhydride
+C123-04-6        148.674   8  1  NROG              1.    3-(chloromethyl)-heptane
+C103-90-2        151.163   8  1  NROG              1.    acetaminophen
+C119-36-8        152.147   8  1  NROG              1.    methyl salicylate
+C99-76-3         152.147   8  1  NROG              1.    methylparaben (4-Hydroxybenzoic acid, methyl ester)
+C121-33-5        152.147   8  1  BZALD             1.    Vanillin
+C91-10-1         154.163   8  1  CRESOL            1.    2,6-Dimethoxyphenol
+C88-04-0         156.609   8  1  NROG              1.    4-chloro-3,5-xylenol
+C112-07-2        160.211   8  1  BIGALK            1.    2-butoxyethyl acetate (ethylene glycol butyl ether acetate)
+C89399-28-0      162.227   8  1  BIGALK            1.    2-methoxy-1-(2-methoxy-1-methylethoxy)-propane
+C15764-24-6      162.227   8  1  BIGALK            1.    dipropylene glycol ethyl ether
+C112-34-5        162.227   8  1  BIGALK            1.    2-(2-butoxyethoxy)ethanol {butyl carbitol}
+C100-21-0        166.131   8  1  NROG              1.    terephthalic acid (p-benzenedicarboxylic acid)
+C822-06-0        168.193   8  1  NROG              1.    1,6-Diisocyanatohexane
+C627-93-0        174.194   8  1  BIGALK            1.    dimethyl adipate (dimethylhexanedioate)
+C5306-85-4       174.194   8  1  NROG              1.    Dimethyl Isosorbide
+C505-48-6        174.194   8  1  NROG              1.    Octanedioic acid
+C112-15-2        176.210   8  1  NROG              1.    2-(2-Ethoxyethoxy) ethyl acetate
+C112-50-5        178.226   8  1  NROG              1.    2-[2-(2-Ethoxyethoxy) ethoxy] ethanol
+C112-57-2        189.302   8  1  NVOL              1.    Tetraethylenepentamine
+C112-60-7        194.226   8  1  NROG              1.    tetraethylene glycol
+C17689-77-9      234.279   8  1  NOASN             0.    Ethyltriacetoxysilane
+C1897-45-6       265.911   8  1  NROG              1.    chlorothalonil (2,4,5,6-tetrachloro-1,3-dicyanobenzene)
+C55406-53-6      281.091   8  1  NROG              1.    iodopropynyl butylcarbamate
+C556-67-2        296.616   8  0  NROG              1.    octamethylcyclotetrasiloxane
+C62-38-4         336.738   8  1  NVOL              1.    (acetato)phenyl mercury
+C4551-51-3       124.223   9  1  BIGALK            1.    cis-bicyclo[4.3.0]nonane
+Sx-004           124.223   9  1  BIGALK            1.    2-ethyl bicyclo[3.2.0]heptane
+C280-65-9        124.223   9  1  BIGALK            1.    bicyclo[3.3.1] Nonane
+C3296-50-2       124.223   9  1  BIGALK            1.    trans octahydro Indene
+C3073-66-3       126.239   9  1  BIGALK            1.    1,1,3-trimethylcyclohexane
+S2-43195         126.239   9  1  BIGALK            1.    trans-1,3-Diethylcyclopentane
+C1678-92-8       126.239   9  1  BIGALK            1.    propylcyclohexane
+C1678-97-3       126.239   9  1  BIGALK            1.    1,2,3-trimethylcyclohexane
+C20348-72-5      126.239   9  1  BIGALK            1.    cis,trans-1,2,3-trimethylcyclohexane
+C1839-63-0       126.239   9  1  BIGALK            1.    1,3,5-trimethylcyclohexane
+C1795-27-3       126.239   9  1  BIGALK            1.    cis-1,cis-3,5-trimethylcyclohexane
+S2-99076         126.239   9  1  BIGALK            1.    trans,trans-1,3,5-trimethylcyclohexane
+C4926-78-7       126.239   9  1  BIGALK            1.    cis 1-ethyl-4-methyl Cyclohexane
+C6236-88-0       126.239   9  1  BIGALK            1.    trans 1-methyl-4-ethylcyclohexane
+C52688-89-8      126.239   9  1  BIGALK            1.    1,1,2,2-tetramethylcyclopentane
+C50876-33-0      126.239   9  1  BIGALK            1.    1,1,3,3-tetramethyl Cyclopentane
+C53907-60-1      126.239   9  1  BIGALK            1.    1,1,3,4-tetramethyl Cyclopentane
+C62016-60-8      126.239   9  1  BIGALK            1.    1,3-diethyl, trans Cyclopentane
+C4926-90-3       126.239   9  1  BIGALK            1.    1-methyl-1-ethylcyclohexane
+C3728-57-2       126.239   9  1  BIGALK            1.    1-methyl-2-propyl Cyclopentane
+C3788-32-7       126.239   9  1  BIGALK            1.    isobutylcyclopentane (2-methylpropyl cyclopentane)
+C696-29-7        126.239   9  1  BIGALK            1.    isopropylcyclohexane (2-methylethyl cyclohexane)
+C1502-38-1       126.239   9  1  BIGALK            1.    methylcyclooctane
+C2040-95-1       126.239   9  1  BIGALK            1.    n-butylcyclopentane
+C4923-77-7       126.239   9  1  BIGALK            1.    cis-1-ethyl-2-methylcyclohexane
+C19489-10-2      126.239   9  1  BIGALK            1.    cis-1-ethyl-3-methylcyclohexane
+C4923-78-8       126.239   9  1  BIGALK            1.    trans-1-ethyl-2-methylcyclohexane
+C4926-76-5       126.239   9  1  BIGALK            1.    trans-1-ethyl-3-methylcyclohexane
+C7094-26-0       126.239   9  1  BIGALK            1.    1,1,2-trimethylcyclohexane
+C7094-27-1       126.239   9  1  BIGALK            1.    1,1,4-trimethylcyclohexane
+C2234-75-5       126.239   9  1  BIGALK            1.    1,2,4-trimethyl Cyclohexane
+C1839-88-9       126.239   9  1  BIGALK            1.    cis,cis,cis-1,2,3-trimethyl Cyclohexane
+C7667-55-2       126.239   9  1  BIGALK            1.    cis,cis,trans-1,2,3-trimethyl, cct Cyclohexane
+C7667-58-5       126.239   9  1  BIGALK            1.    cis,cis,trans-1,2,4-trimethyl Cyclohexane
+S2-99054         126.239   9  1  BIGALK            1.    cis,cis-1,2,4-trimethylcyclohexane
+C1678-81-5       126.239   9  1  BIGALK            1.    cis,trans,cis-1,2,3-trimethyl Cyclohexane
+C7667-59-6       126.239   9  1  BIGALK            1.    cis,trans,cis-1,2,4-trimethyl Cyclohexane
+S2-99079         126.239   9  1  BIGALK            1.    cis,trans-1,2,4-trimethylcyclohexane
+S2-91073         126.239   9  1  BIGALK            1.    cis-1,trans-2,cis-4-trimethylcyclohexane
+C7667-60-9       126.239   9  1  BIGALK            1.    cis-1,trans-2,trans-4-trimethylcyclohexane
+S2-99075         126.239   9  1  BIGALK            1.    trans,cis-1,2,4-trimethylcyclohexane
+C1678-80-4       126.239   9  1  BIGALK            1.    trans,trans-1,2,4-trimethylcyclohexane
+C932-44-5        126.239   9  1  BIGALK            1.    Trans-1-methyl-2-propylcyclopentane
+C1067-20-5       128.255   9  1  BIGALK            1.    3,3-diethylpentane
+C16747-30-1      128.255   9  1  BIGALK            1.    2,4,4-trimethylhexane
+C4032-86-4       128.255   9  1  BIGALK            1.    3,3-dimethylheptane
+C1068-19-5       128.255   9  1  BIGALK            1.    4,4-dimethylheptane
+C3522-94-9       128.255   9  1  BIGALK            1.    2,2,5-trimethylhexane
+C1071-26-7       128.255   9  1  BIGALK            1.    2,2-dimethylheptane
+C16747-26-5      128.255   9  1  BIGALK            1.    2,2,4-trimethylhexane
+C1069-53-0       128.255   9  1  BIGALK            1.    2,3,5-trimethylhexane
+C2216-34-4       128.255   9  1  BIGALK            1.    4-methyloctane
+C1072-05-5       128.255   9  1  BIGALK            1.    2,6-dimethylheptane
+C111-84-2        128.255   9  1  BIGALK            1.    n-nonane
+C2213-23-2       128.255   9  1  BIGALK            1.    2,4-dimethylheptane
+C2216-30-0       128.255   9  1  BIGALK            1.    2,5-dimethylheptane
+C3074-71-3       128.255   9  1  BIGALK            1.    2,3-dimethylheptane
+C2216-33-3       128.255   9  1  BIGALK            1.    3-methyloctane
+C3221-61-2       128.255   9  1  BIGALK            1.    2-methyloctane
+C926-82-9        128.255   9  1  BIGALK            1.    3,5-dimethylheptane
+C922-28-1        128.255   9  1  BIGALK            1.    3,4-dimethylheptane
+C2216-32-2       128.255   9  1  BIGALK            1.    4-ethylheptane
+C15869-80-4      128.255   9  1  BIGALK            1.    3-ethylheptane
+C7154-79-2       128.255   9  1  BIGALK            1.    2,2,3,3-tetramethylpentane
+C1186-53-4       128.255   9  1  BIGALK            1.    2,2,3,4-tetramethylpentane
+C16747-25-4      128.255   9  1  BIGALK            1.    2,2,3,trimethylhexane
+C921-47-1        128.255   9  1  BIGALK            1.    2,3,4-trimethylhexane
+C3074-75-7       128.255   9  1  BIGALK            1.    2-methyl-4-ethylhexane
+C16747-32-3      128.255   9  1  BIGALK            1.    3-ethyl-2,2-dimethyl Pentane
+C1068-87-7       128.255   9  1  BIGALK            1.    3-ethyl-2,4-dimethyl pentane
+C3074-76-8       128.255   9  1  BIGALK            1.    3-ethyl-3-methyl Hexane
+C95-13-6         116.160   9  1  XYLENES           1.    indene
+C496-11-7        118.176   9  1  XYLENES           1.    indan
+C622-97-9        118.176   9  1  BIGENE            1.    4-methylstyrene
+C300-57-2        118.176   9  1  BIGENE            1.    allylbenzene
+C611-15-4        118.176   9  1  BIGENE            1.    o-Vinyltoluene
+C637-50-3        118.176   9  1  BIGENE            1.    b-methylstyrene
+C98-83-9         118.176   9  1  BIGENE            1.    a-methylstyrene
+C103-65-1        120.192   9  1  XYLENES           1.    n-propylbenzene
+C98-82-8         120.192   9  1  XYLENES           1.    cumene (isopropyl benzene)
+C620-14-4        120.192   9  1  XYLENES           1.    m-ethyltoluene
+C611-14-3        120.192   9  1  XYLENES           1.    o-ethyltoluene
+C622-96-8        120.192   9  1  XYLENES           1.    p-ethyltoluene
+C526-73-8        120.192   9  1  XYLENES           1.    1,2,3-trimethylbenzene
+C95-63-6         120.192   9  1  XYLENES           1.    1,2,4-trimethylbenzene
+C108-67-8        120.192   9  1  XYLENES           1.    1,3,5-trimethylbenzene
+C5364-83-0       124.223   9  1  BIGENE            1.    propenylcyclohexane
+C56700-77-7      124.223   9  1  BIGENE            1.    trans 1,3-nonadiene
+C3525-27-7       126.239   9  1  BIGENE            1.    3-ethyl -1-heptene
+C762-62-9        126.239   9  1  BIGENE            1.    4,4-dimethyl-1-pentene
+C124-11-8        126.239   9  1  BIGENE            1.    1-nonene
+C4588-18-5       126.239   9  1  BIGENE            1.    2-methyl-1-octene
+C3074-78-0       126.239   9  1  BIGENE            1.    2,6-dimethyl-1-heptene
+C19549-87-2      126.239   9  1  BIGENE            1.    2,4-dimethyl-1-heptene
+C360769-33-1     126.239   9  1  BIGENE            1.    2,3,3-trimethyl-1-hexene
+C4316-65-8       126.239   9  1  BIGENE            1.    3,5,5-trimethyl-1-hexene
+C3074-64-4       126.239   9  1  BIGENE            1.    2,3-dimethyl-2-heptene
+C16993-86-5      126.239   9  1  BIGENE            1.    2-methyl-2-octene
+C6434-77-1       126.239   9  1  BIGENE            1.    cis-2-nonene
+C20237-46-1      126.239   9  1  BIGENE            1.    cis-3-nonene
+C6434-78-2       126.239   9  1  BIGENE            1.    trans-2-nonene
+C20063-92-7      126.239   9  1  BIGENE            1.    trans-3-nonene
+C2198-23-4       126.239   9  1  BIGENE            1.    4-nonene
+C10405-85-3      126.239   9  1  BIGENE            1.    Trans-4-Nonene
+S2-91058         126.239   9  1  BIGENE            1.    trans-2,2-dimethyl-3-heptene
+C52937-36-7      126.239   9  1  BIGENE            1.    trans-2-methyl-3-octene
+C119-65-3        129.159   9  1  NROG              1.    Isoquinoline
+C91-22-5         129.159   9  1  NROG              1.    quinoline
+C27323-28-0      131.174   9  1  NROG              1.    Methylindole
+C104-55-2        132.159   9  1  XYLENES           1.    cinnamic aldehyde
+C83-33-0         132.159   9  1  XYLENES           1.    1-Indanone
+C15764-16-6      134.175   9  1  BZALD             1.    2,4-dimethylbenzaldehyde
+C5779-94-2       134.175   9  1  BZALD             1.    2,5-Dimethylbenzaldehyde
+C26444-19-9      134.175   9  1  MEK               1.    methylacetophenone
+C104-54-1        134.175   9  1  XYLENES           1.    Cinnamic alcohol
+C496-78-6        136.191   9  1  CRESOL            1.    2,4,5-trimethylphenol
+C697-82-5        136.191   9  1  CRESOL            1.    2,3,5-trimethyl phenol
+C2416-94-6       136.191   9  1  CRESOL            1.    2,3,6-trimethyl phenol
+C27129-87-9      136.191   9  1  CRESOL            1.    3,5-Dimethylbenzyl alcohol
+C78-59-1         138.207   9  1  BIGENE            1.    isophorone {3,5,5-trimethyl-2-cyclohexenone}
+C94-65-5         140.223   9  1  BIGALK            1.    2-propyl cyclohexanone
+C40649-36-3      140.223   9  1  BIGALK            1.    4-propyl cyclohexanone
+C61168-10-3      140.223   9  1  BIGENE            1.    1-nonene-4-one
+C124-19-6        142.239   9  1  BIGALK            1.    Nonanal
+C815-24-7        142.239   9  1  MEK               1.    2,2,4,4-tetramethyl-3-pentanone
+C821-55-6        142.239   9  1  MEK               1.    2-Nonanone
+C108-83-8        142.239   9  1  MEK               1.    2,6-dimethyl-4-heptanone (diisobutyl ketone)
+C1321-60-4       142.239   9  1  BIGALK            1.    trimethylcyclohexanol
+C13254-34-7      144.255   9  1  BIGALK            1.    dimethylheptanol (2,6-dimethyl-2-heptanol)
+C108-82-7        144.255   9  1  BIGALK            1.    2,6-dimethyl-4-heptanol
+C143-08-8        144.255   9  1  BIGALK            1.    1-nonanol
+C494-97-3        148.205   9  1  TOLUENE           1.    Nornicotine
+C619-04-5        150.175   9  1  TOLUENE           1.    3,4-dimethylbenzoic acid
+C140-11-4        150.175   9  1  TOLUENE           1.    benzyl acetate
+C93-89-0         150.175   9  1  TOLUENE           1.    Ethyl benzoate
+C2785-89-9       152.190   9  1  CRESOL            1.    4-ethyl-2-methoxy-phenol
+C4169-04-4       152.190   9  1  CRESOL            1.    propylene glycol phenyl ether (2-phenoxy-1-propanol)
+C770-35-4        152.190   9  1  CRESOL            1.    1-phenoxy-2-propanol
+C80-15-9         152.190   9  1  BZOOH             1.    cumene hydroperoxide
+C494-99-5        152.190   9  1  TOLUENE           1.    1,2-dimethoxy-4-methyl benzene
+SP4-1749         156.222   9  1  BIGALK            1.    5-pentyldihydro-2(3H)-furanone
+C2050-01-3       158.238   9  1  BIGALK            1.    isoamyl isobutyrate
+5MC6-ACT         158.238   9  1  BIGALK            1.    5-Methylhexyl Acetate
+C112-06-1        158.238   9  1  BIGALK            1.    n-Heptyl Acetate
+24MC5ACT         158.238   9  1  BIGALK            1.    2,4-Dimethylpentyl Acetate
+4MC6-ACT         158.238   9  1  BIGALK            1.    4-Methylhexyl Acetate
+3MC6-ACT         158.238   9  1  BIGALK            1.    3-Methylhexyl Acetate
+2MC6-ACT         158.238   9  1  BIGALK            1.    2-Methylhexyl Acetate
+3EC5-ACT         158.238   9  1  BIGALK            1.    3-Ethylpentyl Acetate
+C112-05-0        158.238   9  1  BIGALK            1.    n-Nonanoic acid
+C111-11-5        158.238   9  1  BIGALK            1.    methyl octanoate
+C94-09-7         165.189   9  1  NROG              1.    Benzocaine
+C498-02-2        166.174   9  1  NVOL              1.    Acetovanillone-TMS , also noted as "acetva"
+C120-14-9        166.174   9  1  BZALD             1.    Benzaldehyde, 3,4-dimethoxy-
+C6638-05-7       168.190   9  1  CRESOL            1.    4-methyl-syringol-TMS , also noted as "m4syrg"
+C634-36-6        168.190   9  1  XYLENES           1.    1,2,3-Trimethoxybenzene
+C2455-24-5       170.206   9  1  NOASN             0.    Tetrahydrofurfuryl methacrylate
+C584-84-9        174.156   9  1  NROG              1.    2,4-toluene diisocyanate {tdi}
+C91-08-7         174.156   9  1  NROG              1.    2,6-Toluene Diisocyanate
+C124-16-3        176.253   9  1  BIGALK            1.    1-(butoxyethoxy)-2-propanol
+C29911-27-1      176.253   9  1  BIGALK            1.    Dipropylene glycol n-propyl ether isomer #1
+C3943-74-6       182.173   9  1  NROG              1.    Benzoic acid, 4-hydroxy-3-methoxy-, methyl ester
+C306-08-1        182.173   9  1  NROG              1.    Homovanillic Acid
+C487-19-4        182.173   9  1  BZALD             1.    Beta-Nicotyrine
+C134-96-3        182.173   9  1  BZALD             1.    Syringaldehyde-TMS
+C93-07-2         182.173   9  1  CRESOL            1.    3,4-Dimethoxybenzoic acid
+C2212-67-1       187.302   9  1  BIGALK            1.    molinate
+C759-94-4        189.318   9  1  BIGALK            1.    eptc {s-ethyl dipropylthiocarbamate}
+Sc-88917-22-0b   190.237   9  1  BIGALK            1.    Dipropylene glycol methyl ether acetate isomer #2
+Sc-88917-22-0a   190.237   9  1  BIGALK            1.    Dipropylene glycol methyl ether acetate isomer #1
+C122-20-3        191.268   9  1  BIGALK            1.    triisopropanolamine
+C23305-64-8      192.253   9  1  BIGALK            1.    2-[2-(2-Propoxyethoxy) ethoxy] ethanol (Triethylene glycol monopropyl ether)
+C24800-44-0      192.253   9  1  BIGALK            1.    tripropylene glycol
+C81-13-0         205.251   9  1  BIGALK            1.    dexpanthenol
+C23783-42-8      208.252   9  1  BIGALK            1.    2,5,8,11-Tetraoxatridecan-13-ol
+C102-76-1        218.204   9  1  BIGALK            1.    glyceryl triacetate
+C34014-18-1      228.315   9  1  NVOL              1.    tebuthiuron
+C21564-17-0      238.352   9  1  NOASN             0.    Thiocyanic acid (2-benzoathiazolythio)methyl ester
+C133-07-3        296.558   9  1  NOASN             0.    n-(trichloromethylthio)phthalimide {folpet}
+C133-06-2        300.589   9  1  NOASN             0.    captan
+C2921-88-2       350.586   9  1  NROG              1.    chlorpyrifos
+C115-29-7        406.925   9  1  NOASN             0.    thiosulfan
+C297730-93-9     414.111   9  0  NROG              1.    3-ethoxy-1,1,1,2,3,4,4,5,5,6,6,6-dodecafluoro-2-(trifluoromethyl) hexane (HFE-7500)
+C508-32-7        136.234  10  1  BIGALK            1.    tricyclene
+C493-01-6        138.250  10  1  BIGALK            1.    cis-decalin
+C493-02-7        138.250  10  1  BIGALK            1.    t-decahydronaphthalene (trans-decalin)
+C1678-93-9       140.266  10  1  BIGALK            1.    butylcyclohexane
+C16580-24-8      140.266  10  1  BIGALK            1.    1-Methyl-3-Isopropyl Cyclohexane
+C1678-99-5       140.266  10  1  BIGALK            1.    1,3-Diethyl-Cyclohexane
+C1679-00-1       140.266  10  1  BIGALK            1.    1,4-Diethyl-Cyclohexane
+C6783-92-2       140.266  10  1  BIGALK            1.    1,1,2,3-tetramethyl Cyclohexane
+S2-99062         140.266  10  1  BIGALK            1.    1,1,2,3-tetramethylcyclohexane
+C24612-75-7      140.266  10  1  BIGALK            1.    1,1,3,4-tetramethylcyclohexane
+C4306-65-4       140.266  10  1  BIGALK            1.    1,1,3,5-tetramethylcyclohexane
+S2-99046         140.266  10  1  BIGALK            1.    1,2-dimethyl-3-ethylcyclohexane
+S2-43164         140.266  10  1  BIGALK            1.    1,4-Dimethyl-2-ethylcyclohexane
+S2-99061         140.266  10  1  BIGALK            1.    1-ethyl-1,2-dimethylcyclohexane
+C7058-05-1       140.266  10  1  BIGALK            1.    1-ethyl-2,3-dimethyl Cyclohexane
+C61142-69-6      140.266  10  1  BIGALK            1.    1-ethyl-2,4-dimethyl Cyclohexane
+S2-99063         140.266  10  1  BIGALK            1.    1-ethyl-2,4-dimethylcyclohexane
+C16580-23-7      140.266  10  1  BIGALK            1.    1-isopropyl-2-methyl Cyclohexane
+S2-99041         140.266  10  1  BIGALK            1.    1-methyl-2-isopropylcyclohexane
+S2-99040         140.266  10  1  BIGALK            1.    1-methyl-3-isopropylcyclohexane
+C99-82-1         140.266  10  1  BIGALK            1.    1-methyl-4-isopropylcyclohexane
+C7045-67-2       140.266  10  1  BIGALK            1.    2-ethyl-1,3-dimethyl Cyclohexane
+S2-99055         140.266  10  1  BIGALK            1.    2-ethyl-1,3-dimethylcyclohexane
+C824-43-1        140.266  10  1  BIGALK            1.    cis 1,2-diethyl Cyclohexane
+C13991-43-0      140.266  10  1  BIGALK            1.    cis 1,3-diethyl Cyclohexane
+C13990-92-6      140.266  10  1  BIGALK            1.    cis 1,4-diethyl Cyclohexane
+C4926-71-0       140.266  10  1  BIGALK            1.    cis 1-methyl-2-propyl Cyclohexane
+C42806-75-7      140.266  10  1  BIGALK            1.    cis 1-methyl-3-propyl Cyclohexane
+C28954-42-9      140.266  10  1  BIGALK            1.    cis 1-methyl-4-propyl Cyclohexane
+C1331-43-7       140.266  10  1  BIGALK            1.    diethyl Cyclohexane
+C3741-00-2       140.266  10  1  BIGALK            1.    pentylcyclopentane
+C13990-95-9      140.266  10  1  BIGALK            1.    trans 1,2-diethyl Cyclohexane
+C13990-94-8      140.266  10  1  BIGALK            1.    trans 1,3-diethyl Cyclohexane
+C13990-93-7      140.266  10  1  BIGALK            1.    trans 1,4-diethyl Cyclohexane
+C42806-77-9      140.266  10  1  BIGALK            1.    trans 1-methyl-2-propyl Cyclohexane
+C34522-19-5      140.266  10  1  BIGALK            1.    trans 1-methyl-3-propyl cyclohexane
+C28352-42-3      140.266  10  1  BIGALK            1.    trans 1-methyl-4-propyl Cyclohexane
+C4291-79-6       140.266  10  1  BIGALK            1.    trans-1,methyl-2n-propylcyclohexane
+C1678-98-4       140.266  10  1  BIGALK            1.    isobutylcyclohexane (2-methylpropyl cyclohexane)
+C7058-01-7       140.266  10  1  BIGALK            1.    sec-butylcyclohexane
+S2-43171         140.266  10  1  BIGALK            1.    Cis-1,3-diethylcyclohexane
+S2-43176         140.266  10  1  BIGALK            1.    Cis-1-methyl-4-propylcyclohexane
+C19398-77-7      142.282  10  1  BIGALK            1.    3,4-Diethyl Hexane
+244TM-C7         142.282  10  1  BIGALK            1.    2,4,4-trimethylheptane
+255TM-C7         142.282  10  1  BIGALK            1.    2,5,5-trimethylheptane
+C4110-44-5       142.282  10  1  BIGALK            1.    3,3-dimethyloctane
+C15869-95-1      142.282  10  1  BIGALK            1.    4,4-dimethyloctane
+C15869-87-1      142.282  10  1  BIGALK            1.    2,2-dimethyloctane
+C14720-74-2      142.282  10  1  BIGALK            1.    2,2,4-trimethylheptane
+C20291-95-6      142.282  10  1  BIGALK            1.    2,2,5-trimethylheptane
+C124-18-5        142.282  10  1  BIGALK            1.    n-decane
+C4032-93-3       142.282  10  1  BIGALK            1.    2,3,6-trimethylheptane
+C2613-61-8       142.282  10  1  BIGALK            1.    2,4,6-trimethyl heptane
+C4032-94-4       142.282  10  1  BIGALK            1.    2,4-dimethyloctane
+C7146-60-3       142.282  10  1  BIGALK            1.    2,3-dimethyloctane
+C15869-89-3      142.282  10  1  BIGALK            1.    2,5-dimethyloctane
+C5911-04-6       142.282  10  1  BIGALK            1.    3-methylnonane
+C17301-94-9      142.282  10  1  BIGALK            1.    4-methylnonane
+C14676-29-0      142.282  10  1  BIGALK            1.    3-ethyl-2-methylheptane
+C3178-29-8       142.282  10  1  BIGALK            1.    4-Propyl Heptane
+C15869-86-0      142.282  10  1  BIGALK            1.    4-ethyl Octane
+C871-83-0        142.282  10  1  BIGALK            1.    2-methylnonane
+C2051-30-1       142.282  10  1  BIGALK            1.    2,6-dimethyloctane
+C52896-95-4      142.282  10  1  BIGALK            1.    2,3,4-trimethyl Heptane
+C20278-85-7      142.282  10  1  BIGALK            1.    2,3,5-trimethylheptane
+C20278-84-6      142.282  10  1  BIGALK            1.    2,4,5-trimethylheptane
+C1072-16-8       142.282  10  1  BIGALK            1.    2,7-dimethyloctane
+C7154-80-5       142.282  10  1  BIGALK            1.    3,3,5-trimethylheptane
+C15869-92-8      142.282  10  1  BIGALK            1.    3,4-dimethyloctane
+C15869-93-9      142.282  10  1  BIGALK            1.    3,5-dimethyloctane
+C15869-94-0      142.282  10  1  BIGALK            1.    3,6-dimethyloctane
+C52896-91-0      142.282  10  1  BIGALK            1.    3-ethyl-4-methylheptane
+C5881-17-4       142.282  10  1  BIGALK            1.    3-ethyloctane
+S2-91087         142.282  10  1  BIGALK            1.    3-methyl-5-ethylheptane
+C15869-96-2      142.282  10  1  BIGALK            1.    4,5-dimethyloctane
+C15869-85-9      142.282  10  1  BIGALK            1.    5-methylnonane
+C79004-85-6      142.282  10  1  BIGALK            1.    tetramethylhexane
+C1190-83-6       142.282  10  1  BIGALK            1.    2,2,6-trimethylheptane
+C17302-01-1      142.282  10  1  BIGALK            1.    3-Ethyl-3-methylheptane
+C91-20-3         128.171  10  1  XYLENES           1.    napthalene
+C29036-25-7      130.186  10  1  XYLENES           1.    methylindene
+C447-53-0        130.186  10  1  XYLENES           1.    1,2-Dihydronaphthalene
+C1321-74-0       130.186  10  1  BIGENE            1.    divinyl benzene {vinyl styrene}
+C1515-78-2       130.186  10  1  BIGENE            1.    1-phenyl-1,3-butadiene
+C119-64-2        132.202  10  1  XYLENES           1.    tetralin
+C767-58-8        132.202  10  1  XYLENES           1.    1-methyl indan
+C824-63-5        132.202  10  1  XYLENES           1.    2-methylindan
+C824-22-6        132.202  10  1  XYLENES           1.    4-methylindan
+C874-35-1        132.202  10  1  XYLENES           1.    5-methylindan
+C768-56-9        132.202  10  1  BIGENE            1.    4-phenyl-1-butene
+C133753-32-9     132.202  10  1  BIGENE            1.    trans-1-phenylbutene
+C27831-13-6      132.202  10  1  BIGENE            1.    1,2-dimethyl-4-ethenyl benzene
+C2039-89-6       132.202  10  1  BIGENE            1.    1,4-dimethyl-2-ethenyl benzene
+C7525-62-4       132.202  10  1  BIGENE            1.    m-ethyl styrene
+C2234-20-0       132.202  10  1  BIGENE            1.    2,4-dimethyl styrene
+C1195-32-0       132.202  10  1  BIGENE            1.    alpha para-dimethyl styrene
+C77-73-6         132.202  10  1  BIGENE            1.    dicyclopentadiene
+C98-06-6         134.218  10  1  XYLENES           1.    t-butylbenzene
+C538-93-2        134.218  10  1  XYLENES           1.    (2-methylpropyl)benzene
+C135-98-8        134.218  10  1  XYLENES           1.    (1-methylpropyl)benzene (sec-butyl benzene)
+C104-51-8        134.218  10  1  XYLENES           1.    n-butylbenzene
+C99-87-6         134.218  10  1  XYLENES           1.    1-methyl-4-isopropylbenzene
+C488-23-3        134.218  10  1  XYLENES           1.    1,2,3,4-tetramethylbenzene
+C95-93-2         134.218  10  1  XYLENES           1.    1,2,4,5-tetramethylbenzene
+C527-53-7        134.218  10  1  XYLENES           1.    1,2,3,5-tetramethylbenzene
+C933-98-2        134.218  10  1  XYLENES           1.    1,2-dimethyl-3-ethylbenzene
+C2870-04-4       134.218  10  1  XYLENES           1.    1,3-dimethyl-2-ethylbenzene
+C934-80-5        134.218  10  1  XYLENES           1.    1,2-dimethyl-4-ethylbenzene
+C874-41-9        134.218  10  1  XYLENES           1.    1,3-dimethyl-4-ethylbenzene
+C1758-88-9       134.218  10  1  XYLENES           1.    1,4-dimethyl-2-ethylbenzene
+C934-74-7        134.218  10  1  XYLENES           1.    1,3-dimethyl-5-ethylbenzene
+C141-93-5        134.218  10  1  XYLENES           1.    1,3-diethylbenzene (meta)
+C535-77-3        134.218  10  1  XYLENES           1.    1-methyl-3-isopropylbenzene
+C1074-43-7       134.218  10  1  XYLENES           1.    1-methyl-3n-propylbenzene
+C135-01-3        134.218  10  1  XYLENES           1.    1,2-diethylbenzene (ortho)
+C527-84-4        134.218  10  1  XYLENES           1.    o-cymene; 1-methyl-2-isopropylbenzene
+C1074-17-5       134.218  10  1  XYLENES           1.    1-methyl-2n-propylbenzene
+C105-05-5        134.218  10  1  XYLENES           1.    1,4-diethylbenzene (para)
+C1074-55-1       134.218  10  1  XYLENES           1.    1-methyl-4n-propylbenzene
+C13466-78-9      136.234  10  1  APIN              1.    3-carene
+C7785-26-4       136.234  10  1  APIN              1.    (1s)-(-)-alpha-pinene
+C80-56-8         136.234  10  1  APIN              1.    a-pinene
+C127-91-3        136.234  10  1  BPIN              1.    b-pinene
+C5989-27-5       136.234  10  1  LIMON             1.    d-limonene
+C3387-41-5       136.234  10  1  APIN              1.    Sabinene
+C123-35-3        136.234  10  1  MYRC              1.    myrcene
+C3779-61-1       136.234  10  1  MYRC              1.    trans-beta-ocimene
+C464-17-5        136.234  10  1  APIN              1.    2-bornene
+C471-84-1        136.234  10  1  BPIN              1.    alpha-fenchene
+C5794-03-6       136.234  10  1  BPIN              1.    camphene
+C2867-05-2       136.234  10  1  APIN              1.    alpha-thujene
+C99-84-3         136.234  10  1  LIMON             1.    beta-terpinene
+C99-86-5         136.234  10  1  LIMON             1.    alpha-terpinene
+C586-62-9        136.234  10  1  LIMON             1.    Terpinolene
+C555-10-2        136.234  10  1  LIMON             1.    b-phellandrene {1(7)-2-p-menthadiene}
+C99-85-4         136.234  10  1  LIMON             1.    gamma-terpinene (1-isopropyl-4-methyl-1,4-cyclohexadiene)
+C99-83-2         136.234  10  1  LIMON             1.    alpha-Phellandrene
+C502-99-8        136.234  10  1  MYRC              1.    alpha-ocimene (3,7-dimethyl-1,3,7-octatriene)
+C3338-55-4       136.234  10  1  MYRC              1.    cis-beta-ocimene
+C673-84-7        136.234  10  1  MYRC              1.    2,6-dimethyl-2,4,6-octatriene
+C764-93-2        138.250  10  1  BIGENE            1.    1-decyne
+Sx-006           138.250  10  1  BIGENE            1.    4,6-dimethyl-2-octyne
+C1636-39-1       138.250  10  1  BIGALK            1.    cyclopentylcyclopentane
+C872-05-9        140.266  10  1  BIGENE            1.    1-decene
+C19781-30-7      140.266  10  1  BIGENE            1.    4-ethyl-1-octene
+C35648-55-6      140.266  10  1  BIGENE            1.    3-propyl-1-heptene
+C26741-20-8      140.266  10  1  BIGENE            1.    4-methyl-1-nonene
+C26741-23-1      140.266  10  1  BIGENE            1.    7-methyl 1-Nonene
+C4984-01-4       140.266  10  1  BIGENE            1.    3,7-dimethyl-1-octene
+C19398-89-1      140.266  10  1  BIGENE            1.    Trans-4-Decene
+C7433-78-5       140.266  10  1  BIGENE            1.    Cis-5-Decene
+C59643-70-8      140.266  10  1  BIGENE            1.    3,4-Diethyl-2-Hexene (E)
+C121941-01-3     140.266  10  1  BIGENE            1.    trans 4-methyl-2-nonene
+C74630-09-4      140.266  10  1  BIGENE            1.    trans-4-ethyl-2-octene
+C19781-18-1      140.266  10  1  BIGENE            1.    2,3-dimethyl-2-octene
+C19780-61-1      140.266  10  1  BIGENE            1.    3-ethyl-2-methyl-2-heptene
+C4485-13-6       140.266  10  1  BIGENE            1.    4-propyl-3-heptene
+C692-48-8        140.266  10  1  BIGENE            1.    trans-2,2,5,5-tetramethyl-3-hexene
+C1321-67-1       144.170  10  1  CRESOL            1.    naphthol
+C104-46-1        148.202  10  1  XYLENES           1.    anethol 
+C3238-38-8       150.218  10  1  CRESOL            1.    2,3,4,6-Tetramethylphenol (Isodurenol)
+C4074-46-8       150.218  10  1  CRESOL            1.    4-methyl-2-propyl-phenol
+C85528-07-0      150.218  10  1  CRESOL            1.    ethyldimethylphenol
+C99-49-0         150.218  10  1  TERPROD1          1.    carvone
+C76-22-2         152.233  10  1  TERPROD1          1.    camphor
+C546-80-5        152.233  10  1  TERPROD1          1.    alpha-thujone
+C1195-79-5       152.233  10  1  TERPROD1          1.    fenchone
+C29606-79-9      152.233  10  1  TERPROD1          1.    isopulegone (5-methyl-2-(1-methylethenyl)-cyclohexanone)
+C1126-18-7       154.249  10  1  BIGALK            1.    2-butyl cyclohexanone
+C3913-71-1       154.249  10  1  BIGENE            1.    trans-2-Decenal
+C507-70-0        154.249  10  1  TERPROD1          1.    borneol
+C470-82-6        154.249  10  1  TERPROD1          1.    Cineole
+C78-70-6         154.249  10  1  BIGENE            1.    linalool
+C106-24-1        154.249  10  1  BIGENE            1.    geraniol
+C98-55-5         154.249  10  1  LIMON             1.    a-terpineol
+C366-18-7        156.184  10  1  NROG              1.    Bipyridyl
+C112-31-2        156.265  10  1  BIGALK            1.    Decanal
+C693-54-9        156.265  10  1  BIGALK            1.    2-Decanone
+C89-78-1         156.265  10  1  CRESOL            1.    menthol
+C15356-70-4      156.265  10  1  CRESOL            1.    menthol (racemic)
+C499-69-4        156.265  10  1  CRESOL            1.    carvomenthol (2-p-menthanol) (2-methyl-5-(1-methylethyl)-cyclohexanol)
+C106-22-9        156.265  10  1  BIGENE            1.    Citronellol (3,7-dimethy-6-octen-1-ol)
+C58309-25-4      158.200  10  1  NROG              1.    2,3-dimethyl-1,8-Naphthyridine
+C25339-17-7      158.281  10  1  BIGALK            1.    8-Methyl-1-Nonanol (Isodecyl alcohol)
+C112-30-1        158.281  10  1  BIGALK            1.    1-decanol
+C106-21-8        158.281  10  1  BIGALK            1.    3,7-dimethyl-1-octanol
+C693-65-2        158.281  10  1  BIGALK            1.    Di-n-Pentyl Ether
+C582-17-2        160.169  10  1  XYLENES           1.    2,7-Dihydroxynaphthalene
+C704-00-7        162.185  10  1  XYLENES           1.    1,2-diacetyl benzene
+C94-59-7         162.185  10  1  XYLENES           1.    safrole
+C54-11-5         162.232  10  1  NROG              1.    nicotine
+C97-53-0         164.201  10  1  CRESOL            1.    1-allyl-3-methoxy-4-hydroxybenzene
+C5912-86-7       164.201  10  1  CRESOL            1.    Cis-iso-eugenol
+C97-54-1         164.201  10  1  CRESOL            1.    Isoeugenol-TMS , also noted as "isoeug"
+C5932-68-3       164.201  10  1  CRESOL            1.    phenol, 2-methoxy-4-(1-propenyl)-, (E)- ; trans-isoeugenol
+C2785-87-7       166.217  10  1  CRESOL            1.    phenol, 2-methoxy-4-propyl-
+C706-14-9        170.249  10  1  BIGALK            1.    5-hexyldihydro-2(3H)-furanone
+C34995-77-2      170.249  10  1  BIGENE            1.    trans-linalool oxide
+Sx-005           170.249  10  1  BIGENE            1.    3,4-dimethyl-1-octyne-7,8-diol
+C2855-13-2       170.295  10  1  BIGALK            1.    isophorone diamine (1-Amino-3-aminomethyl-3,5,5-trimethyl cyclohexane)
+C107-75-5        172.265  10  1  BIGALK            1.    Hydroxycitronellal
+C112-14-1        172.265  10  1  BIGALK            1.    n-Octyl Acetate
+45MC6ACT         172.265  10  1  BIGALK            1.    4,5-Dimethylhexyl Acetate
+35MC6ACT         172.265  10  1  BIGALK            1.    3,5-Dimethylhexyl Acetate
+5MC7-ACT         172.265  10  1  BIGALK            1.    5-Methylheptyl Acetate
+4MC7-ACT         172.265  10  1  BIGALK            1.    4-Methylheptyl Acetate
+3MC7-ACT         172.265  10  1  BIGALK            1.    3-Methylheptyl Acetate
+34MC6ACT         172.265  10  1  BIGALK            1.    3,4-Dimethylhexyl Acetate
+24MC6ACT         172.265  10  1  BIGALK            1.    2,4-Dimethylhexyl Acetate
+3EC6-ACT         172.265  10  1  BIGALK            1.    3-Ethylhexyl Acetate
+C103-09-3        172.265  10  1  BIGALK            1.    2-ethyl hexyl acetate
+C334-48-5        172.265  10  1  BIGALK            1.    n-Decanoic acid
+C1731-84-6       172.265  10  1  BIGALK            1.    methyl nonanoate
+C102-81-8        173.296  10  1  BIGALK            1.    2-N,N-Dibutylaminoethanol
+C1559-35-9       174.280  10  1  BIGALK            1.    2-(2-ethylhexyloxy)ethanol (ethylene glycol mono-2-ethylhexyl ether)
+C486-56-6        176.215  10  1  NROG              1.    Cotinine
+SP4-1688         178.185  10  1  TERPROD2          1.    Coniferaldehyde
+SP4-1899         178.231  10  1  NROG              1.    N-Oxynicotine; 3-(1-methyl-1-oxido-2,3,4,5-tetrahydropyrrol-2-yl)pyridine
+C94-13-3         180.200  10  1  NROG              1.    propylparaben 
+C2503-46-0       180.200  10  1  NROG              1.    4-hydroxy-3-methoxyphenylacetone
+SP4-1837         182.216  10  1  CRESOL            1.    4-ethylsyringol
+C475-38-7        190.152  10  1  CRESOL            1.    5,8-dihydroxy-1,4-Naphthalenedione
+C112-59-4        190.280  10  1  BIGALK            1.    2-(2-Hexyloxyethoxy) ethanol
+C29911-28-2      190.280  10  1  BIGALK            1.    glycol ether dpnb {1-(2-butoxy-1-methylethoxy)-2-propanol}
+C131-11-3        194.184  10  1  TOLUENE           1.    dimethyl phthalate
+C120-61-6        194.184  10  1  TOLUENE           1.    dimethylterephthalate
+C2478-38-8       196.200  10  1  NROG              1.    Ethanone, 1-(4-hydroxy-3,5-dimethoxyphenyl)-
+C111-20-6        202.248  10  1  NROG              1.    Decanedioic acid
+C2425-79-8       202.248  10  1  NOASN             0.    1,4-butanediol diglycidyl ether
+C1114-71-2       203.345  10  1  NROG              1.    pebulate
+C124-17-4        204.263  10  1  NROG              1.    diethylene glycol butyl ether acetate {2-2-(butoxyethoxy)ethylacetate}
+C143-22-6        206.279  10  1  NROG              1.    triethylene glycol monobutyl ether
+C25498-49-1      206.279  10  1  NROG              1.    Tripropylene Glycol Monomethyl Ether ([2-(2-methoxymethylethoxy)methylethoxy]-propanol)
+C66291-35-8      206.279  10  1  NROG              1.    1-ethylanthracene
+C66291-36-9      206.279  10  1  NROG              1.    4-Ethylphenanthrene
+C1610-18-0       225.291  10  1  NOASN             0.    pramitol
+C60-00-4         292.243  10  1  NVOL              1.    ethylenediaminetetraacetic acid
+C121-75-5        330.358  10  1  NOASN             0.    malathion
+C1861-32-1       331.964  10  1  NROG              1.    dimethyl 2,3,5,6-tetrachloroterephthalate
+C541-02-6        370.770  10  0  NROG              1.    Decamethylcyclopentasiloxane (D5)
+C2958-76-1       152.277  11  1  BIGALK            1.    2-methyldecalin
+C4292-92-6       154.292  11  1  BIGALK            1.    pentyl Cyclohexane
+Sx-025           154.292  11  1  BIGALK            1.    n-butylcychoheptane
+C62238-33-9      154.292  11  1  BIGALK            1.    1-Ethyl-2-Propyl Cyclohexane
+C164259-42-1     154.292  11  1  BIGALK            1.    1,3-Diethyl-5-Methyl Cyclohexane
+C54105-77-0      154.292  11  1  BIGALK            1.    (2-methylbutyl)cyclohexane
+S2-99059         154.292  11  1  BIGALK            1.    1,1-dimethyl-2-propylcyclohexane
+S2-99053         154.292  11  1  BIGALK            1.    1,2-diethyl-1-methylcyclohexane
+S2-99060         154.292  11  1  BIGALK            1.    1-ethyl-2,2,6-trimethylcyclohexane
+C4457-00-5       154.292  11  1  BIGALK            1.    hexylcyclopentane
+C29949-27-7      154.292  11  1  BIGALK            1.    n-pentylcyclohexane
+SP4-2361         154.292  11  1  BIGALK            1.    Cis 1-methyl-4-ter-butylcyclohexane
+C1120-21-4       156.308  11  1  BIGALK            1.    n-undecane
+C17302-28-2      156.308  11  1  BIGALK            1.    2,6-dimethylnonane
+C13151-34-3      156.308  11  1  BIGALK            1.    3-methyldecane
+C2847-72-5       156.308  11  1  BIGALK            1.    4-methyldecane
+C61868-54-0      156.308  11  1  BIGALK            1.    2,3,4,6-Tetramethyl Heptane
+C61869-02-1      156.308  11  1  BIGALK            1.    3,5-Diethyl Heptane
+C62016-37-9      156.308  11  1  BIGALK            1.    2,4,6-trimethyloctane
+C17302-24-8      156.308  11  1  BIGALK            1.    2,4-dimethylnonane
+C17302-27-1      156.308  11  1  BIGALK            1.    2,5-dimethylnonane
+C1002-17-1       156.308  11  1  BIGALK            1.    2,9-dimethyl Decane
+C6975-98-0       156.308  11  1  BIGALK            1.    2-methyldecane
+S2-99068         156.308  11  1  BIGALK            1.    3,5-dimethylnonane
+C17302-32-8      156.308  11  1  BIGALK            1.    3,7-dimethylnonane
+C17302-11-3      156.308  11  1  BIGALK            1.    3-ethyl Nonane
+S2-99051         156.308  11  1  BIGALK            1.    3-ethyl-3-methyloctane
+S2-91097         156.308  11  1  BIGALK            1.    3-ethylnonane
+C5911-05-7       156.308  11  1  BIGALK            1.    4-ethyl Nonane
+C17302-12-4      156.308  11  1  BIGALK            1.    5-ethyl Nonane
+C13151-35-4      156.308  11  1  BIGALK            1.    5-methyldecane
+S2-99044         156.308  11  1  BIGALK            1.    6-ethyl-2-methyloctane
+C90-12-0         142.197  11  1  XYLENES           1.    1-methyl naphthalene
+C91-57-6         142.197  11  1  XYLENES           1.    2-methylnaphthalene
+C70063-93-3      144.213  11  1  XYLENES           1.    1,2-dimethylindene
+C39292-53-0      144.213  11  1  XYLENES           1.    methyldihydronaphthalene
+C1685-83-2       146.229  11  1  XYLENES           1.    4,5-dimethyl-2,3,dihydro-1-h-indenes
+C1685-82-1       146.229  11  1  XYLENES           1.    4,6-dimethyl-2,3,dihydro-1-h-indenes
+C6682-71-9       146.229  11  1  XYLENES           1.    4,7-dimethyl-2,3,dihydro-1-h-indenes
+C1075-22-5       146.229  11  1  XYLENES           1.    5,6-dimethyl-2,3,dihydro-1-h-indenes
+C53563-67-0      146.229  11  1  XYLENES           1.    Dimethyl Indan
+C56147-63-8      146.229  11  1  XYLENES           1.    2-ethylindan
+C16002-93-0      146.229  11  1  BIGENE            1.    trans-1-phenyl-1-pentene
+C3937-24-4       146.229  11  1  XYLENES           1.    2,4,5-trimethylstyrene
+C1196-58-3       148.245  11  1  XYLENES           1.    3-phenylpentane
+C29316-05-0      148.245  11  1  XYLENES           1.    s-pentylbenzene
+C3968-85-2       148.245  11  1  XYLENES           1.    (2-methylbutyl)benzene
+C2049-95-8       148.245  11  1  XYLENES           1.    tert-Pentylbenzene
+C538-68-1        148.245  11  1  XYLENES           1.    n-pentylbenzene
+C18970-44-0      148.245  11  1  XYLENES           1.    1-ethyl-2-isopropylbenzene
+C1595-11-5       148.245  11  1  XYLENES           1.    1-methyl-2-n-butylbenzene
+C27138-21-2      148.245  11  1  XYLENES           1.    1-t-butyl-2-methylbenzene
+OC11BEN2-1       148.245  11  1  XYLENES           1.    1-ethyl-2-propyl benzene
+C4218-48-8       148.245  11  1  XYLENES           1.    1-ethyl-4-isopropylbenzene
+S2-99064         148.245  11  1  XYLENES           1.    1-methyl-4-isobutylbenzene
+C98-51-1         148.245  11  1  XYLENES           1.    1-methyl-4-t-butylbenzene
+PC11BEN2-1       148.245  11  1  XYLENES           1.    1-ethyl-4-propyl benzene
+C1595-16-0       148.245  11  1  XYLENES           1.    1-methyl-4-(1-methylpropyl)benzene
+MC11BEN2-1       148.245  11  1  XYLENES           1.    1-ethyl-3-propyl benzene
+C17059-44-8      148.245  11  1  XYLENES           1.    1,2-dimethyl-3-propyl benzene
+C13632-95-6      148.245  11  1  XYLENES           1.    1,3-diethyl-2-methyl Benzene
+C17059-45-9      148.245  11  1  XYLENES           1.    1,3-dimethyl-2-propyl benzene
+C13732-80-4      148.245  11  1  XYLENES           1.    1,2-diethyl-4-methylbenzene
+C3982-66-9       148.245  11  1  XYLENES           1.    1,2-dimethyl-4-propyl benzene
+C1758-85-6       148.245  11  1  XYLENES           1.    1,3-diethyl-4-methyl benzene
+C4706-89-2       148.245  11  1  XYLENES           1.    1,3-dimethyl-4-isopropylbenzene
+C3042-50-0       148.245  11  1  XYLENES           1.    1,4-dimethyl-2-propyl Benzene
+C61827-85-8      148.245  11  1  XYLENES           1.    2,4-dimethyl-1-propyl benzene
+3C11BEN3-1       148.245  11  1  XYLENES           1.    1,2-diethyl-3-methylbenzene
+4C11BEN3-1       148.245  11  1  XYLENES           1.    1,2-diethyl-4-methylbenzene
+C3982-64-7       148.245  11  1  XYLENES           1.    1,3-dimethyl-5-propylbenzene
+C700-12-9        148.245  11  1  XYLENES           1.    pentamethylbenzene
+C61827-86-9      148.245  11  1  XYLENES           1.    1,2,3-trimethyl-4-ethylbenzene
+C31366-00-4      148.245  11  1  XYLENES           1.    1,2,3-trimethyl-5-ethyl Benzene
+C2050-24-0       148.245  11  1  XYLENES           1.    1,3-diethyl-5-methyl benzene
+C18262-85-6      148.245  11  1  XYLENES           1.    1-ethyl-2,3,5-trimethyl benzene
+C41903-41-7      148.245  11  1  XYLENES           1.    1-ethyl-2,3,6-trimethyl benzene
+C17851-27-3      148.245  11  1  XYLENES           1.    1-ethyl-2,4,5-trimethyl benzene
+C1074-92-6       148.245  11  1  XYLENES           1.    1-methyl-2-tert-butylbenzene
+C1595-04-6       148.245  11  1  XYLENES           1.    1-methyl-3-butylbenzene
+C61827-87-0      148.245  11  1  XYLENES           1.    2-ethyl-1,3,4-trimethyl benzene
+C3982-67-0       148.245  11  1  XYLENES           1.    2-ethyl-1,3,5-trimethyl benzene
+C25321-29-3      148.245  11  1  XYLENES           1.    dimethyl, isopropyl benzene
+C26573-16-0      148.245  11  1  XYLENES           1.    ethyl isopropyl benzene
+C16021-20-8      148.245  11  1  XYLENES           1.    1-ethyl-2-propylbenzene
+C5161-04-6       148.245  11  1  XYLENES           1.    p-Isobutyl toluene; 1-methyl-4(2-methylpropyl) benzene
+C51911-82-1      150.261  11  1  BIGENE            1.    4,8-dimethyl-1,3,7-nonatriene
+C2243-98-3       152.277  11  1  BIGENE            1.    1-undecyne
+C39546-79-7      152.277  11  1  BIGENE            1.    pentylidenecyclohexane
+C821-95-4        154.292  11  1  BIGENE            1.    1-undecene
+C13151-28-5      154.292  11  1  BIGENE            1.    3-methyl-1-decene
+C101823-01-2     154.292  11  1  BIGENE            1.    trans-4-methyl-2-decene
+C764-97-6        154.292  11  1  BIGENE            1.    Trans-5-Undecene
+C93-04-9         158.197  11  1  XYLENES           1.    2-methoxy-naphthalene
+C6891-45-8       164.244  11  1  CRESOL            1.    2-butyl-4-methyl-phenol
+C1076-56-8       164.244  11  1  CRESOL            1.    2-Isopropyl-5-methylanisole (Methyl thymol ether)
+C2463-77-6       168.276  11  1  BIGENE            1.    2-undecenal
+C112-44-7        170.292  11  1  BIGALK            1.    Undecanal
+C112-12-9        170.292  11  1  BIGALK            1.    2-Undecanone
+C927-49-1        170.292  11  1  BIGALK            1.    6-Undecanone
+C122-70-3        178.228  11  1  XYLENES           1.    benzylcarbinyl propionate
+C136-60-7        178.228  11  1  XYLENES           1.    n-butyl benzoate
+SP4-1757         184.275  11  1  XYLENES           1.    5-heptyldihydro-2(3H)-furanone
+C103-11-7        184.275  11  1  BIGENE            1.    2-Ethyl-Hexyl acrylate
+C143-13-5        186.291  11  1  BIGALK            1.    n-Nonyl Acetate
+46MC7ACT         186.291  11  1  BIGALK            1.    4,6-Dimethylheptyl Acetate
+36MC7ACT         186.291  11  1  BIGALK            1.    3,6-Dimethylheptyl Acetate
+5MC8-ACT         186.291  11  1  BIGALK            1.    5-Methyloctyl Acetate
+4MC8-ACT         186.291  11  1  BIGALK            1.    4-Methyloctyl Acetate
+2MC8-ACT         186.291  11  1  BIGALK            1.    2-Methyloctyl Acetate
+235M6ACT         186.291  11  1  BIGALK            1.    2,3,5-Teimethylhexyl Acetate
+45MC7ACT         186.291  11  1  BIGALK            1.    4,5-Dimethylheptyl Acetate
+35MC7ACT         186.291  11  1  BIGALK            1.    3,5-Dimethylheptyl Acetate
+25MC7ACT         186.291  11  1  BIGALK            1.    2,5-Dimethylheptyl Acetate
+24MC7ACT         186.291  11  1  BIGALK            1.    2,4-Dimethylheptyl Acetate
+23MC7ACT         186.291  11  1  BIGALK            1.    2,3-Dimethylheptyl Acetate
+3EC7-ACT         186.291  11  1  BIGALK            1.    3-Ethylheptyl Acetate
+C112-37-8        186.291  11  1  BIGALK            1.    n-Undecanoic acid
+C110-42-9        186.291  11  1  BIGALK            1.    methyl decanoate
+SP4-1838         196.243  11  1  CRESOL            1.    4-propylsyringol
+C114-26-1        209.242  11  1  NOASN             0.    2-(1-methylethoxy)phenol methylcarbamate {propoxur}
+UNS-TCYC-C12     164.287  12  1  BIGALK            1.    unspecified C12 tricycloalkane
+C1008-17-9       166.303  12  1  BIGALK            1.    1-ethyldecalin
+C4292-75-5       168.319  12  1  BIGALK            1.    hexylcyclohexane
+C75736-67-3      168.319  12  1  BIGALK            1.    1-Methyl-4-Pentyl Cyclohexane
+C164259-43-2     168.319  12  1  BIGALK            1.    1,3,5-Triethyl Cyclohexane
+Sx-009           168.319  12  1  BIGALK            1.    1,2-dimethyl-3-butylcyclohexane
+C294-62-2        168.319  12  1  BIGALK            1.    cyclododecane
+C66553-50-2      168.319  12  1  BIGALK            1.    trans-1-methyl-2-(4-methylpentyl)cyclopentane
+C112-40-3        170.335  12  1  BIGALK            1.    n-dodecane
+C1632-70-8       170.335  12  1  BIGALK            1.    5-methylundecane
+C1002-43-3       170.335  12  1  BIGALK            1.    3-methylundecane
+C62199-32-0      170.335  12  1  BIGALK            1.    2,3,5,7-Tetramethyloctane
+C17312-53-7      170.335  12  1  BIGALK            1.    3,6-Dimethyl Decane
+C62183-94-2      170.335  12  1  BIGALK            1.    3,6-Diethyl Octane
+C13475-82-6      170.335  12  1  BIGALK            1.    2,2,4,6,6-pentamethylheptane
+C17312-44-6      170.335  12  1  BIGALK            1.    2,3-dimethyl Decane
+C2801-84-5       170.335  12  1  BIGALK            1.    2,4-dimethyl Decane
+C17312-50-4      170.335  12  1  BIGALK            1.    2,5-dimethyl Decane
+C13150-81-7      170.335  12  1  BIGALK            1.    2,6-dimethyldecane
+C17312-51-5      170.335  12  1  BIGALK            1.    2,7-dimethyldecane
+C17312-52-6      170.335  12  1  BIGALK            1.    2,8-dimethyl Decane
+Sx-007           170.335  12  1  BIGALK            1.    2,8-dimethyl-5-ethyloctane
+C7045-71-8       170.335  12  1  BIGALK            1.    2-methylundecane {isododecane}
+C17312-48-0      170.335  12  1  BIGALK            1.    3,5-dimethyl Decane
+C17312-54-8      170.335  12  1  BIGALK            1.    3,7-dimethyl Decane
+C17312-55-9      170.335  12  1  BIGALK            1.    3,8-dimethyl Decane
+C17085-96-0      170.335  12  1  BIGALK            1.    3-ethyldecane
+C17312-46-8      170.335  12  1  BIGALK            1.    4,5-dimethyl Decane
+S2-99066         170.335  12  1  BIGALK            1.    4,5-dimethyldecane
+C17312-49-1      170.335  12  1  BIGALK            1.    4,6-dimethyl Decane
+C17312-56-0      170.335  12  1  BIGALK            1.    4,7-dimethyl Decane
+C1636-44-8       170.335  12  1  BIGALK            1.    4-ethyldecane
+C2980-69-0       170.335  12  1  BIGALK            1.    4-methylundecane
+C17302-36-2      170.335  12  1  BIGALK            1.    5-ethyl Decane
+S2-99056         170.335  12  1  BIGALK            1.    5-isopropylnonane
+C17302-33-9      170.335  12  1  BIGALK            1.    6-methylundecane
+S2-91112         170.335  12  1  BIGALK            1.    trans-1-methyl-2-(4-methylpropyl)cyclohexane
+C208-96-8        152.192  12  1  NROG              1.    acenaphthylene
+C92-52-4         154.208  12  1  XYLENES           1.    biphenyl {phenyl benzene}
+C83-32-9         154.208  12  1  XYLENES           1.    acenaphthene
+C581-40-8        156.224  12  1  XYLENES           1.    2,3-dimethylnaphthalene
+C573-98-8        156.224  12  1  XYLENES           1.    1,2-dimethyl naphthalene
+C571-58-4        156.224  12  1  XYLENES           1.    1.4-dimethylnaphthalene
+C581-42-0        156.224  12  1  XYLENES           1.    2,6-dimethyl naphthalene
+C939-27-5        156.224  12  1  XYLENES           1.    2-ethylnaphthalene
+C575-43-9        156.224  12  1  XYLENES           1.    1,6-Dimethylnaphthalene
+C1127-76-0       156.224  12  1  XYLENES           1.    1-ethylnaphthalene
+C54340-88-4      160.255  12  1  XYLENES           1.    2,3-dihydro-1,5,7-trimethyl-1h-indene
+C33484-76-3      160.255  12  1  XYLENES           1.    1,2,3-trimethyl indan
+C127148-37-2     160.255  12  1  XYLENES           1.    1-butyl-2-ethenylbenzene
+C46117-55-9      160.255  12  1  XYLENES           1.    3,5-diethyl styrene
+C1077-16-3       162.271  12  1  XYLENES           1.    n-hexylbenzene
+C577-55-9        162.271  12  1  XYLENES           1.    1,2 diisopropyl benzene
+OC12BEN2-1       162.271  12  1  XYLENES           1.    1,2-dipropylbenzene
+S2-91120         162.271  12  1  XYLENES           1.    1-methyl-4-n-pentylbenzene
+C7364-19-4       162.271  12  1  XYLENES           1.    1-t-butyl-4-ethylbenzene
+PC12BEN2-1       162.271  12  1  XYLENES           1.    1,4-dipropylbenzene
+MC12BEN2-1       162.271  12  1  XYLENES           1.    1,3-dipropylbenzene
+C877-44-1        162.271  12  1  XYLENES           1.    1,2,4-triethylbenzene
+3C12BEN3-1       162.271  12  1  XYLENES           1.    1,2,3-triethylbenzene
+C102-25-0        162.271  12  1  XYLENES           1.    1,3,5-triethylbenzene
+C98-19-1         162.271  12  1  XYLENES           1.    1-(1,1-dimethylethyl)-3,5-dimethylbenzene
+C99-62-7         162.271  12  1  XYLENES           1.    1,3-isodipropylbenzene
+C100-18-5        162.271  12  1  XYLENES           1.    1,4 diisopropyl benzene
+C17171-72-1      162.271  12  1  XYLENES           1.    m-dipropyl benzene
+C87-85-4         162.271  12  1  XYLENES           1.    hexamethyl benzene
+C86-74-8         167.207  12  1  NROG              1.    Carbazole
+C132-64-9        168.191  12  1  XYLENES           1.    dibenzofuran
+C112-41-4        168.319  12  1  BIGENE            1.    1-Dodecene
+C104256-06-6     168.319  12  1  BIGENE            1.    4-ethyl 1-Decene
+C104256-07-7     168.319  12  1  BIGENE            1.    6-ethyl 1-Decene
+C104256-08-8     168.319  12  1  BIGENE            1.    8-ethyl 1-Decene
+Sx-008           168.319  12  1  BIGENE            1.    4,5,7-trimethyl-1-nonene
+C141-70-8        168.319  12  1  BIGENE            1.    4,4-dimethyl-2-neopentyl-1-pentene
+C7206-16-8       168.319  12  1  BIGENE            1.    Trans-5-Dodecene
+C122-39-4        169.222  12  1  XYLENES           1.    n-phenylaniline {diphenylamine}
+C90-43-7         170.207  12  1  CRESOL            1.    biphenylol {2-phenylphenol}
+UNS-C12-PHEN     178.271  12  1  CRESOL            1.    unspecified C12 alkyl phenol
+SP4-1859A        182.302  12  1  BIGENE            1.    11-Dodecenal
+C132-65-0        184.257  12  1  NROG              1.    Dibenzothiophene
+C112-54-9        184.318  12  1  BIGALK            1.    Dodecanal
+C123-18-2        184.318  12  1  BIGALK            1.    2,6,8-trimethyl-4-nonanone
+C123-17-1        186.334  12  1  BIGALK            1.    Trimethylnonanolthreoerythro; 2,6,8-Trimethyl-4-nonanol
+C134-62-3        191.269  12  1  XYLENES           1.    n,n-diethyl-3-methylbenzamide
+C50791-87-2      191.269  12  1  NOASN             0.    methylvinylbis(n-methylacetamido) silane
+C125-12-2        196.286  12  1  TERPROD1          1.    isobornyl acetate (2-camphanyl acetate)
+C76-49-3         196.286  12  1  TERPROD1          1.    Bornyl acetate
+C81-84-5         198.174  12  1  NROG              1.    1,8-Naphthalic anhydride
+SP4-1758         198.302  12  1  XYLENES           1.    5-octyldihydro-2(3H)-furanone
+C92-84-2         199.272  12  1  NROG              1.    Dibenzothiazine
+C1120-16-7       199.333  12  1  NOASN             0.    dodecanamide
+46MC8ACT         200.318  12  1  BIGALK            1.    4,6-Dimethyloctyl Acetate
+36MC8ACT         200.318  12  1  BIGALK            1.    3,6-Dimethyloctyl Acetate
+3IPC7ACT         200.318  12  1  BIGALK            1.    3-Isopropylheptyl Acetate
+C112-17-4        200.318  12  1  BIGALK            1.    n-decyl acetate
+C143-07-7        200.318  12  1  BIGALK            1.    n-Dodedanoic acid
+C1731-86-8       200.318  12  1  BIGALK            1.    methyl undecanoate
+C63-25-2         201.221  12  1  NROG              1.    carbaryl
+C18491-15-1      216.317  12  1  BIGALK            1.    1-Hydroxy-2,2,4-Trimethylpentyl-3-Isobutyrate
+C77-68-9         216.317  12  1  BIGALK            1.    3-Hydroxy-2,2,4-Trimethylpentyl-1-Isobutyrate
+C1559-36-0       218.333  12  1  BIGALK            1.    diethylene glycol mono(2-ethylhexyl) ether
+C84-66-2         222.237  12  1  BIGALK            1.    Diethyl Phthalate
+C101-90-6        222.237  12  1  NROG              1.    diglycidyl resorcinol ether {dgre}
+C4098-71-9       222.284  12  1  NROG              1.    isophorone diisocyanate
+C106-79-6        230.301  12  1  BIGALK            1.    Dimethyl Sebacate
+C6938-94-9       230.301  12  1  BIGALK            1.    diisopropyl adipate
+C56-29-1         236.267  12  1  NOASN             0.    hexenal (hexobarbitol)
+C1559-34-8       250.332  12  1  BIGALK            1.    3,6,9,12-Tetraoxahexadecan-1-ol
+C28249-77-6      257.780  12  1  NROG              1.    thiobencarb
+C126-73-8        266.314  12  1  NOASN             0.    Tributyl phosphate
+C77-93-0         276.283  12  1  NROG              1.    triethyl citrate
+C333-41-5        304.346  12  1  NOASN             0.    diazinon
+C19044-88-3      346.360  12  1  NVOL              1.    oryzalin
+C1163-19-5       959.168  12  1  NROG              1.    decabromodiphenyl oxide
+UNS-TCYC-C13     178.314  13  1  BIGALK            1.    unspecified C13 tricycloalkane
+UNS-BCYC-C13     180.330  13  1  BIGALK            1.    unspecified C13 bicycloalkane
+C5617-41-4       182.346  13  1  BIGALK            1.    Heptyl Cyclohexane
+C92031-93-1      182.346  13  1  BIGALK            1.    1-Methyl-2-Hexyl-Cyclohexane
+Sx-022           182.346  13  1  BIGALK            1.    1,3-Diethyl-5-Propyl Cyclohexane
+C629-50-5        184.361  13  1  BIGALK            1.    n-tridecane
+C17312-57-1      184.361  13  1  BIGALK            1.    3-Methyl Dodecane
+C17453-93-9      184.361  13  1  BIGALK            1.    5-Methyl Dodecane
+C14638-54-1      184.361  13  1  BIGALK            1.    2,4,6,8-Tetramethyl Nonane
+C17301-28-9      184.361  13  1  BIGALK            1.    3,6-Dimethyl Undecane
+236M4IC7         184.361  13  1  BIGALK            1.    2,3,6-Trimethyl 4-Isopropyl Heptane
+37-DE-C9         184.361  13  1  BIGALK            1.    3,7-Diethyl Nonane
+S2-43252         184.361  13  1  BIGALK            1.    2,2,5-triethylheptane
+C17301-23-4      184.361  13  1  BIGALK            1.    2,6-dimethylundecane
+C1560-97-0       184.361  13  1  BIGALK            1.    2-methyl Dodecane
+Sx-010           184.361  13  1  BIGALK            1.    3,4,8-trimethyldecane
+C17312-58-2      184.361  13  1  BIGALK            1.    3-ethyl Undecane
+C31081-18-2      184.361  13  1  BIGALK            1.    3-methyl-5-propylnonane
+C6117-97-1       184.361  13  1  BIGALK            1.    4-methyl Dodecane
+C17453-94-0      184.361  13  1  BIGALK            1.    5-ethyl Undecane
+C86-73-7         166.219  13  1  XYLENES           1.    fluorene
+C643-93-6        168.234  13  1  XYLENES           1.    3-methyl biphenyl
+C879-12-9        170.250  13  1  XYLENES           1.    1,2,3-trimethyl naphthalene
+C2765-18-6       170.250  13  1  XYLENES           1.    1-propyl naphthalene
+C2245-38-7       170.250  13  1  XYLENES           1.    2,3,5-trimethylnaphthalene
+UNS-C13-NAP2     170.250  13  1  XYLENES           1.    unspecified C13 disubstituted naphthalene
+UNS-C13-TET      174.282  13  1  XYLENES           1.    unspecified C13 tetralin or indan
+C1078-71-3       176.298  13  1  XYLENES           1.    heptyl benzene
+OC13BEN2-1       176.298  13  1  XYLENES           1.    1-propyl-2-n-butylbenzene
+PC13BEN2-1       176.298  13  1  XYLENES           1.    1-propyl-4-n-butylbenzene
+C126028-51-1     176.298  13  1  XYLENES           1.    1-butyl-3-ethyl benzene
+MC13BEN2-1       176.298  13  1  XYLENES           1.    1-propyl-3-n-butylbenzene
+C100451-97-6     176.298  13  1  XYLENES           1.    1-methyl-2,4-dipropyl benzene
+3C13BEN3-1       176.298  13  1  XYLENES           1.    1,2-diethyl-3-propylbenzene
+4C13BEN3-1       176.298  13  1  XYLENES           1.    1,2-diethyl-4-propylbenzene
+5C13BEN3-1       176.298  13  1  XYLENES           1.    1,3-diethyl-5-propylbenzene
+C260-94-6        179.217  13  1  NROG              1.    Acridine
+C486-25-9        180.202  13  1  NROG              1.    9-fluorenone
+C548-39-0        180.202  13  1  NROG              1.    Perinaphthenone
+Sx-011           182.346  13  1  BIGENE            1.    3,4,6-trimethyl-1-heptene
+C2437-56-1       182.346  13  1  BIGENE            1.    1-Tridecene
+C23051-84-5      182.346  13  1  BIGENE            1.    Trans-5-Tridecene
+Sx-012           182.346  13  1  BIGENE            1.    3,4,6-trimethyl-2-heptene
+C3796-70-1       194.313  13  1  BIGENE            1.    Geranyl acetone
+C90-47-1         196.201  13  1  NVOL              1.    Xanthone
+SP4-1860A        196.329  13  1  BIGENE            1.    12-tridecenal
+C101-77-9        198.264  13  1  NROG              1.    4,4-methylene dianiline
+C10486-19-8      198.345  13  1  BIGALK            1.    Tridecanal
+C593-08-8        198.345  13  1  BIGALK            1.    2-Tridecanone
+C5888-33-5       208.297  13  1  TERPROD1          1.    Isobornyl Acrylate
+C55955-69-6      212.328  13  1  BIGALK            1.    Methyl 2-methylundecanoate
+SP4-1759         212.328  13  1  BIGALK            1.    5-nonyldihydro-2(3H)-furanone
+C111-82-0        214.344  13  1  BIGALK            1.    methyl dodecanoate {methyl laurate}
+357M8ACT         214.344  13  1  BIGALK            1.    3,5,7-Trimethyloctyl Acetate
+47MC9ACT         214.344  13  1  BIGALK            1.    4,7-Dimethylnonyl Acetate
+3E6M8ACT         214.344  13  1  BIGALK            1.    3-Ethyl-6-Methyloctyl Acetate
+C638-53-9        214.344  13  1  BIGALK            1.    n-Tridecanoic acid
+C120-32-1        218.679  13  1  NROG              1.    chlorophene
+C1211-29-6       224.296  13  1  BIGENE            1.    methyl jasmonate
+C55934-93-5      248.359  13  1  NROG              1.    tripropylene glycol n-butyl ether
+C40487-42-1      281.308  13  1  NVOL              1.    pendimethalin
+C22984-54-9      301.457  13  1  NVOL              1.    methyltri(ethylmethylketoxime) silane
+C1582-09-8       335.279  13  1  NVOL              1.    trifluralin
+UNS-TCYC-C14     192.340  14  1  BIGALK            1.    unspecified C14 tricycloalkane
+UNS-BCYC-C14     194.356  14  1  BIGALK            1.    unspecified C14 bicycloalkane
+C1795-15-9       196.372  14  1  BIGALK            1.    Octyl Cyclohexane
+C205324-73-8     196.372  14  1  BIGALK            1.    trans 1-Methyl-4-Heptyl Cyclohexane
+Sx-020           196.372  14  1  BIGALK            1.    1,3-Dipropyl-5-Ethyl Cyclohexane
+C6418-41-3       198.388  14  1  BIGALK            1.    3-Methyl Tridecane
+C13287-21-3      198.388  14  1  BIGALK            1.    6-Methyl Tridecane
+C82144-67-0      198.388  14  1  BIGALK            1.    3,7-Dimethyl Dodecane
+24568MC9         198.388  14  1  BIGALK            1.    2,4,5,6,8-Pentamethyl Nonane
+C629-59-4        198.388  14  1  BIGALK            1.    n-tetradecane
+2M35IPC7         198.388  14  1  BIGALK            1.    2-Methyl 3,5-Diisopropyl Heptane
+C6224-52-8       198.388  14  1  BIGALK            1.    3,8-Diethyl Decane
+C6864-53-5       198.388  14  1  BIGALK            1.    2,6,10-trimethyl Undecane
+C120-12-7        178.229  14  1  NROG              1.    anthracene
+C85-01-8         178.229  14  1  NROG              1.    phenanthrene
+C1730-37-6       180.245  14  1  NROG              1.    1-methyl-9h-fluorene
+C1556-99-6       180.245  14  1  NROG              1.    4-methyl fluorene
+C1430-97-3       180.245  14  1  NROG              1.    2-Methylfluorene
+C26914-17-0      180.245  14  1  NROG              1.    Methyl fluorene
+C103-29-7        182.261  14  1  XYLENES           1.    diphenyl ethane {bibenzyl}
+C66610-91-1      184.277  14  1  XYLENES           1.    2,3-diethylnaphthalene
+UNS-C14-TET      188.309  14  1  XYLENES           1.    unspecified C14 tetralin or indan
+C2189-60-8       190.324  14  1  XYLENES           1.    n-octyl benzene
+OC14BEN2-1       190.324  14  1  XYLENES           1.    1,2-di-n-butylbenzene
+PC14BEN2-1       190.324  14  1  XYLENES           1.    1,4-di-n-butylbenzene
+MC14BEN2-1       190.324  14  1  XYLENES           1.    1,3-di-n-butylbenzene
+3C14BEN3-1       190.324  14  1  XYLENES           1.    1,2-dipropyl-3-ethylbenzene
+4C14BEN3-1       190.324  14  1  XYLENES           1.    1,2-dipropyl-4-ethylbenzene
+5C14BEN3-1       190.324  14  1  XYLENES           1.    1,3-dipropyl-5-ethylbenzene
+Sx-029           190.324  14  1  XYLENES           1.    1,2,3,5-tetraethyl benzene
+C1120-36-1       196.372  14  1  BIGENE            1.    1-Tetradecene
+C41446-66-6      196.372  14  1  BIGENE            1.    Trans-5-Tetradecene
+C122-40-7        202.292  14  1  BIGENE            1.    amyl cinnamal
+C84-65-1         208.212  14  1  NROG              1.    9,10-anthraquinone
+C53939-27-8      210.356  14  1  BIGENE            1.    Tetradecenal
+C124-25-4        212.372  14  1  BIGALK            1.    tetradecanal
+C2345-27-9       212.372  14  1  BIGALK            1.    2-tetradecanone
+C7534-94-3       222.323  14  1  TERPROD1          1.    isobornyl methacrylate
+C82-45-1         223.227  14  1  NROG              1.    1-aminoanthraquinone
+SP4-1760         226.355  14  1  BIGALK            1.    5-decyldihydro-2(3H)-furanone
+368M9ACT         228.371  14  1  BIGALK            1.    3,6,8-Trimethylnonyl Acetate
+2357M8AC         228.371  14  1  BIGALK            1.    2,3,5,7-Tetramethyloctyl Acetate
+357M9ACT         228.371  14  1  BIGALK            1.    3,5,7-Trimethylnonyl Acetate
+C55554-08-0      228.371  14  1  BIGALK            1.    Methyl 2-methyldodecanoate
+C544-63-8        228.371  14  1  BIGALK            1.    n-Tetradecanoic acid
+C1731-88-0       228.371  14  1  BIGALK            1.    methyl tridecanoate
+C94-36-0         242.227  14  1  NOASN             0.    benzoyl peroxide
+C131-16-8        250.290  14  1  XYLENES           1.    dipropyl phthalate
+C2943-75-1       276.488  14  1  NOASN             0.    Triethoxyoctylsilane
+C17804-35-2      290.318  14  1  NVOL              1.    benomyl
+C120-78-5        332.487  14  1  NVOL              1.    2,2'-Dithiobisbenzothiazole
+UNS-TCYC-C15     206.367  15  1  BIGALK            1.    unspecified C15 tricycloalkane
+UNS-BCYC-C15     208.383  15  1  BIGALK            1.    unspecified C15 bicycloalkane
+C2883-02-5       210.399  15  1  BIGALK            1.    Nonyl Cyclohexane
+Sx-024           210.399  15  1  BIGALK            1.    1-Methyl-2-Octyl Cyclohexane
+Sx-019           210.399  15  1  BIGALK            1.    1,3,5-Tripropyl Cyclohexane
+13E55CC6         210.399  15  1  BIGALK            1.    1,3-diethyl-5-pentyl cyclohexane
+C18435-22-8      212.415  15  1  BIGALK            1.    3-Methyl Tetradecane
+C26730-16-5      212.415  15  1  BIGALK            1.    6-Methyl Tetradecane
+Sx-021           212.415  15  1  BIGALK            1.    3,7-Dimethyl Tridecane
+268M4IC9         212.415  15  1  BIGALK            1.    2,6,8-Trimethyl 4-Isopropyl Nonane
+C13286-72-1      212.415  15  1  BIGALK            1.    3,9-Diethyl Undecane
+C629-62-9        212.415  15  1  BIGALK            1.    n-pentadecane
+C3891-98-3       212.415  15  1  BIGALK            1.    2,6,10-Trimethyldodecane
+C832-69-9        192.256  15  1  NROG              1.    1-methylphenanthrene
+C613-12-7        192.256  15  1  NROG              1.    2-methylanthracene
+C2531-84-2       192.256  15  1  NROG              1.    2-methylphenanthrene
+C832-71-3        192.256  15  1  NROG              1.    3-methylphenanthrene
+C883-20-5        192.256  15  1  NROG              1.    9-methylphenanthrene
+C779-02-2        192.256  15  1  NROG              1.    9-methylanthracene
+UNS-C15-NAPH     198.303  15  1  NROG              1.    unspecified C15 naphthalene
+UNS-C15-TET      202.335  15  1  NROG              1.    unspecified C15 tetralin or indan
+C1081-77-2       204.351  15  1  BIGALK            1.    n-nonyl benzene
+C6753-98-6       204.351  15  1  BCARY             1.    alpha-humulene
+C77129-48-7      204.351  15  1  BCARY             1.    beta-famesene
+OC15BEN2-1       204.351  15  1  XYLENES           1.    1-n-butyl-2-n-pentylbenzene
+PC15BEN2-1       204.351  15  1  XYLENES           1.    1-n-butyl-4-n-pentylbenzene
+MC15BEN2-1       204.351  15  1  XYLENES           1.    1-n-butyl-3-n-pentylbenzene
+3C15BEN3-1       204.351  15  1  XYLENES           1.    1,2,3-tripropylbenzene
+4C15BEN3-1       204.351  15  1  XYLENES           1.    1,2,4-tripropylbenzene
+5C15BEN3-1       204.351  15  1  XYLENES           1.    1,3,5-tripropylbenzene
+C17066-67-0      204.351  15  1  BCARY             1.    beta-selinene
+C13474-59-4      204.351  15  1  BCARY             1.    alpha-bergamotene
+C495-61-4        204.351  15  1  BCARY             1.    beta-bisabolene
+C502-61-4        204.351  15  1  BCARY             1.    alpha-farnesene
+C87-44-5         204.351  15  1  BCARY             1.    beta-caryophyllene
+C13360-61-7      210.399  15  1  BIGENE            1.    1-Pentadecene
+C74392-33-9      210.399  15  1  BIGENE            1.    Trans-5-Pentadecene
+C101-86-0        216.319  15  1  XYLENES           1.    hexyl cinnamal
+C25154-52-3      220.350  15  1  CRESOL            1.    nonylphenol
+C128-37-0        220.350  15  1  CRESOL            1.    2,6-di-tert-butyl-p-cresol 
+SP4-1862A        224.382  15  1  BIGENE            1.    14-pentadecenal
+C2765-11-9       226.398  15  1  BIGALK            1.    Pentadecanal
+C2345-28-0       226.398  15  1  BIGALK            1.    2-Pentadecanone
+C80-05-7         228.286  15  1  CRESOL            1.    bis-phenol a
+C5444-75-7       234.334  15  1  BIGALK            1.    2-ethylhexyl benzoate
+SP4-1761         240.382  15  1  BIGALK            1.    5-undecyldihydro-2(3H)-furanone
+C124-10-7        242.398  15  1  BIGALK            1.    methyl myristate {methyl tetradecanoate}
+479M10AC         242.398  15  1  BIGALK            1.    4,7,9-Trimethyldecyl Acetate
+2468M8AC         242.398  15  1  BIGALK            1.    2,4,6,8-Tetramethylnonyl Acetate
+3E67M9AC         242.398  15  1  BIGALK            1.    3-Ethyl-6,7-Dimethylnonyl Acetate
+C55955-78-7      242.398  15  1  NROG              1.    2-Methyltridecanoic acid methyl ester
+C1002-84-2       242.398  15  1  BIGALK            1.    n-Pentadecanoic acid
+C101-68-8        250.252  15  1  NROG              1.    methene(b)4-phenylisocyanate {methylenediphenyldiisocyanate}
+C118-60-5        250.333  15  1  CRESOL            1.    2-ethylhexyl salicylate
+C5124-30-1       262.347  15  1  NOASN             0.    methylene-bis(4-cyclohexylisocyanate)
+C109201-63-0     264.317  15  1  XYLENES           1.    butyl isopropyl phthalate
+C42874-03-3      361.700  15  1  NVOL              1.    oxyfluorfen
+UNS-TCYC-C16     220.394  16  1  BIGALK            1.    unspecified C16 tricycloalkane
+UNS-BCYC-C16     222.409  16  1  BIGALK            1.    unspecified C16 bicycloalkane
+C1795-16-0       224.425  16  1  BIGALK            1.    Decyl Cyclohexane
+C39762-40-8      224.425  16  1  BIGALK            1.    1-Methyl-4-Nonyl Cyclohexane
+Sx-023           224.425  16  1  BIGALK            1.    1,3-Propyl-5-Butyl Cyclohexane
+C2882-96-4       226.441  16  1  BIGALK            1.    3-Methyl Pentadecane
+C6165-40-8       226.441  16  1  BIGALK            1.    7-Methyl Pentadecane
+C175032-36-7     226.441  16  1  BIGALK            1.    4,8-Dimethyl Tetradecane
+27M35IC8         226.441  16  1  BIGALK            1.    2,7-Dimethyl 3,5-Diisopropyl Heptane
+C544-76-3        226.441  16  1  BIGALK            1.    hexadecane
+C4390-04-9       226.441  16  1  BIGALK            1.    2,2,4,4,6,8,8-Heptamethylnonane
+SP4-1765         226.441  16  1  BIGALK            1.    2,6,10-trimethyltridecane
+C201-06-9        202.251  16  1  NROG              1.    acephenanthrylene
+C129-00-0        202.251  16  1  NROG              1.    pyrene
+C206-44-0        202.251  16  1  NROG              1.    fluoranthene
+C605-02-7        204.266  16  1  NROG              1.    1-Phenylnaphthalene
+C641-48-5        204.266  16  1  NROG              1.    1,2-Dihydroaceanthrylene
+C6232-48-0       204.266  16  1  NROG              1.    4,5-dihydroacephenanthrylene
+C1576-67-6       206.282  16  1  NROG              1.    3,6-dimethylphenanthrene
+S2-99377         210.314  16  1  NROG              1.    ethyl-phenyl-phenyl-ethane
+UNS-C16-NAPH     212.330  16  1  NROG              1.    unspecified C16 naphthalene
+UNS-C16-TET      216.362  16  1  NROG              1.    unspecified C16 tetralin or indan
+OC16BEN2-1       218.378  16  1  XYLENES           1.    1,2-di-n-pentylbenzene
+PC16BEN2-1       218.378  16  1  XYLENES           1.    1,4-di-n-pentylbenzene
+MC16BEN2-1       218.378  16  1  XYLENES           1.    1,3-di-n-pentylbenzene
+3C16BEN3-1       218.378  16  1  XYLENES           1.    1,2-dipropyl-3-n-butylbenzene
+4C16BEN3-1       218.378  16  1  XYLENES           1.    1,2-dipropyl-4-n-butylbenzene
+5C16BEN3-1       218.378  16  1  XYLENES           1.    1,3-dipropyl-5-n-butylbenzene
+C104-72-3        218.378  16  1  BIGALK            1.    n-decyl benzene
+C629-80-1        240.425  16  1  BIGALK            1.    Hexadecanal
+C2687-96-9       253.423  16  1  NROG              1.    lauryl pyrrolidone 
+SP4-1762         254.408  16  1  BIGALK            1.    5-dodecyldihydro-2(3H)-furanone
+C2091-29-4       254.408  16  1  BIGENE            1.    9-Hexadecenoic acid
+C373-49-9        254.408  16  1  BIGENE            1.    Palmitoleic acid
+C68171-50-6      254.408  16  1  BIGENE            1.    2-propenoic acid, 2-methyl dodecyl ester
+M9C15OET         254.408  16  1  BIGENE            1.    methyl cis-9-pentadecenoate
+3579M10A         256.424  16  1  BIGALK            1.    3,5,7,9-Tetramethyldecyl Acetate
+23568M9A         256.424  16  1  BIGALK            1.    2,3,5,6,8-Pentaamethylnonyl Acetate
+5E368M9A         256.424  16  1  BIGALK            1.    5-Ethyl-3,6,8-Trimethylnonyl Acetate
+C55554-09-1      256.424  16  1  BIGALK            1.    Methyl 2-methyltetradecanoate
+C57-10-3         256.424  16  1  BIGALK            1.    palmitic acid {n-hexadecanoic acid}
+C7132-64-1       256.424  16  1  BIGALK            1.    methyl pentadecanoate
+C118-56-9        262.344  16  1  CRESOL            1.    Homosalate
+C84-74-2         278.343  16  1  NVOL              1.    dibutyl phthalate
+C6846-50-0       286.407  16  1  NVOL              1.    2,2,4-Trimethyl-1,3-pentanediol diisobutyrate
+C120-40-1        287.438  16  1  NVOL              1.    varamid ml 1 (n,n-bis(2-hydroxyethyl)dodecanamide)
+C5593-70-4       340.322  16  1  NVOL              1.    tetrabutyl orthotitanate
+UNS-TCYC-C17     234.420  17  1  BIGALK            1.    unspecified C17 tricycloalkane
+UNS-BCYC-C17     236.436  17  1  BIGALK            1.    unspecified C17 bicycloalkane
+C54105-66-7      238.452  17  1  BIGALK            1.    Cyclohexane, undecyl-
+UNS-CYC-C17      238.452  17  1  BIGALK            1.    unspecified C17 cycloalkane
+C629-78-7        240.468  17  1  BIGALK            1.    n-heptadecane
+Sx-015           240.468  17  1  BIGALK            1.    2,3,4-trimethyl-5-propylheptane
+C1560-92-5       240.468  17  1  BIGALK            1.    2-methylheptadecane
+C23339-05-1      216.277  17  1  NROG              1.    7-methylfluoranthenes
+C2381-21-7       216.277  17  1  NROG              1.    1-Methylpyrene
+Sx-026           220.309  17  1  NROG              1.    3-ethyl,6-methylphenanthrene
+UNS-C17-NAPH     226.357  17  1  NROG              1.    unspecified C17 naphthalene
+UNS-C17-TET      230.388  17  1  NROG              1.    unspecified C17 tetralin or indan
+UNS-C17-BEN1     232.404  17  1  NROG              1.    unspecified C17 monosubstituted benzene
+UNS-C17-BEN2     232.404  17  1  NROG              1.    unspecified C17 disubstituted benzene
+UNS-C17-BEN3     232.404  17  1  NROG              1.    unspecified C17 trisubstituted benzene
+C629-90-3        254.451  17  1  BIGALK            1.    Heptadecanal
+SP4-1863         254.451  17  1  BIGALK            1.    2-heptadecanone
+C2922-51-2       254.451  17  1  BIGALK            1.    Heptadecan-2-one
+C1120-25-8       268.435  17  1  BIGENE            1.    methyl cis-9-hexadecenoate (methyl palmitoleate)
+C112-39-0        270.451  17  1  BIGALK            1.    methyl palmitate {methyl hexadecanoate}
+C64120-62-3      270.451  17  1  BIGALK            1.    Methyl 2-methylpentadecanoate
+C506-12-7        270.451  17  1  NVOL              1.    n-Heptadecanoic acid
+UNS-TCYC-C18     248.447  18  1  BIGALK            1.    unspecified C18 tricycloalkane
+UNS-BCYC-C18     250.463  18  1  BIGALK            1.    unspecified C18 bicycloalkane
+C1795-17-1       252.478  18  1  BIGALK            1.    Dodecylcyclohexane
+UNS-CYC-C18      252.478  18  1  BIGALK            1.    unspecified C18 cycloalkane
+C593-45-3        254.494  18  1  BIGALK            1.    octadecane
+Sx-016           254.494  18  1  BIGALK            1.    3,4,8-trimethyl-5-propyldodecane
+C6418-44-6       254.494  18  1  BIGALK            1.    3-methylheptadecane
+C203-12-3        226.272  18  1  NROG              1.    benzo[ghi]fluoranthene
+C56-55-3         228.288  18  1  NROG              1.    benzo(a)anthracene
+C195-19-7        228.288  18  1  NROG              1.    benzo(c)phenanthrene
+C218-01-9        228.288  18  1  NROG              1.    chrysene
+C27208-37-3      228.288  18  1  NROG              1.    cyclopenta[cd]pyrene
+C217-59-4        228.288  18  1  NROG              1.    Triphenylene
+C483-65-8        234.336  18  1  NROG              1.    Retene
+S1-45230         238.367  18  1  NROG              1.    di(ethylphenyl)ethane
+UNS-C18-NAPH     240.383  18  1  NROG              1.    unspecified C18 naphthalene
+UNS-C18-TET      244.415  18  1  NROG              1.    unspecified C18 tetralin or indan
+UNS-C18-BEN1     246.431  18  1  NROG              1.    unspecified C18 monosubstituted benzene
+UNS-C18-BEN2     246.431  18  1  NROG              1.    unspecified C18 disubstituted benzene
+UNS-C18-BEN3     246.431  18  1  NROG              1.    unspecified C18 trisubstituted benzene
+C143-28-2        268.478  18  1  NROG              1.    Oleyl alcohol
+C1955-33-5       278.430  18  1  NVOL              1.    9,12,15-Octadecatrienoic acid
+C463-40-1        278.430  18  1  NVOL              1.    9,12,15-Octadecatrienoic acid, (Z,Z,Z)-
+C2197-37-7       280.445  18  1  NVOL              1.    9,12-Octadecadienoic acid
+C60-33-3         280.445  18  1  NVOL              1.    9,12-octadecadienoic acid (linoleic)
+C112-80-1        282.461  18  1  NVOL              1.    Oleic acid; 9-octadecenoic acid
+M9C17OET         282.461  18  1  NVOL              1.    Methyl cis-9-heptadecenoate
+C1731-92-6       284.477  18  1  NVOL              1.    methyl heptadecanoate
+C57-11-4         284.477  18  1  NVOL              1.    Stearic acid (n-octadecanoic acid)
+C871-70-5        314.460  18  1  NVOL              1.    1,18-Octadecanedioic acid
+C78-51-3         398.472  18  1  NVOL              1.    Tri-(2-Butoxyethanol) Phosphate
+C139-96-8        415.586  18  1  NVOL              1.    triethanolamine lauryl sulfate
+UNS-TCYC-C19     262.473  19  1  BIGALK            1.    unspecified C19 tricycloalkane
+UNS-BCYC-C19     264.489  19  1  BIGALK            1.    unspecified C19 bicycloalkane
+C6006-33-3       266.505  19  1  BIGALK            1.    tridecylcyclohexane
+UNS-CYC-C19      266.505  19  1  BIGALK            1.    unspecified C19 cycloalkane
+C629-92-5        268.521  19  1  BIGALK            1.    nonadecane
+C1921-70-6       268.521  19  1  BIGALK            1.    Pristane
+UNS-BR-C19       268.521  19  1  BIGALK            1.    unspecified branched C19 alkane
+C6111-78-0       242.314  19  1  NROG              1.    11-Methylbenz[a]anthracene
+C652-04-0        242.314  19  1  NROG              1.    2-Methyl-3,4-benzphenanthrene
+C1705-85-7       242.314  19  1  NROG              1.    6-Methylchrysene
+UNS-C19-NAPH     254.410  19  1  NROG              1.    unspecified C19 naphthalene
+UNS-C19-TET      258.442  19  1  NROG              1.    unspecified C19 tetralin or indan
+UNS-C19-BEN1     260.457  19  1  NROG              1.    unspecified C19 monosubstituted benzene
+UNS-C19-BEN2     260.457  19  1  NROG              1.    unspecified C19 disubstituted benzene
+UNS-C19-BEN3     260.457  19  1  NROG              1.    unspecified C19 trisubstituted benzene
+C301-00-8        292.456  19  1  NROG              1.    methyl linolenate; methyl cis,cis,cis-9,12,15-octadecatrienoate
+C112-63-0        294.472  19  1  NROG              1.    methyl linoelate; methyl cis,cis-9,12-octadecadienoate
+C112-62-9        296.488  19  1  NVOL              1.    methyl cis-9-octadecenoate (methyl oleate)
+C112-61-8        298.504  19  1  NVOL              1.    methyl stearate {methyl octadecanoate}
+C142-91-6        298.504  19  1  NVOL              1.    Isopropyl Palmitate
+C646-30-0        298.504  19  1  NVOL              1.    n-Nonadecanoic acid
+C85-68-7         312.360  19  1  NVOL              1.    butylbenzylphthalate
+C542-44-9        330.503  19  1  NVOL              1.    Glycerol Monopalmitate
+UNS-TCYC-C20     276.500  20  1  NVOL              1.    unspecified C20 tricycloalkane
+UNS-BCYC-C20     278.516  20  1  NVOL              1.    unspecified C20 bicycloalkane
+C1795-18-2       280.532  20  1  NVOL              1.    Cyclohexane, tetradecyl-
+UNS-CYC-C20      280.532  20  1  NVOL              1.    unspecified C20 cycloalkane
+C112-95-8        282.547  20  1  NVOL              1.    eicosane
+C638-36-8        282.547  20  1  NVOL              1.    Phytane
+UNS-BR-C20       282.547  20  1  NVOL              1.    unspecified branched C20 alkane
+C50-32-8         252.309  20  1  NVOL              1.    benzo(a)pyrene
+C205-99-2        252.309  20  1  NVOL              1.    benzo(b)fluoranthene
+C192-97-2        252.309  20  1  NVOL              1.    benzo(e)pyrene
+C207-08-9        252.309  20  1  NVOL              1.    benzo(k)fluoranthene
+C198-55-0        252.309  20  1  NVOL              1.    perylene
+C205-82-3        252.309  20  1  NVOL              1.    Benzo[j]fluoranthene
+C74869-33-3      256.341  20  1  NVOL              1.    6-ethyl-Benzo[c]phenanthrene
+C2732-58-3       256.341  20  1  NVOL              1.    6-Ethylchrysene
+C3697-30-1       256.341  20  1  NVOL              1.    7-Ethylbenz[a]anthracene
+UNS-C20-NAPH     268.436  20  1  NVOL              1.    unspecified C20 naphthalene
+UNS-C20-TET      272.468  20  1  NVOL              1.    unspecified C20 tetralin or indan
+UNS-C20-BEN2     274.484  20  1  NVOL              1.    unspecified C20 disubstituted benzene
+UNS-C20-BEN1     274.484  20  1  NVOL              1.    unspecified C20 monosubstituted benzene
+UNS-C20-BEN3     274.484  20  1  NVOL              1.    unspecified C20 trisubstituted benzene
+C5333-42-6       298.547  20  1  NVOL              1.    2-octyl-1-dodecanol
+C23527-10-8      302.451  20  1  NVOL              1.    Sandaracopimaric acid
+UNS-TCYC-C21     290.526  21  1  NVOL              1.    unspecified C21 tricycloalkane
+UNS-BCYC-C21     292.542  21  1  NVOL              1.    unspecified C21 bicycloalkane
+C6006-95-7       294.558  21  1  NVOL              1.    N-Pentadecylcyclohexane
+UNS-CYC-C21      294.558  21  1  NVOL              1.    unspecified C21 cycloalkane
+C629-94-7        296.574  21  1  NVOL              1.    heneicosane
+UNS-BR-C21       296.574  21  1  NVOL              1.    unspecified branched C21 alkane
+UNS-C21-NAPH     282.463  21  1  NVOL              1.    unspecified C21 naphthalene
+UNS-C21-TET      286.495  21  1  NVOL              1.    unspecified C21 tetralin or indan
+UNS-C21-BEN2     288.511  21  1  NVOL              1.    unspecified C21 disubstituted benzene
+UNS-C21-BEN1     288.511  21  1  NVOL              1.    unspecified C21 monosubstituted benzene
+UNS-C21-BEN3     288.511  21  1  NVOL              1.    unspecified C21 trisubstituted benzene
+Sx-017           326.557  21  1  NVOL              1.    Methyl 2-methylnonadecanoate
+C37220-82-9      356.540  21  1  NVOL              1.    9-Octadecenoic acid (Z)-, ester with 1,2,3-propanetriol
+C25496-72-4      356.540  21  1  NVOL              1.    Glycerol monooleate
+C53-03-2         358.428  21  1  NVOL              1.    prednisone
+C52645-53-1      391.288  21  1  NVOL              1.    permethrin
+UNS-TCYC-C22     304.553  22  1  NVOL              1.    unspecified C22 tricycloalkane
+UNS-BCYC-C22     306.569  22  1  NVOL              1.    unspecified C22 bicycloalkane
+UNS-CYC-C22      308.585  22  1  NVOL              1.    unspecified C22 cycloalkane
+C629-97-0        310.601  22  1  NVOL              1.    docosane
+UNS-BR-C22       310.601  22  1  NVOL              1.    unspecified branched C22 alkane
+C193-39-5        276.331  22  1  NVOL              1.    indeno(1,2,3-cd)pyrene
+C191-26-4        276.331  22  1  NVOL              1.    anthanthrene
+C191-24-2        276.331  22  1  NVOL              1.    benzo(g,h,i)perylene
+C53-70-3         278.347  22  1  NVOL              1.    dibenzo(a,h)anthracene
+C222-93-5        278.347  22  1  NVOL              1.    Dibenzo[b,h]phenanthrene
+UNS-C22-NAPH     296.489  22  1  NVOL              1.    unspecified C22 naphthalene
+UNS-C22-TET      300.521  22  1  NVOL              1.    unspecified C22 tetralin or indan
+UNS-C22-BEN2     302.537  22  1  NVOL              1.    unspecified C22 disubstituted benzene
+UNS-C22-BEN1     302.537  22  1  NVOL              1.    unspecified C22 monosubstituted benzene
+UNS-C22-BEN3     302.537  22  1  NVOL              1.    unspecified C22 trisubstituted benzene
+Sx-018           340.584  22  1  NVOL              1.    Methyl 2-methyleicosanoate
+C39515-41-8      349.423  22  1  NVOL              1.    Danitol
+C93-83-4         369.582  22  1  NVOL              1.    oleic diethanol amide
+C121-29-9        372.455  22  1  NVOL              1.    pyrethrin ii
+C19781-73-8      322.611  23  1  NVOL              1.    Heptadecylcyclohexane
+C638-67-5        324.627  23  1  NVOL              1.    n-Tricosane
+SP4-1918         332.606  24  1  NVOL              1.    8B,13a-dimethyl-14B- [3'-methylbutyl]-podocarpane
+C4445-06-1       336.638  24  1  NVOL              1.    octadecylcyclohexane
+C646-31-1        338.654  24  1  NVOL              1.    n-Tetracosane
+C191-07-1        300.352  24  1  NVOL              1.    coronene
+C189-64-0        302.368  24  1  NVOL              1.    Dibenzo[a,h]pyrene
+C557-59-5        368.637  24  1  NVOL              1.    n-tetracosanoic acid
+C15495-94-0      390.556  24  1  NVOL              1.    1,2-Benzenedicarboxylic acid bis-(1-ethylhexyl) ester
+C117-81-7        390.556  24  1  NVOL              1.    di(2-ethylhexyl)phthalate
+C56-35-9         596.105  24  1  NVOL              1.    bis(tri-n-butyltin)oxide
+C22349-03-7      350.665  25  1  NVOL              1.    n-Nonadecylcyclohexane
+C629-99-2        352.680  25  1  NVOL              1.    n-Pentacosane
+C506-38-7        382.663  25  1  NVOL              1.    n-pentacosanoic acid
+C4443-55-4       364.691  26  1  NVOL              1.    Eicosylcyclohexane
+C630-01-3        366.707  26  1  NVOL              1.    N-hexacosane
+C506-46-7        396.690  26  1  NVOL              1.    Hexacosanoic acid
+C593-49-7        380.734  27  1  NVOL              1.    N-heptacosane
+C7138-40-1       410.716  27  1  NVOL              1.    n-heptacosanoic acid
+C630-02-4        394.760  28  1  NVOL              1.    Octacosane
+C506-48-9        424.743  28  1  NVOL              1.    Octacosanoic acid
+C26761-40-0      446.662  28  1  NVOL              1.    1,2-benzenedicarboxylic acid diisodecyl ester
+C630-03-5        408.787  29  1  NVOL              1.    n-Nonacosane
+C59-02-9         430.706  29  1  NVOL              1.    Vitamin E
+C4250-38-8       438.770  29  1  NVOL              1.    nonacosanoic acid
+C638-68-6        422.813  30  1  NVOL              1.    n-Triacontane
+C7683-64-9       410.718  30  1  NVOL              1.    squalene
+C638-95-9        426.717  30  1  NVOL              1.    Alpha-Amyrin
+C506-50-3        452.796  30  1  NVOL              1.    Triacontanoic acid
+C630-04-6        436.840  31  1  NVOL              1.    N-hentriacontane
+C559-70-6        440.744  31  1  NVOL              1.    Beta-Amyrin
+C544-85-4        450.866  32  1  NVOL              1.    Dotriacontane
+C630-05-7        464.893  33  1  NVOL              1.    n-Tritriacontane
+C14167-59-0      478.920  34  1  NVOL              1.    n-Tetratriacontane
+C630-07-9        492.946  35  1  NVOL              1.    n-Pentatriacotane
+C300-92-5        610.927  36  1  NVOL              1.    aluminum stearate, di

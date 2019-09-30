@@ -1,0 +1,4 @@
+name,type,default value,mandatory,description,formatter,constraints,width,spaces,fixformat start,fixformat end
+AQM,VARCHAR(20),"",true,"","","",20,0,0,0
+SPECIE_ID,VARCHAR(20),"",true,"","","",20,0,0,0
+MOLWT,double precision,"",true,"","","",0,0,0,0

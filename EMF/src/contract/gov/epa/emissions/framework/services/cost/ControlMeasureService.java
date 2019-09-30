@@ -94,4 +94,6 @@ public interface ControlMeasureService extends EMFService {
     ControlMeasure[] getControlMeasureBySectorExcludeClasses(int[] sectorIds) throws EmfException;
 
     void generateControlMeasurePDFReport(User user, int[] controlMeasureIds) throws EmfException;
+    
+    Pollutant[] getMeasurePollutants() throws EmfException;
 }

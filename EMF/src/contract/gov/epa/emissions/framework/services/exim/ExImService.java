@@ -57,4 +57,5 @@ public interface ExImService extends EMFService {
     
     String printStatusImportTaskManager() throws EmfException;
 
+    String getDatasetExportName(EmfDataset dataset, Version version, String prefix) throws EmfException;
 }

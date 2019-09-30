@@ -1,0 +1,7 @@
+#  CB05 case, no toxics
+
+mech_basis,AE6
+run_type,CRITERIA
+AQM,CMAQ
+
+output, PM

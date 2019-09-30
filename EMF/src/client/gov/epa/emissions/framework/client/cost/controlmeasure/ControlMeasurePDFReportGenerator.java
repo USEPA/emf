@@ -75,6 +75,10 @@ public class ControlMeasurePDFReportGenerator {
     public static final Font REGULAR_FONT = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
 
     public static final Format COST_FORMAT = new DecimalFormat("$#,##0");
+    
+    public static final Format EFF_FORMAT = new DecimalFormat("###.####");
+    
+    public static final Format EQ_FORMAT = new DecimalFormat("##########.####");
 
     public static final BaseColor COLORED_BORDER = BaseColor.BLACK;
 
@@ -548,40 +552,40 @@ public class ControlMeasurePDFReportGenerator {
                     String value = "";
                     switch (equationTypeVariable.getFileColPosition()) {
                     case 1:
-                        value = this.getDoubleAsString(equation.getValue1(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue1(), "", EQ_FORMAT);
                         break;
                     case 2:
-                        value = this.getDoubleAsString(equation.getValue2(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue2(), "", EQ_FORMAT);
                         break;
                     case 3:
-                        value = this.getDoubleAsString(equation.getValue3(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue3(), "", EQ_FORMAT);
                         break;
                     case 4:
-                        value = this.getDoubleAsString(equation.getValue4(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue4(), "", EQ_FORMAT);
                         break;
                     case 5:
-                        value = this.getDoubleAsString(equation.getValue5(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue5(), "", EQ_FORMAT);
                         break;
                     case 6:
-                        value = this.getDoubleAsString(equation.getValue6(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue6(), "", EQ_FORMAT);
                         break;
                     case 7:
-                        value = this.getDoubleAsString(equation.getValue7(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue7(), "", EQ_FORMAT);
                         break;
                     case 8:
-                        value = this.getDoubleAsString(equation.getValue8(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue8(), "", EQ_FORMAT);
                         break;
                     case 9:
-                        value = this.getDoubleAsString(equation.getValue9(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue9(), "", EQ_FORMAT);
                         break;
                     case 10:
-                        value = this.getDoubleAsString(equation.getValue10(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue10(), "", EQ_FORMAT);
                         break;
                     case 11:
-                        value = this.getDoubleAsString(equation.getValue11(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue11(), "", EQ_FORMAT);
                         break;
                     case 12:
-                        value = this.getDoubleAsString(equation.getValue12(), "");
+                        value = this.getDoubleAsStringSpecial(equation.getValue12(), "", EQ_FORMAT);
                         break;
 
                     default:
@@ -626,7 +630,6 @@ public class ControlMeasurePDFReportGenerator {
             int valueVAlign = Element.ALIGN_CENTER;
             int padding = 4;
 
-            int maxRecords = 4;
             java.util.List<PdfPCell> pollutantList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> localeList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> effectiveList = new ArrayList<PdfPCell>();
@@ -639,10 +642,7 @@ public class ControlMeasurePDFReportGenerator {
             java.util.List<PdfPCell> ruleEffectivenessList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> rulePenetrationList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> equationTypeList = new ArrayList<PdfPCell>();
-            java.util.List<PdfPCell> capRecFacList = new ArrayList<PdfPCell>();
-            java.util.List<PdfPCell> discountRateList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> capAnnRatList = new ArrayList<PdfPCell>();
-            java.util.List<PdfPCell> incCPTList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> detailsList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> existingMeasureList = new ArrayList<PdfPCell>();
             java.util.List<PdfPCell> existingNEIDevList = new ArrayList<PdfPCell>();
@@ -650,7 +650,11 @@ public class ControlMeasurePDFReportGenerator {
             BaseColor backgroundColor = BaseColor.WHITE;// new BaseColor(0xAAAAAA);
 
             PdfPTable table = null;
-            for (int i = 0; i < efficiencyRecords.length; i++) {
+            int maxRecords = 4;
+            int efficiencyRecordCount = efficiencyRecords.length;
+            
+            maxRecords = (maxRecords > efficiencyRecordCount ? efficiencyRecordCount : maxRecords);
+            for (int i = 0; i < efficiencyRecordCount; i++) {
 
                 EfficiencyRecord efficiencyRecord = efficiencyRecords[i];
 
@@ -668,10 +672,7 @@ public class ControlMeasurePDFReportGenerator {
                     ruleEffectivenessList.clear();
                     rulePenetrationList.clear();
                     equationTypeList.clear();
-                    capRecFacList.clear();
-                    discountRateList.clear();
                     capAnnRatList.clear();
-                    incCPTList.clear();
                     detailsList.clear();
                     existingMeasureList.clear();
                     existingNEIDevList.clear();
@@ -790,22 +791,6 @@ public class ControlMeasurePDFReportGenerator {
                     labelCell.setBackgroundColor(backgroundColor);
                     equationTypeList.add(labelCell);
 
-                    labelCell = new PdfPCell(new Phrase("Capital Rec Fac:", BOLD_FONT));
-                    labelCell.setHorizontalAlignment(labelHAlign);
-                    labelCell.setVerticalAlignment(labelVAlign);
-                    labelCell.setBorderColor(borderColor);
-                    labelCell.setPadding(padding);
-                    labelCell.setBackgroundColor(backgroundColor);
-                    capRecFacList.add(labelCell);
-
-                    labelCell = new PdfPCell(new Phrase("Discount Rate:", BOLD_FONT));
-                    labelCell.setHorizontalAlignment(labelHAlign);
-                    labelCell.setVerticalAlignment(labelVAlign);
-                    labelCell.setBorderColor(borderColor);
-                    labelCell.setPadding(padding);
-                    labelCell.setBackgroundColor(backgroundColor);
-                    discountRateList.add(labelCell);
-
                     labelCell = new PdfPCell(new Phrase("Cap Ann Ratio:", BOLD_FONT));
                     labelCell.setHorizontalAlignment(labelHAlign);
                     labelCell.setVerticalAlignment(labelVAlign);
@@ -813,14 +798,6 @@ public class ControlMeasurePDFReportGenerator {
                     labelCell.setPadding(padding);
                     labelCell.setBackgroundColor(backgroundColor);
                     capAnnRatList.add(labelCell);
-
-                    labelCell = new PdfPCell(new Phrase("Incrememental CPT:", BOLD_FONT));
-                    labelCell.setHorizontalAlignment(labelHAlign);
-                    labelCell.setVerticalAlignment(labelVAlign);
-                    labelCell.setBorderColor(borderColor);
-                    labelCell.setPadding(padding);
-                    labelCell.setBackgroundColor(backgroundColor);
-                    incCPTList.add(labelCell);
 
                     labelCell = new PdfPCell(new Phrase("Details:", BOLD_FONT));
                     labelCell.setHorizontalAlignment(labelHAlign);
@@ -893,8 +870,8 @@ public class ControlMeasurePDFReportGenerator {
                 valueCell.setPadding(padding);
                 refYrCPTList.add(valueCell);
 
-                valueCell = new PdfPCell(new Phrase(this.getDoubleAsString(efficiencyRecord.getEfficiency()),
-                        REGULAR_FONT));
+                valueCell = new PdfPCell(new Phrase(this.getDoubleAsStringSpecial(
+                        efficiencyRecord.getEfficiency(), N_A_STRING, EFF_FORMAT), REGULAR_FONT));
                 valueCell.setHorizontalAlignment(valueHAlign);
                 valueCell.setVerticalAlignment(valueVAlign);
                 valueCell.setBorderColor(borderColor);
@@ -940,22 +917,6 @@ public class ControlMeasurePDFReportGenerator {
                 valueCell.setPadding(padding);
                 equationTypeList.add(valueCell);
 
-                valueCell = new PdfPCell(new Phrase(this.getDoubleAsString(efficiencyRecord.getCapRecFactor()),
-                        REGULAR_FONT));
-                valueCell.setHorizontalAlignment(valueHAlign);
-                valueCell.setVerticalAlignment(valueVAlign);
-                valueCell.setBorderColor(borderColor);
-                valueCell.setPadding(padding);
-                capRecFacList.add(valueCell);
-
-                valueCell = new PdfPCell(new Phrase(this.getDoubleAsString(efficiencyRecord.getDiscountRate()),
-                        REGULAR_FONT));
-                valueCell.setHorizontalAlignment(valueHAlign);
-                valueCell.setVerticalAlignment(valueVAlign);
-                valueCell.setBorderColor(borderColor);
-                valueCell.setPadding(padding);
-                discountRateList.add(valueCell);
-
                 valueCell = new PdfPCell(new Phrase(this
                         .getDoubleAsString(efficiencyRecord.getCapitalAnnualizedRatio()), REGULAR_FONT));
                 valueCell.setHorizontalAlignment(valueHAlign);
@@ -963,14 +924,6 @@ public class ControlMeasurePDFReportGenerator {
                 valueCell.setBorderColor(borderColor);
                 valueCell.setPadding(padding);
                 capAnnRatList.add(valueCell);
-
-                valueCell = new PdfPCell(new Phrase(
-                        this.getDoubleAsString(efficiencyRecord.getIncrementalCostPerTon()), REGULAR_FONT));
-                valueCell.setHorizontalAlignment(valueHAlign);
-                valueCell.setVerticalAlignment(valueVAlign);
-                valueCell.setBorderColor(borderColor);
-                valueCell.setPadding(padding);
-                incCPTList.add(valueCell);
 
                 valueCell = new PdfPCell(new Phrase(efficiencyRecord.getDetail(), REGULAR_FONT));
                 valueCell.setHorizontalAlignment(valueHAlign);
@@ -1047,19 +1000,7 @@ public class ControlMeasurePDFReportGenerator {
                         table.addCell(pdfPCell);
                     }
 
-                    for (PdfPCell pdfPCell : capRecFacList) {
-                        table.addCell(pdfPCell);
-                    }
-
-                    for (PdfPCell pdfPCell : discountRateList) {
-                        table.addCell(pdfPCell);
-                    }
-
                     for (PdfPCell pdfPCell : capAnnRatList) {
-                        table.addCell(pdfPCell);
-                    }
-
-                    for (PdfPCell pdfPCell : incCPTList) {
                         table.addCell(pdfPCell);
                     }
 
@@ -1082,7 +1023,92 @@ public class ControlMeasurePDFReportGenerator {
                 // this.createSectionBreak(document, 10, 10, .5f, 100);
                 // }
             }
+            
+            if (efficiencyRecordCount % maxRecords != 0) {
+                table = new PdfPTable((efficiencyRecordCount > maxRecords ? efficiencyRecordCount % maxRecords + 1 : maxRecords + 1));
+                table.setWidthPercentage(100);
 
+                float[] columnWidths = new float[(efficiencyRecordCount > maxRecords ? efficiencyRecordCount % maxRecords + 1 : maxRecords + 1)];
+                for (int j = 0; j < columnWidths.length; j++) {
+
+                    if (j == 0) {
+                        columnWidths[j] = 1.2f;
+                    } else {
+                        columnWidths[j] = 1;
+                    }
+                }
+                table.setTotalWidth(columnWidths);
+                table.getDefaultCell().setBorderColor(borderColor);
+
+                /*
+                 * build table
+                 */
+                for (PdfPCell pdfPCell : pollutantList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : localeList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : effectiveList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : costYearList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : cptList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : refYrCPTList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : controlEfficiencyList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : minEmisList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : maxEmisList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : ruleEffectivenessList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : rulePenetrationList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : equationTypeList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : capAnnRatList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : detailsList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : existingMeasureList) {
+                    table.addCell(pdfPCell);
+                }
+
+                for (PdfPCell pdfPCell : existingNEIDevList) {
+                    table.addCell(pdfPCell);
+                }
+
+                document.add(table);
+            }
         }
     }
 

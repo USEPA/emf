@@ -87,14 +87,9 @@ DECLARE
 	fixed_operation_maintenance_cost_expression text;
 	variable_operation_maintenance_cost_expression text;
 	annualized_capital_cost_expression text;
+	computed_ctl_cost_per_ton_expression text;
 	computed_cost_per_ton_expression text;
 	actual_equation_type_expression text;
-
-	--store 3% Discount Rate Costs...
-	discount_rate_3pct double precision := 0.03;	--store as fraction
-	annual_cost_3pct_expression text;
-	annualized_capital_cost_3pct_expression text;
-	computed_cost_per_ton_3pct_expression text;
 
 	--support for flat file ds types...
 	dataset_type_name character varying(255) := '';
@@ -498,7 +493,7 @@ BEGIN
 				from emissions.' || inv_table_name || ' inv
 
 				where ' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
-					and inv.poll in (''PM10'',''PM25-PRI'')
+					and inv.poll in (''PM10-PRI'',''PM25-PRI'')
 
 				WINDOW source_window AS (PARTITION BY ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ' order by ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ',coalesce(' || inv_ceff_expression || ',0.0) desc)
 			) foo
@@ -516,12 +511,12 @@ BEGIN
 					from emissions.' || inv_table_name || ' inv
 
 					where ' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
-						and inv.poll in (''PM10'',''PM25-PRI'',''SO2'')
+						and inv.poll in (''PM10-PRI'',''PM25-PRI'',''SO2'')
 
 					WINDOW source_window AS (PARTITION BY ' || fips_expression || ',scc' || case when is_point_table = false then '' else ',' || plantid_expression || ',' || pointid_expression || ',' || stackid_expression || ',' || segment_expression || '' end || ')
 
 				) tbl
-				where so2_ann_value is not null and poll in (''PM10'',''PM25-PRI'')
+				where so2_ann_value is not null and poll in (''PM10-PRI'',''PM25-PRI'')
 			) so2_emis
 
 			on pm_fillin_ceff.record_id = so2_emis.record_id';
@@ -593,6 +588,7 @@ BEGIN
 		fixed_operation_maintenance_cost_expression(cost_expressions),
 		variable_operation_maintenance_cost_expression(cost_expressions),
 		annualized_capital_cost_expression(cost_expressions),
+		computed_ctl_cost_per_ton_expression(cost_expressions),
 		computed_cost_per_ton_expression(cost_expressions),
 		actual_equation_type_expression(cost_expressions)
 	from public.get_cost_expressions(
@@ -617,32 +613,9 @@ BEGIN
 		fixed_operation_maintenance_cost_expression,
 		variable_operation_maintenance_cost_expression,
 		annualized_capital_cost_expression,
+		computed_ctl_cost_per_ton_expression,
 		computed_cost_per_ton_expression,
 		actual_equation_type_expression;
-
-	-- get various costing sql expressions (based on 3% discount rate)
-	select annual_cost_expression(cost_expressions),
-		annualized_capital_cost_expression(cost_expressions),
-		computed_cost_per_ton_expression(cost_expressions)
-	from public.get_cost_expressions(
-		int_control_strategy_id, -- int_control_strategy_id
-		input_dataset_id, -- int_input_dataset_id
-		false, --use_override_dataset
-		'inv', --inv_table_alias character varying(64), 
-		'm', --control_measure_table_alias character varying(64), 
-		'et', --equation_type_table_alias character varying(64), 
-		'eq', --control_measure_equation_table_alias
-		'er', --control_measure_efficiencyrecord_table_alias
-		'csm', --control_strategy_measure_table_alias
-		'gdplev', --gdplev_table_alias
-		'inv_ovr', --inv_override_table_alias
-		'gdplev_incr', --gdplev_incr_table_alias
-		'scc'::character varying, --control_measure_sccs_table_alias
-		discount_rate_3pct
-		) as cost_expressions
-	into annual_cost_3pct_expression,
-		annualized_capital_cost_3pct_expression,
-		computed_cost_per_ton_3pct_expression;
 
 	-- add both target and cobenefit pollutants, first get best target pollutant measure, then use that to apply to other pollutants.
 	execute 'insert into emissions.' || worksheet_table_name || ' (
@@ -650,21 +623,19 @@ BEGIN
 			cm_abbrev,
 			poll,
 			scc,
-			fips,
-			plantid, 
-			pointid, 
-			stackid, 
-			segment, 
+			region_cd,
+			facility_id, 
+			unit_id, 
+			rel_point_id, 
+			process_id, 
 			annual_oper_maint_cost,
 			annual_variable_oper_maint_cost,
 			annual_fixed_oper_maint_cost,
 			annualized_capital_cost,
 			total_capital_cost,
 			annual_cost,
+			ctl_ann_cost_per_ton,
 			ann_cost_per_ton,
-			annualized_capital_cost_3pct,
-			annual_cost_3pct,
-			ann_cost_per_ton_3pct,
 			control_eff,
 			rule_pen,
 			rule_eff,
@@ -674,6 +645,7 @@ BEGIN
 			Inv_Ctrl_Eff,
 			Inv_Rule_Pen,
 			Inv_Rule_Eff,
+			ctl_emis_reduction,
 			emis_reduction,
 			inv_emissions,
 			input_emis,
@@ -692,7 +664,7 @@ BEGIN
 			source,
 			xloc,
 			yloc,
-			plant,
+			facility,
 			REPLACEMENT_ADDON,
 			EXISTING_MEASURE_ABBREVIATION,
 			EXISTING_PRIMARY_DEVICE_TYPE_CODE,
@@ -721,10 +693,8 @@ select
 	annualized_capital_cost,
 	capital_cost,
 	ann_cost,
+	computed_ctl_cost_per_ton,
 	computed_cost_per_ton,
-	annualized_capital_cost_3pct,
-	ann_cost_3pct,
-	computed_cost_per_ton_3pct,
 	efficiency,
 	rule_pen,
 	rule_eff,
@@ -734,6 +704,7 @@ select
 	ceff,
 	rpen,
 	reff,
+	ctl_emis_reduction,
 	emis_reduction,
 	inv_emissions,
 	input_emis,
@@ -799,13 +770,8 @@ from (
 			' || annualized_capital_cost_expression || '  as annualized_capital_cost,
 			' || capital_cost_expression || ' as capital_cost,
 			' || annual_cost_expression || ' as ann_cost,
+			' || computed_ctl_cost_per_ton_expression || '  as computed_ctl_cost_per_ton,
 			' || computed_cost_per_ton_expression || '  as computed_cost_per_ton,
-
---3pct discount rate costs
-			' || annualized_capital_cost_3pct_expression || '  as annualized_capital_cost_3pct,
-			' || annual_cost_3pct_expression || ' as ann_cost_3pct,
-			' || computed_cost_per_ton_3pct_expression || '  as computed_cost_per_ton_3pct,
-
 
 			' || get_strategty_ceff_equation_sql || ' as efficiency,
 			' || case when measures_count > 0 then 'coalesce(csm.rule_penetration, er.rule_penetration)' else 'er.rule_penetration' end || ' as rule_pen,
@@ -815,11 +781,12 @@ from (
 			coalesce(inv_ovr.ceff, inv.' || inv_ceff_expression || ') as ceff,
 			' || case when not is_point_table and not is_flat_file_inventory then 'coalesce(inv_ovr.rpen, inv.rpen)' else '100' end || ' as rpen,
 			' || case when not is_flat_file_inventory then 'coalesce(inv_ovr.reff, inv.reff)' else '100' end || ' as reff,
-			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - ' || percent_reduction_sql || ' / 100) as final_emissions,
-			' || emis_sql || ' - case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - ' || percent_reduction_sql || ' / 100) as emis_reduction,
+			' || remaining_emis_sql || ' as final_emissions,
+			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end - ' || remaining_emis_sql || ' as ctl_emis_reduction,
+			' || emis_sql || ' - ' || remaining_emis_sql || ' as emis_reduction,
 			' || emis_sql || ' as inv_emissions,
 			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end as input_emis,
-			case when coalesce(er.existing_measure_abbr, '''') <> '''' or er.existing_dev_code <> 0 then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - ' || percent_reduction_sql || ' / 100) as output_emis,
+			' || remaining_emis_sql || ' as output_emis,
 			substr(inv.' || fips_expression || ', 1, 2) as fipsst,
 			substr(inv.' || fips_expression || ', 3, 3) as fipscty,
 			' || case when has_sic_column = false then 'null::character varying' else 'inv.sic' end || ' as sic,

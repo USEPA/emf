@@ -28,10 +28,7 @@ import gov.epa.emissions.commons.io.ColumnMetaData;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.services.basic.AccessLog;
-import gov.epa.emissions.framework.services.basic.EmfFileInfo;
-import gov.epa.emissions.framework.services.basic.FileDownload;
-import gov.epa.emissions.framework.services.basic.Status;
+import gov.epa.emissions.framework.services.basic.*;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.cost.ControlMeasureClass;
 import gov.epa.emissions.framework.services.cost.ControlMeasureEquation;
@@ -80,6 +77,7 @@ import gov.epa.emissions.framework.services.fast.FastRunInventory;
 import gov.epa.emissions.framework.services.fast.FastRunOutput;
 import gov.epa.emissions.framework.services.fast.FastRunOutputType;
 import gov.epa.emissions.framework.services.fast.Grid;
+import gov.epa.emissions.framework.services.module.*;
 import gov.epa.emissions.framework.services.sms.SectorScenario;
 import gov.epa.emissions.framework.services.sms.SectorScenarioInventory;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;
@@ -108,6 +106,39 @@ public class DataMappings extends Mappings {
         bean(call, EmfDataset.class, dataset());
         bean(call, DatasetType.class, datasetType());
 
+        bean(call, LiteModuleType.class,             liteModule());
+        bean(call, LiteModuleTypeVersion.class,      liteModule());
+        
+        bean(call, ModuleType.class,                 moduleType());
+        bean(call, ModuleTypeVersion.class,          moduleTypeVersion());
+        bean(call, ModuleTypeVersionDataset.class,   moduleTypeVersionDataset());
+        bean(call, ModuleTypeVersionParameter.class, moduleTypeVersionParameter());
+        bean(call, ModuleTypeVersionRevision.class,  moduleTypeVersionRevision());
+        bean(call, ModuleTypeVersionSubmodule.class,            moduleTypeVersionSubmodule());
+        bean(call, ModuleTypeVersionDatasetConnection.class,    moduleTypeVersionDatasetConnection());
+        bean(call, ModuleTypeVersionParameterConnection.class,  moduleTypeVersionParameterConnection());
+        bean(call, ModuleTypeVersionDatasetConnectionEndpoint.class,    moduleTypeVersionDatasetConnectionEndpoint());
+        bean(call, ModuleTypeVersionParameterConnectionEndpoint.class,  moduleTypeVersionParameterConnectionEndpoint());
+
+        bean(call, LiteModule.class,              liteModule());
+        
+        bean(call, Module.class,                  module());
+        bean(call, ModuleDataset.class,           moduleDataset());
+        bean(call, ModuleParameter.class,         moduleParameter());
+        bean(call, ModuleInternalDataset.class,   moduleInternalDataset());
+        bean(call, ModuleInternalParameter.class, moduleInternalParameter());
+        bean(call, BasicSearchFilter.class,       basicSearchFilter());
+
+        bean(call, History.class,                  history());
+        bean(call, HistoryDataset.class,           historyDataset());
+        bean(call, HistoryParameter.class,         historyParameter());
+        bean(call, HistorySubmodule.class,         historySubmodule());
+        bean(call, HistoryInternalDataset.class,   historyInternalDataset());
+        bean(call, HistoryInternalParameter.class, historyInternalParameter());
+
+        bean(call, ParameterType.class,            parameterType());
+        bean(call, Tag.class,                      tag());
+        
         bean(call, InternalSource.class, "InternalSource");
         bean(call, ExternalSource.class, externalSource());
 
@@ -223,6 +254,19 @@ public class DataMappings extends Mappings {
         array(call, EmfDataset[].class, datasets());
         array(call, DatasetType[].class, datasetTypes());
 
+        array(call, ModuleType[].class, moduleTypes());
+        array(call, ModuleTypeVersion[].class, moduleTypeVersions());
+        array(call, ModuleTypeVersionSubmodule[].class, moduleTypeVersionSubmodules());
+        
+        array(call, History[].class, histories());
+        
+        array(call, ParameterType[].class, parameterTypes());
+        array(call, Tag[].class, tags());
+
+        array(call, Module[].class, modules());
+        array(call, ModuleFilter[].class, moduleFilters());
+
+        array(call, LiteModule[].class, liteModules());
         array(call, ExternalSource[].class, externalSources());
         array(call, InternalSource[].class, "InternalSources");
 
@@ -334,6 +378,46 @@ public class DataMappings extends Mappings {
         return qname("DatasetTypes");
     }
 
+    public QName moduleTypes() {
+        return qname("ModuleTypes");
+    }
+
+    public QName moduleTypeVersions() {
+        return qname("ModuleTypeVersions");
+    }
+
+    public QName moduleTypeVersionSubmodules() {
+        return qname("ModuleTypeVersionSubmodules");
+    }
+    
+    public QName histories() {
+        return qname("Histories");
+    }
+
+    public QName parameterTypes() {
+        return qname("ParameterTypes");
+    }
+
+    public QName tags() {
+        return qname("Tags");
+    }
+
+    public QName modules() {
+        return qname("Modules");
+    }
+
+    public QName moduleFilters() {
+        return qname("ModuleFilters");
+    }
+
+    public QName liteModules() {
+        return qname("LiteModules");
+    }
+
+    public QName filterFields() {
+        return qname("FilterFields");
+    }
+
     public QName sector() {
         return qname("Sector");
     }
@@ -408,6 +492,114 @@ public class DataMappings extends Mappings {
 
     public QName datasetType() {
         return qname("DatasetType");
+    }
+
+    public QName liteModuleType() {
+        return qname("LiteModuleType");
+    }
+
+    public QName liteModuleTypeVersion() {
+        return qname("LiteModuleTypeVersion");
+    }
+
+    public QName moduleType() {
+        return qname("ModuleType");
+    }
+
+    public QName moduleTypeVersion() {
+        return qname("ModuleTypeVersion");
+    }
+
+    public QName moduleTypeVersionDataset() {
+        return qname("ModuleTypeVersionDataset");
+    }
+
+    public QName moduleTypeVersionParameter() {
+        return qname("ModuleTypeVersionParameter");
+    }
+
+    public QName moduleTypeVersionRevision() {
+        return qname("ModuleTypeVersionRevision");
+    }
+
+    public QName moduleTypeVersionSubmodule() {
+        return qname("ModuleTypeVersionSubmodule");
+    }
+
+    public QName moduleTypeVersionDatasetConnection() {
+        return qname("ModuleTypeVersionDatasetConnection");
+    }
+
+    public QName moduleTypeVersionParameterConnection() {
+        return qname("ModuleTypeVersionParameterConnection");
+    }
+
+    public QName moduleTypeVersionDatasetConnectionEndpoint() {
+        return qname("ModuleTypeVersionDatasetConnectionEndpoint");
+    }
+
+    public QName moduleTypeVersionParameterConnectionEndpoint() {
+        return qname("ModuleTypeVersionParameterConnectionEndpoint");
+    }
+
+    public QName liteModule() {
+        return qname("LiteModule");
+    }
+
+    public QName module() {
+        return qname("Module");
+    }
+
+    public QName basicSearchFilter() {
+        return qname("BasicSearchFilter");
+    }
+
+    public QName moduleDataset() {
+        return qname("ModuleDataset");
+    }
+
+    public QName moduleParameter() {
+        return qname("ModuleParameter");
+    }
+
+    public QName moduleInternalDataset() {
+        return qname("ModuleInternalDataset");
+    }
+
+    public QName moduleInternalParameter() {
+        return qname("ModuleInternalParameter");
+    }
+
+    public QName history() {
+        return qname("History");
+    }
+
+    public QName historyDataset() {
+        return qname("HistoryDataset");
+    }
+
+    public QName historyParameter() {
+        return qname("HistoryParameter");
+    }
+
+    public QName historySubmodule() {
+        return qname("HistorySubmodule");
+    }
+
+    public QName historyInternalDataset() {
+        return qname("HistoryInternalDataset");
+    }
+
+    public QName historyInternalParameter() {
+        return qname("HistoryInternalParameter");
+    }
+
+    public QName parameterType() {
+        return qname("ParameterType");
+    }
+
+    public QName tag() {
+        return qname("Tag");
     }
 
     public QName dataset() {

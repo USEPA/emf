@@ -27,24 +27,24 @@ public class StrategyMessagesFileFormat implements FileFormat, DelimitedFileForm
     
     private Column[] createCols(SqlDataTypes types) {
         List<Column> cols = new ArrayList<Column>();
-        cols.add(new Column("FIPS", types.stringType(6), new StringFormatter(6)));
+        cols.add(new Column("REGION_CD", types.stringType(6), new StringFormatter(6)));
         cols.add(new Column("SCC", types.stringType(10), new StringFormatter(10)));
-        cols.add(new Column("PLANTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("POINTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("STACKID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("SEGMENT", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("FACILITY_ID", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("UNIT_ID", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("REL_POINT_ID", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("PROCESS_ID", types.stringType(15), 15, new StringFormatter(15)));
         cols.add(new Column("POLL", types.stringType(16), 16, new StringFormatter(16)));
         cols.add(new Column("Status", types.stringType(11), 11, new StringFormatter(11)));
         cols.add(new Column("Control_Program", types.stringType(255), 255, new StringFormatter(255)));
         cols.add(new Column("Message_Type", types.stringType(255), 255, new StringFormatter(255)));
         cols.add(new Column("Message", types.text()));
         cols.add(new Column("Inventory", types.stringType(255), 255, new StringFormatter(255)));
-        cols.add(new Column("Packet_FIPS", types.stringType(6), new StringFormatter(6)));
+        cols.add(new Column("Packet_REGION_CD", types.stringType(6), new StringFormatter(6)));
         cols.add(new Column("Packet_SCC", types.stringType(10), new StringFormatter(10)));
-        cols.add(new Column("Packet_PLANTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("Packet_POINTID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("Packet_STACKID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("Packet_SEGMENT", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("Packet_FACILITY_ID", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("Packet_UNIT_ID", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("Packet_REL_POINT_ID", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("Packet_PROCESS_ID", types.stringType(15), 15, new StringFormatter(15)));
         cols.add(new Column("Packet_POLL", types.stringType(16), 16, new StringFormatter(16)));
         cols.add(new Column("Packet_SIC", types.stringType(4), 4, new StringFormatter(4)));
         cols.add(new Column("Packet_MACT", types.stringType(6), 6, new StringFormatter(6)));

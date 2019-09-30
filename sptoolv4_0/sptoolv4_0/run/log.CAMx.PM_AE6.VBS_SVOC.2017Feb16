@@ -1,0 +1,42 @@
+Running run_sptool.pl
+
+
+Created camx_pm_vbs_svoc schema in sptoolv4_0 database
+Granted permissions on camx_pm_vbs_svoc schema
+Set path successfully to camx_pm_vbs_svoc schema
+Input tables created in camx_pm_vbs_svoc schema
+Starting run_control file import
+Getting control values from control file
+control variables: MECH_BASIS = AE6
+control variables: RUN_TYPE = VBS
+control variables: AQM = CAMX
+control variables: OUTPUT = PM
+control variables: SPLITS_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/outputs/gspro.AE6_CAMX.VBS_SVOC.2017Feb16.txt
+Completed run_control file import
+
+Imported run control file RUNCTL in camx_pm_vbs_svoc schema
+NOTICE:  ======== Speciation Tool v4.0 ========
+NOTICE:    
+NOTICE:  Type of Output is  PM 
+NOTICE:  Type of run is CRITERIA with VBS 
+NOTICE:  Mechanism basis is  AE6 
+NOTICE:  ...establishing mechanism
+NOTICE:  ...establishing profile weights
+NOTICE:  ...calculating weight percent sum of mechanism compounds
+NOTICE:  ...checking VBS based profiles
+NOTICE:  ...preparing VBS based profiles
+NOTICE:  ...generating VBS SVOC components
+NOTICE:  ...finished generating VBS SVOC components
+NOTICE:  ...completed generating PM profiles
+
+Completed PM splits calculations
+
+NOTICE:   Preparing output tables ... 
+NOTICE:      ...rename output AQM pollutants 
+
+Completed output preparations
+SUMMARY:  Number of profiles generated in run camx_pm_vbs_svoc is 125 
+
+Completed writing the output files for run camx_pm_vbs_svoc 
+Finished run_sptool.pl
+

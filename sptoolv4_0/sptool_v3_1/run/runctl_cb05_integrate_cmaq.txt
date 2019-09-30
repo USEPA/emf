@@ -1,0 +1,8 @@
+#  CB05 case, no integrate toxics
+
+mech_basis,CB05
+run_type,INTEGRATE
+AQM,CMAQ
+
+tox_file,tbl_tox.may2013.csv
+

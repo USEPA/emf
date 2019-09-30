@@ -177,11 +177,11 @@ public class StrategyCountySummaryTask extends AbstractStrategySummaryTask {
                               VersionedQuery versionedQuery = new VersionedQuery(v);
 
                               sql += (count > 0 ? " union all " : "") 
-                                  + "select '" + sector.replace("'", "''") + "' as sector, i.fips, i.poll, sum(i.ann_emis) as Uncontrolled_Emis, sum(e.Emis_Reduction) as Emis_Reduction, sum(i.ann_emis) - sum(e.Emis_Reduction) as Remaining_Emis, sum(e.Emis_Reduction) / sum(i.ann_emis) * 100.0 as Pct_Red, sum(e.Annual_Cost) as Annual_Cost, "
+                                  + "select '" + sector.replace("'", "''") + "' as sector, i.fips, i.poll, sum(i.ann_emis) as Uncontrolled_Emis, sum(e.Eff_Emis_Reduction) as Emis_Reduction, sum(i.ann_emis) - sum(e.Eff_Emis_Reduction) as Remaining_Emis, sum(e.Eff_Emis_Reduction) / sum(i.ann_emis) * 100.0 as Pct_Red, sum(e.Annual_Cost) as Annual_Cost, "
                                   + "sum(e.Annual_Oper_Maint_Cost) as Annual_Oper_Maint_Cost, "
                                   + "sum(e.Annualized_Capital_Cost) as Annualized_Capital_Cost, "
                                   + "sum(e.Total_Capital_Cost) as Total_Capital_Cost, "
-                                  + "case when sum(e.Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
+                                  + "case when sum(e.Eff_Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Eff_Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
                                   + "from " + inventoryTableName + " i "
                                   + "left outer join " + detailedresultTableName + " e "
                                   + "on e.source_id = i.record_id "
@@ -204,11 +204,11 @@ public class StrategyCountySummaryTask extends AbstractStrategySummaryTask {
                         Version v = version(results[i].getInputDataset().getId(), results[i].getInputDatasetVersion());
                         VersionedQuery versionedQuery = new VersionedQuery(v);
                         sql += (count > 0 ? " union all " : "") 
-                            + "select '" + sector.replace("'", "''") + "' as sector, i.fips, i.poll, sum(i.ann_emis) as Uncontrolled_Emis, sum(e.Emis_Reduction) as Emis_Reduction, sum(i.ann_emis) - sum(e.Emis_Reduction) as Remaining_Emis, sum(e.Emis_Reduction) / sum(i.ann_emis) * 100.0 as Pct_Red, sum(e.Annual_Cost) as Annual_Cost, "
+                            + "select '" + sector.replace("'", "''") + "' as sector, i.fips, i.poll, sum(i.ann_emis) as Uncontrolled_Emis, sum(e.Eff_Emis_Reduction) as Emis_Reduction, sum(i.ann_emis) - sum(e.Eff_Emis_Reduction) as Remaining_Emis, sum(e.Eff_Emis_Reduction) / sum(i.ann_emis) * 100.0 as Pct_Red, sum(e.Annual_Cost) as Annual_Cost, "
                             + "sum(e.Annual_Oper_Maint_Cost) as Annual_Oper_Maint_Cost, "
                             + "sum(e.Annualized_Capital_Cost) as Annualized_Capital_Cost, "
                             + "sum(e.Total_Capital_Cost) as Total_Capital_Cost, "
-                            + "case when sum(e.Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
+                            + "case when sum(e.Eff_Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Eff_Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
                             + "from " + inventoryTableName + " i "
                             + "left outer join " + detailedresultTableName + " e "
                             + "on e.source_id = i.record_id "

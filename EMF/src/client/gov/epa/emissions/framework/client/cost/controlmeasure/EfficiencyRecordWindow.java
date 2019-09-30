@@ -339,9 +339,9 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
         this.addChangeable(caprecFactor);
         layoutGenerator.addLabelWidgetPair("Capital Recovery Factor:", caprecFactor, panel);
 
-        discountRate = new TextField("Discount Rate", 10);
+        discountRate = new TextField("Interest Rate", 10);
         this.addChangeable(discountRate);
-        layoutGenerator.addLabelWidgetPair("Discount Rate (%):", discountRate, panel);
+        layoutGenerator.addLabelWidgetPair("Interest Rate (%):", discountRate, panel);
   //add invremental CPT      
         incrementalCPT = new TextField("Incremental CPT", 10);
         this.addChangeable(incrementalCPT);
@@ -473,7 +473,7 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
         if (discountRate.getText().trim().length() > 0) {
             double value = verifier.parseDouble(discountRate);
             if (value < 1 || value > 20)
-                throw new EmfException("Enter the Discount Rate as a percent between 1 and 20 (e.g., 7% is entered as 7)");
+                throw new EmfException("Enter the Interest Rate as a percent between 1 and 20 (e.g., 7% is entered as 7)");
             record.setDiscountRate(value);
         }else
             record.setDiscountRate(null);

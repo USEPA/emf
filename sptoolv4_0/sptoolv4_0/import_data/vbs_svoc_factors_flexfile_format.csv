@@ -1,0 +1,9 @@
+name,type,default value,mandatory,description,formatter,constraints,width,spaces,fixformat start,fixformat end
+PROFILE_ID,VARCHAR(20),"",true,"","","",20,0,0,0
+cmaq_svocname,VARCHAR(20),"",true,"","","",20,0,0,0
+camx_svocname,VARCHAR(20),"",true,"","","",20,0,0,0
+bin0,double precision,"",false,"","","",0,0,0,0
+bin1,double precision,"",false,"","","",0,0,0,0
+bin2,double precision,"",false,"","","",0,0,0,0
+bin3,double precision,"",false,"","","",0,0,0,0
+bin4,double precision,"",false,"","","",0,0,0,0

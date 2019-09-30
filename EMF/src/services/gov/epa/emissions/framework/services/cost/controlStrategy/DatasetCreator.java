@@ -630,7 +630,7 @@ public class DatasetCreator {
     private String createTableName(String name) {
         String table = name;
         // truncate if necessary so a unique timestamp can be added to ensure uniqueness
-        if (table.length() > 46) { // postgresql table name max length is 64
+        if (table.length() > 46) { // postgresql table name max length is 63 (NOT 64)
             table = table.substring(0, 45);
         }
 
@@ -640,7 +640,7 @@ public class DatasetCreator {
             }
         }
 
-        // add unique timestamp to ensure uniqueness
+        // add unique timestamp to ensure uniqueness (adds 16 characters)
         return table.trim().replaceAll(" ", "_") + "_" + CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date());
     }
 

@@ -1,0 +1,28 @@
+Running run_sptool.pl
+
+
+Created CB6CMAQ schema in cb6cmaq_test database
+Granted permissions on CB6CMAQ schema
+Set path successfully to CB6CMAQ schema
+Input tables created in CB6CMAQ schema
+Starting run_control file import
+Getting control values from control file
+control variables: MECH_BASIS = CB6CMAQ
+control variables: RUN_TYPE = NOINTEGRATE
+control variables: AQM = CMAQ
+control variables: OUTPUT = VOC
+control variables: SPLITS_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/CB6CMAQ_NATA/out/gspro.CB6CMAQ_nointegrate.CMAQ.2017Feb27.txt
+control variables: CNV_OUT = /sol/work/EMIS/tools/sptool/sptoolv4_0/CB6CMAQ_NATA/out/gscnv.CB6CMAQ_nointegrate.CMAQ.2017Feb27.txt
+Completed run_control file import
+
+Imported run control file RUNCTL in CB6CMAQ schema
+NOTICE:  ======== Speciation Tool v4.0 ========
+NOTICE:    
+NOTICE:  Type of Output is  VOC 
+NOTICE:  AQM is  CMAQ 
+NOTICE:  Type of run is  NOINTEGRATE 
+NOTICE:  Mechanism basis is  CB6CMAQ 
+NOTICE:  Profile Tolerance is  5 
+NOTICE:  ERROR ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+NOTICE:   Species ID 465 (Active/Tracer toxic) in invtable not found in Toxic table
+Error found in toxic table - please make corrections

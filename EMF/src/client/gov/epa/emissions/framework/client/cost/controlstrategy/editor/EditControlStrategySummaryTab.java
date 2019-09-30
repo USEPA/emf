@@ -213,8 +213,15 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     }
 
     private ComboBox typeOfAnalysis() throws EmfException {
-        StrategyType[] types = session.controlStrategyService().getStrategyTypes();
-        strategyTypeCombo = new ComboBox("Choose a strategy type", types);
+        StrategyType[] allTypes = session.controlStrategyService().getStrategyTypes();
+        ArrayList<StrategyType> types = new ArrayList<StrategyType>();
+        // filter out old strategy types from pull-down list
+        for (StrategyType type : allTypes) {
+            if (type.getName().equals("Annotate Inventory") ||
+                type.getName().equals("Apply Measures In Series")) continue;
+            types.add(type);
+        }
+        strategyTypeCombo = new ComboBox("Choose a strategy type", types.toArray(new StrategyType[0]));
         strategyTypeCombo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 StrategyType strategyType = (StrategyType)strategyTypeCombo.getSelectedItem();
@@ -272,7 +279,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
         layoutGenerator.addLabelWidgetPair("Target Year:", inventoryYearTextField(), panel);
         layoutGenerator.addLabelWidgetPair("Region:", regions(), panel);
         layoutGenerator.addLabelWidgetPair("Target Pollutant:", pollutantsPanel, panel);
-        layoutGenerator.addLabelWidgetPair("Discount Rate (%):", discountRate(), panel);
+        layoutGenerator.addLabelWidgetPair("Interest Rate (%):", discountRate(), panel);
 
         JPanel middleLeftPanel = new JPanel(new SpringLayout());
         // panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
@@ -306,9 +313,8 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     }
 
     private DoubleTextField discountRate() {
-        discountRate = new DoubleTextField("discount rate", 1, 20, 12);
+        discountRate = new DoubleTextField("interest rate", 1, 20, 12);
         discountRate.setValue(controlStrategy.getDiscountRate() != null ? controlStrategy.getDiscountRate() : 7.0);
-        discountRate.setToolTipText("This value is only used for point sources");
         changeablesList.addChangeable(discountRate);
         return discountRate;
     }
@@ -583,13 +589,13 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
     private double checkDiscountRate() throws EmfException {
         // check to see that it's not empty
         if (discountRate.getText().trim().length() == 0)
-            throw new EmfException("Enter the Discount Rate as a percentage (e.g., 9 for 9% percent)");
+            throw new EmfException("Enter the Interest Rate as a percentage (e.g., 9 for 9% percent)");
 
         double value = verifier.parseDouble(discountRate.getText());
 
         // make sure the number makes sense...
         if (value < 1 || value > 20) {
-            throw new EmfException("Enter the Discount Rate as a percent between 1 and 20 (e.g., 7% is entered as 7)");
+            throw new EmfException("Enter the Interest Rate as a percent between 1 and 20 (e.g., 7% is entered as 7)");
         }
         return value;
 

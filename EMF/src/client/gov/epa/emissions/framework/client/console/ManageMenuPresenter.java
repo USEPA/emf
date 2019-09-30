@@ -21,6 +21,10 @@ import gov.epa.emissions.framework.client.data.sector.SectorsManagerView;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerPresenter;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerPresenterImpl;
 import gov.epa.emissions.framework.client.fast.MPSDTManagerView;
+import gov.epa.emissions.framework.client.module.ModulesManagerPresenter;
+import gov.epa.emissions.framework.client.module.ModulesManagerView;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypesManagerPresenter;
+import gov.epa.emissions.framework.client.moduletype.ModuleTypesManagerView;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerPresenter;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerPresenterImpl;
 import gov.epa.emissions.framework.client.sms.sectorscenario.SectorScenarioManagerView;
@@ -61,6 +65,16 @@ public class ManageMenuPresenter {
 
     public void doDisplayDatasetTypesManager(DatasetTypesManagerView view) throws EmfException {
         DatasetTypesManagerPresenter presenter = new DatasetTypesManagerPresenter(session, view);
+        presenter.doDisplay();
+    }
+
+    public void doDisplayModuleTypesManager(ModuleTypesManagerView view) throws EmfException {
+        ModuleTypesManagerPresenter presenter = new ModuleTypesManagerPresenter(session, view);
+        presenter.doDisplay();
+    }
+
+    public void doDisplayModulesManager(ModulesManagerView view) throws EmfException {
+        ModulesManagerPresenter presenter = new ModulesManagerPresenter(session, view);
         presenter.doDisplay();
     }
 

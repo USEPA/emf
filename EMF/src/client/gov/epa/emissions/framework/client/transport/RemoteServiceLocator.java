@@ -19,6 +19,7 @@ import gov.epa.emissions.framework.services.editor.DataEditorService;
 import gov.epa.emissions.framework.services.editor.DataViewService;
 import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
+import gov.epa.emissions.framework.services.module.ModuleService;
 import gov.epa.emissions.framework.services.qa.QAService;
 
 public class RemoteServiceLocator implements ServiceLocator {
@@ -34,6 +35,8 @@ public class RemoteServiceLocator implements ServiceLocator {
     private CaseService caseService;
     
     private QAService qaService;
+    
+    private ModuleService moduleService;
     
     private UserService userService;
     
@@ -102,10 +105,18 @@ public class RemoteServiceLocator implements ServiceLocator {
         return qaService;
     }
 
+    public ModuleService moduleService() {
+        if (moduleService == null)
+            moduleService = new ModuleServiceTransport(baseUrl + "/gov.epa.emf.services.module.ModuleService",
+                                                       emfSession);
+        
+        return moduleService;
+    }
+
     public DataCommonsService dataCommonsService() {
         if (dataCommonsService == null)
             dataCommonsService = new DataCommonsServiceTransport(baseUrl + "/gov.epa.emf.services.data.DataCommonsService",
-                    emfSession);
+                                                                 emfSession);
         
         return dataCommonsService;
     }

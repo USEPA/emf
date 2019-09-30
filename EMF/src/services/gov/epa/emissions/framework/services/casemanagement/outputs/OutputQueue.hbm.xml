@@ -22,6 +22,7 @@
 	<property name="remoteUser" column="remote_user" type="java.lang.String" not-null="false"/>
 	<property name="status" column="status" type="java.lang.String" not-null="false"/>
 	<property name="createDate" column="cr_date" type="java.util.Date" not-null="true"/>
+	<property name="targetVersion" column="target_version" type="integer" not-null="false"/>
 	
 
   </class> 

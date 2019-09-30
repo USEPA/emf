@@ -1,0 +1,8 @@
+﻿-- Schema: modules
+
+-- DROP SCHEMA modules;
+
+CREATE SCHEMA modules
+  AUTHORIZATION emf;
+
+

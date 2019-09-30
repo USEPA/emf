@@ -1,0 +1,29 @@
+#!/bin/csh -f
+
+echo " "
+echo "==================================================================================="
+printf "              CB05 notoxics CMAQ "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB criteria_cmaq runctl_cb05_criteria_tog_cmaq.txt
+date
+
+echo " "
+echo "==================================================================================="
+printf "              CB05 NOintegrate CMAQ "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB no_integrate_cmaq runctl_cb05_nointegrate_cmaq.txt
+date
+
+echo " "
+echo "==================================================================================="
+printf "              CB05 Integrate CMAQ "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB integrate_cmaq runctl_cb05_integrate_cmaq.txt
+date
+
+echo " "
+echo "==================================================================================="
+printf "              CB05 notoxics CMAQ PM"
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB pm_cmaq runctl_cb05_criteria_pm_cmaq.txt 
+date

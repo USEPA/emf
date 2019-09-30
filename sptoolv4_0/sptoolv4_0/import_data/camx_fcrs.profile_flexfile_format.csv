@@ -1,0 +1,2 @@
+name,type,default value,mandatory,description,formatter,constraints,width,spaces,fixformat start,fixformat end
+PROFILE_ID,VARCHAR(20),"",true,"","","",20,0,0,0

@@ -1,0 +1,75 @@
+﻿
+-- DROP TABLE modules.history_submodules;
+
+CREATE TABLE modules.history_submodules
+(
+  id serial NOT NULL PRIMARY KEY,
+  history_id integer NOT NULL
+      REFERENCES modules.history(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  submodule_path varchar, -- slash delimited list of submodule ids (at least one)
+  submodule_path_names varchar, -- slash delimited list of submodule names (at least one)
+  setup_script text,
+  user_script text, -- algorithm
+  teardown_script text,
+  log_messages text,
+  status character varying(16) NOT NULL
+      CHECK (status IN ('STARTED', 'SETUP_SCRIPT', 'USER_SCRIPT', 'SUBMODULES', 'TEARDOWN_SCRIPT', 'COMPLETED') ),
+  result character varying(16)
+      CHECK (result IN ('TIMEOUT', 'CANCELLED', 'FAILED', 'SUCCESS') ),
+  error_message text,
+  duration_seconds integer NOT NULL DEFAULT 0,
+  creation_date timestamp without time zone NOT NULL,
+  comment text,
+  CONSTRAINT history_submodules_ukey UNIQUE (history_id, submodule_path)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.history_submodules
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- DROP TABLE modules.history_internal_datasets;
+
+CREATE TABLE modules.history_internal_datasets
+(
+  id serial NOT NULL PRIMARY KEY,
+  history_id integer NOT NULL
+      REFERENCES modules.history(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  placeholder_path varchar, -- slash delimited list of submodule ids (at least one) and the placeholder name
+  placeholder_path_names varchar, -- slash delimited list of submodule names (at least one) and the placeholder name
+  dataset_id integer
+      REFERENCES emf.datasets(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE SET NULL,
+  version integer NOT NULL DEFAULT 0,
+  CONSTRAINT history_internal_datasets_ukey UNIQUE (history_id, placeholder_path)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.history_internal_datasets
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- DROP TABLE modules.history_internal_parameters;
+
+CREATE TABLE modules.history_internal_parameters
+(
+  id serial NOT NULL PRIMARY KEY,
+  history_id integer NOT NULL
+      REFERENCES modules.history(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  parameter_path varchar, -- slash delimited list of submodule ids (at least one) and the parameter name
+  parameter_path_names varchar, -- slash delimited list of submodule names (at least one) and the parameter name
+  value character varying(256),
+  CONSTRAINT history_internal_parameters_ukey UNIQUE (history_id, parameter_path)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.modules_internal_parameters
+  OWNER TO emf;

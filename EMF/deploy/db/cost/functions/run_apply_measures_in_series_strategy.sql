@@ -276,14 +276,14 @@ BEGIN
 		cm_abbrev,
 		poll,
 		scc,
-		fips,
-		' || case when is_point_table = false then '' else 'plantid, pointid, stackid, segment, ' end || '
+		region_cd,
+		' || case when is_point_table = false then '' else 'facility_id, unit_id, rel_point_id, process_id, ' end || '
 
 		annual_oper_maint_cost,
 		annualized_capital_cost,
 		total_capital_cost,
 		annual_cost,
-		ann_cost_per_ton,
+		eff_ann_cost_per_ton,
 		control_eff,
 		rule_pen,
 		rule_eff,
@@ -293,7 +293,7 @@ BEGIN
 		inv_rule_eff,
 
 		final_emissions,
-		emis_reduction,
+		eff_emis_reduction,
 		inv_emissions,
 		fipsst,
 		fipscty,
@@ -305,7 +305,7 @@ BEGIN
 		cm_id,
 		xloc,
 		yloc,
-		plant,
+		facility,
 		sector,
 		equation_type,
 		strategy_name,
@@ -648,7 +648,7 @@ BEGIN
 						on r.region_id = mr.region_id
 						and r.region_version = mr.region_version
 					where mr.control_measure_id = inv2.cm_id
-						and r.fips = inv2.fips
+						and r.fips = inv2.region_cd
 					)
 				and exists (
 					select 1 
@@ -734,13 +734,13 @@ BEGIN
 	-- NOTE:   currently, the assumption is cost equations don't need to be used...and that the computed cpt calculated early should be sufficienct.
 	-- discuss with alison...
 	EXECUTE	'update emissions.' || detailed_result_table_name || ' as inv
-	set 	emis_reduction = inv.inv_emissions * inv.percent_reduction / 100 * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
-		annual_cost = ' || cost_year_deflator_gdp || ' / ' || ref_cost_year_deflator_gdp || ' * inv.ann_cost_per_ton * inv.inv_emissions * inv.percent_reduction / 100 * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
+	set 	eff_emis_reduction = inv.inv_emissions * inv.percent_reduction / 100 * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
+		annual_cost = ' || cost_year_deflator_gdp || ' / ' || ref_cost_year_deflator_gdp || ' * inv.eff_ann_cost_per_ton * inv.inv_emissions * inv.percent_reduction / 100 * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
 		apply_order = (select count(1) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id <= inv.record_id),
 		input_emis = inv.inv_emissions * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
 		output_emis = inv.inv_emissions * (1 - inv.percent_reduction / 100) * coalesce((select public.times(1 - inv2.percent_reduction / 100) from emissions.' || detailed_result_table_name || ' as inv2 where inv2.source_id = inv.source_id and inv2.record_id < inv.record_id), 1),
 		final_emissions = null,
-		ann_cost_per_ton = ' || cost_year_deflator_gdp || ' / ' || ref_cost_year_deflator_gdp || ' * ann_cost_per_ton';
+		eff_ann_cost_per_ton = ' || cost_year_deflator_gdp || ' / ' || ref_cost_year_deflator_gdp || ' * eff_ann_cost_per_ton';
 
 	-- make sure we meet the constraints, if not get rid of the applicable measures...
 	IF has_constraints THEN
@@ -765,29 +765,29 @@ BEGIN
 			where not exists (select 1 
 				from emissions.' || detailed_result_table_name || ' as inv2
 				where inv2.scc = inv.scc
-				and inv2.fips = inv.fips
+				and inv2.region_cd = inv.region_cd
 				' || case when is_point_table = false then '' else '
-				and inv2.plantid = inv.plantid
-				and inv2.pointid = inv.pointid
-				and inv2.stackid = inv.stackid
-				and inv2.segment = inv.segment' end || '
+				and inv2.facility_id = inv.facility_id
+				and inv2.unit_id = inv.unit_id
+				and inv2.rel_point_id = inv.rel_point_id
+				and inv2.process_id = inv.process_id' end || '
 				and inv2.cm_id = inv.cm_id
 				and inv2.poll = ANY (''' || target_pollutant_names::varchar || ''')
 				and (
 					inv2.percent_reduction >= ' || coalesce(min_control_efficiency_constraint, -100.0) || '
-					' || coalesce(' and inv2.emis_reduction >= ' || min_emis_reduction_constraint, '')  || '
-					' || coalesce(' and coalesce(inv2.ann_cost_per_ton, -1E+308) <= ' || max_cost_per_ton_constraint, '')  || '
+					' || coalesce(' and inv2.eff_emis_reduction >= ' || min_emis_reduction_constraint, '')  || '
+					' || coalesce(' and coalesce(inv2.eff_ann_cost_per_ton, -1E+308) <= ' || max_cost_per_ton_constraint, '')  || '
 					' || coalesce(' and coalesce(inv2.annual_cost, -1E+308) <= ' || max_ann_cost_constraint, '')  || '
 				))
 				and exists (select 1 
 					from emissions.' || detailed_result_table_name || ' as inv3
-					where inv3.fips = inv.fips
+					where inv3.region_cd = inv.region_cd
 						and inv3.scc = inv.scc
 						' || case when is_point_table = false then '' else '
-						and inv3.plantid = inv.plantid
-						and inv3.pointid = inv.pointid
-						and inv3.stackid = inv.stackid
-						and inv3.segment = inv.segment' end || '
+						and inv3.facility_id = inv.facility_id
+						and inv3.unit_id = inv.unit_id
+						and inv3.rel_point_id = inv.rel_point_id
+						and inv3.process_id = inv.process_id' end || '
 						and inv3.poll = ANY (''' || target_pollutant_names::varchar || ''')
 					)
 				';

@@ -63,6 +63,7 @@ DECLARE
 	cp_pointid_expression character varying(64) := 'pointid';
 	cp_stackid_expression character varying(64) := 'stackid';
 	cp_segment_expression character varying(64) := 'segment';
+	cp_plantname_expression character varying(64) := 'plant';
 	cp_mact_expression character varying(64) := 'mact';
 
 	is_monthly_source_sql character varying := 'coalesce(jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value) is not null';
@@ -232,6 +233,16 @@ raise notice '%', 'now lets evaluate each packet and see what we find' || clock_
 			-- see if there any issues with the plant closure file
 			IF control_program.type = 'Plant Closure' THEN
 
+				-- if closure data is in the extended format, change the column names to the newer format
+				IF strpos(control_program.dataset_type, 'Extended') > 0 THEN
+					cp_fips_expression := 'region_cd';
+					cp_plantid_expression := 'facility_id';
+					cp_pointid_expression := 'unit_id';
+					cp_stackid_expression := 'rel_point_id';
+					cp_segment_expression := 'process_id';
+					cp_plantname_expression := 'facility_name';
+				END IF;
+
 				--raise notice '%', 
 				execute 
 				'select 
@@ -239,17 +250,17 @@ raise notice '%', 'now lets evaluate each packet and see what we find' || clock_
 				FROM emissions.' || control_program.table_name || ' pc
 
 						inner join emissions.' || inv_table_name || ' inv
-						on pc.fips = inv.' || fips_expression || '
+						on pc.' || cp_fips_expression || ' = inv.' || fips_expression || '
 						' || case when not is_point_table then '
-						and pc.plantid is null
-						and pc.pointid is null
-						and pc.stackid is null
-						and pc.segment is null
+						and pc.' || cp_plantid_expression || ' is null
+						and pc.' || cp_pointid_expression || ' is null
+						and pc.' || cp_stackid_expression || ' is null
+						and pc.' || cp_segment_expression || ' is null
 						' else '
-						and pc.plantid = inv.' || plantid_expression || '
-						and coalesce(pc.pointid, inv.' || pointid_expression || ') = inv.' || pointid_expression || '
-						and coalesce(pc.stackid, inv.' || stackid_expression || ') = inv.' || stackid_expression || '
-						and coalesce(pc.segment, inv.' || segment_expression || ') = inv.' || segment_expression || '
+						and pc.' || cp_plantid_expression || ' = inv.' || plantid_expression || '
+						and coalesce(pc.' || cp_pointid_expression || ', inv.' || pointid_expression || ') = inv.' || pointid_expression || '
+						and coalesce(pc.' || cp_stackid_expression || ', inv.' || stackid_expression || ') = inv.' || stackid_expression || '
+						and coalesce(pc.' || cp_segment_expression || ', inv.' || segment_expression || ') = inv.' || segment_expression || '
 						' end || '
 						and ' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
 
@@ -269,29 +280,29 @@ raise notice '%', 'now lets evaluate each packet and see what we find' || clock_
 					'select 
 						pc.record_id as packet_rec_id,
 						pc.dataset_id as packet_ds_id,
-						pc.fips,
-						pc.plantid, 
-						pc.pointid, 
-						pc.stackid, 
-						pc.segment, 
+						pc.' || cp_fips_expression || ' as fips,
+						pc.' || cp_plantid_expression || ' as plantid, 
+						pc.' || cp_pointid_expression || ' as pointid, 
+						pc.' || cp_stackid_expression || ' as stackid, 
+						pc.' || cp_segment_expression || ' as segment, 
 						' || quote_literal(control_program.control_program_name) || '::character varying(255) as control_program,
-						''Plant'' || case when pc.plant is not null and length(pc.plant) > 0 then coalesce('', '' || pc.plant || '','', '''') else '''' end || '' is missing from the inventory.'' as "comment",
+						''Facility'' || case when pc.' || cp_plantname_expression || ' is not null and length(pc.' || cp_plantname_expression || ') > 0 then coalesce('', '' || pc.' || cp_plantname_expression || ' || '','', '''') else '''' end || '' is missing from the inventory.'' as "comment",
 						pc.effective_date
 
 					FROM emissions.' || control_program.table_name || ' pc
 
 						left outer join emissions.' || inv_table_name || ' inv
-						on pc.fips = inv.' || fips_expression || '
+						on pc.' || cp_fips_expression || ' = inv.' || fips_expression || '
 						' || case when not is_point_table then '
-						and pc.plantid is null
-						and pc.pointid is null
-						and pc.stackid is null
-						and pc.segment is null
+						and pc.' || cp_plantid_expression || ' is null
+						and pc.' || cp_pointid_expression || ' is null
+						and pc.' || cp_stackid_expression || ' is null
+						and pc.' || cp_segment_expression || ' is null
 						' else '
-						and pc.plantid = inv.' || plantid_expression || '
-						and coalesce(pc.pointid, inv.' || pointid_expression || ') = inv.' || pointid_expression || '
-						and coalesce(pc.stackid, inv.' || stackid_expression || ') = inv.' || stackid_expression || '
-						and coalesce(pc.segment, inv.' || segment_expression || ') = inv.' || segment_expression || '
+						and pc.' || cp_plantid_expression || ' = inv.' || plantid_expression || '
+						and coalesce(pc.' || cp_pointid_expression || ', inv.' || pointid_expression || ') = inv.' || pointid_expression || '
+						and coalesce(pc.' || cp_stackid_expression || ', inv.' || stackid_expression || ') = inv.' || stackid_expression || '
+						and coalesce(pc.' || cp_segment_expression || ', inv.' || segment_expression || ') = inv.' || segment_expression || '
 						' end || '
 						and ' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
 
@@ -308,13 +319,13 @@ raise notice '%', 'now lets evaluate each packet and see what we find' || clock_
 					'select 
 						pc.record_id as packet_rec_id,
 						pc.dataset_id as packet_ds_id,
-						pc.fips,
-						pc.plantid, 
-						pc.pointid, 
-						pc.stackid, 
-						pc.segment, 
+						pc.' || cp_fips_expression || ' as fips,
+						pc.' || cp_plantid_expression || ' as plantid, 
+						pc.' || cp_pointid_expression || ' as pointid, 
+						pc.' || cp_stackid_expression || ' as stackid, 
+						pc.' || cp_segment_expression || ' as segment, 
 						' || quote_literal(control_program.control_program_name) || '::character varying(255) as control_program,
-						''Plant'' || case when pc.plant is not null and length(pc.plant) > 0 then coalesce('', '' || pc.plant || '','', '''') else '''' end || '' is missing from the inventory.'' as "comment",
+						''Facility'' || case when pc.' || cp_plantname_expression || ' is not null and length(pc.' || cp_plantname_expression || ') > 0 then coalesce('', '' || pc.' || cp_plantname_expression || ' || '','', '''') else '''' end || '' is missing from the inventory.'' as "comment",
 						pc.effective_date
 					FROM emissions.' || control_program.table_name || ' pc
 
@@ -615,12 +626,12 @@ raise notice '%', 'check inventory ' || inventory_record.dataset_name || ' again
 		'insert into emissions.' || strategy_messages_table_name || ' 
 			(
 			dataset_id, 
-			packet_fips, 
+			packet_region_cd, 
 			packet_scc, 
-			packet_plantid, 
-			packet_pointid, 
-			packet_stackid, 
-			packet_segment, 
+			packet_facility_id, 
+			packet_unit_id, 
+			packet_rel_point_id, 
+			packet_process_id, 
 			packet_poll, 
 			status,
 			control_program,
@@ -673,11 +684,11 @@ raise notice '%', 'check inventory ' || inventory_record.dataset_name || ' again
 		 'insert into emissions.' || strategy_messages_table_name || ' 
 			(
 			dataset_id, 
-			packet_fips, 
-			packet_plantid, 
-			packet_pointid, 
-			packet_stackid, 
-			packet_segment, 
+			packet_region_cd, 
+			packet_facility_id, 
+			packet_unit_id, 
+			packet_rel_point_id, 
+			packet_process_id, 
 			status,
 			control_program,
 			message_type,

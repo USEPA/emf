@@ -1,0 +1,8 @@
+#!/bin/csh -f
+
+echo " "
+echo "==================================================================================="
+printf "              Static CMAQ "
+date
+$PERL_BIN/perl $SPTOOL_SRC_HOME/run_sptool.pl $SPTOOL_DB criteria_cmaq runctl_static_cmaq.txt
+date

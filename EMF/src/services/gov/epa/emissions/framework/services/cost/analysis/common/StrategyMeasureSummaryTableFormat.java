@@ -67,10 +67,9 @@ public class StrategyMeasureSummaryTableFormat implements TableFormat {
         List<Column> cols = new ArrayList<Column>();
 
         cols.add(new Column("SECTOR", types.stringType(64), 64, new StringFormatter(255)));
-        cols.add(new Column("FIPS", types.stringType(6), new StringFormatter(6)));
+        cols.add(new Column("REGION_CD", types.stringType(6), new StringFormatter(6)));
         cols.add(new Column("SCC", types.stringType(10), new StringFormatter(10)));
         cols.add(new Column("Poll", types.stringType(20), new StringFormatter(20)));
-        //cols.add(new Column("Control_Measure_Abbreviation", types.stringType(10), new StringFormatter(10))); // JIZHEN20110727
         cols.add(new Column("Control_Measure_Abbreviation", types.stringType(CoSTConstants.CM_ABBREV_LEN), new StringFormatter(CoSTConstants.CM_ABBREV_LEN)));
         cols.add(new Column("Control_Measure", types.stringType(255), new StringFormatter(255)));
         cols.add(new Column("Control_Technology", types.stringType(128), new StringFormatter(128)));

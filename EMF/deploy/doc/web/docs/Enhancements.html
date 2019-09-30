@@ -1,0 +1,1043 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta name="generator" content="Bluefish 1.3.7" >
+ <title>EMF enhancements </title>
+<link rel="stylesheet" type="text/css" href="../css/style.css" />
+
+</head>
+<body>
+<div id="border">
+	<div id="container">
+		<div id="header">
+			<p>Emissions Modeling Framework</p>
+		</div>
+		<div id="content">
+			<h2>EMF deployments by reverse chronological date </h2>
+
+<strong>Deployment 25Mar2019 (v3.3):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Now requires Java 8 or higher</li>
+  <li>Updated to work with Java 9 and higher, which supports HiDPI displays on Windows</li>
+  <li>New version of the EMF Client Installer available to work with Java 9 and higher</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Removed out-of-date control strategy types (Annotate Inventory and Apply Measures In Series)</li>
+  <li>Removed fixed 3% interest rate calculations from control strategies</li>
+  <li>Relabeled columns in control strategy summaries and worksheets to match FF10 inventory terminology</li>
+  <li>Allow control strategies to be run even if the input inventories don't have sectors set</li>
+  </ul>
+</li>
+<li>Module system
+  <ul>
+  <li>Reduced the maximum length allowed for module dataset and parameter names to avoid truncation when running the module</li>
+  <li>Allow required module datasets to be unset</li>
+  <li>Added option for admin users to delete module history records</li>
+  <li>Reworked how the module history is fetched to speed up viewing and editing modules</li>
+  <li>Added option to use module parameters in dataset placeholder names</li>
+  <li>Updates to work with Postgres 10</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 16Aug2018 (v3.2):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Added ability for admin users to edit dataset type column defintions for Flexible File Format-based dataset types</li>
+  <li>Improved error messages displayed when importing datasets</li>
+  <li>Added new option to export and import non-composite modules</li>
+  <li>When exporting modules, added option to export all the input datasets associated with the selected modules</li>
+  <li>Removed dataset types that can't be imported from the Import Window dataset type pull-down menu</li>
+  <li>Added a message explaining why a new dataset version can't be created if there are no existing final versions of the dataset</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Created a new Control Strategy Detailed Result dataset type that uses column names consistent with the Flat File 2010 inventory formats</li>
+  <li>Added the term "effective" to emission reduction and annual cost per ton column names in the new strategy detailed result dataset type</li>
+  <li>Updated all control strategy types to output the new detailed result dataset type</li>
+  <li>Created QA step templates for the new detailed result dataset type based on the old dataset type</li>
+  <li>Added check to prevent users from trying to create controlled/projected inventories with old strategy detailed results datasets</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 17May2018 (v3.1):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Added a new dataset type named "Facility Closure Extended" for use with Project Future Year Inventory control strategies. This dataset type works like the existing "Plant Closure (CSV)" type but uses current inventory terminology.</li>
+  <li>Added support for dataset type keywords when exporting and importing module types and associated dataset types</li>
+  <li>Fixed an error when trying to upload a file whose name contains a percent sign</li>
+  <li>Fixed the Module Manager window refresh so that module information is reloaded correctly</li>
+  <li>Fixed errors when module types are imported, caused by blank dataset type creation and last modified dates</li>
+  <li>Fixed errors when deleting modules</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Updated the implicit price deflator values used in cost year conversions for 2014 through 2017</li>
+  <li>Added 2017 as an available cost year</li>
+  <li>Relabeled the combustion efficiency column in the control measure SCC window for clarity</li>
+  <li>Added formatting to numbers in the CMDB export files</li>
+  <li>Added formatting to the cost equation parameters in the At-A-Glance report and the control measure view/edit window</li>
+  <li>Updated cost equation descriptions</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 14Feb2018 (v3.0):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Updated EMF server to require Apache Tomcat 8 or later</li>
+  <li>Fixed labeling for columns FUG_WIDTH_XDIM and FUG_LENGTH_YDIM in the Flat File 2010 Point dataset type</li>
+  <li>Fixed the Dataset Type Manager window to correctly disable non-admin buttons after a refresh</li>
+  <li>Module Tool updates:
+    <ul>
+    <li>Prevent deletion of datasets that are in use by modules</li>
+    <li>Prevent non-admins from removing entire module types or finalized module type versions</li>
+    <li>Added option to delete outputs when deleting a module</li>
+    <li>Fixed bug running modules when username contains capital letters</li>
+    <li>Removed unneeded Module Type Manager window refresh after export</li>
+    <li>Fixed blanking of module description text box after save or refresh</li>
+    </ul>
+  </li>
+  <li>EMF v3.0 will be the first public release of the Module Tool system (will be disabled by default)</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Removed unused source groups</li>
+  <li>Purged obsolete point sector control measures from the CMDB</li>
+  <li>Removed all existing incremental cost-per-ton values from the CMDB; removed unused control-measure-specific capital recovery factors and discount rates</li>
+  <li>Relabeled control strategy "discount rate" to "interest rate"</li>
+  <li>Removed unused fields from the Control Measure At-A-Glance report</li>
+  <li>Updated control strategy cost columns to use double precision values</li>
+  <li>Added formatting to control efficiency values shown in view/edit windows and At-A-Glance reports</li>
+  <li>Added columns to the control strategy detailed results dataset to report raw emissions reduction (based on uncontrolled inventory emissions) and associated annual cost-per-ton</li>
+  <li>Updated labels on control strategy constraints tab to reflect that values are for effective reductions and cost-per-ton, not raw</li>
+  <li><span style="font-weight: bold">3/6/2018</span> Deleted old control measure property records from CMDB</li>
+  <li><span style="font-weight: bold">3/6/2018</span> Updated cost equation descriptions</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 24Aug2017 (v3.0b):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Added support for new Module Tool</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 24Aug2017 (v2.15):</strong>
+<ul>
+<li>CoST
+  <ul>
+  <li>Fixed bug trying to finalize control strategies that use control measures to be purged</li>
+  <li>Updated Control Measure Manager cost year menu to cover 2000 to 2016</li>
+  <li>Fixed control measure reference search to be case-insensitive</li>
+  <li>Fixed At-A-Glance report to handle various numbers of control efficiency records correctly</li>
+  <li>Control Measure Database updates:
+    <ul>
+      <li>Purged obsolete onroad and nonroad control measures, and old temporary measures</li>
+      <li>Converted control measures using pollutants PM2_5 and PM10 to PM25-PRI and PM10-PRI</li>
+      <li>Removed control efficiency records with old effective dates</li>
+      <li>Removed special characters from control measure source group names and property values</li>
+      <li>Updated control efficiencies and equipment life values for some NOx measures</li>
+      <li><span style="font-weight: bold">8/28/2017</span> Updated control measures using equation types 1, 12, and 13</li>
+      <li><span style="font-weight: bold">9/7/2017</span> For several PM measures, removed control efficiency records with effective dates of 1/1/2020 and updated control efficiency values</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 27Jun2017 (v2.14):</strong>
+<ul>
+<li>CoST
+  <ul>
+  <li>Updated the lists of pollutants in the Control Measure Manager window to only show pollutants actually controlled by measures in the system, instead of all defined pollutants</li>
+  <li>Added checks for null cost equation parameters for Equation Type 2 and its variants</li>
+  <li>Fixed a bug in the calculations for Equation Type 13 caused by an order of operations error</li>
+  <li>Removed special characters (curly quotes, long dashes, and symbols) from control measure names, descriptions, and references</li>
+  </ul>
+</li>
+<li>EMF
+  <ul>
+  <li>Added logging for commands run from the RemoteCommand execute method</li>
+  <li>Stopped renaming of database tables when a dataset's name is changed</li>
+  <li>Fixed a bug when creating a new flexible format dataset type with spaces in the column names; spaces are automatically converted to underscores in the database table definition</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 20Mar2017 (v2.13):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Improved the display of file format information when viewing or editing a dataset type</li>
+  <li>Enhanced the case comparison report to include dataset version differences</li>
+  <li>Added the ability to upload local files to the server via the EMF client</li>
+  <li>Automatic clean-up of uploaded files after 12 hours</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Changed the control strategy cost year to use a pull-down menu of available years instead of a text field</li>
+  <li>Updated cost year conversion factors (implicit price deflators) for 2013 through 2016</li>
+  <li>Updated NOx non-EGU control measures based on SRA recommendations</li>
+  <li>Miscellaneous CMDB clean-up and fixes</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 22Sep2016 (v2.12):</strong>
+<ul>
+<li>Bug fixes
+  <ul>
+  <li>Updated the uniqueness checks when importing control measure efficiency records to take into account the minimum and maximum capacity columns</li>
+  <li>Updated the labels used for the maximum cost per ton and maximum annualized cost control strategy constraints to reflect that the constraints are specified in dollars matching the cost year of the control strategy, not a fixed reference year</li>
+  </ul>
+</li>
+<li>Enhancements
+  <ul>
+  <li>Consolidated database connections via the Tomcat-managed connection pool</li>
+  <li>Expanded control measure cost equation Type 2 to support new NOx non-EGU control measures</li>
+  <li>Updated NOx non-EGU control measures with new cost data, SCC assignments, and cost equations</li>
+  <li>Changed the final cost-per-ton calculations in CoST to use the net emissions reduction instead of gross; this change impacts costs when replacement controls are applied</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 15Jun2016 (v2.11.1):</strong>
+<ul>
+<li>Bug fixes
+  <ul>
+  <li>Fix checks for design capacity columns in inventories when applying new generating capacity thresholds; allows control strategies using nonpoint inventories to run</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 06Jun2016 (v2.11):</strong>
+<ul>
+<li>Bug fixes
+  <ul>
+  <li>Fixed a bug when editing cases where changes after an initial save weren't saved to the database</li>
+  <li>Fixed a bug that caused multi-pollutant control strategies to fail in some circumstances</li>
+  <li>Fixed issues in the control measure import interface where the import button wasn't enabled after errors</li>
+  </ul>
+</li>
+<li>Enhancements
+  <ul>
+  <li>The control measure database has been updated based on IPM v5.15 for the ptipm sector. Updates include revised control efficiency and cost equation parameters, removal of obsolete control measures, addition of new measures, and fixes to cost equation calculations. These updates make use of several new features included in EMF v2.11:
+    <ul>
+    <li>Include the control measure's equation type in the Control Measure Manager details display</li>
+    <li>Allow control measures to be targeted to sources based on generating capacity</li>
+    <li>Use SCC-specific combustion efficiency percentages when calculating generating capacity from design capacity</li>
+    </ul>
+  </li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 28Jan2016 (v2.10):</strong>
+<ul>
+<li>Bug fixes
+  <ul>
+  <li>Cost-per-ton values displayed in the Control Measure Manager window when Show Details is checked are now correctly adjusted for the selected Cost Year.</li>
+  <li>Fixed an intermittent problem when running a Least Cost Curve control strategy that caused calculations at different increments to apply maximum controls instead of the specified percent reduction.</li>
+  <li>Allow cancelled control strategies to be re-run.</li>
+  </ul>
+</li>
+<li>Enhancements
+  <ul>
+  <li>Conversions of dollar amounts between different years are now done using annual GDP implicit price deflator values. Previously, the EMF used chained GDP values for converting between cost years.</li>
+  <li>Added support for cost years 2007 through 2014.</li>
+  <li>Updated the default cost year to 2013; previously the default year was 2006.</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 09Sept2015 (v2.9.1):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Prevent datasets that are being used as a temporal profile or cross-reference input in a temporal allocation run from being deleted.</li>
+  <li>Allow the project associated with a dataset, control strategy, or temporal allocation to be set back to none.</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Fixed a bug when matching inventory sources that could cause newer sources to be excluded from least cost analyses.</li>
+  <li>Create the server export folder if needed when exporting control measures for automatic download.</li>
+  <li>When deleting control strategies and associated datasets (control strategy results, generated inventories), fully delete the selected datasets. Previously, the datasets would be marked as deleted but not purged.</li>
+  <li>Fixed the calculation of per-source percent reductions when creating projected inventories. This bug affected sources that had additive controls applied in the Project Future Year Inventory strategy.</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 20Jul2015 (v2.9):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>This release adds a new feature that will allow a user to Archive or Restore a dataset or QA Step result. The archive process will still keep around the meta data on the dataset or QA Step, but the underlying data will be archived and removed from the database. The Restore process will allow the user to bring back the underlying data for the dataset or QA Step.</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>The Control Measure Manager search box will now match control measures by name or abbreviation.</li>
+  <li>When editing control programs, the list of available dataset types is now limited to those types used by control programs: Allowable Packet, Allowable Packet Extended, Control Packet, Control Packet Extended, Plant Closure (CSV), Projection Packet, and Projection Packet Extended.</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 24Jun2015 (v2.8.2):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Fixed a bug where case jobs that had been previously run were automatically run again when the EMF server was restarted</li>
+  <li>Fixed an issue when importing datasets with long, nearly identical names that would cause the database table names to not be unique</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Fixed the source matching hierarchy used by the Project Future Year Inventory strategy. This change affects records where a state code is formatted as 5 digits (i.e. 36000 rather than 36). Matching records with an exact county specified are now given priority over the state-level record.</li>
+  <li>Added a new control strategy option to only apply control measures whose major pollutant matches the strategy's target pollutant. This option is on by default for newly created strategies.</li>
+  <li>Fixed a spurious error message when checking if an inventory has sources matching the strategy's target pollutant</li>
+  <li>Updated post-run calculations of the maximum emissions reduction and total cost to take target pollutant matching into account</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 07May2015 (v2.8.1):</strong>
+<ul>
+<li>CoST
+  <ul>
+  <li>Added sector column to FF10 merged inventory format</li>
+  <li>Make sure sector column in strategy detailed result reports original inventory sector when processing multiple FF10 inventories</li>
+  <li>Added class and major pollutant columns to control measure selector for control strategy editing</li>
+  </ul>
+</li>
+<li>Temporal Allocation
+  <ul>
+  <li>Fixed bug where run status could get overwritten if temporal allocation was saved while it was running</li>
+  <li>Added default indices to temporal cross-reference and profiles datasets</li>
+  <li>Run database analysis on intermediate result tables during temporal allocation run</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 20February2015 (server only):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Fixed error exporting datasets from Dataset Manager when not downloading files to local machine</li>
+  <li>Fixed error exporting FF10 datasets from cases</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 19February2015 (v2.8):</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Check syntax of user-entered SQL Filter and UPDATE SET SQL text before running Advanced Find and Replace</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Updated Least Cost algorithm to select control measures with the greatest emissions reduction in a given cost range rather than measures with the lowest marginal cost; allows Least Cost runs to achieve maximum emissions reductions</li>
+  <li>Added option to automatically download exported control measure files to local machine</li>
+  <li>Added options for which datasets should be deleted when removing control strategies; datasets that can be deleted are controlled inventories and/or strategy results, messages, and summaries</li>
+  <li>Added ability to automatically export and download control strategy results from the Control Strategy Manager window</li>
+  <li>Added user preference to select which columns are included when exporting FF10 inventories from the CoST interface; users can also specify custom column names and enter a prefix to use when naming the columns</li>
+  </ul>
+</li>
+<li>Temporal Allocation
+  <ul>
+  <li>Added ability to cancel in-progress temporal allocation runs</li>
+  <li>Added messages dataset that logs any sources that didn't match a temporal cross-reference entry or were missing a temporal profile</li>
+  <li>Include summary of temporal allocation run in metadata for results datasets</li>
+  <li>Fixed issue detecting monthly values in FF10 inventories where some versions of the dataset have monthly values and other versions don't</li>
+  <li>Fixed issue calculating episodic totals/averages when processing multiple inventories</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 16January2015:</strong>
+<ul>
+<li>CoST
+  <ul>
+  <li>When running Least Cost control strategies with multiple FF10 inventories, the inventories will now be merged into a unified FF10-based dataset. This avoids problems using inventory filters due to column name differences between FF10 and ORL inventories.</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 18December2014:</strong>
+<ul>
+<li>Bug fixes
+  <ul>
+  <li>Fixed broken data value filter search option in the Advanced Dataset Search.</li>
+  <li>Fixed bug regarding hidden columns for different dataset types. Previously, if more than half the columns for a dataset type were hidden, this bug prevented the data from being displayed.</li>
+  <li>Refresh local project cache when a new project is created by editing a dataset, control strategy, or temporal allocation.</li>
+  <li>Fixed issue in temporal allocation module date handling if server and client are in different time zones.</li>
+  <li>Increased field size for design capacity units in ORL Merged dataset type. Fixes error processing FF10 inventories in a Least Cost Analysis.</li>
+  </ul>
+</li>
+<li>Enhancements
+  <ul>
+  <li>User interface enhancements for the temporal allocation module: view (read-only) mode, prompt user before deleting existing outputs, confirm runs with no inventory filter.</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Deployment 28October2014:</strong>
+<ul>
+<li>EMF
+  <ul>
+  <li>Fixed contextual menu pop-up in the File Downloads window for Mac OS X users.</li>
+  <li>When exporting datasets or QA steps, fixed an issue with the user-entered prefix/filename that would cause the downloaded file to be empty. Spaces in the prefix or filename are converted to underscores.</li>
+  </ul>
+</li>
+<li>CoST
+  <ul>
+  <li>Simplified target pollutant selection when setting up control strategies. The target pollutant is now matched to the inventory sources using a wildcard search of pollutant names.</li>
+  <li>Added Summarize function to the Control Strategy Manager window which creates a locally-saved spreadsheet summarizing the selected control strategies, including name, strategy type, constraints, emission reductions, and strategy costs.</li>
+  <li>Added option to enter notes about projects when editing control strategies.</li>
+  <li>Added interface for creating control strategy groups. This allows grouping of related control strategies with a custom name and notes about each group.</li>
+  <li>Automatically suppress header comments when exporting input or controlled inventories directly from the CoST interface.</li>
+  <li>Added option to download files to local computer when exporting inventories or results from the CoST interface.</li>
+  <li>Added option to use a custom prefix when naming exported inventory or result files from the CoST interface.</li>
+  </ul>
+</li>
+<li>Temporal allocation module
+  <ul>
+  <li>Fixed checks for duplicate temporal allocation names.</li>
+  <li>Added support for daily FF10 inventories. The temporal allocation module can sum daily emissions to produce monthly, episodic, or weekday/weekend output (totals or average day).</li>
+  <li>Added support for applying month-to-day temporal profiles.</li>
+  </ul>
+</li>
+</ul>
+
+<strong>Client Update 29September2014:</strong>
+<ul>
+  <li>Fixed display of dataset properties Sources tab for external datasets</li>
+  <li>Removed recent user interface optimization updates made to data editing and viewing. This change fixes the following known issues:
+    <ul>
+      <li>Unable to delete selected records when editing a dataset</li>
+      <li>Applying a row filter causes the editing window to think there are unsaved changes and locks the Find and Replace Column Values option</li>
+    </ul>
+  </li>
+</ul>
+
+<strong>Client Update 08September2014:</strong>
+<ul>
+  <li>Fixed sorting and filtering in the Data Viewer</li>
+  <li>Fixed tab display after saving case</li>
+</ul>
+
+<strong>Deployment 03September2014 (EMF/CoST):</strong>
+<ul>
+  <li><em>Bug fixes:</em>
+    <ul>
+      <li>Fixed issue where dataset and QA step table names could be longer than 63 characters.</li>
+      <li>Fixed bug where Project Future Year Inventory Strategy was not passing through the design capacity for Flat File 2010 Point inventories when creating a controlled inventory.</li>
+      <li>Fixed issue in File Download window where the progress bar could be hidden behind a long filename.</li>
+      <li>Removed requirement that sector be entered for control strategies that don't use this information.</li>
+      <li>Reduced excessive server logging about cases. </li>
+    </ul>
+  </li>
+  <li><em>Enhancements:</em>
+    <ul>
+      <li>Added control measure class to summary display of control measures in the Control Measure Manager.</li>
+      <li>Updated SCC reference tables with newest SCC codes.</li>
+      <li>Added user interface optimization (threading and asynchronous processing) to Dataset Export window, Dataset Manager Advanced Search, Status window, File Downloads window, and data editing and viewing.</li>
+    </ul>
+  </li>
+</ul>
+
+<strong>Deployment 13August2014 (EMF/CoST):</strong>
+<ul>
+  <li>EMF
+    <ul>
+      <li>Added ability to use multiple QA Step argument editing windows at the same time</li>
+      <li>Modified Flat File Inventory formats to handle EIS Dataset Shortname</li>
+      <li>Leave export button available when exporting datasets using row filtering options</li>
+      <li>Continuing work on user interface responsiveness: updates have been made to the Case Manager window, viewing and editing cases, and viewing and editing dataset properties</li>
+    </ul>
+  </li>
+  <li>CoST
+    <ul>
+      <li>Added new options for specifying if replacement controls should be applied to sources with incomplete existing device information</li>
+    </ul>
+  </li>
+  <li>Beta version of new temporal allocation module
+    <ul>
+      <li>New module to apply temporal profiles to annual or monthly inventories</li>
+      <li>Module can calculate monthly, daily, or episodic total emissions or average-day values</li>
+      <li>Options for weekday and weekend average-day values</li>
+      <li>Supports ORL and FF10 inventories</li>
+      <li>Uses updated formats for cross-reference and profile datasets</li>
+      <li>Preliminary guide to new module available at <a href="http://www.cmascenter.org/emf/internal/temporal_allocation.html">http://www.cmascenter.org/emf/internal/temporal_allocation.html</a></li>
+    </ul>
+  </li>
+</ul>
+
+<strong>Deployment 17June2014 (EMF/CoST):</strong>
+<ul>
+  <li><em>Bug fixes:</em>
+    <ul>
+      <li>When exporting a dataset from the Dataset Manager, certain types of row filters would cause records from older versions of the dataset to be included in the exported file. This behavior is now fixed and the exported file will only contain records for the correct dataset version.</li>
+      <li>When creating a controlled inventory after running a control strategy, the resulting datasets wouldn't use a user-specified prefix correctly. The controlled inventories will now be named with the custom prefix prepended to the original dataset name. Also, the custom prefix can start with a digit without causing any issues.</li>
+    </ul>
+  </li>
+  <li><em>Enhancements:</em>
+    <ul>
+      <li>When exporting control measures, measures marked as Obsolete or Temporary will now be excluded by default. A new checkbox in the export dialog will allow you to include obsolete and temporary measures if desired.</li>
+      <li>Ongoing work is being done to keep the interface more responsive when the client application needs to communicate with the server or handle longer tasks.</li>
+    </ul>
+  </li>
+</ul>
+
+<strong>Deployment 08May2014 (EMF/CoST):</strong>
+<ul>
+  <li>Fixed bug where Least Cost Strategy Merge Process was expecting Point IDs to be 15 characters instead of the new 20 character length. Also needed to up the SCC code to be 12 characters not 10.</li>
+  <li>Fixed bug copying QA Step templates to the same dataset type</li>
+  <li>Added new SO2 and PM2.5 equation types for estimating costs for ICI boiler control measures</li>
+  <li>Updated CoST to use stack flow values from the inventories when available instead of calculating from stack velocity and diameter</li>
+  <li>Updated CoST control strategy processing to look for PM25-PRI instead of PM2_5</li>
+  <li>Updated CSV Dataset Type importer to not translate PM25-PRI to PM2_5</li>
+  <li>Added lightweight dataset types, client-side caching, and threading for user interface updates to improve UI responsiveness</li>
+  <li>Code repository was moved from CVS (SourceForge) to Git (GitHub)</li>
+</ul>
+
+<strong>Deployment 25October2013 (EMF):</strong>
+<ul>
+        <li>Fixed bug where the PM pollutant �primary� suffix (i.e., PM10-PRI was changed to PM10) is stripped off the pollutant code when importing Control, Projection, and Allowable datasets.  These pollutant codes are now allowed in inventories, and should be allowed to be controlled when running the Project Future Year Control Strategy Process.</li>
+        <li>Fixed build issue where some EMF Client installations (using Java 6) were having issues due to software being built in Java 7.</li>
+</ul>
+
+<strong>Deployment 12September2013 (EMF):</strong>
+<ul>
+        <li>Fixed bug with new "Download Manager" capability where user specific server download directory was not created correctly.</li>
+        <li>Added validation code to new Shapefile exporter to not allow results to have a geometry (i.e., state or county) with more than one row defined in the result.</li>
+</ul>
+
+<strong>Deployment 12September2013 (CoST):</strong>
+<ul>
+               <li>Added control information to the Strategy Detailed Results reports (control_ids and ann_pct_red) which is used with main control measure costing algorithms.</li>
+               <li>Added Discount Rate 3% cost information to the Strategy Detailed Results reports.  Added fields that will display the results recalculated at a Discount Rate of 3%.</li>
+               <li>Fixed bug when saving (Type 13 cost equation type) Low NOx Burner/Selective (Non-) Catalytic Reduction  ICI Boiler control measures, was overriding key input variable to engineering cost equations.</li>
+</ul>
+
+<strong>Deployment 18July2013 (EMF):</strong>
+<ul>
+        <li>Fixed bug with the way the queue Id is read while running a case job (3710)</li>
+        <li>Added new CSV based and Shapefile QA Step Exporter.  The new Shapefile generator can transform data from rows to columns (i.e., pollutants can be pivoted from being row based to column based).</li>
+        <li>Added new "Download Manager" capability.  Exported files (datasets and QA Step results) can now be downloaded to local machine instead of having to manually move files from the EMF server.</li>
+</ul>
+
+<strong>Deployment 21May2013 (CoST):</strong>
+<ul>
+        <li>Update to Control Strategy Tool (CoST) to fix bug when merging Flat File and ORL inventories into a Merged ORL Inventory</li>
+</ul>
+
+<strong>Deployment 02May2013 (CoST):</strong>
+<ul>
+        <li>Updates to Control Strategy Tool (CoST) Least Cost algorithms to support Flat File 2010 point and nonpoint inventories</li>
+</ul>
+
+<strong>Deployment 29April2013 (CoST):</strong>
+<ul>
+        <li>Updates to Control Strategy Tool (CoST) algorithms to support Flat File 2010 point and nonpoint inventories</li>
+</ul>
+
+<strong>Deployment 29April2013 (EMF):</strong>
+<ul>
+        <li>Minor look and feel changes to Case Output Comparison report (Bug 3697)</li>
+</ul>
+
+<strong>Deployment 14March2013 (EMF):</strong>
+<ul>
+        <li>Fixed bug with Cases Output Report (Bug 3697)</li>
+</ul>
+
+<strong>Deployment 07March2013 (EMF):</strong>
+<ul>
+        <li>Added some additional logging to further research why the queue Id (from remote job server) is not read while running a case job (Bug 3710)</li>
+        <li>Enhanced Cases Output Report to handle cases based on differing regions, also added functionality to report various issues/warnings when running a case comparison analysis (Bug 3697)</li>
+        <li>Prepared PM Inventory (for FF10 Point and Nonpoint) Speciation QA Step SQL Templates to help with inventory speciation efforts</li>
+</ul>
+
+
+<strong>Deployment 05February2013 (EMF):</strong>
+<ul>
+	<li>Fixed bug with the way the queue Id is read while running a case job (3710)</li>
+	<li>Fixed bug with new beta feature that allows users to compare case outputs by reporting at various aggregate levels (sector, pollutant, state, etc.), was targeting wrong output dataset type (3697)</li>
+</ul>
+
+<strong>Deployment 29January2013 (EMF):</strong>
+<ul>
+	<li>Added new beta feature that will allow users to Compare Case outputs by reporting at various aggregate levels (sector, pollutant, county, state, etc.) (3697)</li>
+	<li>Fixed bug when sorting in QA result viewer (3685)</li>
+	<li>Fixed problem when limiting QA Step results to preview (3678)</li>
+	<li>Fixed bug when opening "Country, state, and county (COSTCY)" dataset</li>
+	<li>Fixed issue where exported QA step result file is not set to group writable for everyone to view (3690)</li>
+	<li>Fixed bug where Analysis Engine can't display datetime data types (3691)</li>
+	<li>Fixed bug where Case Comparison Report was creating duplicate rows (3696)</li>
+	<li>Created new Toxicity Weighted QA Step template a "National" based aggregate query that is used with the Flat File 2010 dataset types (3699) </li>
+</ul>
+
+<strong>Deployment 04January2013 (EMF):</strong>
+<ul>
+	<li>Upgrade database application server from 9.0 to 9.2</li>
+	<li>Updated dataset types using profile codes to handle 10 characters profile code instead of 5 characters</li>
+</ul>
+
+<strong>Deployment 27September2012 (EMF):</strong>
+<ul>
+	<li>Fixed slowness issue with preview QA Step result (3678)</li>
+	<li>Fixed bug with refreshing and deleting control strategy programs when Editing or Viewing Control Strategy Windows (3686)</li>
+	<li>Fixed bug with search and replace functionality where dataset editor filter was not being applied correctly during update process (3679)</li>
+</ul>
+
+<strong>Deployment 06September2012 (EMF):</strong>
+<ul>
+	<li>Moved versions table into "emf" database schema, useful when backing/restoring database to new server (3503)</li>
+	<li>Updated Project Future Year Inventory Control Strategy to handle monthly specific projection factors (3652)</li>
+	<li>Fixed bug where COSTCY dataset type is giving wrong record count</li>
+	<li>Fixed Delete Dataset Type functionality, needed to purge from table_consolidations table for datasets that are consolidated into one table.</li>
+	<li>Changed Compare QA Programs to be able to specify a base and compare suffix for fields being compared (don't use ann_emis_b and ann_emis_c instead for example use ann_emis_2005 and ann_emis_2008)</li>
+	<li>Added ability to preview QA Step result, now can limit to certain number of rows that can specified in user's local preference file (3678)</li>
+	<li>Fixed bug with Projection pre-run validation process when only one control program is used</li>
+	<li>Fix slowness issue with projection process</li>
+	<li>Fixed problem sorting when viewing QA Step Results (3685)</li>
+	<li>Fixed bug with projection process when start/end date are not set in the baseline inventory</li>
+	<li>Fixed problem with warning messages in Strategy Messages output when applying closure and projection control programs (3687)</li>
+	<li>Added ability to perform "Search and replace" functionality on float date type columns/fields (aka Advanced Search/Replace).  User can now specify an advanced SQL filter and update multiple database columns in one pass, old approach could only change one column at a time (3679).</li>
+</ul>
+
+<strong>Deployment 21June2012 (EMF):</strong>
+<ul>
+	<li>Updated Project Future Year Inventory Control Strategy to handle monthly specific packet factors.  This change will allow the Projection, Control and Allowable packets to specify monthly or annual source specific factors (3652).</li>
+	<li>Fixed bug when copying QA Step to multiple datasets, was only copying to one of the datasets not all of them (3670)</li>
+	<li>Enhanced Compare Dataset QA Program (in addition to other QA Programs) to be more intuitive with respect to the default dataset type that is shown via the Dataset Chooser (3518) when defining the QA Program.</li>
+	<li>Updated reference pollutant code tables (invtable and pollutant_codes ) to have the latest known list of pollutants</li>
+	<li>Update reference county table with most recent county data</li>
+	<li>Added lat-long to states reference table</li>
+	<li>Adjusted Flat File 2010 dataset types State Query QA templates to use state references table instead of county reference table (more efficient approach)</li>
+	<li>Enhanced Compare Dataset Fields QA Program to include a match column, which shows when the data being compared has the same value or not (3626).</li>
+	<li>Added ability to hide certain EMF Features (e.g., Control Strategies and/or Control Measures) (3662)</li>
+	<li>Fixed bug when resetting password would reset user specific settings (e.g., features hidden for that user or dataset types that are hidden for that user) (3663)</li>
+	<li>Added ability for the user to specify the order of columns when viewing a dataset's data in addition to being able to hide certain columns (3635).  This feature will allow the user to define the column layout per dataset type when viewing the dataset's data.</li>
+</ul>
+
+<strong>Deployment 21June2012 (CoST):</strong>
+<ul>
+	<li>Added country and state name information to the Least Cost Worksheet and Strategy Detailed Result output datasets </li>
+	<li>Added control technology and source group to the Least Cost Worksheet
+Result output dataset</li>
+	<li>Added scc descriptive information (level1, level2, level3, and level4) to the Least Cost Worksheet and Strategy Detailed Result output datasets</li>
+</ul>
+
+
+<strong>Deployment 21March2012:</strong>
+<ul>
+
+	<li>Updated CSV Dataset Importer to support datasets with no column labels
+and inline comments</li>
+	<li>Finalize adding settings to make sure FF10 dataset types (Activity and
+Nonpoint Daily) are auto indexed when imported into the EMF</li>
+	<li>Indexed preexisting FF10 Activity and Nonpoint Daily datasets</li>
+	<li>Fixed bug with Flat File Exporter when dataset has no string data types.</li>
+	<li>Add ability to hide certain Dataset Types for users (3663)</li>
+</ul>
+
+<strong>Deployment 31January2012:</strong>
+<ul>
+	<li>Updated Project Future Year Inventory Control Strategy to handle FF10 datasets (3651)</li>
+	<li>Added settings to make sure FF10 dataset types are auto indexed when imported into the EMF</li>
+	<li>Indexed preexisting FF10 datasets</li>
+	<li>Fixed bug when running a case where newly created directories are not created as group writable (3659)</li>
+</ul>
+
+<strong>Deployment 10January2012:</strong>
+<ul>
+	<li>Fixed bug when exporting a QA step result</li>
+</ul>
+
+
+<strong>Deployment 20December2011:</strong>
+<ul>
+	<li>Fixed bug when running multiple QA steps with similar names (3637)</li>
+	<li>Added ability to specify a prefix for the file name of dataset exports (3648)</li>
+	<li>Fixed aliasing bug when running Compare Datasets QA Program that includes group by expressions with similar names (3592)</li>
+	<li>Added new "Compare Dataset Fields" QA Program that is useful for performing value comparisons between various datasets (3626)</li>
+	<li>Added new functionality to Compare various control strategies, a report is generated that allows the user to identify differences in strategy configurations (3627)</li>
+	<li>Added QA step that performs toxicity weighting on the Flat File 2010 Nonpoint dataset type (3216)</li>
+	<li>Added QA step, "Summarize by State with Toxicity Weighting", that performs toxicity weighting while aggregating at the State Level on the Flat File 2010 Point and Nonpoint dataset types (3216)</li>
+	<li>Added ability to change dataset version of a QA step (3650) </li>
+</ul>
+
+
+<strong>Deployment 06December2011 (EMF):</strong>
+<ul>
+	<li>Fixed bug with Dataset Data Search & Replace where null and blank values were not always being replaced with new value (3646)</li>
+	<li>Limited Dataset Data Search & Replace to certain data types - strings (varchar, char, text) and integers (smallint, integer, bigint), and not double, floats, timestamps (3647)</li>
+	<li>Updated Dataset Advanced Search to allow freeform SQL filter to specified.  Any datasets that match the filter will be retrieved.  (3598)</li>
+	<li>Updated Dataset Advanced Search to be able to specify a Case in the search process.  Any datasets that are attached to the specified Case will be retrieved.  (3598)</li>
+	<li>Added some new SCC codes to underlying reference SCC database tables (3633).</li>
+	<li>Added new dataset type, "Toxicity Weighting". (3216)</li>
+	<li>Added prototype QA Step that will generate a toxicity weighted Flat File 2010 Point inventory.</li>
+	<li>Added ability to specify name of QA Step Export (3655)</li>
+
+</ul>
+
+<strong>Deployment 06December2011 (CoST):</strong>
+<ul>
+	<li>Removed database dependency of using the PL/TCL language</li>
+
+
+</ul>
+
+<strong>Deployment 01November2011 (EMF):</strong>
+<ul>
+	<li>Add status message during a dataset import when the dataset import queue is full.  The status message will indicate the dataset will be imported when the queue has available resources (3634).</li>
+	<li>Fixed bug with the QA Step engine when running complex SQL queries (i.e., using derived subqueries or using UNIONs) (3618).</li>
+	<li>Added menu items to the "Window" menu to "Hide All" (minimize) windows and another menu item to "Close All" windows (3629)</li>
+	<li>Changed look and feel of the Dataset Manager Window, clarified what different Edit buttons accomplish (i.e., changed button to say "Edit Version" or "Edit Data") (3631).</li>
+	<li>Added functionality to Copy and Paste rows in the Dataset Editor (3632).</li>
+	<li>Fixed bug with viewing QA Step with no results (3639).</li>
+
+
+</ul>
+
+<strong>Deployment 11October2011 (EMF):</strong>
+<ul>
+	<li>Fixed bug with Country, County, State Information dataset type exporter (3638).</li>
+</ul>
+
+<strong>Deployment 11October2011 (CoST):</strong>
+<ul>
+	<li>Implemented approach to allow main strategy algorithms (Max Emission Reduction and Least Cost Types) to apply VOC and PM2.5 measures to Organic HAPs and PM Metals.</li>
+	<li>Added capability to post scan control strategy detailed result for -Type X equations, which is used to populate Strategy Message output with sources that used default costing approach instead of the engineering costing approach (also indicate what might be the culprit for not using engineering cost equation).</li>
+	<li>Fixed bug when setting county dataset version via Strategy Edit Window, was saving to database but loading of window would reset to dataset to default version.</li>
+	<li>Fixed bug to auto populate sector (to "All Sectors") for "Least Cost" ORL Merged created datasets.</li>
+	<li>Fixed bug when rerunning  "Least Cost" strategies would producing erratic Detailed Results.</li>
+</ul>
+
+<strong>Deployment 15September2011:</strong>
+              <ul>
+                                                <li>Changed post-run validation routine for the "Project Future Year Inventory" Strategies to report issues with control program matching criteria. Also, integrated new hierarchy matching approach into core algorithm.</li>
+                                                <li>Installed QA Step Templates to help identify strange characters in plant name for ORL Point and Flat File Point dataset types (3588)</li>
+                                                <li>Externalized server debug level so that redeploy is not needed to change debug levels in the supporting EMF log files (3156).</li>
+                                                <li>Setup procedure to be able to delete QA Steps (3615).</li>
+                                                <li>Added ability to report key features on a case (3621).</li>
+                                                <li>Fixed bug with Country, County, State Information dataset type exporter (3636).</li>
+                                                <li>Added ability to dump memory settings to the Apache Tomcat web server log file during an "Out of Memory" error.</li>
+              </ul>
+
+
+<strong>Deployment 02August2011:</strong>
+              <ul>
+                                                <li>Added client-side error handling/logging to help explain an infrequent issue found while exporting a QA report (3595)
+</li>
+                                                <li>Added new Dataset Keywords to Projected ORL Inventories and Control Strategy Detailed Result Datasets that are created form Project Future Year Control Strategy runs (3602).  These dataset keywords can be used to figure out what strategy created the output dataset and more relevant information on the Projection strategy (i.e., Target Year of Projection).  Also, filled in the start/end date for resulting Control Strategy Detailed Result datasets. </li>
+                                                <li>Fixed bug where the Dataset Access Log time required was too large during Case runs (3589).  The Case dataset export process was using the incorrect start time as a basis to figure out how long a dataset took to export.  Changed the access log time required to zero when no export occurs and changed the process to use the correct start time when an export does occur.</li>
+              </ul>
+
+<strong>Deployment 22July2011:</strong>
+              <ul>
+                                                <li>Added new QA Program, &quot;Merge In Supporting Data&quot;. This QA Program will create a report that expand the Flat File 2010 Point Dataset to include new fields (i.e., facility company name and unit description) from some various supporting datasets. (Bug 3601)
+</li>
+                                                <li>Added new QA Step Templates for the Flat File 2010 Point and Nonpoint Dataset Type that will convert the dataset to an equivalent ORL format (3603).</li>
+                                                <li>Fixed the Dataset Viewer and Editor paging capabilities.  The viewer was having issues showing the correct number of records when positioned at increments of 10,000 (i.e., 10,000, 20,000, etc...) (3605).</li>
+                                                <li>Fixed bug where CSV and SMOKE Dataset Exporter Types would insert column header multiple times in the exported data (3606)
+</li>
+                                                <li>Fixed bug where CSV and SMOKE Dataset Exporter Types would export the data in a random fashion (3606).  This issue was only prevalent for very large datasets (200,000+ records).</li>
+                                                <li>Fixed bug when renaming a QA Step would create a copy of the with original name (3608).</li>
+                                                <li>Fixed bug when exporting QA Step that contains column names with capital letters (3610).</li>
+              </ul>
+
+<strong>Deployment 7June2011:</strong>
+              <ul>
+                                                <li>Added capability to include WHERE clause (filter records) during the "Compare Datasets" QA Program.</li>
+                                                <li>Updated Case Comparison report -- removed some unnecessary records (sector list and case description).</li>
+                                                <li>Updated Project Future Year Control Strategy to not include "other" packet record results when the source has been closed via a closure packet.</li>
+                                                <li>Updated Project Future Year Control Strategy to rework the number of errors/warning that are seen in the Strategy Message Output.</li>
+                                                <li>Optimized CoST strategy algorithms -- Maximum Emission Reduction, Multi-Pollutant Maximum Emission Reduction, Least Cost, and Least Cost Curve.</li>
+              </ul>
+
+<strong>Deployment 22March2011(Sector Scenario):</strong>
+
+              <ul>
+
+                                     <li>Updated sector mapping file format.</li>
+                                                <li>Updated mapping rules to have a straight mapping between sector and other key columns (such as mact,naics,scc) in the following types of inventories: ORL Point NATA, ORL Point NATA Sector Annotated, NOF Point, NOF Nonpoint.</li>
+                                                <li>Added a functionality to automatically transfer the sector scenario analysis result datasets to a separate database (sandbox) for interoperable calls.</li>
+                                                <li>Enabled 'Remove' button on sector scenarios manager window to remove sector scenarios.</li>
+              </ul>
+                        <strong>Deployment 15March2011: </strong>
+              <ul>
+                                                <li>Documented the Compare Datasets QA program.</li>
+                                                <li>Right justified the numerical columns in the dataset editor/viewer windows.</li>
+                                                <li>Verified the correctness of the number of records for dataset versions.</li>
+                                                <li>Auto refreshed the job's status on the EMF client side once users cancel a running case job.</li>
+                                                <li>Extended the capability of the 'Find and Replace' function on the dataset editor window so that users can find any value in a column and replace with a particular value through the SQL wild card character '%'.</li>
+                                                <li>Fixed a bug where the KMZ generator fails without any error message for some files that have mal-formatted lines.</li>
+                                                <li>Made the notification message better to reveal the error nature if registering output data for cases fails from the EMF command line client.</li>
+              </ul>
+                        <strong>Deployment 21February2011: </strong>
+              <ul>
+                                                <li>Finished the implementation of filtering from another dataset on export. When exporting, this feauture provides an option to export only those rows that match values from a specified column in another dataset. For example, one would do an inner join on the specified column of the selected dataset and dump only the rows that match the inner join.</li>
+                                                <li>Reconfigured Tomcat JVM parameters so to ease the memory contraint on the server.</li>
+                                                <li>Added a feauter that users can choose from multiple join types running the Compare Datasets QA program. This QA program allows users to compare two point datasets or different versions of the same dataset at the plant or state level. Adding join types gives the flexibility of controling the output values to only the matches (INNER JOIN) for example.</li>
+
+                                                <li>Modified the naming schema for viewing QA step results so that each result file has its own unique name in the specified temporary directory.</li>
+                                                <li>Modified the error messages during export so that users can easily identify the nature of the export failures.</li>
+                                                <li>Updated the rendeing of status messages so that users can now copy and paste the status messages from the Status window at the EMF client.</li>
+                                                <li>Updated the dataset name rendering to use uneditable text field so that users can copy and paste dataset names on the dataset properties' viewer.</li>
+                                                <li>Fixed a memory issue with search and replace on large datasets on dataset editor.</li>
+              </ul>
+                        <strong>Deployment 27January2011: </strong>
+              <ul>
+                                                <li>Updated the advanced dataset search document.</li>
+                                                <li>Updated the document for the new QA program for comparing datasets/versions of datasets.</li>
+                                                <li>Fixed a bug where leading/trailing spaces in a dataset name prevented the QA programs to run successfully.</li>
+                                                <li>Added a new feature at the dataset export window so to export dataset by filters from another dataset.</li>
+                                                <li>Added new columns to SCC table.</li>
+                                                <li>Improved resize behavior of arguments editor on various QA programs.</li>
+                                                <li>Grayed out the 'Copy' button for external dataset on data versions editor window.</li>
+                                                <li>Trimmed dataset names before creating new datasets or after editing datasets.</li>
+                                                <li>Fixed a bug where dangling dataset IDs found in the emissions table.</li>
+                                                <li>Added a new field into the advanced search window so to find datasets with QA steps that use a dataset.</li>
+                                                <li>Fixed a bug where reviewing a QA step result throws a null pointer exception.</li>
+                                                <li>Fixed a bug in a QA program where the query syntax was not correct.</li>
+                                                <li>Enabled viewing/editing timestamp data in Data Viewer/Editor window.</li>
+                                                <li>Fixed an issue where re-import Control Packet datasets truncates comments column data.</li>
+                                                <li>Enabled viewing/editing timestamp data in flexible file format datasets.</li>
+              </ul>
+                        <strong>Deployment 30November2010: </strong>
+              <ul>
+                                                <li>Removed redundancy in the delete versions column in emissions tables.</li>
+                                                <li>Added capacity for searching and replacing for blank values to data editor.</li>
+                                                <li>Added creator and QA step name to the advanced dataset search dialog.</li>
+                                                <li>Added QA program to allow comparisons of different versions of the same dataset and different versions of different datasets.</li>
+                                                <li>Fixed a bug where the default version of dataset reverts to 0 when new final version is not selected.</li>
+              </ul>
+                        <strong>Deployment 09November2010: </strong>
+              <ul>
+                                                <li>Fixed a bug where external and line-based dataset types cannot be deleted.</li>
+                                                <li>Fixed a bug where versions table information isn't updated correctly.</li>
+                                                <li>Added additional refinements to the messages when deleting and/or purging datasets.</li>
+                                                <li>Fixed a bug where KMZ generator legend is wrong.</li>
+                                                <li>Updated EMF installer to handle deleted files.</li>
+                                                <li>Fixed an issue where pollutant descriptions are truncated in some queries.</li>
+                                                <li>Added a QA step template to detect missing xloc, yloc or lat-lons.</li>
+                                                <li>Added a refresh button to the remote file browser.</li>
+              </ul>
+                        <strong>Deployment 30September2010: </strong>
+              <ul>
+                                                <li>Transfered EMF to new server and new version of Postgres database.</li>
+                                                <li>Reworked the dataset removal/purge process so that it checks Cases, Strategies, Programs, FaST, and Sector scenarios.</li>
+						<li>Fixed a bug when creating a new dataset type. </li>
+						<li>Fixed a bug with the internal_sources table, which was not able to store the import file size for very large files. </li>
+						<li>Added new functionality for exporting a portion of a dataset using an SQL filter. </li>
+						<li>Added a version selection drop down when exporting a dataset. </li>
+						<li>Added version info and user notes to header of exported datasets. </li>
+						<li>Added a display of the dataset ID in the dataset properties viewer/editor. </li>
+						<li>Fixed a bug in editing an Input within the Case editor: when try to select a new dataset if the user clicked cancel, dataset area should not be cleared. </li>
+						<li>In the data editor window, fixed the total number of records after deleting or adding rows. </li>
+						<li>Developed beta version of new Control Strategy Type, Multi-Pollutant Max Emission Reduction.</li>
+						<li>Added reference cost year to Control Measure Summary file export and import process. </li>
+
+              </ul>
+                        <strong>Deployment 20July2010: </strong>
+              <ul>
+                                                <li>Added mobile sources to Estimate EC Impacts QA Program.</li>
+                                                <li>Improved usability of CoST Estimate EC Impacts QA program by usng the keywords (STRATEGY_INVENTORY_NAME and STRATEGY_INVENTORY_VERSION) defined in the Strategy Detailed Result Dataset to auto populate program setup.</li>
+                                                <li>Added Fixed and Variable O&M Costs to CoST Equation Types 3, 4, 5, and 6.</li>
+                                                <li>Fixed some typos in the CoST Equation Type 3 and 9 definition.</li>
+                                                <li>Implemented incremental costs like in AirControl.Net in CoST.</li>
+                                                <li>Implemented approach to display CoST run warning messages to the client via the EMF Status Window.</li>
+						<li>Prevented the sub dir column from being set in the Input when using an external dataset. </li>
+						<li>Added a reminder for the user to save changes before performing a find and replace when editing a dataset. </li>
+						<li>Fixed the Find and Replace function for datasets that reside in a consolidated table. </li>
+						<li>Refined the Case Manager columns to make them more concise and complete. </li>
+						<li>Added a pound sign to the automatic comment added to the header when copying a dataset. </li>
+						<li>Fixed how the KMZ generator adjusts the decimal places for all columns. </li>
+						<li>Updated the sensitivity wizard to prevent it from accidentally updating the sensitivity template Job's region. </li>
+              </ul>
+
+
+			<strong>Deployment 20May2010: </strong>
+              <ul>
+						<li>Added percent reduction to QA step Summaries for CoST Detailed Results.</li>
+						<li>Added 2 letter State abbreviation to QA step Summaries for CoST Detailed Results.</li>
+						<li>Added county name and lat/lon to FIPS report for CoST Detailed Results.</li>
+						<li>Limited number of decimal places and include commas for real numbers in the Dataset Data Viewer.</li>
+						<li>Fixed export directory to be consistent for QA Steps and CoST Strategy Results.</li>
+						<li>Fixed bug in the GUI when displaying CoST strategy result costs and reductions.</li>
+						<li>Fixed bug when entering a 'date reviewed' for a Control Measure, validate that it has the format mm/dd/yyyy.</li>
+						<li>Enhanced the CoST Detailed Strategy Result to include three new columns: strategy_name, control_technology, and source_group.</li>
+						<li>Provided a new keyword, INDICES, for creating an index on one or more columns for dataset types derived from the flexible file format.</li>
+						<li>Prevented Case import from adding a new empty sector.</li>
+						<li>Added delete to the Dataset Type Manager.</li>
+						<li>Added support for column labels in flexible file format typed datasets. If the keyword, EXPORT_COLUMN_LABEL equals false, the dataset will not expect column labels during import and will not export column labels. If the keyword isn't set or is set to true, import will expect column labels and export will add the column labels to the output file.</li>
+						<li>Improved error checking on import of flexible file format typed datasets.</li>
+						<li>Provided support for EMF specific keywords on import of flexible file format typed datasets. For example, EMF_SECTOR, EMF_COUNTRY, EMF_START_DATE, etc.</li>
+						<li>Changed the Job uniqueness criteria so that there could be Jobs with the same name within a Case. New uniqueness criteria is the combination of Job name, sector, and region. Modified helper script, emf_cleanup.csh, to support this change.</li>
+						<li>Added floating point precision control to the KMZ generator.</li>
+						<li>Added support for a difference plot in the KMZ generator.</li>
+						<li>Added new color palettes to the KMZ generator.</li>
+						<li>Added controls for the location of the legend in the KMZ generator.</li>
+						<li>Added equal distance binning algorithm to the KMZ generator.</li>
+						<li>Added controls for the number of bins in the KMZ generator.</li>
+					</ul>
+
+			<strong>Deployment 06Apr2010: </strong>
+              <ul>
+                  <li>Added functionality of defining new dataset types derived from a
+						    flexible file format.  An administrator can specify a dataset type
+						    that has custom cols for direct database import.  This is
+						    particularly useful for new inventory formats. </li>
+						<li>Modified dataset type editor to show dataset creator, creation
+						    date, last modified date, and flexible format if it is specified. </li>
+						<li>Added flexible file format database importer. </li>
+						<li>Added flexible file format database exporter. </li>
+						<li>Enforce consistent regions in a Case's summary, jobs, inputs, and
+						    parameter tabs. </li>
+						<li>Fixed bug cannot save new control program </li>
+						<li> Added custom format (no decimal places) for the "Total Cost",
+						    "Reduction (tons)", and "Average Cost Per Ton" columns in the
+						    Control Strategy Manager. </li>
+						<li>When "viewing" a Control Measure made sure pull-downs reverted to
+						    original values. </li>
+						<li>Added show last modified date column for a Control Program to the
+						    Control Program Manager. </li>
+						<li>Fixed bug where CoST was not filling in the number of records for
+						     datasets it creates. </li>
+						<li>Enhanced EC Control Scenario (now named Estimate EC Impacts) QA
+						     Program to work with nonpoint inventories. </li>
+						<li>Improved usabilitiy of Estimate EC Impacts QA program by creating
+						     a QA template to drive the QA program. </li>
+						<li>Enhanced CoST Projections Algorithm to include NAICS in Control
+						     Program Packets -- Allowable, Control, or Projection. </li>
+						<li>Fix Minimum Percent Reduction Difference for Replacement Control
+						     Constraint -- was including sources with no controls and add-on
+						     controls using this constraint. </li>
+
+					</ul>
+
+
+			<strong>Deployment 25Feb2010: </strong>
+              <ul>
+                  <li> Fixed the dataset last access date so that the date is consistent with the dataset history. </li>
+						<li> Improved the error message when importing CSV files with misformatted data. New error includes line number of problematic data. </li>
+   					<li> Fixed bug in the export of temporal xref file (A/M/PTREF).</li>
+						<li> Fixed a typo in the ptday format.  The corrected column is now called 'STATE'. </li>
+						<li> Updated the dataset viewer/editor to show the full name of the dataset creator </li>
+						<li> Added a "beta" control measure PDF generator.</li>
+						<li> Upgraded Control Strategy Manager to use comma separators when displaying numbers (i.e., 11500 is 11,500).</li>
+						<li> Added feature - To pass through control program info into controlled inventories created from a CoST Project Future Year Strategy run.</li>
+						<li> Added cost equation inventory fields and equation definition to the CoST Control Measure View and Edit Windows.</li>
+						<li> Changed control measure importer to default equipment life to null when its zero in the import file.</li>
+						<li> Added last log in date and whether or not user want to receive emails concerning EMF upgrades.</li>
+						<li> Added capability to store extensions and longer phone numbers in the user profile.</li>
+						<li> Added the ability to store date of last user password reset and added a requirement to reset the password after a certain period of time (90 days).</li>
+						<li> Added the ability to store the last export folder and the last import folder used in the dataset manager.</li>
+						<li> Made import/export windows for case/dataset manager, and folder selector wider. In addition, all text fields are adjusted when the window size is changed. </li>
+						<li> Added feature - during import/export of a Case, newline characters in various fields (e.g. parameter purpose) are preserved.</li>
+						<li> Added feature - during import/export of a Case, double quotes (e.g. in Job arguments and Parameter values)are preserved.</li>
+						<li> Added feature - during import/export of a Case, the Base Year from the summary tab is stored.</li>
+
+					</ul>
+
+
+
+			<strong>Deployment 19Jan2010: </strong>
+              <ul>
+                  <li> Fixed bug where CoST was not also adding # to metadata header when creating controlled ORL inventories.</li>
+						<li> Fixed bug where CoST was not updating the ORL header YEAR when projecting ORL inventories.</li>
+						<li> Added control measure efficiency record count to the Control Strategy Detailed Result datasst type  "Summarize all Control Measures" QA step template.</li>
+						<li> Defined more appropriate names for control measure properties.</li>
+						<li> Removed identified control measures that have no supporting efficiency records.</li>
+						<li> Update control measure database with properties from Pechan measure review.</li>
+						<li> Fixed bug with control measure importer on not dealing with ensuring uniquess of efficiency records.</li>
+						<li> Identified and fixed control measures that have duplicate efficiency records.</li>
+						<li> Fixed the dataset last access date so that the date is consistent with the dataset history.</li>
+						<li> Improved the error message when importing CSV files with misformatted data. New error includes line number of problematic data. </li>
+						<li> Fixed bug in the export of temporal xref file (A/M/PTREF).</li>
+						<li> Fixed a typo in the ptday format.  The corrected column is now called 'STATE'. </li>
+						<li>  Minor updates to show the full name of the dataset creator in the dataset viewer/editor.</li>
+					</ul>
+
+
+
+			<strong>Deployment 29Dec2009: </strong>
+              <ul>
+
+                  <li>Implemented add on control measure functionality for the Maximum Emission Reduction and Least Cost strategy types.</li>
+						<li>Fixed bug in control measure importer and exporter with sector and nei device codes.</li>
+                  <li>Added name contains filter to jobs/inputs/paras copy dialog on case viewer.</li>
+						<li>Restrict the creation of new projects on import of datasets	to administrative users.</li>
+						<li>Added version information about server, client, and database schemas.</li>
+						<li>When importing ORL files, added a query that replaces -9 with nulls in key fields.</li>
+						<li>Changed the dataset creator to show the user's full name on the Dataset Manager and Dataset Properties editor and viewer instead of the login ID.</li>
+						<li>When importing ORL files, added a query to trim spaces from key fields.</li>
+						<li>Removed the FILE EXISTS checkbox from the Export dialog</li>
+						<li>Added code to replace newline characters with a special character on export of a case (e.g. in parameter notes or purpose).  Use that special character to reformat to a newline on import pf the case.</li>
+						<li>When picking input datasets, added code to remember the last name contains filter if the dataset type is the same.</li>
+						<li>Improved uniqueness check to include georegions when importing case parameters and inputs. </li>
+					</ul>
+			<strong>Deployment 01Dec2009: </strong>
+					<ul>
+						<li>The dataset manager advanced search can now also filter on project.
+
+						<li>Fixed bug in import of cases with georegions.</li>
+
+						<li> Added a name contains filter on the case manager window.</li>
+
+						<li> Added a name contains filter when copying jobs, inputs and parameters.</li>
+
+						<li> Implemented functionality to import control measure reference file.</li>
+
+						<li> Implemented functionality to export control measure reference and property files.</li>
+
+						<li> Added more sophisticated "Add Reference: dialog", with ability to
+								search for and add an existing reference.</li>
+					</ul>
+			<strong>Deployment 10Nov2009: </strong>
+			<ul>
+					<li> The dataset manager advanced search more cleanly deals with searches that return a large number of matches.</li>
+
+					<li>  File browser has an extended timeout.</li>
+
+					<li>  Refined the version information (description, etc) on data tab</li>
+
+					<li>  Editing of version information is restricted to creator of the version or a user with administrative privileges.</li>
+
+					<li>  Fixed bug in export of a Case's Jobs.</li>
+
+					<li>  Keywords can have values greater than 256 characters</li>
+
+					<li>  Improved error message when importing an ORL dataset which is missing the header "#ORL" </li>
+
+			</ul>
+
+		</div>
+		<div id="footer">			<p><a title="back to top" href="#border">back to top</a> </p>		</div>
+
+	</div>
+</div>
+
+</body>
+</html>

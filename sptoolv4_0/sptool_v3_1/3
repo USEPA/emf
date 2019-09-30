@@ -1,0 +1,76 @@
+#!/bin/csh -f
+#PBS -j oe
+#PBS -r n
+
+limit stacksize unlimited
+
+## EMF Command line client -- source environment variables needed and setup EMF JAVACMDLINE to java executable and EMF_PYTHON to python cmd line
+setenv EMF_CLIENT false
+
+## Job run file for job: Import_run_specific
+
+## EMF specific variables
+setenv EMF_JOBID "57738"
+setenv EMF_JOBNAME "Import_run_specific"
+setenv EMF_USER "callen05"
+setenv EMF_SCRIPTDIR "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a"
+setenv EMF_SCRIPTNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/Import_run_specific_Create_CB6CMAQ_MOVES_integration_95335a_20171114135629.csh"
+setenv EMF_LOGNAME "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/logs/Import_run_specific_Create_CB6CMAQ_MOVES_integration_95335a_20171114135629.log"
+setenv EMF_JOBKEY "57738_1510685789291"
+
+## Inputs -- for all regions, all sectors and all jobs
+setenv INVTABLE "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/invtable_hapcap_cb05soa_MOVES_HAPs_11jun2013_v0.txt"
+setenv PROC_FILE "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/profile_process_combined_27aug2014_v1.csv"
+setenv MECHANISMPM "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/mech_pm_ae5_ae6_09nov2012_v0.csv"
+
+
+
+
+## Inputs -- all regions and  all sector and job (Import run-specific (All sectors, All regions))
+setenv CARBONS "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/sptool_v3_carbons_CB6E51_07oct2016_v2.csv"
+setenv MECHANISM "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/CB6CMAQ_from_Ramboll_27Sep2016_07oct2016_v0.csv"
+setenv MECHANISM_DESCRIPTION "/work/EMIS/tools/speciation_emf/runs_speciate4_5/Create_CB6CMAQ_MOVES_integration_95335a/in/sptool_mechanism_desc_cb05_07oct2016_v4.csv"
+
+
+
+
+## Parameters -- from Case summary 
+setenv CASE "Create_CB6CMAQ_MOVES_integration_95335a"
+setenv MODEL_LABEL "Speciation Tool4.0"
+setenv EMF_AQM "SMOKE"
+setenv EMF_SPC "CB6CMAQ"
+setenv PARENT_CASE "Create_CB6CMAQ_MOVES_integration"
+
+## Parameters -- from job tab
+
+## Parameters -- all regions, all sectors, all jobs 
+setenv PERL_DBI "Pg"
+setenv SPTOOL_VER "4.0"
+setenv POSTGRES_BIN "/usr/bin"
+setenv EMF_QUEUE_OPTIONS "-A  naaqs_di  -q workq -W group_list=romo -W umask=022"
+setenv PROJ_ROOT "/work/EMIS/tools/speciation_emf/runs_speciate4_5"
+setenv INSTALL "/work/EMIS/tools/speciation_emf/sptoolv4_0"
+setenv EMF_LOGGERPYTHONDIR "$PROJ_ROOT/$CASE/case_logs"
+setenv SPTOOL_DB "cb6cmaq"
+setenv SPTOOL_SRC_HOME "$INSTALL/src"
+setenv OUTPUT "VOC"
+setenv AQM "CMAQ"
+
+
+
+
+## Parameters -- all regions, all sectors, job (Import run-specific)
+
+
+
+
+## job executable
+$EMF_CLIENT -k $EMF_JOBKEY -x $INSTALL/sptool_load_run.v4.csh -m "Running top level script for job: Import_run_specific"
+$INSTALL/sptool_load_run.v4.csh 
+if ( $status != 0 ) then
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Failed' -m "ERROR running Job: $EMF_JOBNAME" -t 'e' 
+	 exit(1)
+else
+	 $EMF_CLIENT -k $EMF_JOBKEY -s 'Completed' -m "Completed job: $EMF_JOBNAME"
+endif
+

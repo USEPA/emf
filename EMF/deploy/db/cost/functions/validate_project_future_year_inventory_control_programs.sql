@@ -33,6 +33,7 @@ DECLARE
 	cp_pointid_expression character varying(64) := 'pointid';
 	cp_stackid_expression character varying(64) := 'stackid';
 	cp_segment_expression character varying(64) := 'segment';
+	cp_plantname_expression character varying(64) := 'plant';
 	cp_mact_expression character varying(64) := 'mact';
 
 	is_monthly_source_sql character varying := 'coalesce(jan_value,feb_value,mar_value,apr_value,may_value,jun_value,jul_value,aug_value,sep_value,oct_value,nov_value,dec_value) is not null';
@@ -111,8 +112,21 @@ BEGIN
 	LOOP
 		-- look at the closure control program inputs and table format (make sure all the right columns are in the table)
 		IF control_program.type = 'Plant Closure' THEN
+		
+			-- see if closure data is in the extended format
+			is_control_packet_extended_format := public.check_table_for_columns(control_program.table_name, 'region_cd', ',');
 
-			IF not public.check_table_for_columns(control_program.table_name, 'effective_date,fips,plantid,pointid,stackid,segment,plant', ',') THEN
+			-- if closure data is in the extended format, change the column names to the newer format
+			IF is_control_packet_extended_format THEN
+				cp_fips_expression := 'region_cd';
+				cp_plantid_expression := 'facility_id';
+				cp_pointid_expression := 'unit_id';
+				cp_stackid_expression := 'rel_point_id';
+				cp_segment_expression := 'process_id';
+				cp_plantname_expression := 'facility_name';
+			END IF;
+
+			IF not public.check_table_for_columns(control_program.table_name, 'effective_date,' || cp_fips_expression || ',' || cp_plantid_expression || ',' || cp_pointid_expression || ',' || cp_stackid_expression || ',' || cp_segment_expression || ',' || cp_plantname_expression, ',') THEN
 			--	RAISE EXCEPTION 'Control program, %, plant closure dataset table has incorrect table structure, expecting the following columns -- fips, plantid, pointid, stackid, segment, plant, and effective_date.', control_program.control_program_name;
 
 				execute
@@ -145,7 +159,7 @@ BEGIN
 					''Error''::character varying(11) as status,
 					''' || control_program.control_program_name || '''::character varying(255) as control_program,
 					''Packet Level''::character varying(255) as message_type,
-					''Control program, ' || control_program.control_program_name || ', plant closure dataset table has incorrect table structure, expecting the following columns -- fips, plantid, pointid, stackid, segment, plant, and effective_date.'' as "message",
+					''Control program, ' || control_program.control_program_name || ', closure dataset table has incorrect table structure, expecting the following columns - ' || cp_fips_expression || ', ' || cp_plantid_expression || ', ' || cp_pointid_expression || ', ' || cp_stackid_expression || ', ' || cp_segment_expression || ', ' || cp_plantname_expression || ', and effective_date.'' as "message",
 					null::character varying(255) as inventory';
 				has_error := true;
 			END IF;
@@ -160,12 +174,12 @@ BEGIN
 				 'insert into emissions.' || strategy_messages_table_name || ' 
 					(
 					dataset_id, 
-					packet_fips, 
+					packet_region_cd, 
 --					packet_scc, 
-					packet_plantid, 
-					packet_pointid, 
-					packet_stackid, 
-					packet_segment, 
+					packet_facility_id, 
+					packet_unit_id, 
+					packet_rel_point_id, 
+					packet_process_id, 
 --					packet_poll, 
 					status,
 					control_program,
@@ -175,17 +189,17 @@ BEGIN
 					)
 				select 
 					' || strategy_messages_dataset_id || '::integer,
-					fips, 
+					' || cp_fips_expression || ', 
 --					scc, 
-					plantid, 
-					pointid, 
-					stackid, 
-					segment, 
+					' || cp_plantid_expression || ', 
+					' || cp_pointid_expression || ', 
+					' || cp_stackid_expression || ', 
+					' || cp_segment_expression || ', 
 --					poll, 
 					''Error''::character varying(11) as status,
 					''' || control_program.control_program_name || '''::character varying(255) as control_program,
 					''Packet Level''::character varying(255) as message_type,
-					''Control program, ' || control_program.control_program_name || ', plant closure dataset has ' || count || ' effective date(s) that are not in the correct date format.'' as "message",
+					''Control program, ' || control_program.control_program_name || ', closure dataset has ' || count || ' effective date(s) that are not in the correct date format.'' as "message",
 					null::character varying(255) as inventory
 				from emissions.' || control_program.table_name || ' 
 				where not public.isdate(effective_date) 
@@ -194,7 +208,7 @@ BEGIN
 			END IF;
 
 			-- make sure there aren't missing fips codes
-			execute 'select count(1) from emissions.' || control_program.table_name || ' cp where coalesce(trim(fips), '''') = ''''' || '  and ' || public.build_version_where_filter(control_program.dataset_id, control_program.dataset_version) || ' limit 1'
+			execute 'select count(1) from emissions.' || control_program.table_name || ' cp where coalesce(trim(' || cp_fips_expression || '), '''') = ''''' || '  and ' || public.build_version_where_filter(control_program.dataset_id, control_program.dataset_version) || ' limit 1'
 			into count;
 			IF count > 0 THEN
 --				RAISE EXCEPTION 'Control program, %, plant closure dataset has % missing fip(s) codes.', control_program.control_program_name, count;
@@ -203,12 +217,12 @@ BEGIN
 				 'insert into emissions.' || strategy_messages_table_name || ' 
 					(
 					dataset_id, 
-					packet_fips, 
+					packet_region_cd, 
 --					packet_scc, 
-					packet_plantid, 
-					packet_pointid, 
-					packet_stackid, 
-					packet_segment, 
+					packet_facility_id, 
+					packet_unit_id, 
+					packet_rel_point_id, 
+					packet_process_id, 
 --					packet_poll, 
 					status,
 					control_program,
@@ -218,17 +232,17 @@ BEGIN
 					)
 				select 
 					' || strategy_messages_dataset_id || '::integer,
-					fips, 
+					' || cp_fips_expression || ', 
 --					scc, 
-					plantid, 
-					pointid, 
-					stackid, 
-					segment, 
+					' || cp_plantid_expression || ', 
+					' || cp_pointid_expression || ', 
+					' || cp_stackid_expression || ', 
+					' || cp_segment_expression || ', 
 --					poll, 
 					''Error''::character varying(11) as status,
 					''' || control_program.control_program_name || '''::character varying(255) as control_program,
 					''Packet Level''::character varying(255) as message_type,
-					''Control program, ' || control_program.control_program_name || ', plant closure dataset has ' || count || ' missing fip(s) codes.'' as "message",
+					''Control program, ' || control_program.control_program_name || ', closure dataset has ' || count || ' missing region/FIPS codes.'' as "message",
 					null::character varying(255) as inventory
 				from emissions.' || control_program.table_name || ' cp
 				where coalesce(trim(' || cp_fips_expression || '), '''') = ''''' || ' 
@@ -237,7 +251,7 @@ BEGIN
 			END IF;
 
 			-- make sure there aren't missing plant ids
-			execute 'select count(1) from emissions.' || control_program.table_name || ' where coalesce(trim(plantid), '''') = ''''' || '  and ' || public.build_version_where_filter(control_program.dataset_id, control_program.dataset_version) || ' limit 1'
+			execute 'select count(1) from emissions.' || control_program.table_name || ' where coalesce(trim(' || cp_plantid_expression || '), '''') = ''''' || '  and ' || public.build_version_where_filter(control_program.dataset_id, control_program.dataset_version) || ' limit 1'
 			into count;
 			IF count > 0 THEN
 --				RAISE EXCEPTION 'Control program, %, plant closure dataset has % missing plant Id(s).', control_program.control_program_name, count;
@@ -246,12 +260,12 @@ BEGIN
 				 'insert into emissions.' || strategy_messages_table_name || ' 
 					(
 					dataset_id, 
-					packet_fips, 
+					packet_region_cd, 
 --					packet_scc, 
-					packet_plantid, 
-					packet_pointid, 
-					packet_stackid, 
-					packet_segment, 
+					packet_facility_id, 
+					packet_unit_id, 
+					packet_rel_point_id, 
+					packet_process_id, 
 --					packet_poll, 
 					status,
 					control_program,
@@ -261,20 +275,20 @@ BEGIN
 					)
 				select 
 					' || strategy_messages_dataset_id || '::integer,
-					fips,
+					' || cp_fips_expression || ',
 --					scc, 
-					plantid, 
-					pointid, 
-					stackid, 
-					segment, 
+					' || cp_plantid_expression || ', 
+					' || cp_pointid_expression || ', 
+					' || cp_stackid_expression || ', 
+					' || cp_segment_expression || ', 
 --					poll, 
 					''Error''::character varying(11) as status,
 					''' || control_program.control_program_name || '''::character varying(255) as control_program,
 					''Packet Level''::character varying(255) as message_type,
-					''Control program, ' || control_program.control_program_name || ', plant closure dataset has ' || count || ' missing plant Id(s).'' as "message",
+					''Control program, ' || control_program.control_program_name || ', closure dataset has ' || count || ' missing facility IDs.'' as "message",
 					null::character varying(255) as inventory
 				from emissions.' || control_program.table_name || ' 
-				where coalesce(trim(plantid), '''') = ''''' || ' 
+				where coalesce(trim(' || cp_plantid_expression || '), '''') = ''''' || ' 
 					and ' || public.build_version_where_filter(control_program.dataset_id, control_program.dataset_version);
 				has_error := true;
 			END IF;
@@ -381,12 +395,12 @@ BEGIN
 						 'insert into emissions.' || strategy_messages_table_name || ' 
 							(
 							dataset_id, 
-							packet_fips, 
+							packet_region_cd, 
 							packet_scc, 
-							packet_plantid, 
-							packet_pointid, 
-							packet_stackid, 
-							packet_segment, 
+							packet_facility_id, 
+							packet_unit_id, 
+							packet_rel_point_id, 
+							packet_process_id, 
 							packet_poll, 
 							status,
 							control_program,
@@ -531,12 +545,12 @@ BEGIN
 				 'insert into emissions.' || strategy_messages_table_name || ' 
 					(
 					dataset_id, 
-					packet_fips, 
+					packet_region_cd, 
 					packet_scc, 
-					packet_plantid, 
-					packet_pointid, 
-					packet_stackid, 
-					packet_segment, 
+					packet_facility_id, 
+					packet_unit_id, 
+					packet_rel_point_id, 
+					packet_process_id, 
 					packet_poll, 
 					status,
 					control_program,

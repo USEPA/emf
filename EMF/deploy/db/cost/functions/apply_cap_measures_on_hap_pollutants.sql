@@ -207,11 +207,11 @@ raise notice '%', is_flat_file_inventory;
 		cm_abbrev,
 		poll,
 		scc,
-		fips,
-		plantid, 
-		pointid, 
-		stackid, 
-		segment,
+		region_cd,
+		facility_id, 
+		unit_id, 
+		rel_point_id, 
+		process_id,
 		control_eff,
 		rule_pen,
 		rule_eff,
@@ -220,7 +220,8 @@ raise notice '%', is_flat_file_inventory;
 		inv_rule_pen,
 		inv_rule_eff,
 		final_emissions,
-		emis_reduction,
+		ctl_emis_reduction,
+		eff_emis_reduction,
 		inv_emissions,
 		input_emis,
 		output_emis,
@@ -237,7 +238,7 @@ raise notice '%', is_flat_file_inventory;
 		sector,
 		xloc,
 		yloc,
-		plant,
+		facility,
 		REPLACEMENT_ADDON,
 		EXISTING_MEASURE_ABBREVIATION,
 		EXISTING_PRIMARY_DEVICE_TYPE_CODE,
@@ -252,11 +253,11 @@ raise notice '%', is_flat_file_inventory;
 		dr.cm_abbrev as abbreviation,
 		inv.poll,
 		dr.scc,
-		dr.fips,
-		dr.plantid,
-		dr.pointid,
-		dr.stackid,
-		dr.segment,
+		dr.region_cd,
+		dr.facility_id,
+		dr.unit_id,
+		dr.rel_point_id,
+		dr.process_id,
 		dr.control_eff,
 		dr.rule_pen,
 		dr.rule_eff,
@@ -265,6 +266,7 @@ raise notice '%', is_flat_file_inventory;
 		' || case when not is_point_table and not is_flat_file_inventory then 'inv.rpen' else '100.0' end || ' as inv_rule_pen,
 		' || case when not is_flat_file_inventory then 'inv.reff' else '100.0' end || ' as inv_rule_eff,
 		case when coalesce(dr.replacement_addon, '''') = ''A'' then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - dr.percent_reduction / 100) as final_emissions,
+		case when coalesce(dr.replacement_addon, '''') = ''A'' then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end  - case when coalesce(dr.replacement_addon, '''') = ''A'' then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - dr.percent_reduction / 100) as ctl_emis_reduction,
 		' || emis_sql || ' - case when coalesce(dr.replacement_addon, '''') = ''A'' then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end * (1 - dr.percent_reduction / 100) as emis_reduction,
 		' || emis_sql || ' as inv_emissions,
 		case when coalesce(dr.replacement_addon, '''') = ''A'' then ' || emis_sql || ' else ' || uncontrolled_emis_sql || ' end as input_emis,
@@ -294,18 +296,18 @@ raise notice '%', is_flat_file_inventory;
 	FROM emissions.' || detailed_result_table_name || ' dr
 
 		inner join emissions.' || inv_table_name || ' inv
-		on inv.' || fips_expression || ' = dr.fips
+		on inv.' || fips_expression || ' = dr.region_cd
 		and inv.scc = dr.scc
 		' || case when is_point_table then 
-		'and inv.' || plantid_expression || ' = dr.plantid
-		and inv.' || pointid_expression || ' = dr.pointid
-		and inv.' || stackid_expression || ' = dr.stackid
-		and inv.' || segment_expression || ' = dr.segment' 
+		'and inv.' || plantid_expression || ' = dr.facility_id
+		and inv.' || pointid_expression || ' = dr.unit_id
+		and inv.' || stackid_expression || ' = dr.rel_point_id
+		and inv.' || segment_expression || ' = dr.process_id' 
 		else 
-		'and dr.plantid is null
-		and dr.pointid is null
-		and dr.stackid is null
-		and dr.segment is null' 
+		'and dr.facility_id is null
+		and dr.unit_id is null
+		and dr.rel_point_id is null
+		and dr.process_id is null' 
 		end || '
 
 --			on inv.dataset_id = coalesce(dr.original_dataset_id, dr.input_dataset_id)

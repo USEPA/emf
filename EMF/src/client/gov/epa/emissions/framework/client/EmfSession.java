@@ -1,6 +1,8 @@
 package gov.epa.emissions.framework.client;
 
 import java.security.PublicKey;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.google.common.cache.Cache;
 
@@ -27,6 +29,9 @@ import gov.epa.emissions.framework.services.editor.DataEditorService;
 import gov.epa.emissions.framework.services.editor.DataViewService;
 import gov.epa.emissions.framework.services.exim.ExImService;
 import gov.epa.emissions.framework.services.fast.FastService;
+import gov.epa.emissions.framework.services.module.LiteModule;
+import gov.epa.emissions.framework.services.module.ModuleService;
+import gov.epa.emissions.framework.services.module.ParameterType;
 import gov.epa.emissions.framework.services.qa.QAService;
 
 public interface EmfSession {
@@ -67,6 +72,8 @@ public interface EmfSession {
 
     QAService qaService();
 
+    ModuleService moduleService();
+
     CaseService caseService();
 
     ControlMeasureService controlMeasureService();
@@ -88,9 +95,11 @@ public interface EmfSession {
     //cache for things that are used all the time
     DatasetType[] getLightDatasetTypes();
     Project[] getProjects();
-    
+    TreeMap<String, ParameterType> getParameterTypes();
+    ConcurrentSkipListMap<Integer, LiteModule> getLiteModules();
+    ConcurrentSkipListMap<Integer, LiteModule> getFreshLiteModules();
+
     DatasetType getLightDatasetType(String name);
 
     Cache<ObjectCacheType, Object> getObjectCache();
-
 }

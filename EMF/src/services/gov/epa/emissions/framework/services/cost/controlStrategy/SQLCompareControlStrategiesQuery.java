@@ -63,7 +63,7 @@ public class SQLCompareControlStrategiesQuery {
         sql.append("from ( ");
         sql.append(buildGetControlStrategyColumnValueSQL(controlStrategyId, "Name", "name"));
         sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Run Status", "run_status"));
-        sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Discount Rate", "discount_rate"));
+        sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Interest Rate", "discount_rate"));
         sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Cost Year", "cost_year"));
         sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Analysis Year", "analysis_year"));
         sql.append(" union all " + buildGetControlStrategyColumnValueSQL(controlStrategyId, "Last Modified Date", "last_modified_date"));

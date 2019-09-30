@@ -1,0 +1,92 @@
+﻿
+ALTER TABLE modules.module_types ADD COLUMN "is_composite" BOOLEAN NOT NULL DEFAULT FALSE;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_submodules
+
+-- DROP TABLE modules.module_types_versions_submodules;
+
+CREATE TABLE modules.module_types_versions_submodules
+(
+  id serial NOT NULL PRIMARY KEY,
+  composite_module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  name character varying(63) NOT NULL, -- (NAMEDATALEN-1) for consistency -- could be larger if necessary
+  module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  description text,
+  CONSTRAINT module_types_versions_submodules_ukey UNIQUE (composite_module_type_version_id, name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_submodules
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_connections_datasets
+
+-- DROP TABLE modules.module_types_versions_connections_datasets;
+
+CREATE TABLE modules.module_types_versions_connections_datasets
+(
+  id serial NOT NULL PRIMARY KEY,
+  composite_module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  connection_name varchar NOT NULL, -- unique target name
+  source_submodule_id integer -- NULL indicates the composite module type itself
+      REFERENCES modules.module_types_versions_submodules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  source_placeholder_name character varying(63), -- NULL if disconnected
+  target_submodule_id integer -- NULL indicates the composite module type itself
+      REFERENCES modules.module_types_versions_submodules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  target_placeholder_name character varying(63) NOT NULL,
+  description text,
+  CONSTRAINT module_types_versions_connections_datasets_ukey1 UNIQUE (composite_module_type_version_id, connection_name),
+  CONSTRAINT module_types_versions_connections_datasets_ukey2 UNIQUE (composite_module_type_version_id, target_submodule_id, target_placeholder_name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_connections_datasets
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+
+-- Table: modules.module_types_versions_connections_parameters
+
+-- DROP TABLE modules.module_types_versions_connections_parameters;
+
+CREATE TABLE modules.module_types_versions_connections_parameters
+(
+  id serial NOT NULL PRIMARY KEY,
+  composite_module_type_version_id integer NOT NULL
+      REFERENCES modules.module_types_versions(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  connection_name varchar NOT NULL, -- unique target name
+  source_submodule_id integer -- NULL indicates the composite module type itself
+      REFERENCES modules.module_types_versions_submodules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  source_parameter_name character varying(63), -- NULL if disconnected
+  target_submodule_id integer -- NULL indicates the composite module type itself
+      REFERENCES modules.module_types_versions_submodules(id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  target_parameter_name character varying(63) NOT NULL,
+  description text,
+  CONSTRAINT module_types_versions_connections_parameters_ukey1 UNIQUE (composite_module_type_version_id, connection_name),
+  CONSTRAINT module_types_versions_connections_parameters_ukey2 UNIQUE (composite_module_type_version_id, target_submodule_id, target_parameter_name)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.module_types_versions_connections_parameters
+  OWNER TO emf;
+
+-------------------------------------------------------------------------------
+

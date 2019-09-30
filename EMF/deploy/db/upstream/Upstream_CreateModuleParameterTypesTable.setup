@@ -1,0 +1,17 @@
+﻿-- Table: modules.parameter_types
+
+-- DROP TABLE modules.parameter_types;
+
+CREATE TABLE modules.parameter_types
+(
+  id serial NOT NULL PRIMARY KEY,
+  sql_type varchar(256) NOT NULL UNIQUE,
+  is_text_type boolean NOT NULL -- TRUE for text and varchar
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE modules.parameter_types
+  OWNER TO emf;
+
+----------------------------------------------

@@ -39,10 +39,14 @@ public class ImporterFactory {
      }
 
     public Importer createVersioned(EmfDataset dataset, File folder, String[] fileNames) throws Exception {
+        return createVersioned(dataset, folder, fileNames, 0);
+    }
+
+    public Importer createVersioned(EmfDataset dataset, File folder, String[] fileNames, int targetVersion) throws Exception {
         this.sqlDataTypes = newDBInstance.getSqlDataTypes();
         
         Importer importer = create(dataset, folder, fileNames);
-        return new VersionedImporter(importer, dataset, newDBInstance, lastModifiedDate(folder, fileNames));
+        return new VersionedImporter(importer, dataset, newDBInstance, lastModifiedDate(folder, fileNames), targetVersion);
     }
 
     private Date lastModifiedDate(File folder, String[] fileNames) {

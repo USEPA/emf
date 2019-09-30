@@ -1,0 +1,61 @@
+Initialize Case:
+
+Envt. Var.	Region	Sector
+PROFILES_GAS	speciate_4_5_09252016_gas_profiles	3
+SPECIES_MAP	sptool gas specie map	2
+SPECIES_PROPERTIES	speciate_4_5_species_06jun2016	3
+WEIGHTS_GAS	speciate_4_5_09252016_profile_weights	2
+
+Run Case:
+
+Envt. Var.	Region	Sector
+CARBONS	sptool_v3_carbons_CB6E51	2
+EMF_JOBHEADER	emf_jobheader_false	1
+INVTABLE	invtable_hapcap_cb05soa_MOVES_HAPs	0
+MECHANISM	CB6CMAQ_from_Ramboll_27Sep2016	0
+MECHANISM_DESCRIPTION	sptool_mechanism_desc_cb05	4
+MECHANISMPM	mech_pm_ae5_ae6	0
+TOX_FILE	tbl_tox_moves_haps	1
+
+Combined List:
+
+CARBONS	sptool_v3_carbons_CB6E51	2
+INVTABLE	invtable_hapcap_cb05soa_MOVES_HAPs	0
+MECHANISM	CB6CMAQ_from_Ramboll_27Sep2016	0
+MECHANISMPM	mech_pm_ae5_ae6	0
+MECHANISM_DESCRIPTION	sptool_mechanism_desc_cb05	4
+PROFILES_GAS	speciate_4_5_09252016_gas_profiles	3
+SPECIES_MAP	sptool gas specie map	2
+SPECIES_PROPERTIES	speciate_4_5_species_06jun2016	3
+WEIGHTS_GAS	speciate_4_5_09252016_profile_weights	2
+
+
+Expected List:
+
+#      CAMX_FCRS		- list of profiles where FPRM is renamed FCRS (CAMx support)
+#      CARBONS			- carbon assignments
+#      INVTABLE			- invtable
+#      IVOC_SPECIES		- IVOC species molecular weights
+#      MECHANISM		- gas mechanism definitions
+#      MECHANISMPM		- PM mechanism definitions
+#      MECHANISM_DESCRIPTION	- description of chemical mechanisms	
+#      PROFILES_GAS		- gas profile properties
+#      PROFILES_PM		- pm profile properties
+#      PROFILES_STATIC		- static profiles
+#      SPECIES_PROPERTIES	- species properties
+#      SPECIES_RENAME		- rename species for AQM requirements
+#      VBS_IVOC_FACTORS 	- IVOC non-methane fraction by profile id
+#      VBS_SVOC_FACTORS 	- SVOC saturation concentrations by profile id
+#      WEIGHTS_GAS		- gas profile weights
+#      WEIGHTS_PM		- pm profile weights
+
+Missing:
+
+#      CAMX_FCRS		- list of profiles where FPRM is renamed FCRS (CAMx support)
+#      IVOC_SPECIES		- IVOC species molecular weights
+#      PROFILES_PM		- pm profile properties
+#      PROFILES_STATIC		- static profiles
+#      SPECIES_RENAME		- rename species for AQM requirements
+#      VBS_IVOC_FACTORS 	- IVOC non-methane fraction by profile id
+#      VBS_SVOC_FACTORS 	- SVOC saturation concentrations by profile id
+#      WEIGHTS_PM		- pm profile weights

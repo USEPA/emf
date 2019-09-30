@@ -1,5 +1,7 @@
 package gov.epa.emissions.framework.client.cost.controlmeasure;
 
+import java.text.DecimalFormat;
+
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
@@ -29,7 +31,11 @@ public class EditEfficiencyRecordWindow extends EfficiencyRecordWindow implement
     public void populateFields() {
         pollutant.setSelectedItem(record.getPollutant());
         equationType.setSelectedItem(record.getEquationType());
-        efficiency.setText((record.getEfficiency() != null ? record.getEfficiency() : "") + "");
+        String efficiencyText = "";
+        if (record.getEfficiency() != null) {
+            efficiencyText = new DecimalFormat("###.####").format(record.getEfficiency());
+        }
+        efficiency.setText(efficiencyText);
         minEmis.setText((record.getMinEmis() != null ? record.getMinEmis() : "") + "");
         maxEmis.setText((record.getMaxEmis() != null ? record.getMaxEmis() : "") + "");
         costYear.setText((record.getCostYear() != null ? record.getCostYear() : "") + "");

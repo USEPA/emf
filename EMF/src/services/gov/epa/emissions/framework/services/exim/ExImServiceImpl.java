@@ -273,4 +273,8 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
             throw new EmfException("Error exporting dataset. " + e.getMessage());
         }
     }
+
+    public String getDatasetExportName(EmfDataset dataset, Version version, String prefix) {
+        return exportService.getCleanPrefix(prefix) + exportService.getCleanDatasetName(dataset, version);
+    }
 }

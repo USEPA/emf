@@ -66,6 +66,8 @@ public class DatasetType implements Serializable, Lockable, Comparable<DatasetTy
     public static final String controlPacket = "Control Packet";
     
     public static final String strategyDetailedResult = "Control Strategy Detailed Result";
+    
+    public static final String strategyDetailedResultExtended = "Control Strategy Detailed Result Extended";
 
     public static final String strategyCountySummary = "Strategy County Summary";
     

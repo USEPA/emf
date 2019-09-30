@@ -16,6 +16,7 @@ import gov.epa.emissions.framework.services.basic.*;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.cost.controlStrategy.FileFormatFactory;
 import gov.epa.emissions.framework.services.editor.Revision;
+import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -274,7 +275,12 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 ) 
                             throw new EmfException("DatasetType keyword, " + Dataset.inline_comment_char + ", contains an invalid inline comment delimiter, comma (,) or semi-colon (;).");
             }
-            
+
+            //update FileFormat
+            if (xFileFormat != null) {
+                dao.update(xFileFormat, session);
+            }
+
             DatasetType locked = dao.updateDatasetType(type, session);
 
             return locked;
@@ -307,7 +313,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             throw new EmfException("Could not release lock on DatasetType: " + type.getName());
         }
     }
-    
+
     public void deleteDatasetTypes(User owner, DatasetType[] types) throws EmfException {
         Session session = this.sessionFactory.getSession();
         DbServer dbServer = dbServerFactory.getDbServer();
@@ -317,7 +323,8 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 for (int i =0; i<types.length; i++) {
                     checkIfUsedByCases(types[i], session); 
                     checkIfUsedByDeletedDS(types[i], session);
-                    checkIfUsedByDatasets(types[i], session); 
+                    checkIfUsedByDatasets(types[i], session);
+                    checkIfUsedByModuleTypes(types[i], session);
                     dao.removeUserExcludedDatasetType(types[i], dbServer);
                     dao.removeTableConsolidation(types[i], dbServer);
                     dao.removeDatasetTypes(types[i], session);
@@ -377,12 +384,40 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         List list = null;
 
         // check if dataset is an input dataset for some cases (via the cases.cases_caseinputs table)
-        list = session.createQuery(
-                "select DS.id from EmfDataset as DS " + "where (DS.datasetType.id = "
-                        + type.getId()+ ")").list();
+        list = session.createQuery("select DS.name from EmfDataset as DS where (DS.datasetType.id = " + type.getId() + ")").list();
 
         if (list != null && list.size() > 0) {
-            throw new EmfException("Dataset type \" " + type.getName()+ "\" is used by dataset " + list.get(0) );
+            StringBuilder message = new StringBuilder();
+            message.append("Dataset type \"" + type.getName()+ "\" is used by:\n");
+            int count = (list.size() <= 6) ? list.size() : 5;
+            for(int i = 0; i < count; i++) {
+                message.append("- dataset \"" + list.get(i) + "\"\n");
+            }
+            if (list.size() > count) message.append(String.format("(and %d more)\n", list.size() - count));
+            throw new EmfException(message.toString());
+        }
+    }
+
+    private void checkIfUsedByModuleTypes(DatasetType type, Session session) throws EmfException {
+        List list = null;
+
+        // check if dataset type is is used by any module type
+        list = session.createQuery("FROM ModuleTypeVersionDataset AS mtvd WHERE (mtvd.datasetType.id = " + type.getId() + ")").list();
+
+        if (list != null && list.size() > 0) {
+            StringBuilder message = new StringBuilder();
+            message.append("Dataset type \"" + type.getName() + "\" is used by:\n");
+            int count = (list.size() <= 6) ? list.size() : 5;
+            for(int i = 0; i < count; i++) {
+                ModuleTypeVersionDataset mtvt = (ModuleTypeVersionDataset) list.get(i);
+                message.append(String.format("- module type \"%s\" version %d \"%s\" placeholder \"%s\"\n",
+                                             mtvt.getModuleTypeVersion().getModuleType().getName(),
+                                             mtvt.getModuleTypeVersion().getVersion(),
+                                             mtvt.getModuleTypeVersion().getName(),
+                                             mtvt.getPlaceholderName()));
+            }
+            if (list.size() > count) message.append(String.format("(and %d more)\n", list.size() - count));
+            throw new EmfException(message.toString());
         }
     }
 
@@ -585,6 +620,10 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             XFileFormat xFileFormat = type.getFileFormat();
             Column[] cols = new Column[] { };
             if (xFileFormat != null) {
+                if (xFileFormat.getId() == 0) {
+                    xFileFormat = addFileFormat(xFileFormat);
+                    type.setFileFormat(xFileFormat);
+                }
                 cols = xFileFormat.cols();
             } else {
                 TableFormat tableFormat = new FileFormatFactory(dbServer).tableFormat(type, true);
@@ -593,13 +632,19 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             if (cols != null) 
                 dao.validateDatasetTypeIndicesKeyword(type, cols);
             
+            // create keywords if needed
+            if (type.getKeyVals().length > 0) {
+                KeywordsDAO keywordsDAO = new KeywordsDAO();
+                for (KeyVal keyVal : type.getKeyVals()) {
+                    Keyword added = keywordsDAO.add(keyVal.getKeyword(), session);
+                    keyVal.setKeyword(added);
+                }
+            }
+            
             dao.add(type, session);
-        } catch (RuntimeException e) {
-            LOG.error("Could not add new DatasetType", e);
-            throw new EmfException("DatasetType name already in use");
         } catch (Exception e) {
-            LOG.error(e.getMessage());
-            throw new EmfException(e.getMessage());
+            LOG.error("Could not add DatasetType", e);
+            throw new EmfException("Could not add DatasetType: " + e.getMessage());
         } finally {
             session.close();
             try {
@@ -610,7 +655,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             }
         }
     }
-    
+
     public synchronized XFileFormat addFileFormat(XFileFormat format) throws EmfException {
         Session session = sessionFactory.getSession();
         
@@ -626,7 +671,23 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 session.close();
         }
     }
-    
+
+    public synchronized XFileFormat updateFileFormat(XFileFormat format) throws EmfException {
+        Session session = sessionFactory.getSession();
+
+        try {
+            dao.update(format, session);
+            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), session);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("Could not add new XFileFormat " + format.getName(), e);
+            throw new EmfException("Could not add new XFileFormat " + format.getName() + ". " + e.getLocalizedMessage());
+        } finally {
+            if (session != null && session.isConnected())
+                session.close();
+        }
+    }
+
     // under construction
     public synchronized XFileFormat deleteFileFormat(XFileFormat format) throws EmfException {
         Session session = sessionFactory.getSession();

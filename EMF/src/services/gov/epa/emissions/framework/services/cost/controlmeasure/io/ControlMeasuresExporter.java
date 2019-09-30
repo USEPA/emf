@@ -98,18 +98,18 @@ public class ControlMeasuresExporter implements Exporter {
             + "     et.name as CMEqnType, "
             + "     p.name as Pollutant, "
             + "     eq.cost_year as CostYear, "
-            + "     eq.value1 as Var1, "
-            + "     eq.value2 as Var2, "
-            + "     eq.value3 as Var3, "
-            + "     eq.value4 as Var4, "
-            + "     eq.value5 as Var5, "
-            + "     eq.value6 as Var6, "
-            + "     eq.value7 as Var7, "
-            + "     eq.value8 as Var8, "
-            + "     eq.value9 as Var9, "
-            + "     eq.value10 as Var10, "
-            + "     eq.value11 as Var11, "
-            + "     eq.value12 as Var12 "
+            + "     TO_CHAR(eq.value1, 'FM9999999990.0999') as Var1, "
+            + "     TO_CHAR(eq.value2, 'FM9999999990.0999') as Var2, "
+            + "     TO_CHAR(eq.value3, 'FM9999999990.0999') as Var3, "
+            + "     TO_CHAR(eq.value4, 'FM9999999990.0999') as Var4, "
+            + "     TO_CHAR(eq.value5, 'FM9999999990.0999') as Var5, "
+            + "     TO_CHAR(eq.value6, 'FM9999999990.0999') as Var6, "
+            + "     TO_CHAR(eq.value7, 'FM9999999990.0999') as Var7, "
+            + "     TO_CHAR(eq.value8, 'FM9999999990.0999') as Var8, "
+            + "     TO_CHAR(eq.value9, 'FM9999999990.0999') as Var9, "
+            + "     TO_CHAR(eq.value10, 'FM9999999990.0999') as Var10, "
+            + "     TO_CHAR(eq.value11, 'FM9999999990.0999') as Var11, "
+            + "     TO_CHAR(eq.value12, 'FM9999999990.0999') as Var12 "
             + " from emf.control_measures m "
             + "     inner join emf.control_measure_equations eq "
             + "     on eq.control_measure_id = m.id "
@@ -120,7 +120,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), false);
         
 //        PrintWriter equationWriter = openExportFile("_equations.csv");
 //        CMEquationFileFormat fileFormat = new CMEquationFileFormat();
@@ -235,7 +235,7 @@ public class ControlMeasuresExporter implements Exporter {
             + "     on cmc.id = m.cm_class_id "
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation";
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), true);
         
 /*        PrintWriter summaryWriter = openExportFile("_summary.csv");
         CMSummaryFileFormat fileFormat = new CMSummaryFileFormat();
@@ -313,20 +313,20 @@ public class ControlMeasuresExporter implements Exporter {
             + "     er.existing_dev_code as NEIExistingDevCode, "
             + "     er.min_emis as MinEmissions, "
             + "     er.max_emis as MaxEmissions, "
-            + "     er.efficiency as ControlEfficiency, "
+            + "     TO_CHAR(er.efficiency, 'FM990.0999') as ControlEfficiency, "
             + "     er.cost_year as CostYear, "
             + "     er.cost_per_ton as CostPerTon, "
-            + "     er.rule_effectiveness as RuleEff, "
-            + "     er.rule_penetration as RulePen, "
+            + "     TO_CHAR(er.rule_effectiveness, 'FM990.0999') as RuleEff, "
+            + "     TO_CHAR(er.rule_penetration, 'FM990.0999') as RulePen, "
             + "     er.equation_type as EquationType, "
-            + "     er.cap_rec_factor as CapRecFactor, "
-            + "     er.discount_rate as DiscountRate, "
-            + "     er.cap_ann_ratio as CapAnnRatio, "
+            + "     TO_CHAR(er.cap_rec_factor, 'FM990.0999') as CapRecFactor, "
+            + "     TO_CHAR(er.discount_rate, 'FM990.0999') as DiscountRate, "
+            + "     TO_CHAR(er.cap_ann_ratio, 'FM990.0999') as CapAnnRatio, "
             + "     er.incremental_cost_per_ton as IncrementalCPT, "
             + "     er.min_capacity as MinCapacity, "
             + "     er.max_capacity as MaxCapacity, "
             + "     er.detail as Details, "
-            + "     er.ref_yr_cost_per_ton as RefYrCostPerTon "
+            + "     TO_CHAR(er.ref_yr_cost_per_ton, 'FM9999999990.00') as RefYrCostPerTon "
             + " from emf.control_measures m "
             + "     inner join emf.control_measure_efficiencyrecords er "
             + "     on er.control_measures_id = m.id "
@@ -335,7 +335,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation, p.name";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), false);
 //        PrintWriter efficienciesWriter = openExportFile("_efficiencies.csv");
 //        CMEfficiencyFileFormatv3 fileFormat = new CMEfficiencyFileFormatv3();
 //        String[] colNames = fileFormat.cols();
@@ -406,14 +406,14 @@ public class ControlMeasuresExporter implements Exporter {
             "   select m.abbreviation as CMAbbreviation, "
             + "     scc.name as SCC, "
             + "     scc.status as Status, "
-            + "     scc.combustion_efficiency as CombustionEfficiency "
+            + "     TO_CHAR(scc.combustion_efficiency, 'FM990.0999') as CombustionEfficiency "
             + " from emf.control_measures m "
             + "     inner join emf.control_measure_sccs scc "
             + "     on scc.control_measures_id = m.id "
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation, scc.name";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), false);
 //        PrintWriter sccsWriter = openExportFile("_SCCs.csv");
 //        CMSCCsFileFormat fileFormat = new CMSCCsFileFormat();
 //        String[] colNames = fileFormat.cols();
@@ -448,7 +448,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where mr.control_measure_id in (" + idList + ") "
             + " order by r.id";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), true);
     }
 
     private void writePropertyFile() throws ExporterException {
@@ -472,7 +472,7 @@ public class ControlMeasuresExporter implements Exporter {
             + " where m.id in (" + idList + ") "
             + " order by m.abbreviation, mp.name";
         
-        postgresCOPYExport.export(selectQuery, file.getAbsolutePath());
+        postgresCOPYExport.export(selectQuery, file.getAbsolutePath(), true);
     }
 
     private void addStatus(String message) {

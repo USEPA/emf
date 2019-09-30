@@ -29,6 +29,7 @@ import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.editor.Revision;
+import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
@@ -225,14 +226,14 @@ public class DatasetDAO {
     }
 
     public void updateWithoutLocking(EmfDataset dataset, Session session) throws Exception {
-        try {
-            renameEmissionTable(dataset, getDataset(session, dataset.getId()), session);
-        } catch (Exception e) {
-            LOG.info("Can not rename emission table: " + dataset.getInternalSources()[0].getTable());
-        } finally {
+//        try {
+//            renameEmissionTable(dataset, getDataset(session, dataset.getId()), session);
+//        } catch (Exception e) {
+//            LOG.info("Can not rename emission table: " + dataset.getInternalSources()[0].getTable());
+//        } finally {
             session.clear();
             hibernateFacade.updateOnly(dataset, session);
-        }
+//        }
     }
 
     public void remove(EmfDataset dataset, Session session) {
@@ -342,16 +343,16 @@ public class DatasetDAO {
     public EmfDataset update(EmfDataset locked, Session session) throws Exception {
         EmfDataset toReturn = null;
 
-        try {
-            renameEmissionTable(locked, getDataset(session, locked.getId()), session);
-        } catch (Exception e) {
-            LOG.error("Can not rename emission table: " + locked.getInternalSources()[0].getTable(), e);
-        } finally { // to ignore if the rename fails
+//        try {
+//            renameEmissionTable(locked, getDataset(session, locked.getId()), session);
+//        } catch (Exception e) {
+//            LOG.error("Can not rename emission table: " + locked.getInternalSources()[0].getTable(), e);
+//        } finally { // to ignore if the rename fails
             if (DebugLevels.DEBUG_12())
                 System.out.println("Update dataset " + locked.getName() + " with id: " + locked.getId());
 
             toReturn = (EmfDataset) lockingScheme.releaseLockOnUpdate(locked, current(locked, session), session);
-        }
+//        }
 
         return toReturn;
     }
@@ -470,9 +471,14 @@ public class DatasetDAO {
 
         return list.get(0);
     }
-
+    
     public EmfDataset getDataset(Session session, int id) {
-        session.clear(); // to clear the cached objects in session if any
+        return getDataset(session, id, true);
+    }
+
+    public EmfDataset getDataset(Session session, int id, boolean clearSession) {
+        if (clearSession)
+            session.clear(); // to clear the cached objects in session if any
         Criterion statusCrit = Restrictions.ne("status", "Deleted"); // FIXME: to be deleted after dataset removed
         // from db
         Criterion idCrit = Restrictions.eq("id", new Integer(id));
@@ -801,22 +807,42 @@ public class DatasetDAO {
             }
 
             try {
-                session.clear();
-                session.flush();
-                hibernateFacade.remove(datasets, session);
+                decoupleDSFromModules(datasetIDs, session);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
                 exception = e;
             }
+        }
 
+        try {
+            dropDataTables(datasets, emissionTableTool, session);
+        } catch (Exception e) {
+            LOG.error(e);
+            e.printStackTrace();
+            exception = e;
+        }
+
+        for(EmfDataset dataset : datasets) {
+            dataset.setKeyVals(new KeyVal[]{});
+            dataset.setInternalSources(new InternalSource[]{});
             try {
-                dropDataTables(datasets, emissionTableTool, session);
+                updateDSPropNoLocking(dataset, session);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
                 exception = e;
             }
+        }
+        
+        try {
+            session.clear();
+            session.flush();
+            hibernateFacade.remove(datasets, session);
+        } catch (Exception e) {
+            LOG.error(e);
+            e.printStackTrace();
+            exception = e;
         }
 
         if (exception != null) {
@@ -968,6 +994,40 @@ public class DatasetDAO {
         return ids;
     }
 
+    public List<Integer> getModulesUsingDataset(int datasetId) throws Exception {
+        DbServer dbServer = dbServerFactory.getDbServer();
+        Datasource emfDatasource = dbServer.getEmfDatasource();
+        DataQuery dataQuery = emfDatasource.query();
+        // check if dataset is an input dataset for a module different than moduleId
+        String query = "SELECT DISTINCT m.id FROM modules.modules_datasets md " +
+                       "LEFT JOIN modules.modules m " +
+                       "  ON m.id = md.module_id " +
+                       "LEFT JOIN modules.module_types_versions mtv " +
+                       "  ON mtv.id = m.module_type_version_id " +
+                       "LEFT JOIN modules.module_types_versions_datasets mtvd " +
+                       "  ON mtvd.module_type_version_id = mtv.id AND mtvd.placeholder_name = md.placeholder_name " +
+                       "WHERE mtvd.mode IN ('IN', 'INOUT') AND md.dataset_id = " + datasetId + ";";
+
+        List<Integer> moduleIds = new ArrayList<Integer>();
+        ResultSet resultSet = null;
+        try {
+            resultSet = dataQuery.executeQuery(query);
+            while (resultSet.next()) {
+                moduleIds.add(resultSet.getInt(1));
+            }
+        } finally {
+            if (resultSet != null)
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    LOG.error(e);
+                    e.printStackTrace();
+                }
+        }
+        return moduleIds;
+    }
+    
+    
     public void checkIfUsedByControlPrograms(int[] datasetIDs, Session session) throws EmfException {
         // check if dataset is an input inventory for some control program (via the control_programs table)
         controlProgList = session.createQuery(
@@ -977,6 +1037,14 @@ public class DatasetDAO {
         if (controlProgList != null && controlProgList.size() > 0)
             throw new EmfException("Error: dataset used by control program " + controlProgList.get(0) + ".");
 
+    }
+    
+    public boolean isUsedByControlPrograms(int datasetID, Session session) throws EmfException {
+        // check if dataset is an input inventory for some control program (via the control_programs table)
+        controlProgList = session.createQuery(
+                "select cP.name from ControlProgram as cP inner join cP.dataset as d with (d.id = " + datasetID + ")").list();
+
+        return (controlProgList != null && controlProgList.size() > 0);
     }
     
     public List<Integer> notUsedByControlPrograms(int[] datasetIDs, User user, Session session) throws Exception {
@@ -1250,7 +1318,13 @@ public class DatasetDAO {
         
         return all;
     }
-    
+
+    public boolean isUsedByFast(int datasetId, User user, DbServer dbServer, Session session) throws Exception {
+        int[] datasetIDs = new int[] { datasetId };
+        List<Integer> list = notUsedByFast(datasetIDs, user, dbServer, session);
+        return (list.size() == 0);
+    }
+        
     @SuppressWarnings("unchecked")
     public List<Integer> notUsedByTemporalAllocations(int[] datasetIDs, User user, Session session) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
@@ -1327,6 +1401,67 @@ public class DatasetDAO {
         return all;
     }
 
+    public boolean isUsedByTemporalAllocations(int datasetId, User user, Session session) throws Exception {
+        int[] datasetIDs = new int[] { datasetId };
+        List<Integer> list = notUsedByTemporalAllocations(datasetIDs, user, session);
+        return (list.size() == 0);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Integer> notUsedByModules(int[] datasetIDs, User user, Session session) throws Exception {
+        if (datasetIDs == null || datasetIDs.length == 0)
+            return new ArrayList<Integer>();
+        
+        // check if dataset is in the modules.modules_datasets table
+        List<Object[]> list = session.createQuery(
+                "SELECT DISTINCT dataset, m.name " +
+                  "FROM Module as m, ModuleDataset as md, EmfDataset as dataset " +
+                 "WHERE md.module.id = m.id " +
+                   "AND dataset.id = md.datasetId " +
+                   "AND (md.datasetId = " + getAndOrClause(datasetIDs, "md.datasetId") + ")").list();
+        
+        List<Integer> all = EmfArrays.convert(datasetIDs);
+        String usedby = "used by module";
+        
+        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        all.removeAll(ids);
+        
+        if (all.size() == 0)
+            return all;
+        
+        // check for OUT NEW datasets in most recent history records
+        list = session.createSQLQuery(
+                "SELECT d.id, d.name, m.name AS module " +
+                  "FROM (SELECT h.module_id, MAX(h.id) AS history_id " +
+                          "FROM modules.history h " +
+                      "GROUP BY h.module_id) v " +
+                  "JOIN modules.modules m " +
+                    "ON v.module_id = m.id " +
+                  "JOIN modules.modules_datasets md " +
+                    "ON v.module_id = md.module_id " +
+                  "JOIN modules.history h " +
+                    "ON v.history_id = h.id " +
+                  "JOIN modules.history_datasets hd " +
+                    "ON v.history_id = hd.history_id " +
+                  "JOIN emf.datasets d " +
+                    "ON d.id = hd.dataset_id " +
+                 "WHERE h.result = 'SUCCESS' " +
+                   "AND md.output_method = 'NEW' " +
+                   "AND hd.placeholder_name = md.placeholder_name " +
+                   "AND (hd.dataset_id = " + getAndOrClause(datasetIDs, "hd.dataset_id") + ")").list();
+        ids = new ArrayList<Integer>();
+        
+        if (list != null && list.size() != 0) {
+            for (int i = 0; i < list.size(); i++) {
+                ids.add((Integer)list.get(i)[0]);
+                setStatus(user.getUsername(), "Dataset \"" + list.get(i)[1] + "\" " + usedby + ": " + list.get(i)[2] + ".", "Delete Dataset", session);
+            }
+        }
+        all.removeAll(ids);
+        
+        return all;
+    }
+        
     private List<Integer> getRefdDatasetIds(User user, int[] idArray, DataQuery dataQuery, String query, String dsId, Session session)
             throws SQLException {
         ResultSet resultSet = null;
@@ -1690,6 +1825,33 @@ public class DatasetDAO {
         } finally {
             if (DebugLevels.DEBUG_16())
                 LOG.warn(updatedItems + " items updated from " + CaseInput.class.getName() + " table.");
+        }
+    }
+
+    private void decoupleDSFromModules(int[] dsIDs, Session session) throws EmfException {
+        int updatedItems = 0;
+
+        try {
+            Transaction tx = session.beginTransaction();
+
+            String firstPart = "UPDATE " + ModuleDataset.class.getSimpleName()
+                    + " obj SET obj.datasetId = null, obj.version = null";
+            String secondPart = " WHERE obj.datasetId = " + getAndOrClause(dsIDs, "obj.datasetId");
+            String updateQuery = firstPart + secondPart;
+
+            if (DebugLevels.DEBUG_16())
+                System.out.println("hql update string: " + updateQuery);
+
+            updatedItems = session.createQuery(updateQuery).executeUpdate();
+            tx.commit();
+
+            if (DebugLevels.DEBUG_16())
+                System.out.println(updatedItems + " items updated.");
+        } catch (HibernateException e) {
+            throw new EmfException(e.getMessage());
+        } finally {
+            if (DebugLevels.DEBUG_16())
+                LOG.warn(updatedItems + " items updated from " + ModuleDataset.class.getName() + " table.");
         }
     }
 

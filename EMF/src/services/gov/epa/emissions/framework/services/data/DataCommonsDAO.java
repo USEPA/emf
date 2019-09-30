@@ -16,7 +16,6 @@ import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
-import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
@@ -339,9 +338,13 @@ public class DataCommonsDAO {
     public void add(DatasetType datasetType, Session session) {
         datasetTypesDAO.add(datasetType, session);
     }
-    
+
     public void add(XFileFormat format, Session session) {
         addObject(format, session);
+    }
+
+    public void update(XFileFormat format, Session session) {
+        hibernateFacade.updateOnly(format, session);
     }
 
     public void add(Sector sector, Session session) {

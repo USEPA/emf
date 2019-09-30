@@ -215,7 +215,7 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
                 .setToolTipText("Enter the sources target pollutant minimum emission reduction (in tons).  The control measure must be able to control greater than or equal to this tonnage.");
         this.emisReduction.setEditable(false);
 
-        layoutGenerator.addLabelWidgetPair("Minimum Emissions Reduction (tons)", this.emisReduction, panel);
+        layoutGenerator.addLabelWidgetPair("Minimum Effective Emissions Reduction (tons)", this.emisReduction, panel);
 
         this.contrlEff = new TextField("control efficiency", 10);
         this.contrlEff.setText(constraint != null ? (constraint.getMaxControlEfficiency() != null ? constraint
@@ -235,7 +235,7 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
                 .setToolTipText("Enter the sources target pollutant maximum cost per ton.  The control measure must be have a cost per ton less than or equal to this cost per ton.");
         this.costPerTon.setEditable(false);
 
-        layoutGenerator.addLabelWidgetPair("Maximum Cost per Ton ($/ton) [in Strategy Cost Year dollars]",
+        layoutGenerator.addLabelWidgetPair("Maximum Effective Cost per Ton ($/ton) [in Strategy Cost Year dollars]",
                 this.costPerTon, panel);
 
         this.annCost = new TextField("annual cost", 10);

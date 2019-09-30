@@ -7,7 +7,6 @@ import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.db.version.Versions;
-import gov.epa.emissions.commons.io.TableFormat;
 import gov.epa.emissions.commons.io.VersionedQuery;
 import gov.epa.emissions.commons.io.importer.DataTable;
 import gov.epa.emissions.commons.io.other.StrategyMessagesFileFormat;
@@ -43,8 +42,6 @@ import java.util.List;
 import org.hibernate.Session;
 
 public abstract class AbstractStrategyLoader implements StrategyLoader {
-
-    protected TableFormat detailedResultTableFormat;
 
     protected ControlStrategy controlStrategy;
     
@@ -101,7 +98,6 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
 //        this.decFormat = new DecimalFormat("0.###E0");
         this.keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
         this.dbServer = dbServerFactory.getDbServer();
-        this.detailedResultTableFormat = new StrategyDetailedResultTableFormat(dbServer.getSqlDataTypes());
         this.datasource = dbServer.getEmissionsDatasource();
         // VERSIONS TABLE - completed - should throw exception if emission schema and versions table apear together
         this.creator = new DatasetCreator(controlStrategy, user, 
@@ -183,9 +179,10 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
     }
 
     private EmfDataset createResultDataset(EmfDataset inputDataset) throws EmfException {
+        DatasetType dsType = getControlStrategyDetailedResultDatasetType();
         return creator.addDataset("Strategy", "CSDR", 
-                inputDataset, getControlStrategyDetailedResultDatasetType(), 
-                detailedResultTableFormat);
+                inputDataset, dsType,
+                new VersionedTableFormat(dsType.getFileFormat(), dbServer.getSqlDataTypes()));
     }
 
     private EmfDataset createStrategyMessagesDataset() throws Exception {
@@ -221,7 +218,7 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
         if (controlStrategyDetailedResultDatasetType == null) {
             Session session = sessionFactory.getSession();
             try {
-                controlStrategyDetailedResultDatasetType = new DatasetTypesDAO().get(DatasetType.strategyDetailedResult, session);
+                controlStrategyDetailedResultDatasetType = new DatasetTypesDAO().get(DatasetType.strategyDetailedResultExtended, session);
             } finally {
                 session.close();
             }
@@ -346,10 +343,10 @@ public abstract class AbstractStrategyLoader implements StrategyLoader {
             if (pollToMatch.equals("PM2_5")) pollToMatch = "PM2";
         }
         
-        String query = "SELECT count(1) as record_count, sum(Annual_Cost) as total_cost, " 
+        String query = "SELECT count(1) as record_count, round(sum(Annual_Cost)::numeric,2) as total_cost, " 
             + (controlStrategy.getTargetPollutant() == null || controlStrategy.getStrategyType().getName().equals(StrategyType.MULTI_POLLUTANT_MAX_EMISSIONS_REDUCTION)
                     ? "null::double precision" 
-                    : "sum(case when poll LIKE '%" + pollToMatch + "%' then Emis_Reduction else null::double precision end)"
+                    : "sum(case when poll LIKE '%" + pollToMatch + "%' then Eff_Emis_Reduction else null::double precision end)"
             ) + " as total_reduction "
             + " FROM " + qualifiedEmissionTableName(controlStrategyResult.getDetailedResultDataset());
         ResultSet rs = null;

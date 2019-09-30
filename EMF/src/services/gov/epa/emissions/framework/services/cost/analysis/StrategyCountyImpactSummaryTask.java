@@ -135,9 +135,9 @@ public class StrategyCountyImpactSummaryTask extends AbstractStrategySummaryTask
         String countyImpactTable = "reference.impact_estimates";
         String rsmInvSectorsTable = "reference.rsm_inv_sectors";
 
-        String impactTableCols = "dataset_id, version, FIPS, RSM_SECTOR, INV_SECTOR, Poll, Impact_pollutant, Ton_Reduced, Annual_cost, Impact_per_ton, Impact, Cost_per_change_conc, Total_cost, Total_impact, Total_cost_per_change_conc";
+        String impactTableCols = "dataset_id, version, REGION_CD, RSM_SECTOR, INV_SECTOR, Poll, Impact_pollutant, Ton_Reduced, Annual_cost, Impact_per_ton, Impact, Cost_per_change_conc, Total_cost, Total_impact, Total_cost_per_change_conc";
 
-        String selectSubString = "e.fips, coalesce(p.rsm_sector,'AN UNSPECIFIED RSM SECTOR') as rsm_sector, "
+        String selectSubString = "e.region_cd, coalesce(p.rsm_sector,'AN UNSPECIFIED RSM SECTOR') as rsm_sector, "
                 + "coalesce(e.sector, 'AN UNSPECIFIED INV SECTOR') as inv_sector, "
                 + "coalesce(e.poll,'AN UNSPECIFIED POLLUTANT') as poll, p.impact_pollutant, sum(emis_reduction) as ton_reduced, "
                 + "sum(annual_cost) as annual_cost, p.impact_per_ton, "
@@ -147,7 +147,7 @@ public class StrategyCountyImpactSummaryTask extends AbstractStrategySummaryTask
                 "(select sum(e1.annual_cost) from "
                 + countySummaryTable
                 + " e1 "
-                + "where e1.fips=e.fips) as total_cost, "
+                + "where e1.region_cd=e.region_cd) as total_cost, "
                 +
 
                 "(select sum(e1.emis_reduction * p1.impact_per_ton) "
@@ -161,15 +161,15 @@ public class StrategyCountyImpactSummaryTask extends AbstractStrategySummaryTask
                 + "inner join "
                 + countyImpactTable
                 + " p1 "
-                + "on e1.fips=p1.fips and e1.poll=p1.pollutant and p1.rsm_sector=s1.rsm_sector "
-                + "where e1.fips=e.fips ) as total_impact, "
+                + "on e1.region_cd=p1.fips and e1.poll=p1.pollutant and p1.rsm_sector=s1.rsm_sector "
+                + "where e1.region_cd=e.region_cd ) as total_impact, "
                 +
 
                 "(select sum(e1.annual_cost) "
                 + "from "
                 + countySummaryTable
                 + " e1 "
-                + "where e1.fips=e.fips) / (sum(emis_reduction) * p.impact_per_ton) as total_cost_per_change_conc "
+                + "where e1.region_cd=e.region_cd) / (sum(emis_reduction) * p.impact_per_ton) as total_cost_per_change_conc "
                 +
 
                 "from "
@@ -182,10 +182,10 @@ public class StrategyCountyImpactSummaryTask extends AbstractStrategySummaryTask
                 + "inner join "
                 + countyImpactTable
                 + " p "
-                + "on e.fips=p.fips and e.poll=p.pollutant "
+                + "on e.region_cd=p.fips and e.poll=p.pollutant "
                 + "where p.rsm_sector=s.rsm_sector "
-                + "group by e.fips, e.sector, e.poll, p.impact_pollutant, p.impact_per_ton, p.rsm_sector "
-                + "order by e.fips";
+                + "group by e.region_cd, e.sector, e.poll, p.impact_pollutant, p.impact_per_ton, p.rsm_sector "
+                + "order by e.region_cd";
 
         String sql = "INSERT INTO " + qualifiedEmissionTableName(countyImpactSummary.getDetailedResultDataset()) + " ("
                 + impactTableCols + ") select " + countyImpactSummary.getDetailedResultDataset().getId() + ", 0, "

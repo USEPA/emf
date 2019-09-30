@@ -357,7 +357,7 @@ public abstract class AbstractStrategyTask implements Strategy {
     private void populateStrategyMeasureSummaryDataset(ControlStrategyResult[] results, ControlStrategyResult summaryResult) throws EmfException {
         if (results.length > 0) {
             
-            String sql = "INSERT INTO " + qualifiedEmissionTableName(summaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, fips, scc, poll, Control_Measure_Abbreviation, Control_Measure, Control_Technology, source_group, avg_ann_cost_per_ton, Annual_Cost, input_emis, Emis_Reduction, Pct_Red) " 
+            String sql = "INSERT INTO " + qualifiedEmissionTableName(summaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, region_cd, scc, poll, Control_Measure_Abbreviation, Control_Measure, Control_Technology, source_group, avg_ann_cost_per_ton, Annual_Cost, input_emis, Emis_Reduction, Pct_Red) " 
             + "select " + summaryResult.getDetailedResultDataset().getId() + ", 0, "
             + "summary.sector, "
             + "summary.fips, "
@@ -378,10 +378,10 @@ public abstract class AbstractStrategyTask implements Strategy {
                 if (results[i].getDetailedResultDataset() != null) {
                     String tableName = qualifiedEmissionTableName(results[i].getDetailedResultDataset());
                     sql += (count > 0 ? " union all " : "") 
-                        + "select e.sector, e.fips, e.scc, e.poll, e.cm_id, sum(e.Annual_Cost) as Annual_Cost, sum(e.Emis_Reduction) as Emis_Reduction, "
+                        + "select e.sector, e.region_cd as fips, e.scc, e.poll, e.cm_id, sum(e.Annual_Cost) as Annual_Cost, sum(e.Eff_Emis_Reduction) as Emis_Reduction, "
                         + "sum(e.input_emis) as input_emis "
                         + "from " + tableName + " e "
-                        + "group by e.sector, e.fips, e.scc, e.poll, e.cm_id ";
+                        + "group by e.sector, e.region_cd, e.scc, e.poll, e.cm_id ";
                     ++count;
                 }
             }
@@ -514,7 +514,7 @@ public abstract class AbstractStrategyTask implements Strategy {
 
             //SET work_mem TO '512MB';
             //NOTE:  Still need to  support mobile monthly files
-            String sql = "INSERT INTO " + qualifiedEmissionTableName(countySummaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, fips, poll, Input_Emis, Emis_Reduction, Remaining_Emis, Pct_Red, Annual_Cost, Annual_Oper_Maint_Cost, Annualized_Capital_Cost, Total_Capital_Cost, Avg_Ann_Cost_per_Ton) " 
+            String sql = "INSERT INTO " + qualifiedEmissionTableName(countySummaryResult.getDetailedResultDataset()) + " (dataset_id, version, sector, region_cd, poll, Input_Emis, Emis_Reduction, Remaining_Emis, Pct_Red, Annual_Cost, Annual_Oper_Maint_Cost, Annualized_Capital_Cost, Total_Capital_Cost, Avg_Ann_Cost_per_Ton) " 
             + "select " + countySummaryResult.getDetailedResultDataset().getId() + ", 0, "
                       + "sector, "
                       + "fips, "
@@ -570,14 +570,14 @@ public abstract class AbstractStrategyTask implements Strategy {
                                   + "i." + (isFlatFileInventory ? "region_cd" : "fips") + " as fips, "
                                   + "i.poll, "
                                   + "sum(" + sqlAnnEmis + ") as Input_Emis, "
-                                  + "sum(e.Emis_Reduction) as Emis_Reduction, "
-                                  + "sum(" + sqlAnnEmis + ") - sum(e.Emis_Reduction) as Remaining_Emis, "
-                                  + "case when sum(" + sqlAnnEmis + ") <> 0 then sum(e.Emis_Reduction) / sum(" + sqlAnnEmis + ") * 100.0 else null::double precision end as Pct_Red, "
+                                  + "sum(e.Eff_Emis_Reduction) as Emis_Reduction, "
+                                  + "sum(" + sqlAnnEmis + ") - sum(e.Eff_Emis_Reduction) as Remaining_Emis, "
+                                  + "case when sum(" + sqlAnnEmis + ") <> 0 then sum(e.Eff_Emis_Reduction) / sum(" + sqlAnnEmis + ") * 100.0 else null::double precision end as Pct_Red, "
                                   + "sum(e.Annual_Cost) as Annual_Cost, "
                                   + "sum(e.Annual_Oper_Maint_Cost) as Annual_Oper_Maint_Cost, "
                                   + "sum(e.Annualized_Capital_Cost) as Annualized_Capital_Cost, "
                                   + "sum(e.Total_Capital_Cost) as Total_Capital_Cost, "
-                                  + "case when sum(e.Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
+                                  + "case when sum(e.Eff_Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Eff_Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
                                   + "from " + inventoryTableName + " i "
                                   + "left outer join " + detailedresultTableName + " e "
                                   + "on e.source_id = i.record_id "
@@ -613,14 +613,14 @@ public abstract class AbstractStrategyTask implements Strategy {
                             + "i." + (isFlatFileInventory ? "region_cd" : "fips") + " as fips, "
                             + "i.poll, "
                             + "sum(" + sqlAnnEmis + ") as Input_Emis, "
-                            + "sum(e.Emis_Reduction) as Emis_Reduction, "
-                            + "sum(" + sqlAnnEmis + ") - sum(e.Emis_Reduction) as Remaining_Emis, "
-                            + "case when sum(" + sqlAnnEmis + ") <> 0 then sum(e.Emis_Reduction) / sum(" + sqlAnnEmis + ") * 100.0 else null::double precision end as Pct_Red, "
+                            + "sum(e.Eff_Emis_Reduction) as Emis_Reduction, "
+                            + "sum(" + sqlAnnEmis + ") - sum(e.Eff_Emis_Reduction) as Remaining_Emis, "
+                            + "case when sum(" + sqlAnnEmis + ") <> 0 then sum(e.Eff_Emis_Reduction) / sum(" + sqlAnnEmis + ") * 100.0 else null::double precision end as Pct_Red, "
                             + "sum(e.Annual_Cost) as Annual_Cost, "
                             + "sum(e.Annual_Oper_Maint_Cost) as Annual_Oper_Maint_Cost, "
                             + "sum(e.Annualized_Capital_Cost) as Annualized_Capital_Cost, "
                             + "sum(e.Total_Capital_Cost) as Total_Capital_Cost, "
-                            + "case when sum(e.Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
+                            + "case when sum(e.Eff_Emis_Reduction) <> 0 then sum(e.Annual_Cost) / sum(e.Eff_Emis_Reduction) else null::double precision end as Avg_Ann_Cost_per_Ton "
                             + "from " + inventoryTableName + " i "
                             + "left outer join " + detailedresultTableName + " e "
                             + "on e.source_id = i.record_id "

@@ -212,8 +212,8 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
         property.setMnemonic('E');
         property.setEnabled(this.editable);
         
-        Button data = new Button("Edit Data", editDataAction());
-        data.setMnemonic('a');
+        Button data = new Button("View Dataset Versions", displayVersionedData());
+        data.setMnemonic('D');
         data.setEnabled(this.editable);
         if (dataset.getStatus().equals("Archived"))
             data.setEnabled(false);
@@ -295,7 +295,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
         }
     }
 
-    private Action editDataAction() {
+    private Action displayVersionedData() {
         return new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 doDisplayVersionedData();
