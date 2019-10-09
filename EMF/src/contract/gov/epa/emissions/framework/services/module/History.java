@@ -171,6 +171,8 @@ public class History implements Serializable, Comparable<History> {
             String mode = moduleTypeVersionDataset.getMode();
             if (mode.equals(ModuleTypeVersionDataset.OUT))
                 continue;
+            if (moduleTypeVersionDataset.getIsOptional() && historyDataset.getDatasetId() == null)
+                continue;
             if (historyDataset.getDatasetId() == null) { // should never happen
                 error.append(String.format("The dataset for '%s' input placeholder was not captured by the run.", placeholderName));
                 return false;
