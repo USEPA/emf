@@ -1354,7 +1354,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             messageScrollPane.setSize(new Dimension(width, 10));
             int height = Math.min((int)(screenSize.getHeight() * 0.75), messageScrollPane.getPreferredSize().height);
             messageScrollPane.setPreferredSize(new Dimension(width, height));
-            JOptionPane.showMessageDialog(null, messageScrollPane, title, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, messageScrollPane, title, JOptionPane.INFORMATION_MESSAGE);
         } else {
             messagePanel.setMessage(message.toString());
         }
