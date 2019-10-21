@@ -1004,54 +1004,21 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 8'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then capital_control_cost_factor * stack_flow_rate
-								else default_capital_cpt_factor * emis_reduction
-							end;
+						capital_cost := capital_cost_multiplier * stack_flow_rate * capital_cost_constant
 
 						-- calculate operation maintenance cost
-						operation_maintenance_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then om_control_cost_factor * stack_flow_rate
-								else default_om_cpt_factor * emis_reduction
-							end;
+						operation_maintenance_cost := om_cost_multiplier * stack_flow_rate * om_cost_constant
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost :=  
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then annualized_capital_cost + 0.04 * capital_cost + operation_maintenance_cost
-								else default_annualized_cpt_factor * emis_reduction
-							end;
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					case 
-						when ' || stkflow_expression || ' >= 5.0 then 
-							/*capital_cost*/case 
-								when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value1/*capital_control_cost_factor*/ * ' || stkflow_expression || '
-								else ' || control_measure_equation_table_alias || '.value3/*default_capital_cpt_factor*/ * ' || emis_reduction_sql || '
-							end 
-							* ' || capital_recovery_factor_expression || ' 
-							+ 0.04 * 
-							/*capital_cost*/case 
-								when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value1/*capital_control_cost_factor*/ * ' || stkflow_expression || '
-								else ' || control_measure_equation_table_alias || '.value3/*default_capital_cpt_factor*/ * ' || emis_reduction_sql || '
-							end 
-							+ 
-							/*operation_maintenance_cost*/case 
-								when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value2/*om_control_cost_factor*/ * ' || stkflow_expression || '
-								else ' || control_measure_equation_table_alias || '.value4/*default_om_cpt_factor*/ * ' || emis_reduction_sql || '
-							end
-						else
-							' || control_measure_equation_table_alias || '.value5/*default_annualized_cpt_factor*/ * ' || emis_reduction_sql || '
-					end
+					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || stkflow_expression || ' + ' || control_measure_equation_table_alias || '.value6/*capital_cost_constant*/)/*capital_cost*/ * (' || capital_recovery_factor_expression || ')/*annualized_capital_cost*/
+					+ (' || control_measure_equation_table_alias || '.value2/*om_cost_multiplier*/ * ' || stkflow_expression || ' + ' || control_measure_equation_table_alias || '.value7/*om_cost_constant*/)/*operation_maintenance_cost*/
 					)
 
 				-- Equation Type 9
@@ -1519,39 +1486,19 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 8'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then capital_control_cost_factor * stack_flow_rate
-								else default_capital_cpt_factor * emis_reduction
-							end;
+						capital_cost := capital_cost_multiplier * stack_flow_rate * capital_cost_constant
 
 						-- calculate operation maintenance cost
-						operation_maintenance_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then om_control_cost_factor * stack_flow_rate
-								else default_om_cpt_factor * emis_reduction
-							end;
+						operation_maintenance_cost := om_cost_multiplier * stack_flow_rate * om_cost_constant
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost :=  
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then annualized_capital_cost + 0.04 * capital_cost + operation_maintenance_cost
-								else default_annualized_cpt_factor * emis_reduction
-							end;
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(
-					case 
-						when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value1/*capital_control_cost_factor*/ * ' || stkflow_expression || '
-						else ' || control_measure_equation_table_alias || '.value3/*default_capital_cpt_factor*/ * ' || emis_reduction_sql || '
-					end 
-					)
+					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || stkflow_expression || ' + ' || control_measure_equation_table_alias || '.value6/*capital_cost_constant*/)/*capital_cost*/
 
 				-- Equation Type 9
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 9'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
@@ -2055,39 +2002,19 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 8'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then capital_control_cost_factor * stack_flow_rate
-								else default_capital_cpt_factor * emis_reduction
-							end;
+						capital_cost := capital_cost_multiplier * stack_flow_rate * capital_cost_constant
 
 						-- calculate operation maintenance cost
-						operation_maintenance_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then om_control_cost_factor * stack_flow_rate
-								else default_om_cpt_factor * emis_reduction
-							end;
+						operation_maintenance_cost := om_cost_multiplier * stack_flow_rate * om_cost_constant
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost :=  
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then annualized_capital_cost + 0.04 * capital_cost + operation_maintenance_cost
-								else default_annualized_cpt_factor * emis_reduction
-							end;
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
-					(
-					case 
-						when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value2/*om_control_cost_factor*/ * ' || stkflow_expression || '
-						else ' || control_measure_equation_table_alias || '.value4/*default_om_cpt_factor*/ * ' || emis_reduction_sql || '
-					end/*operation_maintenance_cost*/
-					)
+					(' || control_measure_equation_table_alias || '.value2/*om_cost_multiplier*/ * ' || stkflow_expression || ' + ' || control_measure_equation_table_alias || '.value7/*om_cost_constant*/)/*operation_maintenance_cost*/
 
 				-- Equation Type 9
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 9'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
@@ -2494,31 +2421,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 8'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then capital_control_cost_factor * stack_flow_rate
-								else default_capital_cpt_factor * emis_reduction
-							end;
+						capital_cost := capital_cost_multiplier * stack_flow_rate * capital_cost_constant
 
 						-- calculate operation maintenance cost
-						operation_maintenance_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then om_control_cost_factor * stack_flow_rate
-								else default_om_cpt_factor * emis_reduction
-							end;
+						operation_maintenance_cost := om_cost_multiplier * stack_flow_rate * om_cost_constant
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost :=  
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then annualized_capital_cost + 0.04 * capital_cost + operation_maintenance_cost
-								else default_annualized_cpt_factor * emis_reduction
-							end;
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
@@ -2880,31 +2792,16 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 8'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then capital_control_cost_factor * stack_flow_rate
-								else default_capital_cpt_factor * emis_reduction
-							end;
+						capital_cost := capital_cost_multiplier * stack_flow_rate * capital_cost_constant
 
 						-- calculate operation maintenance cost
-						operation_maintenance_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then om_control_cost_factor * stack_flow_rate
-								else default_om_cpt_factor * emis_reduction
-							end;
+						operation_maintenance_cost := om_cost_multiplier * stack_flow_rate * om_cost_constant
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost :=  
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then annualized_capital_cost + 0.04 * capital_cost + operation_maintenance_cost
-								else default_annualized_cpt_factor * emis_reduction
-							end;
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
@@ -3304,39 +3201,20 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 8'' and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						-- calculate capital cost
-						capital_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then capital_control_cost_factor * stack_flow_rate
-								else default_capital_cpt_factor * emis_reduction
-							end;
+						capital_cost := capital_cost_multiplier * stack_flow_rate * capital_cost_constant
 
 						-- calculate operation maintenance cost
-						operation_maintenance_cost := 
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then om_control_cost_factor * stack_flow_rate
-								else default_om_cpt_factor * emis_reduction
-							end;
+						operation_maintenance_cost := om_cost_multiplier * stack_flow_rate * om_cost_constant
 
 						-- calculate annualized capital cost
 						annualized_capital_cost := capital_cost * cap_recovery_factor;
 
 						-- calculate annual cost
-						annual_cost :=  
-							case 
-								when coalesce(stack_flow_rate, 0) = 0 then null
-								when stack_flow_rate >= 5.0 then annualized_capital_cost + 0.04 * capital_cost + operation_maintenance_cost
-								else default_annualized_cpt_factor * emis_reduction
-							end;
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(
-					case 
-						when ' || stkflow_expression || ' >= 5.0 then ' || control_measure_equation_table_alias || '.value1/*capital_control_cost_factor*/ * ' || stkflow_expression || '
-						else ' || control_measure_equation_table_alias || '.value3/*default_capital_cpt_factor*/ * ' || emis_reduction_sql || '
-					end 
-					* (' || capital_recovery_factor_expression || ')
+					(' || control_measure_equation_table_alias || '.value1/*capital_cost_multiplier*/ * ' || stkflow_expression || ' + ' || control_measure_equation_table_alias || '.value6/*capital_cost_constant*/)/*capital_cost*/ * (' || capital_recovery_factor_expression || ')
 					)
 
 				-- Equation Type 9
@@ -3572,7 +3450,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 	end';
 
 
-	-- prepare annualized_capital_cost_expression 
+	-- prepare actual_equation_type_expression
 	actual_equation_type_expression := '(' ||
 	case 
 		when use_cost_equations then 

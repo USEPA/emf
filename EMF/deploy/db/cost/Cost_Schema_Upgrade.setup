@@ -2424,3 +2424,46 @@ WHERE name = 'Strategy Messages (CSV)';
 
 -- 07/15/2019 Use double precision for ref_yr_cost_per_ton column
 ALTER TABLE emf.control_measure_efficiencyrecords ALTER COLUMN ref_yr_cost_per_ton TYPE DOUBLE PRECISION;
+
+-- 10/21/2019 Update equation type 8
+UPDATE emf.equation_types
+   SET inventory_fields = 'stack_flow_rate, stack_velocity, stack_diameter',
+       equation =
+'Capital Cost = Capital Cost Multiplier x Exhaust Flowrate (acfm) + Capital Cost Constant
+O&M Cost = O&M Cost Multiplier x Exhaust Flowrate (acfm) + O&M Cost Constant'
+ WHERE name = 'Type 8';
+
+UPDATE emf.equation_type_variables
+   SET name = 'Capital Cost Multiplier ($/acfm)'
+ WHERE name = 'Typical Capital Cost ($/acfm)'
+   AND equation_type_id = (SELECT id FROM emf.equation_types WHERE name = 'Type 8');
+
+UPDATE emf.equation_type_variables
+   SET name = 'O&M Cost Multiplier ($/acfm)'
+ WHERE name = 'Typical O&M Cost ($/acfm)'
+   AND equation_type_id = (SELECT id FROM emf.equation_types WHERE name = 'Type 8');
+
+UPDATE emf.equation_type_variables
+   SET name = 'Unused'
+ WHERE name = 'Typical Default CPT Factor - Capital'
+   AND equation_type_id = (SELECT id FROM emf.equation_types WHERE name = 'Type 8');
+
+UPDATE emf.equation_type_variables
+   SET name = 'Unused'
+ WHERE name = 'Typical Default CPT Factor - O&M'
+   AND equation_type_id = (SELECT id FROM emf.equation_types WHERE name = 'Type 8');
+
+UPDATE emf.equation_type_variables
+   SET name = 'Unused'
+ WHERE name = 'Typical Default CPT Factor - Annualized'
+   AND equation_type_id = (SELECT id FROM emf.equation_types WHERE name = 'Type 8');
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id, 'Capital Cost Constant ($)', 6, 5
+  FROM emf.equation_types AS e
+ WHERE name = 'Type 8';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id, 'O&M Cost Constant ($)', 7, 6
+  FROM emf.equation_types AS e
+ WHERE name = 'Type 8';
