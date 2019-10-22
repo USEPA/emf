@@ -2467,3 +2467,19 @@ INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_positi
 SELECT e.id, 'O&M Cost Constant ($)', 7, 6
   FROM emf.equation_types AS e
  WHERE name = 'Type 8';
+
+-- 10/21/2019 Add equation type 20
+INSERT INTO emf.equation_types (name, description, inventory_fields, equation) VALUES
+('Type 20', 'ICI Boiler Cost Equations', 'design_capacity, design_capacity_units',
+'Capital Cost = Capital Cost Multiplier x Design Capacity (MMBtu/hr)
+O&M Cost = O&M Cost Multiplier x Design Capacity (MMBtu/hr)');
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id, 'Capital Cost Multiplier ($/MMBtu/hr)', 1, 0
+  FROM emf.equation_types AS e
+ WHERE name = 'Type 20';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id, 'O&M Cost Multiplier ($/MMBtu/hr)', 2, 1
+  FROM emf.equation_types AS e
+ WHERE name = 'Type 20';

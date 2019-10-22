@@ -1206,6 +1206,29 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t19_tac || ')
 				' end || '
 
+				' || case when not has_design_capacity_columns then '' else '
+				-- Equation Type 20
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := om_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annual cost
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
+
+					*/|| deflator_gdp_adjustment_factor_expression || ' *
+					(
+					((' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || '))/*capital_cost*/ * (' || capital_recovery_factor_expression || '))/*annualized_capital_cost*/
+					+ (' || control_measure_equation_table_alias || '.value2 * (3.412 * ' || convert_design_capacity_expression || '))/*operation_maintenance_cost*/
+					)
+				' end || '
+
 				-- Filler when clause, just in case no when part shows up from conditional logic
 				when 1 = 0 then null::double precision
 				else 
@@ -1687,6 +1710,26 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t19_tci || ')
 				' end || '
 
+				' || case when not has_design_capacity_columns then '' else '
+				-- Equation Type 20
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := om_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annual cost
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
+
+					*/|| deflator_gdp_adjustment_factor_expression || ' *
+					(' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || '))/*capital_cost*/
+				' end || '
+
 				-- Filler when clause, just in case no when part shows up from conditional logic
 				when 1 = 0 then null::double precision
 				else 
@@ -2160,6 +2203,26 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * 
 					(' || control_measure_equation_table_alias || '.value5 + ' || control_measure_equation_table_alias || '.value6 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value7 + ' || control_measure_equation_table_alias || '.value8 * (3.412 * ' || convert_design_capacity_expression || ') ^ ' || control_measure_equation_table_alias || '.value9 + ' || control_measure_equation_table_alias || '.value10 * (' || stkflow_expression || ' / 60.0) + ' || control_measure_equation_table_alias || '.value11 * ' || emis_reduction_sql || ')/*operation_maintenance_cost*/
 					
+				' end || '
+
+				' || case when not has_design_capacity_columns then '' else '
+				-- Equation Type 20
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := om_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annual cost
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
+
+					*/|| deflator_gdp_adjustment_factor_expression || ' *
+					(' || control_measure_equation_table_alias || '.value2 * (3.412 * ' || convert_design_capacity_expression || '))/*operation_maintenance_cost*/
 				' end || '
 
 				-- Filler when clause, just in case no when part shows up from conditional logic
@@ -3408,6 +3471,28 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					*/|| deflator_gdp_adjustment_factor_expression || ' * (' || t19_tci || ') * (' || capital_recovery_factor_expression || ')
 				' end || '
 
+				' || case when not has_design_capacity_columns then '' else '
+				-- Equation Type 20
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+					/*
+						-- calculate capital cost
+						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annualized capital cost
+						annualized_capital_cost := capital_cost * cap_recovery_factor
+
+						-- calculate operation maintenance cost
+						operation_maintenance_cost := om_cost_multiplier * design_capacity (mmbtu/hr)
+
+						-- calculate annual cost
+						annual_cost := annualized_capital_cost + operation_maintenance_cost
+
+					*/|| deflator_gdp_adjustment_factor_expression || ' *
+					(
+					((' || control_measure_equation_table_alias || '.value1 * (3.412 * ' || convert_design_capacity_expression || '))/*capital_cost*/ * (' || capital_recovery_factor_expression || '))/*annualized_capital_cost*/
+					)
+				' end || '
+
 				-- Filler when clause, just in case no when part shows up from conditional logic
 				when 1 = 0 then null::double precision
 				else 
@@ -3662,6 +3747,17 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 							''-Type 19''
 					end
 
+				' end || '
+
+				' || case when not has_design_capacity_columns then '' else '
+				-- Equation Type 20
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' then
+					case
+						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then
+							''Type 20''
+						else
+							''-Type 20''
+					end
 				' end || '
 
 				-- Filler when clause, just in case no when part shows up from conditional logic
