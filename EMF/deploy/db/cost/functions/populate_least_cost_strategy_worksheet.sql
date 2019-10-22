@@ -803,7 +803,7 @@ from (
 			' || quote_literal(strategy_name) || ' as strategy_name,
 			ct.name as control_technology,
 			sg.name as source_group,
-			' || case when not has_merged_columns then 'null::integer as original_dataset_id, ' || quote_literal(sector) || '::character varying as sector' else 'inv.original_dataset_id, inv.sector' end || ',
+			' || case when not has_merged_columns then 'null::integer as original_dataset_id, ' || quote_nullable(sector) || '::character varying as sector' else 'inv.original_dataset_id, inv.sector' end || ',
 			sources.id as source,
 			fipscode.county,
 			fipscode.state_name,

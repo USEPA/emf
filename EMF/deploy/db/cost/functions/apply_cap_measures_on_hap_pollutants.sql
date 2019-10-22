@@ -281,7 +281,7 @@ raise notice '%', is_flat_file_inventory;
 		dr.cm_id as control_measures_id,
 		null as equation_type,
 		dr.original_dataset_id,
-		' || quote_literal(inventory_sectors) || ' as sector,
+		' || quote_nullable(inventory_sectors) || ' as sector,
 
 		' || case when has_latlong_columns then 'inv.' || longitude_expression || ' as xloc,inv.' || latitude_expression || ' as yloc,' else 'fipscode.centerlon as xloc,fipscode.centerlat as yloc,' end || '
 		' || case when has_plant_column then 'inv.' || plant_name_expression || ' as plant' when not has_latlong_columns then 'fipscode.state_county_fips_code_desc as plant' else 'null::character varying as plant' end || ',
