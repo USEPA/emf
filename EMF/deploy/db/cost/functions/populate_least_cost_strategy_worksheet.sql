@@ -675,7 +675,15 @@ BEGIN
 			scc_l1,
 			scc_l2,
 			scc_l3,
-			scc_l4
+			scc_l4,
+			design_capacity,
+			design_capacity_units,
+			stkflow,
+			stkvel,
+			stkdiam,
+			stktemp,
+			annual_avg_hours_per_year,
+			so2_emissions
 			) 
 select 
 	' || worksheet_dataset_id || '::integer as dataset_id,
@@ -733,7 +741,15 @@ select
 	scc_l1,
 	scc_l2,
 	scc_l3,
-	scc_l4
+	scc_l4,
+	design_capacity,
+	design_capacity_units,
+	stkflow,
+	stkvel,
+	stkdiam,
+	stktemp,
+	annual_avg_hours_per_year,
+	so2_emissions
 --	,source_tp_remaining_emis,source_tp_count,source_annual_cost, winner
 
 from (
@@ -810,7 +826,12 @@ from (
 			scc_codes.scc_l1,
 			scc_codes.scc_l2,
 			scc_codes.scc_l3,
-			scc_codes.scc_l4
+			scc_codes.scc_l4,
+			' || case when has_design_capacity_columns = false then 'null::double precision as design_capacity, null::character varying(20) as design_capacity_units, ' else 'inv.design_capacity,
+			' || case when is_flat_file_inventory then 'inv.design_capacity_units, 'else 'inv.design_capacity_unit_numerator as design_capacity_units, ' end || '
+			' end || '
+			' || case when is_point_table = false then 'null::double precision as stkflow, null::double precision as stkvel, null::double precision as stkdiam, null::double precision as stktemp, null::double precision as annual_avg_hours_per_year, ' else 'inv.stkflow, inv.stkvel, inv.stkdiam, inv.stktemp, inv.annual_avg_hours_per_year, ' end || '
+			inv_ovr.so2_ann_value as so2_emissions
 
 		FROM emissions.' || inv_table_name || ' inv
 

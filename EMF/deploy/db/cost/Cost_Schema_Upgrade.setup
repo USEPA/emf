@@ -2483,3 +2483,17 @@ INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_positi
 SELECT e.id, 'O&M Cost Multiplier ($/MMBtu/hr)', 2, 1
   FROM emf.equation_types AS e
  WHERE name = 'Type 20';
+
+ -- 10/21/2019 Add columns to Control Strategy Detailed Result Extended dataset type
+WITH type AS (
+  SELECT file_format AS id FROM emf.dataset_types WHERE name = 'Control Strategy Detailed Result Extended'
+)
+INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type) VALUES
+((SELECT id FROM type), 85, 'design_capacity', 'double precision'),
+((SELECT id FROM type), 86, 'design_capacity_units', 'VARCHAR(20)'),
+((SELECT id FROM type), 87, 'stkflow', 'double precision'),
+((SELECT id FROM type), 88, 'stkvel', 'double precision'),
+((SELECT id FROM type), 89, 'stkdiam', 'double precision'),
+((SELECT id FROM type), 90, 'stktemp', 'double precision'),
+((SELECT id FROM type), 91, 'annual_avg_hours_per_year', 'double precision'),
+((SELECT id FROM type), 92, 'so2_emissions', 'double precision');

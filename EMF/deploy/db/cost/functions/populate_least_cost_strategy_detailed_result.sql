@@ -334,7 +334,15 @@ BEGIN
 		scc_l1,
 		scc_l2,
 		scc_l3,
-		scc_l4
+		scc_l4,
+		design_capacity,
+		design_capacity_units,
+		stkflow,
+		stkvel,
+		stkdiam,
+		stktemp,
+		annual_avg_hours_per_year,
+		so2_emissions
 		) 
 	select 	
 		' || detailed_result_dataset_id || '::integer,
@@ -392,7 +400,15 @@ BEGIN
 		scc_l1,
 		scc_l2,
 		scc_l3,
-		scc_l4
+		scc_l4,
+		design_capacity,
+		design_capacity_units,
+		stkflow,
+		stkvel,
+		stkdiam,
+		stktemp,
+		annual_avg_hours_per_year,
+		so2_emissions
 
 	from (
 

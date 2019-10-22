@@ -146,6 +146,15 @@ public class StrategyLeastCostCMWorksheetTableFormat implements TableFormat {
         cols.add(new Column("SCC_L3", types.stringType(70), 70, new StringFormatter(70)));
         cols.add(new Column("SCC_L4", types.stringType(70), 70, new StringFormatter(70)));
         
+        cols.add(new Column("design_capacity", types.realType(), new RealFormatter()));
+        cols.add(new Column("design_capacity_units", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("stkflow", types.realType(), new RealFormatter()));
+        cols.add(new Column("stkvel", types.realType(), new RealFormatter()));
+        cols.add(new Column("stkdiam", types.realType(), new RealFormatter()));
+        cols.add(new Column("stktemp", types.realType(), new RealFormatter()));
+        cols.add(new Column("annual_avg_hours_per_year", types.realType(), new RealFormatter()));
+        cols.add(new Column("so2_emissions", types.realType(), new RealFormatter()));
+        
         cols.add(new Column("Comment", types.stringType(128), new StringFormatter(128)));
 
         return cols.toArray(new Column[0]);
