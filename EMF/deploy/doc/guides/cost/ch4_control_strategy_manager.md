@@ -730,23 +730,23 @@ Cost ($) for a year of interest = (Cost for original cost year x GDP IPD for yea
 
 where the GDP IPD is the Gross Domestic Product Implicit Price Deflator.
 
-Implicit Price Deflator (IPD) values are available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from March 2018. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
+Implicit Price Deflator (IPD) values are available from the United States Department of Commerce Bureau of Economic Analysis [Table 1.1.9. Implicit Price Deflators for Gross Domestic Product](https://apps.bea.gov/iTable/iTable.cfm?reqid=19&step=3&isuri=1&1921=survey&1903=13#reqid=19&step=3&isuri=1&1921=survey&1903=13). The current version used is from August 2019. An excerpt of this version is shown in Table {@tbl:excerpt_from_the_gdplev_table_table}.
 
 
 <a id="tbl:excerpt_from_the_gdplev_table_table"></a>
 
 Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD| |Year|GDP IPD
 -|-|-|-|-|-|-|-|-|-|-
-1980|44.377| |1990|66.773| |2000|81.887| |2010|101.221
-1981|48.520| |1991|68.996| |2001|83.754| |2011|103.311
-1982|51.530| |1992|70.569| |2002|85.039| |2012|105.214
-1983|53.565| |1993|72.248| |2003|86.735| |2013|106.913
-1984|55.466| |1994|73.785| |2004|89.120| |2014|108.832
-1985|57.240| |1995|75.324| |2005|91.988| |2015|110.012
-1986|58.395| |1996|76.699| |2006|94.814| |2016|111.416
-1987|59.885| |1997|78.012| |2007|97.337| |2017|113.421
-1988|61.982| |1998|78.859| |2008|99.246|
-1989|64.392| |1999|80.065| |2009|100|
+1980|42.273| |1990|63.671| |2000|78.078| |2010|96.111
+1981|46.273| |1991|65.825| |2001|79.790| |2011|98.118
+1982|49.132| |1992|67.325| |2002|81.052| |2012|100
+1983|51.056| |1993|68.920| |2003|82.557| |2013|101.755
+1984|52.898| |1994|70.392| |2004|84.780| |2014|103.638
+1985|54.571| |1995|71.868| |2005|87.421| |2015|104.717
+1986|55.670| |1996|73.183| |2006|90.066| |2016|105.801
+1987|57.046| |1997|74.445| |2007|92.486| |2017|107.794
+1988|59.059| |1998|75.283| |2008|94.285| |2018|110.420
+1989|61.374| |1999|76.370| |2009|95.004|
 
 Table: Excerpt from the Table Used to Convert Data between Cost Years. {#tbl:excerpt_from_the_gdplev_table_table}
 
