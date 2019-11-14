@@ -816,6 +816,14 @@ EXISTING\_PRIMARY\_DEVICE\_<wbr/>`\hspace{0pt}`{=latex}TYPE\_CODE|This column is
 STRATEGY\_NAME|The name of the control strategy that produced the detailed result.
 CONTROL\_TECHNOLOGY|Indicates the control technology of the control measure.
 SOURCE\_GROUP|Indicates the source group of the control measure.
+DESIGN\_CAPACITY|For point sources, the design capacity for the source from the inventory.
+DESIGN\_CAPACITY\_UNITS|For point sources, the design capacity units for the source from the inventory.
+STKFLOW (ft<sup>3</sup>/sec)|For point sources, the stack gas flow rate for the source from the inventory.
+STKVEL (ft/sec)|For point sources, the stack gas exit velocity for the source from the inventory.
+STKDIAM (ft)|For point sources, the stack diameter for the source from the inventory.
+STKTEMP (&deg;F)|For point sources, the stack gas exit temperature for the source from the inventory.
+ANNUAL\_AVG\_HOURS\_PER\_YEAR|For point sources, the annual average hours per year of operation for the source from the inventory.
+SO2\_EMISSIONS (tons)|Annual SO<sub>2</sub> emissions for the source from the inventory.
 COMMENT|Information about this record and how it was produced; this information is either created automatically by the system or entered by the user.
 RECORD\_ID VERSION DELETE\_VERSIONS|System specific columns used for tracking primary key and versioning of data
 
