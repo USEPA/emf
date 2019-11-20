@@ -814,8 +814,15 @@ REPLACEMENT\_ADDON|Indicates whether the measure was a replacement or an add-on 
 EXISTING\_MEASURE\_<wbr/>`\hspace{0pt}`{=latex}ABBREVIATION|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure abbreviation that was on the source.
 EXISTING\_PRIMARY\_DEVICE\_<wbr/>`\hspace{0pt}`{=latex}TYPE\_CODE|This column is used when an Add-On Control was applied to a source; it indicates the existing control measure primary device type code that was on the source.
 STRATEGY\_NAME|The name of the control strategy that produced the detailed result.
+TARGET\_POLL|The target pollutant of the control strategy.
 CONTROL\_TECHNOLOGY|Indicates the control technology of the control measure.
 SOURCE\_GROUP|Indicates the source group of the control measure.
+COUNTY\_NAME|The name of the county that the source is in.
+STATE\_NAME|The name of the state that the source is in.
+SCC\_L1|The Level 1 description for the source's SCC.
+SCC\_L2|The Level 2 description for the source's SCC.
+SCC\_L3|The Level 3 description for the source's SCC.
+SCC\_L4|The Level 4 description for the source's SCC.
 DESIGN\_CAPACITY|For point sources, the design capacity for the source from the inventory.
 DESIGN\_CAPACITY\_UNITS|For point sources, the design capacity units for the source from the inventory.
 STKFLOW (ft<sup>3</sup>/sec)|For point sources, the stack gas flow rate for the source from the inventory.
