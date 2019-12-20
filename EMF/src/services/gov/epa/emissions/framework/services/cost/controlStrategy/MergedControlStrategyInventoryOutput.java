@@ -31,7 +31,7 @@ import java.util.Date;
 import org.hibernate.Session;
 
 public class MergedControlStrategyInventoryOutput extends AbstractControlStrategyInventoryOutput {
-   
+
     public MergedControlStrategyInventoryOutput(User user, ControlStrategy controlStrategy,
             ControlStrategyResult controlStrategyResult, String namePrefix, 
             HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) throws Exception {
@@ -294,7 +294,7 @@ public class MergedControlStrategyInventoryOutput extends AbstractControlStrateg
         ResultSet rs;
         ResultSetMetaData md;
         try {
-            rs = datasource.query().executeQuery("select * from " + qualifiedTableName);
+            rs = datasource.query().executeQuery("select * from " + qualifiedTableName + " where 1 = 0");
             md = rs.getMetaData();
         } catch (SQLException e) {
             throw new EmfException(e.getMessage());
