@@ -2117,3 +2117,8 @@ set name = 'FUG_LENGTH_YDIM'
 where file_format_id in (select id from emf.file_formats where id in (select file_format from emf.dataset_types where name = 'Flat File 2010 Point'))
 and name = 'FUG_LENGTH_XDIM';
 
+-- 2/24/2020 Fix data_set_id field for Flat File 2010 Activity
+update emf.fileformat_columns
+set name = 'data_set_id', type = 'varchar(255)'
+where file_format_id in (select file_format from emf.dataset_types where name = 'Flat File 2010 Activity')
+and name = 'date_set_id';
