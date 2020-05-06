@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.data.datasettype;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
 import gov.epa.emissions.framework.ui.RefreshObserver;
 
@@ -104,8 +105,8 @@ public class DatasetTypesManagerPresenter implements RefreshObserver {
         view.refresh(service().getDatasetTypes());
     }
 
-    public DatasetType[] getDatasetTypes() throws EmfException {
-        return service().getDatasetTypes();
+    public DatasetType[] getDatasetTypes(BasicSearchFilter searchFilter) throws EmfException {
+        return service().getDatasetTypes(searchFilter);
     }
 
 }

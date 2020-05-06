@@ -121,7 +121,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         msgRefreshPanel.add(button, BorderLayout.EAST);
 
         JPanel topPanel = new JPanel(new BorderLayout());
-        simpleTextFilter = new TextField("textfilter", 10);
+        simpleTextFilter = new TextField("textfilter", 25);
         simpleTextFilter.setPreferredSize(new Dimension(360, 25));
         simpleTextFilter.setEditable(true);
         simpleTextFilter.addActionListener(simpleFilterTypeAction());

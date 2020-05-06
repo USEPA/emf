@@ -6,15 +6,25 @@ import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
+import gov.epa.emissions.framework.services.basic.FilterField;
+import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
+import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
 public class DatasetTypesDAO {
@@ -30,6 +40,29 @@ public class DatasetTypesDAO {
 
     public List getAll(Session session) {
         return hibernateFacade.getAll(DatasetType.class, Order.asc("name").ignoreCase(), session);
+    }
+
+    public List<DatasetType> getDatasetTypes(Session session, BasicSearchFilter searchFilter) {
+        Criteria criteria = session.createCriteria(DatasetType.class, "dt");
+
+        if (StringUtils.isNotBlank(searchFilter.getFieldName())
+                && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
+            Criteria inCriteria = session.createCriteria(DatasetType.class, "dt")
+                    .setProjection(Property.forName("id"));
+
+            SearchDAOUtility.buildSearchCriterion(inCriteria, new DatasetTypeFilter(), searchFilter);
+
+            List<Integer> moduleIds = inCriteria.list();
+
+            if (moduleIds.size() > 0)
+                criteria
+                        .add(Property.forName("id").in(moduleIds));
+            else
+                criteria
+                        .add(Property.forName("id").eq((Object)null));
+        }
+
+        return criteria.list();
     }
 
     public List<DatasetType> getLightAll(Session session) {

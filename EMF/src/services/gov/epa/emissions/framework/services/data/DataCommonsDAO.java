@@ -15,6 +15,7 @@ import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
@@ -100,6 +101,10 @@ public class DataCommonsDAO {
 
     public List getDatasetTypes(Session session) {
         return datasetTypesDAO.getAll(session);
+    }
+
+    public List<DatasetType> getDatasetTypes(Session session, BasicSearchFilter searchFilter) {
+        return datasetTypesDAO.getDatasetTypes(session, searchFilter);
     }
 
     public List<DatasetType> getDatasetTypes(int userId, Session session) {

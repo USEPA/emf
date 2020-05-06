@@ -14,6 +14,7 @@ import gov.epa.emissions.commons.db.intendeduse.IntendedUse;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.FileDownload;
 import gov.epa.emissions.framework.services.basic.Status;
@@ -56,6 +57,8 @@ public interface DataCommonsService {
 
     // DatasetType
     DatasetType[] getDatasetTypes() throws EmfException;
+
+    DatasetType[] getDatasetTypes(BasicSearchFilter searchFilter) throws EmfException;
 
     // DatasetType (limit to viewable dataset types)
     DatasetType[] getDatasetTypes(int userId) throws EmfException;

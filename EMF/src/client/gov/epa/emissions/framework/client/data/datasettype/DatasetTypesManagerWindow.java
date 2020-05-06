@@ -2,8 +2,10 @@ package gov.epa.emissions.framework.client.data.datasettype;
 
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.gui.Button;
+import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
@@ -13,6 +15,8 @@ import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
+import gov.epa.emissions.framework.services.data.DatasetTypeFilter;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
@@ -20,21 +24,13 @@ import gov.epa.emissions.framework.ui.RefreshObserver;
 import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 
 public class DatasetTypesManagerWindow extends ReusableInteralFrame implements DatasetTypesManagerView, RefreshObserver {
 
@@ -55,6 +51,9 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
     private EmfSession session;
     
     private Button editButton, newButton, removeButton;
+
+    private TextField simpleTextFilter;
+    private ComboBox filterFieldsComboBox;
 
     public DatasetTypesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
         super("Dataset Type Manager", new Dimension(700, 350), desktopManager);
@@ -113,6 +112,64 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
 
         Button button = new RefreshButton(this, "Refresh Dataset Types", messagePanel);
         panel.add(button, BorderLayout.EAST);
+
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        simpleTextFilter = new TextField("textfilter", 25);
+        simpleTextFilter.setPreferredSize(new Dimension(360, 25));
+        simpleTextFilter.setEditable(true);
+        simpleTextFilter.addActionListener(simpleFilterTypeAction());
+
+
+        JPanel advPanel = new JPanel(new BorderLayout(5, 2));
+
+        //get table column names
+//        String[] columns = new String[] {"Module Name", "Composite?", "Final?", "Tags", "Project", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };//(new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>())).columns();
+
+        filterFieldsComboBox = new ComboBox("Select one", (new DatasetTypeFilter()).getFilterFieldNames());
+        filterFieldsComboBox.setSelectedIndex(1);
+        filterFieldsComboBox.setPreferredSize(new Dimension(180, 25));
+        filterFieldsComboBox.addActionListener(simpleFilterTypeAction());
+
+        advPanel.add(getDilterFieldsComboBoxPanel("Filter Fields:", filterFieldsComboBox), BorderLayout.LINE_START);
+        advPanel.add(simpleTextFilter, BorderLayout.EAST);
+//        advPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
+
+        topPanel.add(advPanel, BorderLayout.EAST);
+
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1));
+        mainPanel.add(panel);
+        mainPanel.add(topPanel);
+
+        return mainPanel;
+    }
+
+    private Action simpleFilterTypeAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+//                DatasetType type = getSelectedDSType();
+//                try {
+//                    // count the number of datasets and do refresh
+//                    if (dsTypesBox.getSelectedIndex() > 0)
+                try {
+                    doRefresh();
+                } catch (EmfException e1) {
+                    e1.printStackTrace();
+                }
+//                } catch (EmfException e1) {
+////                    messagePanel.setError("Could not retrieve all modules " /*+ type.getName()*/);
+//                }
+            }
+        };
+    }
+
+    private JPanel getDilterFieldsComboBoxPanel(String label, JComboBox box) {
+        JPanel panel = new JPanel(new BorderLayout(5, 2));
+        JLabel jlabel = new JLabel(label);
+        jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        panel.add(jlabel, BorderLayout.WEST);
+        panel.add(box, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));
 
         return panel;
     }
@@ -266,6 +323,17 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
         populate();
     }
 
+    private BasicSearchFilter getBasicSearchFilter() {
+
+        BasicSearchFilter searchFilter = new BasicSearchFilter();
+        String fieldName = (String)filterFieldsComboBox.getSelectedItem();
+        if (fieldName != null) {
+            searchFilter.setFieldName(fieldName);
+            searchFilter.setFieldValue(simpleTextFilter.getText());
+        }
+        return searchFilter;
+    }
+
     @Override
     public void populate() {
         //long running methods.....
@@ -288,7 +356,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
              */
             @Override
             public DatasetType[] doInBackground() throws EmfException  {
-                return presenter.getDatasetTypes();
+                return presenter.getDatasetTypes(getBasicSearchFilter());
             }
 
             /*

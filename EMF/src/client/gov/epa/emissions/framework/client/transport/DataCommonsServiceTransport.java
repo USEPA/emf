@@ -16,6 +16,7 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.DefaultEmfSession.ObjectCacheType;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.EmfFileInfo;
 import gov.epa.emissions.framework.services.basic.FileDownload;
 import gov.epa.emissions.framework.services.basic.Status;
@@ -117,6 +118,16 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.setReturnType(mappings.datasetTypes());
 
         return (DatasetType[]) call.requestResponse(new Object[] {});
+    }
+
+    public synchronized DatasetType[] getDatasetTypes(BasicSearchFilter searchFilter) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getDatasetTypes");
+        call.addParam("searchFilter", mappings.basicSearchFilter());
+        call.setReturnType(mappings.datasetTypes());
+
+        return (DatasetType[]) call.requestResponse(new Object[] {searchFilter});
     }
 
     // DatasetType (limit to viewable dataset types)
