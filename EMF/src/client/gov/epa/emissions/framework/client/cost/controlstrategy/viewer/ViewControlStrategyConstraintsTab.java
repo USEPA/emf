@@ -191,7 +191,8 @@ public class ViewControlStrategyConstraintsTab extends EmfPanel implements ViewC
             doNotApplyReplacement.setSelected(true);
         }
         
-        panel.add(new JLabel("Handling for sources that have an existing device code but no reduction percentage"));
+        panel.add(new JLabel("<html>This constraint applies ONLY to emissions units in the NEI that have " +
+                             "an existing control device code and DO NOT specify a percent reduction.</html>"));
         panel.add(doNotApplyReplacement);
         panel.add(matchDevicePollutant);
         panel.add(alwaysApplyReplacement);
