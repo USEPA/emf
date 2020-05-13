@@ -987,7 +987,7 @@ from (
 				' else '' end || '
 
 				-- dont include sources that have been fully controlled...
-				and coalesce(' || inv_pct_red_expression || ', 0) <> 100.0
+				and coalesce(' || inv_pct_red_expression || ', 0) < 100.0
 
 
 				-- make sure the new control is worthy
