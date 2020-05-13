@@ -787,7 +787,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -1312,7 +1312,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -1842,7 +1842,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -2309,7 +2309,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -2673,7 +2673,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || inv_table_alias || '.design_capacity, 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || inv_table_alias || '.design_capacity, 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -3061,7 +3061,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -3572,7 +3572,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				--Equation Type 2b 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' then
 					case 
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then 
 							''Type 2b''
 						else
 							''-Type 2b''
