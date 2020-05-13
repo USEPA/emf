@@ -2497,3 +2497,11 @@ INSERT INTO emf.fileformat_columns (file_format_id, list_index, name, type) VALU
 ((SELECT id FROM type), 90, 'stktemp', 'double precision'),
 ((SELECT id FROM type), 91, 'annual_avg_hours_per_year', 'double precision'),
 ((SELECT id FROM type), 92, 'so2_emissions', 'double precision');
+
+-- 11/20/2019 Update Equation Type 1 description to reflect changes made in EMF v2.11 (June 2016)
+UPDATE emf.equation_types SET equation =
+'Scaling Factor = (Model Plant boiler capacity / MW) ^ (Scaling Factor Exponent)
+Capital Cost = Capital Cost Multiplier x Design Capacity x Scaling Factor x 1,000
+Fixed O&M = Fixed O&M Cost Multiplier x Design Capacity x Scaling Factor x 1,000
+Variable O&M = Variable O&M Cost Multiplier x Design Capacity x Capacity Factor x 8,760'
+WHERE name = 'Type 1';
