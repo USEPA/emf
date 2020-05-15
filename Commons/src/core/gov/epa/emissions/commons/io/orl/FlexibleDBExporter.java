@@ -35,8 +35,10 @@ import org.apache.commons.logging.LogFactory;
 public class FlexibleDBExporter extends GenericExporter {
 
     Log log = LogFactory.getLog(ORLExporter.class);
-
-    private Dataset dataset;
+    
+    private Dataset[] datasets;
+    
+    private DataFormatFactory[] dataFormatFactories;
     
     private XFileFormat fileFormat;
     
@@ -48,12 +50,13 @@ public class FlexibleDBExporter extends GenericExporter {
     
     protected Map<String, String> colsToExport;
     
-    public FlexibleDBExporter(Dataset dataset, String rowFilters, DbServer dbServer, DataFormatFactory dataFormatFactory,
+    public FlexibleDBExporter(Dataset[] datasets, String rowFilters, DbServer dbServer, DataFormatFactory[] dataFormatFactories,
             Integer optimizedBatchSize, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition,
             String colsToExport) {
-        super(dataset, rowFilters, dbServer, dataset.getDatasetType().getFileFormat(), dataFormatFactory, optimizedBatchSize, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
-        this.dataset = dataset;
-        this.fileFormat = dataset.getDatasetType().getFileFormat();
+        super(datasets[0], rowFilters, dbServer, datasets[0].getDatasetType().getFileFormat(), null, optimizedBatchSize, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+        this.datasets = datasets;
+        this.dataFormatFactories = dataFormatFactories;
+        this.fileFormat = datasets[0].getDatasetType().getFileFormat();
         this.datasource = dbServer.getEmissionsDatasource();
         this.withColNames = getColumnLabel();
 
@@ -76,7 +79,7 @@ public class FlexibleDBExporter extends GenericExporter {
     }
 
     public FlexibleDBExporter(Dataset dataset, String rowFilters, DbServer dbServer, Integer optimizeBatchSize) {
-        this(dataset, rowFilters, dbServer, new NonVersionedDataFormatFactory(), optimizeBatchSize, null, null, null, null);
+        this(new Dataset[] { dataset }, rowFilters, dbServer, new DataFormatFactory[] { new NonVersionedDataFormatFactory() }, optimizeBatchSize, null, null, null, null);
     }
 
     public void export(File file) throws ExporterException {
@@ -93,41 +96,50 @@ public class FlexibleDBExporter extends GenericExporter {
                     + tempDir + "");
         
         if (fileFormat==null || fileFormat.cols()== null || fileFormat.cols().length == 0)
-            throw new ExporterException("Flexible file format is not defined for dataset: "+dataset.getName());
+            throw new ExporterException("Flexible file format is not defined for dataset: "+datasets[0].getName());
 
         Random rando = new Random();
         long id = Math.abs(rando.nextInt());
 
         String separator = System.getProperty("file.separator");
-        String dataFileName = tempDir + separator + file.getName() + id + ".dat";
         
         String headerFileName = tempDir + separator + file.getName() + id + ".hed";
-        File dataFile = new File(dataFileName);
         File headerFile = new File(headerFileName);
+
+        String[] dataFileNames = new String[datasets.length];
+        File[] dataFiles = new File[datasets.length];
+        
+        for (int i = 0; i < datasets.length; i++) {
+            id = Math.abs(rando.nextInt());
+            dataFileNames[i] = tempDir + separator + file.getName() + id + ".dat";
+            dataFiles[i] = new File(dataFileNames[i]);
+        }
 
         // use one statement and connection object for all operations, this we can easily clean them up....
         Connection connection = null;
         Statement statement = null;
 
         try {
-            createNewFile(dataFile);
             writeHeader(headerFile);
 
-            String originalQuery = getQueryString(dataset, rowFilters, datasource, this.filterDataset, this.filterDatasetVersion, this.filterDatasetJoinCondition);
-            String query = getColsSpecdQueryString(dataset, originalQuery);
-         
-            String writeQuery = getWriteQueryString(dataFileName, query);
-            //System.out.print(writeQuery);
-
-            // log.warn(writeQuery);
-
             connection = datasource.getConnection();
-
-            statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             
-            setExportedLines(originalQuery, statement);
-            executeQuery(statement, writeQuery);
-            concatFiles(file, headerFileName, dataFileName);
+            for (int i = 0; i < datasets.length; i++) {
+                createNewFile(dataFiles[i]);
+
+                String originalQuery = getQueryString(datasets[i], dataFormatFactories[i], rowFilters, datasource, this.filterDataset, this.filterDatasetVersion, this.filterDatasetJoinCondition);
+                String query = getColsSpecdQueryString(datasets[i], originalQuery);
+         
+                String writeQuery = getWriteQueryString(dataFileNames[i], query, (i == 0 ? withColNames : false));
+                //System.out.print(writeQuery);
+
+                // log.warn(writeQuery);
+
+                statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+                setExportedLines(originalQuery, statement);
+                executeQuery(statement, writeQuery);
+            }
+            concatFiles(file, headerFileName, dataFileNames);
             //setExportedLines(originalQuery, statement);
         } catch (Exception e) {
             //e.printStackTrace();
@@ -148,8 +160,10 @@ public class FlexibleDBExporter extends GenericExporter {
             } catch (SQLException e) {
                 //
             }
-            if (dataFile.exists())
-                dataFile.delete();
+            for (File dataFile : dataFiles) {
+                if (dataFile.exists())
+                    dataFile.delete();
+            }
             if (headerFile.exists())
                 headerFile.delete();
         }
@@ -208,10 +222,10 @@ public class FlexibleDBExporter extends GenericExporter {
         PrintWriter writer = new PrintWriter(new CustomCharSetOutputStreamWriter(new FileOutputStream(file)));
 
         try {
-            boolean headercomments = dataset.getHeaderCommentsSetting();
+            boolean headercomments = datasets[0].getHeaderCommentsSetting();
 
             if (headercomments)
-                writeHeaders(writer, dataset);
+                writeHeaders(writer, datasets[0], dataFormatFactories[0]);
         } finally {
             writer.close();
         }
@@ -231,13 +245,22 @@ public class FlexibleDBExporter extends GenericExporter {
         }
     }
 
-    private void concatFiles(File file, String headerFile, String dataFile) throws Exception {
+    private void concatFiles(File file, String headerFile, String[] dataFiles) throws Exception {
         String[] cmd = null;
 
-        if (windowsOS)
-            cmd = getCommands("copy \"" + headerFile + "\" + \"" +dataFile + "\" \"" + file.getAbsolutePath() + "\" /Y");
-        else {
-            String cmdString = "cat " + headerFile + " " + dataFile + " > " + file.getAbsolutePath();
+        if (windowsOS) {
+            String cmdString = "copy \"" + headerFile + "\"";
+            for (String dataFile : dataFiles) {
+                cmdString += " + \"" + dataFile + "\"";
+            }
+            cmdString += " \"" + file.getAbsolutePath() + "\" /Y";
+            cmd = getCommands(cmdString);
+        } else {
+            String cmdString = "cat " + headerFile;
+            for (String dataFile : dataFiles) {
+                cmdString += " " + dataFile;
+            }
+            cmdString += " > " + file.getAbsolutePath();
             cmd = new String[] { "sh", "-c", cmdString };
         }
         
@@ -299,7 +322,7 @@ public class FlexibleDBExporter extends GenericExporter {
     }
     
 
-    private String getWriteQueryString(String dataFile, String query) {
+    private String getWriteQueryString(String dataFile, String query, boolean withColNames) {
         String columnsThatNeedQuotes = getNeedQuotesCols();
         String withClause = " WITH NULL '' CSV" + (!columnsThatNeedQuotes.isEmpty() ? " FORCE QUOTE " + columnsThatNeedQuotes : "");
         if (withColNames)
@@ -343,7 +366,7 @@ public class FlexibleDBExporter extends GenericExporter {
     }
     
     private  KeyVal[] keyValFound(String keyword) {
-        KeyVal[] keys = dataset.getDatasetType().getKeyVals();
+        KeyVal[] keys = datasets[0].getDatasetType().getKeyVals();
         List<KeyVal> list = new ArrayList<KeyVal>();
         
         for (KeyVal key : keys)

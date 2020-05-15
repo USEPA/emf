@@ -84,13 +84,19 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
-        exportDatasets(user, datasets, versions, dirName, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+        exportDatasets(user, datasets, versions, dirName, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null, false);
+    }
+
+    public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, String[] dsExportPrefs) throws EmfException {
+        exportDatasets(user, datasets, versions, dirName, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs, false);
     }
 
     public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String dirName, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
-            String[] dsExportPrefs) throws EmfException {
+            String[] dsExportPrefs, boolean concat) throws EmfException {
         if (DebugLevels.DEBUG_4())
             System.out.println(">>## calling export datasets in eximSvcImp: " + myTag() + " for datasets: "
                     + datasets.toString());
@@ -101,7 +107,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
         submitterId = exportService.exportForClient(user, datasets, versions, dirName, 
                     prefix, rowFilters, filterDataset,
                     filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, overwrite,
-                    dsExportPrefs);
+                    dsExportPrefs, concat);
         if (DebugLevels.DEBUG_4())
             System.out.println("In ExImServiceImpl:exportDatasets() SUBMITTERID= " + submitterId);
         if (DebugLevels.DEBUG_21())
@@ -111,13 +117,19 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
-        downloadDatasets(user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+        downloadDatasets(user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null, false);
+    }
+
+    public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, String[] dsExportPrefs) throws EmfException {
+        downloadDatasets(user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs, false);
     }
 
     public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
-            String[] dsExportPrefs) throws EmfException {
+            String[] dsExportPrefs, boolean concat) throws EmfException {
         String dirName = this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/";
         if (DebugLevels.DEBUG_4())
             System.out.println(">>## calling export datasets in eximSvcImp: " + myTag() + " for datasets: "
@@ -129,7 +141,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
         submitterId = exportService.downloadForClient(user, datasets, versions, dirName, 
                     prefix, rowFilters, filterDataset,
                     filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose,
-                    dsExportPrefs);
+                    dsExportPrefs, concat);
         if (DebugLevels.DEBUG_4())
             System.out.println("In ExImServiceImpl:exportDatasets() SUBMITTERID= " + submitterId);
         if (DebugLevels.DEBUG_21())

@@ -125,6 +125,10 @@ public class GenericExporter implements Exporter {
     }
 
     protected void writeHeaders(PrintWriter writer, Dataset dataset) throws SQLException {
+        writeHeaders(writer, dataset, dataFormatFactory);
+    }
+
+    protected void writeHeaders(PrintWriter writer, Dataset dataset, DataFormatFactory localDataFormatFactory) throws SQLException {
         String header = dataset.getDescription();
         String cr = System.getProperty("line.separator");
 
@@ -140,11 +144,15 @@ public class GenericExporter implements Exporter {
                 writer.print(cr);
         }
 
-        printExportInfo(writer);
+        printExportInfo(writer, localDataFormatFactory);
     }
 
     protected void printExportInfo(PrintWriter writer) throws SQLException {
-        Version version = dataFormatFactory.getVersion();
+        printExportInfo(writer, dataFormatFactory);
+    }
+
+    protected void printExportInfo(PrintWriter writer, DataFormatFactory localDataFormatFactory) throws SQLException {
+        Version version = localDataFormatFactory.getVersion();
 
         writer.println("#EXPORT_DATE=" + new Date().toString());
         writer.println("#EXPORT_VERSION_NAME=" + (version == null ? "None" : version.getName()));
@@ -238,17 +246,25 @@ public class GenericExporter implements Exporter {
     }
 
     protected String getQueryString(Dataset dataset, String rowFilters, Datasource datasource) throws ExporterException {
+        return getQueryString(dataset, dataFormatFactory, rowFilters, datasource);
+    }
+
+    protected String getQueryString(Dataset dataset, DataFormatFactory localDataFormatFactory, String rowFilters, Datasource datasource) throws ExporterException {
         InternalSource source = dataset.getInternalSources()[0];
         if ("versions".equalsIgnoreCase(source.getTable().toLowerCase()) && "emissions".equalsIgnoreCase(datasource.getName().toLowerCase())) {
             System.err.println("Versions table moved to EMF. Error in " + this.getClass().getName());
         }
         String qualifiedTable = datasource.getName() + "." + source.getTable();
-        ExportStatement export = dataFormatFactory.exportStatement();
+        ExportStatement export = localDataFormatFactory.exportStatement();
 
         return export.generate(qualifiedTable, rowFilters);
     }
 
     protected String getQueryString(Dataset dataset, String rowFilters, Datasource datasource, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition) throws ExporterException {
+        return getQueryString(dataset, dataFormatFactory, rowFilters, datasource, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);
+    }
+
+    protected String getQueryString(Dataset dataset, DataFormatFactory localDataFormatFactory, String rowFilters, Datasource datasource, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition) throws ExporterException {
         InternalSource source = dataset.getInternalSources()[0];
         
         // VERSIONS TABLE - Completed - throws exception if the following case is true
@@ -261,7 +277,7 @@ public class GenericExporter implements Exporter {
         }
         
         String qualifiedTable = datasource.getName() + "." + source.getTable();
-        ExportStatement export = dataFormatFactory.exportStatement();
+        ExportStatement export = localDataFormatFactory.exportStatement();
 
         try {
             return export.generate(datasource, qualifiedTable, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition);

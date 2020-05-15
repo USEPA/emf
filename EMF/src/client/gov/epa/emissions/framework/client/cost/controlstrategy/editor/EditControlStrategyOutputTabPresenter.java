@@ -47,10 +47,10 @@ public class EditControlStrategyOutputTabPresenter implements EditControlStrateg
     }
     
     public void doExport(EmfDataset[] datasets, String folder) throws EmfException {
-        doExport(datasets, folder, null, false);
+        doExport(datasets, folder, null, false, false);
     }
     
-    public void doExport(EmfDataset[] datasets, String folder, String prefix, boolean download) throws EmfException {
+    public void doExport(EmfDataset[] datasets, String folder, String prefix, boolean download, boolean concat) throws EmfException {
         view.clearMsgPanel();
         
         if(datasets.length==0){
@@ -81,9 +81,9 @@ public class EditControlStrategyOutputTabPresenter implements EditControlStrateg
             dsExportPrefs[i] = prefVal;
         }
         if (download) {
-            service.downloadDatasets(session.user(), datasets, versions, prefix, true, "", null, null, null, "", "Exporting datasets", dsExportPrefs);
+            service.downloadDatasets(session.user(), datasets, versions, prefix, true, "", null, null, null, "", "Exporting datasets", dsExportPrefs, concat);
         } else {
-            service.exportDatasets(session.user(), datasets, versions, folder, prefix, true, "", null, null, null, "", "Exporting datasets", dsExportPrefs);
+            service.exportDatasets(session.user(), datasets, versions, folder, prefix, true, "", null, null, null, "", "Exporting datasets", dsExportPrefs, concat);
         }
     }
 

@@ -377,7 +377,7 @@ public class ManagedExportService {
     public synchronized String exportForClient(User user, EmfDataset[] datasets, Version[] versions, String dirName,
             String prefix, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, boolean overwrite,
-            String[] dsExportPrefs) throws EmfException {
+            String[] dsExportPrefs, boolean concat) throws EmfException {
 
         // FIXME: always overwrite
         // FIXME: hardcode overwite=true until verified with Alison
@@ -420,18 +420,35 @@ public class ManagedExportService {
         Services services = services();
 
         try {
-            for (int i = 0; i < datasets.length; i++) {
-                // Services services = services();
-                EmfDataset dataset = datasets[i];
-                Version version = versions[i];
-                String colsToExport = (dsExportPrefs != null ? dsExportPrefs[i] : "");
-
-                // FIXME: Investigate if services reference needs to be unique for each dataset in this call
-                if (isExportable(dataset, version, services, user)) {
-                    ExportTask tsk = createExportTask(user, purpose, overwrite,rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
-
+            if (concat) {
+                boolean isExportable = true;
+                for (int i = 0; i < datasets.length; i++) {
+                    EmfDataset dataset = datasets[i];
+                    Version version = versions[i];
+                    if (!isExportable(dataset, version, services, user)) {
+                        isExportable = false;
+                        break;
+                    }
+                }
+                if (isExportable) {
+                    String colsToExport = (dsExportPrefs != null ? dsExportPrefs[0] : "");
+                    ExportTask tsk = createConcatExportTask(user, purpose, overwrite, rowFilters, colOrders, path, prefix, datasets, versions, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
                     eximTasks.add(tsk);
-
+                }
+            } else {
+                for (int i = 0; i < datasets.length; i++) {
+                    // Services services = services();
+                    EmfDataset dataset = datasets[i];
+                    Version version = versions[i];
+                    String colsToExport = (dsExportPrefs != null ? dsExportPrefs[i] : "");
+    
+                    // FIXME: Investigate if services reference needs to be unique for each dataset in this call
+                    if (isExportable(dataset, version, services, user)) {
+                        ExportTask tsk = createExportTask(user, purpose, overwrite,rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
+    
+                        eximTasks.add(tsk);
+    
+                    }
                 }
             }
 
@@ -473,7 +490,7 @@ public class ManagedExportService {
     public synchronized String downloadForClient(User user, EmfDataset[] datasets, Version[] versions, String dirName,
             String prefix, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
-            String[] dsExportPrefs) throws EmfException {
+            String[] dsExportPrefs, boolean concat) throws EmfException {
 
         if (DebugLevels.DEBUG_9())
             System.out.println("ManagedExportService:export() called at: " + new Date());
@@ -513,18 +530,35 @@ public class ManagedExportService {
         Services services = services();
 
         try {
-            for (int i = 0; i < datasets.length; i++) {
-                // Services services = services();
-                EmfDataset dataset = datasets[i];
-                Version version = versions[i];
-                String colsToExport = (dsExportPrefs != null ? dsExportPrefs[i] : "");
-
-                // FIXME: Investigate if services reference needs to be unique for each dataset in this call
-                if (isExportable(dataset, version, services, user)) {
-                    ExportTask tsk = createDownloadTask(user, purpose, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
-
+            if (concat) {
+                boolean isExportable = true;
+                for (int i = 0; i < datasets.length; i++) {
+                    EmfDataset dataset = datasets[i];
+                    Version version = versions[i];
+                    if (!isExportable(dataset, version, services, user)) {
+                        isExportable = false;
+                        break;
+                    }
+                }
+                if (isExportable) {
+                    String colsToExport = (dsExportPrefs != null ? dsExportPrefs[0] : "");
+                    ExportTask tsk = createConcatDownloadTask(user, purpose, rowFilters, colOrders, path, prefix, datasets, versions, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
                     eximTasks.add(tsk);
-
+                }
+            } else {
+                for (int i = 0; i < datasets.length; i++) {
+                    // Services services = services();
+                    EmfDataset dataset = datasets[i];
+                    Version version = versions[i];
+                    String colsToExport = (dsExportPrefs != null ? dsExportPrefs[i] : "");
+    
+                    // FIXME: Investigate if services reference needs to be unique for each dataset in this call
+                    if (isExportable(dataset, version, services, user)) {
+                        ExportTask tsk = createDownloadTask(user, purpose, rowFilters, colOrders, path, prefix, dataset, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
+    
+                        eximTasks.add(tsk);
+    
+                    }
                 }
             }
 
@@ -715,6 +749,25 @@ public class ManagedExportService {
         return eximTask;
     }
 
+    private synchronized ExportTask createConcatExportTask(User user, String purpose, boolean overwrite,
+            String rowFilters, String colOrders, File path,
+            String prefix, EmfDataset[] datasets, Version[] versions, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition,
+            String colsToExport) throws Exception {
+        Services services = services();
+        File file = validateExportFile(path, getCleanPrefix(prefix) +
+                getCleanDatasetName(datasets[0], versions[0]), overwrite);
+
+        AccessLog accesslog = new AccessLog(user.getUsername(), datasets[0].getId(), datasets[0].getAccessedDateTime(),
+                "Version " + versions[0].getVersion(), purpose, file.getAbsolutePath());
+        accesslog.setDatasetname(datasets[0].getName());
+
+        ExportTask eximTask = new ExportTask(user, file, datasets, services, accesslog,
+                rowFilters, colOrders, dbFactory, sessionFactory, versions, filterDataset, filterDatasetVersion,
+                filterDatasetJoinCondition, false, colsToExport);
+        return eximTask;
+    }
+
     private synchronized ExportTask createDownloadTask(User user, String purpose, String rowFilters, 
             String colOrders, File path,
             String prefix, EmfDataset dataset, Version version, EmfDataset filterDataset,
@@ -744,6 +797,25 @@ public class ManagedExportService {
                 filterDatasetJoinCondition, true, colsToExport);
         // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
 
+        return eximTask;
+    }
+
+    public synchronized ExportTask createConcatDownloadTask(User user, String purpose, String rowFilters,
+            String colOrders, File path,
+            String prefix, EmfDataset[] datasets, Version[] versions, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition,
+            String colsToExport) throws Exception {
+        Services services = services();
+        File file = validateExportFile(path, getCleanPrefix(prefix) +
+                getCleanDatasetName(datasets[0], versions[0]), true);
+
+        AccessLog accesslog = new AccessLog(user.getUsername(), datasets[0].getId(), datasets[0].getAccessedDateTime(),
+                "Version " + versions[0].getVersion(), purpose, file.getAbsolutePath());
+        accesslog.setDatasetname(datasets[0].getName());
+
+        ExportTask eximTask = new ExportTask(user, file, datasets, services, accesslog,
+                rowFilters, colOrders, dbFactory, sessionFactory, versions, filterDataset, filterDatasetVersion,
+                filterDatasetJoinCondition, true, colsToExport);
         return eximTask;
     }
 

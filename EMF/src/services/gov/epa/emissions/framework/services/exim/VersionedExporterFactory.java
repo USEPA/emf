@@ -33,8 +33,12 @@ public class VersionedExporterFactory {
     }
 
     public Exporter create(Dataset dataset, Version version, String rowFilters, String colOrders, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, String colsToExport) throws EmfException {
+        return create(new Dataset[] { dataset }, new Version[] { version }, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
+    }
+
+    public Exporter create(Dataset[] datasets, Version[] versions, String rowFilters, String colOrders, Dataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, String colsToExport) throws EmfException {
         try {
-            String exporterName = dataset.getDatasetType().getExporterClassName();
+            String exporterName = datasets[0].getDatasetType().getExporterClassName();
             Class[] classParams;
             Object[] params;
             
@@ -44,15 +48,19 @@ public class VersionedExporterFactory {
             Class exporterClass = Class.forName(exporterName);
             classParams = new Class[] { Dataset.class, String.class, DbServer.class,
                     DataFormatFactory.class, Integer.class, Dataset.class, Version.class, String.class };
-            params = new Object[] { dataset, rowFilters, dbServer, new VersionedDataFormatFactory(version, dataset),
+            params = new Object[] { datasets[0], rowFilters, dbServer, new VersionedDataFormatFactory(versions[0], datasets[0]),
                     new Integer(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition };
             
-            // for now, FlexibleDBExporter is only class that supports colsToExport
+            // for now, FlexibleDBExporter is only class that supports colsToExport and file concatenation
             if (exporterName.equals(DatasetType.FLEXIBLE_EXPORTER)) {
-                classParams = new Class[] { Dataset.class, String.class, DbServer.class,
-                        DataFormatFactory.class, Integer.class, Dataset.class, Version.class, String.class,
+                classParams = new Class[] { Dataset[].class, String.class, DbServer.class,
+                        DataFormatFactory[].class, Integer.class, Dataset.class, Version.class, String.class,
                         String.class };
-                params = new Object[] { dataset, rowFilters, dbServer, new VersionedDataFormatFactory(version, dataset),
+                DataFormatFactory[] factories = new DataFormatFactory[datasets.length];
+                for (int i = 0; i < datasets.length; i++) {
+                    factories[i] = new VersionedDataFormatFactory(versions[i], datasets[i]);
+                }
+                params = new Object[] { datasets, rowFilters, dbServer, factories,
                         new Integer(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition,
                         colsToExport };
             }
@@ -65,7 +73,7 @@ public class VersionedExporterFactory {
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not create Exporter", e);
-            throw new EmfException("Could not create Exporter for Dataset Type: " + dataset.getDatasetTypeName() +"  "+ dataset.getDatasetType().getExporterClassName());
+            throw new EmfException("Could not create Exporter for Dataset Type: " + datasets[0].getDatasetTypeName() +"  "+ datasets[0].getDatasetType().getExporterClassName());
         }
     }
 

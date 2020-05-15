@@ -23,13 +23,20 @@ public class ExImServiceTransport implements ExImService {
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
         exportDatasets(user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset,
-                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null, false);
+    }
+
+    public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String folder, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, String[] dsExportPrefs) throws EmfException {
+        exportDatasets(user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset,
+                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs, false);
     }
         
     public void exportDatasets(User user, EmfDataset[] datasets, Version[] versions, String folder, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, 
-            String[] dsExportPrefs) throws EmfException {
+            String[] dsExportPrefs, boolean concat) throws EmfException {
         call.setOperation("exportDatasets");
         call.addParam("user", mappings.user());
         call.addParam("datasets", mappings.datasets());
@@ -44,22 +51,30 @@ public class ExImServiceTransport implements ExImService {
         call.addStringParam("colOrders");
         call.addStringParam("purpose");
         call.addParam("dsExportPrefs", mappings.strings());
+        call.addBooleanParameter("concat");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs });
+        call.request(new Object[] { user, datasets, versions, folder, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs, concat });
     }
 
     public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose) throws EmfException {
         downloadDatasets(user, datasets, versions, prefix, overwrite, rowFilters, filterDataset,
-                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null);
+                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, null, false);
+    }
+
+    public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
+            boolean overwrite, String rowFilters, EmfDataset filterDataset,
+            Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose, String[] dsExportPrefs) throws EmfException {
+        downloadDatasets(user, datasets, versions, prefix, overwrite, rowFilters, filterDataset,
+                filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs, false);
     }
 
     public void downloadDatasets(User user, EmfDataset[] datasets, Version[] versions, String prefix,
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
-            String[] dsExportPrefs) throws EmfException {
+            String[] dsExportPrefs, boolean concat) throws EmfException {
         call.setOperation("downloadDatasets");
         call.addParam("user", mappings.user());
         call.addParam("datasets", mappings.datasets());
@@ -73,9 +88,10 @@ public class ExImServiceTransport implements ExImService {
         call.addStringParam("colOrders");
         call.addStringParam("purpose");
         call.addParam("dsExportPrefs", mappings.strings());
+        call.addBooleanParameter("concat");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs });
+        call.request(new Object[] { user, datasets, versions, prefix, overwrite, rowFilters, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colOrders, purpose, dsExportPrefs, concat });
     }
 
     public void importDataset(User user, String folderPath, String[] fileNames, DatasetType datasetType,

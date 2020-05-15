@@ -55,7 +55,7 @@ public class ExportTask extends Task {
 
     private LoggingServiceImpl loggingService;
 
-    private EmfDataset dataset;
+    private EmfDataset[] datasets;
 
     private DatasetType type;
 
@@ -63,7 +63,7 @@ public class ExportTask extends Task {
 
     private HibernateSessionFactory sessionFactory;
 
-    private Version version;
+    private Version[] versions;
 
     private ExternalSource[] extSrcs;
 
@@ -97,7 +97,7 @@ public class ExportTask extends Task {
             System.out.println(">>>> " + createId());
         this.user = user;
         this.file = file;
-        this.dataset = dataset;
+        this.datasets = new EmfDataset[] { dataset };
         this.type = dataset.getDatasetType();
         this.statusServices = services.getStatus();
         this.loggingService = services.getLoggingService();
@@ -105,7 +105,7 @@ public class ExportTask extends Task {
         this.accesslog = accesslog;
         this.sessionFactory = sessionFactory;
         this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
-        this.version = version;
+        this.versions = new Version[] { version };
         this.datasetDao = new DatasetDAO();
     }
     
@@ -129,6 +129,15 @@ public class ExportTask extends Task {
         this(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
         this.download = download;
     } 
+    
+    protected ExportTask(User user, File file, EmfDataset[] datasets, Services services, AccessLog accessLog,
+            String rowFilters, String colOrders,
+            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version[] versions, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download,
+            String colsToExport) {
+        this(user, file, datasets[0], services, accessLog, rowFilters, colOrders, dbFactory, sessionFactory, versions[0], filterDataset, filterDatasetVersion, filterDatasetJoinCondition, download, colsToExport);
+        this.datasets = datasets;
+        this.versions = versions;
+    }
 
     public void run() {
         DbServer dbServer = null;
@@ -137,7 +146,7 @@ public class ExportTask extends Task {
         extSrcs = getExternalSrcs(session);
 
         if (DebugLevels.DEBUG_1())
-            System.out.println(">>## ExportTask:run() " + createId() + " for datasetId: " + this.dataset.getId());
+            System.out.println(">>## ExportTask:run() " + createId() + " for datasetId: " + this.datasets[0].getId());
         if (DebugLevels.DEBUG_1())
             System.out.println("Task#" + taskId + " RUN @@@@@ THREAD ID: " + Thread.currentThread().getId());
 
@@ -154,7 +163,7 @@ public class ExportTask extends Task {
             accesslog.setFolderPath(file.getAbsolutePath());
 
             if (file.exists()) {
-                setStatus("completed", "FILE EXISTS: Completed export of " + dataset.getName() + " to "
+                setStatus("completed", "FILE EXISTS: Completed export of " + datasets[0].getName() + " to "
                         + file.getAbsolutePath() + " in " + accesslog.getTimereqrd() + " seconds."
                         + (download ? "  The file will start downloading momentarily, see the Download Manager for the download status." : ""));
 
@@ -162,7 +171,7 @@ public class ExportTask extends Task {
                 dbServer = this.dbFactory.getDbServer();
                 VersionedExporterFactory exporterFactory = new VersionedExporterFactory(dbServer, dbServer
                         .getSqlDataTypes(), batchSize(session));
-                Exporter exporter = exporterFactory.create(dataset, version, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
+                Exporter exporter = exporterFactory.create(datasets, versions, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
                 if (exporter instanceof ExternalFilesExporter)
                     ((ExternalFilesExporter) exporter).setExternalSources(extSrcs);
@@ -174,14 +183,14 @@ public class ExportTask extends Task {
                 if (DebugLevels.DEBUG_1())
                     printLogInfo(accesslog);               
                 if (exportedLineCount == 0){
-                    throw new Exception("ERROR: "+dataset.getName()+
+                    throw new Exception("ERROR: "+datasets[0].getName()+
                             " will not be exported because no records satisfied the filter " );
                 }
 
                 accesslog.setEnddate(new Date());
                 accesslog.setLinesExported(exportedLineCount);
 
-                String msghead = "Completed export of " + dataset.getName();
+                String msghead = "Completed export of " + datasets[0].getName();
                 String msgend = " in " + accesslog.getTimereqrd() + " seconds.";
  
                 if (type.getExporterClassName().endsWith("ExternalFilesExporter")) {
@@ -242,9 +251,9 @@ public class ExportTask extends Task {
         } finally {
             try {
                 //We want to record the dataset access time anyways
-                dataset.setAccessedDateTime(start);
+                datasets[0].setAccessedDateTime(start);
                 session.clear();
-                updateDataset(dataset, session);
+                updateDataset(datasets[0], session);
                 
                 // check for isConnected before disconnecting
                 if ((dbServer != null) && (dbServer.isConnected()))
@@ -270,7 +279,7 @@ public class ExportTask extends Task {
         String[] sts = new String[2];
 
         if (DebugLevels.DEBUG_1())
-            System.out.println(">>## ExportTask:run() " + createId() + " for datasetId: " + this.dataset.getId());
+            System.out.println(">>## ExportTask:run() " + createId() + " for datasetId: " + this.datasets[0].getId());
         if (DebugLevels.DEBUG_1())
             System.out.println("Task#" + taskId + " RUN @@@@@ THREAD ID: " + Thread.currentThread().getId());
 
@@ -288,7 +297,7 @@ public class ExportTask extends Task {
             dbServer = this.dbFactory.getDbServer();
             VersionedExporterFactory exporterFactory = new VersionedExporterFactory(dbServer, dbServer
                     .getSqlDataTypes(), batchSize(session));
-            Exporter exporter = exporterFactory.create(dataset, version, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
+            Exporter exporter = exporterFactory.create(datasets, versions, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
             if (exporter instanceof ExternalFilesExporter)
                 ((ExternalFilesExporter) exporter).setExternalSources(extSrcs);
@@ -303,7 +312,7 @@ public class ExportTask extends Task {
             accesslog.setEnddate(new Date());
             accesslog.setLinesExported(exportedLineCount);
 
-            String msghead = "Completed export of " + dataset.getName();
+            String msghead = "Completed export of " + datasets[0].getName();
             String msgend = " in " + accesslog.getTimereqrd() + " seconds.";
 
             sts[0] = "completed";
@@ -329,9 +338,9 @@ public class ExportTask extends Task {
         } finally {
             try {
               //We want to record the dataset access time anyways
-                dataset.setAccessedDateTime(start);
+                datasets[0].setAccessedDateTime(start);
                 session.clear();
-                updateDataset(dataset, session);
+                updateDataset(datasets[0], session);
                 
                 // check for isConnected before disconnecting
                 if ((dbServer != null) && (dbServer.isConnected()))
@@ -358,7 +367,7 @@ public class ExportTask extends Task {
     }
 
     private ExternalSource[] getExternalSrcs(Session session) {
-        return datasetDao.getExternalSrcs(dataset.getId(), -1, null, session);
+        return datasetDao.getExternalSrcs(datasets[0].getId(), -1, null, session);
     }
 
     private void printLogInfo(AccessLog log) {
@@ -372,7 +381,7 @@ public class ExportTask extends Task {
 
     private String compareDatasetRecordsNumbers(long linesExported, Session session, DbServer dbServer)
             throws Exception {
-        DatasetType type = dataset.getDatasetType();
+        DatasetType type = datasets[0].getDatasetType();
         String importerclass = (type == null ? "" : type.getImporterClassName());
         importerclass = (importerclass == null ? "" : importerclass.trim());
 
@@ -383,7 +392,7 @@ public class ExportTask extends Task {
         long records = 0;
 
         try {
-            records = datasetDao.getDatasetRecordsNumber(dbServer, session, dataset, version);
+            records = datasetDao.getDatasetRecordsNumber(dbServer, session, datasets[0], versions[0]);
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Error determining number of records: " + e.getMessage());
@@ -408,9 +417,9 @@ public class ExportTask extends Task {
 
     private void setStartStatus() {
         if (type.getExporterClassName().endsWith("ExternalFilesExporter"))
-            setStatus("started", "Started exporting " + dataset.getName());
+            setStatus("started", "Started exporting " + datasets[0].getName());
         else
-            setStatus("started", "Started exporting " + dataset.getName() + " to " + file.getAbsolutePath());
+            setStatus("started", "Started exporting " + datasets[0].getName() + " to " + file.getAbsolutePath());
     }
 
     private void setStatus(String status, String message) {
@@ -430,11 +439,11 @@ public class ExportTask extends Task {
     }
 
     public EmfDataset getDataset() {
-        return dataset;
+        return datasets[0];
     }
 
     public Version getVersion() {
-        return version;
+        return versions[0];
     }
 
     private int batchSize(Session session) throws Exception {

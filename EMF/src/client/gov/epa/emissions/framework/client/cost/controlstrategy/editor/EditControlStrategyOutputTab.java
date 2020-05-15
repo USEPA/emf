@@ -124,6 +124,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
             if (!download.isSelected())
                 validateFolder(getExportFolder());
             
+            boolean canConcatReports = buttonGroup.getSelection().equals(detailButton.getModel());
             ControlStrategyResult[] controlStrategyResults = getSelectedDatasets();
             List<EmfDataset> datasetList = new ArrayList<EmfDataset>();
             for (int i = 0; i < controlStrategyResults.length; i++) {
@@ -134,6 +135,9 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                 } else if (buttonGroup.getSelection().equals(detailButton.getModel())) {
                     if (controlStrategyResults[i].getDetailedResultDataset() != null)
                         datasetList.add((EmfDataset)controlStrategyResults[i].getDetailedResultDataset());
+                    if (!controlStrategyResults[i].getStrategyResultType().getName().equals(StrategyResultType.detailedStrategyResult)) {
+                        canConcatReports = false;
+                    }
                 } else if (buttonGroup.getSelection().equals(contInvButton.getModel())) {
                     if (controlStrategyResults[i].getControlledInventoryDataset() != null) {
                         inv = (EmfDataset)controlStrategyResults[i].getControlledInventoryDataset();
@@ -149,7 +153,17 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                     datasetList.add(inv);
                 }
             }
-            presenter.doExport(datasetList.toArray(new EmfDataset[0]), getExportFolder(), exportName.getText(), download.isSelected());
+            
+            boolean concat = false;
+            if (canConcatReports && datasetList.size() > 1) {
+                int selection = JOptionPane.showConfirmDialog(parentConsole,
+                    "Export all selected reports in a single file? The output filename will be based on the first report:\n" +
+                    datasetList.get(0).getName(), "Strategy Detailed Result Output", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (selection == JOptionPane.YES_OPTION)
+                    concat = true;
+            }
+            
+            presenter.doExport(datasetList.toArray(new EmfDataset[0]), getExportFolder(), exportName.getText(), download.isSelected(), concat);
             messagePanel.setMessage("Started Export. Please monitor the Status window to track your export request");
         } catch (EmfException e) {
             messagePanel.setMessage(e.getMessage());
