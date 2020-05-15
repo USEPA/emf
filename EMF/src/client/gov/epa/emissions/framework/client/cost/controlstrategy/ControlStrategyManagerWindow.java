@@ -1,8 +1,10 @@
 package gov.epa.emissions.framework.client.cost.controlstrategy;
 
 import gov.epa.emissions.commons.gui.Button;
+import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
@@ -19,7 +21,9 @@ import gov.epa.emissions.framework.client.cost.controlstrategy.viewer.ViewContro
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.preference.UserPreference;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
+import gov.epa.emissions.framework.services.cost.ControlStrategyFilter;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -29,10 +33,7 @@ import gov.epa.mims.analysisengine.table.format.FormattedCellRenderer;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 import gov.epa.emissions.commons.CommonDebugLevel;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -40,16 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -83,7 +75,10 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
     private static final List<String> COLUMN_NAMES_TO_FORMAT = new ArrayList<String>();
     
     private JFileChooser chooser;
-    
+
+    private TextField simpleTextFilter;
+    private ComboBox filterFieldsComboBox;
+
     static {
         COLUMN_NAMES_TO_FORMAT.add("Total Cost");
         COLUMN_NAMES_TO_FORMAT.add("Reduction (tons)");
@@ -207,6 +202,63 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
 
         Button button = new RefreshButton(this, "Refresh Control Strategies", messagePanel);
         panel.add(button, BorderLayout.EAST);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        simpleTextFilter = new TextField("textfilter", 25);
+        simpleTextFilter.setPreferredSize(new Dimension(360, 25));
+        simpleTextFilter.setEditable(true);
+        simpleTextFilter.addActionListener(simpleFilterTypeAction());
+
+
+        JPanel advPanel = new JPanel(new BorderLayout(5, 2));
+
+        //get table column names
+//        String[] columns = new String[] {"Module Name", "Composite?", "Final?", "Tags", "Project", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };//(new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>())).columns();
+
+        filterFieldsComboBox = new ComboBox("Select one", (new ControlStrategyFilter()).getFilterFieldNames());
+        filterFieldsComboBox.setSelectedIndex(1);
+        filterFieldsComboBox.setPreferredSize(new Dimension(180, 25));
+        filterFieldsComboBox.addActionListener(simpleFilterTypeAction());
+
+        advPanel.add(getDilterFieldsComboBoxPanel("Filter Fields:", filterFieldsComboBox), BorderLayout.LINE_START);
+        advPanel.add(simpleTextFilter, BorderLayout.EAST);
+//        advPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
+
+        topPanel.add(advPanel, BorderLayout.EAST);
+
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1));
+        mainPanel.add(panel);
+        mainPanel.add(topPanel);
+
+        return mainPanel;
+    }
+
+    private Action simpleFilterTypeAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+//                DatasetType type = getSelectedDSType();
+//                try {
+//                    // count the number of datasets and do refresh
+//                    if (dsTypesBox.getSelectedIndex() > 0)
+                try {
+                    doRefresh();
+                } catch (EmfException e1) {
+                    e1.printStackTrace();
+                }
+//                } catch (EmfException e1) {
+////                    messagePanel.setError("Could not retrieve all modules " /*+ type.getName()*/);
+//                }
+            }
+        };
+    }
+
+    private JPanel getDilterFieldsComboBoxPanel(String label, JComboBox box) {
+        JPanel panel = new JPanel(new BorderLayout(5, 2));
+        JLabel jlabel = new JLabel(label);
+        jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        panel.add(jlabel, BorderLayout.WEST);
+        panel.add(box, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));
 
         return panel;
     }
@@ -576,6 +628,16 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
     public void displayControlStrategyComparisonResult(String qaStepName, String exportedFileName) {
         AnalysisEngineTableApp app = new AnalysisEngineTableApp("View QA Step Results: " + qaStepName, new Dimension(500, 500), desktopManager, parentConsole);
         app.display(new String[] { exportedFileName });
-    }   
+    }
 
+    public BasicSearchFilter getSearchFilter() {
+
+        BasicSearchFilter searchFilter = new BasicSearchFilter();
+        String fieldName = (String)filterFieldsComboBox.getSelectedItem();
+        if (fieldName != null) {
+            searchFilter.setFieldName(fieldName);
+            searchFilter.setFieldValue(simpleTextFilter.getText());
+        }
+        return searchFilter;
+    }
 }

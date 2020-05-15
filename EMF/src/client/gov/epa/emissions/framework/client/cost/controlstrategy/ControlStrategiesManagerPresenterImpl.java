@@ -53,7 +53,7 @@ public class ControlStrategiesManagerPresenterImpl implements RefreshObserver, C
 
     public void doRefresh() throws EmfException {
         // loadControlMeasures();
-        view.refresh(service().getControlStrategies());
+        view.refresh(service().getControlStrategies(view.getSearchFilter()));
     }
 
     public void doClose() {

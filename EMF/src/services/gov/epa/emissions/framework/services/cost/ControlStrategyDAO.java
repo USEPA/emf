@@ -4,7 +4,9 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
+import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyConstraint;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup;
@@ -24,12 +26,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
 public class ControlStrategyDAO {
@@ -129,6 +136,66 @@ public class ControlStrategyDAO {
                 "left join cS.project as P " +
                 "order by cS.name").list();
         //return hibernateFacade.getAll(ControlStrategy.class, Order.asc("name"), session);
+    }
+
+    public List<ControlStrategy> getControlStrategies(Session session, BasicSearchFilter searchFilter) throws EmfException {
+        String hql = "select distinct new ControlStrategy(cs.id, cs.name, " +
+                "cs.lastModifiedDate, cs.runStatus, " +
+                "region, targetPollutant, " +
+                "project, strategyType, " +
+                "cs.costYear, cs.inventoryYear, " +
+//                "cS.creator, (select sum(sR.totalCost) from ControlStrategyResult sR where sR.controlStrategyId = cS.id), (select sum(sR.totalReduction) from ControlStrategyResult sR where sR.controlStrategyId = cS.id)) " +
+                "cs.creator, cs.totalCost, cs.totalReduction, cs.isFinal) " +
+                "from ControlStrategy as cs " +
+                "left join cs.targetPollutant as targetPollutant " +
+                "left join cs.strategyType as strategyType " +
+                "left join cs.region as region " +
+                "left join cs.project as project " +
+                "left join cs.creator as creator " +
+                "left join cs.controlStrategyInputDatasets as inputDataset " +
+                "left join cs.controlPrograms as controlProgram " +
+                "left join cs.controlMeasures as controlMeasure " +
+                "left join cs.controlMeasureClasses as controlMeasureClass ";
+        //
+        if (StringUtils.isNotBlank(searchFilter.getFieldName())
+                && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
+            String whereClause = SearchDAOUtility.buildSearchCriterion(new ControlStrategyFilter(), searchFilter);
+            if (StringUtils.isNotBlank(whereClause))
+                hql += " where " + whereClause;
+        }
+        return session.createQuery(hql).list();
+
+//        Criteria criteria = session.createCriteria(ControlStrategy.class, "cs");
+//
+//        if (StringUtils.isNotBlank(searchFilter.getFieldName())
+//                && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
+//            Criteria inCriteria = session.createCriteria(ControlStrategy.class, "cs")
+//                    .setProjection(Property.forName("id"));
+//
+//            inCriteria.createAlias("cs.project", "project", CriteriaSpecification.LEFT_JOIN);
+//            inCriteria.createAlias("cs.creator", "creator", CriteriaSpecification.LEFT_JOIN);
+//            inCriteria.createAlias("cs.targetPollutant", "targetPollutant", CriteriaSpecification.LEFT_JOIN);
+//            inCriteria.createAlias("cs.strategyType", "strategyType", CriteriaSpecification.LEFT_JOIN);
+////            inCriteria.setFetchMode("cs.controlPrograms", FetchMode.JOIN);
+//            inCriteria.createAlias("cs.controlPrograms", "controlPrograms", CriteriaSpecification.LEFT_JOIN);
+////            inCriteria.setFetchMode("cs.controlStrategyInputDatasets", FetchMode.JOIN);
+////            inCriteria.createAlias("cs.controlStrategyInputDatasets", "controlStrategyInputDatasets", CriteriaSpecification.LEFT_JOIN);
+//            inCriteria.createAlias("cs.region", "region", CriteriaSpecification.LEFT_JOIN);
+//            inCriteria.createAlias("cs.controlMeasureClasses", "controlMeasureClasses", CriteriaSpecification.LEFT_JOIN);
+//
+//            SearchDAOUtility.buildSearchCriterion(inCriteria, new ControlStrategyFilter(), searchFilter);
+//
+//            List<Integer> ids = inCriteria.list();
+//
+//            if (ids.size() > 0)
+//                criteria
+//                        .add(Property.forName("id").in(ids));
+//            else
+//                criteria
+//                        .add(Property.forName("id").eq((Object)null));
+//        }
+//
+//        return criteria.list();
     }
 //    // return ControlStrategies orderby name
 //    public List test(Session session) {

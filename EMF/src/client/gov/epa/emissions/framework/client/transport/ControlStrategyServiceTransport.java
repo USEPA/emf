@@ -5,6 +5,7 @@ import java.util.List;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.cost.ControlMeasureClass;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
@@ -40,6 +41,16 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.setReturnType(mappings.controlStrategies());
 
         return (ControlStrategy[]) call.requestResponse(new Object[] {});
+    }
+
+    public synchronized ControlStrategy[] getControlStrategies(BasicSearchFilter searchFilter) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getControlStrategies");
+        call.addParam("searchFilter", mappings.basicSearchFilter());
+        call.setReturnType(mappings.controlStrategies());
+
+        return (ControlStrategy[]) call.requestResponse(new Object[] { searchFilter });
     }
 
     public synchronized int addControlStrategy(ControlStrategy element) throws EmfException {
