@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.transport;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.cost.ControlProgram;
 import gov.epa.emissions.framework.services.cost.ControlProgramService;
 import gov.epa.emissions.framework.services.cost.ControlProgramType;
@@ -32,6 +33,16 @@ public class ControlProgramServiceTransport implements ControlProgramService {
         call.setReturnType(mappings.controlPrograms());
 
         return (ControlProgram[]) call.requestResponse(new Object[] {});
+    }
+
+    public synchronized ControlProgram[] getControlPrograms(BasicSearchFilter searchFilter) throws EmfException {
+        EmfCall call = call();
+
+        call.setOperation("getControlPrograms");
+        call.addParam("searchFilter", mappings.basicSearchFilter());
+        call.setReturnType(mappings.controlPrograms());
+
+        return (ControlProgram[]) call.requestResponse(new Object[] { searchFilter });
     }
 
     public synchronized int addControlProgram(ControlProgram element) throws EmfException {

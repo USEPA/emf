@@ -121,7 +121,7 @@ public class ControlStrategyProgramsTab extends JPanel implements EditControlStr
         ControlProgramSelectionView view = new ControlProgramSelectionDialog(parent, changeablesList);
         ControlProgramSelectionPresenter presenter = new ControlProgramSelectionPresenter(this, view, session);
         try {
-            presenter.display(view);
+            presenter.display();
         } catch (Exception exp) {
             messagePanel.setError(exp.getMessage());
         }

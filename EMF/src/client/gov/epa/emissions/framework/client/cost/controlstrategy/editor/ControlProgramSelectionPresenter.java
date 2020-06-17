@@ -7,9 +7,9 @@ import gov.epa.emissions.framework.services.cost.ControlProgram;
 
 public class ControlProgramSelectionPresenter {
 
-    private ControlProgramTableData tableData;
-
     private ControlProgramSelectorView parentView;
+
+    private ControlProgramSelectionView view;
 
     private EmfSession session;
     
@@ -17,22 +17,27 @@ public class ControlProgramSelectionPresenter {
             ControlProgramSelectionView view, 
             EmfSession session) {
         this.parentView = parentView;
+        this.view = view;
         this.session = session;
     }
 
-    public void display(ControlProgramSelectionView view) throws Exception {
+    public void display() throws Exception {
         view.observe(this);
-        this.tableData = new ControlProgramTableData(getAllControlPrograms());
-        view.display(tableData);
+        view.display(session.controlProgramService().getControlPrograms());
 
+    }
+
+    public void doRefresh() throws EmfException {
+        // loadControlMeasures();
+        view.refresh(getControlPrograms()); //view.getSearchFilter()
     }
 
     public void doAdd(ControlProgram[] controlPrograms) {
         parentView.add(controlPrograms);
     }
 
-    public ControlProgram[] getAllControlPrograms() throws EmfException {
-        return session.controlProgramService().getControlPrograms();
+    public ControlProgram[] getControlPrograms() throws EmfException {
+        return session.controlProgramService().getControlPrograms(view.getSearchFilter());
     }
 
 }

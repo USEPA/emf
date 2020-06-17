@@ -3,10 +3,13 @@ package gov.epa.emissions.framework.services.cost;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EMFService;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 
 public interface ControlProgramService extends EMFService {
 
     ControlProgram[] getControlPrograms() throws EmfException;
+
+    ControlProgram[] getControlPrograms(BasicSearchFilter searchFilter) throws EmfException;
     
     ControlProgram getControlProgram(int id) throws EmfException;
     

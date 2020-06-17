@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.io.DeepCopy;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
@@ -71,6 +72,19 @@ public class ControlProgramServiceImpl implements ControlProgramService {
         } catch (HibernateException e) {
             LOG.error("Could not retrieve all control strategies.");
             throw new EmfException("Could not retrieve all control strategies.");
+        } finally {
+            session.close();
+        }
+    }
+
+    public synchronized ControlProgram[] getControlPrograms(BasicSearchFilter searchFilter) throws EmfException {
+        Session session = sessionFactory.getSession();
+        try {
+            List cs = dao.getControlPrograms(session, searchFilter);
+            return (ControlProgram[]) cs.toArray(new ControlProgram[0]);
+        } catch (HibernateException e) {
+            LOG.error("Could not retrieve control programs.");
+            throw new EmfException("Could not retrieve control programs.");
         } finally {
             session.close();
         }

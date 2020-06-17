@@ -5,6 +5,8 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
+import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
@@ -18,6 +20,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -69,6 +72,21 @@ public class ControlProgramDAO {
 //                "left join cS.region " +
 //                "order by cS.name").list();
         return hibernateFacade.getAll(ControlProgram.class, Order.asc("name"), session);
+    }
+
+    public List getControlPrograms(Session session, BasicSearchFilter searchFilter) {
+        String hql = "select distinct cp " +
+                "from ControlProgram as cp " +
+                "left join cp.dataset as dataset " +
+                "left join cp.controlProgramType as cpt ";
+        //
+        if (StringUtils.isNotBlank(searchFilter.getFieldName())
+                && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
+            String whereClause = SearchDAOUtility.buildSearchCriterion(new ControlStrategyProgramFilter(), searchFilter);
+            if (StringUtils.isNotBlank(whereClause))
+                hql += " where " + whereClause;
+        }
+        return session.createQuery(hql).list();
     }
 
     public List getControlProgramTypes(Session session) {
