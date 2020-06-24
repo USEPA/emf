@@ -2505,3 +2505,45 @@ Capital Cost = Capital Cost Multiplier x Design Capacity x Scaling Factor x 1,00
 Fixed O&M = Fixed O&M Cost Multiplier x Design Capacity x Scaling Factor x 1,000
 Variable O&M = Variable O&M Cost Multiplier x Design Capacity x Capacity Factor x 8,760'
 WHERE name = 'Type 1';
+
+-- 6/10/2020 Add EXPORT_SUFFIX for Least Cost Worksheet and other Control Strategy reports
+WITH ds_type AS (SELECT id FROM emf.dataset_types WHERE name = 'Control Strategy Least Cost Control Measure Worksheet')
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, value, kwname)
+SELECT
+  (SELECT id FROM ds_type),
+  (SELECT COALESCE(MAX(list_index)+1, 0) FROM emf.dataset_types_keywords WHERE dataset_type_id = (SELECT id FROM ds_type)),
+  (SELECT id FROM emf.keywords WHERE name = 'EXPORT_SUFFIX'),
+  '.csv',
+  'EXPORT_SUFFIX';
+WITH ds_type AS (SELECT id FROM emf.dataset_types WHERE name = 'Control Strategy Least Cost Curve Summary')
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, value, kwname)
+SELECT
+  (SELECT id FROM ds_type),
+  (SELECT COALESCE(MAX(list_index)+1, 0) FROM emf.dataset_types_keywords WHERE dataset_type_id = (SELECT id FROM ds_type)),
+  (SELECT id FROM emf.keywords WHERE name = 'EXPORT_SUFFIX'),
+  '.csv',
+  'EXPORT_SUFFIX';
+WITH ds_type AS (SELECT id FROM emf.dataset_types WHERE name = 'Strategy Messages (CSV)')
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, value, kwname)
+SELECT
+  (SELECT id FROM ds_type),
+  (SELECT COALESCE(MAX(list_index)+1, 0) FROM emf.dataset_types_keywords WHERE dataset_type_id = (SELECT id FROM ds_type)),
+  (SELECT id FROM emf.keywords WHERE name = 'EXPORT_SUFFIX'),
+  '.csv',
+  'EXPORT_SUFFIX';
+WITH ds_type AS (SELECT id FROM emf.dataset_types WHERE name = 'Strategy Measure Summary')
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, value, kwname)
+SELECT
+  (SELECT id FROM ds_type),
+  (SELECT COALESCE(MAX(list_index)+1, 0) FROM emf.dataset_types_keywords WHERE dataset_type_id = (SELECT id FROM ds_type)),
+  (SELECT id FROM emf.keywords WHERE name = 'EXPORT_SUFFIX'),
+  '.csv',
+  'EXPORT_SUFFIX';
+WITH ds_type AS (SELECT id FROM emf.dataset_types WHERE name = 'Strategy County Summary')
+INSERT INTO emf.dataset_types_keywords (dataset_type_id, list_index, keyword_id, value, kwname)
+SELECT
+  (SELECT id FROM ds_type),
+  (SELECT COALESCE(MAX(list_index)+1, 0) FROM emf.dataset_types_keywords WHERE dataset_type_id = (SELECT id FROM ds_type)),
+  (SELECT id FROM emf.keywords WHERE name = 'EXPORT_SUFFIX'),
+  '.csv',
+  'EXPORT_SUFFIX';
