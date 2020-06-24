@@ -135,6 +135,7 @@ public class ControlMeasureEquationTab extends JPanel implements ControlMeasureT
         tableModel = new EditableEmfTableModel(tableData);
 
         EditableTable table = new EditableTable(tableModel);
+        table.putClientProperty("terminateEditOnFocusLost", true);
 //        table.setColWidthsBasedOnColNames();
         changeables.addChangeable(table);
  //       table.disableScrolling();
