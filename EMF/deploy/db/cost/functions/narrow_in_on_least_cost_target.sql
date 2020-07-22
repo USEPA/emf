@@ -19,7 +19,7 @@ DECLARE
 	max_emis_reduction double precision;
 	record_count integer;
 	continue_trying boolean := true;
-	tries_around_target integer := 0;
+	have_been_under_at_end boolean := false;
 BEGIN
 
 	-- get a record count
@@ -77,9 +77,9 @@ BEGIN
 			continue_trying := false;
 		ELSEIF target_record_offset_diff = 1 AND emis_reduction < domain_wide_emis_reduction THEN
 			continue_trying := true;
+			have_been_under_at_end := true;
 		ELSEIF target_record_offset_diff = 1 AND emis_reduction > domain_wide_emis_reduction THEN
-			tries_around_target := tries_around_target + 1;
-			IF tries_around_target > 1 THEN
+			IF have_been_under_at_end THEN
 				continue_trying := false;
 			ELSE
 				continue_trying := true;
