@@ -1,8 +1,10 @@
 package gov.epa.emissions.framework.client.cost.controlprogram;
 
 import gov.epa.emissions.commons.gui.Button;
+import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
@@ -14,7 +16,9 @@ import gov.epa.emissions.framework.client.cost.controlprogram.editor.ControlProg
 import gov.epa.emissions.framework.client.cost.controlprogram.editor.ControlProgramWindow;
 import gov.epa.emissions.framework.client.cost.controlprogram.editor.NewControlProgramWindow;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.cost.ControlProgram;
+import gov.epa.emissions.framework.services.cost.ControlStrategyProgramFilter;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.RefreshButton;
 import gov.epa.emissions.framework.ui.RefreshObserver;
@@ -22,21 +26,14 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class ControlProgramManagerWindow extends ReusableInteralFrame implements ControlProgramManagerView,
         RefreshObserver, Runnable {
@@ -62,6 +59,9 @@ public class ControlProgramManagerWindow extends ReusableInteralFrame implements
     private List<ControlProgramView> editControlProgramViewList;
 
     private volatile Thread populateThread;
+
+    private TextField simpleTextFilter;
+    private ComboBox filterFieldsComboBox;
 
     public ControlProgramManagerWindow(EmfConsole parentConsole, EmfSession session, DesktopManager desktopManager) {
         super("Control Program Manager", new Dimension(850, 400), desktopManager);
@@ -162,6 +162,62 @@ public class ControlProgramManagerWindow extends ReusableInteralFrame implements
 
         Button button = new RefreshButton(this, "Refresh Control Programs", messagePanel);
         panel.add(button, BorderLayout.EAST);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        simpleTextFilter = new TextField("textfilter", 25);
+        simpleTextFilter.setPreferredSize(new Dimension(360, 25));
+        simpleTextFilter.setEditable(true);
+        simpleTextFilter.addActionListener(simpleFilterTypeAction());
+
+
+        JPanel advPanel = new JPanel(new BorderLayout(5, 2));
+
+        //get table column names
+//        String[] columns = new String[] {"Module Name", "Composite?", "Final?", "Tags", "Project", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };//(new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>())).columns();
+
+        filterFieldsComboBox = new ComboBox("Select one", (new ControlStrategyProgramFilter()).getFilterFieldNames());
+        filterFieldsComboBox.setSelectedIndex(1);
+        filterFieldsComboBox.setPreferredSize(new Dimension(180, 25));
+        filterFieldsComboBox.addActionListener(simpleFilterTypeAction());
+
+        advPanel.add(getFilterFieldsComboBoxPanel("Filter Fields:", filterFieldsComboBox), BorderLayout.LINE_START);
+        advPanel.add(simpleTextFilter, BorderLayout.EAST);
+//        advPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
+
+        topPanel.add(advPanel, BorderLayout.EAST);
+
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1));
+        mainPanel.add(panel);
+        mainPanel.add(topPanel);
+
+        return mainPanel;
+    }
+
+    private Action simpleFilterTypeAction() {
+        return new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+//                DatasetType type = getSelectedDSType();
+//                try {
+//                    // count the number of datasets and do refresh
+//                    if (dsTypesBox.getSelectedIndex() > 0)
+                try {
+                    doRefresh();
+                } catch (EmfException e1) {
+                    e1.printStackTrace();
+                }
+//                } catch (EmfException e1) {
+////                    messagePanel.setError("Could not retrieve all modules " /*+ type.getName()*/);
+//                }
+            }
+        };
+    }
+
+    private JPanel getFilterFieldsComboBoxPanel(String label, JComboBox box) {
+        JPanel panel = new JPanel(new BorderLayout(5, 2));
+        JLabel jlabel = new JLabel(label);
+        jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        panel.add(jlabel, BorderLayout.WEST);
+        panel.add(box, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));
 
         return panel;
     }
@@ -186,6 +242,17 @@ public class ControlProgramManagerWindow extends ReusableInteralFrame implements
         controlPanel.add(closePanel, BorderLayout.EAST);
 
         return controlPanel;
+    }
+
+    public BasicSearchFilter getSearchFilter() {
+
+        BasicSearchFilter searchFilter = new BasicSearchFilter();
+        String fieldName = (String)filterFieldsComboBox.getSelectedItem();
+        if (fieldName != null) {
+            searchFilter.setFieldName(fieldName);
+            searchFilter.setFieldValue(simpleTextFilter.getText());
+        }
+        return searchFilter;
     }
 
     private JPanel createCrudPanel() {

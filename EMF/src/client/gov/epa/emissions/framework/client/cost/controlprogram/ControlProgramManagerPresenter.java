@@ -36,7 +36,7 @@ public class ControlProgramManagerPresenter implements RefreshObserver {
 
     public void doRefresh() throws EmfException {
 //        loadControlMeasures();
-        view.refresh(service().getControlPrograms());
+        view.refresh(service().getControlPrograms(view.getSearchFilter()));
     }
 
     public void doClose() {
