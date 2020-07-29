@@ -293,6 +293,16 @@ public class FlexibleDBExporter extends GenericExporter {
         Map<String, String> tableColsMap = getTableCols(dataset);
         int numCols = cols.length;
         
+        // check if dataset_id should get included in export
+        if (colsToExport != null && colsToExport.get("dataset_id") != null) {
+            selectColsString += "\"dataset_id\"";
+            String colValue = colsToExport.get("dataset_id");
+            if (!colValue.equals("")) {
+                selectColsString += " as \"" + colValue + "\"";
+            }
+            selectColsString += ",";
+        }
+        
         for (int i = 0; i < numCols; i++) {
             String colName = cols[i].name();
             String outputName = colName;
