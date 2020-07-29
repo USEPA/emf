@@ -164,12 +164,12 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
             boolean concat = false;
             if (canConcatReports && datasetList.size() > 1) {
                 int selection = JOptionPane.showConfirmDialog(getParentConsole(),
-                    "Export all selected reports in a single file? The output filename will be based on the first report:\n" +
-                    datasetList.get(0).getName(), "Strategy Detailed Result Output", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    "Export all selected reports in a single file?",
+                    "Strategy Detailed Result Output", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (selection == JOptionPane.YES_OPTION)
                     concat = true;
             }
-            presenter.doExport(datasetList.toArray(new EmfDataset[0]), getExportFolder(), exportName.getText(), download.isSelected(), concat);
+            presenter.doExport(controlStrategy, datasetList.toArray(new EmfDataset[0]), getExportFolder(), exportName.getText(), download.isSelected(), concat);
             showMessage("Started Export. Please monitor the Status window to track your export request");
         } catch (EmfException e) {
             showMessage(e.getMessage());

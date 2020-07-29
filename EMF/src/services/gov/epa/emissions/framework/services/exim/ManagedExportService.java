@@ -162,6 +162,10 @@ public class ManagedExportService {
     }
 
     public String getCleanDatasetName(EmfDataset dataset, Version version) {
+        return getCleanDatasetName(dataset, version, false);
+    }
+
+    public String getCleanDatasetName(EmfDataset dataset, Version version, boolean prefixSuffixOnly) {
         String name = dataset.getName();
         String prefix = "", suffix = "";
         // KeyVal[] keyvals = dataset.getKeyVals(); // only gets KeyVals from dataset itself
@@ -188,17 +192,23 @@ public class ManagedExportService {
 
         String versionString = (version.isFinalVersion() ? "" : "_nf") + "_v" + +version.getVersion();
 
+        if (prefixSuffixOnly)
+            return prefix + suffix;
         return prefix + name + "_" + date.toLowerCase() + versionString + suffix;
     }
     
     public String getCleanPrefix(String prefix) {
+        return getCleanPrefix(prefix, false);
+    }
+
+    public String getCleanPrefix(String prefix, boolean prefixOnly) {
         if (prefix == null) return "";
 
         String trimmed = prefix.trim().replace(" ", "_");
         if (trimmed.isEmpty()) return "";
 
         if (trimmed.endsWith("_")) return trimmed;
-        return trimmed + "_";
+        return (prefixOnly ? trimmed : trimmed + "_");
     }
 
     public synchronized String exportForJob(User user, List<CaseInput> inputs, String cjtId, String purpose,
@@ -755,8 +765,8 @@ public class ManagedExportService {
             Version filterDatasetVersion, String filterDatasetJoinCondition,
             String colsToExport) throws Exception {
         Services services = services();
-        File file = validateExportFile(path, getCleanPrefix(prefix) +
-                getCleanDatasetName(datasets[0], versions[0]), overwrite);
+        File file = validateExportFile(path, getCleanPrefix(prefix, true) +
+                getCleanDatasetName(datasets[0], versions[0], true), overwrite);
 
         AccessLog accesslog = new AccessLog(user.getUsername(), datasets[0].getId(), datasets[0].getAccessedDateTime(),
                 "Version " + versions[0].getVersion(), purpose, file.getAbsolutePath());
@@ -806,8 +816,8 @@ public class ManagedExportService {
             Version filterDatasetVersion, String filterDatasetJoinCondition,
             String colsToExport) throws Exception {
         Services services = services();
-        File file = validateExportFile(path, getCleanPrefix(prefix) +
-                getCleanDatasetName(datasets[0], versions[0]), true);
+        File file = validateExportFile(path, getCleanPrefix(prefix, true) +
+                getCleanDatasetName(datasets[0], versions[0], true), true);
 
         AccessLog accesslog = new AccessLog(user.getUsername(), datasets[0].getId(), datasets[0].getAccessedDateTime(),
                 "Version " + versions[0].getVersion(), purpose, file.getAbsolutePath());

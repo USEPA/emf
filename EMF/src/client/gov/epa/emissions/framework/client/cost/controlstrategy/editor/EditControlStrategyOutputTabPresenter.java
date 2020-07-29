@@ -47,10 +47,10 @@ public class EditControlStrategyOutputTabPresenter implements EditControlStrateg
     }
     
     public void doExport(EmfDataset[] datasets, String folder) throws EmfException {
-        doExport(datasets, folder, null, false, false);
+        doExport(null, datasets, folder, null, false, false);
     }
     
-    public void doExport(EmfDataset[] datasets, String folder, String prefix, boolean download, boolean concat) throws EmfException {
+    public void doExport(ControlStrategy controlStrategy, EmfDataset[] datasets, String folder, String prefix, boolean download, boolean concat) throws EmfException {
         view.clearMsgPanel();
         
         if(datasets.length==0){
@@ -80,6 +80,22 @@ public class EditControlStrategyOutputTabPresenter implements EditControlStrateg
             
             dsExportPrefs[i] = prefVal;
         }
+        if (concat) {
+            // add strategy name to filename prefix
+            String stratName = controlStrategy.getName();
+            for (int i = 0; i < stratName.length(); i++) {
+                if (!Character.isLetterOrDigit(stratName.charAt(i))) {
+                    stratName = stratName.replace(stratName.charAt(i), '_');
+                }
+            }
+            if (prefix == null || prefix.isEmpty()) {
+                prefix = stratName;
+            } else {
+                prefix += "_" + stratName;
+            }
+            prefix += "_combined_results_" + System.currentTimeMillis();
+        }
+        
         if (download) {
             service.downloadDatasets(session.user(), datasets, versions, prefix, true, "", null, null, null, "", "Exporting datasets", dsExportPrefs, concat);
         } else {
