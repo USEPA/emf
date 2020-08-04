@@ -51,7 +51,7 @@ public class CaseJobTask extends Task {
 
     private String jobkey;
 
-    private String runRedirect = ">&"; // shell specific redirect
+    private String runRedirect = "|& tee"; // shell specific redirect
     
     private static final String lineSep = System.getProperty("line.separator");
     

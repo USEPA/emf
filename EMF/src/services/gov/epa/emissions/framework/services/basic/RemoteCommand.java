@@ -51,10 +51,10 @@ public class RemoteCommand {
 
                     if (qId == null)
                         qId = extractQId(message);
-                    
+
                     message = reader.readLine();
                 }
-                
+
 //                LOG.warn("QID extracted: " + qId);
                 
                 if (qId == null && !localHost)
@@ -114,7 +114,7 @@ public class RemoteCommand {
 
         // TBD: need to generalize this to accept other queue ID formats - perhaps with
         //      new property
-        Pattern p = Pattern.compile("^[0-9]*\\.(.)*", Pattern.MULTILINE);
+        Pattern p = Pattern.compile("(\\d+)", Pattern.MULTILINE);
         Matcher m = p.matcher(message.trim());
 
         if (m.find()) {

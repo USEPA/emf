@@ -1078,20 +1078,22 @@ public class CaseJobTaskManager implements TaskManager {
     private static void remoteCancel(User user, CaseJob caseJob, String host) throws EmfException {
         String qid = caseJob.getIdInQueue();
 
-        if (host.equalsIgnoreCase("localhost")) {
+        if (qid == null || qid.trim().isEmpty()) {
             updateCancelStatus(user, caseJob, caseJob.getRunstatus().getName());
             throw new EmfException("Please cancel the job command manually.");
         }
-
-        if (qid == null || qid.trim().isEmpty())
-            return;
 
         String command = getQueCommand(qid, host);
 
         if (DebugLevels.DEBUG_14())
             System.out.println("CANCEL JOBS: " + command);
 
-        InputStream inStream = RemoteCommand.execute(user.getUsername(), host, command);
+        InputStream inStream;
+        if (host.equalsIgnoreCase("localhost")) {
+            inStream = RemoteCommand.executeLocal(command);
+        } else {
+            inStream = RemoteCommand.execute(user.getUsername(), host, command);
+        }
         String outTitle = "stdout from (" + host + "): " + command;
         RemoteCommand.logRemoteStdout(outTitle, inStream);
     }
