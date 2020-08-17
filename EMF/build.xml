@@ -2,8 +2,8 @@
 <project name="EMF" default="core" basedir=".">
 
 	<!--  =================== Properties ====================================== -->
-	<property name="ant.build.javac.target" value="1.6" />
-	<property name="ant.build.javac.source" value="1.6" />
+	<property name="ant.build.javac.target" value="1.7" />
+	<property name="ant.build.javac.source" value="1.7" />
 	
 	<property file="build.properties" />
 	<property file="${user.home}/build.properties" />
