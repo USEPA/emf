@@ -14,6 +14,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JMenu;
@@ -30,6 +31,7 @@ public class FileMenu extends JMenu {
     public FileMenu(EmfSession session, EmfConsole parent, MessagePanel messagePanel, DesktopManager desktopManager) {
         super("File");
         super.setName("file");
+        super.setMnemonic(KeyEvent.VK_F);
 //        this.parent = parent;
 
         super.add(createImport(session, messagePanel, parent));

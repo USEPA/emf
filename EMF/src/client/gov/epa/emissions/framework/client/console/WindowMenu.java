@@ -6,6 +6,7 @@ import gov.epa.emissions.framework.client.ManagedView;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ public class WindowMenu extends JMenu implements WindowMenuView {
     public WindowMenu(EmfConsole console) {
         super("Window");
         super.setName("window");
+        super.setMnemonic(KeyEvent.VK_W);
         this.parent = console;
         menuItems = new TreeSet();
         permanentMenuItems = new ArrayList();

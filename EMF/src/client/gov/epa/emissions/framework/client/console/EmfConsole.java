@@ -20,6 +20,7 @@ import gov.epa.mims.analysisengine.table.TableApp;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JMenu;
@@ -180,6 +181,7 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
     
     private JMenu createToolMenu() {
         JMenu menu = new JMenu("Tools");
+        menu.setMnemonic(KeyEvent.VK_T);
         addClearAction(menu);
 
 
@@ -203,6 +205,7 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
 
     private JMenu createHelpMenu() {
         JMenu menu = new JMenu("Help");
+        menu.setMnemonic(KeyEvent.VK_H);
         addClearAction(menu);
 
         menu.add(createDisabledMenuItem("User Guide"));

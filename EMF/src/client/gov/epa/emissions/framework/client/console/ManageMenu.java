@@ -41,6 +41,7 @@ import gov.epa.emissions.framework.client.tempalloc.TemporalAllocationManagerWin
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -74,6 +75,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     public ManageMenu(EmfSession session, EmfConsole parent, MessagePanel messagePanel) {
         super("Manage");
         super.setName("manage");
+        super.setMnemonic(KeyEvent.VK_M);
         this.session = session;
         this.parent = parent;
         this.messagePanel = messagePanel;
