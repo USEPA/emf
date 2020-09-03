@@ -100,8 +100,8 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
                 doView();
             }
         });
+        view.setMnemonic('V');
         container.add(view);
-
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(container, BorderLayout.LINE_START);
 

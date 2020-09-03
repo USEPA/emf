@@ -217,6 +217,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
                 archiveDataset();
             }
         });
+        archive.setMnemonic('A');
         archive.setToolTipText(label + " Dataset");
         return archive;
     }

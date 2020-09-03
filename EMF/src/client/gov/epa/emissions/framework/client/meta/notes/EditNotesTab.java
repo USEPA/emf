@@ -97,6 +97,7 @@ public class EditNotesTab extends JPanel implements EditNotesTabView, RefreshObs
                 addExistingNotes();
             }
         });
+        addExisting.setMnemonic('E');
         addExisting.setToolTipText("add an existing note");
         container.add(addExisting);
 

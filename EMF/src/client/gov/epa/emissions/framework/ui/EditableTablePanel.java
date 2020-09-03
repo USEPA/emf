@@ -83,6 +83,7 @@ public class EditableTablePanel extends JPanel implements Editor {
                 refresh();
             }
         });
+        add.setMnemonic('A');
         container.add(add);
 
         JButton remove = new JButton("Remove");
@@ -92,6 +93,7 @@ public class EditableTablePanel extends JPanel implements Editor {
                 doRemove(tableData);
             }
         });
+        remove.setMnemonic('m');
         container.add(remove);
 
         JPanel panel = new JPanel(new BorderLayout());

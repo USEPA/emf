@@ -117,20 +117,23 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 doAddUsingTemplate();
             }
         });
+        add.setMnemonic('p');
         container.add(add);
 
-        Button remove = new BorderlessButton("Add Custom", new AbstractAction() {
+        Button addC = new BorderlessButton("Add Custom", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 doAddCustom();
             }
         });
-        container.add(remove);
+        addC.setMnemonic('A');
+        container.add(addC);
 
         Button edit = new BorderlessButton("Edit", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 doEdit();
             }
         });
+        edit.setMnemonic('E');
         container.add(edit);
 
         Button copy = new BorderlessButton("Copy", new AbstractAction() {
@@ -138,6 +141,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 doCopy();
             }
         });
+        copy.setMnemonic('C');
         container.add(copy);
         
         Button delete = new BorderlessButton("Delete", new AbstractAction() { // BUG3615
@@ -146,6 +150,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             }
 
         });
+        delete.setMnemonic('D');
         container.add(delete);
 
         Button status = new BorderlessButton("Set Status", new AbstractAction() {
@@ -153,6 +158,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 doSetStatus();
             }
         });
+        status.setMnemonic('u');
         container.add(status);
         
         Button runStatus = new BorderlessButton("Run", new AbstractAction() {
@@ -160,6 +166,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 runStatus();
             }
         });
+        runStatus.setMnemonic('n');
         container.add(runStatus);
         JButton viewResults = new BorderlessButton("View Results", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -179,6 +186,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 archiveResults();
             }
         });
+        archive.setMnemonic('v');
         container.add(archive);
 
         JButton restore = new BorderlessButton("Restore", new AbstractAction() {
@@ -187,6 +195,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 restoreResults();
             }
         });
+        restore.setMnemonic('o');
         container.add(restore);
 
         JPanel panel = new JPanel(new BorderLayout());

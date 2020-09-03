@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -129,6 +130,8 @@ public class LoginWindow extends EmfFrame implements LoginView {
                 doSignIn();
             }
         });
+        signIn.setMnemonic(KeyEvent.VK_I);
+        //signIn.setMnemonic('I');
         container.add(signIn);
         setDefaultButton(signIn);
 

@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -89,10 +90,11 @@ public class StatusWindow
     }
 
     private JButton createClearButton() {
-        JButton button = new JButton(trashIcon());
-        button.setName("clear");
+        JButton button = new JButton("Clear Messages");
+        button.setIcon(trashIcon());
         button.setBorderPainted(false);
         button.setToolTipText("Clear the Status messages");
+        button.setMnemonic(KeyEvent.VK_C);
 
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {

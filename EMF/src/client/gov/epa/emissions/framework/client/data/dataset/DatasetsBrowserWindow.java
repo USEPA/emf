@@ -174,6 +174,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
                 notifyAdvancedSearch();
             }
         });
+        advButton.setMnemonic('d');
         advButton.setToolTipText("Advanced search");
         
         JPanel advPanel = new JPanel(new BorderLayout(5, 2));
@@ -359,6 +360,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
             }
         });
         purgeButton.setToolTipText("Purge deleted dataset(s)");
+        purgeButton.setMnemonic('P');
         panel.add(purgeButton);
 
         Button closeButton = new CloseButton(new AbstractAction() {

@@ -265,6 +265,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
                 }
             }
         });
+        refresh.setMnemonic('R');
         buttonsPanel.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
 

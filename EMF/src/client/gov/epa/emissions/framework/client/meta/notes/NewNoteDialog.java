@@ -148,6 +148,7 @@ public class NewNoteDialog extends Dialog implements NewNoteView {
                 doAddReferences(notes);
             }
         });
+        button.setMnemonic('S');
         button.setToolTipText("Set References");
         container.add(button);
 

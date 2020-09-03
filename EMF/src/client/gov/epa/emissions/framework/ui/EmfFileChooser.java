@@ -257,6 +257,7 @@ public class EmfFileChooser extends JComponent {
                 buttonUploadActionPerformed(event);
             }
         });
+        buttonUpload.setMnemonic('U');
         JPanel uploadFileButtonPanel = new JPanel(new BorderLayout());
         uploadFileButtonPanel.add(buttonUpload, BorderLayout.EAST);
         localPanel.add(uploadFileButtonPanel);

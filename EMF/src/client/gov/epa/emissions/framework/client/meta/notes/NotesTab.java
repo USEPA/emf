@@ -77,8 +77,8 @@ public class NotesTab extends JPanel implements NotesTabView, RefreshObserver {
                 viewNotes();
             }
         });
+        viewButton.setMnemonic('V');
         buttonPanel.add(viewButton);
-
         panel.add(buttonPanel, BorderLayout.LINE_START);
 
         return panel;

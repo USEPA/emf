@@ -87,6 +87,7 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
                 viewRevisions();
             }
         });
+        viewButton.setMnemonic('V');
         buttonPanel.add(viewButton);
 
         JButton editButton = new JButton(new AbstractAction("Edit"){
@@ -94,7 +95,7 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
                 editRevisions();
             }
         });
-        
+        editButton.setMnemonic('E');
         editButton.setMargin(insets);
         editButton.setEnabled(this.editable);
         

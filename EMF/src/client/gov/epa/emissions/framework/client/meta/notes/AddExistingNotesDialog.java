@@ -110,6 +110,7 @@ public class AddExistingNotesDialog extends JDialog{
                   refresh();
               }
           });
+          button.setMnemonic('G');
           button.setToolTipText("Get notes");
           rightPanel.add(button, BorderLayout.CENTER);
 

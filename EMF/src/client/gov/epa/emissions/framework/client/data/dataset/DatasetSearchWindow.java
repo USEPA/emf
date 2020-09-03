@@ -223,6 +223,7 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
         qaStepArguments.setToolTipText("QA step argument contains.");
         
         Button selectButton = new AddButton("Find Dataset", selectAction());
+        selectButton.setMnemonic('F');
         selectButton.setMargin(new Insets(1, 2, 1, 2));
 
         JPanel invPanel = new JPanel(new BorderLayout(5, 0));
@@ -363,13 +364,13 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
             }
         });
         
-        Button clearButoon = new Button("Clear", new AbstractAction(){
+        Button clearButton = new Button("Clear", new AbstractAction(){
             public void actionPerformed(ActionEvent event) {
                 clearFields();
             }
         });
-        
-        panel.add(clearButoon);
+        clearButton.setMnemonic('C');
+        panel.add(clearButton);
         
         panel.add(closeButton, BorderLayout.LINE_END);
         getRootPane().setDefaultButton(okButton);
