@@ -18,8 +18,13 @@ public class TextField extends JTextField implements Changeable {
     private boolean changed = false;
 
     public TextField(String name, int size) {
+        this(name, size, name);
+    }
+
+    public TextField(String name, int size, String toolTipText) {
         super(size);
         super.setName(name);
+        super.setToolTipText(toolTipText);
     }
 
     public TextField(String name, String value, int size) {
@@ -61,7 +66,9 @@ public class TextField extends JTextField implements Changeable {
     private void addKeyListener() {
         this.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
-                notifyChanges();
+                if (!(e.getKeyChar() == KeyEvent.VK_TAB)
+                        && !(e.getKeyCode() == KeyEvent.VK_TAB &&  e.isShiftDown()))
+                    notifyChanges();
             }
         });
     }

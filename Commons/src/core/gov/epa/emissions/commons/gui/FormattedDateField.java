@@ -13,6 +13,12 @@ public class FormattedDateField extends FormattedTextField implements Changeable
         this.format = format;
     }
 
+    public FormattedDateField(String name, Date value, SimpleDateFormat format, MessageBoard messagePanel,
+                              String toolTipText) {
+        this(name, value, format, messagePanel);
+        super.setToolTipText(toolTipText);
+    }
+
     public Date value() {
         String value = super.getText();
         if (value == null || value.length() == 0)
@@ -24,5 +30,4 @@ public class FormattedDateField extends FormattedTextField implements Changeable
             throw new RuntimeException("could not parse Date - " + value + ". Expected format - " + format.toPattern());
         }
     }
-
 }

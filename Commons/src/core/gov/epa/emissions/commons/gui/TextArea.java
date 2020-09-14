@@ -1,5 +1,6 @@
 package gov.epa.emissions.commons.gui;
 
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -14,14 +15,26 @@ public class TextArea extends JTextArea implements Changeable {
     private boolean changed = false;
 
     public TextArea(String name, String value) {
-        this(name, value, 40);
+        this(name, value, 40, name);
+    }
+
+    public TextArea(String name, String value, String toolTipText) {
+        this(name, value, 40, toolTipText);
     }
 
     public TextArea(String name, String value, int columns) {
-        this(name, value, columns, 4);
+        this(name, value, columns, 4, name);
+    }
+
+    public TextArea(String name, String value, int columns, String toolTipText) {
+        this(name, value, columns, 4, toolTipText);
     }
 
     public TextArea(String name, String value, int columns, int rows) {
+        this(name, value, columns, rows, name);
+    }
+
+    public TextArea(String name, String value, int columns, int rows, String toolTipText) {
         super.setName(name);
         super.setText(value);
         super.setRows(rows);
@@ -29,6 +42,7 @@ public class TextArea extends JTextArea implements Changeable {
         super.setCaretPosition(0);
         super.setColumns(columns);
         super.setWrapStyleWord(true);
+        super.setToolTipText(toolTipText);
     }
 
     private void addTextListener() {
@@ -51,7 +65,36 @@ public class TextArea extends JTextArea implements Changeable {
     private void addKeyListener() {
         this.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
-                notifyChanges();
+                if (!(e.getKeyChar() == KeyEvent.VK_TAB)
+                    && !(e.getKeyCode() == KeyEvent.VK_TAB &&  e.isShiftDown()))
+                    notifyChanges();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB)
+                {
+                    e.consume();
+                    KeyboardFocusManager.
+                            getCurrentKeyboardFocusManager().focusNextComponent();
+                }
+
+                if (e.getKeyCode() == KeyEvent.VK_TAB
+                        &&  e.isShiftDown())
+                {
+                    e.consume();
+                    KeyboardFocusManager.
+                            getCurrentKeyboardFocusManager().focusPreviousComponent();
+                }
+
+//                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+//                    if (e.getModifiersEx() > 0) {
+//                        this.transferFocusBackward();
+//                    } else {
+//                        this.transferFocus();
+//                    }
+//                    e.consume();
+//                }
             }
         });
     }

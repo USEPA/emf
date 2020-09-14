@@ -12,6 +12,12 @@ public class EditableComboBox extends JComboBox implements Changeable {
 
     private boolean changed = false;
 
+    public EditableComboBox(Object[] objects, String toolTipText) {
+        super(objects);
+        setEditable(true);
+        setToolTipText(toolTipText);
+    }
+
     public EditableComboBox(Object[] objects) {
         super(objects);
         setEditable(true);

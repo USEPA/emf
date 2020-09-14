@@ -37,10 +37,7 @@ import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 
 public class EditableSummaryTab extends JPanel implements EditableSummaryTabView, RefreshObserver {
 
@@ -124,17 +121,18 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        layoutGenerator.addLabelWidgetPair("Status:", new Label("status", dataset.getStatus()), panel);
+        layoutGenerator.addLabelWidgetPair("Status:", new Label("status", dataset.getStatus(), "Dataset status", 175),
+                panel);
         layoutGenerator.addLabelWidgetPair("Last Modified Date:", new Label("lastModifiedDate", format(dataset
-                .getModifiedDateTime())), panel);
+                .getModifiedDateTime()), "Dataset last modified date time", 175), panel);
         layoutGenerator.addLabelWidgetPair("Last Accessed Date:", new Label("lastAccessedDate", format(dataset
-                .getAccessedDateTime())), panel);
+                .getAccessedDateTime()), "Dataset last accessed date time", 175), panel);
         layoutGenerator.addLabelWidgetPair("Creation Date:", new Label("creationDate", format(dataset
-                .getCreatedDateTime())), panel);
+                .getCreatedDateTime()), "Dataset creation date time", 175), panel);
 
         setupIntendedUseCombo();
         layoutGenerator.addLabelWidgetPair("Intended Use: ", intendedUseCombo, panel);
-        defaultVersionPanel = new DefaultVersionPanel(dataset, versions, changeablesList, messagePanel);
+        defaultVersionPanel = new DefaultVersionPanel(dataset, versions, changeablesList, messagePanel, "Dataset default version");
         layoutGenerator.addLabelWidgetPair("Default Version:", defaultVersionPanel, panel);
         layoutGenerator.makeCompactGrid(panel, 6, 2, // rows, cols
                 5, 5, // initialX, initialY
@@ -144,7 +142,7 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
 
     private void setupIntendedUseCombo() throws EmfException {
         allIntendedUses = service.getIntendedUses();
-        intendedUseCombo = new ComboBox(allIntendedUses);
+        intendedUseCombo = new ComboBox(allIntendedUses, "Dataset intended use");
         IntendedUse intendedUse = dataset.getIntendedUse();
 
         if (intendedUse == null)
@@ -189,21 +187,20 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
 
         // time period
         startDateTime = new FormattedDateField("startDateTime", dataset.getStartDateTime(), DATE_FORMATTER,
-                messagePanel);
-        endDateTime = new FormattedDateField("endDateTime", dataset.getStopDateTime(), DATE_FORMATTER, messagePanel);
+                messagePanel, "Enter a start date time with the format MM/dd/yyyy HH:mm");
+        endDateTime = new FormattedDateField("endDateTime", dataset.getStopDateTime(), DATE_FORMATTER, messagePanel,
+                "Enter a end date time with the format MM/dd/yyyy HH:mm");
         changeablesList.addChangeable(startDateTime);
         changeablesList.addChangeable(endDateTime);
         layoutGenerator.addLabelWidgetPair("Time Period Start:", startDateTime, panel);
         layoutGenerator.addLabelWidgetPair("Time Period End:", endDateTime, panel);
-        startDateTime.setToolTipText("Enter a date with the format MM/dd/yyyy HH:mm");
-        endDateTime.setToolTipText("Enter a date with the format MM/dd/yyyy HH:mm");
 
         // temporal resolution
         temporalResolutionsCombo = temporalResolutionCombo();
         temporalResolutionsCombo.setPreferredSize(new Dimension(175, 20));
         layoutGenerator.addLabelWidgetPair("Temporal Resolution:", temporalResolutionsCombo, panel);
 
-        sectorsCombo = new ComboBox("Choose a sector", service.getSectors());
+        sectorsCombo = new ComboBox("Choose a sector", service.getSectors(), "Dataset sector");
         Sector[] datasetSectors = dataset.getSectors();
         // TODO: Change this code, when multiple sector selection is allowed
         if (datasetSectors != null && datasetSectors.length > 0) {
@@ -213,19 +210,17 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         sectorsCombo.setPreferredSize(new Dimension(175, 20));
         changeablesList.addChangeable(sectorsCombo);
         layoutGenerator.addLabelWidgetPair("Sector:", sectorsCombo, panel);
-
+        UIManager.getLookAndFeelDefaults().put("ComboBox.noActionOnKeyNavigation", true);
         allRegions = service.getRegions();
-        regionsCombo = new EditableComboBox(allRegions);
+        regionsCombo = new EditableComboBox(allRegions, "Dataset region");
         regionsCombo.setSelectedItem(dataset.getRegion());
         regionsCombo.setName("regionsComboModel");
         regionsCombo.setPreferredSize(new Dimension(175, 20));
         changeablesList.addChangeable(regionsCombo);
         layoutGenerator.addLabelWidgetPair("Region:", regionsCombo, panel);
-        Region region = dataset.getRegion();
-        regionsCombo.setSelectedItem(region);
 
         // country
-        countriesCombo = new ComboBox("Choose a country", service.getCountries());
+        countriesCombo = new ComboBox("Choose a country", service.getCountries(), "Dataset country");
         countriesCombo.setSelectedItem(dataset.getCountry());
         countriesCombo.setName("countries");
         countriesCombo.setPreferredSize(new Dimension(175, 20));
@@ -244,7 +239,7 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
     }
 
     private ComboBox temporalResolutionCombo() {
-        ComboBox combo = new ComboBox("Choose a resolution", TemporalResolution.NAMES.toArray());
+        ComboBox combo = new ComboBox("Choose a resolution", TemporalResolution.NAMES.toArray(), "Dataset temporal resolution");
         combo.setName("temporalResolutions");
          String resolution = dataset.getTemporalResolution();
 
@@ -272,7 +267,7 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
         // name
-        name = new TextField("name", 51);
+        name = new TextField("name", 51, "Dataset Name");
         name.setText(dataset.getName());
         name.setPreferredSize(new Dimension(575, 20));
         changeablesList.addChangeable(name);
@@ -280,7 +275,7 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         layoutGenerator.addLabelWidgetPair("Name:", name, panel);
 
         // description
-        description = new TextArea("description", dataset.getDescription());
+        description = new TextArea("description", dataset.getDescription(), "Dataset description");
 
         changeablesList.addChangeable(description);
         ScrollableComponent viewableTextArea = new ScrollableComponent(description);
@@ -291,7 +286,7 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         // layoutGenerator.addLabelWidgetPair("Description:", new ScrollableComponent(description), panel);
 
         allProjects = session.getProjects();
-        projectsCombo = new EditableComboBox(allProjects);
+        projectsCombo = new EditableComboBox(allProjects, "Dataset projects");
         projectsCombo.setSelectedItem(dataset.getProject());
         projectsCombo.setPreferredSize(new Dimension(250, 20));
         changeablesList.addChangeable(projectsCombo);
@@ -300,11 +295,11 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         layoutGenerator.addLabelWidgetPair("Project:", projectsCombo, panel);
 
         // creator
-        JLabel creator = createLeftAlignedLabel(getFullName());
+        Label creator = createLeftAlignedLabel("creator", getFullName(), "Dataset creator full name");
         layoutGenerator.addLabelWidgetPair("Creator:", creator, panel);
 
         // dataset type
-        JLabel datasetType = createLeftAlignedLabel(dataset.getDatasetTypeName());
+        Label datasetType = createLeftAlignedLabel("datasetType",  dataset.getDatasetTypeName(), "Dataset type");
         layoutGenerator.addLabelWidgetPair("Dataset Type:", datasetType, panel);
 
         // Lay out the panel.
@@ -315,8 +310,8 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         return panel;
     }
 
-    private JLabel createLeftAlignedLabel(String name) {
-        JLabel datasetTypeLabel = new JLabel(name);
+    private Label createLeftAlignedLabel(String name, String label, String toolTipText) {
+        Label datasetTypeLabel = new Label(name, label, toolTipText, 250);
         datasetTypeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         return datasetTypeLabel;

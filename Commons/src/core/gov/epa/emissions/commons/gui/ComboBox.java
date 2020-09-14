@@ -3,6 +3,8 @@ package gov.epa.emissions.commons.gui;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +32,18 @@ public class ComboBox extends JComboBox implements Changeable {
         setRenderer(new ComboBoxRenderer(defaultLabel));
     }
 
+    public ComboBox(String defaultLabel, Object[] values, String toolTipText) {
+        this(defaultLabel, values);
+        super.setToolTipText(toolTipText);
+    }
+
     public ComboBox(Object[] values) {
         super(values);
+    }
+
+    public ComboBox(Object[] values, String toolTipText) {
+        this(values);
+        super.setToolTipText(toolTipText);
     }
 
     public ComboBox() {
@@ -92,6 +104,21 @@ public class ComboBox extends JComboBox implements Changeable {
         addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 notifyChanges();
+            }
+        });
+        addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent e) {
+                if (!(e.getKeyChar() == KeyEvent.VK_TAB)
+                        && !(e.getKeyCode() == KeyEvent.VK_TAB && e.isShiftDown()))
+                    notifyChanges();
+            }
+
+            public void keyPressed(KeyEvent e) {
+                // NO OP;
+            }
+
+            public void keyReleased(KeyEvent e) {
+                // NO OP;
             }
         });
     }

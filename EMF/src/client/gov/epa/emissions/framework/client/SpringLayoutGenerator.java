@@ -167,6 +167,7 @@ public class SpringLayoutGenerator {
     public void addLabelWidgetPair(String label, JComponent widget, JPanel panel) {
         JLabel l = new JLabel(label, JLabel.TRAILING);
         l.setLabelFor( widget);
+        l.setToolTipText(widget.getToolTipText());
         //addWidgetPair(new JLabel(label, JLabel.TRAILING), widget, panel);
         addWidgetPair(l, widget, panel);
     }
