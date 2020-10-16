@@ -21,24 +21,15 @@ public class DefaultVersionPanel extends JPanel {
     
     private MessagePanel messagePanel;
 
-    private String toolTipText;
-
     public DefaultVersionPanel(EmfDataset dataset, Version[] versions, ManageChangeables changeables,
        MessagePanel messagePanel) {
         this.dataset = dataset;
         this.versions = versions;
         this.messagePanel = messagePanel;
+
         createLayout(changeables);
     }
 
-    public DefaultVersionPanel(EmfDataset dataset, Version[] versions, ManageChangeables changeables,
-                               MessagePanel messagePanel, String toolTipText) {
-        this.dataset = dataset;
-        this.versions = versions;
-        this.messagePanel = messagePanel;
-        this.toolTipText = toolTipText;
-        createLayout(changeables);
-    }
     private void createLayout(ManageChangeables changeables) {
         //super.add(new JLabel("Default Version:"));
 
@@ -52,7 +43,7 @@ public class DefaultVersionPanel extends JPanel {
             return;
         }    
         
-        versionCombo = new ComboBox(finalVersions, toolTipText);
+        versionCombo = new ComboBox(finalVersions);
         versionCombo.setPreferredSize(new Dimension(175,20));
         versionCombo.setSelectedIndex(getIndexOfDefaultVersion(defaultVersionNum, finalVersions));
         
