@@ -228,6 +228,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
         forgotPassword.setToolTipText("Reset password");
         JPanel forgotPasswordPanel = new JPanel(new BorderLayout());
         forgotPasswordPanel.add(forgotPassword);
+        forgotPassword.setMnemonic('P');
 
         JButton register = new Button("Register New User", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -235,6 +236,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
             }
         });
         register.setToolTipText("Register as a new user");
+        register.setMnemonic('R');
 
         JPanel registerPanel = new JPanel(new BorderLayout());
         registerPanel.add(register);

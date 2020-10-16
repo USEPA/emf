@@ -317,6 +317,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
             }
         });
         crudPanel.add(compareButton);
+        compareButton.setMnemonic('o');
         
         Button qaButton = new Button("Compare Reports", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -330,6 +331,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
             }
         });
         crudPanel.add(qaButton);
+        qaButton.setMnemonic('m');
         
         return crudPanel;
     }
