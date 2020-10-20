@@ -244,7 +244,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         String message1 = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog1 = new ConfirmDialog(message1, "Warning", this);
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog1);
-        edit.setMnemonic('d');
+        edit.setMnemonic('E');
         edit.setMargin(insets);
         container.add(edit);
 
@@ -254,7 +254,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         container.add(copy);
 
         Button modify = new Button("Modify", modifyAction());
-        modify.setMnemonic('o');
+        modify.setMnemonic('y');
         modify.setMargin(insets);
         container.add(modify);
 
@@ -286,13 +286,13 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         validate.setMargin(insets);
         container.add(validate);
 
-        Button set = new Button("Set Status", new AbstractAction() {
+        Button set = new Button("Set Statuz", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clearMessage();
                 setStatus();
             }
         });
-        set.setMnemonic('e');
+        set.setMnemonic('z');
         set.setMargin(insets);
         container.add(set);
 

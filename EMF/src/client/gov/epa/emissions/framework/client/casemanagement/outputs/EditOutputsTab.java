@@ -201,10 +201,11 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         container.add(remove);
 
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog);
+        edit.setMnemonic('i');
         edit.setMargin(insets);
         container.add(edit);
         
-        Button view = new ViewButton("View Dataset", new AbstractAction() {
+        Button view = new ViewButton("View Datasetz", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     displayOutputDatasetsPropertiesViewer();
@@ -214,6 +215,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
                 }
             }
         });
+        view.setMnemonic('z');
         view.setMargin(insets);
         container.add(view);
         
@@ -222,6 +224,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
                 //
             }
         });
+        export.setMnemonic('E');
         export.setMargin(insets);
         export.setEnabled(false);
         container.add(export);
@@ -231,6 +234,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
                 viewCasesReleatedToDataset();
             }
         });
+        findRelated.setMnemonic('n');
         findRelated.setMargin(insets);
         container.add(findRelated);
 

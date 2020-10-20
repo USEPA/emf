@@ -83,7 +83,6 @@ public class CaseDAO {
 
         try {
             hibernateFacade.add(output, session);
-
             return getCaseOutput(output, session);
         } catch (Exception ex) {
             throw new Exception("Problem adding case output: " + output.getName() + ". " + ex.getMessage());

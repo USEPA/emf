@@ -203,7 +203,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         });
         buttonsPanel.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
-        refresh.setMnemonic('R');
+        refresh.setMnemonic('s');
         
         Button printCaseButton = new Button("Export", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -212,7 +212,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         });
         buttonsPanel.add(printCaseButton);
         printCaseButton.setToolTipText("Export the settings for current case.");
-        printCaseButton.setMnemonic('E');
+        printCaseButton.setMnemonic('x');
 
         Button viewParent = new Button("View Parent", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -229,7 +229,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
             }
         });
         buttonsPanel.add(viewRelated);
-        viewRelated.setMnemonic('V');
+        viewRelated.setMnemonic('R');
         
         Button close = new CloseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {

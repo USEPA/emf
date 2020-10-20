@@ -331,7 +331,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
             }
         });
         crudPanel.add(qaButton);
-        qaButton.setMnemonic('m');
+        qaButton.setMnemonic('p');
         
         return crudPanel;
     }

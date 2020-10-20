@@ -199,7 +199,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             }
         });
         set.setMargin(insets);
-        set.setMnemonic('S');
+        set.setMnemonic('e');
         container.add(set);
         
         Button cancelJobs = new Button("Cancel", new AbstractAction() {

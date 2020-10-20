@@ -203,6 +203,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
                 }
             }
         });
+        viewDS.setMnemonic('a');
         viewDS.setMargin(insets);
         container.add(viewDS);
         
@@ -211,6 +212,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
                 //
             }
         });
+        export.setMnemonic('E');
         export.setMargin(insets);
         export.setEnabled(false);
         container.add(export);
@@ -221,7 +223,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
             }
         });
         findRelated.setMargin(insets);
-        findRelated.setMnemonic('F');
+        findRelated.setMnemonic('n');
         container.add(findRelated);
 
         JPanel panel = new JPanel(new BorderLayout());

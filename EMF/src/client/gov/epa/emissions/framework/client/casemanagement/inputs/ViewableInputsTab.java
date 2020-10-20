@@ -88,6 +88,7 @@ public class ViewableInputsTab extends EditInputsTab {
                 doDisplayInputDatasetsPropertiesViewer();
             }
         });
+        viewDS.setMnemonic('i');
         viewDS.setMargin(insets);
         container.add(viewDS);
 
@@ -96,6 +97,7 @@ public class ViewableInputsTab extends EditInputsTab {
                 doExportInputDatasets(getSelectedInputs());
             }
         });
+        export.setMnemonic('E');
         export.setMargin(insets);
         container.add(export);
 
@@ -105,7 +107,7 @@ public class ViewableInputsTab extends EditInputsTab {
             }
         });
         findRelated.setMargin(insets);
-        findRelated.setMnemonic('F');
+        findRelated.setMnemonic('n');
         container.add(findRelated);
 
         showAll = new JCheckBox("Show All", false);

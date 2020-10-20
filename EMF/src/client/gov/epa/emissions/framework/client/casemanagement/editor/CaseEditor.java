@@ -226,7 +226,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 printCase();
             }
         });
-        printCaseButton.setMnemonic('E');
+        printCaseButton.setMnemonic('x');
         buttonsPanel.add(printCaseButton);
         printCaseButton.setToolTipText("Export the settings for current case.");
 
