@@ -78,12 +78,14 @@ public class SortGUI extends OptionDialog {
 				addNewSortPanel(sortPanels.isEmpty());
 			}
 		});
+		addBtn.setMnemonic('A');
 
 		clearBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearSortPanel();
 			}
 		});
+		clearBtn.setMnemonic('C');
 
 		sortContentPanel.setLayout(new BoxLayout(sortContentPanel, BoxLayout.Y_AXIS));
 
