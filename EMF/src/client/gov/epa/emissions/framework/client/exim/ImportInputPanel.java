@@ -200,7 +200,7 @@ public class ImportInputPanel extends JPanel {
                 selectFilesFromPattern();
             }
         });
-
+        button.setMnemonic('A');
         return button;
     }
 

@@ -174,6 +174,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
         
         Button copy = new Button("Copy", copyAction());
         copy.setMargin(insets);
+        copy.setMnemonic('C');
         container.add(copy);
 
         Button validate = new Button("Validate", new AbstractAction() {
@@ -188,8 +189,9 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             }
         });
         validate.setMargin(insets);
+        validate.setMnemonic('i');
         container.add(validate);
-        
+         
         Button set = new Button("Set Status", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clearMessage();
@@ -197,6 +199,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             }
         });
         set.setMargin(insets);
+        set.setMnemonic('S');
         container.add(set);
         
         Button cancelJobs = new Button("Cancel", new AbstractAction() {
@@ -209,6 +212,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
                 }
             }
         });
+        cancelJobs.setMnemonic('a');
         cancelJobs.setMargin(insets);
         container.add(cancelJobs);
 

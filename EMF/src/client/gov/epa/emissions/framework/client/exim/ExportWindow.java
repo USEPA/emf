@@ -335,6 +335,7 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
                 presenter.notifyDone();
             }
         });
+        done.setMnemonic('D');
         container.add(done);
 
         panel.add(container, BorderLayout.EAST);

@@ -244,14 +244,17 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         String message1 = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog1 = new ConfirmDialog(message1, "Warning", this);
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog1);
+        edit.setMnemonic('d');
         edit.setMargin(insets);
         container.add(edit);
 
         Button copy = new Button("Copy", copyAction());
+        copy.setMnemonic('C');
         copy.setMargin(insets);
         container.add(copy);
 
         Button modify = new Button("Modify", modifyAction());
+        modify.setMnemonic('o');
         modify.setMargin(insets);
         container.add(modify);
 
@@ -279,6 +282,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 }
             }
         });
+        validate.setMnemonic('i');
         validate.setMargin(insets);
         container.add(validate);
 
@@ -288,6 +292,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 setStatus();
             }
         });
+        set.setMnemonic('e');
         set.setMargin(insets);
         container.add(set);
 
@@ -301,6 +306,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 }
             }
         });
+        cancelJobs.setMnemonic('n');
         cancelJobs.setMargin(insets);
         container.add(cancelJobs);
 

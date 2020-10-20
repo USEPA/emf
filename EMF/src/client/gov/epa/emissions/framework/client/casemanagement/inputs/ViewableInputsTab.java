@@ -80,6 +80,7 @@ public class ViewableInputsTab extends EditInputsTab {
 
         Button copy = new Button("Copy", copyAction(presenter));
         copy.setMargin(insets);
+        copy.setMnemonic('C');
         container.add(copy);
 
         Button viewDS = new ViewButton("View Dataset", new AbstractAction() {
@@ -104,6 +105,7 @@ public class ViewableInputsTab extends EditInputsTab {
             }
         });
         findRelated.setMargin(insets);
+        findRelated.setMnemonic('F');
         container.add(findRelated);
 
         showAll = new JCheckBox("Show All", false);

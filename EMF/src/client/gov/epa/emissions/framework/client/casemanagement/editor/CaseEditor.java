@@ -195,6 +195,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 }
             }
         });
+        describe.setMnemonic('D');
         buttonsPanel.add(describe);
         describe.setToolTipText("Show the description in a non-modal window.");
         
@@ -207,6 +208,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 }
             }
         });
+        refresh.setMnemonic('R');
         buttonsPanel.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
 
@@ -215,6 +217,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 loadCase();
             }
         });
+        loadCaseButton.setMnemonic('o');
         buttonsPanel.add(loadCaseButton);
         loadCaseButton.setToolTipText("Load case inputs, parameters, and outputs from case log file.");
         
@@ -223,6 +226,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 printCase();
             }
         });
+        printCaseButton.setMnemonic('E');
         buttonsPanel.add(printCaseButton);
         printCaseButton.setToolTipText("Export the settings for current case.");
 
@@ -239,6 +243,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 viewParentCase();
             }
         });
+        viewParent.setMnemonic('P');
         buttonsPanel.add(viewParent);
         
         Button viewRelated = new Button("View Related", new AbstractAction() {
@@ -246,6 +251,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 viewRelatedCase();
             }
         });
+        viewRelated.setMnemonic('V');
         buttonsPanel.add(viewRelated);
 
         Button close = new CloseButton(new AbstractAction() {

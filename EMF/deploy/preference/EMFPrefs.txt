@@ -71,3 +71,5 @@ Comma_Separated_Values_(CSV)_column_order=comments,record_id,version,delete_vers
 Comma_Separated_Values_(CSV)_column_hidden=
 Projection_Packet_column_order=fips,scc,proj_factor,poll,sic,mact,plantid,pointid,stackid,segment,naics,char_5,comments,record_id,version,delete_versions
 Projection_Packet_column_hidden=
+Strategy_County_Summary_column_order=sector,region_cd,poll,input_emis,emis_reduction,remaining_emis,pct_red,annual_cost,annual_oper_maint_cost,annualized_capital_cost,total_capital_cost,avg_ann_cost_per_ton,comment,record_id,version,delete_versions
+Strategy_County_Summary_column_hidden=

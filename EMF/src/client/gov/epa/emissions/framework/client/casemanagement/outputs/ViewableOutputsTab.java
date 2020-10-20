@@ -221,6 +221,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
             }
         });
         findRelated.setMargin(insets);
+        findRelated.setMnemonic('F');
         container.add(findRelated);
 
         JPanel panel = new JPanel(new BorderLayout());

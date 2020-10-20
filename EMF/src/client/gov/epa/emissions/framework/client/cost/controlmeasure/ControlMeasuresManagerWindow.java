@@ -405,9 +405,11 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
         Button view = new Button("View", viewAction());
         // Button view = new ViewButton(viewAction());
         panel.add(view);
+        view.setMnemonic('V');
 
         Button edit = new Button("Edit", editAction());
         panel.add(edit);
+        edit.setMnemonic('E');
 
         AbstractAction copyAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -426,9 +428,11 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
         Button find = new Button("Find", findAction());
         find.setToolTipText("Find measures that apply to specific SCCs");
         panel.add(find);
+        find.setMnemonic('F');
 
         Button genereateReport = new Button("Report", generatePDFReportAction());
         panel.add(genereateReport);
+        genereateReport.setMnemonic('p');
 
         return panel;
     }

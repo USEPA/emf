@@ -72,13 +72,13 @@ public class ImportWindow extends ReusableInteralFrame implements ImportView {
         });
         container.add(importButton);
         getRootPane().setDefaultButton(importButton);
-
         JButton done = new Button("Done", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 presenter.doDone();
             }
         });
         container.add(done);
+        done.setMnemonic('M');
 
         panel.add(container, BorderLayout.EAST);
 

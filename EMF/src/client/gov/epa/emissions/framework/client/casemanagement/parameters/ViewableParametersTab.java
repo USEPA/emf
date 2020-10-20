@@ -125,6 +125,7 @@ public class ViewableParametersTab extends EditParametersTab {
         
         Button copy = new Button("Copy", copyAction(presenter));
         copy.setMargin(insets);
+        copy.setMnemonic('C');
         container.add(copy);
 
         showAll = new JCheckBox("Show All", false);

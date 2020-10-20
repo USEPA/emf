@@ -174,7 +174,7 @@ public class AddRemoveDatasetVersionWidget extends JPanel {
                     setVersionAction();
             }
         });
-
+        setVersionButton.setMnemonic('S');
         removeButton = new RemoveButton("Remove", removeAction());
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));

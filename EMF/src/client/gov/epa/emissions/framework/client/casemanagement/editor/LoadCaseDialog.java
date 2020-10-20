@@ -144,10 +144,12 @@ public class LoadCaseDialog extends JDialog {
         container.setLayout(layout);
 
         loadButton = new Button("Load", loadCase());
+        loadButton.setMnemonic('L');
         container.add(loadButton);
         getRootPane().setDefaultButton(loadButton);
 
         cancelButton = new Button("Done", closeAction());
+        cancelButton.setMnemonic('D');
         container.add(cancelButton);
 
         panel.add(container, BorderLayout.EAST);

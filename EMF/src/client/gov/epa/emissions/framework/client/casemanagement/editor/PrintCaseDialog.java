@@ -155,6 +155,7 @@ public class PrintCaseDialog extends JDialog {
         container.setLayout(layout);
 
         okButton = new Button("OK", printCase());
+        okButton.setMnemonic('O');
         container.add(okButton);
         getRootPane().setDefaultButton(okButton);
 

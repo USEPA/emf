@@ -178,6 +178,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 }
             }
         });
+        viewResults.setMnemonic('i');
         container.add(viewResults);
 
         JButton archive = new BorderlessButton("Archive", new AbstractAction() {
