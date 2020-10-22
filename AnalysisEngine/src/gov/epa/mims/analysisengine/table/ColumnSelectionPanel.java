@@ -190,24 +190,28 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 				applyFilterToSelection();
 			}
 		});
+		filterBtn.setMnemonic('S');
 
 		reverseBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reverseSelection();
 			}
 		});
+		reverseBtn.setMnemonic('I');
 
 		checkBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkSelectedRows(true);
 			}
 		});
+		checkBtn.setMnemonic('w');
 
 		uncheckBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkSelectedRows(false);
 			}
 		});
+		uncheckBtn.setMnemonic('H');
 
 		// Filter Panel
 		filterPanel = new FilterPanel(true, null, new String[] { "Column Name" }, FilterCriteria.OPERATION_STRINGS, 0,

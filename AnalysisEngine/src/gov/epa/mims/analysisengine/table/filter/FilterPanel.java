@@ -228,7 +228,9 @@ public class FilterPanel extends JPanel implements ChildHasChangedListener, Acti
 		toolBar.add(deleteBtn);
 
 		addBtn.addActionListener(this);
+		addBtn.setMnemonic('A');
 		deleteBtn.addActionListener(this);
+		deleteBtn.setMnemonic('D');
 
 		filterCheckBox = new JCheckBox("Apply Filter?");
 		filterCheckBox.addActionListener(this);
