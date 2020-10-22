@@ -78,7 +78,7 @@ public class ImportWindow extends ReusableInteralFrame implements ImportView {
             }
         });
         container.add(done);
-        done.setMnemonic('M');
+        done.setMnemonic('D');
 
         panel.add(container, BorderLayout.EAST);
 

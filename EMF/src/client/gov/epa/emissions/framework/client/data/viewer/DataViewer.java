@@ -138,7 +138,7 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
             }
         });
         addNote.setEnabled(this.editable);
-        
+        addNote.setMnemonic('N');
         leftPanel.add(addNote);
         return leftPanel;
     }

@@ -166,7 +166,7 @@ public class DataSortFilterPanelViewer extends JPanel {
             }
         });
         this.formatButton.setToolTipText("Apply the new format settings to the table");
-        formatButton.setMnemonic('F');
+        formatButton.setMnemonic('o');
         
         this.resetViewCheckBox.setAction(new AbstractAction("Reset View") {
             public void actionPerformed(ActionEvent e) {

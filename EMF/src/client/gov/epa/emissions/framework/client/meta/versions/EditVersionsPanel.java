@@ -174,6 +174,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
         newButton.setText("New Version");
         newButton.setToolTipText("Create a new version");
         newButton.setMargin(new Insets(2, 2, 2, 2));
+        
         panel.add(newButton);
         if (dataset.getInternalSources().length == 0) {
             newButton.setEnabled(false);
@@ -189,6 +190,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
                 }
             }
         });
+        renameButton.setMnemonic('d');
         renameButton.setToolTipText("Edit version information");
         renameButton.setMargin(new Insets(2, 2, 2, 2));
         panel.add(renameButton);
@@ -206,6 +208,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
                 }
             }
         });
+        markFinal.setMnemonic('r');
         markFinal.setToolTipText("Mark the selected versions as final so that no more edits can be made");
         markFinal.setMargin(new Insets(2, 2, 2, 2));
 

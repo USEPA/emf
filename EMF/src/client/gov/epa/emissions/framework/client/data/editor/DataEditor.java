@@ -231,6 +231,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 }
             }
         });
+        addNote.setMnemonic('N');
         panel.add(addNote);
 
         return panel;
@@ -262,7 +263,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 doSave();
             }
         });
-
+        save.setMnemonic('S');
         save.setToolTipText("Save your changes");
         save.setEnabled(false);
         return save;
@@ -275,6 +276,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 doDiscard();
             }
         });
+        discard.setMnemonic('D');
         discard.setToolTipText("Discard your changes");
         discard.setEnabled(false);
         return discard;

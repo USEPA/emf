@@ -117,10 +117,11 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
         
         if (dataset.isExternal())
             appendData.setEnabled(false);
-        
+        appendData.setMnemonic('A');
         panel.add(appendData);
 
         Button propButton = new Button("Edit Properties", editPropAction());
+        propButton.setMnemonic('P');
         panel.add(propButton);
 
         JButton closeButton = new JButton("Close");
@@ -129,7 +130,7 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
                 presenter.doClose();
             }
         });
-
+        closeButton.setMnemonic('l');
         getRootPane().setDefaultButton(closeButton);
         panel.add(closeButton);
 

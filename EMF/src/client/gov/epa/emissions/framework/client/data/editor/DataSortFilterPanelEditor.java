@@ -147,6 +147,7 @@ public class DataSortFilterPanelEditor extends JPanel {
                 doApplyFormat(presenter);
             }
         });
+        formatButton.setMnemonic('o');
         this.formatButton.setToolTipText("Apply the new format settings to the table");
 
         Button apply = new Button("Apply", new AbstractAction() {
@@ -154,6 +155,7 @@ public class DataSortFilterPanelEditor extends JPanel {
                 doApplyConstraints(presenter);
             }
         });
+        apply.setMnemonic('A');
         apply.setToolTipText("Apply the Row Filter & Sort Order constraints to the table");
         actionPanel.add(apply);
     }

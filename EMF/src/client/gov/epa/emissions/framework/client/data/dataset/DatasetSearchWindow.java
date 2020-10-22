@@ -223,7 +223,7 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
         qaStepArguments.setToolTipText("QA step argument contains.");
         
         Button selectButton = new AddButton("Find Dataset", selectAction());
-        selectButton.setMnemonic('F');
+        selectButton.setMnemonic('D');
         selectButton.setMargin(new Insets(1, 2, 1, 2));
 
         JPanel invPanel = new JPanel(new BorderLayout(5, 0));

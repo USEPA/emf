@@ -70,7 +70,7 @@ public class RevisionPanel extends JPanel {
             }
         });
         references.setToolTipText("Select notes for the dataset that your changes are in reference to");
-
+        references.setMnemonic('R');
         panel.add(references);
 
         return panel;
