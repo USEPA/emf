@@ -113,7 +113,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
     }    
 
     private void createDSTypesComboBox() {
-        dsTypesBox = new ComboBox("Select one", allDSTypes);
+        dsTypesBox = new ComboBox("Select one", allDSTypes, "Dataset Types");
         dsTypesBox.setPreferredSize(new Dimension(360, 25));
         dsTypesBox.addActionListener(typeAction());
     }
@@ -164,7 +164,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         msgRefreshPanel.add(button, BorderLayout.EAST);
         
         JPanel topPanel = new JPanel(new BorderLayout());
-        textFilter = new TextField("textfilter", 10);
+        textFilter = new TextField("textfilter", 10, "Name contains text filter");
         textFilter.setEditable(true);
         textFilter.addActionListener(typeAction());
         
@@ -260,6 +260,11 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         SelectAwareButton propButton = new SelectAwareButton("Edit Properties", editPropAction(), table, confirmDialog);
         SelectAwareButton dataButton = new SelectAwareButton("Edit Data", editDataAction(), table, confirmDialog);
         Button removeButton = new RemoveButton(removeAction());
+
+        viewButton.setToolTipText("View dataset properties window");
+        propButton.setToolTipText("Edit dataset properties window");
+        dataButton.setToolTipText("Edit dataset data window");
+        removeButton.setToolTipText("Remove datasets action");
 
         dataButton.setMnemonic('a');
 
@@ -368,6 +373,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
                 presenter.doClose();
             }
         });
+        closeButton.setToolTipText("Close dataset manager");
         panel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -742,6 +748,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
 //                    this.parentContainer.
                     ComponentUtility.enableComponents(parentContainer, true);
                     this.parentContainer.setCursor(null); //turn off the wait cursor
+                    dsTypesBox.grabFocus();
                 }
             }
         };
