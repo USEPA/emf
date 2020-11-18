@@ -72,6 +72,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
     private DatasetType[] allDSTypes = new DatasetType[] {};
 
     private SelectableSortFilterWrapper table;
+    private Button removeButton;
     
     public DatasetsBrowserWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
         super("Dataset Manager", new Dimension(850, 450), desktopManager);
@@ -259,7 +260,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction(), table, confirmDialog);
         SelectAwareButton propButton = new SelectAwareButton("Edit Properties", editPropAction(), table, confirmDialog);
         SelectAwareButton dataButton = new SelectAwareButton("Edit Data", editDataAction(), table, confirmDialog);
-        Button removeButton = new RemoveButton(removeAction());
+        removeButton = new RemoveButton(removeAction());
 
         viewButton.setToolTipText("View dataset properties window");
         propButton.setToolTipText("Edit dataset properties window");
@@ -661,6 +662,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
 //                        this.parentContainer.
                         ComponentUtility.enableComponents(parentContainer, true);
                         this.parentContainer.setCursor(null); //turn off the wait cursor
+                        removeButton.grabFocus();
                     }
                 }
             };
