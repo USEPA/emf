@@ -372,6 +372,7 @@ public class CMExportWindow extends DisposableInteralFrame implements CMExportVi
                 presenter.notifyDone();
             }
         });
+        done.setMnemonic('l');
         container.add(done);
 
         panel.add(container, BorderLayout.EAST);

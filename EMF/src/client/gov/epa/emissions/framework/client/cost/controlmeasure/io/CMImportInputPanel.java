@@ -225,7 +225,7 @@ public class CMImportInputPanel extends JPanel {
                 selectFilesFromPattern();
             }
         });
-
+        button.setMnemonic('A');
         return button;
     }
 

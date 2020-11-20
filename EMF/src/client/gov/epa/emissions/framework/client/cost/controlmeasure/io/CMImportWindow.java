@@ -92,6 +92,7 @@ public class CMImportWindow extends ReusableInteralFrame implements CMImportView
                 doDone();
             }
         });
+        done.setMnemonic('D');
         container.add(done);
         panel.add(container, BorderLayout.EAST);
 

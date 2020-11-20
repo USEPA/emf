@@ -177,7 +177,7 @@ public class EditControlMeasureWindow extends DisposableInteralFrame implements 
                 doReport();
             }
         });
-
+        reportButton.setMnemonic('R');
         reportButton.setToolTipText("Generate \"At-a-glance\" report");
 
         buttonsPanel.add(reportButton);

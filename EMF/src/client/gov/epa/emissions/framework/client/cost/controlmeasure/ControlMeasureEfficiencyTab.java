@@ -522,6 +522,7 @@ public class ControlMeasureEfficiencyTab extends JPanel implements ControlMeasur
                 applySortFilter();
             }
         });
+        apply.setMnemonic('p');
         apply.setToolTipText("Apply the Row Filter constraints to the table");
         actionPanel.add(new JLabel(""));
         actionPanel.add(apply);

@@ -286,7 +286,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
         gbc.insets = buttonInsets;
 
         this.searchButton = new Button("Search", searchAction);
-
+        searchButton.setMnemonic('e');
         panel.add(this.searchButton, gbc);
 
         gbc.gridx = 0;

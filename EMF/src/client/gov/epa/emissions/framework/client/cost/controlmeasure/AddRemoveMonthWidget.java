@@ -69,7 +69,9 @@ public class AddRemoveMonthWidget extends JPanel {
     private JPanel addRemoveButtonPanel() {
         JPanel panel = new JPanel();
         addButton = new AddButton("Add", addAction());
+        addButton.setMnemonic('d');
         removeButton = new RemoveButton("Remove", removeAction());
+        removeButton.setMnemonic('e');
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));
         panel.add(addButton);
