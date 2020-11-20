@@ -112,7 +112,7 @@ public class ImportCasePanel extends JPanel {
                 selectFilesFromPattern();
             }
         });
-
+        button.setMnemonic('A');
         return button;
     }
 

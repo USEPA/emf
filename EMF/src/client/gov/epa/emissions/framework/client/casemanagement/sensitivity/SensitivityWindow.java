@@ -229,6 +229,7 @@ public class SensitivityWindow extends DisposableInteralFrame implements Sensiti
 
         Button setJobsButton = new Button("Select Jobs", setJobsAction(this));
         container.add(setJobsButton);
+        setJobsButton.setMnemonic('S');
         container.add(new CancelButton(closeAction()));
         getRootPane().setDefaultButton(setJobsButton);
 

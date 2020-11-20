@@ -79,6 +79,7 @@ public class ImportCaseWindow extends ReusableInteralFrame implements ImportCase
                 presenter.finish();
             }
         });
+        done.setMnemonic('D');
         container.add(done);
 
         panel.add(container, BorderLayout.EAST);
