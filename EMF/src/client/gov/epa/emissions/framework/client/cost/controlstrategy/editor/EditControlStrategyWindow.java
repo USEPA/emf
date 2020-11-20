@@ -273,6 +273,7 @@ public class EditControlStrategyWindow extends DisposableInteralFrame implements
             container.add(runButton);
 
         refreshButton = new Button("Refresh", refreshAction());
+        refreshButton.setMnemonic('R');
         container.add(refreshButton);
 
         stopButton = new StopButton(stopAction());

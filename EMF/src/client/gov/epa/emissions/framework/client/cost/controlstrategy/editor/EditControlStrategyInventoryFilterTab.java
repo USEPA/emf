@@ -139,18 +139,21 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
                 }
             }
         });
+        addButton.setMnemonic('A');
         panel.add(addButton);
         Button editButton = new BorderlessButton("Set Version", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                     setVersionAction();
             }
         });
+        editButton.setMnemonic('e');
         panel.add(editButton);
         Button removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
                     removeAction();
             }
         });
+        removeButton.setMnemonic('m');
         panel.add(removeButton);
         Button viewButton = new BorderlessButton("View", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -161,6 +164,7 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
                 }
             }
         });
+        removeButton.setMnemonic('V');
         panel.add(viewButton);
         Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -171,6 +175,7 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
                 }
             }
         });
+        viewDataButton.setMnemonic('D');
         panel.add(viewDataButton);
 
         JPanel rightPanel = new JPanel();

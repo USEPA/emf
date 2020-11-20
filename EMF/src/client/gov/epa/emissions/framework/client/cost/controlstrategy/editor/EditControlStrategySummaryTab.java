@@ -163,6 +163,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
                 editProjectNotes();
             }
         });
+        notesButton.setMnemonic('P');
         projPanel.add(notesButton);
         layoutGenerator.addLabelWidgetPair("Project:", projPanel, panelTop);
 
@@ -461,8 +462,8 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
                     messagePanel.setError(e.getMessage());
                 }
             }
-            
         });
+        set.setMnemonic('e');
         
         panel.add(multiPollField, BorderLayout.LINE_START);
         panel.add(set, BorderLayout.LINE_END);

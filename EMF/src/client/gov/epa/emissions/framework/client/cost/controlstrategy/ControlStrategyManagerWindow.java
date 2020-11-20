@@ -87,7 +87,6 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
      
     public ControlStrategyManagerWindow(EmfConsole parentConsole, EmfSession session, DesktopManager desktopManager) {
         super("Control Strategy Manager", new Dimension(850, 400), desktopManager);
-        
         this.session = session;
         this.parentConsole = parentConsole;
 
@@ -273,6 +272,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 presenter.doClose();
             }
         });
+        closeButton.setMnemonic('l');
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -342,6 +342,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        compareButton.setMnemonic('o');
         row1Panel.add(compareButton);
         
         Button summaryButton = new Button("Summarize", new AbstractAction() {
@@ -354,6 +355,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        summaryButton.setMnemonic('u');
         row2Panel.add(summaryButton);
         
         Button resultsButton = new Button("Export Results", new AbstractAction() {
@@ -366,6 +368,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        resultsButton.setMnemonic('x');
         row2Panel.add(resultsButton);
         
         Button groupsButton = new Button("Strategy Groups", new AbstractAction() {
@@ -379,6 +382,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        groupsButton.setMnemonic('S');
         row2Panel.add(groupsButton);
         
         crudPanel.add(row1Panel);
