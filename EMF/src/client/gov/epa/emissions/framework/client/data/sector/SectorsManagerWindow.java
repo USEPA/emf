@@ -115,6 +115,7 @@ public class SectorsManagerWindow extends ReusableInteralFrame implements Sector
                 presenter.doClose();
             }
         });
+        closeButton.setMnemonic('l');
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -157,6 +158,7 @@ public class SectorsManagerWindow extends ReusableInteralFrame implements Sector
                 createNewSector();
             }
         });
+        newButton.setMnemonic('N');
         crudPanel.add(newButton);
 
         return crudPanel;

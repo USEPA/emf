@@ -1166,6 +1166,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
                 }
             }
         });
+        export.setMnemonic('e');
         return export;
     }
 

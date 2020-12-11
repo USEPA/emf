@@ -99,11 +99,13 @@ public class SelectDTypePanel extends JPanel {
         excludeButtonPanel.setPreferredSize(new Dimension(80, 45));
         excludeButtonPanel.setMinimumSize(new Dimension(80, 45));
         Button includeButton = new AddButton("<<Show", includeAction());
+        includeButton.setMnemonic('o');
         includeButtonPanel.add(includeButton, BorderLayout.SOUTH);
 //        JPanel excludeButtonPanel =  new JPanel();
 //        excludeButtonPanel.setLayout(new BorderLayout(0, 0));
 //        excludeButtonPanel.setPreferredSize(new Dimension(80, 45));
         Button excludeButton = new AddButton("Hide>>", excludeAction());
+        excludeButton.setMnemonic('i');
         excludeButtonPanel.add(excludeButton, BorderLayout.NORTH);
         buttonPanel.add(includeButtonPanel);
         buttonPanel.add(Box.createRigidArea(new Dimension(0,10)));

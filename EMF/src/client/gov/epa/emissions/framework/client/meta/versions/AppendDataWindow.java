@@ -117,7 +117,7 @@ public class AppendDataWindow extends ReusableInteralFrame implements AppendData
                 }
             }
         });
-
+        setButton.setMnemonic('S');
         JPanel sourceDatasetPanel = new JPanel(new BorderLayout(2, 0));
         sourceDatasetPanel.add(sourceDatasetField, BorderLayout.LINE_START);
         sourceDatasetPanel.add(setButton, BorderLayout.CENTER);
@@ -165,6 +165,7 @@ public class AppendDataWindow extends ReusableInteralFrame implements AppendData
                 }
             }
         });
+        view.setMnemonic('V');
         // view.setEnabled(false);
         panel.add(view);
         return panel;
@@ -251,10 +252,10 @@ public class AppendDataWindow extends ReusableInteralFrame implements AppendData
 
         okButton = new Button("OK", okAction());
         panel.add(okButton);
-
+        okButton.setMnemonic('O');
         Button closeButton = new Button("Close", closeWindowAction());
         panel.add(closeButton);
-
+        closeButton.setMnemonic('l');
         return panel;
     }
 

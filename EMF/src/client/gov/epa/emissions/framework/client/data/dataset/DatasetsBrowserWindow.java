@@ -54,6 +54,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 
 public class DatasetsBrowserWindow extends ReusableInteralFrame implements DatasetsBrowserView, RefreshObserver {
 
@@ -409,6 +410,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         if (presenter.isAdminUser()) {
             message = "As an admin user, purge datasets will clear up all the datasets that do not have emissions data."
                     + ls + "Are you sure you want to remove them permanently?";
+            UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
             selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
         } else {
