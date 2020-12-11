@@ -137,6 +137,7 @@ public class StrategyGroupManagerWindow extends ReusableInteralFrame implements 
                 presenter.doClose();
             }
         });
+        closeButton.setMnemonic('l');
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 

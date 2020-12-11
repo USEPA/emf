@@ -552,10 +552,13 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 tempDir = System.getProperty("java.io.tmpdir");
             File tempDirFile = new File(tempDir);
             chooser.setCurrentDirectory(tempDirFile);
-
+             
             chooser.setSelectedFile(new File("strategy_summary.csv"));
         }
-
+        chooser.setApproveButtonMnemonic('S');
+         
+        //UIManager.put("JFileChooser.saveButtonMnemonic", "83");  // for Setting 'O' as mnemonic
+        //UIManager.put("JFileChooser.cancelButtonMnemonic", "67");
         if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
         
         localFile = chooser.getSelectedFile();
@@ -578,6 +581,8 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         }
         
         // prompt for file name prefix
+        UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
+        UIManager.put("OptionPane.cancelButtonMnemonic", "67"); // for Setting 'C' as mnemonic
         String prefix = JOptionPane.showInputDialog(parentConsole, 
                 "Enter a prefix for the exported filenames (leave blank for no prefix).", 
                 "Use filename prefix?",

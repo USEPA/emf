@@ -448,18 +448,19 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
 
         exportButton = new ExportButton(exportAction());
         analysisButton = new Button("Analyze", analysisAction());
-
+        analysisButton.setMnemonic('A');
         viewDataButton = new Button("View Data", viewDataAction());
-
+        viewDataButton.setMnemonic('V');
         JButton editButton = new DisabledButton("Edit");
-      
+        editButton.setMnemonic('E');
         summarizeButton = new Button("Summarize", summarizeAction());
-
+        summarizeButton.setMnemonic('z');
         JButton createButton = new DisabledButton("Create");
-
+        createButton.setMnemonic('C');
         customizeButton = new Button("Customize", customizeAction());
-
+        customizeButton.setMnemonic('o');
         detailButton = new JRadioButton("Result");
+         
         detailButton.addActionListener(radioButtonAction());
         detailButton.setSelected(true);
         invButton = new JRadioButton("Input Inventory");

@@ -427,16 +427,22 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
     }
     private JPanel buttonPanel() {
         exportButton = new ExportButton(exportAction());
+        //exportButton.setMnemonic(mnemonic);
         analysisButton = new Button("Analyze", analysisAction());
+        analysisButton.setMnemonic('A');
 //        analysisButton.setVisible(false);
 //        view = new ViewButton("View", viewAction());
         viewDataButton = new Button("View Data", viewDataAction());
+        viewDataButton.setMnemonic('V');
         editButton = new Button("Edit", editAction());
+        editButton.setMnemonic('E');
         summarizeButton = new Button("Summarize", summarizeAction());
+        summarizeButton.setMnemonic('z');
         createButton = new Button("Create", createOutputAction());
+        createButton.setMnemonic('C');
         createButton.setEnabled(false);
         customizeButton = new Button("Customize", customizeAction());
-        
+        customizeButton.setMnemonic('o');
 //        editButton.setEnabled(false);
         
         detailButton = new JRadioButton("Result");

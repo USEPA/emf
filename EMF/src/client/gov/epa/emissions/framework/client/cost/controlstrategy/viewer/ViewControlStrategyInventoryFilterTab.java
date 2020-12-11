@@ -113,12 +113,15 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
 
         JPanel panel = new JPanel();
         JButton addButton = new DisabledBorderlessButton("Add");
+        addButton.setMnemonic('A');
         panel.add(addButton);
 
         JButton editButton = new DisabledBorderlessButton("Set Version");
+        editButton.setMnemonic('o');
         panel.add(editButton);
 
         JButton removeButton = new DisabledBorderlessButton("Remove");
+        removeButton.setMnemonic('m');
         panel.add(removeButton);
 
         Button viewButton = new BorderlessButton("View", new AbstractAction() {
@@ -130,6 +133,7 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
                 }
             }
         });
+        viewButton.setMnemonic('V');
         panel.add(viewButton);
 
         Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
@@ -141,6 +145,7 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
                 }
             }
         });
+        viewDataButton.setMnemonic('D');
         panel.add(viewDataButton);
 
         JPanel rightPanel = new JPanel();
@@ -332,11 +337,13 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
     private JPanel datasetPanel() {
 
         Button viewButton = new BorderlessButton("View", viewDatasetAction());
+        viewButton.setMnemonic('e');
         JPanel invPanel = new JPanel(new BorderLayout(5, 0));
 
         invPanel.add(dataset, BorderLayout.LINE_START);
         invPanel.add(viewButton);
         Button viewDataButton = new BorderlessButton("View Data", viewCountyDatasetDataAction());
+        viewDataButton.setMnemonic('i');
         invPanel.add(viewDataButton, BorderLayout.LINE_END);
         return invPanel;
     }

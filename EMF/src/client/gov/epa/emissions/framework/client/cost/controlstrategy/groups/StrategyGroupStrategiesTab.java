@@ -73,6 +73,7 @@ public class StrategyGroupStrategiesTab extends JPanel implements StrategyGroupT
                 addAction();
             }
         });
+        addButton.setMnemonic('A');
         buttonPanel.add(addButton);
 
         Button removeButton = new BorderlessButton("Remove from Group", new AbstractAction() {
@@ -80,6 +81,7 @@ public class StrategyGroupStrategiesTab extends JPanel implements StrategyGroupT
                 removeAction();
             }
         });
+        removeButton.setMnemonic('R');
         buttonPanel.add(removeButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);

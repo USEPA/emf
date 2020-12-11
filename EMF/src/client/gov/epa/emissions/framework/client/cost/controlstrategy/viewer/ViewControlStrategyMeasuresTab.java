@@ -110,13 +110,16 @@ public class ViewControlStrategyMeasuresTab extends EmfPanel implements ViewCont
 
         JButton addButton = new DisabledButton("Add");
         addButton.setMargin(new Insets(2, 5, 2, 5));
+        addButton.setMnemonic('A');
         panel.add(addButton);
 
         JButton editButton = new DisabledButton("Edit");
+        editButton.setMnemonic('E');
         panel.add(editButton);
 
         JButton removeButton = new DisabledButton("Remove");
         removeButton.setMargin(new Insets(2, 5, 2, 5));
+        removeButton.setMnemonic('m');
         panel.add(removeButton);
 
         JPanel container = new JPanel(new BorderLayout());
