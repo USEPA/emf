@@ -214,7 +214,7 @@ public class EditSectorScenarioWindow extends DisposableInteralFrame implements 
                 }
             }
         }); 
-        
+        refreshButton.setMnemonic('R');
         container.add(refreshButton);
 
         stopButton = new StopButton(stopAction());

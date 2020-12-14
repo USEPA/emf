@@ -220,12 +220,15 @@ public class EditSectorScenarioOutputsTab extends JPanel implements EditSectorSc
     private JPanel buttonPanel() {
         exportButton = new ExportButton(exportAction());
         analysisButton = new Button("Analyze", analysisAction());
+        analysisButton.setMnemonic('A');
 //        analysisButton.setVisible(false);
 //        view = new ViewButton("View", viewAction());
         viewDataButton = new Button("View Data", viewDataAction());
+        viewDataButton.setMnemonic('V');
         editButton = new Button("Edit", editAction());
+        editButton.setMnemonic('E');
         summarizeButton = new Button("Summarize", summarizeAction());
-        
+        summarizeButton.setMnemonic('z');
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel buttonPanel = new JPanel();
         

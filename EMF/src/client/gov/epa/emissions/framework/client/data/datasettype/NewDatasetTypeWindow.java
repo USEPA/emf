@@ -216,6 +216,7 @@ public class NewDatasetTypeWindow extends DisposableInteralFrame implements NewD
                 selectFile();
             }
         });
+        browse.setMnemonic('B');
         browse.setEnabled(false);
         
         panel.add(formatFile);

@@ -235,7 +235,7 @@ public class InputFieldsPanel extends JPanel implements InputFieldsPanelView {
         datasetTxt.setToolTipText("Press select button to choose from a dataset list.");
         selectButton = new AddButton("Select", selectAction());
         selectButton.setMargin(new Insets(1, 2, 1, 2));
-
+        selectButton.setMnemonic('e');
         JPanel invPanel = new JPanel(new BorderLayout(5, 0));
 
         invPanel.add(datasetTxt, BorderLayout.LINE_START);

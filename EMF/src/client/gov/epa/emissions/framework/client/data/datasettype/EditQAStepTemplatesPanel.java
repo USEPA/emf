@@ -133,6 +133,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doAdd();
             }
         });
+        add.setMnemonic('d');
         container.add(add);
 
         Button remove = new RemoveButton(new AbstractAction() {

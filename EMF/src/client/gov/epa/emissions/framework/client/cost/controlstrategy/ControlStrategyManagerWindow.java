@@ -488,6 +488,8 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         JCheckBox deleteResults = new JCheckBox("Strategy results, messages, and summaries");
         JCheckBox deleteCntlInvs = new JCheckBox("Controlled inventories");
         Object[] contents = {message, deleteResults, deleteCntlInvs};
+        UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
+        UIManager.put("OptionPane.cancelButtonMnemonic", "67"); // for Setting 'C' as mnemonic
         int selection = JOptionPane.showConfirmDialog(parentConsole, contents, title, JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 

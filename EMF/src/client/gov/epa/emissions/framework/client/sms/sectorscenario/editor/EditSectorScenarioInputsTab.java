@@ -153,18 +153,21 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
                 }
             }
         });
+        addButton.setMnemonic('A');
         panel.add(addButton);
         editButton = new BorderlessButton("Set Version", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                     setVersionAction();
             }
         });
+        editButton.setMnemonic('n');
         panel.add(editButton);
         removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
                     removeAction();
             }
         });
+        removeButton.setMnemonic('m');
         panel.add(removeButton);
         viewButton = new BorderlessButton("View", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -175,6 +178,7 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
                 }
             }
         });
+        viewButton.setMnemonic('e');
         panel.add(viewButton);
 //        Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
 //            public void actionPerformed(ActionEvent event) {
@@ -462,6 +466,7 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
         changeablesList.addChangeable(datasetCom);
         datasetCom.setToolTipText("Press select button to choose from a dataset list.");
         Button viewButton = new BorderlessButton("View", viewDatasetAction(datasetCom)); 
+        viewButton.setMnemonic('V');
         JPanel invPanel = new JPanel(new BorderLayout(5,0));
 
         invPanel.add(datasetCom, BorderLayout.LINE_START);

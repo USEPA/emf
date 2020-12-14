@@ -79,7 +79,9 @@ public class RegionChooser extends JDialog {
 
     private JPanel buttonPanel() {
         Button newRegionButton = new Button("New", addNewRegionAction());
+        newRegionButton.setMnemonic('N');
         Button editButton = new Button("Edit", editRegionAction());
+        editButton.setMnemonic('E');
         OKButton okButton = new OKButton(okAction());
         CancelButton cancelButton = new CancelButton(cancelAction());
         
