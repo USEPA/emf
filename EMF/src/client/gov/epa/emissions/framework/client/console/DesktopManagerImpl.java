@@ -55,13 +55,13 @@ public class DesktopManagerImpl implements DesktopManager {
         windowMenu.unregister(manageView);
         layout.remove(manageView);
         if (windowNames.size() > 0) {
-            final boolean[] justOpened = {false};
-            windowNames.forEach((wn, mv) -> {
-                if (!justOpened[0]) {
+            boolean justOpened = false;
+            for (Object mv : windowNames.values()) {
+                if (!justOpened) {
                     this.openWindow((ManagedView)mv);
-                    justOpened[0] = true;
+                    justOpened = true;
                 }
-            });
+            }
         }
     }
     
