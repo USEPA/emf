@@ -78,6 +78,7 @@ import gov.epa.emissions.framework.services.fast.FastRunOutput;
 import gov.epa.emissions.framework.services.fast.FastRunOutputType;
 import gov.epa.emissions.framework.services.fast.Grid;
 import gov.epa.emissions.framework.services.module.*;
+import gov.epa.emissions.framework.services.module.Module;
 import gov.epa.emissions.framework.services.sms.SectorScenario;
 import gov.epa.emissions.framework.services.sms.SectorScenarioInventory;
 import gov.epa.emissions.framework.services.sms.SectorScenarioOutput;

@@ -9,6 +9,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.module.*;
+import gov.epa.emissions.framework.services.module.Module;
 
 public class ModuleServiceTransport implements ModuleService {
 
