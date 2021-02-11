@@ -1,6 +1,5 @@
 package gov.epa.emissions.commons.data;
 
-import gov.epa.emissions.commons.data.InternalSource;
 import junit.framework.TestCase;
 
 public class InternalSourceTest extends TestCase {

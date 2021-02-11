@@ -1,14 +1,10 @@
 package gov.epa.emissions.commons.gui;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.text.Format;
-import java.text.ParseException;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 public class FormattedTextField extends JFormattedTextField implements Changeable {

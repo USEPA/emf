@@ -1,8 +1,5 @@
 package gov.epa.emissions.commons.data;
 
-import gov.epa.emissions.commons.data.Lockable;
-import gov.epa.emissions.commons.data.Sector;
-import gov.epa.emissions.commons.data.SectorCriteria;
 import gov.epa.emissions.commons.security.User;
 
 import java.util.Date;
