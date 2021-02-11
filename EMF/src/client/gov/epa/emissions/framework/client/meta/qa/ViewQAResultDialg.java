@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.CancelButton;
 import gov.epa.emissions.commons.gui.buttons.OKButton;
+import gov.epa.emissions.commons.gui.buttons.ViewButton;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.ui.Dialog;
@@ -73,7 +74,7 @@ public class ViewQAResultDialg extends Dialog {
         getRootPane().setDefaultButton(ok);
         panel.add(ok);
 
-        Button viewAllButton = new Button( "ViewAll", new AbstractAction() {
+        Button viewAllButton = new ViewButton("View All", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 viewAll = true;
                 viewNone = false;

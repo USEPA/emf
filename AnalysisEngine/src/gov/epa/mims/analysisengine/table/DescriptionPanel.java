@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 /*
@@ -63,6 +64,7 @@ public class DescriptionPanel extends JPanel
       this.add(oneLineTextField,BorderLayout.CENTER);
 
       JButton button = new JButton("Full Description");
+      button.setMnemonic(KeyEvent.VK_D);
       this.add(button, BorderLayout.EAST);
       final String titleString = labelString + " Description:"+fileName;
       button.addActionListener(new ActionListener()
@@ -101,6 +103,7 @@ public class DescriptionPanel extends JPanel
 
       JPanel okCancelPanel = new JPanel();
       JButton okButton = new JButton("OK");
+      okButton.setMnemonic(KeyEvent.VK_O);
       okButton.addActionListener(new ActionListener()
       {
          public void actionPerformed(ActionEvent e)
@@ -111,6 +114,7 @@ public class DescriptionPanel extends JPanel
          }
       });
       JButton cancelButton = new JButton("Cancel");
+      cancelButton.setMnemonic(KeyEvent.VK_L);
       cancelButton.addActionListener(new ActionListener()
       {
          public void actionPerformed(ActionEvent e)
@@ -121,6 +125,7 @@ public class DescriptionPanel extends JPanel
          }
       });
       JButton resetButton = new JButton("Reset");
+      resetButton.setMnemonic(KeyEvent.VK_R);
       resetButton.addActionListener(new ActionListener()
       {
          public void actionPerformed(ActionEvent e)

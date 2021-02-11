@@ -13,6 +13,8 @@ import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.BrowseButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
+import gov.epa.emissions.commons.gui.buttons.ExportButton;
+import gov.epa.emissions.commons.gui.buttons.ViewButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
@@ -490,13 +492,14 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     }
 
     private Button exportButton() {
-        Button export = new Button("Export", new AbstractAction() {
+        Button export = new ExportButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clear();
                 
                 doExport();
             }
         });
+        export.setToolTipText("Export Results to CSV or Shapefile");
         return export;
     }
 
@@ -589,7 +592,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     }
 
     private Button viewResultsButton() {
-        return new Button("View Results", new AbstractAction() {
+        Button viewButton = new ViewButton("View Results", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clear();
                 try {
@@ -599,6 +602,8 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 }
             }
         });
+        viewButton.setToolTipText("View the result as a local file on the client computer. Optionally create Google Earth .kmz file");
+        return viewButton;
     }
     
     private void viewResults() throws EmfException { // TODO: 2011-02
