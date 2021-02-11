@@ -391,7 +391,6 @@ public class AnalysisEngineTableApp extends DisposableInteralFrame
         closeMenuItem = createCloseMenuItem();
         closeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
         fileMenu.add(closeMenuItem);
-        closeMenuItem.setEnabled(false);
 
 
         menuPanel.add(menuBar, BorderLayout.WEST);
@@ -424,6 +423,15 @@ public class AnalysisEngineTableApp extends DisposableInteralFrame
     
     private JMenuItem createCloseMenuItem() {
         JMenuItem closeMenu = new JMenuItem("Close");
+        closeMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setClosed(true);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         return closeMenu;
     }
 }
