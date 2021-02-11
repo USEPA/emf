@@ -13,7 +13,7 @@ public abstract class MessagePanel extends JPanel implements MessageBoard {
     }
 
     public void setError(String error) {
-        setMessage(error, Color.RED);
+        setMessage("Error: " + error, Color.RED);
     }
 
     public void setMessage(String message) {
