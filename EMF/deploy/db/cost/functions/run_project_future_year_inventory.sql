@@ -94,18 +94,6 @@ DECLARE
 	segment_expression character varying(64) := 'segment';
 	is_flat_file_inventory boolean := false;
 	is_flat_file_point_inventory boolean := false;
-	jan_annualized_uncontrolled_emis_sql character varying;
-	feb_annualized_uncontrolled_emis_sql character varying;
-	mar_annualized_uncontrolled_emis_sql character varying;
-	apr_annualized_uncontrolled_emis_sql character varying;
-	may_annualized_uncontrolled_emis_sql character varying;
-	jun_annualized_uncontrolled_emis_sql character varying;
-	jul_annualized_uncontrolled_emis_sql character varying;
-	aug_annualized_uncontrolled_emis_sql character varying;
-	sep_annualized_uncontrolled_emis_sql character varying;
-	oct_annualized_uncontrolled_emis_sql character varying;
-	nov_annualized_uncontrolled_emis_sql character varying;
-	dec_annualized_uncontrolled_emis_sql character varying;
 	jan_uncontrolled_emis_sql character varying;
 	feb_uncontrolled_emis_sql character varying;
 	mar_uncontrolled_emis_sql character varying;
@@ -331,28 +319,6 @@ BEGIN
 	into effective_date_cutoff_daymonth;
 	effective_date_cutoff_daymonth := coalesce(effective_date_cutoff_daymonth, '07/01');	--default just in case
 	
-	uncontrolled_emis_sql := 
-		case 
-			when is_flat_file_inventory then 
-				'case when (1 - coalesce(case when inv.ann_pct_red = 100.0 and inv.ann_value > 0.0 then 0.0 else inv.ann_pct_red end / 100 , 0)) != 0 then inv.ann_value / (1 - coalesce(case when inv.ann_pct_red = 100.0 and inv.ann_value > 0.0 then 0.0 else inv.ann_pct_red end / 100 , 0)) else 0.0::double precision end' 
-			when dataset_month != 0 then 
-				'case when (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) != 0 then coalesce(inv.avd_emis * ' || no_days_in_month || ', inv.ann_emis) / (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) else 0.0::double precision end' 
-			else 
-				'case when (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) != 0 then inv.ann_emis / (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) else 0.0::double precision end' 
-		end;
-	jan_uncontrolled_emis_sql := 'case when (1 - coalesce(case when inv.jan_pctred = 100.0 and inv.jan_value > 0.0 then 0.0 else inv.jan_pctred end / 100 , 0)) != 0 then inv.jan_value / (1 - coalesce(case when inv.jan_pctred = 100.0 and inv.jan_value > 0.0 then 0.0 else inv.jan_pctred end / 100 , 0)) else 0.0::double precision end';
-	feb_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'feb_');
-	mar_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'mar_');
-	apr_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'apr_');
-	may_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'may_');
-	apr_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'apr_');
-	jun_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'jun_');
-	jul_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'jul_');
-	aug_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'aug_');
-	sep_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'sep_');
-	oct_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'oct_');
-	nov_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'nov_');
-	dec_uncontrolled_emis_sql := replace(jan_uncontrolled_emis_sql, 'jan_', 'dec_');
 	emis_sql := 
 		case 
 			when is_flat_file_inventory then 
@@ -374,28 +340,6 @@ BEGIN
 	oct_emis_sql := 'inv.oct_value';
 	nov_emis_sql := 'inv.nov_value';
 	dec_emis_sql := 'inv.dec_value';
-	annualized_uncontrolled_emis_sql := 
-		case 
-			when is_flat_file_inventory then 
-				'case when (1 - coalesce(case when inv.ann_pct_red = 100.0 and inv.ann_value > 0.0 then 0.0 else inv.ann_pct_red end / 100 , 0)) != 0 then inv.ann_value / (1 - coalesce(case when inv.ann_pct_red = 100.0 and inv.ann_value > 0.0 then 0.0 else inv.ann_pct_red end / 100 , 0)) else 0.0::double precision end' 
-			when dataset_month != 0 then 
-				'case when (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) != 0 then coalesce(inv.avd_emis * ' || number_of_days_in_year || ', inv.ann_emis) / (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) else 0.0::double precision end'
-			else 
-				'case when (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) != 0 then inv.ann_emis / (1 - coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end / 100 * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end / 100, 1.0)' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end / 100, 1.0)' else '' end || ', 0)) else 0.0::double precision end'
-		end;
-	jan_annualized_uncontrolled_emis_sql := 'case when (1 - coalesce(case when inv.jan_pctred = 100.0 and inv.jan_value > 0.0 then 0.0 else inv.jan_pctred end / 100 , 0)) != 0 then inv.jan_value / (1 - coalesce(case when inv.jan_pctred = 100.0 and inv.jan_value > 0.0 then 0.0 else inv.jan_pctred end / 100 , 0)) else 0.0::double precision end';
-	feb_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'feb_');
-	mar_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'mar_');
-	apr_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'apr_');
-	may_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'may_');
-	apr_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'apr_');
-	jun_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'jun_');
-	jul_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'jul_');
-	aug_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'aug_');
-	sep_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'sep_');
-	oct_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'oct_');
-	nov_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'nov_');
-	dec_annualized_uncontrolled_emis_sql := replace(jan_annualized_uncontrolled_emis_sql, 'jan_', 'dec_');
 
 
 
@@ -1180,14 +1124,14 @@ BEGIN
 		inv_percent_reduction_sql := 
 			case 
 				when is_flat_file_inventory then 
-					'(coalesce(case when inv.ann_pct_red = 100.0 and inv.ann_value > 0.0 then 0.0 else inv.ann_pct_red end, 0.0))'
+					'(coalesce(case when inv.ann_pct_red >= 100.0 and inv.ann_value > 0.0 then 0.0 else inv.ann_pct_red end, 0.0))'
 				else 
 					'(coalesce(case when inv.ceff = 100.0 and coalesce(inv.avd_emis, inv.ann_emis) > 0.0 then 0.0 else inv.ceff end, 0.0) * coalesce(case when inv.reff = 0.0 and inv.ceff > 0.0 then 100.0 else inv.reff end, 100) / 100 ' || case when has_rpen_column then ' * coalesce(case when inv.rpen = 0.0 and inv.ceff > 0.0 then 100.0 else inv.rpen end, 100.0) / 100.0 ' else '' end || ')'
 			end;
 		jan_inv_percent_reduction_sql := 
 			case 
 				when is_flat_file_inventory then 
-					'(coalesce(case when inv.jan_pctred = 100.0 and inv.jan_value > 0.0 then 0.0 else inv.jan_pctred end,' || inv_percent_reduction_sql || ', 0.0))'
+					'(coalesce(case when inv.jan_pctred >= 100.0 and inv.jan_value > 0.0 then 0.0 else inv.jan_pctred end,' || inv_percent_reduction_sql || ', 0.0))'
 				else 
 					'null::double precision'
 			end;
