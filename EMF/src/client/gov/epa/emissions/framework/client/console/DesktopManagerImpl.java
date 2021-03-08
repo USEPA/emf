@@ -54,7 +54,7 @@ public class DesktopManagerImpl implements DesktopManager {
         windowNames.remove(manageView.getName());
         windowMenu.unregister(manageView);
         layout.remove(manageView);
-        if (windowNames.size() > 0) {
+        /*if (windowNames.size() > 0) {
             boolean justOpened = false;
             for (Object mv : windowNames.values()) {
                 if (!justOpened) {
@@ -62,7 +62,7 @@ public class DesktopManagerImpl implements DesktopManager {
                     justOpened = true;
                 }
             }
-        }
+        }*/
     }
     
     public void hideWindow(ManagedView manageView) {
