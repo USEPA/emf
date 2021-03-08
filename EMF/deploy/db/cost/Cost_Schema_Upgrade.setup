@@ -2547,3 +2547,153 @@ SELECT
   (SELECT id FROM emf.keywords WHERE name = 'EXPORT_SUFFIX'),
   '.csv',
   'EXPORT_SUFFIX';
+
+-- 03/08/2021 Create Equation Type 2c and variables
+INSERT INTO emf.equation_types (name, description, inventory_fields, equation) VALUES
+('Type 2c', 'Non-EGU NOx', 'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator',
+'Annual Cost = Annual Cost Multiplier x (Design Capacity [in HP])^(Annual Cost Exponent) + Annual Cost Base
+Capital Cost = Capital Cost Multiplier x (Design Capacity [in HP])^(Capital Cost Exponent) + Capital Cost Base');
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Capital Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Capital Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Annual Cost Multiplier',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Annual Cost Exponent',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Annual Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Capital Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Incremental Annual Cost Base',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 2c';
