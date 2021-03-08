@@ -1,8 +1,5 @@
 package gov.epa.emissions.commons.db;
 
-import gov.epa.emissions.commons.db.Datasource;
-import gov.epa.emissions.commons.db.DbServer;
-import gov.epa.emissions.commons.db.TableDefinition;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.commons.io.importer.PersistenceTestCase;
 

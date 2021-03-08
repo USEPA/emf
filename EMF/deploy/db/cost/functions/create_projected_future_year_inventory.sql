@@ -431,7 +431,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.percent_reduction
 						when cont.replacement_addon = ''A'' then 
-							cont.percent_reduction + coalesce(inv.ann_pct_red,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.ann_pct_red, 0.0), 100.0)) * (1.0 - cont.percent_reduction/100.0)
 						else inv.ann_pct_red 
 					end
 				when cr.source_id is not null then null::double precision 
@@ -447,7 +447,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.percent_reduction
 						when cont.replacement_addon = ''A'' then 
-							cont.jan_pct_red + coalesce(inv.jan_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.jan_pctred, 0.0), 100.0)) * (1.0 - cont.jan_pct_red/100.0)
 						else inv.jan_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -463,7 +463,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.feb_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.feb_pct_red + coalesce(inv.feb_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.feb_pctred, 0.0), 100.0)) * (1.0 - cont.feb_pct_red/100.0)
 						else inv.feb_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -479,7 +479,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.mar_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.mar_pct_red + coalesce(inv.mar_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.mar_pctred, 0.0), 100.0)) * (1.0 - cont.mar_pct_red/100.0)
 						else inv.mar_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -495,7 +495,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.apr_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.apr_pct_red + coalesce(inv.apr_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.apr_pctred, 0.0), 100.0)) * (1.0 - cont.apr_pct_red/100.0)
 						else inv.apr_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -511,7 +511,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.may_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.may_pct_red + coalesce(inv.may_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.may_pctred, 0.0), 100.0)) * (1.0 - cont.may_pct_red/100.0)
 						else inv.may_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -527,7 +527,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.jun_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.jun_pct_red + coalesce(inv.jun_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.jun_pctred, 0.0), 100.0)) * (1.0 - cont.jun_pct_red/100.0)
 						else inv.jun_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -543,7 +543,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.jul_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.jul_pct_red + coalesce(inv.jul_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.jul_pctred, 0.0), 100.0)) * (1.0 - cont.jul_pct_red/100.0)
 						else inv.jul_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -559,7 +559,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.aug_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.aug_pct_red + coalesce(inv.aug_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.aug_pctred, 0.0), 100.0)) * (1.0 - cont.aug_pct_red/100.0)
 						else inv.aug_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -575,7 +575,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.sep_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.sep_pct_red + coalesce(inv.sep_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.sep_pctred, 0.0), 100.0)) * (1.0 - cont.sep_pct_red/100.0)
 						else inv.sep_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -591,7 +591,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.oct_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.oct_pct_red + coalesce(inv.oct_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.oct_pctred, 0.0), 100.0)) * (1.0 - cont.oct_pct_red/100.0)
 						else inv.oct_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -607,7 +607,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.nov_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.nov_pct_red + coalesce(inv.nov_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.nov_pctred, 0.0), 100.0)) * (1.0 - cont.nov_pct_red/100.0)
 						else inv.nov_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 
@@ -623,7 +623,7 @@ BEGIN
 						when cont.replacement_addon = ''R'' then 
 							cont.dec_pct_red
 						when cont.replacement_addon = ''A'' then 
-							cont.dec_pct_red + coalesce(inv.dec_pctred,0.0)
+						  100.0 - (100.0 - least(coalesce(inv.dec_pctred, 0.0), 100.0)) * (1.0 - cont.dec_pct_red/100.0)
 						else inv.dec_pctred 
 					end 
 				when cr.source_id is not null then null::double precision 

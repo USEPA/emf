@@ -1,7 +1,5 @@
 package gov.epa.emissions.commons.data;
 
-import gov.epa.emissions.commons.data.Lockable;
-import gov.epa.emissions.commons.data.Mutex;
 import gov.epa.emissions.commons.security.User;
 
 import java.io.Serializable;

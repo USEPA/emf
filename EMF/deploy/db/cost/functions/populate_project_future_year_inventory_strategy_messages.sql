@@ -57,6 +57,7 @@ DECLARE
 	pointid_expression character varying(64) = 'pointid';
 	stackid_expression character varying(64) = 'stackid';
 	segment_expression character varying(64) = 'segment';
+	inv_ceff_expression character varying(64) := 'ceff';
 
 	cp_fips_expression character varying(64) := 'fips';
 	cp_plantid_expression character varying(64) := 'plantid';
@@ -163,6 +164,7 @@ BEGIN
 			pointid_expression := 'unit_id';
 			stackid_expression := 'rel_point_id';
 			segment_expression := 'process_id';
+			inv_ceff_expression := 'ann_pct_red';
 			is_flat_file_inventory := true;
 		ELSE
 			fips_expression := 'fips';
@@ -170,6 +172,7 @@ BEGIN
 			pointid_expression := 'pointid';
 			stackid_expression := 'stackid';
 			segment_expression := 'segment';
+			inv_ceff_expression := 'ceff';
 			is_flat_file_inventory := false;
 		END If;
 
@@ -719,6 +722,51 @@ raise notice '%', 'check inventory ' || inventory_record.dataset_name || ' again
 		order by packet_ds_id,packet_rec_id
 		';
 	END IF;
+
+
+  -- check for inventory sources with 100% reduction but non-zero emissions
+  execute 'insert into emissions.' || strategy_messages_table_name || '
+    (
+    dataset_id,
+    region_cd,
+    scc,
+    ' || case when is_point_table then '
+    facility_id,
+    unit_id,
+    rel_point_id,
+    process_id,
+    ' else '' end || '
+    poll,
+    status,
+    message
+    )
+  select
+    ' || strategy_messages_dataset_id || '::integer,
+    inv.' || fips_expression || ' as fips,
+    inv.scc,
+    ' || case when is_point_table then '
+		inv.' || plantid_expression || ' as facility_id,
+		inv.' || pointid_expression || ' as unit_id,
+		inv.' || stackid_expression || ' as rel_point_id,
+		inv.' || segment_expression || ' as process_id,
+		' else '' end || '
+		inv.poll,
+		''Warning''::character varying(11) as status,
+		''Source has 100% control but non-zero emissions.'' as "comment"
+	from emissions.' || inv_table_name || ' inv
+  where ' || inv_filter || coalesce(county_dataset_filter_sql, '') || '
+    and coalesce(' || inv_ceff_expression || ',0.0) >= 100.0
+    and inv.ann_value > 0.0
+  
+  order by inv.' || fips_expression || ',
+    inv.scc,
+		' || case when is_point_table then '
+		inv.' || plantid_expression || ',
+		inv.' || pointid_expression || ',
+		inv.' || stackid_expression || ',
+		inv.' || segment_expression || ',
+		' else '' end || '
+		inv.poll';
 
 
 END;

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import gov.epa.emissions.commons.io.ColumnMetaData;
-
 public class TableMetadata {
 
     private String table;
