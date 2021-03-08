@@ -382,6 +382,50 @@ BEGIN
 		and ' || public.build_version_where_filter(strategy_detailed_result_dataset_id, 0, 'dr'::character varying(64));
 
 
+  -- check for inventory sources with 100% reduction but non-zero emissions
+  execute 'insert into emissions.' || strategy_messages_table_name || '
+    (
+    dataset_id,
+    region_cd,
+    scc,
+    ' || case when is_point_table then '
+    facility_id,
+    unit_id,
+    rel_point_id,
+    process_id,
+    ' else '' end || '
+    poll,
+    status,
+    message
+    )
+  select
+    ' || strategy_messages_dataset_id || '::integer,
+    a.' || fips_expression || ' as fips,
+    a.scc,
+    ' || case when is_point_table then '
+		a.' || plantid_expression || ' as facility_id,
+		a.' || pointid_expression || ' as unit_id,
+		a.' || stackid_expression || ' as rel_point_id,
+		a.' || segment_expression || ' as process_id,
+		' else '' end || '
+		a.poll,
+		''Warning''::character varying(11) as status,
+		''Source has 100% control but non-zero emissions.'' as "comment"
+	from emissions.' || inv_table_name || ' a
+  where ' || inv_filter || '
+    and coalesce(' || inv_ceff_expression || ',0.0) >= 100.0
+    and a.ann_value > 0.0
+  
+  order by a.' || fips_expression || ',
+    a.scc,
+		' || case when is_point_table then '
+		a.' || plantid_expression || ',
+		a.' || pointid_expression || ',
+		a.' || stackid_expression || ',
+		a.' || segment_expression || ',
+		' else '' end || '
+		a.poll';
+
 END;
 $BODY$
   LANGUAGE 'plpgsql' VOLATILE;
