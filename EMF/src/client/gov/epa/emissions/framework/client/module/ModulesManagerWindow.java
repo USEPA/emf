@@ -11,7 +11,7 @@ import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.*;
 
-public class ModulesManagerWindow extends ReusableInteralFrame implements ModulesManagerView, RefreshObserver {
+public class ModulesManagerWindow extends DisposableInteralFrame implements ModulesManagerView, RefreshObserver {
 
     private ModulesManagerPresenter presenter;
 

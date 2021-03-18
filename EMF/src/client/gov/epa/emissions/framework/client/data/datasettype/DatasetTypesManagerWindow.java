@@ -10,7 +10,7 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.*;
 
-public class DatasetTypesManagerWindow extends ReusableInteralFrame implements DatasetTypesManagerView, RefreshObserver {
+public class DatasetTypesManagerWindow extends DisposableInteralFrame implements DatasetTypesManagerView, RefreshObserver {
 
     private DatasetTypesManagerPresenter presenter;
 

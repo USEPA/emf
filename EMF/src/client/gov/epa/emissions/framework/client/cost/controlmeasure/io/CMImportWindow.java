@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.cost.controlmeasure.io;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -26,7 +26,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class CMImportWindow extends ReusableInteralFrame implements CMImportView, RefreshObserver {
+public class CMImportWindow extends DisposableInteralFrame implements CMImportView, RefreshObserver {
 
     private CMImportPresenter presenter;
 

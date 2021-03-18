@@ -1,7 +1,7 @@
 package gov.epa.emissions.framework.client.meta.versions;
 
 import gov.epa.emissions.commons.gui.Button;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesEditor;
@@ -29,7 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
-public class VersionedDataWindow extends ReusableInteralFrame implements VersionedDataView {
+public class VersionedDataWindow extends DisposableInteralFrame implements VersionedDataView {
 
     private EmfConsole parentConsole;
 

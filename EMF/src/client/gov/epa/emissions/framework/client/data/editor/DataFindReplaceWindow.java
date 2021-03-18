@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.data.editor;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ManageChangeables;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
-public class DataFindReplaceWindow extends ReusableInteralFrame implements FindReplaceWindowView {
+public class DataFindReplaceWindow extends DisposableInteralFrame implements FindReplaceWindowView {
 
     private String[] cols = new String[0];
 

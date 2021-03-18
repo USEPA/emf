@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.status;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
@@ -35,7 +35,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class StatusWindow 
-  extends ReusableInteralFrame 
+  extends DisposableInteralFrame 
   implements StatusView, RefreshObserver {
 
     private MessagePanel messagePanel;

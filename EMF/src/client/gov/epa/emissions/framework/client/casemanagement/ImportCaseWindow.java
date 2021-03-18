@@ -2,7 +2,7 @@ package gov.epa.emissions.framework.client.casemanagement;
 
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -20,7 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class ImportCaseWindow extends ReusableInteralFrame implements ImportCaseView {
+public class ImportCaseWindow extends DisposableInteralFrame implements ImportCaseView {
 
     private ImportCasePresenter presenter;
     

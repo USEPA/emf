@@ -11,7 +11,7 @@ import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditor;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseViewer;
 import gov.epa.emissions.framework.client.casemanagement.sensitivity.SensitivityWindow;
@@ -51,7 +51,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class CaseManagerWindow extends ReusableInteralFrame implements CaseManagerView, RefreshObserver {
+public class CaseManagerWindow extends DisposableInteralFrame implements CaseManagerView, RefreshObserver {
 
     private CaseManagerPresenter presenter;
 

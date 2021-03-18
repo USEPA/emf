@@ -11,7 +11,7 @@ import gov.epa.emissions.commons.gui.buttons.AddButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.OKButton;
 import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.casemanagement.CaseSearchPresenter;
 import gov.epa.emissions.framework.client.casemanagement.CaseSearchWindow;
@@ -46,7 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
-public class DatasetSearchWindow extends ReusableInteralFrame {
+public class DatasetSearchWindow extends DisposableInteralFrame {
 
     private DatasetsBrowserPresenter presenter;
 

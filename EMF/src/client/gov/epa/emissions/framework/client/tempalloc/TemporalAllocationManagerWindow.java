@@ -21,7 +21,7 @@ import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.tempalloc.editor.TemporalAllocationView;
@@ -35,7 +35,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
-public class TemporalAllocationManagerWindow extends ReusableInteralFrame implements TemporalAllocationManagerView,
+public class TemporalAllocationManagerWindow extends DisposableInteralFrame implements TemporalAllocationManagerView,
         RefreshObserver, Runnable {
 
     private TemporalAllocationManagerPresenter presenter;

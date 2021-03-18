@@ -12,7 +12,7 @@ import gov.epa.emissions.commons.gui.buttons.ExportButton;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -53,7 +53,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-public class ControlMeasuresManagerWindow extends ReusableInteralFrame implements ControlMeasuresManagerView,
+public class ControlMeasuresManagerWindow extends DisposableInteralFrame implements ControlMeasuresManagerView,
         RefreshObserver, Runnable {
 
     // private SortFilterSelectModel selectModel;

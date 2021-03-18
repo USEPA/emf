@@ -9,7 +9,7 @@ import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlprogram.editor.ControlProgramView;
@@ -35,7 +35,7 @@ import java.util.List;
 
 import javax.swing.*;
 
-public class ControlProgramManagerWindow extends ReusableInteralFrame implements ControlProgramManagerView,
+public class ControlProgramManagerWindow extends DisposableInteralFrame implements ControlProgramManagerView,
         RefreshObserver, Runnable {
 
     private ControlProgramManagerPresenter presenter;
