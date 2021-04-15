@@ -75,19 +75,19 @@ public class SummaryTab extends JPanel implements SummaryTabView, RefreshObserve
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        layoutGenerator.addLabelWidgetPair("Status:", new Label("status", dataset.getStatus()), panel);
-        layoutGenerator.addLabelWidgetPair("Last Modified Date:", new Label("lastModifiedDate", formatDate(dataset
+        layoutGenerator.addLabelWidgetPair("Status:", new Label("Status", dataset.getStatus()), panel);
+        layoutGenerator.addLabelWidgetPair("Last Modified Date:", new Label("Last modified date", formatDate(dataset
                 .getModifiedDateTime())), panel);
-        layoutGenerator.addLabelWidgetPair("Last Accessed Date:", new Label("lastAccessedDate", formatDate(dataset
+        layoutGenerator.addLabelWidgetPair("Last Accessed Date:", new Label("Last accessed date", formatDate(dataset
                 .getAccessedDateTime())), panel);
-        layoutGenerator.addLabelWidgetPair("Creation Date:", new Label("creationDate", formatDate(dataset
+        layoutGenerator.addLabelWidgetPair("Creation Date:", new Label("Creation date", formatDate(dataset
                 .getCreatedDateTime())), panel);
 
         IntendedUse intendedUse = dataset.getIntendedUse();
         String intendedUseName = (intendedUse != null) ? intendedUse.getName() : "";
-        layoutGenerator.addLabelWidgetPair("Intended Use:", new Label("intendedUse", intendedUseName), panel);
+        layoutGenerator.addLabelWidgetPair("Intended Use:", new Label("Intended use", intendedUseName), panel);
 
-        layoutGenerator.addLabelWidgetPair("Default Version:", new Label("defaultVersion", ""
+        layoutGenerator.addLabelWidgetPair("Default Version:", new Label("Default version", ""
                 + (version != null ? version.toString() : "" )), panel);
 
         // Lay out the panel.
@@ -104,24 +104,24 @@ public class SummaryTab extends JPanel implements SummaryTabView, RefreshObserve
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
         // time period
-        layoutGenerator.addLabelWidgetPair("Time Period Start:", new JLabel(formatDate(dataset.getStartDateTime())),
+        layoutGenerator.addLabelWidgetPair("Time Period Start:", new Label("Time period start", formatDate(dataset.getStartDateTime())),
                 panel);
         layoutGenerator
-                .addLabelWidgetPair("Time Period End:", new JLabel(formatDate(dataset.getStopDateTime())), panel);
-        layoutGenerator.addLabelWidgetPair("Temporal Resolution:", new JLabel(dataset.getTemporalResolution()), panel);
+                .addLabelWidgetPair("Time Period End:", new Label("Time period end", formatDate(dataset.getStopDateTime())), panel);
+        layoutGenerator.addLabelWidgetPair("Temporal Resolution:", new Label("Temporal resolution", dataset.getTemporalResolution()), panel);
         Sector[] sectors = dataset.getSectors();
         String sectorLabel = "";
         if (sectors != null && sectors.length > 0) {
             sectorLabel = sectors[0].toString();
         }
-        layoutGenerator.addLabelWidgetPair("Sector:", new JLabel(sectorLabel), panel);
+        layoutGenerator.addLabelWidgetPair("Sector:", new Label("Sector", sectorLabel), panel);
         Region region = dataset.getRegion();
         String regionName = (region != null) ? region.getName() : "";
-        layoutGenerator.addLabelWidgetPair("Region:", new JLabel(regionName), panel);
+        layoutGenerator.addLabelWidgetPair("Region:", new Label("Region", regionName), panel);
 
         Country country = dataset.getCountry();
         String countryName = (country != null) ? country.getName() : "";
-        layoutGenerator.addLabelWidgetPair("Country:", new JLabel(countryName), panel);
+        layoutGenerator.addLabelWidgetPair("Country:", new Label("Country", countryName), panel);
 
         // Lay out the panel.
         layoutGenerator.makeCompactGrid(panel, 6, 2, // rows, cols
@@ -161,9 +161,9 @@ public class SummaryTab extends JPanel implements SummaryTabView, RefreshObserve
 
         Project project = dataset.getProject();
         String projectName = (project != null) ? project.getName() : "";
-        layoutGenerator.addLabelWidgetPair("Project:", new JLabel(projectName), panel);
-        layoutGenerator.addLabelWidgetPair("Creator:", new JLabel(getFullName()), panel);
-        layoutGenerator.addLabelWidgetPair("Dataset Type:", new JLabel(dataset.getDatasetTypeName()), panel);
+        layoutGenerator.addLabelWidgetPair("Project:", new Label("Project", projectName), panel);
+        layoutGenerator.addLabelWidgetPair("Creator:", new Label("Creator", getFullName()), panel);
+        layoutGenerator.addLabelWidgetPair("Dataset Type:", new Label("Dataset type", dataset.getDatasetTypeName()), panel);
 
         // Lay out the panel.
         layoutGenerator.makeCompactGrid(panel, 5, 2, // rows, cols
