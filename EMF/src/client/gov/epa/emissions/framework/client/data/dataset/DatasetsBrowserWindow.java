@@ -146,6 +146,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
     private JPanel createBrowserPanel(EmfDataset[] datasets) {
         EmfDatasetTableData tableData = new EmfDatasetTableData(datasets);
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of datasets");
 
         JPanel browserPanel = new JPanel(new BorderLayout());
         browserPanel.add(table);
