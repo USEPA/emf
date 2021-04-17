@@ -172,6 +172,7 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 		setLayout(new BorderLayout());
 		add(toolBar, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
+		statusLabel.setFocusable(true);
 		add(statusLabel, BorderLayout.SOUTH);
 		DefaultUserInteractor.set(new GUIUserInteractor());
 		for (int i = 0; i < table.getColumnCount(); i++) {
@@ -206,6 +207,7 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 		setLayout(new BorderLayout());
 		add(toolBar, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
+		statusLabel.setFocusable(true);
 		add(statusLabel, BorderLayout.SOUTH);
 		DefaultUserInteractor.set(new GUIUserInteractor());
 		for (int i = 0; i < table.getColumnCount(); i++) {
@@ -833,6 +835,8 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
                         COLUMNS_STR + " [" + overallModel.filterSortInfoString() + "]";
 		statusLabel.setText(info);
 		statusLabel.setToolTipText(info);
+		statusLabel.getAccessibleContext().setAccessibleName("Table status");
+		statusLabel.getAccessibleContext().setAccessibleDescription(info);
 	} // updateStatusLabel()
 
 	/**
