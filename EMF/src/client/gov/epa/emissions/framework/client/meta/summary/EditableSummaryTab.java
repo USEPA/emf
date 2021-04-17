@@ -300,12 +300,10 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         layoutGenerator.addLabelWidgetPair("Project:", projectsCombo, panel);
 
         // creator
-        JLabel creator = createLeftAlignedLabel(getFullName());
-        layoutGenerator.addLabelWidgetPair("Creator:", creator, panel);
+        layoutGenerator.addLabelWidgetPair("Creator:", new Label("Creator", getFullName()), panel);
 
         // dataset type
-        JLabel datasetType = createLeftAlignedLabel(dataset.getDatasetTypeName());
-        layoutGenerator.addLabelWidgetPair("Dataset Type:", datasetType, panel);
+        layoutGenerator.addLabelWidgetPair("Dataset Type:", new Label("Dataset type", dataset.getDatasetTypeName()), panel);
 
         // Lay out the panel.
         layoutGenerator.makeCompactGrid(panel, 5, 2, // rows, cols
