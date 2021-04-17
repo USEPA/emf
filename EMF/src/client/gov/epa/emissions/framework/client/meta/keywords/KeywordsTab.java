@@ -54,6 +54,7 @@ public class KeywordsTab extends JPanel implements KeywordsTabView, RefreshObser
         TableData tableData = new DatasetTypeKeyValueTableData(vals);
         JTable table = new JTable(new EmfTableModel(tableData));
         table.setRowHeight(16);
+        table.getAccessibleContext().setAccessibleName("List of keywords specific to the dataset type used by this dataset");
 
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
@@ -68,6 +69,7 @@ public class KeywordsTab extends JPanel implements KeywordsTabView, RefreshObser
         KeyValueTableData tableData = new KeyValueTableData(values);
         JTable table = new JTable(new EmfTableModel(tableData));
         table.setRowHeight(20);
+        table.getAccessibleContext().setAccessibleName("List of keywords specific to this dataset");
 
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 

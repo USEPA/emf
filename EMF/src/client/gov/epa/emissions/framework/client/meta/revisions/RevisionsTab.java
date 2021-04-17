@@ -66,10 +66,12 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
     private JPanel tablePanel(Revision[] revisions, EmfConsole parentConsole) {
         //EmfTableModel model = new EmfTableModel(new RevisionsTableData(revisions));
         JPanel tablePanel = new JPanel(new BorderLayout());
-        if ( table==null ) 
+        if (table == null) {
             table = new SelectableSortFilterWrapper(parentConsole, new RevisionsTableData(revisions), null);
-        else
+            table.getTable().getAccessibleContext().setAccessibleName("List of revisions for this dataset");
+        } else {
             table.refresh(new RevisionsTableData(revisions));
+        }
         tablePanel.add(table);
         return tablePanel;
     }

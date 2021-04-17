@@ -68,10 +68,12 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
     private JPanel tablePanel(QAStep[] steps, QAStepResult[] results) {
         JPanel container = new JPanel(new BorderLayout());
         tableData = new QAStepsTableData(steps, results);
-        if (table == null )
+        if (table == null) {
             table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
-        else
+            table.getTable().getAccessibleContext().setAccessibleName("List of QA steps for this dataset");
+        } else {
             table.refresh(tableData);
+        }
         container.add(table, BorderLayout.CENTER);
         return container;
     }

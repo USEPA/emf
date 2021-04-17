@@ -58,10 +58,12 @@ public class NotesTab extends JPanel implements NotesTabView, RefreshObserver {
 
     private JPanel tablePanel(DatasetNote[] notes, EmfConsole parentConsole) {
         JPanel tablePanel = new JPanel(new BorderLayout());
-        if (table == null)
+        if (table == null) {
             table = new SelectableSortFilterWrapper(parentConsole, new NotesTableData(notes), null);
-        else 
+            table.getTable().getAccessibleContext().setAccessibleName("List of notes for this dataset");
+        } else {
             table.refresh(new NotesTableData(notes));
+        }
         
         tablePanel.add(table);
         return tablePanel;

@@ -132,6 +132,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
         tableModel = new EmfTableModel(tableData);
 
         ScrollableTable scrollableTable = new ScrollableTable(new VersionTable(tableModel), null);
+        scrollableTable.getTable().getAccessibleContext().setAccessibleName("List of versions for this dataset");
 
         String[] columns = {"Select", "Version", "Base", "Is Final?"}; 
         Font font = this.getFont();

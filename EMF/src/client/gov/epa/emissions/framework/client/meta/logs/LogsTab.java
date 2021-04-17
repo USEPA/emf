@@ -50,10 +50,12 @@ public class LogsTab extends JPanel implements LogsTabView, RefreshObserver{
     private JPanel tablePanel(AccessLog[] logs) {
         JPanel tablePanel = new JPanel(new BorderLayout());
         //SimpleTableModel wrapperModel = new SimpleTableModel(model);
-        if ( table ==null )
+        if (table == null) {
             table = new SelectableSortFilterWrapper(parentConsole, new LogsTableData(logs), null);
-        else
+            table.getTable().getAccessibleContext().setAccessibleName("List of access logs for this dataset");
+        } else {
              table.refresh(new LogsTableData(logs)); 
+        }
         tablePanel.add(table);
         return tablePanel;
     }
