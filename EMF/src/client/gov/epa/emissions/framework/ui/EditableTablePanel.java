@@ -8,9 +8,9 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -77,8 +77,8 @@ public class EditableTablePanel extends JPanel implements Editor {
 
         JButton add = new JButton("Add");
         add.setMargin(new Insets(2, 2, 2, 2));
-        add.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
+        add.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 tableData.addBlankRow();
                 refresh();
             }
@@ -88,8 +88,8 @@ public class EditableTablePanel extends JPanel implements Editor {
 
         JButton remove = new JButton("Remove");
         remove.setMargin(new Insets(2, 2, 2, 2));
-        remove.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
+        remove.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 doRemove(tableData);
             }
         });
