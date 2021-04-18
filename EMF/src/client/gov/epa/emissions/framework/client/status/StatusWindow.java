@@ -119,6 +119,7 @@ public class StatusWindow
         table = //new JTable(statusTableModel);
                 new MultiLineTable(statusTableModel);
         table.setName("statusMessages");
+        table.getAccessibleContext().setAccessibleName("List of status messages");
         // FIXME: code put in for the demo
         //table.setRowHeight(50);
         //table.setDefaultRenderer(Object.class, new TextAreaTableCellRenderer());

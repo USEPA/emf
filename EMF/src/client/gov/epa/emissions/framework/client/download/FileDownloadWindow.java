@@ -371,6 +371,7 @@ public class FileDownloadWindow
         table = new JTable(fileDownloadTableModel);
 //            new MultiLineTable(fileDownloadTableModel);
         table.setName("fileDownloads");
+        table.getAccessibleContext().setAccessibleName("List of downloaded files");
         // FIXME: code put in for the demo
 //        table.setRowHeight(50);
         //table.setDefaultRenderer(Object.class, new TextAreaTableCellRenderer());
