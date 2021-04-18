@@ -4,8 +4,11 @@ import gov.epa.mims.analysisengine.table.filter.FilterCriteria;
 import gov.epa.mims.analysisengine.table.filter.FilterPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -169,6 +172,14 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		selectionLabel.setFocusable(true);
+		selectionLabel.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                selectionLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void focusLost(FocusEvent e) {
+                selectionLabel.setBorder(null);
+            }
+        });
 		selectionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		valueChanged(new ListSelectionEvent(table, 0, 0, false));
 

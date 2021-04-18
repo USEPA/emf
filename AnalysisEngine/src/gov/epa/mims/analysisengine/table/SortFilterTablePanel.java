@@ -21,11 +21,14 @@ import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 import gov.epa.mims.analysisengine.table.sort.SortGUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -34,6 +37,7 @@ import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -173,6 +177,14 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 		add(toolBar, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 		statusLabel.setFocusable(true);
+		statusLabel.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void focusLost(FocusEvent e) {
+                statusLabel.setBorder(null);
+            }
+        });
 		add(statusLabel, BorderLayout.SOUTH);
 		DefaultUserInteractor.set(new GUIUserInteractor());
 		for (int i = 0; i < table.getColumnCount(); i++) {
@@ -208,6 +220,14 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 		add(toolBar, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 		statusLabel.setFocusable(true);
+		statusLabel.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+            	statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void focusLost(FocusEvent e) {
+            	statusLabel.setBorder(null);
+            }
+        });
 		add(statusLabel, BorderLayout.SOUTH);
 		DefaultUserInteractor.set(new GUIUserInteractor());
 		for (int i = 0; i < table.getColumnCount(); i++) {
