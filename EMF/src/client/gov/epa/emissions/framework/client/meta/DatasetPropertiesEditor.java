@@ -70,7 +70,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
     private int previousTab = 0; // NOTE: assuming the default tab shown is Summary tab.
 
     public DatasetPropertiesEditor(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Dataset Properties Editor", new Dimension(700, 550), desktopManager);
+        super("Dataset Properties Editor", new Dimension(800, 550), desktopManager);
         this.session = session;
         this.parentConsole = parentConsole;
         this.desktopManager = desktopManager;
