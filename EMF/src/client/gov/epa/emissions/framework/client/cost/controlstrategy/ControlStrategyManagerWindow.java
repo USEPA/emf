@@ -491,7 +491,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
         UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
         UIManager.put("OptionPane.cancelButtonMnemonic", "67"); // for Setting 'C' as mnemonic
         int selection = JOptionPane.showConfirmDialog(parentConsole, contents, title, JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE);
 
         if (selection == JOptionPane.OK_OPTION) {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

@@ -181,7 +181,8 @@ public class CMImportWindow extends DisposableInteralFrame implements CMImportVi
                 this,
                 msg,
                 "Purge existing control measures?",
-                JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
         if ( n == JOptionPane.YES_OPTION) {
             return true;
         }

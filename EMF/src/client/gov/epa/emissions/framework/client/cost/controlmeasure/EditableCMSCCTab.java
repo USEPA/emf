@@ -207,7 +207,7 @@ public class EditableCMSCCTab extends JPanel implements ControlMeasureSccTabView
         String title = "Warning";
         String message = "Are you sure you want to remove the "+records.length+" selected SCC(s)?";
         int selection = JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             modify();

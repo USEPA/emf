@@ -577,7 +577,8 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                     this,
                     "You did not specify the Export Name. It will be generated automatically. Would you like to continue?",
                     "Export Name not Specified",
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
             if ( n == JOptionPane.YES_OPTION) 
                 return true;
             return false;
@@ -657,7 +658,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                             String title = "Warning";
                             String message = "Are you sure you want to view more than 100,000 records?  It could take several minutes to load the data.";
                             int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE);
+                                    JOptionPane.WARNING_MESSAGE);
 
                             if (selection == JOptionPane.NO_OPTION) {
                                 return;

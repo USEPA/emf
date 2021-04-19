@@ -413,7 +413,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
                     + ls + "Are you sure you want to remove them permanently?";
             UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
             selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
         } else {
             if (numDelDatasets == 0) {
                 JOptionPane.showMessageDialog(parentConsole, message);
@@ -421,7 +421,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
             }
             
             selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
         }
         
         if (selection == JOptionPane.NO_OPTION)
@@ -614,8 +614,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
 
         String message = "Are you sure you want to remove the selected " + datasets.size() + " dataset(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
+                JOptionPane.WARNING_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
             //long running methods.....
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -703,7 +702,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
             String message = "There are " + numDataset + " datasets, which could take a while to transfer, would you like to continue? \n"
             +"[Hint: if you choose not to continue, enter a filter in Name Contains before proceeding]";
             int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.NO_OPTION ||
                     selection == JOptionPane.CANCEL_OPTION) {

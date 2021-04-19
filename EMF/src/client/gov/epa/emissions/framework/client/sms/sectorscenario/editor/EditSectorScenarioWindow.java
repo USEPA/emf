@@ -241,7 +241,7 @@ public class EditSectorScenarioWindow extends DisposableInteralFrame implements 
                 
                 String message = "Would you like to stop running the sector scenario?\nThis could take several minutes to cancel the run.";
                 int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE);
                 boolean cancel = false;
                 if (selection == JOptionPane.CANCEL_OPTION) {
                     return;

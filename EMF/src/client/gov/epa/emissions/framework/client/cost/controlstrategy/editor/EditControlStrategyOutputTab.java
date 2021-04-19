@@ -158,7 +158,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
             if (canConcatReports && datasetList.size() > 1) {
                 int selection = JOptionPane.showConfirmDialog(parentConsole,
                     "Export all selected reports in a single file?",
-                    "Strategy Detailed Result Output", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    "Strategy Detailed Result Output", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 if (selection == JOptionPane.YES_OPTION)
                     concat = true;
             }
@@ -218,7 +218,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                         String title = "Warning";
                         String message = "Are you sure you want to view the result? The table has over 300,000 records. It could take several minutes to load the data.";
                         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title,
-                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                         if (selection == JOptionPane.NO_OPTION) {
                             return;
@@ -322,7 +322,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                 String title = "Warning";
                 String message = "Are you sure you want to create controlled inventories? There are controlled inventories that " + (creatingControlledInventories ? "are already being created" : "have already been created") + ".";
                 int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE);
 
                 if (selection != JOptionPane.YES_OPTION) {
                     return;

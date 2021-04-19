@@ -490,7 +490,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
 
     private int showWarningMsg(String title, String msg) {
         return JOptionPane.showConfirmDialog(parentConsole, msg, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private void copySelectedCases() {

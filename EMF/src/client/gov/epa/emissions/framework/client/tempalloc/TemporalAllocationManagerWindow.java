@@ -310,7 +310,7 @@ public class TemporalAllocationManagerWindow extends DisposableInteralFrame impl
                 "Are you sure you want to remove the selected temporal allocation?" :
                 "Are you sure you want to remove the "+numSelected+" selected temporal allocations?";
        int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (selection == JOptionPane.YES_OPTION) {

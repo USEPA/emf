@@ -200,7 +200,7 @@ public class DataFindReplaceAdvancedTab extends JPanel implements DataFindReplac
         if (replaceString.isEmpty()){
             String message = "Replace field is empty, would you like to continue?";
             int selection = JOptionPane.showConfirmDialog( this, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
             if (selection == JOptionPane.NO_OPTION)   
                 return false;
         }

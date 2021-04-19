@@ -233,7 +233,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
             }
 
             if (JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE)
+                    JOptionPane.WARNING_MESSAGE)
                     == JOptionPane.YES_OPTION)
                 if (dataset.getStatus().equals("Archived")) {
                     presenter.restoreDataset(dataset.getId());
@@ -261,7 +261,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
     private int getYesNoSelection(){
         String message = " Would you like to copy a version to new dataset? ";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
         return selection;
     }
 

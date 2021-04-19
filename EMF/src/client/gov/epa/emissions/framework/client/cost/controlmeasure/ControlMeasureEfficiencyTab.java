@@ -276,7 +276,7 @@ public class ControlMeasureEfficiencyTab extends JPanel implements ControlMeasur
         String title = "Warning";
         String message = "Are you sure you want to remove the "+records.length+" selected efficiency record(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             for (int i = 0; i < records.length; i++) {

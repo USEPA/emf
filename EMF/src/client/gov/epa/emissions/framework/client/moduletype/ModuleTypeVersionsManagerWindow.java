@@ -405,7 +405,7 @@ public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame impl
         }
         
         String message = "Are you sure you want to remove the selected module type version? There is no undo for this action.";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
             try {
                 ModuleType moduleType = presenter.removeModuleTypeVersion(selectedMTV.getId());

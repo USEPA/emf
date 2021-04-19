@@ -404,7 +404,7 @@ public class DatasetSearchWindow extends DisposableInteralFrame {
                     if (datasets.length == 1 && datasets[0].getName().startsWith("Alert!!! More than 300 datasets selected.")) {
                         String msg = "Number of datasets > 300. Would you like to continue?";
                         int option = JOptionPane.showConfirmDialog(parent, msg, "Warning", JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.WARNING_MESSAGE);
                         if (option == JOptionPane.NO_OPTION)
                             return;
                         //kick off another swingworker for second step...

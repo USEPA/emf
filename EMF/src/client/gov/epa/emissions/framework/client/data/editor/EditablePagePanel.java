@@ -459,7 +459,7 @@ public class EditablePagePanel extends JPanel {
         String msg = "Are you sure you want to delete the selected " + selected + " row" + (selected > 1 ? "s" : "")
                 + "?";
         int regularDel = JOptionPane.showConfirmDialog((Component) listOfChangeables, msg, "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (regularDel == JOptionPane.YES_OPTION) {
             tableData.removeSelected();
@@ -487,7 +487,7 @@ public class EditablePagePanel extends JPanel {
         
         if (rowCount > tableData.rows().size()) {
             option = JOptionPane.showConfirmDialog((Component) listOfChangeables, msg, title,
-                    JOptionPane.YES_NO_CANCEL_OPTION);
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (option == JOptionPane.CANCEL_OPTION)
                 return JOptionPane.CANCEL_OPTION;
@@ -497,7 +497,7 @@ public class EditablePagePanel extends JPanel {
             String confirm = "This deletion of " + rowCount
                     + " records is not reversible. Are you sure you want to proceed?";
             int goDelete = JOptionPane.showConfirmDialog((Component) listOfChangeables, confirm, title,
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (goDelete == JOptionPane.YES_OPTION) {
                 try {

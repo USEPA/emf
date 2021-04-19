@@ -20,7 +20,8 @@ public class ConfirmDialog {
     }
     
     public boolean confirm() {
-        int option = JOptionPane.showConfirmDialog(parentWindow, message, title, JOptionPane.YES_NO_OPTION);
+        int option = JOptionPane.showConfirmDialog(parentWindow, message, title, JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
         return (option == 0);
     }
     

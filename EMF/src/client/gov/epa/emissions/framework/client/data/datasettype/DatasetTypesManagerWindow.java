@@ -287,7 +287,7 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
 
         String message = "Are you sure you want to remove the selected " + selected.size() + " dataset type(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
@@ -295,7 +295,7 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
                 messagePanel.setMessage(selected.size()
                         + " dataset types have been removed. Please Refresh to see the revised list of types.");
             } catch (EmfException e) {
-              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
     }

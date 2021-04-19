@@ -248,7 +248,7 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
         }
 
         int option = JOptionPane.showConfirmDialog(this, "Are you sure about deleting user(s) - " + buffer.toString(),
-                "Delete User", JOptionPane.YES_NO_OPTION);
+                "Delete User", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         return (option == 0);
     }
 

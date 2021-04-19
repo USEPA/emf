@@ -294,7 +294,7 @@ public class SectorScenarioManagerWindow extends DisposableInteralFrame implemen
                 "Are you sure you want to remove the selected sector scenarios?" :
                 "Are you sure you want to remove the "+records.length+" selected scenarios?";
        int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (selection == JOptionPane.YES_OPTION) {

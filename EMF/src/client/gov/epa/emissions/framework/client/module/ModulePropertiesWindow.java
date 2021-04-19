@@ -1467,7 +1467,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 return;
         }
         String message = "Are you sure you want to run the '" + module.getName() + "' module?";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
         
@@ -1586,7 +1586,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         if (nonfinalInputVersionsText.length() > 0) {
             String title = "Finalizing module " + module.getName(); 
             String message = "Are you sure you want to finalize these input datasets?\n\n" + nonfinalInputVersionsText.toString();
-            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection != JOptionPane.YES_OPTION)
                 return;
             for (Version version : nonfinalInputVersions.values()) {
@@ -1621,7 +1621,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         if (nonfinalOutputVersionsText.length() > 0) {
             String message = "Are you sure you want to finalize these output datasets?\n\n" + nonfinalOutputVersionsText.toString();
-            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection != JOptionPane.YES_OPTION)
                 return;
             for (Version version : nonfinalOutputVersions.values()) {
@@ -1640,7 +1640,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         title = module.getName();
         int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to finalize this module?",
-                                                      title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                                      title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             module.setIsFinal(true);
@@ -1765,7 +1765,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         if (module.getModuleTypeVersion().isValid(error)) {
             if (!module.isValid(error)) {
                 int selection = JOptionPane.showConfirmDialog(parentConsole, error + "\n\nAre you sure you want to close invalid/incomplete module?\n",
-                                                              "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                                              "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (selection == JOptionPane.NO_OPTION)
                     return;
             }

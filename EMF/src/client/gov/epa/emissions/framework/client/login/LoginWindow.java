@@ -113,7 +113,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
         System.out.println("Showing confirm dialog");
         return JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private JPanel createButtonsPanel() {
@@ -178,7 +178,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 //            Math.abs(expireDays) + " days.\n"
 //            + "Please reset your password using profile manager. ";
 //            System.out.println("Showing confirm dialog");
-//            return JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.CLOSED_OPTION);
+//            return JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
 //        }
         return 0; 
     }  

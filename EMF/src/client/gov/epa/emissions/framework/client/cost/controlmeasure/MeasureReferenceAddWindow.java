@@ -92,7 +92,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
                         + "[Hint: if you choose not to continue, enter a filter in the 'Text contains' field\n"
                         + " before proceeding]";
                 int selection = JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE);
 
                 if (selection == JOptionPane.YES_OPTION) {
                     refresh(this.getReferences());

@@ -236,7 +236,7 @@ public class ControlMeasureReferencesTab extends EmfPanel implements ControlMeas
         String title = "Warning";
         String message = "Are you sure you want to remove the reference?";
         int selection = JOptionPane.showConfirmDialog(this.getParentConsole(), message, title,
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
 

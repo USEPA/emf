@@ -1017,7 +1017,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
         String message = "Are you sure you want to remove the selected " + selected.size() + " dataset(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
@@ -1028,7 +1028,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                 messagePanel.setMessage("Removed " + selected.size() + " dataset(s)");
                 refreshDatasets();
             } catch (Exception e) {
-                JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+                JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -1115,7 +1115,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
         String message = "Are you sure you want to remove the selected " + selected.size() + " parameter(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
@@ -1126,7 +1126,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                 messagePanel.setMessage("Removed " + selected.size() + " parameter(s)");
                 refreshParameters();
             } catch (Exception e) {
-                JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+                JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -1217,7 +1217,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
 
         String message = "Are you sure you want to remove the selected " + selected.size() + " submodule(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
             try {
                 for (ModuleTypeVersionSubmodule moduleTypeVersionSubmodule : selected
@@ -1227,7 +1227,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
                 messagePanel.setMessage("Removed " + selected.size() + " submodule(s)");
                 refreshSubmodules();
             } catch (Exception e) {
-                JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+                JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -1408,7 +1408,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             message.append(dependentModuleTypeVersion.fullNameSS("module type \"%s\" version \"%s\"\n"));
         }
         message.append("\n");
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         return (selection == JOptionPane.YES_OPTION);
     }
     
@@ -1515,7 +1515,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         
         int selection = JOptionPane.showConfirmDialog(parentConsole,
                                         message, title, JOptionPane.YES_NO_OPTION,
-                                        JOptionPane.QUESTION_MESSAGE);
+                                        JOptionPane.WARNING_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
         

@@ -356,7 +356,7 @@ public class ControlProgramManagerWindow extends DisposableInteralFrame implemen
         String title = "Warning";
         String message = "Are you sure you want to remove the "+records.length+" selected control program(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (selection == JOptionPane.YES_OPTION) {

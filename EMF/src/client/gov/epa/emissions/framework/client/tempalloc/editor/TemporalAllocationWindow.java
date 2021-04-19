@@ -277,7 +277,7 @@ public class TemporalAllocationWindow extends DisposableInteralFrame implements 
                     String[] messages = {"Are you sure you want to stop the temporal allocation run?",
                             "The run will be stopped once the currently running task is completed."};
                     int selection = JOptionPane.showConfirmDialog(parentConsole, messages, title, JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
+                            JOptionPane.WARNING_MESSAGE);
                     if (selection == JOptionPane.YES_OPTION) {
                         presenter.doStop();
                         messagePanel.setMessage("Request to cancel run submitted. Monitor the status window for cancellation.");

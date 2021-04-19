@@ -465,7 +465,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 caseId + ")? \n Note: if you don't add the region, the copy will be canceled. ";
                       
                 int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE);
                 if (selection == JOptionPane.YES_OPTION) 
                     presenter.copyJobs(caseId, jobs);
                 return; 
@@ -618,7 +618,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
 
     private int showDialog(Object msg, String title) {
         return JOptionPane.showConfirmDialog(parentConsole, msg, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private void showMessageDialog(Object msg, String title) {

@@ -327,7 +327,7 @@ public class AppendDataWindow extends DisposableInteralFrame implements AppendDa
                     if (!sameDef) {
                         String defMsg = "Source dataset and target dataset have different table definitions.\nWould you like to proceed to append data anyway?";
                         int answer = JOptionPane.showConfirmDialog(parentConsole, defMsg, title,
-                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                         if (answer != JOptionPane.YES_OPTION)
                             return;

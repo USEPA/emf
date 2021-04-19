@@ -217,7 +217,7 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
         String title = "Warning";
         String message = "Are you sure you want to remove selected history message(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.remove(selected);

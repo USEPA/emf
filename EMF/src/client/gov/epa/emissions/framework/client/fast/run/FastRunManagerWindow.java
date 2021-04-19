@@ -254,7 +254,7 @@ public class FastRunManagerWindow extends AbstractMPSDTManagerTab implements Fas
             }
 
             int selection = JOptionPane.showConfirmDialog(getParentConsole(), message, "Warning",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.YES_OPTION) {
 
@@ -287,7 +287,7 @@ public class FastRunManagerWindow extends AbstractMPSDTManagerTab implements Fas
             }
 
             int selection = JOptionPane.showConfirmDialog(getParentConsole(), message, "Warning",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.YES_OPTION) {
 
@@ -323,7 +323,7 @@ public class FastRunManagerWindow extends AbstractMPSDTManagerTab implements Fas
             }
 
             int selection = JOptionPane.showConfirmDialog(getParentConsole(), message, "Warning",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.YES_OPTION) {
 
@@ -357,7 +357,7 @@ public class FastRunManagerWindow extends AbstractMPSDTManagerTab implements Fas
             }
 
             int selection = JOptionPane.showConfirmDialog(getParentConsole(), message, "Warning",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.YES_OPTION) {
 

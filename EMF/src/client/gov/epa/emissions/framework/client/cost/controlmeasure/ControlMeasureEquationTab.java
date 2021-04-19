@@ -227,7 +227,7 @@ public class ControlMeasureEquationTab extends JPanel implements ControlMeasureT
         String title = "Warning";
         String message = "Are you sure you want to remove the equation information?";
         int selection = JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             if(tableData.rows().size()>0){

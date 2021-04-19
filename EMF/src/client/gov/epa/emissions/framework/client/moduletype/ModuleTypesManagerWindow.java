@@ -262,7 +262,7 @@ public class ModuleTypesManagerWindow extends DisposableInteralFrame implements 
     }
 
     private void createModuleType() {
-        int selection = JOptionPane.showConfirmDialog(parentConsole, "Create a composite module type?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, "Create a composite module type?", "", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, selection == JOptionPane.YES_OPTION);
         presenter.displayNewModuleTypeView(view);
     }
@@ -382,14 +382,14 @@ public class ModuleTypesManagerWindow extends DisposableInteralFrame implements 
         }
         message.append("There is no undo for this action!");
         
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
                 presenter.doRemove(selectedModuleTypes);
                 messagePanel.setMessage(selectedModuleTypes.length + " module types have been removed. Please Refresh to see the revised list of types.");
             } catch (EmfException e) {
-              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -468,7 +468,7 @@ public class ModuleTypesManagerWindow extends DisposableInteralFrame implements 
         
                 String message = "Which version of '" + moduleType.getName() + "' do you want to export?";
                 String selectedVersionName = (String)JOptionPane.showInputDialog(parentConsole, message,
-                        "Select Module Type Version", JOptionPane.QUESTION_MESSAGE, null,
+                        "Select Module Type Version", JOptionPane.INFORMATION_MESSAGE, null,
                         versionNames, versionNames[0]);
                 if (selectedVersionName == null) {
                     return;
@@ -516,7 +516,7 @@ public class ModuleTypesManagerWindow extends DisposableInteralFrame implements 
         }
         
         if (file.exists()) {
-            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection == JOptionPane.NO_OPTION) {
                 messagePanel.setMessage("Export cancelled.");
                 return;

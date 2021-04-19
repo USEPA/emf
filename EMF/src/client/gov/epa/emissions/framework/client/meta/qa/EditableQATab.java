@@ -257,7 +257,8 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             return;
         }
 
-        int answer = JOptionPane.showConfirmDialog(this, "Copy to the current dataset?");
+        int answer = JOptionPane.showConfirmDialog(this, "Copy to the current dataset?",
+                "Confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (answer == JOptionPane.CANCEL_OPTION) {
             return;
         } else if ( answer == JOptionPane.YES_OPTION) {
@@ -318,7 +319,8 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             return;
         }
 
-        int answer = JOptionPane.showConfirmDialog(this, "Archive QA Step Results?");
+        int answer = JOptionPane.showConfirmDialog(this, "Archive QA Step Results?", "Confirm",
+                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (answer == JOptionPane.CANCEL_OPTION) {
             return;
         } else if ( answer == JOptionPane.YES_OPTION) {
@@ -354,7 +356,8 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             return;
         }
 
-        int answer = JOptionPane.showConfirmDialog(this, "Restore QA Step Results?");
+        int answer = JOptionPane.showConfirmDialog(this, "Restore QA Step Results?", "Confirm",
+                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (answer == JOptionPane.CANCEL_OPTION) {
             return;
         } else if ( answer == JOptionPane.YES_OPTION) {
@@ -389,7 +392,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
         
         String message = "Are you sure you want to remove the selected " + selected.size() + " QA step(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection != JOptionPane.YES_OPTION) {
             return;
@@ -581,7 +584,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                                     String title = "Warning";
                                     String message = "Are you sure you want to view more than 100,000 records?  It could take several minutes to load the data.";
                                     int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                                            JOptionPane.QUESTION_MESSAGE);
+                                            JOptionPane.WARNING_MESSAGE);
 
                                     if (selection == JOptionPane.NO_OPTION) {
                                         return;

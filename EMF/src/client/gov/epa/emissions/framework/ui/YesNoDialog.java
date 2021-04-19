@@ -26,7 +26,7 @@ public class YesNoDialog implements Confirm {
 
     private int show() {
         return JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
     }
 
 }

@@ -160,7 +160,7 @@ public class ControlStrategyProgramsTab extends JPanel implements EditControlStr
         String title = "Warning";
         String message = "Are you sure you want to remove the "+records.length+" selected control programs?";
         int selection = JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.remove(records);

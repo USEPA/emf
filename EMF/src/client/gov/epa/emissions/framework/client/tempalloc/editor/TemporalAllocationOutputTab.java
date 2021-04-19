@@ -221,7 +221,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                     + "Re-running it will delete the existing outputs and any QA steps.\n"
                     + "Are you sure you want to re-run?";
             int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
             if (selection == JOptionPane.CANCEL_OPTION) {
                 throw new EmfException("Run cancelled.");
             }

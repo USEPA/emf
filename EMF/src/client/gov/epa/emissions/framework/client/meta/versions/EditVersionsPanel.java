@@ -304,7 +304,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             String msg = "Would you like to make version " + versions[0].getVersion()
                     + " the default version for the dataset?";
             int makeDefault = JOptionPane.showConfirmDialog(parentConsole, msg, "Make Default Version",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null);
 
             if (makeDefault == JOptionPane.YES_OPTION) {
                 presenter.markFinalNDefault(versions[0]);
@@ -536,7 +536,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
     private int getYesNoSelection() {
         String message = " Would you like to copy a version to new dataset? ";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
         return selection;
     }
 

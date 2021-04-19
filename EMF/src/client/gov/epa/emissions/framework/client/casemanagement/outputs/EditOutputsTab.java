@@ -380,7 +380,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         String title = "Warning";
         String message = "Are you sure you want to remove the selected output(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         String messageDS = "Would you also like to delete the Datasets"+"\n associated with these Outputs?";
         String titleDS = "Discard dataset?";

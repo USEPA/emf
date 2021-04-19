@@ -362,7 +362,7 @@ public class FastDatasetManagerWindow extends AbstractMPSDTManagerTab implements
 
 			int selection = JOptionPane.showConfirmDialog(getParentConsole(),
 					message, "Warning", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
+					JOptionPane.WARNING_MESSAGE);
 
 			if (selection == JOptionPane.YES_OPTION) {
 
@@ -401,7 +401,7 @@ public class FastDatasetManagerWindow extends AbstractMPSDTManagerTab implements
 
 			int selection = JOptionPane.showConfirmDialog(getParentConsole(),
 					message, "Warning", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
+					JOptionPane.WARNING_MESSAGE);
 
 			if (selection == JOptionPane.YES_OPTION) {
 

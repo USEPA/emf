@@ -265,7 +265,7 @@ public class FastAnalysisManagerWindow extends AbstractMPSDTManagerTab
 
 			int selection = JOptionPane.showConfirmDialog(getParentConsole(),
 					message, "Warning", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
+					JOptionPane.WARNING_MESSAGE);
 
 			if (selection == JOptionPane.YES_OPTION) {
 
@@ -301,7 +301,7 @@ public class FastAnalysisManagerWindow extends AbstractMPSDTManagerTab
 
 			int selection = JOptionPane.showConfirmDialog(getParentConsole(),
 					message, "Warning", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
+					JOptionPane.WARNING_MESSAGE);
 
 			if (selection == JOptionPane.YES_OPTION) {
 
@@ -337,7 +337,7 @@ public class FastAnalysisManagerWindow extends AbstractMPSDTManagerTab
 
 			int selection = JOptionPane.showConfirmDialog(getParentConsole(),
 					message, "Warning", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
+					JOptionPane.WARNING_MESSAGE);
 
 			if (selection == JOptionPane.YES_OPTION) {
 
@@ -373,7 +373,7 @@ public class FastAnalysisManagerWindow extends AbstractMPSDTManagerTab
 
 			int selection = JOptionPane.showConfirmDialog(getParentConsole(),
 					message, "Warning", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
+					JOptionPane.WARNING_MESSAGE);
 
 			if (selection == JOptionPane.YES_OPTION) {
 

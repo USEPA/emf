@@ -98,7 +98,8 @@ public class RegionEditorWindow extends DisposableInteralFrame implements Region
                 if (RegionEditorWindow.this.hasChanges()) {
                     int option = JOptionPane.showConfirmDialog(parentConsole,
                             "Would you like to discard the changes and close the editor?",
-                            "Region Parameters' Value Changed", JOptionPane.YES_NO_OPTION);
+                            "Region Parameters' Value Changed", JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
 
                     if (option == JOptionPane.NO_OPTION)
                         return;

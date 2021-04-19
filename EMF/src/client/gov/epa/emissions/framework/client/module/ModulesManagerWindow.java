@@ -503,7 +503,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
         String message = "Are you sure you want to remove the selected " + selectedModuleIds.length + " module(s)?";
         JCheckBox deleteOutputs = new JCheckBox("Delete any output datasets?");
         Object[] contents = {message, deleteOutputs};
-        int selection = JOptionPane.showConfirmDialog(parentConsole, contents, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, contents, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
         
@@ -516,7 +516,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
             else
                 messagePanel.setMessage(removedModuleIds.length + " modules have been removed. Please Refresh to see the revised list of modules.");
         } catch (EmfException e) {
-          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -537,7 +537,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
         } else {
             message = "Are you sure you want to run the selected " + selectedModuleIds.length + " modules?";
         }
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
             
@@ -549,7 +549,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
                 messagePanel.setMessage("The " + selectedModuleIds.length + " modules have been executed.");
             }
         } catch (EmfException e) {
-          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -626,7 +626,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
         String location = "If not downloaded, files will be exported to \"" + exportFolder + "\" on the server.";
         Object[] contents = {message, download, location};
         boolean exportDatasets = (JOptionPane.showConfirmDialog(parentConsole, contents, "Export Module Datasets",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION);
+                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION);
 
         List<Module> modulesList = new ArrayList<Module>();
         Map<Integer, Map<String, String>> moduleDatasetInfo = new HashMap<Integer, Map<String, String>>();
@@ -698,7 +698,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
         }
         
         if (file.exists()) {
-            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection == JOptionPane.NO_OPTION) {
                 messagePanel.setMessage("Export cancelled.");
                 return;
