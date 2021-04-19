@@ -149,7 +149,8 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 		Boolean value = new Boolean(check);
 
 		for (int i = 0; i < selectedRows.length; i++) {
-			table.setValueAt(value, selectedRows[i], lastCol);
+			if (table.isCellEditable(selectedRows[i], lastCol))
+				table.setValueAt(value, selectedRows[i], lastCol);
 		} // for(i)
 	} // checkSelectedRows()
 
