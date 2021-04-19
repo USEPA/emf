@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.tempalloc.editor;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.InternalSource;
@@ -98,6 +99,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                 }
             }
         });
+        viewButton.setMnemonic(KeyEvent.VK_V);
         buttonPanel.add(viewButton);
         Button viewDataButton = new Button("View Data", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -105,6 +107,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                 viewData();
             }
         });
+        viewDataButton.setMnemonic(KeyEvent.VK_D);
         buttonPanel.add(viewDataButton);
         Button summarizeButton = new Button("Summarize", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -116,6 +119,7 @@ public class TemporalAllocationOutputTab extends JPanel implements TemporalAlloc
                 }
             }
         });
+        summarizeButton.setMnemonic(KeyEvent.VK_Z);
         buttonPanel.add(summarizeButton);
         return buttonPanel;
     }

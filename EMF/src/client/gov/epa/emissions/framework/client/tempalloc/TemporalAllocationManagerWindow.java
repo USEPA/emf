@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
@@ -150,8 +151,7 @@ public class TemporalAllocationManagerWindow extends DisposableInteralFrame impl
         JPanel crudPanel = createCrudPanel();
 
         JPanel closePanel = new JPanel();
-        JButton closeButton = new JButton("Close");
-        closeButton.addActionListener(new ActionListener() {
+        JButton closeButton = new CloseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 presenter.doClose();
             }

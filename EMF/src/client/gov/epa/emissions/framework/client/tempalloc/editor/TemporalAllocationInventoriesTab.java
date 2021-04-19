@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.tempalloc.editor;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import gov.epa.emissions.commons.data.Dataset;
@@ -116,6 +117,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 }
             }
         });
+        addButton.setMnemonic(KeyEvent.VK_A);
         addButton.setEnabled(presenter.isEditing());
         panel.add(addButton);
 
@@ -124,6 +126,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 setVersionAction();
             }
         });
+        editButton.setMnemonic(KeyEvent.VK_E);
         editButton.setEnabled(presenter.isEditing());
         panel.add(editButton);
 
@@ -132,6 +135,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                     removeAction();
             }
         });
+        removeButton.setMnemonic(KeyEvent.VK_M);
         removeButton.setEnabled(presenter.isEditing());
         panel.add(removeButton);
 
@@ -144,6 +148,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 }
             }
         });
+        viewButton.setMnemonic(KeyEvent.VK_V);
         panel.add(viewButton);
 
         Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
@@ -155,6 +160,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                 }
             }
         });
+        viewDataButton.setMnemonic(KeyEvent.VK_D);
         panel.add(viewDataButton);
 
         return panel;
