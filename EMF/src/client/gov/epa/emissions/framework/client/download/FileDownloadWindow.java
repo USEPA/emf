@@ -327,7 +327,7 @@ public class FileDownloadWindow
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel container = new JPanel(new FlowLayout());
-        messagePanel = new SingleLineMessagePanel();
+        messagePanel = new SingleLineMessagePanel(false);
         container.add(messagePanel);
 
         JButton clearButton = createClearButton();

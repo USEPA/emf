@@ -14,8 +14,15 @@ public class SingleLineMessagePanel extends MessagePanel {
     private String message;
 
     private Color background;
-
+    
+    private Boolean requestFocus = false;
+    
     public SingleLineMessagePanel() {
+        this(true);
+    }
+
+    public SingleLineMessagePanel(Boolean requestFocus) {
+        this.requestFocus = requestFocus;
         background = super.getBackground();
         label = new JLabel(" ");
         label.addFocusListener(new FocusAdapter() {
@@ -49,7 +56,8 @@ public class SingleLineMessagePanel extends MessagePanel {
         super.setBackground(new Color(227, 224, 251));
         label.setText(message);
         label.setFocusable(true);
-        label.requestFocusInWindow();
+        if (requestFocus)
+            label.requestFocusInWindow();
 
         super.setVisible(true);
         super.validate();
