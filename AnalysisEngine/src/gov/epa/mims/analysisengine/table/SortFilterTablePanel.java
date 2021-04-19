@@ -368,6 +368,7 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 	            	if (c instanceof JComponent && vColIndex>2 ) {
 	            		JComponent jc = (JComponent)c;
 	            		jc.setToolTipText(getValueAt(rowIndex, 2) != null? getValueAt(rowIndex, 2).toString():"");
+	            		jc.getAccessibleContext().setAccessibleDescription("");
 	            	}
 	            	return c;
 	            }
@@ -376,8 +377,10 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 					if (jc != null)
 					{
 						Object obj = getValueAt(rowIndex, 1);
-						if (obj != null)
+						if (obj != null) {
 						   jc.setToolTipText(getValueAt(rowIndex, 1).toString());
+						   jc.getAccessibleContext().setAccessibleDescription("");
+						}
 					}
 				}
 				return c;
