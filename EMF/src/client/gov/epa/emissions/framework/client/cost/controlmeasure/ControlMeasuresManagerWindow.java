@@ -111,7 +111,7 @@ public class ControlMeasuresManagerWindow extends DisposableInteralFrame impleme
     private TextField textFilter;
 
     public ControlMeasuresManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Control Measure Manager", new Dimension(900, 400), desktopManager);
+        super("Control Measure Manager", new Dimension(1000, 400), desktopManager);
         super.setName("controlMeasures");
         super.setMinimumSize(new Dimension(860, 300));
         this.session = session;
