@@ -79,7 +79,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
     private ComboBox filterFieldsComboBox;
 
     public ModulesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Manager", new Dimension(1200, 800), desktopManager);
+        super("Module Manager", new Dimension(1000, 600), desktopManager);
         super.setName("moduleManager");
 
         this.session = session;

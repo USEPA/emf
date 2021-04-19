@@ -76,7 +76,7 @@ public class ModuleTypesManagerWindow extends DisposableInteralFrame implements 
     private EmfSession session;
 
     public ModuleTypesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Type Manager", new Dimension(1200, 800), desktopManager);
+        super("Module Type Manager", new Dimension(1000, 600), desktopManager);
         super.setName("moduleTypeManager");
 
         this.session = session;
