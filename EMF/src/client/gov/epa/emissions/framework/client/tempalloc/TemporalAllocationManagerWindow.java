@@ -121,6 +121,7 @@ public class TemporalAllocationManagerWindow extends DisposableInteralFrame impl
         setupTableModel(temporalAllocations);
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of temporal allocation runs");
         tablePanel.add(table, BorderLayout.CENTER);
 
         return tablePanel;

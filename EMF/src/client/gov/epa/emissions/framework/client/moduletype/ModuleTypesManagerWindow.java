@@ -127,6 +127,7 @@ public class ModuleTypesManagerWindow extends DisposableInteralFrame implements 
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new ModuleTypesTableData(moduleTypes), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of module types");
         tablePanel.add(table);
         return tablePanel;
     }

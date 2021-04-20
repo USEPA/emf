@@ -100,6 +100,7 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
     private JPanel tablePanel() {
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new DatasetTypesTableData(new DatasetType[] {}), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of dataset types");
         tablePanel.add(table);
         return tablePanel;
     }

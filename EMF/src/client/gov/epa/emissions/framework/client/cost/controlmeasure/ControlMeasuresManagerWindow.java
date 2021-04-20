@@ -236,6 +236,7 @@ public class ControlMeasuresManagerWindow extends DisposableInteralFrame impleme
 
         // JScrollPane sortFilterPane = sortFilterPane(parentConsole);
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of control measures");
 
         tablePanel.add(table);
 

@@ -181,6 +181,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>()), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of modules");
         tablePanel.add(table);
         return tablePanel;
     }

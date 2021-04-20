@@ -139,6 +139,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
         mainPanel.setLayout(new BorderLayout());
 
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of cases");
         mainPanel.add(table);
 
         return mainPanel;

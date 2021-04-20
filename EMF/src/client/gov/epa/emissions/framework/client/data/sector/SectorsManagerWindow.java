@@ -80,6 +80,7 @@ public class SectorsManagerWindow extends DisposableInteralFrame implements Sect
         //model = new EmfTableModel(new SectorsTableData(sectors));
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new SectorsTableData(sectors), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of sectors");
         tablePanel.add(table);
         createLayout();
     }

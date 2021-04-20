@@ -140,6 +140,7 @@ public class ControlProgramManagerWindow extends DisposableInteralFrame implemen
         setupTableModel(controlPrograms);
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of control programs");
         tablePanel.add(table, BorderLayout.CENTER);
 
         return tablePanel;

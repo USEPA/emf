@@ -114,6 +114,7 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
         tablePanel = new JPanel(new BorderLayout());
         tableData = new UsersTableData(new User[] {});//User[] users
         table = new SelectableSortFilterWrapper(parentConsole, tableData, null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of users");
         tablePanel.add(table);
         return tablePanel;
         

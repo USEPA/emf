@@ -163,6 +163,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
         setupTableModel(controlStrategies);
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of control strategies");
 
         JTable innerTable = table.getTable();
         TableColumnModel columnModel = innerTable.getColumnModel();
