@@ -183,6 +183,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         JPanel advPanel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel("Name Contains:");
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(textFilter);
         advPanel.add(jlabel, BorderLayout.WEST);
         advPanel.add(textFilter, BorderLayout.CENTER);
         advPanel.add(advButton, BorderLayout.EAST);
@@ -227,6 +228,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         JPanel panel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel(label);
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(box);
         panel.add(jlabel, BorderLayout.WEST);
         panel.add(box, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));

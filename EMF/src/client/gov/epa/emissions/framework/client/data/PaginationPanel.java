@@ -171,6 +171,8 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
             }
         });
 
+        slider.setToolTipText("Record position indicator via a slider control");
+
         return slider;
     }
 

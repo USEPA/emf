@@ -127,7 +127,7 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
         //get table column names
 //        String[] columns = new String[] {"Module Name", "Composite?", "Final?", "Tags", "Project", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };//(new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>())).columns();
 
-        filterFieldsComboBox = new ComboBox("Select one", (new DatasetTypeFilter()).getFilterFieldNames());
+        filterFieldsComboBox = new ComboBox("Select one", (new DatasetTypeFilter()).getFilterFieldNames(), "Fields Filter Text");
         filterFieldsComboBox.setSelectedIndex(1);
         filterFieldsComboBox.setPreferredSize(new Dimension(180, 25));
         filterFieldsComboBox.addActionListener(simpleFilterTypeAction());
@@ -168,6 +168,7 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
         JPanel panel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel(label);
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(box);
         panel.add(jlabel, BorderLayout.WEST);
         panel.add(box, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));

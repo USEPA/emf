@@ -195,8 +195,10 @@ public class LoginWindow extends EmfFrame implements LoginView {
         GridLayout labelsLayoutManager = new GridLayout(2, 1);
         labelsLayoutManager.setVgap(15);
         JPanel labelsPanel = new JPanel(labelsLayoutManager);
-        labelsPanel.add(new JLabel("EMF Username"));
-        labelsPanel.add(new JLabel("EMF Password"));
+        final JLabel usernameLabel = new JLabel("EMF Username");
+        labelsPanel.add(usernameLabel);
+        final JLabel passwordLabel = new JLabel("EMF Password");
+        labelsPanel.add(passwordLabel);
 
         panel.add(labelsPanel);
 
@@ -206,9 +208,17 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
         username = new JTextField(10);
         username.setName("username");
+
+        usernameLabel.setLabelFor(username);
+        usernameLabel.setToolTipText(username.getToolTipText());
+
         valuesPanel.add(username);
         password = new JPasswordField(10);
         password.setName("password");
+
+        passwordLabel.setLabelFor(password);
+        passwordLabel.setToolTipText(password.getToolTipText());
+
         valuesPanel.add(password);
 
         panel.add(valuesPanel);
