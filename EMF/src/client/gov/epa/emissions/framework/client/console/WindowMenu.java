@@ -88,6 +88,12 @@ public class WindowMenu extends JMenu implements WindowMenuView {
 
     public void addPermanently(ManagedView managedView) {
         JMenuItem menuItem = new WindowMenuItem(managedView);
+        if (managedView.getTitle() == "Status") {
+            menuItem.setMnemonic(KeyEvent.VK_S);
+        }
+        if (managedView.getTitle() == "Downloads") {
+            menuItem.setMnemonic(KeyEvent.VK_D);
+        }
         super.add(menuItem);
         permanentMenuItems.add(menuItem);
         refreshMenuItems();
