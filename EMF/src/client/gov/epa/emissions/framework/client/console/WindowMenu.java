@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 public class WindowMenu extends JMenu implements WindowMenuView {
 
@@ -90,6 +91,8 @@ public class WindowMenu extends JMenu implements WindowMenuView {
         JMenuItem menuItem = new WindowMenuItem(managedView);
         if (managedView.getTitle() == "Status") {
             menuItem.setMnemonic(KeyEvent.VK_S);
+            menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                    ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
         }
         if (managedView.getTitle() == "Downloads") {
             menuItem.setMnemonic(KeyEvent.VK_D);
