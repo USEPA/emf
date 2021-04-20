@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -52,6 +53,7 @@ public class UpdateFilesPage extends Box {
         upper.add(scrollPane, BorderLayout.CENTER);
         
         ok = new JButton("Update");
+        ok.setMnemonic(KeyEvent.VK_U);
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(parent.getLayout());
@@ -62,6 +64,7 @@ public class UpdateFilesPage extends Box {
         ok.setEnabled(false);
 
         cancel = new JButton("Cancel");
+        cancel.setMnemonic(KeyEvent.VK_L);
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(parent.getLayout());
