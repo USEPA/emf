@@ -487,7 +487,7 @@ public class InstallWindow extends JFrame implements InstallView {
         rewriteBatchFile();
 
         if (INSTALL_MODE == INSTALL) {
-            presenter.createShortcut();
+            //presenter.createShortcut();
             load.setText(Constants.INSTALL_CLOSE_MESSAGE);
         } else if (INSTALL_MODE == RE_INSTALL) {
             load.setText(Constants.REINSTALL_CLOSE_MESSAGE);
