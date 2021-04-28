@@ -51,3 +51,24 @@ Custom Icon (Step 5 of 5)
 
 
 - After FreeExtractor finishes creating emfinst.exe, create a zip file that contains just the exe. Upload emfinst.zip so it's available at https://www.cmascenter.org/emf/install/emfinst.zip
+
+
+
+New procedure used for MARAMA
+
+Update EMF/res/EMFPrefsTemplate.txt with correct settings for web.site, server.address, etc.
+Run the ant task "client-installer(only jar)" to create the file emf-client-installer.jar in EMF/build/sandbox/.
+On Windows, launch iexpress as an administrator. Here are the options for each step:
+
+- Create new Self Extraction Directive file.
+- Package purpose: Extract files and run an installation command
+- Package title: EMF Client Installer
+- Confirmation prompt: Do you want to install/update the EMF Client?
+- License agreement: Do not display a license.
+- Packaged files: emf-client-installer.jar, runinstaller.bat
+- Install Program: cmd /c runinstaller.bat
+- Show window: Hidden
+- Finished message: No message.
+- Package Name and Options: EMF Client Installer, check "Store files using Long File Name inside Package"
+- Configure restart: No restart
+- Save Self Extraction Directive: can save or not
