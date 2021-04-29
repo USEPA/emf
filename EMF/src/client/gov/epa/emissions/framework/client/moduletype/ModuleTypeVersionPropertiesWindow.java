@@ -857,17 +857,17 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         container.setLayout(layout);
 
         Button validateButton = new Button("Validate", validateAction());
-        validateButton.setMnemonic('V');
+        validateButton.setMnemonic(KeyEvent.VK_V);
 
         Button newRevisionButton = new Button("New Revision", newRevisionAction());
-        newRevisionButton.setMnemonic('R');
+        newRevisionButton.setMnemonic(KeyEvent.VK_R);
         newRevisionButton.setEnabled(viewMode != ViewMode.VIEW);
 
         Button saveButton = new SaveButton(saveAction());
         saveButton.setEnabled((viewMode != ViewMode.VIEW) && !moduleTypeVersion.getIsFinal());
 
         Button finalizeButton = new Button("Finalize", finalizeAction());
-        finalizeButton.setMnemonic('F');
+        finalizeButton.setMnemonic(KeyEvent.VK_F);
         finalizeButton.setEnabled((viewMode != ViewMode.VIEW) && !moduleTypeVersion.getIsFinal());
 
         Button closeButton = new CloseButton("Close", closeAction());
@@ -891,7 +891,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             }
         };
         Button addTagsButton = new Button("Add Tags", addTagsAction);
-        addTagsButton.setMnemonic('A');
+        addTagsButton.setMnemonic(KeyEvent.VK_A);
 
         Action removeTagsAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -899,7 +899,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
             }
         };
         Button removeTagsButton = new Button("Remove Tags", removeTagsAction);
-        removeTagsButton.setMnemonic('e');
+        removeTagsButton.setMnemonic(KeyEvent.VK_E);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));

@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -229,9 +230,9 @@ public class FilterPanel extends JPanel implements ChildHasChangedListener, Acti
 		toolBar.add(deleteBtn);
 
 		addBtn.addActionListener(this);
-		addBtn.setMnemonic('A');
+		addBtn.setMnemonic(KeyEvent.VK_A);
 		deleteBtn.addActionListener(this);
-		deleteBtn.setMnemonic('D');
+		deleteBtn.setMnemonic(KeyEvent.VK_D);
 
 		filterCheckBox = new JCheckBox("Apply Filter?");
 		filterCheckBox.addActionListener(this);

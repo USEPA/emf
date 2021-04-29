@@ -18,6 +18,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -111,10 +112,10 @@ public class ModuleTypeVersionNewRevisionDialog extends JDialog implements Modul
         JPanel panel = new JPanel();
         
         Button addButton = new Button("Add Revision", okAction());
-        addButton.setMnemonic('A');
+        addButton.setMnemonic(KeyEvent.VK_A);
         
         Button skipButton = new Button("Skip Revision", cancelAction());
-        skipButton.setMnemonic('S');
+        skipButton.setMnemonic(KeyEvent.VK_S);
         
         panel.add(addButton);
         panel.add(skipButton);

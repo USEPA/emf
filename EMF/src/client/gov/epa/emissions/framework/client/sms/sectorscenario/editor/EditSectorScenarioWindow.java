@@ -23,6 +23,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -214,7 +215,7 @@ public class EditSectorScenarioWindow extends DisposableInteralFrame implements 
                 }
             }
         }); 
-        refreshButton.setMnemonic('R');
+        refreshButton.setMnemonic(KeyEvent.VK_R);
         container.add(refreshButton);
 
         stopButton = new StopButton(stopAction());

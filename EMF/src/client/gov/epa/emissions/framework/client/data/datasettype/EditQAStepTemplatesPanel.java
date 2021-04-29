@@ -29,6 +29,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
@@ -133,7 +134,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doAdd();
             }
         });
-        add.setMnemonic('d');
+        add.setMnemonic(KeyEvent.VK_D);
         container.add(add);
 
         Button remove = new RemoveButton(new AbstractAction() {
@@ -141,7 +142,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doRemove();
             }
         });
-        remove.setMnemonic('R');
+        remove.setMnemonic(KeyEvent.VK_R);
         container.add(remove);
 
         Button update = new EditButton(new AbstractAction() {

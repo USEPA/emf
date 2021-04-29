@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -117,7 +118,7 @@ public class AppendDataWindow extends DisposableInteralFrame implements AppendDa
                 }
             }
         });
-        setButton.setMnemonic('S');
+        setButton.setMnemonic(KeyEvent.VK_S);
         JPanel sourceDatasetPanel = new JPanel(new BorderLayout(2, 0));
         sourceDatasetPanel.add(sourceDatasetField, BorderLayout.LINE_START);
         sourceDatasetPanel.add(setButton, BorderLayout.CENTER);
@@ -165,7 +166,7 @@ public class AppendDataWindow extends DisposableInteralFrame implements AppendDa
                 }
             }
         });
-        view.setMnemonic('V');
+        view.setMnemonic(KeyEvent.VK_V);
         // view.setEnabled(false);
         panel.add(view);
         return panel;
@@ -252,10 +253,10 @@ public class AppendDataWindow extends DisposableInteralFrame implements AppendDa
 
         okButton = new Button("OK", okAction());
         panel.add(okButton);
-        okButton.setMnemonic('O');
+        okButton.setMnemonic(KeyEvent.VK_O);
         Button closeButton = new Button("Close", closeWindowAction());
         panel.add(closeButton);
-        closeButton.setMnemonic('l');
+        closeButton.setMnemonic(KeyEvent.VK_L);
         return panel;
     }
 

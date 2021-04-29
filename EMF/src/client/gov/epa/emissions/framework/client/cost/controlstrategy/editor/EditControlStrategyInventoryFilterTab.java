@@ -33,6 +33,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -139,21 +140,21 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
                 }
             }
         });
-        addButton.setMnemonic('A');
+        addButton.setMnemonic(KeyEvent.VK_A);
         panel.add(addButton);
         Button editButton = new BorderlessButton("Set Version", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                     setVersionAction();
             }
         });
-        editButton.setMnemonic('o');
+        editButton.setMnemonic(KeyEvent.VK_O);
         panel.add(editButton);
         Button removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
                     removeAction();
             }
         });
-        removeButton.setMnemonic('m');
+        removeButton.setMnemonic(KeyEvent.VK_M);
         panel.add(removeButton);
         Button viewButton = new BorderlessButton("View", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -164,7 +165,7 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
                 }
             }
         });
-        viewButton.setMnemonic('V');
+        viewButton.setMnemonic(KeyEvent.VK_V);
         panel.add(viewButton);
         Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -175,7 +176,7 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
                 }
             }
         });
-        viewDataButton.setMnemonic('D');
+        viewDataButton.setMnemonic(KeyEvent.VK_D);
         panel.add(viewDataButton);
 
         JPanel rightPanel = new JPanel();
@@ -470,13 +471,13 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
         changeablesList.addChangeable(dataset);
         dataset.setToolTipText("Press select button to choose from a dataset list.");
         Button viewButton = new BorderlessButton("View", viewDatasetAction()); 
-        viewButton.setMnemonic('e');
+        viewButton.setMnemonic(KeyEvent.VK_E);
         JPanel invPanel = new JPanel(new BorderLayout(5,0));
 
         invPanel.add(dataset, BorderLayout.LINE_START);
         invPanel.add(viewButton);
         Button viewDataButton = new BorderlessButton("View Data", viewCountyDatasetDataAction()); 
-        viewDataButton.setMnemonic('i');
+        viewDataButton.setMnemonic(KeyEvent.VK_I);
         invPanel.add(viewDataButton, BorderLayout.LINE_END );
         return invPanel;
     }

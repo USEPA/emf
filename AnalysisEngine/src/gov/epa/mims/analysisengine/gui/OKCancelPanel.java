@@ -21,8 +21,8 @@ public class OKCancelPanel
     okButton.addActionListener(okListener);
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(cancelListener);
-    okButton.setMnemonic('O');
-    cancelButton.setMnemonic('l');
+    okButton.setMnemonic(KeyEvent.VK_O);
+    cancelButton.setMnemonic(KeyEvent.VK_L);
     add(okButton);
     add(cancelButton);
   }

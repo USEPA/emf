@@ -39,6 +39,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -429,20 +430,20 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
         exportButton = new ExportButton(exportAction());
         //exportButton.setMnemonic(mnemonic);
         analysisButton = new Button("Analyze", analysisAction());
-        analysisButton.setMnemonic('A');
+        analysisButton.setMnemonic(KeyEvent.VK_A);
 //        analysisButton.setVisible(false);
 //        view = new ViewButton("View", viewAction());
         viewDataButton = new Button("View Data", viewDataAction());
-        viewDataButton.setMnemonic('V');
+        viewDataButton.setMnemonic(KeyEvent.VK_V);
         editButton = new Button("Edit", editAction());
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_E);
         summarizeButton = new Button("Summarize", summarizeAction());
-        summarizeButton.setMnemonic('z');
+        summarizeButton.setMnemonic(KeyEvent.VK_Z);
         createButton = new Button("Create", createOutputAction());
-        createButton.setMnemonic('C');
+        createButton.setMnemonic(KeyEvent.VK_C);
         createButton.setEnabled(false);
         customizeButton = new Button("Customize", customizeAction());
-        customizeButton.setMnemonic('o');
+        customizeButton.setMnemonic(KeyEvent.VK_O);
 //        editButton.setEnabled(false);
         
         detailButton = new JRadioButton("Result");

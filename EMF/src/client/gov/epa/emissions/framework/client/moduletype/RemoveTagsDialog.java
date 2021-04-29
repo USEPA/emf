@@ -11,6 +11,7 @@ import gov.epa.mims.analysisengine.gui.ScreenUtils;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ public class RemoveTagsDialog extends JDialog implements RemoveTagsView {
         JPanel panel = new JPanel();
         
         Button removeButton = new Button("Remove", removeAction());
-        removeButton.setMnemonic('R');
+        removeButton.setMnemonic(KeyEvent.VK_R);
         
         Button cancelButton = new CancelButton(cancelAction());
         

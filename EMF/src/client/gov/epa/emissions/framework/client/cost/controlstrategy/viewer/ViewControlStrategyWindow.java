@@ -23,6 +23,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -224,7 +225,7 @@ public class ViewControlStrategyWindow extends DisposableInteralFrame implements
         container.setLayout(layout);
 
         JButton saveButton = new DisabledButton("Save");
-        saveButton.setMnemonic('S');
+        saveButton.setMnemonic(KeyEvent.VK_S);
         container.add(saveButton);
 
         Button closeButton = new CloseButton(closeAction());
@@ -234,18 +235,18 @@ public class ViewControlStrategyWindow extends DisposableInteralFrame implements
         container.add(Box.createHorizontalStrut(20));
 
         JButton runButton = new DisabledButton("Run");
-        runButton.setMnemonic('u');
+        runButton.setMnemonic(KeyEvent.VK_U);
         ControlStrategyResultsSummary summary = new ControlStrategyResultsSummary(controlStrategyResults);
         if (!summary.getRunStatus().equalsIgnoreCase("Running")) {
             container.add(runButton);
         }
 
         Button refreshButton = new Button("Refresh", refreshAction());
-        refreshButton.setMnemonic('R');
+        refreshButton.setMnemonic(KeyEvent.VK_R);
         container.add(refreshButton);
 
         JButton stopButton = new DisabledButton("Stop");
-        stopButton.setMnemonic('t');
+        stopButton.setMnemonic(KeyEvent.VK_T);
         container.add(stopButton);
 
         panel.add(container, BorderLayout.CENTER);

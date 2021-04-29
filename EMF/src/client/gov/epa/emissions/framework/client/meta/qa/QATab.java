@@ -18,6 +18,7 @@ import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -102,7 +103,7 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
                 doView();
             }
         });
-        view.setMnemonic('V');
+        view.setMnemonic(KeyEvent.VK_V);
         container.add(view);
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(container, BorderLayout.LINE_START);

@@ -40,6 +40,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -448,17 +449,17 @@ public class ViewControlStrategyOutputTab extends EmfPanel implements ViewContro
 
         exportButton = new ExportButton(exportAction());
         analysisButton = new Button("Analyze", analysisAction());
-        analysisButton.setMnemonic('A');
+        analysisButton.setMnemonic(KeyEvent.VK_A);
         viewDataButton = new Button("View Data", viewDataAction());
-        viewDataButton.setMnemonic('V');
+        viewDataButton.setMnemonic(KeyEvent.VK_V);
         JButton editButton = new DisabledButton("Edit");
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_E);
         summarizeButton = new Button("Summarize", summarizeAction());
-        summarizeButton.setMnemonic('z');
+        summarizeButton.setMnemonic(KeyEvent.VK_Z);
         JButton createButton = new DisabledButton("Create");
-        createButton.setMnemonic('C');
+        createButton.setMnemonic(KeyEvent.VK_C);
         customizeButton = new Button("Customize", customizeAction());
-        customizeButton.setMnemonic('o');
+        customizeButton.setMnemonic(KeyEvent.VK_O);
         detailButton = new JRadioButton("Result");
          
         detailButton.addActionListener(radioButtonAction());

@@ -21,6 +21,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
@@ -286,7 +287,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
         gbc.insets = buttonInsets;
 
         this.searchButton = new Button("Search", searchAction);
-        searchButton.setMnemonic('e');
+        searchButton.setMnemonic(KeyEvent.VK_E);
         panel.add(this.searchButton, gbc);
 
         gbc.gridx = 0;

@@ -748,7 +748,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
             }
         });
         view.setToolTipText("View the result as a local file on the client computer. Optionally create Google Earth .kmz file");
-        view.setMnemonic('V');
+        view.setMnemonic(KeyEvent.VK_V);
         return view;
     }
 
@@ -1104,7 +1104,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
                 }
             }
         });
-        refresh.setMnemonic('R');
+        refresh.setMnemonic(KeyEvent.VK_R);
 
         return refresh;
     }
@@ -1166,7 +1166,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
                 }
             }
         });
-        export.setMnemonic('e');
+        export.setMnemonic(KeyEvent.VK_E);
         return export;
     }
 

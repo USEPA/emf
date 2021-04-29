@@ -15,6 +15,7 @@ import gov.epa.emissions.framework.ui.Border;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -70,7 +71,7 @@ public class RevisionPanel extends JPanel {
             }
         });
         references.setToolTipText("Select notes for the dataset that your changes are in reference to");
-        references.setMnemonic('R');
+        references.setMnemonic(KeyEvent.VK_R);
         panel.add(references);
 
         return panel;

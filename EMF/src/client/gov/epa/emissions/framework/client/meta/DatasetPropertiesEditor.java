@@ -38,6 +38,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -265,7 +266,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
                 }
             }
         });
-        refresh.setMnemonic('R');
+        refresh.setMnemonic(KeyEvent.VK_R);
         buttonsPanel.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
 

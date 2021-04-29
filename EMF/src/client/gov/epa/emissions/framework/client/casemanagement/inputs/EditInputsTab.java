@@ -305,7 +305,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         container.add(edit);
 
         Button copy = new Button("Copy", copyAction(presenter));
-        copy.setMnemonic('C');
+        copy.setMnemonic(KeyEvent.VK_C);
         copy.setMargin(insets);
         container.add(copy);
 
@@ -314,7 +314,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
                 doDisplayInputDatasetsPropertiesViewer();
             }
         });
-        view.setMnemonic('z');
+        view.setMnemonic(KeyEvent.VK_Z);
         view.setMargin(insets);
         container.add(view);
 
@@ -323,7 +323,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
                 doExportInputDatasets(getSelectedInputs());
             }
         });
-        export.setMnemonic('I');
+        export.setMnemonic(KeyEvent.VK_I);
         export.setMargin(insets);
         container.add(export);
 
@@ -332,7 +332,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
                 viewCasesReleatedToDataset();
             }
         });
-        findRelated.setMnemonic('n');
+        findRelated.setMnemonic(KeyEvent.VK_N);
         findRelated.setMargin(insets);
         container.add(findRelated);
 

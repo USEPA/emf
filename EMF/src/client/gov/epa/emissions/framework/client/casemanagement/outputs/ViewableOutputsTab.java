@@ -33,6 +33,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -203,7 +204,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
                 }
             }
         });
-        viewDS.setMnemonic('a');
+        viewDS.setMnemonic(KeyEvent.VK_A);
         viewDS.setMargin(insets);
         container.add(viewDS);
         
@@ -212,7 +213,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
                 //
             }
         });
-        export.setMnemonic('E');
+        export.setMnemonic(KeyEvent.VK_E);
         export.setMargin(insets);
         export.setEnabled(false);
         container.add(export);
@@ -223,7 +224,7 @@ public class ViewableOutputsTab extends EditOutputsTab implements RefreshObserve
             }
         });
         findRelated.setMargin(insets);
-        findRelated.setMnemonic('n');
+        findRelated.setMnemonic(KeyEvent.VK_N);
         container.add(findRelated);
 
         JPanel panel = new JPanel(new BorderLayout());

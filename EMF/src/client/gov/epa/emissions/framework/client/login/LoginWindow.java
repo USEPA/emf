@@ -131,7 +131,6 @@ public class LoginWindow extends EmfFrame implements LoginView {
             }
         });
         signIn.setMnemonic(KeyEvent.VK_I);
-        //signIn.setMnemonic('I');
         container.add(signIn);
         setDefaultButton(signIn);
 
@@ -238,7 +237,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
         forgotPassword.setToolTipText("Reset password");
         JPanel forgotPasswordPanel = new JPanel(new BorderLayout());
         forgotPasswordPanel.add(forgotPassword);
-        forgotPassword.setMnemonic('P');
+        forgotPassword.setMnemonic(KeyEvent.VK_P);
 
         JButton register = new Button("Register New User", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -246,7 +245,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
             }
         });
         register.setToolTipText("Register as a new user");
-        register.setMnemonic('R');
+        register.setMnemonic(KeyEvent.VK_R);
 
         JPanel registerPanel = new JPanel(new BorderLayout());
         registerPanel.add(register);

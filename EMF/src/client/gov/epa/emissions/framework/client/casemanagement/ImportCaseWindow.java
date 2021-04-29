@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -79,7 +80,7 @@ public class ImportCaseWindow extends DisposableInteralFrame implements ImportCa
                 presenter.finish();
             }
         });
-        done.setMnemonic('D');
+        done.setMnemonic(KeyEvent.VK_D);
         container.add(done);
 
         panel.add(container, BorderLayout.EAST);

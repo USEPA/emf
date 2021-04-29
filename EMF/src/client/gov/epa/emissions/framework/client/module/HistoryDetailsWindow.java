@@ -34,6 +34,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.Iterator;
@@ -413,7 +414,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
             }
         };
         SelectAwareButton viewButton = new SelectAwareButton("View Dataset Properties", viewAction, datasetsTable, confirmDialog);
-        viewButton.setMnemonic('D');
+        viewButton.setMnemonic(KeyEvent.VK_D);
 
         Action viewRelatedModulesAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -421,7 +422,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
             }
         };
         Button viewRelatedModulesButton = new Button("View Related Modules", viewRelatedModulesAction);
-        viewRelatedModulesButton.setMnemonic('M');
+        viewRelatedModulesButton.setMnemonic(KeyEvent.VK_M);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -567,7 +568,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
             }
         };
         SelectAwareButton viewInternalDatasetsButton = new SelectAwareButton("View Dataset Properties", viewInternalDatasetsAction, internalDatasetsTable, confirmDialog);
-        viewInternalDatasetsButton.setMnemonic('D');
+        viewInternalDatasetsButton.setMnemonic(KeyEvent.VK_D);
 
         Action viewInternalRelatedModulesAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -575,7 +576,7 @@ public class HistoryDetailsWindow extends DisposableInteralFrame implements Hist
             }
         };
         Button viewInternalRelatedModulesButton = new Button("View Related Modules", viewInternalRelatedModulesAction);
-        viewInternalRelatedModulesButton.setMnemonic('M');
+        viewInternalRelatedModulesButton.setMnemonic(KeyEvent.VK_M);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));

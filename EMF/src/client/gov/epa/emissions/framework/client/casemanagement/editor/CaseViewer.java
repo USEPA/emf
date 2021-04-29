@@ -25,6 +25,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -190,7 +191,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         });
         buttonsPanel.add(describe);
         describe.setToolTipText("Show the description in a non-modal window.");
-        describe.setMnemonic('D');
+        describe.setMnemonic(KeyEvent.VK_D);
 
         Button refresh = new Button("Refresh", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -203,7 +204,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         });
         buttonsPanel.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
-        refresh.setMnemonic('s');
+        refresh.setMnemonic(KeyEvent.VK_S);
         
         Button printCaseButton = new Button("Export", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -212,7 +213,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         });
         buttonsPanel.add(printCaseButton);
         printCaseButton.setToolTipText("Export the settings for current case.");
-        printCaseButton.setMnemonic('x');
+        printCaseButton.setMnemonic(KeyEvent.VK_X);
 
         Button viewParent = new Button("View Parent", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -221,7 +222,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
         });
         //viewParent.setEnabled(false);
         buttonsPanel.add(viewParent);  
-        viewParent.setMnemonic('P');
+        viewParent.setMnemonic(KeyEvent.VK_P);
         
         Button viewRelated = new Button("View Related", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -229,7 +230,7 @@ public class CaseViewer extends DisposableInteralFrame implements CaseViewerView
             }
         });
         buttonsPanel.add(viewRelated);
-        viewRelated.setMnemonic('R');
+        viewRelated.setMnemonic(KeyEvent.VK_R);
         
         Button close = new CloseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {

@@ -29,6 +29,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -209,11 +210,11 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
         
         JPanel left = new JPanel();
         Button property = new Button("Edit Properties", editPropertyAction());
-        property.setMnemonic('E');
+        property.setMnemonic(KeyEvent.VK_E);
         property.setEnabled(this.editable);
         
         Button data = new Button("View Dataset Versions", displayVersionedData());
-        data.setMnemonic('D');
+        data.setMnemonic(KeyEvent.VK_D);
         data.setEnabled(this.editable);
         if (dataset.getStatus().equals("Archived"))
             data.setEnabled(false);
@@ -231,7 +232,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
                 }
             }
         });
-        refresh.setMnemonic('R');
+        refresh.setMnemonic(KeyEvent.VK_R);
         right.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
         

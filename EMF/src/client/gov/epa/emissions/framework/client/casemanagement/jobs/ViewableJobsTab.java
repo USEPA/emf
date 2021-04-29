@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -174,7 +175,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
         
         Button copy = new Button("Copy", copyAction());
         copy.setMargin(insets);
-        copy.setMnemonic('C');
+        copy.setMnemonic(KeyEvent.VK_C);
         container.add(copy);
 
         Button validate = new Button("Validate", new AbstractAction() {
@@ -189,7 +190,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             }
         });
         validate.setMargin(insets);
-        validate.setMnemonic('i');
+        validate.setMnemonic(KeyEvent.VK_I);
         container.add(validate);
          
         Button set = new Button("Set Status", new AbstractAction() {
@@ -199,7 +200,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             }
         });
         set.setMargin(insets);
-        set.setMnemonic('e');
+        set.setMnemonic(KeyEvent.VK_E);
         container.add(set);
         
         Button cancelJobs = new Button("Cancel", new AbstractAction() {
@@ -212,7 +213,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
                 }
             }
         });
-        cancelJobs.setMnemonic('a');
+        cancelJobs.setMnemonic(KeyEvent.VK_A);
         cancelJobs.setMargin(insets);
         container.add(cancelJobs);
 

@@ -31,6 +31,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -150,7 +151,7 @@ public class SectorScenarioManagerWindow extends DisposableInteralFrame implemen
                 presenter.doClose();
             }
         });
-        closeButton.setMnemonic('l');
+        closeButton.setMnemonic(KeyEvent.VK_L);
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 

@@ -29,6 +29,7 @@ import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -233,7 +234,7 @@ public class ControlProgramManagerWindow extends DisposableInteralFrame implemen
                 presenter.doClose();
             }
         });
-        closeButton.setMnemonic('l');
+        closeButton.setMnemonic(KeyEvent.VK_L);
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 

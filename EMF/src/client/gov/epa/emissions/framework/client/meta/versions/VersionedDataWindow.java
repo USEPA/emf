@@ -19,6 +19,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
@@ -117,11 +118,11 @@ public class VersionedDataWindow extends DisposableInteralFrame implements Versi
         
         if (dataset.isExternal())
             appendData.setEnabled(false);
-        appendData.setMnemonic('A');
+        appendData.setMnemonic(KeyEvent.VK_A);
         panel.add(appendData);
 
         Button propButton = new Button("Edit Properties", editPropAction());
-        propButton.setMnemonic('P');
+        propButton.setMnemonic(KeyEvent.VK_P);
         panel.add(propButton);
 
         JButton closeButton = new JButton("Close");
@@ -130,7 +131,7 @@ public class VersionedDataWindow extends DisposableInteralFrame implements Versi
                 presenter.doClose();
             }
         });
-        closeButton.setMnemonic('l');
+        closeButton.setMnemonic(KeyEvent.VK_L);
         getRootPane().setDefaultButton(closeButton);
         panel.add(closeButton);
 

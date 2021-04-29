@@ -16,6 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -78,7 +79,7 @@ public class ImportWindow extends DisposableInteralFrame implements ImportView {
             }
         });
         container.add(done);
-        done.setMnemonic('D');
+        done.setMnemonic(KeyEvent.VK_D);
 
         panel.add(container, BorderLayout.EAST);
 

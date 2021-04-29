@@ -17,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -166,7 +167,7 @@ public class DataSortFilterPanelViewer extends JPanel {
             }
         });
         this.formatButton.setToolTipText("Apply the new format settings to the table");
-        formatButton.setMnemonic('o');
+        formatButton.setMnemonic(KeyEvent.VK_O);
         
         this.resetViewCheckBox.setAction(new AbstractAction("Reset View") {
             public void actionPerformed(ActionEvent e) {
@@ -180,7 +181,7 @@ public class DataSortFilterPanelViewer extends JPanel {
             }
         });
         apply.setToolTipText("Apply the Row Filter & Sort Order constraints to the table");
-        apply.setMnemonic('A');
+        apply.setMnemonic(KeyEvent.VK_A);
         actionPanel.add(apply);
     }
 

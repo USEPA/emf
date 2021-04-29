@@ -29,6 +29,7 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -190,7 +191,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
                 }
             }
         });
-        renameButton.setMnemonic('d');
+        renameButton.setMnemonic(KeyEvent.VK_D);
         renameButton.setToolTipText("Edit version information");
         renameButton.setMargin(new Insets(2, 2, 2, 2));
         panel.add(renameButton);
@@ -208,7 +209,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
                 }
             }
         });
-        markFinal.setMnemonic('r');
+        markFinal.setMnemonic(KeyEvent.VK_R);
         markFinal.setToolTipText("Mark the selected versions as final so that no more edits can be made");
         markFinal.setMargin(new Insets(2, 2, 2, 2));
 

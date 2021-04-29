@@ -257,7 +257,7 @@ public class EmfFileChooser extends JComponent {
                 buttonUploadActionPerformed(event);
             }
         });
-        buttonUpload.setMnemonic('U');
+        buttonUpload.setMnemonic(KeyEvent.VK_U);
         JPanel uploadFileButtonPanel = new JPanel(new BorderLayout());
         uploadFileButtonPanel.add(buttonUpload, BorderLayout.EAST);
         localPanel.add(uploadFileButtonPanel);
@@ -436,7 +436,7 @@ public class EmfFileChooser extends JComponent {
             }
         });
         refresh.setToolTipText("Refresh the content of the dir");
-        refresh.setMnemonic('R');
+        refresh.setMnemonic(KeyEvent.VK_R);
         panel.add(refresh); 
 
         JPanel container = new JPanel(new BorderLayout(0, 20));

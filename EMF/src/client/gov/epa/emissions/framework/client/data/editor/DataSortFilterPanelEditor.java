@@ -17,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -147,7 +148,7 @@ public class DataSortFilterPanelEditor extends JPanel {
                 doApplyFormat(presenter);
             }
         });
-        formatButton.setMnemonic('o');
+        formatButton.setMnemonic(KeyEvent.VK_O);
         this.formatButton.setToolTipText("Apply the new format settings to the table");
 
         Button apply = new Button("Apply", new AbstractAction() {
@@ -155,7 +156,7 @@ public class DataSortFilterPanelEditor extends JPanel {
                 doApplyConstraints(presenter);
             }
         });
-        apply.setMnemonic('A');
+        apply.setMnemonic(KeyEvent.VK_A);
         apply.setToolTipText("Apply the Row Filter & Sort Order constraints to the table");
         actionPanel.add(apply);
     }

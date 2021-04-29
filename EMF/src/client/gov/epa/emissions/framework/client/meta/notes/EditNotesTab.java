@@ -16,6 +16,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class EditNotesTab extends JPanel implements EditNotesTabView, RefreshObs
                 addExistingNotes();
             }
         });
-        addExisting.setMnemonic('E');
+        addExisting.setMnemonic(KeyEvent.VK_E);
         addExisting.setToolTipText("add an existing note");
         container.add(addExisting);
 

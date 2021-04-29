@@ -517,7 +517,7 @@ public class TableApp extends JFrame {
 		menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
 
 		JMenu fileMenu = new JMenu("File");
-		fileMenu.setMnemonic('F');
+		fileMenu.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(fileMenu);
 
 		JMenuItem importMenuItem = createImportMenuItem();
@@ -582,7 +582,7 @@ public class TableApp extends JFrame {
 		});
 
 		JMenu editMenu = new JMenu("Edit");
-		editMenu.setMnemonic('E');
+		editMenu.setMnemonic(KeyEvent.VK_E);
 		menuBar.add(editMenu);
 		JMenuItem editTabNameItem = new JMenuItem("Rename Tabs");
 		editMenu.add(editTabNameItem);

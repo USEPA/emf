@@ -36,6 +36,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -188,11 +189,11 @@ public class ControlProgramSummaryTab extends JPanel implements ControlProgramTa
         dataset.setToolTipText("Press select button to choose from a dataset list.");
         selectButton = new AddButton("Select", selectAction());
         selectButton.setMargin(new Insets(1, 2, 1, 2));
-        selectButton.setMnemonic('e');
+        selectButton.setMnemonic(KeyEvent.VK_E);
         Button viewButton = new BorderlessButton("View", viewDatasetAction()); 
-        viewButton.setMnemonic('V');
+        viewButton.setMnemonic(KeyEvent.VK_V);
         Button viewDataButton = new BorderlessButton("View Data", viewDataAction()); 
-        viewDataButton.setMnemonic('D');
+        viewDataButton.setMnemonic(KeyEvent.VK_D);
         JPanel invPanel = new JPanel(new BorderLayout(5,0));
         JPanel subPanel = new JPanel(new BorderLayout(5,0));
 

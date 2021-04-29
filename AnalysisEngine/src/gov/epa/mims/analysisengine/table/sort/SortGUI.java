@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -78,14 +79,14 @@ public class SortGUI extends OptionDialog {
 				addNewSortPanel(sortPanels.isEmpty());
 			}
 		});
-		addBtn.setMnemonic('A');
+		addBtn.setMnemonic(KeyEvent.VK_A);
 
 		clearBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearSortPanel();
 			}
 		});
-		clearBtn.setMnemonic('C');
+		clearBtn.setMnemonic(KeyEvent.VK_C);
 
 		sortContentPanel.setLayout(new BoxLayout(sortContentPanel, BoxLayout.Y_AXIS));
 

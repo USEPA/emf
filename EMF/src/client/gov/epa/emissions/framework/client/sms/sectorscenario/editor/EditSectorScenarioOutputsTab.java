@@ -30,6 +30,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,15 +221,15 @@ public class EditSectorScenarioOutputsTab extends JPanel implements EditSectorSc
     private JPanel buttonPanel() {
         exportButton = new ExportButton(exportAction());
         analysisButton = new Button("Analyze", analysisAction());
-        analysisButton.setMnemonic('A');
+        analysisButton.setMnemonic(KeyEvent.VK_A);
 //        analysisButton.setVisible(false);
 //        view = new ViewButton("View", viewAction());
         viewDataButton = new Button("View Data", viewDataAction());
-        viewDataButton.setMnemonic('V');
+        viewDataButton.setMnemonic(KeyEvent.VK_V);
         editButton = new Button("Edit", editAction());
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_E);
         summarizeButton = new Button("Summarize", summarizeAction());
-        summarizeButton.setMnemonic('z');
+        summarizeButton.setMnemonic(KeyEvent.VK_Z);
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel buttonPanel = new JPanel();
         

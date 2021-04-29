@@ -36,6 +36,7 @@ import gov.epa.emissions.commons.CommonDebugLevel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -273,7 +274,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
                 presenter.doClose();
             }
         });
-        closeButton.setMnemonic('l');
+        closeButton.setMnemonic(KeyEvent.VK_L);
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -343,7 +344,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
                 }
             }
         });
-        compareButton.setMnemonic('o');
+        compareButton.setMnemonic(KeyEvent.VK_O);
         row1Panel.add(compareButton);
         
         Button summaryButton = new Button("Summarize", new AbstractAction() {
@@ -356,7 +357,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
                 }
             }
         });
-        summaryButton.setMnemonic('u');
+        summaryButton.setMnemonic(KeyEvent.VK_U);
         row2Panel.add(summaryButton);
         
         Button resultsButton = new Button("Export Results", new AbstractAction() {
@@ -369,7 +370,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
                 }
             }
         });
-        resultsButton.setMnemonic('x');
+        resultsButton.setMnemonic(KeyEvent.VK_X);
         row2Panel.add(resultsButton);
         
         Button groupsButton = new Button("Strategy Groups", new AbstractAction() {
@@ -383,7 +384,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
                 }
             }
         });
-        groupsButton.setMnemonic('S');
+        groupsButton.setMnemonic(KeyEvent.VK_S);
         row2Panel.add(groupsButton);
         
         crudPanel.add(row1Panel);

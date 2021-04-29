@@ -41,6 +41,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -406,11 +407,11 @@ public class ControlMeasuresManagerWindow extends DisposableInteralFrame impleme
         Button view = new Button("View", viewAction());
         // Button view = new ViewButton(viewAction());
         panel.add(view);
-        view.setMnemonic('V');
+        view.setMnemonic(KeyEvent.VK_V);
 
         Button edit = new Button("Edit", editAction());
         panel.add(edit);
-        edit.setMnemonic('E');
+        edit.setMnemonic(KeyEvent.VK_E);
 
         AbstractAction copyAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -429,11 +430,11 @@ public class ControlMeasuresManagerWindow extends DisposableInteralFrame impleme
         Button find = new Button("Find", findAction());
         find.setToolTipText("Find measures that apply to specific SCCs");
         panel.add(find);
-        find.setMnemonic('F');
+        find.setMnemonic(KeyEvent.VK_F);
 
         Button genereateReport = new Button("Report", generatePDFReportAction());
         panel.add(genereateReport);
-        genereateReport.setMnemonic('p');
+        genereateReport.setMnemonic(KeyEvent.VK_P);
 
         return panel;
     }

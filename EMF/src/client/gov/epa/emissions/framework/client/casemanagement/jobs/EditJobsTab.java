@@ -36,6 +36,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -244,17 +245,17 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         String message1 = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog1 = new ConfirmDialog(message1, "Warning", this);
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog1);
-        edit.setMnemonic('E');
+        edit.setMnemonic(KeyEvent.VK_E);
         edit.setMargin(insets);
         container.add(edit);
 
         Button copy = new Button("Copy", copyAction());
-        copy.setMnemonic('C');
+        copy.setMnemonic(KeyEvent.VK_C);
         copy.setMargin(insets);
         container.add(copy);
 
         Button modify = new Button("Modify", modifyAction());
-        modify.setMnemonic('y');
+        modify.setMnemonic(KeyEvent.VK_Y);
         modify.setMargin(insets);
         container.add(modify);
 
@@ -282,7 +283,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 }
             }
         });
-        validate.setMnemonic('i');
+        validate.setMnemonic(KeyEvent.VK_I);
         validate.setMargin(insets);
         container.add(validate);
 
@@ -292,7 +293,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 setStatus();
             }
         });
-        set.setMnemonic('z');
+        set.setMnemonic(KeyEvent.VK_Z);
         set.setMargin(insets);
         container.add(set);
 
@@ -306,7 +307,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 }
             }
         });
-        cancelJobs.setMnemonic('n');
+        cancelJobs.setMnemonic(KeyEvent.VK_N);
         cancelJobs.setMargin(insets);
         container.add(cancelJobs);
 

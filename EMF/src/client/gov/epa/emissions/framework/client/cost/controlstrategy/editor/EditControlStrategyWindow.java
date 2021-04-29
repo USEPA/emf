@@ -26,6 +26,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -273,7 +274,7 @@ public class EditControlStrategyWindow extends DisposableInteralFrame implements
             container.add(runButton);
 
         refreshButton = new Button("Refresh", refreshAction());
-        refreshButton.setMnemonic('R');
+        refreshButton.setMnemonic(KeyEvent.VK_R);
         container.add(refreshButton);
 
         stopButton = new StopButton(stopAction());

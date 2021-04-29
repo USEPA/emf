@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -522,7 +523,7 @@ public class ControlMeasureEfficiencyTab extends JPanel implements ControlMeasur
                 applySortFilter();
             }
         });
-        apply.setMnemonic('p');
+        apply.setMnemonic(KeyEvent.VK_P);
         apply.setToolTipText("Apply the Row Filter constraints to the table");
         actionPanel.add(new JLabel(""));
         actionPanel.add(apply);

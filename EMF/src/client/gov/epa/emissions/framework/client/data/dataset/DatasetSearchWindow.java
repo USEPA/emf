@@ -32,6 +32,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -223,7 +224,7 @@ public class DatasetSearchWindow extends DisposableInteralFrame {
         qaStepArguments.setToolTipText("QA step argument contains.");
         
         Button selectButton = new AddButton("Find Dataset", selectAction());
-        selectButton.setMnemonic('D');
+        selectButton.setMnemonic(KeyEvent.VK_D);
         selectButton.setMargin(new Insets(1, 2, 1, 2));
 
         JPanel invPanel = new JPanel(new BorderLayout(5, 0));
@@ -369,7 +370,7 @@ public class DatasetSearchWindow extends DisposableInteralFrame {
                 clearFields();
             }
         });
-        clearButton.setMnemonic('C');
+        clearButton.setMnemonic(KeyEvent.VK_C);
         panel.add(clearButton);
         
         panel.add(closeButton, BorderLayout.LINE_END);

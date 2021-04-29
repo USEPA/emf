@@ -14,6 +14,7 @@ import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
                 viewRevisions();
             }
         });
-        viewButton.setMnemonic('V');
+        viewButton.setMnemonic(KeyEvent.VK_V);
         buttonPanel.add(viewButton);
 
         JButton editButton = new JButton(new AbstractAction("Edit"){
@@ -97,7 +98,7 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
                 editRevisions();
             }
         });
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_E);
         editButton.setMargin(insets);
         editButton.setEnabled(this.editable);
         

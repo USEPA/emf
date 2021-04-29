@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -208,28 +209,28 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 				applyFilterToSelection();
 			}
 		});
-		filterBtn.setMnemonic('S');
+		filterBtn.setMnemonic(KeyEvent.VK_S);
 
 		reverseBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reverseSelection();
 			}
 		});
-		reverseBtn.setMnemonic('I');
+		reverseBtn.setMnemonic(KeyEvent.VK_I);
 
 		checkBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkSelectedRows(true);
 			}
 		});
-		checkBtn.setMnemonic('w');
+		checkBtn.setMnemonic(KeyEvent.VK_W);
 
 		uncheckBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkSelectedRows(false);
 			}
 		});
-		uncheckBtn.setMnemonic('H');
+		uncheckBtn.setMnemonic(KeyEvent.VK_H);
 
 		// Filter Panel
 		filterPanel = new FilterPanel(true, null, new String[] { "Column Name" }, FilterCriteria.OPERATION_STRINGS, 0,

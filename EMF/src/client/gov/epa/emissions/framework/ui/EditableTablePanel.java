@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
@@ -83,7 +84,7 @@ public class EditableTablePanel extends JPanel implements Editor {
                 refresh();
             }
         });
-        add.setMnemonic('A');
+        add.setMnemonic(KeyEvent.VK_A);
         container.add(add);
 
         JButton remove = new JButton("Remove");
@@ -93,7 +94,7 @@ public class EditableTablePanel extends JPanel implements Editor {
                 doRemove(tableData);
             }
         });
-        remove.setMnemonic('m');
+        remove.setMnemonic(KeyEvent.VK_M);
         container.add(remove);
 
         JPanel panel = new JPanel(new BorderLayout());

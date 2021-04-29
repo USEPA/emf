@@ -20,6 +20,7 @@ import gov.epa.emissions.framework.ui.ScrollableTable;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -218,7 +219,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
                 archiveDataset();
             }
         });
-        archive.setMnemonic('A');
+        archive.setMnemonic(KeyEvent.VK_A);
         archive.setToolTipText(label + " Dataset");
         return archive;
     }

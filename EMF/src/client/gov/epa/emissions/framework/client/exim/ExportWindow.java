@@ -31,6 +31,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -335,7 +336,7 @@ public class ExportWindow extends DisposableInteralFrame implements ExportView {
                 presenter.notifyDone();
             }
         });
-        done.setMnemonic('D');
+        done.setMnemonic(KeyEvent.VK_D);
         container.add(done);
 
         panel.add(container, BorderLayout.EAST);

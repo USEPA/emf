@@ -10,6 +10,7 @@ import gov.epa.emissions.framework.ui.ListWidget;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -110,8 +111,8 @@ public class AddRemoveWidget extends JPanel {
         removeButton = new RemoveButton("Remove", removeAction());
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));
-        addButton.setMnemonic('A');
-        removeButton.setMnemonic('m');
+        addButton.setMnemonic(KeyEvent.VK_A);
+        removeButton.setMnemonic(KeyEvent.VK_M);
         panel.add(addButton);
         panel.add(removeButton);
 

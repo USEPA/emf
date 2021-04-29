@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import javax.swing.AbstractAction;
@@ -99,13 +100,13 @@ public class SelectDTypePanel extends JPanel {
         excludeButtonPanel.setPreferredSize(new Dimension(80, 45));
         excludeButtonPanel.setMinimumSize(new Dimension(80, 45));
         Button includeButton = new AddButton("<<Show", includeAction());
-        includeButton.setMnemonic('o');
+        includeButton.setMnemonic(KeyEvent.VK_O);
         includeButtonPanel.add(includeButton, BorderLayout.SOUTH);
 //        JPanel excludeButtonPanel =  new JPanel();
 //        excludeButtonPanel.setLayout(new BorderLayout(0, 0));
 //        excludeButtonPanel.setPreferredSize(new Dimension(80, 45));
         Button excludeButton = new AddButton("Hide>>", excludeAction());
-        excludeButton.setMnemonic('i');
+        excludeButton.setMnemonic(KeyEvent.VK_I);
         excludeButtonPanel.add(excludeButton, BorderLayout.NORTH);
         buttonPanel.add(includeButtonPanel);
         buttonPanel.add(Box.createRigidArea(new Dimension(0,10)));

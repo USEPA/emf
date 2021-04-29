@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.cost.controlstrategy.groups;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import gov.epa.emissions.commons.gui.BorderlessButton;
@@ -73,7 +74,7 @@ public class StrategyGroupStrategiesTab extends JPanel implements StrategyGroupT
                 addAction();
             }
         });
-        addButton.setMnemonic('A');
+        addButton.setMnemonic(KeyEvent.VK_A);
         buttonPanel.add(addButton);
 
         Button removeButton = new BorderlessButton("Remove from Group", new AbstractAction() {
@@ -81,7 +82,7 @@ public class StrategyGroupStrategiesTab extends JPanel implements StrategyGroupT
                 removeAction();
             }
         });
-        removeButton.setMnemonic('R');
+        removeButton.setMnemonic(KeyEvent.VK_R);
         buttonPanel.add(removeButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);

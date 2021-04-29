@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.framework.services.EmfException;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -26,7 +27,7 @@ public class RefreshButton extends Button {
         super.setIcon(refreshIcon(message, iconSize));
         super.setToolTipText(message);
         super.setBorderPainted(borderPainted);
-        this.setMnemonic('R');
+        this.setMnemonic(KeyEvent.VK_R);
     }
 
     public RefreshButton(final RefreshObserver observer, String message, final MessagePanel messagePanel) {

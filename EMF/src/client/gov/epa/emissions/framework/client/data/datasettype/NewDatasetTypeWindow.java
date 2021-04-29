@@ -27,6 +27,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -216,7 +217,7 @@ public class NewDatasetTypeWindow extends DisposableInteralFrame implements NewD
                 selectFile();
             }
         });
-        browse.setMnemonic('B');
+        browse.setMnemonic(KeyEvent.VK_B);
         browse.setEnabled(false);
         
         panel.add(formatFile);

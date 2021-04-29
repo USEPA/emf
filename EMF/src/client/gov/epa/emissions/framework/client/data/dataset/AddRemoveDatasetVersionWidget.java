@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,7 +175,7 @@ public class AddRemoveDatasetVersionWidget extends JPanel {
                     setVersionAction();
             }
         });
-        setVersionButton.setMnemonic('S');
+        setVersionButton.setMnemonic(KeyEvent.VK_S);
         removeButton = new RemoveButton("Remove", removeAction());
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));

@@ -15,6 +15,7 @@ import gov.epa.emissions.framework.ui.MessagePanel;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,7 +113,7 @@ public class ImportCasePanel extends JPanel {
                 selectFilesFromPattern();
             }
         });
-        button.setMnemonic('A');
+        button.setMnemonic(KeyEvent.VK_A);
         return button;
     }
 

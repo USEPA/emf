@@ -99,7 +99,7 @@ public class NewTagDialog extends JDialog implements NewTagView {
         JPanel panel = new JPanel();
         
         Button createButton = new Button("Create", createAction());
-        createButton.setMnemonic('r');
+        createButton.setMnemonic(KeyEvent.VK_R);
         
         Button cancelButton = new CancelButton(cancelAction());
         

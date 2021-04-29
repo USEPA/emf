@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -231,7 +232,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 }
             }
         });
-        addNote.setMnemonic('N');
+        addNote.setMnemonic(KeyEvent.VK_N);
         panel.add(addNote);
 
         return panel;
@@ -263,7 +264,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 doSave();
             }
         });
-        save.setMnemonic('S');
+        save.setMnemonic(KeyEvent.VK_S);
         save.setToolTipText("Save your changes");
         save.setEnabled(false);
         return save;
@@ -276,7 +277,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 doDiscard();
             }
         });
-        discard.setMnemonic('D');
+        discard.setMnemonic(KeyEvent.VK_D);
         discard.setToolTipText("Discard your changes");
         discard.setEnabled(false);
         return discard;

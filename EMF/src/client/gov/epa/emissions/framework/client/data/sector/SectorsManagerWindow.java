@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -116,7 +117,7 @@ public class SectorsManagerWindow extends DisposableInteralFrame implements Sect
                 presenter.doClose();
             }
         });
-        closeButton.setMnemonic('l');
+        closeButton.setMnemonic(KeyEvent.VK_L);
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -159,7 +160,7 @@ public class SectorsManagerWindow extends DisposableInteralFrame implements Sect
                 createNewSector();
             }
         });
-        newButton.setMnemonic('N');
+        newButton.setMnemonic(KeyEvent.VK_N);
         crudPanel.add(newButton);
 
         return crudPanel;

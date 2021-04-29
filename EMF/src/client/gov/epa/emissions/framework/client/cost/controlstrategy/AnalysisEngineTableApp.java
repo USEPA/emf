@@ -376,7 +376,7 @@ public class AnalysisEngineTableApp extends DisposableInteralFrame
         menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
 
         JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic('F');
+        fileMenu.setMnemonic(KeyEvent.VK_F);
         menuBar.add(fileMenu);
 
         googleEarth = createGoogleMenuItem(fileNames);

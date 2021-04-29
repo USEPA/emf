@@ -11,6 +11,7 @@ import gov.epa.mims.analysisengine.gui.ScreenUtils;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -95,10 +96,10 @@ public class AddTagsDialog extends JDialog implements AddTagsView, TagsObserver 
         JPanel panel = new JPanel();
         
         Button newButton = new Button("New", newAction());
-        newButton.setMnemonic('N');
+        newButton.setMnemonic(KeyEvent.VK_N);
         
         Button addButton = new Button("Add", addAction());
-        newButton.setMnemonic('A');
+        newButton.setMnemonic(KeyEvent.VK_A);
         
         Button cancelButton = new CancelButton(cancelAction());
         

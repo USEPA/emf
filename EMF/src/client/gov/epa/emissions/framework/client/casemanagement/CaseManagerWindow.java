@@ -38,6 +38,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -303,7 +304,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
                 sensitivityCase();
             }
         });
-        sensitivityButton.setMnemonic('S');
+        sensitivityButton.setMnemonic(KeyEvent.VK_S);
         crudPanel.add(sensitivityButton);
         
         Button compareButton = new Button("Compare", new AbstractAction() {
@@ -318,7 +319,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
             }
         });
         crudPanel.add(compareButton);
-        compareButton.setMnemonic('o');
+        compareButton.setMnemonic(KeyEvent.VK_O);
         
         Button qaButton = new Button("Compare Reports", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -332,7 +333,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
             }
         });
         crudPanel.add(qaButton);
-        qaButton.setMnemonic('p');
+        qaButton.setMnemonic(KeyEvent.VK_P);
         
         return crudPanel;
     }

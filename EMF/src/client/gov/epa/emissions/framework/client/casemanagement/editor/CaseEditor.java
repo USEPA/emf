@@ -29,6 +29,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -195,7 +196,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 }
             }
         });
-        describe.setMnemonic('D');
+        describe.setMnemonic(KeyEvent.VK_D);
         buttonsPanel.add(describe);
         describe.setToolTipText("Show the description in a non-modal window.");
         
@@ -208,7 +209,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 }
             }
         });
-        refresh.setMnemonic('R');
+        refresh.setMnemonic(KeyEvent.VK_R);
         buttonsPanel.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
 
@@ -217,7 +218,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 loadCase();
             }
         });
-        loadCaseButton.setMnemonic('o');
+        loadCaseButton.setMnemonic(KeyEvent.VK_O);
         buttonsPanel.add(loadCaseButton);
         loadCaseButton.setToolTipText("Load case inputs, parameters, and outputs from case log file.");
         
@@ -226,7 +227,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 printCase();
             }
         });
-        printCaseButton.setMnemonic('x');
+        printCaseButton.setMnemonic(KeyEvent.VK_X);
         buttonsPanel.add(printCaseButton);
         printCaseButton.setToolTipText("Export the settings for current case.");
 
@@ -243,7 +244,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 viewParentCase();
             }
         });
-        viewParent.setMnemonic('P');
+        viewParent.setMnemonic(KeyEvent.VK_P);
         buttonsPanel.add(viewParent);
         
         Button viewRelated = new Button("View Related", new AbstractAction() {
@@ -251,7 +252,7 @@ public class CaseEditor extends DisposableInteralFrame implements CaseEditorView
                 viewRelatedCase();
             }
         });
-        viewRelated.setMnemonic('V');
+        viewRelated.setMnemonic(KeyEvent.VK_V);
         buttonsPanel.add(viewRelated);
 
         Button close = new CloseButton(new AbstractAction() {

@@ -24,6 +24,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -160,7 +161,7 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
             }
         };
         Button deleteButton = new Button("Delete", deleteAction);
-        deleteButton.setMnemonic('D');
+        deleteButton.setMnemonic(KeyEvent.VK_D);
         deleteButton.setEnabled(false);
 
         String messageTooManyWindows = "You have asked to open a lot of windows. Do you wish to proceed?";

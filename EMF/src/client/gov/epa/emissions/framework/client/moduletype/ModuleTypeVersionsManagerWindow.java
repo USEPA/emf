@@ -25,6 +25,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -177,7 +178,7 @@ public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame impl
             }
         };
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
-        viewButton.setMnemonic('V');
+        viewButton.setMnemonic(KeyEvent.VK_V);
 
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -185,7 +186,7 @@ public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame impl
             }
         };
         SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_E);
 
         Action newVersionAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -193,7 +194,7 @@ public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame impl
             }
         };
         Button newVersionButton = new Button("New Version", newVersionAction);
-        newVersionButton.setMnemonic('N');
+        newVersionButton.setMnemonic(KeyEvent.VK_N);
 
         Action newModuleTypeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -201,7 +202,7 @@ public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame impl
             }
         };
         Button newModuleTypeButton = new Button("New Module Type", newModuleTypeAction);
-        newModuleTypeButton.setMnemonic('T');
+        newModuleTypeButton.setMnemonic(KeyEvent.VK_T);
 
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -209,7 +210,7 @@ public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame impl
             }
         };
         Button removeButton = new RemoveButton(removeAction);
-        removeButton.setMnemonic('m');
+        removeButton.setMnemonic(KeyEvent.VK_M);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());

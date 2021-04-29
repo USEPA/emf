@@ -40,6 +40,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -177,7 +178,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
                 notifyAdvancedSearch();
             }
         });
-        advButton.setMnemonic('d');
+        advButton.setMnemonic(KeyEvent.VK_D);
         advButton.setToolTipText("Advanced search");
         
         JPanel advPanel = new JPanel(new BorderLayout(5, 2));
@@ -271,7 +272,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         dataButton.setToolTipText("Edit dataset data window");
         removeButton.setToolTipText("Remove datasets action");
 
-        dataButton.setMnemonic('a');
+        dataButton.setMnemonic(KeyEvent.VK_A);
 
         panel.add(viewButton);
         panel.add(propButton);
@@ -370,7 +371,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
             }
         });
         purgeButton.setToolTipText("Purge deleted dataset(s)");
-        purgeButton.setMnemonic('P');
+        purgeButton.setMnemonic(KeyEvent.VK_P);
         panel.add(purgeButton);
 
         Button closeButton = new CloseButton(new AbstractAction() {

@@ -216,12 +216,12 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
         container.add(remove);
 
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog);
-        //edit.setMnemonic('i');
+        //edit.setMnemonic(KeyEvent.VK_I);
         edit.setMargin(insets);
         container.add(edit);
 
         Button copy = new Button("Copy", copyAction(presenter));
-        copy.setMnemonic('C');
+        copy.setMnemonic(KeyEvent.VK_C);
         copy.setMargin(insets);
         container.add(copy);
 

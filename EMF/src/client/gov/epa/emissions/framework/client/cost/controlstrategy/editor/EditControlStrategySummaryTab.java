@@ -39,6 +39,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,7 +164,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
                 editProjectNotes();
             }
         });
-        notesButton.setMnemonic('P');
+        notesButton.setMnemonic(KeyEvent.VK_P);
         projPanel.add(notesButton);
         layoutGenerator.addLabelWidgetPair("Project:", projPanel, panelTop);
 
@@ -463,7 +464,7 @@ public class EditControlStrategySummaryTab extends JPanel implements EditControl
                 }
             }
         });
-        set.setMnemonic('e');
+        set.setMnemonic(KeyEvent.VK_E);
         
         panel.add(multiPollField, BorderLayout.LINE_START);
         panel.add(set, BorderLayout.LINE_END);

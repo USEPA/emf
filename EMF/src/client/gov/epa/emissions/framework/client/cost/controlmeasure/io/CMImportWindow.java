@@ -19,6 +19,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
@@ -92,7 +93,7 @@ public class CMImportWindow extends DisposableInteralFrame implements CMImportVi
                 doDone();
             }
         });
-        done.setMnemonic('D');
+        done.setMnemonic(KeyEvent.VK_D);
         container.add(done);
         panel.add(container, BorderLayout.EAST);
 
