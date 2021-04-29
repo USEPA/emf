@@ -766,7 +766,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -1312,7 +1312,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -1853,7 +1853,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -2365,7 +2365,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -2747,7 +2747,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -3145,7 +3145,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 					
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -3696,7 +3696,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				--Equation Type 2a 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' then
 					case 
-						when coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
 							''Type 2a''
 						else
 							''-Type 2a''
