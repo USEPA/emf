@@ -33,6 +33,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -194,6 +195,7 @@ public class ModuleTypesManagerWindow extends DisposableInteralFrame implements 
             }
         };
         SelectAwareButton exportButton = new SelectAwareButton("Export", exportAction, table, confirmDialog);
+        exportButton.setMnemonic(KeyEvent.VK_X);
 
         Action importAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {

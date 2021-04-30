@@ -860,7 +860,7 @@ public class ModuleTypeVersionPropertiesWindow extends DisposableInteralFrame
         validateButton.setMnemonic(KeyEvent.VK_V);
 
         Button newRevisionButton = new Button("New Revision", newRevisionAction());
-        newRevisionButton.setMnemonic(KeyEvent.VK_R);
+        newRevisionButton.setMnemonic(KeyEvent.VK_I);
         newRevisionButton.setEnabled(viewMode != ViewMode.VIEW);
 
         Button saveButton = new SaveButton(saveAction());

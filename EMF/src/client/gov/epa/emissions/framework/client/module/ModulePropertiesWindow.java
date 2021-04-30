@@ -654,7 +654,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         statusContainer.setLayout(statusLayout);
         
         statusButton = new Button("Status", statusAction());
-        statusButton.setMnemonic(KeyEvent.VK_S);
+        statusButton.setMnemonic(KeyEvent.VK_T);
         
         statusText = new Label("");
         refreshStatusText();
@@ -932,6 +932,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         SelectAwareButton editButton = new SelectAwareButton("Set Input Value", editAction, parametersTable, confirmDialog);
+        editButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -1326,6 +1327,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         viewButton = new SelectAwareButton("View", viewAction, historyTable, confirmDialog);
+        viewButton.setMnemonic(KeyEvent.VK_I);
         viewButton.setEnabled(!historyTableData.rows().isEmpty());
         
         String deleteMessage = "Are you sure you want to delete the selected history records?";

@@ -288,6 +288,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
             }
         };
         Button exportButton = new Button("Export", exportAction);
+        exportButton.setMnemonic(KeyEvent.VK_X);
 
         Action importAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -295,6 +296,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
             }
         };
         Button importButton = new Button("Import", importAction);
+        importButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
