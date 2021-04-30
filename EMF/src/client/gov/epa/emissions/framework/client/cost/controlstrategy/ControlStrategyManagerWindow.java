@@ -344,7 +344,7 @@ public class ControlStrategyManagerWindow extends DisposableInteralFrame impleme
                 }
             }
         });
-        compareButton.setMnemonic(KeyEvent.VK_O);
+        compareButton.setMnemonic(KeyEvent.VK_P);
         row1Panel.add(compareButton);
         
         Button summaryButton = new Button("Summarize", new AbstractAction() {

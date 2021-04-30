@@ -94,7 +94,7 @@ public class EditableTablePanel extends JPanel implements Editor {
                 doRemove(tableData);
             }
         });
-        remove.setMnemonic(KeyEvent.VK_M);
+        remove.setMnemonic(KeyEvent.VK_O);
         container.add(remove);
 
         JPanel panel = new JPanel(new BorderLayout());

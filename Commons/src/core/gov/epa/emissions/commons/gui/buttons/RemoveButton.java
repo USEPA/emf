@@ -10,7 +10,7 @@ public class RemoveButton extends Button {
 
     public RemoveButton(String label, final Action action) {
         super(label, action);
-        this.setMnemonic(KeyEvent.VK_M);
+        this.setMnemonic(KeyEvent.VK_O);
     }
 
     public RemoveButton(final Action action) {

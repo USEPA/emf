@@ -111,8 +111,6 @@ public class AddRemoveWidget extends JPanel {
         removeButton = new RemoveButton("Remove", removeAction());
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));
-        addButton.setMnemonic(KeyEvent.VK_A);
-        removeButton.setMnemonic(KeyEvent.VK_M);
         panel.add(addButton);
         panel.add(removeButton);
 

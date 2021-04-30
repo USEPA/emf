@@ -135,7 +135,7 @@ public class TemporalAllocationInventoriesTab extends JPanel implements Temporal
                     removeAction();
             }
         });
-        removeButton.setMnemonic(KeyEvent.VK_M);
+        removeButton.setMnemonic(KeyEvent.VK_O);
         removeButton.setEnabled(presenter.isEditing());
         panel.add(removeButton);
 

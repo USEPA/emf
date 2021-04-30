@@ -233,7 +233,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
             }
         };
         lockButton = new Button("Lock", lockAction);
-        lockButton.setMnemonic(KeyEvent.VK_L);
+        lockButton.setMnemonic(KeyEvent.VK_C);
 
         Action unlockAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -241,7 +241,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
             }
         };
         unlockButton = new Button("Unlock", unlockAction);
-        unlockButton.setMnemonic(KeyEvent.VK_O);
+        unlockButton.setMnemonic(KeyEvent.VK_K);
 
         Action createAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -265,7 +265,6 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
             }
         };
         removeButton = new RemoveButton(removeAction);
-        removeButton.setMnemonic(KeyEvent.VK_M);
 
         Action runAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -281,7 +280,7 @@ public class ModulesManagerWindow extends DisposableInteralFrame implements Modu
             }
         };
         compareButton = new Button("Compare", compareAction);
-        compareButton.setMnemonic(KeyEvent.VK_C);
+        compareButton.setMnemonic(KeyEvent.VK_P);
         
         Action exportAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {

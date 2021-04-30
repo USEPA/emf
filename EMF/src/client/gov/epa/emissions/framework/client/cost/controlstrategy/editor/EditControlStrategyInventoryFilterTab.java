@@ -147,14 +147,14 @@ public class EditControlStrategyInventoryFilterTab extends JPanel implements Edi
                     setVersionAction();
             }
         });
-        editButton.setMnemonic(KeyEvent.VK_O);
+        editButton.setMnemonic(KeyEvent.VK_E);
         panel.add(editButton);
         Button removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
                     removeAction();
             }
         });
-        removeButton.setMnemonic(KeyEvent.VK_M);
+        removeButton.setMnemonic(KeyEvent.VK_O);
         panel.add(removeButton);
         Button viewButton = new BorderlessButton("View", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {

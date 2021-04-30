@@ -75,7 +75,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     public ManageMenu(EmfSession session, EmfConsole parent, MessagePanel messagePanel) {
         super("Manage");
         super.setName("manage");
-        super.setMnemonic(KeyEvent.VK_G);
+        super.setMnemonic(KeyEvent.VK_M);
         this.session = session;
         this.parent = parent;
         this.messagePanel = messagePanel;

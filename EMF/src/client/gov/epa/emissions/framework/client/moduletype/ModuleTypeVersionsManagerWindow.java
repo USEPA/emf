@@ -210,7 +210,6 @@ public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame impl
             }
         };
         Button removeButton = new RemoveButton(removeAction);
-        removeButton.setMnemonic(KeyEvent.VK_M);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());

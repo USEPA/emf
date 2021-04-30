@@ -168,7 +168,7 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
                     removeAction();
             }
         });
-        removeButton.setMnemonic(KeyEvent.VK_M);
+        removeButton.setMnemonic(KeyEvent.VK_O);
         panel.add(removeButton);
         viewButton = new BorderlessButton("View", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {

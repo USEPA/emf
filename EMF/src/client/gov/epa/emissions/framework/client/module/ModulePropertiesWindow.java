@@ -783,7 +783,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button viewRelatedModulesButton = new Button("View Related Modules", viewRelatedModulesAction);
-        viewRelatedModulesButton.setMnemonic(KeyEvent.VK_M);
+        viewRelatedModulesButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -1035,7 +1035,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button viewRelatedModulesButton = new Button("View Related Modules", viewInternalRelatedModulesAction);
-        viewRelatedModulesButton.setMnemonic(KeyEvent.VK_M);
+        viewRelatedModulesButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));

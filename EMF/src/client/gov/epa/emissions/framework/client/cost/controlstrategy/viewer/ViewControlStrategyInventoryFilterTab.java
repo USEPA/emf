@@ -118,11 +118,11 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
         panel.add(addButton);
 
         JButton editButton = new DisabledBorderlessButton("Set Version");
-        editButton.setMnemonic(KeyEvent.VK_O);
+        editButton.setMnemonic(KeyEvent.VK_E);
         panel.add(editButton);
 
         JButton removeButton = new DisabledBorderlessButton("Remove");
-        removeButton.setMnemonic(KeyEvent.VK_M);
+        removeButton.setMnemonic(KeyEvent.VK_O);
         panel.add(removeButton);
 
         Button viewButton = new BorderlessButton("View", new AbstractAction() {
