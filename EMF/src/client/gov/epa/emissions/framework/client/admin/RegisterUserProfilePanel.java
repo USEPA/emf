@@ -181,6 +181,7 @@ public class RegisterUserProfilePanel extends JPanel {
         valuesPanel.add(Box.createRigidArea(new Dimension(1, 10)));
 
         email = new TextField("email", user.getEmail(), 15);
+        email.setToolTipText("User email");
         emailLabel.setLabelFor(email);
         changeablesList.addChangeable(email);
         valuesPanel.add(email);

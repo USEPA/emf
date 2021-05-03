@@ -127,6 +127,7 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
         serverfolder = new JTextField();
         serverfolder.setPreferredSize(defaultDimension);
         serverfolder.setName("serverfolder");
+        serverfolder.setToolTipText("Server-side location of folder/directory");
         Button serverButton = new BrowseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent arg0) {
                 messagePanel.clear();
@@ -165,6 +166,7 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
         sectorList.addAll(getCaseSectors());
 
         sectorsListWidget = new ListWidget(sectorList.toArray(new Sector[0]));
+        sectorsListWidget.setToolTipText("Sectors to compare cases on");
         sectorsListWidget.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane exDTscrollPane = new JScrollPane(sectorsListWidget, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -213,12 +215,14 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
     
     private JPanel inforPanel(){
         JPanel panel = new JPanel();
-        infoArea = new TextArea("Messages: ", "", 20, 3);
-        
+        infoArea = new TextArea("Messages: ", "", 20, 3, "Informational messages from comparing cases");
+        addChangeable(infoArea);
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(infoArea);
         descScrollableTextArea.setPreferredSize(new Dimension(240, 120));        
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(new JLabel("Messages: "));
+        final JLabel messageLabel = new JLabel("Messages: ");
+        messageLabel.setLabelFor(infoArea);
+        panel.add(messageLabel);
         panel.add(descScrollableTextArea);
         
         JPanel panel1 = new JPanel();
@@ -235,11 +239,14 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         whereArea = new TextArea("where Filter", "", 20, 3);
         whereArea.setToolTipText("ie: where species = 'NO' ");
+        addChangeable(whereArea);
 
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(whereArea);
         descScrollableTextArea.setPreferredSize(new Dimension(150, 70));        
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(new JLabel("Where Filter: "));
+        final JLabel whereFilterLabel = new JLabel("Where Filter: ");
+        whereFilterLabel.setLabelFor(whereArea);
+        panel.add(whereFilterLabel);
         panel.add(descScrollableTextArea);
         
         panel.add(Box.createRigidArea(new Dimension(10,0)));
@@ -251,28 +258,34 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
     
     private JPanel validColPanel(){  
         String[] values= new String[]{"Fips", "State", "County", "Sector", "Species", "Ann_emis"};
-        validColsWidget = new ListWidget(values);   
-         
+        validColsWidget = new ListWidget(values);
+        validColsWidget.setToolTipText("Valid columns to include");
+
         JScrollPane inReportScrollPane = new JScrollPane(validColsWidget, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         inReportScrollPane.setPreferredSize(new Dimension(90, 90));
         JPanel inPanel = new JPanel();
         inPanel.setLayout(new BoxLayout(inPanel, BoxLayout.Y_AXIS));
-        inPanel.add(new JLabel("Valid Columns: "));
+        final JLabel validColumnsLabel = new JLabel("Valid Columns: ");
+        validColumnsLabel.setLabelFor(validColsWidget);
+        inPanel.add(validColumnsLabel);
         inPanel.add(inReportScrollPane);
         return inPanel;        
     }
     
     private JPanel inPanel(){
         String [] values= new String[]{"State", "County", "Sector", "Species"};
-        inReportWidget = new ListWidget(values);        
-        inReportWidget.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);        
+        inReportWidget = new ListWidget(values);
+        inReportWidget.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        inReportWidget.setToolTipText("Report dimensions to include in report");
         JScrollPane inReportScrollPane = new JScrollPane(inReportWidget, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         inReportScrollPane.setPreferredSize(new Dimension(100, 70));
         JPanel inPanel = new JPanel();
         inPanel.setLayout(new BoxLayout(inPanel, BoxLayout.Y_AXIS));
-        inPanel.add(new JLabel("included: "));
+        final JLabel includedLabel = new JLabel("Included: ");
+        includedLabel.setLabelFor(inReportWidget);
+        inPanel.add(includedLabel);
         inPanel.add(inReportScrollPane);
         return inPanel;        
     }
@@ -280,14 +293,17 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
     private JPanel exPanel(){
         String [] values= new String[]{};
         exReportWidget = new ListWidget(values);        
-        exReportWidget.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);        
+        exReportWidget.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        exReportWidget.setToolTipText("Report dimensions to exclude from report");
         JScrollPane exReportScrollPane = new JScrollPane(exReportWidget, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         exReportScrollPane.setPreferredSize(new Dimension(100, 70));
 
         JPanel exPanel = new JPanel();
         exPanel.setLayout(new BoxLayout(exPanel, BoxLayout.Y_AXIS));
-        exPanel.add(new JLabel("Excluded: "));
+        final JLabel excludedLabel = new JLabel("Excluded: ");
+        excludedLabel.setLabelFor(exReportWidget);
+        exPanel.add(excludedLabel);
         exPanel.add(exReportScrollPane);
         return exPanel;        
     }
@@ -304,11 +320,13 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
         excludeButtonPanel.setPreferredSize(new Dimension(50, 45));
         excludeButtonPanel.setMinimumSize(new Dimension(50, 45));
         Button includeButton = new AddButton("<<", includeAction());
+        includeButton.setToolTipText("Include report dimensions in report");
         includeButtonPanel.add(includeButton, BorderLayout.SOUTH);
 //        JPanel excludeButtonPanel =  new JPanel();
 //        excludeButtonPanel.setLayout(new BorderLayout(0, 0));
 //        excludeButtonPanel.setPreferredSize(new Dimension(80, 45));
         Button excludeButton = new AddButton(">>", excludeAction());
+        excludeButton.setToolTipText("Exclude report dimensions from report");
         excludeButtonPanel.add(excludeButton, BorderLayout.NORTH);
         buttonPanel.add(includeButtonPanel);
         buttonPanel.add(Box.createRigidArea(new Dimension(0,10)));
@@ -499,8 +517,11 @@ public class CompareCaseWindow extends DisposableInteralFrame implements Compare
         container.setLayout(layout);
 
         Button okButton = new OKButton(okAction());
+        okButton.setToolTipText("Run case comparison report");
         container.add(okButton);
-        container.add(new CancelButton(closeAction()));
+        final CancelButton cancelButton = new CancelButton(closeAction());
+        cancelButton.setToolTipText("Close Compare Case Window");
+        container.add(cancelButton);
         getRootPane().setDefaultButton(okButton);
 
         panel.add(container, BorderLayout.CENTER);

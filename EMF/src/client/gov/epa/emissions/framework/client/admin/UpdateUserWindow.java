@@ -8,6 +8,7 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -82,7 +83,7 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
     }
 
     private EditableUserProfilePanel createLayout(AdminOption adminOption) {
-        Widget username = new LabelWidget("username", user.getUsername());
+        Label username = new Label("username", user.getUsername());
         return createUserProfilePanel(username, adminOption);
     }
     
@@ -112,8 +113,10 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
         container.setLayout(layout);
 
         Button okButton = new SaveButton(saveAction);
+        okButton.setToolTipText("Save user information");
         container.add(okButton);
         CloseButton closeButton = new CloseButton(closeAction);
+        closeButton.setToolTipText("Cancel saving user information and close window");
         container.add(closeButton);
 
         panel.add(container, BorderLayout.CENTER);
@@ -121,7 +124,7 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
         return panel;
     }
 
-    private EditableUserProfilePanel createUserProfilePanel(Widget username,
+    private EditableUserProfilePanel createUserProfilePanel(Label username,
             AdminOption adminOption) {
         EditableUserProfilePanel panel=null;
         try {

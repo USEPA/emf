@@ -111,6 +111,8 @@ public class AddRemoveWidget extends JPanel {
         removeButton = new RemoveButton("Remove", removeAction());
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));
+        addButton.setToolTipText("Add item to list");
+        removeButton.setToolTipText("Remove item from list");
         panel.add(addButton);
         panel.add(removeButton);
 

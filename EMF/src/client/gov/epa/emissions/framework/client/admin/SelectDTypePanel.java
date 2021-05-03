@@ -59,6 +59,7 @@ public class SelectDTypePanel extends JPanel {
     private JPanel createExcludePanel(DatasetType[] eDatasetTypes) {  
         excludeDSTypeList = new ListWidget(new DatasetType[0]);
         excludeDSTypeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        excludeDSTypeList.setToolTipText("Choose dataset types to hide from user");
         sort(eDatasetTypes, excludeDSTypeList);
  
         changeablesList.addChangeable(excludeDSTypeList);
@@ -67,7 +68,9 @@ public class SelectDTypePanel extends JPanel {
         exDTscrollPane.setPreferredSize(new Dimension(200, 300));
         JPanel panel = new JPanel(new BorderLayout(20, 15));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(new JLabel("Hidden Dataset types: "));
+        final JLabel hiddenDSLabel = new JLabel("Hidden Dataset types: ");
+        hiddenDSLabel.setLabelFor(excludeDSTypeList);
+        panel.add(hiddenDSLabel);
         panel.add(exDTscrollPane);
         return panel;
     }
@@ -75,15 +78,18 @@ public class SelectDTypePanel extends JPanel {
     private JPanel createIncludePanel(DatasetType[] iDatasetTypes) {
         includeDSTypeList = new ListWidget(new DatasetType[0]);
         includeDSTypeList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        includeDSTypeList.setToolTipText("Choose dataset types to be visible to the user");
         sort(iDatasetTypes, includeDSTypeList);
- 
+
         changeablesList.addChangeable(includeDSTypeList);
         inDTscrollPane = new JScrollPane(includeDSTypeList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         inDTscrollPane.setPreferredSize(new Dimension(200, 300));
         JPanel panel = new JPanel(new BorderLayout(15, 15));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(new JLabel("Visible Dataset types: "));
+        final JLabel visibleDSLabel = new JLabel("Visible Dataset types: ");
+        visibleDSLabel.setLabelFor(includeDSTypeList);
+        panel.add(visibleDSLabel);
         panel.add(inDTscrollPane);
         return panel;
     }
@@ -101,12 +107,14 @@ public class SelectDTypePanel extends JPanel {
         excludeButtonPanel.setMinimumSize(new Dimension(80, 45));
         Button includeButton = new AddButton("<<Show", includeAction());
         includeButton.setMnemonic(KeyEvent.VK_O);
+        includeButton.setToolTipText("Include datasets that are visible to the user");
         includeButtonPanel.add(includeButton, BorderLayout.SOUTH);
 //        JPanel excludeButtonPanel =  new JPanel();
 //        excludeButtonPanel.setLayout(new BorderLayout(0, 0));
 //        excludeButtonPanel.setPreferredSize(new Dimension(80, 45));
         Button excludeButton = new AddButton("Hide>>", excludeAction());
         excludeButton.setMnemonic(KeyEvent.VK_I);
+        excludeButton.setToolTipText("Exclude datasets that are visible to the user");
         excludeButtonPanel.add(excludeButton, BorderLayout.NORTH);
         buttonPanel.add(includeButtonPanel);
         buttonPanel.add(Box.createRigidArea(new Dimension(0,10)));

@@ -62,22 +62,28 @@ public class ImportCasePanel extends JPanel {
         mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
 
         JPanel chooser = new JPanel(new BorderLayout(10, 10));
-        folder = new TextField("folder", width);
-        chooser.add(new JLabel("Folder     "),BorderLayout.WEST);
+        folder = new TextField("folder", width, "Folder to store exported case(s)");
+        final JLabel folderLabel = new JLabel("Folder     ");
+        folderLabel.setLabelFor(folder);
+        chooser.add(folderLabel,BorderLayout.WEST);
         chooser.add(folder);
         chooser.add(browseFileButton(), BorderLayout.EAST);
 
         JPanel apply = new JPanel(new BorderLayout(10,10));
-        pattern = new TextField("pattern", width);
-        apply.add(new JLabel("Pattern   "),BorderLayout.WEST);
+        pattern = new TextField("pattern", width, "File search pattern");
+        final JLabel patternLabel = new JLabel("Pattern   ");
+        patternLabel.setLabelFor(pattern);
+        apply.add(patternLabel,BorderLayout.WEST);
         apply.add(pattern);
         apply.add(applyPatternButton(), BorderLayout.EAST);
 
         JPanel fileNamesPanel = new JPanel(new BorderLayout(4,10));
-        filenames = new TextArea("filenames", "", width, 6);
+        filenames = new TextArea("filenames", "", width, 6, "Case import file names");
         JScrollPane fileTextAreaPane = new JScrollPane(filenames, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        fileNamesPanel.add(new JLabel("Filenames"),BorderLayout.WEST);
+        final JLabel filenamesLabel = new JLabel("Filenames");
+        filenamesLabel.setLabelFor(filenames);
+        fileNamesPanel.add(filenamesLabel,BorderLayout.WEST);
         fileNamesPanel.add(fileTextAreaPane);
 
         // Lay out the panel.
@@ -102,6 +108,7 @@ public class ImportCasePanel extends JPanel {
 
         Icon icon = new ImageResources().open("Import a Case");
         button.setIcon(icon);
+        button.setToolTipText("Find case import file");
 
         return button;
     }
@@ -114,6 +121,7 @@ public class ImportCasePanel extends JPanel {
             }
         });
         button.setMnemonic(KeyEvent.VK_A);
+        button.setToolTipText("Apply pattern");
         return button;
     }
 

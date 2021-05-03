@@ -152,7 +152,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
     }
 
     private void createCategoriesComboBox() { 
-        categoriesBox = new ComboBox("Select one", categories.toArray(new CaseCategory[0]));
+        categoriesBox = new ComboBox("Select one", categories.toArray(new CaseCategory[0]), "Select one category to filter the cases on");
         categoriesBox.setPreferredSize(new Dimension(360, 20));
         
         if (selectedCategory != null)
@@ -196,7 +196,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
         msgRefreshPanel.add(button, BorderLayout.EAST);
 
         JPanel topPanel = new JPanel(new BorderLayout());
-        nameFilter = new TextField("textfilter", 10);
+        nameFilter = new TextField("textfilter", 10, "Name contains text filter");
         nameFilter.setEditable(true);
         nameFilter.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -208,6 +208,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
         JPanel advPanel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel("Name Contains:");
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(nameFilter);
         advPanel.add(jlabel, BorderLayout.WEST);
         advPanel.add(nameFilter, BorderLayout.CENTER);
         advPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 30));
@@ -226,6 +227,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
         JPanel panel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel(label);
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(box);
         panel.add(jlabel, BorderLayout.WEST);
         panel.add(box, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(3, 50, 5, 5));

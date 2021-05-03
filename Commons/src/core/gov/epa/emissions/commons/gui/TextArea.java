@@ -43,6 +43,7 @@ public class TextArea extends JTextArea implements Changeable {
         super.setColumns(columns);
         super.setWrapStyleWord(true);
         super.setToolTipText(toolTipText);
+        addKeyListener();
     }
 
     private void addTextListener() {
@@ -74,6 +75,7 @@ public class TextArea extends JTextArea implements Changeable {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_TAB)
                 {
+                    System.out.println("keyPressed " + e.getKeyCode());
                     e.consume();
                     KeyboardFocusManager.
                             getCurrentKeyboardFocusManager().focusNextComponent();
@@ -82,6 +84,7 @@ public class TextArea extends JTextArea implements Changeable {
                 if (e.getKeyCode() == KeyEvent.VK_TAB
                         &&  e.isShiftDown())
                 {
+                    System.out.println("keyPressed " + e.getKeyCode());
                     e.consume();
                     KeyboardFocusManager.
                             getCurrentKeyboardFocusManager().focusPreviousComponent();
@@ -116,7 +119,7 @@ public class TextArea extends JTextArea implements Changeable {
     public void observe(Changeables changeables) {
         this.changeables = changeables;
         addTextListener();
-        addKeyListener();
+//        addKeyListener();
     }
 
     public boolean isEmpty() {
