@@ -823,10 +823,10 @@ from (
 			sources.id as source,
 			fipscode.county,
 			fipscode.state_name,
-			scc_codes.scc_l1,
-			scc_codes.scc_l2,
-			scc_codes.scc_l3,
-			scc_codes.scc_l4,
+			SUBSTR(scc_codes.scc_l1, 1, 54) scc_l1,
+			SUBSTR(scc_codes.scc_l2, 1, 54) scc_l2,
+			SUBSTR(scc_codes.scc_l3, 1, 70) scc_l3,
+			SUBSTR(scc_codes.scc_l4, 1, 70) scc_l4,
 			' || case when has_design_capacity_columns = false then 'null::double precision as design_capacity, null::character varying(20) as design_capacity_units, ' else 'inv.design_capacity,
 			' || case when is_flat_file_inventory then 'inv.design_capacity_units, 'else 'inv.design_capacity_unit_numerator as design_capacity_units, ' end || '
 			' end || '
@@ -1094,4 +1094,3 @@ end || '
 	return;
 END;
 $$ LANGUAGE plpgsql;
-
