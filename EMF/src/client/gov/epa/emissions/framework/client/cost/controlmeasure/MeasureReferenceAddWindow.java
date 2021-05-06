@@ -240,6 +240,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
 
         this.existingReferenceRB = new JRadioButton("Use existing reference");
         this.existingReferenceRB.setSelected(true);
+        this.existingReferenceRB.setToolTipText("Check to use existing reference");
         bg.add(this.existingReferenceRB);
         panel.add(this.existingReferenceRB, gbc);
 
@@ -274,6 +275,9 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
 
         this.filterTextField = new JTextField();
         this.filterTextField.addActionListener(searchAction);
+        this.filterTextField.setToolTipText("The text contains search filter for finding references");
+        this.containsLabel.setToolTipText(this.filterTextField.getToolTipText());
+        containsLabel.setLabelFor(this.filterTextField);
         panel.add(this.filterTextField, gbc);
 
         gbc.gridx = 2;
@@ -288,6 +292,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
 
         this.searchButton = new Button("Search", searchAction);
         searchButton.setMnemonic(KeyEvent.VK_E);
+        searchButton.setToolTipText("Search for reference by using a contains search filter");
         panel.add(this.searchButton, gbc);
 
         gbc.gridx = 0;
@@ -316,6 +321,9 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
         this.referenceList = new ListWidget(null);
         this.referenceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.referenceList.setVisibleRowCount(4);
+        this.referenceList.setToolTipText("This is list of references, which can be filtered by a contains search");
+        referencesLabel.setToolTipText(this.referenceList.getToolTipText());
+        referencesLabel.setLabelFor(this.referenceList);
 
         JScrollPane scrollPane = new JScrollPane(this.referenceList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -333,6 +341,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
         gbc.insets = rbInsets;
 
         this.newReferenceRB = new JRadioButton("Create new reference");
+        this.newReferenceRB.setToolTipText("Check to create new reference");
         bg.add(this.newReferenceRB);
         panel.add(this.newReferenceRB, gbc);
 
@@ -350,6 +359,9 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
         panel.add(descriptionLabel, gbc);
 
         this.descriptionField = new TextArea("", "");
+        this.descriptionField.setToolTipText("Text area where a new reference can be entered");
+        descriptionLabel.setToolTipText(this.descriptionField.getToolTipText());
+        descriptionLabel.setLabelFor(this.descriptionField);
 
         gbc.gridx = 1;
         gbc.gridy = 4;
@@ -416,6 +428,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
             }
         });
         getRootPane().setDefaultButton(saveButton);
+        saveButton.setToolTipText("Save control measure reference");
         panel.add(saveButton);
 
         cancelButton = new CancelButton(new AbstractAction() {
@@ -423,6 +436,7 @@ public class MeasureReferenceAddWindow extends DisposableInteralFrame implements
                 closeWindow();
             }
         });
+        cancelButton.setToolTipText("Cancel saving control measure reference and close window");
         panel.add(cancelButton);
 
         return panel;
