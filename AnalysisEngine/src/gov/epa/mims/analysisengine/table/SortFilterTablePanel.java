@@ -858,8 +858,7 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
                         COLUMNS_STR + " [" + overallModel.filterSortInfoString() + "]";
 		statusLabel.setText(info);
 		statusLabel.setToolTipText(info);
-		statusLabel.getAccessibleContext().setAccessibleName("Table status");
-		statusLabel.getAccessibleContext().setAccessibleDescription(info);
+		statusLabel.getAccessibleContext().setAccessibleName("Table status " + info);
 	} // updateStatusLabel()
 
 	/**

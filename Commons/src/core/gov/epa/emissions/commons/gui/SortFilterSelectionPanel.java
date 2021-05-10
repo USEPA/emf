@@ -254,8 +254,7 @@ public class SortFilterSelectionPanel extends SortFilterTablePanel {
                 + ": " + getSelectedIndexes().length + " Selected [" + overallModel.filterSortInfoString() + "]";
         statusLabel.setText(info);
         statusLabel.setToolTipText(info);
-        statusLabel.getAccessibleContext().setAccessibleName("Table status");
-        statusLabel.getAccessibleContext().setAccessibleDescription(info);
+        statusLabel.getAccessibleContext().setAccessibleName("Table status " + info);
     } // updateStatusLabel()
 
     public void setModel(SortFilterSelectModel selectModel){
