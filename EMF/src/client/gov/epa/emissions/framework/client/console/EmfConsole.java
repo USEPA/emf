@@ -4,6 +4,9 @@ import gov.epa.emissions.commons.gui.Confirm;
 import gov.epa.emissions.framework.ConcurrentTaskRunner;
 import gov.epa.emissions.framework.client.EmfFrame;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserPresenter;
+import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserView;
+import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserWindow;
 import gov.epa.emissions.framework.client.download.FileDownloadPresenter;
 import gov.epa.emissions.framework.client.download.FileDownloadWindow;
 import gov.epa.emissions.framework.client.sms.SectorScenarioDialog;
@@ -74,6 +77,7 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
         createLayout(session);
         showStatus();
         showFileDownload();
+        showDatasetsManager();
     }
 
     private void createLayout(EmfSession session) {
@@ -107,6 +111,16 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
 
         fileDownloadPresenter = new FileDownloadPresenter(session.user(), session.dataCommonsService(), new ConcurrentTaskRunner());
         fileDownloadPresenter.display(fileDownloadWindow);
+    }
+    
+    private void showDatasetsManager() {
+        try {
+            DatasetsBrowserView datasetsBrowserView = new DatasetsBrowserWindow(session, this, desktopManager);
+            DatasetsBrowserPresenter datasetsBrowserPresenter = new DatasetsBrowserPresenter(session);
+            datasetsBrowserPresenter.doDisplay(datasetsBrowserView);
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setProperties() {
