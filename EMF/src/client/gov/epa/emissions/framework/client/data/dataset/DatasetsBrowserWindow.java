@@ -89,6 +89,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         JPanel panel = createLayout(datasets);
         Container contentPane = getContentPane();
         contentPane.add(panel);
+        this.messagePanel.setMessage("Please select a dataset type to display datasets.");
         super.display();
         populate();
     }
