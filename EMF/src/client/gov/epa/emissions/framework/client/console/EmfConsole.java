@@ -77,7 +77,6 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
         createLayout(session);
         showStatus();
         showFileDownload();
-        showDatasetsManager();
     }
 
     private void createLayout(EmfSession session) {
@@ -286,6 +285,11 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
     
     public void observe(EmfConsolePresenter presenter) {
         manageMenu.observe(presenter);
+    }
+    
+    public void display() {
+        super.display();
+        showDatasetsManager();
     }
 
     public void displayUserManager() throws EmfException {

@@ -89,7 +89,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         JPanel panel = createLayout(datasets);
         Container contentPane = getContentPane();
         contentPane.add(panel);
-        this.messagePanel.setMessage("Please select a dataset type to display datasets.");
+        messagePanel.setMessage("Fetching dataset types...");
         super.display();
         populate();
     }
@@ -827,6 +827,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
 //                    this.parentContainer.
                     ComponentUtility.enableComponents(parentContainer, true);
                     this.parentContainer.setCursor(null); //turn off the wait cursor
+                    messagePanel.setMessage("Please select a dataset type to display datasets.");
                 }
             }
         };
