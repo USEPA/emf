@@ -47,7 +47,7 @@ public class VersionedDataWindow extends DisposableInteralFrame implements Versi
     private EditVersionsPanel versionsPanel; 
     
     public VersionedDataWindow(EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Data Versions Editor", new Dimension(750, 350), desktopManager);
+        super("Data Versions Editor", new Dimension(800, 350), desktopManager);
 
         this.parentConsole = parentConsole;
         layout = new JPanel();
