@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -27,7 +28,7 @@ import javax.swing.table.TableCellRenderer;
  * 
  */
 
-public class MultiRowHeaderRenderer extends JPanel implements TableCellRenderer
+public class MultiRowHeaderRenderer extends DefaultTableCellRenderer
 
 {
 
@@ -74,7 +75,7 @@ public class MultiRowHeaderRenderer extends JPanel implements TableCellRenderer
 			labels[i].setHorizontalAlignment(SwingConstants.CENTER);
 			labels[i].setText(values[i]);
 			labels[i].setOpaque(true);
-			add(labels[i]);
+			//add(labels[i]);
 		} // for(i)
 	} // MultiRowHeaderRenderer()
 
@@ -93,6 +94,8 @@ public class MultiRowHeaderRenderer extends JPanel implements TableCellRenderer
 		{
 			labels[i].setBackground(background);
 		}
+		
+		if (labels.length > 0) return labels[0];
 		return this;
 	}
 }
