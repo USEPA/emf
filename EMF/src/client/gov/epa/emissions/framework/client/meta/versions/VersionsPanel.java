@@ -29,6 +29,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
@@ -163,13 +164,15 @@ public class VersionsPanel extends JPanel implements VersionsView {
             hasMultiISources = true;
         
         JPanel panel = new JPanel();
-        panel.add(new Label("Table:"));
+        JLabel tableLabel = new JLabel("Table:");
+        panel.add(tableLabel);
 
         DefaultComboBoxModel tablesModel = new DefaultComboBoxModel(tableNames(sources));
         tableCombo = new JComboBox(tablesModel);
         tableCombo.setName("tables");
         tableCombo.setEditable(false);
         tableCombo.addActionListener(sourceAction());
+        tableLabel.setLabelFor(tableCombo);
         panel.add(tableCombo);
 
         view = new ViewButton(new AbstractAction() {
