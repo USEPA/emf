@@ -9,6 +9,7 @@ import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.ManagedView;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -50,7 +51,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private EditorPanel pageContainer;
 
-    private JLabel lockInfo;
+    private Label lockInfo;
 
     private EmfConsole parent;
 
@@ -91,7 +92,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel, BorderLayout.CENTER);
 
-        lockInfo = new JLabel();
+        lockInfo = new Label("Lock info", "");
         panel.add(lockInfo, BorderLayout.LINE_END);
 
         return panel;

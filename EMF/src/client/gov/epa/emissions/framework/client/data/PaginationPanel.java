@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.data;
 
 import gov.epa.emissions.commons.db.Page;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.data.viewer.TablePresenter;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.IconButton;
@@ -33,13 +34,13 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
 
     private TablePresenter presenter;
 
-    private JLabel current;
+    private Label current;
 
     private MessagePanel messagePanel;
 
     private JSlider slider;
 
-    private JLabel filteredRecords;
+    private Label filteredRecords;
 
     private IconButton lastButton;
 
@@ -51,7 +52,7 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
 
     private int totalRecords;
 
-    private JLabel totalRecordsLabel;
+    private Label totalRecordsLabel;
 
     public PaginationPanel(MessagePanel messagePanel) {
         super(new BorderLayout());
@@ -74,18 +75,20 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
 
         JLabel currentName = new JLabel("Current:");
         panel.add(currentName);
-        current = new JLabel("               ");
+        current = new Label("Current", "               ");
         current.setToolTipText("Range of displayed records");
+        currentName.setLabelFor(current);
         panel.add(current);
 
         JLabel filtered = new JLabel("Filtered:");
         panel.add(filtered);
-        filteredRecords = new JLabel("" + totalRecordsCount);
+        filteredRecords = new Label("Filtered", "" + totalRecordsCount);
         filteredRecords.setToolTipText("Number of records in dataset matching the filter");
+        filtered.setLabelFor(filteredRecords);
         panel.add(filteredRecords);
 
         panel.add(new JLabel("of"));
-        totalRecordsLabel = new JLabel("" + totalRecordsCount);
+        totalRecordsLabel = new Label("Total records", "" + totalRecordsCount);
         totalRecordsLabel.setToolTipText("Total number of records in dataset");
         panel.add(totalRecordsLabel);
 
