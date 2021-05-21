@@ -75,7 +75,7 @@ public class TextArea extends JTextArea implements Changeable {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_TAB)
                 {
-                    System.out.println("keyPressed " + e.getKeyCode());
+                    //System.out.println("keyPressed " + e.getKeyCode());
                     e.consume();
                     KeyboardFocusManager.
                             getCurrentKeyboardFocusManager().focusNextComponent();
@@ -84,7 +84,7 @@ public class TextArea extends JTextArea implements Changeable {
                 if (e.getKeyCode() == KeyEvent.VK_TAB
                         &&  e.isShiftDown())
                 {
-                    System.out.println("keyPressed " + e.getKeyCode());
+                    //System.out.println("keyPressed " + e.getKeyCode());
                     e.consume();
                     KeyboardFocusManager.
                             getCurrentKeyboardFocusManager().focusPreviousComponent();
