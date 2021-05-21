@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.gui.buttons.CancelButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.DefaultEmfSession;
 import gov.epa.emissions.framework.client.EmfFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.admin.PostRegisterStrategy;
 import gov.epa.emissions.framework.client.admin.RegisterUserPresenter;
 import gov.epa.emissions.framework.client.admin.RegisterUserWindow;
@@ -107,12 +108,12 @@ public class LoginWindow extends EmfFrame implements LoginView {
     }
 
     private int toUpdate() {
-        String message = "An updated version of the EMF client exists (" + 
-                  presenter.getUpdatedEmfVersion() + ").\n"
-                + "Would you like to stop logging in so that you can update \nyour client using the Installer?";
+        String message = "<html>An updated version of the EMF client exists (" + 
+                  presenter.getUpdatedEmfVersion() + ").<br>"
+                + "Would you like to stop logging in so that you can update<br>your client using the Installer?</html>";
 
         System.out.println("Showing confirm dialog");
-        return JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.YES_NO_OPTION,
+        return JOptionPane.showConfirmDialog(this, new Label("", message), "Warning", JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
     }
 

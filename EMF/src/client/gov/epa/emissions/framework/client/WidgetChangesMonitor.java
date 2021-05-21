@@ -21,11 +21,11 @@ public class WidgetChangesMonitor {
     }
 
     public boolean shouldDiscardChanges() {
-        String message = "Would you like to discard the changes " + System.getProperty("line.separator")
-                + " and close the current window?";
+        String message = "<html>Would you like to discard the changes <br>"
+                + " and close the current window?</html>";
         String title = "Discard changes?";
         if (list.hasChanges()) {
-            YesNoDialog dialog = new YesNoDialog(window, title, message);
+            YesNoDialog dialog = new YesNoDialog(window, title, new Label("", message));
             return dialog.confirm();
         }
 

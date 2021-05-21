@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.gui.Confirm;
 import gov.epa.emissions.framework.ConcurrentTaskRunner;
 import gov.epa.emissions.framework.client.EmfFrame;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserPresenter;
 import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserView;
 import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserWindow;
@@ -239,7 +240,7 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
                 }
                 
                 if (showDialog) {
-                    JOptionPane.showMessageDialog(EmfConsole.this, guideMessage, "EMF User's Guide",
+                    JOptionPane.showMessageDialog(EmfConsole.this, new Label("", guideMessage), "EMF User's Guide",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -249,7 +250,7 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
         JMenuItem about = new JMenuItem("About");
         about.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                JOptionPane.showMessageDialog(EmfConsole.this, aboutMessage, "About the EMF",
+                JOptionPane.showMessageDialog(EmfConsole.this, new Label("", aboutMessage), "About the EMF",
                         JOptionPane.INFORMATION_MESSAGE);
             }
         });

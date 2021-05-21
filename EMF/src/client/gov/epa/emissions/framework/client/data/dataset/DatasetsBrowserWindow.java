@@ -12,6 +12,7 @@ import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.exim.DatasetsBrowserAwareImportPresenter;
@@ -617,7 +618,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         }
 
         String message = "Are you sure you want to remove the selected " + datasets.size() + " dataset(s)?";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
+        int selection = JOptionPane.showConfirmDialog(parentConsole, new Label("", message), "Warning", JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
             //long running methods.....
@@ -703,9 +704,9 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
     public void doRefresh() throws EmfException {  
         int numDataset = presenter.getNumOfDatasets(getSelectedDSType(), textFilter.getText());
         if ( numDataset >= 300){
-            String message = "There are " + numDataset + " datasets, which could take a while to transfer, would you like to continue? \n"
-            +"[Hint: if you choose not to continue, enter a filter in Name Contains before proceeding]";
-            int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
+            String message = "<html>There are " + numDataset + " datasets, which could take a while to transfer, would you like to continue?<br>"
+            +"[Hint: if you choose not to continue, enter a filter in Name Contains before proceeding]</html>";
+            int selection = JOptionPane.showConfirmDialog(parentConsole, new Label("", message), "Warning", JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.NO_OPTION ||
