@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 
 public class EditableUserProfilePanel extends JPanel {
 
-    private Widget username;
+    private Label username;
 
     private PasswordField password;
 
@@ -96,6 +96,7 @@ public class EditableUserProfilePanel extends JPanel {
         JPanel valuesPanel = new JPanel(valuesLayoutManager);
 
         usernameLabel.setLabelFor(username);
+        this.username = username;
         valuesPanel.add(username);
 
         password = new PasswordField("password", 10);
@@ -234,7 +235,7 @@ public class EditableUserProfilePanel extends JPanel {
         return wantEmails.isSelected();
     }
     public String getUsername() {
-        return username.value();
+        return username.getText();
     }
     
     public char[] getPassword() {
