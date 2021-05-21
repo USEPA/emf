@@ -86,9 +86,11 @@ public class RevisionPanel extends JPanel {
         JPanel panel = new JPanel(new GridLayout(1, 2, 10, 0));
 
         what = new TextArea("", "", 30, 2);
+        what.getAccessibleContext().setAccessibleName("What was changed");
         panel.add(labelValuePanel("What was changed", ScrollableComponent.createWithVerticalScrollBar(what)));
 
         why = new TextArea("", "", 30, 2);
+        why.getAccessibleContext().setAccessibleName("Why it was changed");
         panel.add(labelValuePanel("Why it was changed", ScrollableComponent.createWithVerticalScrollBar(why)));
 
         return panel;
