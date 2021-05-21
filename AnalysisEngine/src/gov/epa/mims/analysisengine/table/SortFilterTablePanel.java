@@ -365,6 +365,11 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 	                                         int rowIndex, int vColIndex) {
 	            Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 	            if ( column1.trim().equalsIgnoreCase("select")){
+	            	if (c instanceof JComponent && vColIndex == 1) {
+	            		JComponent jc = (JComponent)c;
+	            		jc.setToolTipText("Use checkbox to select this row");
+	            		jc.getAccessibleContext().setAccessibleDescription("Use checkbox to select this row");
+	            	}
 	            	if (c instanceof JComponent && vColIndex>2 ) {
 	            		JComponent jc = (JComponent)c;
 	            		jc.setToolTipText(getValueAt(rowIndex, 2) != null? getValueAt(rowIndex, 2).toString():"");
