@@ -44,7 +44,12 @@ public class ImportInputRules {
         if (files == null || files.length == 0) {
             throw new EmfException("A Filename should be specified");
         }
-
+        
+        for (String file : files) {
+            if (file.contains(" ")) {
+                throw new EmfException("Filenames can't contain spaces");
+            }
+        }
     }
 
     private void validateDatasetName(String datasetName) throws EmfException {

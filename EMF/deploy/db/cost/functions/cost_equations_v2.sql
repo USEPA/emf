@@ -402,7 +402,7 @@ Is PM emission rate based on pm2_5 or pm10?
 Is PM emission rate based on measure inlet or outlet rate?
 */
 
-t14_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 14'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
+t14_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 14'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
 t14_fa := '(' || stkflow_expression || ')';
 t14_fd := '((' || t14_fa || ') * ((460.0 + 68.0)/(460.0 + ' || inv_table_alias || '.stktemp)) * (1.0 - ' || control_measure_equation_table_alias || '.value1 / 100.0))';
@@ -465,7 +465,7 @@ Is PM emission rate based on pm2_5 or pm10?
 Is PM emission rate based on measure inlet or outlet rate?
 */
 
-t15_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 15'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
+t15_use_equation := 'coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 15'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || inv_table_alias || '.stktemp, 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 and coalesce(' || inv_table_alias || '.annual_avg_hours_per_year, 0.0) <> 0.0';
 --use brenda shines approach
 t15_fa := '(' || stkflow_expression || ')';
 t15_ec1 := '(case when  ' || t15_fa || ' < 9495.0 then 614.55 else 57.87 end)';
@@ -719,7 +719,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 			'case 
 				' || case when not has_design_capacity_columns then '' else '
 				--Equation Type 1 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 					annual_cost := annualized_capital_cost + operation_maintenance_cost
 					annualized_capital_cost := capital_cost * cap_recovery_factor
@@ -745,7 +745,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
@@ -766,7 +766,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -787,7 +787,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -807,7 +807,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2c
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity [in HP] ^ capital_cost_exponent) + capital_cost_base;
@@ -1067,7 +1067,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 10
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := design_capacity * capital_cost_multiplier * 1000 * (250.0 / design_capacity) ^ capital_cost_exponent;
@@ -1097,7 +1097,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				-- Equation Type 11
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- figure out cost per ton
 						computed_cost_per_ton := 
@@ -1161,7 +1161,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						Capital Cost = var1*input1^var2+var3*input1^var4 
 						O&M Cost = var5+var6*input1^var7+var8*input1^var9+var10*input3+var11*input2
@@ -1229,7 +1229,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 20
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
@@ -1271,7 +1271,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				--Equation Type 1 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 					annual_cost := annualized_capital_cost + operation_maintenance_cost
 					annualized_capital_cost := capital_cost * cap_recovery_factor
@@ -1291,7 +1291,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
@@ -1312,7 +1312,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -1333,7 +1333,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -1353,7 +1353,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2c
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity [in HP] ^ capital_cost_exponent) + capital_cost_base;
@@ -1597,7 +1597,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' end || '
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 10
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := design_capacity * capital_cost_multiplier * 1000 * (250.0 / design_capacity) ^ capital_cost_exponent;
@@ -1625,7 +1625,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				-- Equation Type 11
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- figure out cost per ton
 						computed_cost_per_ton := 
@@ -1688,7 +1688,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						Capital Cost = var1*input1^var2+var3*input1^var4 
 						O&M Cost = var5+var6*input1^var7+var8*input1^var9+var10*input3+var11*input2
@@ -1754,7 +1754,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 20
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
@@ -1802,7 +1802,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				--Equation Type 1 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 					annual_cost := annualized_capital_cost + operation_maintenance_cost
 					annualized_capital_cost := capital_cost * cap_recovery_factor
@@ -1822,7 +1822,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
@@ -1853,7 +1853,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -1884,7 +1884,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -1911,7 +1911,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2c
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity [in HP] ^ capital_cost_exponent) + capital_cost_base;
@@ -2155,7 +2155,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' end || '
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 10
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := design_capacity * capital_cost_multiplier * 1000 * (250.0 / design_capacity) ^ capital_cost_exponent;
@@ -2183,7 +2183,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				-- Equation Type 11
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- figure out cost per ton
 						computed_cost_per_ton := 
@@ -2250,7 +2250,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						Capital Cost = var1*input1^var2+var3*input1^var4 
 						O&M Cost = var5+var6*input1^var7+var8*input1^var9+var10*input3+var11*input2
@@ -2280,7 +2280,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 20
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
@@ -2330,7 +2330,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				--Equation Type 1 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 					annual_cost := annualized_capital_cost + operation_maintenance_cost
 					annualized_capital_cost := capital_cost * cap_recovery_factor
@@ -2348,7 +2348,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
@@ -2365,7 +2365,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -2382,7 +2382,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -2399,7 +2399,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2c
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity [in HP] ^ capital_cost_exponent) + capital_cost_base;
@@ -2610,7 +2610,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' end || '
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 10
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := design_capacity * capital_cost_multiplier * 1000 * (250.0 / design_capacity) ^ capital_cost_exponent;
@@ -2638,7 +2638,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				-- Equation Type 11
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- figure out cost per ton
 						computed_cost_per_ton := 
@@ -2688,7 +2688,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' end || '
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 				' end || '
@@ -2712,7 +2712,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				--Equation Type 1 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 					annual_cost := annualized_capital_cost + operation_maintenance_cost
 					annualized_capital_cost := capital_cost * cap_recovery_factor
@@ -2730,7 +2730,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || inv_table_alias || '.design_capacity, 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
@@ -2747,7 +2747,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -2764,7 +2764,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || inv_table_alias || '.design_capacity, 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -2781,7 +2781,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					null::double precision
 
 				--Equation Type 2c
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity [in HP] ^ capital_cost_exponent) + capital_cost_base;
@@ -2998,7 +2998,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' end || '
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 10
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := design_capacity * capital_cost_multiplier * 1000 * (250.0 / design_capacity) ^ capital_cost_exponent;
@@ -3026,7 +3026,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				-- Equation Type 11
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || inv_table_alias || '.design_capacity, 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- figure out cost per ton
 						computed_cost_per_ton := 
@@ -3076,7 +3076,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				' end || '
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					|| deflator_gdp_adjustment_factor_expression || ' * 
 					null::double precision
 				' end || '
@@ -3100,7 +3100,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				--Equation Type 1 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 					annual_cost := annualized_capital_cost + operation_maintenance_cost
 					annualized_capital_cost := capital_cost * cap_recovery_factor
@@ -3121,7 +3121,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 					
 				--Equation Type 2 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity ^ capital_cost_exponent) + capital_cost_base;
@@ -3145,7 +3145,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 					
 				--Equation Type 2a 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (emis_reduction ^ capital_cost_exponent) + capital_cost_base;
@@ -3169,7 +3169,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2b 
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * e ^ (design_capacity * capital_cost_exponent);
@@ -3192,7 +3192,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				--Equation Type 2c
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * (design_capacity [in HP] ^ capital_cost_exponent) + capital_cost_base;
@@ -3446,7 +3446,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 10
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' and coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := design_capacity * capital_cost_multiplier * 1000 * (250.0 / design_capacity) ^ capital_cost_exponent;
@@ -3475,7 +3475,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 					)
 
 				-- Equation Type 11
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- figure out cost per ton
 						computed_cost_per_ton := 
@@ -3540,7 +3540,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 13
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || stkflow_expression || ', 0) <> 0 then '
 					/*
 						Capital Cost = var1*input1^var2+var3*input1^var4 
 						O&M Cost = var5+var6*input1^var7+var8*input1^var9+var10*input3+var11*input2
@@ -3606,7 +3606,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 
 				' || case when not has_design_capacity_columns then '' else '
 				-- Equation Type 20
-				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then '
+				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' and coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then '
 					/*
 						-- calculate capital cost
 						capital_cost := capital_cost_multiplier * design_capacity (mmbtu/hr)
@@ -3678,7 +3678,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				--Equation Type 1 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 1'' then
 					case 
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then 
 							''Type 1''
 						else
 							''-Type 1''
@@ -3687,7 +3687,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				--Equation Type 2 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2'' then
 					case 
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
 							''Type 2''
 						else
 							''-Type 2''
@@ -3696,7 +3696,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				--Equation Type 2a 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2a'' then
 					case 
-						when coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(3.412 * ' || convert_design_capacity_expression || ', 0) <= 2000.0 then 
 							''Type 2a''
 						else
 							''-Type 2a''
@@ -3705,7 +3705,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				--Equation Type 2b 
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2b'' then
 					case 
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) <= 1500.0 then 
 							''Type 2b''
 						else
 							''-Type 2b''
@@ -3714,7 +3714,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				--Equation Type 2c
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 2c'' then
 					case
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(1341.022 * ' ||convert_design_capacity_expression || ', 0) < 1500.0 then
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(1341.022 * ' || convert_design_capacity_expression || ', 0) < 1500.0 then
 							''Type 2c''
 						else
 							''-Type 2c''
@@ -3791,7 +3791,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				-- Equation Type 10
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 10'' then
 					case 
-						when coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) <> 0 then 
+						when coalesce(' || convert_design_capacity_expression_default_MW_units || ', 0) > 0.1 then 
 							''Type 10''
 						else
 							''-Type 10''
@@ -3800,7 +3800,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				-- Equation Type 11
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 11'' then
 					case 
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then 
 							''Type 11''
 						else
 							''-Type 11''
@@ -3823,7 +3823,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				-- Equation Type 13
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 13'' then
 					case 
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 and coalesce(' || stkflow_expression || ', 0) <> 0 then 
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 and coalesce(' || stkflow_expression || ', 0) <> 0 then 
 							''Type 13''
 						else
 							''-Type 13''
@@ -3896,7 +3896,7 @@ t19_tac := '(' || inv_table_alias || '.annual_avg_hours_per_year) * (((0.00162) 
 				-- Equation Type 20
 				when coalesce(' || equation_type_table_alias || '.name,'''') = ''Type 20'' then
 					case
-						when coalesce(' || convert_design_capacity_expression || ', 0) <> 0 then
+						when coalesce(' || convert_design_capacity_expression || ', 0) > 0.1 then
 							''Type 20''
 						else
 							''-Type 20''

@@ -234,7 +234,6 @@ public class EmfFileChooser extends JComponent {
                 if (action.getActionCommand().equals(JFileChooser.CANCEL_SELECTION))
                 {
                     System.out.printf("CancelSelection\n");
-                    ;
 //                    this.setVisible(false);
 //                    this.dispose();
                 }
@@ -321,7 +320,13 @@ public class EmfFileChooser extends JComponent {
             if (uploadFile.length() >= maxFileUploadSize) {
                 JOptionPane.showMessageDialog(null, "File to large (max size is " + (maxFileUploadSize / (1024 * 1024))
                                 + " MB) to upload: " + uploadFile.getName(),
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                                "File Upload Error", JOptionPane.ERROR_MESSAGE);
+                break;
+            }
+            
+            if (uploadFile.getName().contains(" ")) {
+                JOptionPane.showMessageDialog(null, "Filenames can't contain spaces: " + uploadFile.getName(),
+                        "File Upload Error", JOptionPane.ERROR_MESSAGE);
                 break;
             }
 
