@@ -4,8 +4,9 @@ import gov.epa.emissions.commons.io.ColumnMetaData;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.framework.client.data.DataHeaderPref;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,17 +16,22 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
 import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 public class TableColumnHeadersViewer implements MouseListener, ActionListener {
     
@@ -70,7 +76,6 @@ public class TableColumnHeadersViewer implements MouseListener, ActionListener {
     
     public void  renderHeader() {
         JTableHeader tableHeader = new JTableHeader(table.getColumnModel());
-        tableHeader.setPreferredSize(new Dimension(0, 32));
         tableHeader.setBackground(UIManager.getDefaults().getColor("TableHeader.background"));
         tableHeader.setDefaultRenderer(new TableHeaderRenderer(tableHeader, tableMetadata));
         table.setTableHeader(tableHeader);
@@ -79,25 +84,38 @@ public class TableColumnHeadersViewer implements MouseListener, ActionListener {
         initiateColumns();
     }
 
-    public class TableHeaderRenderer extends DefaultTableCellRenderer {
+    public class TableHeaderRenderer extends JPanel implements TableCellRenderer {
+
+        private JTextPane textPane;
 
         private TableMetadata metadata;
 
         public TableHeaderRenderer(JTableHeader tableHeader, TableMetadata tableMetadata) {
+            this.textPane = new JTextPane();
             this.metadata = tableMetadata;
+            textPaneSettings(tableHeader);
+            setLayout(new BorderLayout());
+            add(textPane);
+        }
 
-            setForeground(tableHeader.getForeground());
-            setBackground(tableHeader.getBackground());
-            setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+        private void textPaneSettings(JTableHeader tableHeader) {
+            textPane.setForeground(tableHeader.getForeground());
+            textPane.setBackground(tableHeader.getBackground());
+            textPane.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+            StyledDocument doc = textPane.getStyledDocument();
+            MutableAttributeSet standard = new SimpleAttributeSet();
+            Font font = tableHeader.getFont();
+            StyleConstants.setAlignment(standard, StyleConstants.ALIGN_CENTER);
+            StyleConstants.setFontFamily(standard, font.getFamily());
+            StyleConstants.setFontSize(standard,font.getSize());
+            doc.setParagraphAttributes(0, 0, standard, true);
             
-            setFont(tableHeader.getFont());
-            
-            setHorizontalAlignment(SwingConstants.CENTER);
+            textPane.setFont(font);
         }
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                 boolean hasFocus, int row, int column) {
-            setText("<html><center>" + headerText(value) + "</center></html>");
+            textPane.setText(headerText(value));
             return this;
         }
 
@@ -109,15 +127,15 @@ public class TableColumnHeadersViewer implements MouseListener, ActionListener {
         private String type(String header) {
             ColumnMetaData data = metadata.columnMetadata(header);
             if(data==null){
-                return "<br>";
+                return "\n";
             }
             String type = parse(data.getType());
             if(!type.equalsIgnoreCase("String")){
-                return "<br>"+type;
+                return "\n"+type;
             }
             int length = data.getSize();
             String size = (length==-1 || length > 500)?"*":""+length;
-            return "<br>" + type + "(" + size + ")";
+            return "\n" + type + "(" + size + ")";
         }
 
         private String parse(String type) {
