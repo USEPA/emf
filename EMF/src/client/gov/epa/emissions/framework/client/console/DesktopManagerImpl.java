@@ -124,5 +124,11 @@ public class DesktopManagerImpl implements DesktopManager {
     public int numberOfOpenWindows() {
         return windowNames.size();
     }
+    
+    public void selectNextWindowIfNeeded() {
+        if (desktop.getDesktopPane().getSelectedFrame() == null) {
+            desktop.getDesktopPane().selectFrame(true);
+        }
+    }
 
 }
