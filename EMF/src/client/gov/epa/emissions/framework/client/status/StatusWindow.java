@@ -202,7 +202,8 @@ public class StatusWindow
 //                    setErrorMsg(e1.getCause().getMessage());
                 } finally {
                     super.finalize();
-                    refreshButton.requestFocusInWindow();
+                    if (isSelected())
+                        refreshButton.requestFocusInWindow();
                 }
             }
         }.execute();
