@@ -110,6 +110,7 @@ public class CaseManagerWindow extends DisposableInteralFrame implements CaseMan
         setupTableModel(cases);
         table.refresh(tableData);
         panelRefresh();
+        categoriesBox.requestFocusInWindow();
     }
 
     private void panelRefresh() {
