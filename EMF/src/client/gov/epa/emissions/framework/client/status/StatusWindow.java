@@ -47,6 +47,8 @@ public class StatusWindow
     private EmfConsole parent;
     
     private User user;
+    
+    private RefreshButton refreshButton;
 
     public StatusWindow(EmfConsole parent, DesktopManager desktopManager, User user) {
         super("Status", desktopManager);
@@ -82,7 +84,8 @@ public class StatusWindow
         getRootPane().setDefaultButton(clearButton);
         container.add(clearButton);
 
-        container.add(createRefreshButton());
+        refreshButton = createRefreshButton();
+        container.add(refreshButton);
 
         panel.add(container, BorderLayout.EAST);
 
@@ -105,7 +108,7 @@ public class StatusWindow
         return button;
     }
 
-    private Button createRefreshButton() {
+    private RefreshButton createRefreshButton() {
         return new RefreshButton(this, "Refresh the Status messages", messagePanel);
     }
 
@@ -198,7 +201,9 @@ public class StatusWindow
                         messagePanel.setError(e1.getMessage());
 //                    setErrorMsg(e1.getCause().getMessage());
                 } finally {
-                    super.finalize();            }
+                    super.finalize();
+                    refreshButton.requestFocusInWindow();
+                }
             }
         }.execute();
     }

@@ -91,7 +91,7 @@ public class FileDownloadWindow
     
     private String downloadFolder;
 
-
+    private RefreshButton refreshButton;
    
     
     class Task extends SwingWorker<Void, Void> {
@@ -334,7 +334,8 @@ public class FileDownloadWindow
         getRootPane().setDefaultButton(clearButton);
         container.add(clearButton);
 
-        container.add(createRefreshButton());
+        refreshButton = createRefreshButton();
+        container.add(refreshButton);
 
         panel.add(container, BorderLayout.EAST);
 
@@ -357,7 +358,7 @@ public class FileDownloadWindow
         return button;
     }
 
-    private Button createRefreshButton() {
+    private RefreshButton createRefreshButton() {
         return new RefreshButton(this, "Refresh the Downloaded Files", messagePanel);
     }
 
@@ -755,6 +756,7 @@ public class FileDownloadWindow
 //                    setErrorMsg(e1.getCause().getMessage());
                 } finally {
                     super.finalize();
+                    refreshButton.requestFocusInWindow();
                 }
             }
         }.execute();
