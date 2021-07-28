@@ -15,6 +15,7 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -24,9 +25,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Date;
 
@@ -104,16 +103,18 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
         name = new TextField("name", type.getName(), 40);
+        name.setToolTipText("Dataset type name");
         addChangeable(name);
         layoutGenerator.addLabelWidgetPair("Name:", name, uPanel);
 
-        description = new TextArea("description", type.getDescription(), 40, 2);
+        description = new TextArea("description", type.getDescription(), 40, 2, "Dataset type description");
         addChangeable(description);
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
         descScrollableTextArea.setMinimumSize(new Dimension(80, 50));
         layoutGenerator.addLabelWidgetPair("Description:", descScrollableTextArea, uPanel);
 
         sortOrder = new TextField("sortOrder", type.getDefaultSortOrder(), 40);
+        sortOrder.setToolTipText("Dataset type sort order columns");
         addChangeable(sortOrder);
         layoutGenerator.addLabelWidgetPair("Default Sort Order:", sortOrder, uPanel);
 
@@ -126,12 +127,31 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         Date cDate = type.getCreationDate();
         Date mDate = type.getLastModifiedDate();
         String spaces = "       ";
-        JPanel creator = new JPanel();
-        creator.setLayout(new BoxLayout(creator, BoxLayout.X_AXIS));
-        creator.add(new JLabel("Creator: " + (user == null ? " " : user.getName() + spaces)));
-        creator.add(new JLabel("Creation Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(cDate) + spaces));
-        creator.add(new JLabel("Last Modified Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(mDate)));
-        //layoutGenerator.addLabelWidgetPair("", creator, uPanel);
+        JPanel creator = new JPanel(new SpringLayout());
+        creator.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
+        SpringLayoutGenerator subLayoutGenerator = new SpringLayoutGenerator();
+
+        // creator
+        Label creatorLabel = new Label("Creator", (user == null ? " " : user.getName() + spaces));
+        creatorLabel.setToolTipText("Creator of dataset type");
+        subLayoutGenerator.addLabelWidgetPair("Creator:", creatorLabel, creator);
+        // creation date
+        Label creationDateLabel = new Label("Creation Date", CustomDateFormat.format_YYYY_MM_DD_HH_MM(cDate) + spaces);
+        creationDateLabel.setToolTipText("Creation date of dataset type");
+        subLayoutGenerator.addLabelWidgetPair("Creation Date:", creationDateLabel, creator);
+        // creation date
+        Label lastModDtLabel = new Label("Last Modified Date", CustomDateFormat.format_YYYY_MM_DD_HH_MM(mDate) + spaces);
+        lastModDtLabel.setToolTipText("Last modified date of dataset typpe");
+        subLayoutGenerator.addLabelWidgetPair("Last Modified Date:", lastModDtLabel, creator);
+
+        // Lay out the panel.
+        subLayoutGenerator.makeCompactGrid(creator, 1, 6, // rows, cols
+                5, 5, // initialX, initialY
+                10, 10);// xPad, yPad
+
+//        creator.add(new JLabel("Creator: " + (user == null ? " " : user.getName() + spaces)));
+//        creator.add(new JLabel("Creation Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(cDate) + spaces));
+//        creator.add(new JLabel("Last Modified Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(mDate)));
 
 //        fileFormat = getFileFormat(type);
         JPanel fileFormat = createFileFormatPanel(type);
@@ -144,6 +164,7 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         }else {
             TextField fileFomatTextArea =new TextField(""," No file format for view.  ",40);
             fileFomatTextArea.setEditable(false);
+            fileFomatTextArea.setToolTipText("File format for dataset type");
             fileFormatPanel.add(new JScrollPane(fileFomatTextArea), BorderLayout.CENTER);
         }
 
@@ -229,8 +250,10 @@ public class EditableDatasetTypeWindow extends DisposableInteralFrame implements
         container.setLayout(layout);
 
         Button saveButton = new SaveButton(saveAction());
+        saveButton.setToolTipText("Save dataset type");
         container.add(saveButton);
         CloseButton closeButton = new CloseButton(closeAction());
+        closeButton.setToolTipText("Close view dataset type");
         container.add(closeButton);
         getRootPane().setDefaultButton(saveButton);
 
