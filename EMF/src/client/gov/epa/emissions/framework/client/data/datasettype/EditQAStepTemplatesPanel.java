@@ -134,6 +134,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doAdd();
             }
         });
+        add.setToolTipText("Add QA step template");
         add.setMnemonic(KeyEvent.VK_D);
         container.add(add);
 
@@ -142,6 +143,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doRemove();
             }
         });
+        remove.setToolTipText("Remove QA step template");
         remove.setMnemonic(KeyEvent.VK_R);
         container.add(remove);
 
@@ -150,6 +152,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doEdit();
             }
         });
+        update.setToolTipText("Edit QA step template");
         container.add(update);
 
         Button copy = new CopyButton(new AbstractAction() {
@@ -157,6 +160,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doCopy();
             }
         });
+        copy.setToolTipText("Copy QA step template");
         container.add(copy);
 
         JPanel panel = new JPanel(new BorderLayout());

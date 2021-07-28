@@ -78,6 +78,7 @@ public class EditableTablePanel extends JPanel implements Editor {
 
         JButton add = new JButton("Add");
         add.setMargin(new Insets(2, 2, 2, 2));
+        add.setToolTipText("Add");
         add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 tableData.addBlankRow();
@@ -89,6 +90,7 @@ public class EditableTablePanel extends JPanel implements Editor {
 
         JButton remove = new JButton("Remove");
         remove.setMargin(new Insets(2, 2, 2, 2));
+        remove.setToolTipText("Remove");
         remove.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doRemove(tableData);
