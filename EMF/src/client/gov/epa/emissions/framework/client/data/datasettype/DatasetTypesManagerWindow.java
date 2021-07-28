@@ -385,6 +385,7 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
                         removeButton.setEnabled(false);
                     }
                     this.parentContainer.setCursor(null); //turn off the wait cursor
+                    filterFieldsComboBox.grabFocus();
                 }
             }
         };
