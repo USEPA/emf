@@ -24,6 +24,11 @@ public class CheckBox extends JCheckBox implements Changeable {
         super(title, selected);
     }
 
+    public CheckBox(String title, boolean selected, String toolTipText) {
+        super(title, selected);
+        setToolTipText(toolTipText);
+    }
+
     private void addActionListener() {
         addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

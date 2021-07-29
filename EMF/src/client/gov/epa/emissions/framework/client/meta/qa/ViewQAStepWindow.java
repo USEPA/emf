@@ -196,16 +196,19 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         String table = stepResult.getTable();
         table = (table == null) ? "" : table;
         tableName = new TextField("tableName", table, 20);
+        tableName.setToolTipText("QA step database table name");
         tableName.setEditable(false);
         layoutGenerator.addLabelWidgetPair("Output Name:", tableName, panel);
 
-        creationStatusLabel = new JLabel();
+        creationStatusLabel = new Label("Creation Status");
         String tableCreationStatus = stepResult.getTableCreationStatus();
+        creationStatusLabel.setToolTipText("QA step creation status");
         creationStatusLabel.setText((tableCreationStatus != null) ? tableCreationStatus : "");
         layoutGenerator.addLabelWidgetPair("Run Status:", creationStatusLabel, panel);
 
-        creationDateLabel = new JLabel();
+        creationDateLabel = new Label("Table Creation Date");
         Date tableCreationDate = stepResult.getTableCreationDate();
+        creationDateLabel.setToolTipText("QA step creation date");
         String creationDate = (tableCreationDate != null) ? CustomDateFormat.format_MM_DD_YYYY_HH_mm(tableCreationDate)
                 : "";
         creationDateLabel.setText(creationDate);
@@ -213,6 +216,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
 
         currentTable = new JCheckBox();
         currentTable.setEnabled(false);
+        currentTable.setToolTipText("QA step current output?");
         currentTable.setSelected(stepResult.isCurrentTable());
         layoutGenerator.addLabelWidgetPair("Current Output?", currentTable, panel);
 
@@ -233,7 +237,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 + "file (e.g., a REPCONFIG file)");
         layoutGenerator.addLabelWidgetPair("Configuration:", config, panel);
 
-        comments = new TextArea("Comments", step.getComments(), 40, 2);
+        comments = new TextArea("Comments", step.getComments(), 40, 2, "QA step comments");
         //addChangeable(comments);
         ScrollableComponent scrollableComment = ScrollableComponent.createWithVerticalScrollBar(comments);
         layoutGenerator.addLabelWidgetPair("Comments:", scrollableComment, panel);
@@ -244,7 +248,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         layoutGenerator.addLabelWidgetPair("", overideChkboxPanel(step), panel);
         
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(panel, 5, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(panel, 6, 2, // rows, cols
                 5, 5, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -265,6 +269,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     private JPanel downloadResultsChkboxPanel(QAStep step) {
         download = new JCheckBox("Download result file to local machine?");
         download.setName("download");
+        download.setToolTipText("Download result file to local machine?");
         download.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
 
@@ -286,8 +291,8 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
 
     private JPanel overideChkboxPanel(QAStep step) {
         overide = new JCheckBox("Overwrite files if they exist?");
-        overide.setToolTipText("If the box checked, the files with the same names will be overiden if they already exist in the folder.");
-        overide.setName("overid");
+        overide.setToolTipText("If the box checked, the files with the same names will be overriden if they already exist in the folder.");
+        overide.setName("override");
         JPanel overidePanel = new JPanel(new BorderLayout(2, 10));
         overidePanel.add(overide, BorderLayout.LINE_START);
         return overidePanel;
@@ -296,6 +301,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     private JPanel exportFolderPanel(QAStep step) {
         exportFolder = new JTextField(40);
         exportFolder.setName("folder");
+        exportFolder.setToolTipText("QA step output folder");
         String outputFolder = step.getOutputFolder();
         exportFolder.setText(outputFolder != null ? outputFolder : "");
         exportFolderButton = new BrowseButton(new AbstractAction() {
@@ -303,6 +309,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 selectFolder();
             }
         });
+        exportFolder.setToolTipText("Browse for QA step output folder");
         JPanel folderPanel = new JPanel(new BorderLayout(10, 10));
         folderPanel.add(exportFolder);
         folderPanel.add(exportFolderButton, BorderLayout.EAST);
@@ -696,6 +703,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 doClose();
             }
         });
+        cancel.setToolTipText("Close QA step window");
         return cancel;
     }
 
