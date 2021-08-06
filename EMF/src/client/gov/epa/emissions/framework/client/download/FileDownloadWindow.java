@@ -334,6 +334,9 @@ public class FileDownloadWindow
         getRootPane().setDefaultButton(clearButton);
         container.add(clearButton);
 
+        JButton goToFolderButton = createGoToFolderButton();
+        container.add(goToFolderButton);
+
         refreshButton = createRefreshButton();
         container.add(refreshButton);
 
@@ -343,7 +346,7 @@ public class FileDownloadWindow
     }
 
     private JButton createClearButton() {
-        JButton button = new JButton("Clear Downloads");
+        JButton button = new JButton("Clear");
         button.setIcon(trashIcon());
         button.setBorderPainted(false);
         button.setToolTipText("Removes downloads from the list");
@@ -352,6 +355,21 @@ public class FileDownloadWindow
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 presenter.doClear();
+            }
+        });
+
+        return button;
+    }
+
+    private JButton createGoToFolderButton() {
+        JButton button = new JButton("Go to Folder");
+        button.setBorderPainted(false);
+        button.setToolTipText("Go to folder containing download files");
+        button.setMnemonic(KeyEvent.VK_G);
+
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                openContaingFolder();
             }
         });
 
@@ -376,7 +394,7 @@ public class FileDownloadWindow
         // FIXME: code put in for the demo
 //        table.setRowHeight(50);
         //table.setDefaultRenderer(Object.class, new TextAreaTableCellRenderer());
-        
+
         table.setCellSelectionEnabled(true);
 //        MultiLineCellRenderer multiLineCR = new MultiLineCellRenderer();
         FileDownloadTableCellRenderer progressBarTableCellRenderer = new FileDownloadTableCellRenderer();
@@ -384,7 +402,7 @@ public class FileDownloadWindow
 //        table.getColumnModel().getColumn(1).setCellRenderer(multiLineCR);
 //        table.getColumnModel().getColumn(2).setCellRenderer(multiLineCR);
         table.getColumnModel().getColumn(0).setCellRenderer(progressBarTableCellRenderer);
-        
+
         table.addMouseListener(new MouseListener() {
             
             public void mouseReleased(MouseEvent e) {
@@ -433,7 +451,7 @@ public class FileDownloadWindow
             showPopup(e.getPoint());//table.columnAtPoint(e.getPoint()), table.rowAtPoint(e.getPoint()));
         }
     }
-  
+
     /**
      *  Show a hidden column in the table.
      *
@@ -558,17 +576,8 @@ public class FileDownloadWindow
                 java.awt.EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         // NOTE Auto-generated method stub
-//                        System.out.println("Popup Open Containing Folder click");
-                        Desktop desktop = null;
-                        if (Desktop.isDesktopSupported()) {
-                            desktop = Desktop.getDesktop();
-                        }
+                        openContaingFolder();
 
-                        try {
-                            desktop.open(new File(downloadFolder));
-                        } catch (IOException ex) {
-                            messagePanel.setError(ex.getMessage());
-                        }
                     }
                 });
                 
@@ -587,7 +596,21 @@ public class FileDownloadWindow
         //  Display the popup below the click point
         popup.show(table.getComponentAt(point), point.x, point.y);
     }
- 
+
+    private void openContaingFolder() {
+        //                        System.out.println("Popup Open Containing Folder click");
+        Desktop desktop = null;
+        if (Desktop.isDesktopSupported()) {
+            desktop = Desktop.getDesktop();
+        }
+
+        try {
+            desktop.open(new File(downloadFolder));
+        } catch (IOException ex) {
+            messagePanel.setError(ex.getMessage());
+        }
+    }
+
     private void setColumnWidths(TableColumnModel model) {
         TableColumn message = model.getColumn(0);
         message.setPreferredWidth((int) (getWidth() * 0.75));
