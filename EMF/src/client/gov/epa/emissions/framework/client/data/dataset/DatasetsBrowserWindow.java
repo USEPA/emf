@@ -41,7 +41,9 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -57,6 +59,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 public class DatasetsBrowserWindow extends DisposableInteralFrame implements DatasetsBrowserView, RefreshObserver {
 
@@ -102,9 +106,10 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         this.allDSTypes = dbDSTypes.toArray(new DatasetType[0]);
     }
     
-    private Action typeAction() {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
+    private void typeAction() {
+//        return new AbstractAction() {
+//            public void actionPerformed(ActionEvent e) {
+
                 DatasetType type = getSelectedDSType();
                 try {
                     // count the number of datasets and do refresh
@@ -114,13 +119,64 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
                     messagePanel.setError("Could not retrieve all datasets for dataset type " + type.getName());
                 }
             }
-        };
-    }    
+//        };
+//    }
 
     private void createDSTypesComboBox() {
         dsTypesBox = new ComboBox("Select one", allDSTypes, "Dataset Types");
         dsTypesBox.setPreferredSize(new Dimension(360, 25));
-        dsTypesBox.addActionListener(typeAction());
+        final boolean[] popupMenuWillBecomeInvisible = {true};
+//        dsTypesBox.addActionListener(new AbstractAction() {
+//            public void actionPerformed(ActionEvent e) {
+//
+//                System.out.println("popupMenuWillBecomeInvisible[0]=" + popupMenuWillBecomeInvisible[0]);
+//                if (popupMenuWillBecomeInvisible[0]) {
+//                    DatasetType type = getSelectedDSType();
+//                    try {
+//                        // count the number of datasets and do refresh
+//                        if (dsTypesBox.getSelectedIndex() > 0)
+//                            doRefresh();
+//                    } catch (EmfException e1) {
+//                        messagePanel.setError("Could not retrieve all datasets for dataset type " + type.getName());
+//                    }
+//                }
+//            }
+//        });
+        dsTypesBox.addPopupMenuListener(new PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                popupMenuWillBecomeInvisible[0] = false;
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                popupMenuWillBecomeInvisible[0] = true;
+                typeAction();
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                popupMenuWillBecomeInvisible[0] = true;
+            }
+        });
+        dsTypesBox.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                System.out.println("keyReleased " + e.getKeyChar());
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    typeAction();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
     }
 
     public DatasetType getSelectedDSType() {
@@ -172,7 +228,12 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         JPanel topPanel = new JPanel(new BorderLayout());
         textFilter = new TextField("textfilter", 10, "Name contains text filter");
         textFilter.setEditable(true);
-        textFilter.addActionListener(typeAction());
+        textFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typeAction();
+            }
+        });
         
         Button advButton = new Button("Advanced", new AbstractAction(){
             public void actionPerformed(ActionEvent arg0) {
