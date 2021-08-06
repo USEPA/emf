@@ -125,7 +125,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
     private void createDSTypesComboBox() {
         dsTypesBox = new ComboBox("Select one", allDSTypes, "Dataset Types");
         dsTypesBox.setPreferredSize(new Dimension(360, 25));
-        final boolean[] popupMenuWillBecomeInvisible = {true};
+//        final boolean[] popupMenuWillBecomeInvisible = {true};
 //        dsTypesBox.addActionListener(new AbstractAction() {
 //            public void actionPerformed(ActionEvent e) {
 //
@@ -145,18 +145,18 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         dsTypesBox.addPopupMenuListener(new PopupMenuListener() {
             @Override
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                popupMenuWillBecomeInvisible[0] = false;
+//                popupMenuWillBecomeInvisible[0] = false;
             }
 
             @Override
             public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-                popupMenuWillBecomeInvisible[0] = true;
+//                popupMenuWillBecomeInvisible[0] = true;
                 typeAction();
             }
 
             @Override
             public void popupMenuCanceled(PopupMenuEvent e) {
-                popupMenuWillBecomeInvisible[0] = true;
+//                popupMenuWillBecomeInvisible[0] = true;
             }
         });
         dsTypesBox.addKeyListener(new KeyListener() {
