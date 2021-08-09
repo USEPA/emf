@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.gui.Editor;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.meta.keywords.EditableKeyValueTableData;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
@@ -106,13 +107,13 @@ public class EditableTablePanel extends JPanel implements Editor {
     }
 
     private void doRemove(final InlineEditableTableData tableData) {
-        int[] rows = table.getSelectedRows();
+        int rowCount = ((EditableKeyValueTableData)tableData).getSelected().length;
 
-        if (rows.length == 0)
+        if (rowCount == 0)
             return;
 
         String title = "Warning";
-        String message = "Are you sure you want to remove the "+rows.length+" selected items?";
+        String message = "Are you sure you want to remove the "+rowCount+" selected items?";
         int selection = JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
 
