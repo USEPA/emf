@@ -227,6 +227,7 @@ public class EmfFileChooser extends JComponent {
         fileChooser.setMultiSelectionEnabled(true);
         fileChooser.setApproveButtonText("Upload");
         fileChooser.setControlButtonsAreShown(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent action)
@@ -247,6 +248,9 @@ public class EmfFileChooser extends JComponent {
                 }
             }
         });
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        InputMap map = fileChooser.getInputMap(JFileChooser.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        map.put(enter, "approveSelection");
 
         localPanel.add(fileChooser);
         JButton buttonUpload = new JButton("Upload");
