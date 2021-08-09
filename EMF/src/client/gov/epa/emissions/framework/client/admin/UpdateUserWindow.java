@@ -61,7 +61,7 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
         panel = createLayout(adminOption);
         container.add(panel);
         container.add(selectDTPanel());
-        
+
         messagePanel = new SingleLineMessagePanel();
         mainContainer.add(messagePanel);
         mainContainer.add(container);
@@ -171,7 +171,8 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
 
     public void windowClosing() {
         try {
-            presenter.doClose();
+            if(shouldDiscardChanges())
+                presenter.doClose();
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         }

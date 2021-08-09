@@ -224,7 +224,6 @@ public class EditableUserProfilePanel extends JPanel {
         UserFeature[] exUserFeatures = user.getExcludedUserFeatures();
         
         featureWidget = new AddRemoveWidget(userFeatures, exUserFeatures, changeablesList, parentConsole, "Features");
-//        featureWidget.setObjects(exUserFeatures);
         featureWidget.setPreferredSize(new Dimension(180, 90));
         featureWidget.setToolTipText("EMF features visible to this user");
 
