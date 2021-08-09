@@ -42,8 +42,17 @@ public class AddRemoveWidget extends JPanel {
         this(allObjects, changeables, parentConsole, true, true);
         this.topic = topic;
     }
-    
-    public AddRemoveWidget(Object[] allObjects, ManageChangeables changeables, EmfConsole parentConsole, 
+
+    public AddRemoveWidget(Object[] allObjects, Object[] setObjects, ManageChangeables changeables, EmfConsole parentConsole, String topic) {
+        this.allObjects = allObjects;
+        this.objectsList = new ListWidget(new Object[0]);
+        setObjects(setObjects);
+        this.parentConsole = parentConsole;
+        setupLayout(changeables, true, true);
+        this.topic = topic;
+    }
+
+    public AddRemoveWidget(Object[] allObjects, ManageChangeables changeables, EmfConsole parentConsole,
             boolean horizontalBar, boolean verticalBar) {
         this.allObjects = allObjects;
         this.parentConsole = parentConsole;
@@ -62,7 +71,6 @@ public class AddRemoveWidget extends JPanel {
     }
 
     private void setupLayout(ManageChangeables changeables, boolean horizontalBar, boolean verticalBar) {
-        this.objectsList = new ListWidget(new Object[0]);
         final JPanel container = this;
         this.objectsList.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent event) {
