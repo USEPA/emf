@@ -244,7 +244,13 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
     }
 
     private void viewDatasetTypes() {
+        messagePanel.clear();
         List selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more dataset types");
+            return;
+        }
+        
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             DatasetType type = (DatasetType) iter.next();
             try {
@@ -257,6 +263,7 @@ public class DatasetTypesManagerWindow extends DisposableInteralFrame implements
     }
 
     private void editDatasetTypes() {
+        messagePanel.clear();
         List selected = selected();
         if (selected.isEmpty()) {
             messagePanel.setMessage("Please select one or more dataset types");
