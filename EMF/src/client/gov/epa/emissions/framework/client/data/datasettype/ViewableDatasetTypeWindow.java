@@ -253,6 +253,10 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
 
     private void showTemplateWindows(EditableQAStepTemplateTableData data) {
         QAStepTemplate[] selected = data.getSelected();
+        if (selected.length == 0) {
+            messagePanel.setMessage("Please select one or more QA Step Templates to view");
+            return;
+        }
         
         for(int i = 0; i < selected.length; i++) {
             ViewableQAStepTemplateView view = new ViewableQAStepTemplateWindow(selected[i].getName()+
