@@ -50,6 +50,9 @@ public class SingleLineMessagePanel extends MessagePanel {
 
     public void setMessage(String message, Color color) {       
         clear();
+        
+        // don't bother showing a blank message
+        if (message == "") return;
 
         this.message = message;
         label.setForeground(color);
