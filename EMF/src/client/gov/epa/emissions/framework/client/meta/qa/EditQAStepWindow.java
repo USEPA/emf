@@ -22,6 +22,7 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -957,8 +958,10 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
             int n = JOptionPane
                     .showConfirmDialog(
                             this,
-                            "You did not specify the Export Name. It will be generated automatically. Would you like to continue?",
-                            "Export Name not Specified", JOptionPane.YES_NO_OPTION);
+                            new Label("", "You did not specify the Export Name. It will be generated automatically. Would you like to continue?"),
+                            "Export Name not Specified",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
             if (n == JOptionPane.YES_OPTION)
                 return true;
             return false;
@@ -2483,7 +2486,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
                         if (viewCount > 100000) {
                             String title = "Warning";
                             String message = "Are you sure you want to view more than 100,000 records?  It could take several minutes to load the data.";
-                            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title,
+                            int selection = JOptionPane.showConfirmDialog(parentConsole, new Label("", message), title,
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                             if (selection == JOptionPane.NO_OPTION) {
