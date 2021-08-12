@@ -166,7 +166,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
 
     private JPanel createRevisionsTab(EmfConsole parentConsole) {
         try {
-            RevisionsTab view = new RevisionsTab(parentConsole, desktopManager, messagePanel, editable);
+            RevisionsTab view = new RevisionsTab(parentConsole, desktopManager, messagePanel, false);
             presenter.set(view);
             return view;
         } catch (EmfException e) {

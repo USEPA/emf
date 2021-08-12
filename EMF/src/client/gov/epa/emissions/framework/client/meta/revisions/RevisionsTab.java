@@ -93,16 +93,16 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
         viewButton.setMnemonic(KeyEvent.VK_V);
         buttonPanel.add(viewButton);
 
-        JButton editButton = new JButton(new AbstractAction("Edit"){
-            public void actionPerformed(ActionEvent event) {
-                editRevisions();
-            }
-        });
-        editButton.setMnemonic(KeyEvent.VK_E);
-        editButton.setMargin(insets);
-        editButton.setEnabled(this.editable);
-        
-        buttonPanel.add(editButton);
+        if (this.editable) {
+            JButton editButton = new JButton(new AbstractAction("Edit"){
+                public void actionPerformed(ActionEvent event) {
+                    editRevisions();
+                }
+            });
+            editButton.setMnemonic(KeyEvent.VK_E);
+            editButton.setMargin(insets);
+            buttonPanel.add(editButton);
+        }
 
         panel.add(buttonPanel, BorderLayout.LINE_START);
 
