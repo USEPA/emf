@@ -125,56 +125,10 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
     private void createDSTypesComboBox() {
         dsTypesBox = new ComboBox("Select one", allDSTypes, "Dataset Types");
         dsTypesBox.setPreferredSize(new Dimension(360, 25));
-//        final boolean[] popupMenuWillBecomeInvisible = {true};
-//        dsTypesBox.addActionListener(new AbstractAction() {
-//            public void actionPerformed(ActionEvent e) {
-//
-//                System.out.println("popupMenuWillBecomeInvisible[0]=" + popupMenuWillBecomeInvisible[0]);
-//                if (popupMenuWillBecomeInvisible[0]) {
-//                    DatasetType type = getSelectedDSType();
-//                    try {
-//                        // count the number of datasets and do refresh
-//                        if (dsTypesBox.getSelectedIndex() > 0)
-//                            doRefresh();
-//                    } catch (EmfException e1) {
-//                        messagePanel.setError("Could not retrieve all datasets for dataset type " + type.getName());
-//                    }
-//                }
-//            }
-//        });
-        dsTypesBox.addPopupMenuListener(new PopupMenuListener() {
+        dsTypesBox.addActionListener(new ActionListener() {
             @Override
-            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-//                popupMenuWillBecomeInvisible[0] = false;
-            }
-
-            @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-//                popupMenuWillBecomeInvisible[0] = true;
+            public void actionPerformed(ActionEvent e) {
                 typeAction();
-            }
-
-            @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {
-//                popupMenuWillBecomeInvisible[0] = true;
-            }
-        });
-        dsTypesBox.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                System.out.println("keyReleased " + e.getKeyChar());
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    typeAction();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
             }
         });
     }
