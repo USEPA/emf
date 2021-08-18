@@ -107,7 +107,7 @@ public class EditableTablePanel extends JPanel implements Editor {
     }
 
     private void doRemove(final InlineEditableTableData tableData) {
-        int rowCount = ((EditableKeyValueTableData)tableData).getSelected().length;
+        int rowCount = tableData.getSelectedCount();
 
         if (rowCount == 0)
             return;

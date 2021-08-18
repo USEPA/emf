@@ -6,4 +6,6 @@ public interface InlineEditableTableData extends EditableTableData {
 
     void removeSelected();
 
+    int getSelectedCount();
+
 }
