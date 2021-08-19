@@ -22,6 +22,7 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -173,7 +174,6 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
         panel.setLayout(new BorderLayout(1, 1));
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel, BorderLayout.NORTH);
-        panel.add(new Label("empty", "  "), BorderLayout.LINE_START);
         panel.add(getCardPanel(),BorderLayout.CENTER);
         return panel;
     }
@@ -292,7 +292,7 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
     private JPanel chooseGeometryPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.add(new Label("<html>Output Shapefile Template:<br/><br/>The QA Step output/result was found to contain the county fips code.  The folowing base shape files are available for use when creating your custom shapefile.</html>"), BorderLayout.NORTH);
+        panel.add(new Label("<html>Output Shapefile Template:<br/><br/>The QA Step output/result was found to contain the county fips code.  The following base shape files are available for use when creating your custom shapefile.</html>"), BorderLayout.NORTH);
         projectionShapeFile = new ComboBox(projectionShapeFileList.toArray(new ProjectionShapeFile[0]));
         if (projectionShapeFile.getItemCount() > 0)
             projectionShapeFile.setSelectedIndex(0);
@@ -309,18 +309,17 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
         JPanel leftPanel = new JPanel(new BorderLayout());
         JPanel rightPanel = new JPanel(new BorderLayout());
 
-        JPanel avaialbleColumnsPanel = new JPanel();
-        avaialbleColumnsPanel.setLayout(new BorderLayout());
+        JPanel availableColumnsPanel = new JPanel();
+        availableColumnsPanel.setLayout(new BorderLayout());
         
-        ListWidget avaialbleColumnsCB = new ListWidget(availableColumns);
-//        if (avaialbleColumnsCB.getItemCount() > 0)
-//            avaialbleColumnsCB.setSelectedIndex(0);
-        avaialbleColumnsCB.setEnabled(false);
-        JScrollPane avaialbleColumnsScrollPane = new JScrollPane(avaialbleColumnsCB);
-        avaialbleColumnsScrollPane.setPreferredSize(new Dimension(20, 100));
-                                        
-        rightPanel.add(new Label("<html>Available Columns<br/>to use in Row<br/>Filter:</html>"), BorderLayout.NORTH);
-        rightPanel.add(avaialbleColumnsScrollPane, BorderLayout.CENTER);
+        ListWidget availableColumnsCB = new ListWidget(availableColumns);
+        JScrollPane availableColumnsScrollPane = new JScrollPane(availableColumnsCB);
+        availableColumnsScrollPane.setPreferredSize(new Dimension(20, 100));
+        
+        JLabel availableColumnsLabel = new JLabel("<html>Available Columns<br/>to use in Row<br/>Filter:</html>");
+        availableColumnsLabel.setLabelFor(availableColumnsCB);
+        rightPanel.add(availableColumnsLabel, BorderLayout.NORTH);
+        rightPanel.add(availableColumnsScrollPane, BorderLayout.CENTER);
         
         // Row Filter
         rowFilter = new TextArea("rowFilter", "", 35, 2);
@@ -328,7 +327,9 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
         JScrollPane rowArea = new JScrollPane(rowFilter, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        leftPanel.add(new Label("Row Filter: "), BorderLayout.NORTH);
+        JLabel rowFilterLabel = new JLabel("Row Filter: ");
+        rowFilterLabel.setLabelFor(rowArea);
+        leftPanel.add(rowFilterLabel, BorderLayout.NORTH);
         leftPanel.add(rowArea,BorderLayout.CENTER);
         
         panel.add(leftPanel, BorderLayout.WEST);
@@ -585,6 +586,7 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
              }
          });
          backButton.setText("Back");
+         backButton.setMnemonic(KeyEvent.VK_B);
          backButton.setEnabled(false);
          nextButton = new JButton(new AbstractAction() {
              public void actionPerformed(ActionEvent e) {
@@ -659,6 +661,7 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
              }
          });
          nextButton.setText("Next");
+         nextButton.setMnemonic(KeyEvent.VK_N);
          nextButton.setEnabled(false);
          
          cancelButton = new CancelButton(new AbstractAction() {
@@ -673,6 +676,7 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
              }
          });
          finishButton.setText("Finish");
+         finishButton.setMnemonic(KeyEvent.VK_I);
          if (!isShapefileCapable || ignoreShapeFileFunctionality)
              finishButton.setEnabled(true);
          else            
