@@ -328,7 +328,7 @@ public class QAStepExportWizard extends Dialog implements QAStepExportWizardView
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         JLabel rowFilterLabel = new JLabel("Row Filter: ");
-        rowFilterLabel.setLabelFor(rowArea);
+        rowFilterLabel.setLabelFor(rowFilter);
         leftPanel.add(rowFilterLabel, BorderLayout.NORTH);
         leftPanel.add(rowArea,BorderLayout.CENTER);
         
