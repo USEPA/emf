@@ -24,7 +24,6 @@ public class TableColumnHeadersEditor {
     
     public void  renderHeader() {
         JTableHeader tableHeader = new JTableHeader(table.getColumnModel());
-        tableHeader.setPreferredSize(new Dimension(0, 32));
         tableHeader.setBackground(UIManager.getDefaults().getColor("TableHeader.background"));
         tableHeader.setDefaultRenderer(new TableHeaderRenderer(tableHeader, tableMetadata));
         table.setTableHeader(tableHeader);
@@ -61,7 +60,7 @@ public class TableColumnHeadersEditor {
         private String type(String header) {
             ColumnMetaData data = metadata.columnMetadata(header);
             if(data==null){
-                return "<br>";
+                return "<br>&nbsp;";
             }
             String type = parse(data.getType());
             if(!type.equalsIgnoreCase("String")){
