@@ -87,7 +87,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
 
     private FormattedDateField date;
 
-    private CheckBox required;
+    private Label required;
 
     private User user;
 
@@ -101,11 +101,11 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     
     private JCheckBox overide;
 
-    private JLabel creationStatusLabel;
+    private Label creationStatusLabel;
     
-    private JLabel creationDateLabel;
+    private Label creationDateLabel;
     
-    private JCheckBox currentTable;
+    private Label currentTable;
 
     private EmfConsole parentConsole;
 
@@ -214,10 +214,9 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         creationDateLabel.setText(creationDate);
         layoutGenerator.addLabelWidgetPair("Run Date:", creationDateLabel, panel);
 
-        currentTable = new JCheckBox();
-        currentTable.setEnabled(false);
+        currentTable = new Label("Current Output?");
         currentTable.setToolTipText("QA step current output?");
-        currentTable.setSelected(stepResult.isCurrentTable());
+        currentTable.setText(stepResult.isCurrentTable() ? "Yes" : "No");
         layoutGenerator.addLabelWidgetPair("Current Output?", currentTable, panel);
 
         // Lay out the panel.
@@ -407,12 +406,9 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         
         layoutGenerator.addLabelWidgetPair("Arguments:", scrollableDetails, panel);
 
-        required = new CheckBox("", step.isRequired());
-        if (step.isRequired())
-            required.setEnabled(false);
-        CheckBox sameAstemplate = new CheckBox("", asTemplate);
-        sameAstemplate.setEnabled(false);
-        
+        required = new Label("", step.isRequired() ? "Yes" : "No");
+        Label sameAstemplate = new Label("", asTemplate ? "Yes" : "No");
+
         order = new NumberFormattedTextField(5, orderAction());
         order.setText(step.getOrder() + "");
         order.addKeyListener(keyListener());
@@ -733,7 +729,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         tableName.setText(result == null ? "" : result.getTable());
         creationStatusLabel.setText(result == null ? "" : result.getTableCreationStatus());
         creationDateLabel.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(result == null ? null : result.getTableCreationDate()));
-        currentTable.setSelected(result == null ? false : result.isCurrentTable());
+        currentTable.setText(result != null && result.isCurrentTable() ? "Yes" : "No");
         super.revalidate();
     }
 

@@ -131,7 +131,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
 
     private Button export;
 
-    private JCheckBox currentTable;
+    private Label currentTable;
 
     private EmfSession session;
 
@@ -139,9 +139,9 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
 
     private TextField tableName;
 
-    private JLabel creationStatusLabel;
+    private Label creationStatusLabel;
 
-    private JLabel creationDateLabel;
+    private Label creationDateLabel;
 
     private EmfDataset[] flatFile2010PointInv = null;
 
@@ -345,21 +345,20 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         tableName.setToolTipText("The name of the output of the step (e.g. name of a table in the database");
         layoutGenerator.addLabelWidgetPair("Output Name:", tableName, panel);
 
-        creationStatusLabel = new JLabel();
         String tableCreationStatus = stepResult.getTableCreationStatus();
+        creationStatusLabel = new Label((tableCreationStatus != null) ? tableCreationStatus : "");
         creationStatusLabel.setText((tableCreationStatus != null) ? tableCreationStatus : "");
         layoutGenerator.addLabelWidgetPair("Run Status:", creationStatusLabel, panel);
 
-        creationDateLabel = new JLabel();
         Date tableCreationDate = stepResult.getTableCreationDate();
         String creationDate = (tableCreationDate != null) ? CustomDateFormat.format_MM_DD_YYYY_HH_mm(tableCreationDate)
                 : "";
+        creationDateLabel = new Label(creationDate);
         creationDateLabel.setText(creationDate);
         layoutGenerator.addLabelWidgetPair("Run Date:", creationDateLabel, panel);
 
-        currentTable = new JCheckBox();
-        currentTable.setEnabled(false);
-        currentTable.setSelected(stepResult.isCurrentTable());
+        currentTable = new Label("Current Output?");
+        currentTable.setText(stepResult.isCurrentTable() ? "Yes" : "No");
         currentTable
                 .setToolTipText("True when the source data and QA step have not been modified since the step was run");
         layoutGenerator.addLabelWidgetPair("Current Output?", currentTable, panel);
@@ -577,7 +576,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         addChangeable(program);
         program.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                currentTable.setSelected(false);
+                currentTable.setText("No");
             }
         });
 
@@ -626,7 +625,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         layoutGenerator.addLabelWidgetPair("Arguments:", buttonPanel, panel);
         programArguments.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
-                currentTable.setSelected(false);
+                currentTable.setText("No");
             }
         });
 
@@ -634,8 +633,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         if (step.isRequired())
             required.setEnabled(false);
 
-        CheckBox sameAstemplate = new CheckBox("", astemplate);
-        sameAstemplate.setEnabled(false);
+        Label sameAstemplate = new Label("", astemplate ? "Yes" : "No");
 
         order = new NumberFormattedTextField(3, orderAction());
         order.setText(step.getOrder() + "");
@@ -2363,7 +2361,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
             tableName.setToolTipText(result.getTable());
             creationStatusLabel.setText(result.getTableCreationStatus());
             creationDateLabel.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(result.getTableCreationDate()));
-            currentTable.setSelected(result.isCurrentTable());
+            currentTable.setText(result.isCurrentTable() ? "Yes" : "No");
             qaStepResult = result;
         }
         resetChanges();
