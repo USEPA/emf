@@ -67,6 +67,7 @@ public class TextArea extends JTextArea implements Changeable {
         this.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 if (!(e.getKeyChar() == KeyEvent.VK_TAB)
+                    && !(e.isAltDown()) //ignore all mnemonic characters
                     && !(e.getKeyCode() == KeyEvent.VK_TAB &&  e.isShiftDown()))
                     notifyChanges();
             }
