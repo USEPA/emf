@@ -223,7 +223,12 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
         step.setName(stepName);
         step.setProgram(qaPrograms.get(program.getSelectedItem()));
         step.setProgramArguments(arguments.getText());
-        step.setOrder(Float.parseFloat(order.getText()));
+        try {
+            final float orderValue = Float.parseFloat(order.getText());
+            step.setOrder(orderValue);
+        } catch (NumberFormatException e) {
+            throw new EmfException("Please enter an order that is a numeric value");
+        }
         step.setDescription(description.getText().trim());
         step.setWho(dataset.getCreator());
 
