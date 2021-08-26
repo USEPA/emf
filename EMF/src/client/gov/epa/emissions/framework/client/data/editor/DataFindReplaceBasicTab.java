@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.commons.gui.TextField;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
@@ -34,7 +35,7 @@ public class DataFindReplaceBasicTab extends JPanel implements DataFindReplaceVi
 
     private TextField replaceWith;
 
-    private JLabel filterLabel;
+    private Label filterLabel;
     
     private String table;
     
@@ -56,7 +57,7 @@ public class DataFindReplaceBasicTab extends JPanel implements DataFindReplaceVi
         this.version = version;
         this.listOfChangeables = listOfChangeables;
         this.filterFromParentWindow = filterFromParentWindow;
-        this.filterLabel = new JLabel(filterFromParentWindow.getText());
+        this.filterLabel = new Label(filterFromParentWindow.getText());
         this.sortOrder = sortOrder;
         this.messagePanel = messagePanel;
         this.dataFindReplaceWindow = dataFindReplaceWindow;
@@ -64,6 +65,7 @@ public class DataFindReplaceBasicTab extends JPanel implements DataFindReplaceVi
     
     public void display(){
         this.filterLabel.setText(filterFromParentWindow.getText());
+        this.filterLabel.setToolTipText("Filter used");
         this.filterLabel.validate();
         setLayout();
     }
