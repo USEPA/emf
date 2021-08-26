@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -117,9 +118,11 @@ public class DataFindReplaceWindow extends DisposableInteralFrame implements Fin
         JPanel panel = new JPanel();
 
         okButton = new Button("Apply", applyAction());
+        okButton.setMnemonic(KeyEvent.VK_A);
         panel.add(okButton);
 
         Button closeButton = new Button("Close", closeWindowAction());
+        closeButton.setMnemonic(KeyEvent.VK_L);
         panel.add(closeButton);
 
         return panel;
