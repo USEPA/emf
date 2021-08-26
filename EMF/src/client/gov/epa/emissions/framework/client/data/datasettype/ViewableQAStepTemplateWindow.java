@@ -108,7 +108,6 @@ public class ViewableQAStepTemplateWindow extends DisposableInteralFrame impleme
                 disposeView();
             }
         });
-        ok.setToolTipText("Save QA step template");
         getRootPane().setDefaultButton(ok);
         panel.add(ok);
 
