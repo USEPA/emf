@@ -237,7 +237,7 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
                 showTemplateWindows(data);
             }
         });
-        view.setToolTipText("View dataset type");
+        view.setToolTipText("View selected QA step templates");
         panel.add(view, BorderLayout.LINE_START);
         
         return panel;
