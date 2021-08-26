@@ -42,8 +42,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -73,6 +74,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
     private EmfSession session;
 
     private ComboBox dsTypesBox;
+    private DatasetType dsTypeLoaded;
     
     private TextField textFilter;
 
@@ -107,20 +109,15 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
     }
     
     private void typeAction() {
-//        return new AbstractAction() {
-//            public void actionPerformed(ActionEvent e) {
-
-                DatasetType type = getSelectedDSType();
-                try {
-                    // count the number of datasets and do refresh
-                    if (dsTypesBox.getSelectedIndex() > 0)
-                        doRefresh();          
-                } catch (EmfException e1) {
-                    messagePanel.setError("Could not retrieve all datasets for dataset type " + type.getName());
-                }
-            }
-//        };
-//    }
+        DatasetType type = getSelectedDSType();
+        try {
+            // count the number of datasets and do refresh
+            if (dsTypesBox.getSelectedIndex() > 0)
+                doRefresh();          
+        } catch (EmfException e1) {
+            messagePanel.setError("Could not retrieve all datasets for dataset type " + type.getName());
+        }
+    }    
 
     private void createDSTypesComboBox() {
         dsTypesBox = new ComboBox("Select one", allDSTypes, "Dataset Types");
@@ -128,7 +125,23 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         dsTypesBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                typeAction();
+                if (!dsTypesBox.isPopupVisible() &&
+                        getSelectedDSType() != dsTypeLoaded) {
+                    typeAction();
+                }
+            }
+        });
+        dsTypesBox.addPopupMenuListener(new PopupMenuListener() {
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                if (getSelectedDSType() != dsTypeLoaded) typeAction();
+            }
+
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                //
+            }
+
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                //
             }
         });
     }
@@ -761,6 +774,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
                 try {
                     //make sure something didn't happen
                     refresh(get());
+                    dsTypeLoaded = getSelectedDSType();
                 } catch (InterruptedException e1) {
 //                    messagePanel.setError(e1.getMessage());
 //                    setErrorMsg(e1.getMessage());
