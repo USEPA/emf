@@ -105,7 +105,7 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
         layoutGenerator.addLabelWidgetPair("Arguments:", scrollableDetails, panel);
 
         order = new NumberFormattedTextField(5, orderAction());
-        order.setText("0");
+        order.setValue(0);
         order.addKeyListener(keyListener());
         layoutGenerator.addLabelWidgetPair("Order:", order, panel);
 

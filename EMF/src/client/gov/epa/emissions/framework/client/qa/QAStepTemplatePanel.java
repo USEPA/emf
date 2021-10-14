@@ -166,7 +166,7 @@ public class QAStepTemplatePanel extends JPanel {
         program.setSelectedIndex(getItemIndex(template));
         programParameters.setText(template.getProgramArguments());
         required.setSelected(template.isRequired());
-        order.setText(template.getOrder() + "");
+        order.setValue(template.getOrder());
         description.setText(template.getDescription());
     }
 

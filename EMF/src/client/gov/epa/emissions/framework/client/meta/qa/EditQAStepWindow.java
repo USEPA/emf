@@ -636,7 +636,7 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         Label sameAstemplate = new Label("", astemplate ? "Yes" : "No");
 
         order = new NumberFormattedTextField(3, orderAction());
-        order.setText(step.getOrder() + "");
+        order.setValue(step.getOrder());    //Need to set value
         order.addKeyListener(keyListener());
         addChangeable(order);
 

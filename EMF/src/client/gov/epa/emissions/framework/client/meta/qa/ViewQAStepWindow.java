@@ -410,7 +410,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         Label sameAstemplate = new Label("", asTemplate ? "Yes" : "No");
 
         order = new NumberFormattedTextField(5, orderAction());
-        order.setText(step.getOrder() + "");
+        order.setValue(step.getOrder());
         order.addKeyListener(keyListener());
         //addChangeable(order);
         
