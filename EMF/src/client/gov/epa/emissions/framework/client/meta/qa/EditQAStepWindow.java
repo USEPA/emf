@@ -635,9 +635,8 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
 
         Label sameAstemplate = new Label("", astemplate ? "Yes" : "No");
 
-        order = new NumberFormattedTextField(3, orderAction());
+        order = new NumberFormattedTextField(3);
         order.setValue(step.getOrder());    //Need to set value
-        order.addKeyListener(keyListener());
         addChangeable(order);
 
         JPanel checkBoxPanel = new JPanel(new SpringLayout());
@@ -664,43 +663,6 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
                 5, 5);// xPad, yPad
 
         return panel;
-    }
-
-    private KeyListener keyListener() {
-        return new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyReleased(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyPressed(KeyEvent e) {
-                keyActions();
-            }
-        };
-    }
-
-    private void keyActions() {
-        try {
-            messagePanel.clear();
-            Float.parseFloat(order.getText());
-        } catch (NumberFormatException ex) {
-            messagePanel.setError("Order should be a floating point number");
-        }
-    }
-
-    private AbstractAction orderAction() {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Float.parseFloat(order.getText());
-                } catch (NumberFormatException ex) {
-                    messagePanel.setError("Order should be a floating point number");
-                }
-            }
-        };
     }
 
     private JPanel buttonsPanel() {
@@ -2580,7 +2542,11 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
         // step.setDatasetId(this.origDataset.getId());
         step.setProgram(qaPrograms.get(program.getSelectedItem()));
         step.setProgramArguments(programArguments.getText());
-        step.setOrder(Float.parseFloat(order.getText()));
+        try {
+            step.setOrder(Float.parseFloat(order.getText()));
+        } catch (NumberFormatException ex) {
+            throw new EmfException("Order should be a floating point number");
+        }
         step.setDescription(description.getText().trim());
         step.setRequired(required.isSelected());
 

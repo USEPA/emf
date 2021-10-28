@@ -104,9 +104,8 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
         ScrollableComponent scrollableDetails = ScrollableComponent.createWithVerticalScrollBar(arguments);
         layoutGenerator.addLabelWidgetPair("Arguments:", scrollableDetails, panel);
 
-        order = new NumberFormattedTextField(5, orderAction());
+        order = new NumberFormattedTextField(5);
         order.setValue(0);
-        order.addKeyListener(keyListener());
         layoutGenerator.addLabelWidgetPair("Order:", order, panel);
 
         required = new CheckBox("", false);
@@ -131,43 +130,6 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
                 10, 10);// xPad, yPad
 
         return panel;
-    }
-
-    private KeyListener keyListener() {
-        return new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyReleased(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyPressed(KeyEvent e) {
-                keyActions();
-            }
-        };
-    }
-
-    private void keyActions() {
-        try {
-            messagePanel.clear();
-            Float.parseFloat(order.getText());
-        } catch (NumberFormatException ex) {
-            messagePanel.setError("Order should be a floating point number");
-        }
-    }
-
-    private AbstractAction orderAction() {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Float.parseFloat(order.getText());
-                } catch (NumberFormatException ex) {
-                    messagePanel.setError("Order should be a floating point number");
-                }
-            }
-        };
     }
 
     private JPanel buttonsPanel() {

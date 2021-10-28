@@ -38,6 +38,11 @@ public class NumberFormattedTextField extends JFormattedTextField implements Cha
         this(Double.MIN_VALUE, Double.MAX_VALUE, size, action);
     }
 
+    public NumberFormattedTextField(int size) {
+        super.setFormatterFactory(new DefaultFormatterFactory(doubleFormatter(Double.MIN_VALUE, Double.MAX_VALUE)));
+        super.setColumns(size);
+    }
+
     private void addActionForEnterKeyPress(Action action) {
         super.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "check");
         super.getActionMap().put("check", action);

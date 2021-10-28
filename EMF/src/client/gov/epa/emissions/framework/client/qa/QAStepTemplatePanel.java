@@ -71,9 +71,8 @@ public class QAStepTemplatePanel extends JPanel {
         ScrollableComponent scrollableDetails = ScrollableComponent.createWithVerticalScrollBar(programParameters);
         layoutGenerator.addLabelWidgetPair("Arguments:", scrollableDetails, panel);
 
-        order = new NumberFormattedTextField(5, orderAction());
+        order = new NumberFormattedTextField(5);
         changeablesList.addChangeable(order);
-        order.addKeyListener(keyListener());
         layoutGenerator.addLabelWidgetPair("Order:", order, panel);
 
         required = new CheckBox("");
@@ -93,48 +92,6 @@ public class QAStepTemplatePanel extends JPanel {
                 10, 10);// xPad, yPad
 
         return panel;
-    }
-
-    private AbstractAction orderAction() {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    parseNumber();
-                } catch (NumberFormatException ex) {
-                    messagePanel.setError("Order should be a floating point number");
-                }
-            }
-        };
-    }
-
-    private KeyListener keyListener() {
-        return new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyReleased(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyPressed(KeyEvent e) {
-                keyActions();
-            }
-        };
-    }
-
-    private void keyActions() {
-        try {
-            messagePanel.clear();
-            parseNumber();
-        } catch (NumberFormatException ex) {
-            messagePanel.setError("Order should be a floating point number");
-        }
-    }
-
-    private void parseNumber() {
-        if (!order.getText().equals(""))
-            Float.parseFloat(order.getText());
     }
 
     public String getTemplateName() {
