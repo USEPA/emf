@@ -55,6 +55,7 @@ public class AddRemoveWidget extends JPanel {
     public AddRemoveWidget(Object[] allObjects, ManageChangeables changeables, EmfConsole parentConsole,
             boolean horizontalBar, boolean verticalBar) {
         this.allObjects = allObjects;
+        this.objectsList = new ListWidget(new Object[0]);
         this.parentConsole = parentConsole;
         setupLayout(changeables, horizontalBar, verticalBar);
 
