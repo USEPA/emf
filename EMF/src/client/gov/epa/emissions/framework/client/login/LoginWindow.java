@@ -208,6 +208,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
         username = new JTextField(10);
         username.setName("username");
+        username.setToolTipText("EMF Username");
 
         usernameLabel.setLabelFor(username);
         usernameLabel.setToolTipText(username.getToolTipText());
@@ -215,6 +216,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
         valuesPanel.add(username);
         password = new JPasswordField(10);
         password.setName("password");
+        password.setToolTipText("EMF Password");
 
         passwordLabel.setLabelFor(password);
         passwordLabel.setToolTipText(password.getToolTipText());
