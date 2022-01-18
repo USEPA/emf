@@ -11,6 +11,9 @@ import gov.epa.emissions.framework.ui.Border;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -66,12 +69,16 @@ public class RegisterUserProfilePanel extends JPanel {
     private JPanel createLoginPanel(Widget usernameWidget) {
         JPanel panel = new JPanel();
         panel.setBorder(new Border("Login"));
+        panel.setToolTipText("Uaer Profile Login; username and password");
+
 
         GridLayout labelsLayoutManager = new GridLayout(3, 1);
         labelsLayoutManager.setVgap(15);
         JPanel labelsPanel = new JPanel(labelsLayoutManager);
         final JLabel usernameLabel = new JLabel("Username");
+        usernameLabel.setToolTipText("User username");
         final JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setToolTipText("User password");
         final JLabel confirmPasswordLabel = new JLabel("Confirm Password");
         labelsPanel.add(usernameLabel);
         labelsPanel.add(passwordLabel);
@@ -110,89 +117,110 @@ public class RegisterUserProfilePanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(new Border("Profile"));
-        
-        JPanel mandatoryPanel = createManadatoryProfilePanel();
-        panel.add(mandatoryPanel);
- 
-        //JPanel subPanel = new JPanel();
-        //subPanel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        //labelsLayoutManager.setVgap(5);
+        panel.setToolTipText("Uaer Profile Information; name, phone, email");
+
+        JPanel topPanel = new JPanel(new GridBagLayout());
+
+        createManadatoryProfilePanel(topPanel);
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 1;
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.insets = new Insets(5, 5, 5, 5);
+
+
         JPanel checkPanel = new JPanel(new BorderLayout(10,0));
         wantEmails = new JCheckBox("Receives EMF update emails? ");
         wantEmails.setSelected(user.getWantEmails());
         wantEmails.setToolTipText("Does the user want to receive EMF update emails?");
         checkPanel.add(wantEmails, BorderLayout.NORTH);
         checkPanel.setBorder(BorderFactory.createEmptyBorder(2,30,2,20));
-        
+
         JPanel optionsPanel = new JPanel(new BorderLayout(10,0));
         adminOption.add(checkPanel);
         adminOption.setAdmin(user);
         optionsPanel.setBorder(BorderFactory.createEmptyBorder(2,30,2,20));
-        
-        panel.add(checkPanel);
-        panel.add(optionsPanel,BorderLayout.SOUTH);
+
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        constraints.gridwidth = 2;
+
+        topPanel.add(checkPanel, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 5;
+        topPanel.add(optionsPanel, constraints);
+
+
         panel.setMaximumSize(new Dimension(300, 280));
+        panel.add(topPanel);
         return panel;
     }
 
-    private JPanel createManadatoryProfilePanel() {
-        JPanel panel = new JPanel();
-
-        JPanel labelsPanel = new JPanel();
-        labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.Y_AXIS));
+    private JPanel createManadatoryProfilePanel(JPanel mainPanel) {
 
         final JLabel nameLabel = new JLabel("Name");
         final JLabel affiliationLabel = new JLabel("Affiliation");
         final JLabel phoneLabel = new JLabel("Phone");
         final JLabel emailLabel = new JLabel("Email");
 
-        labelsPanel.add(nameLabel);
-        labelsPanel.add(Box.createRigidArea(new Dimension(1, 15)));
-        labelsPanel.add(affiliationLabel);
-        labelsPanel.add(Box.createRigidArea(new Dimension(1, 15)));
-        labelsPanel.add(phoneLabel);
-        labelsPanel.add(Box.createRigidArea(new Dimension(1, 15)));
-        labelsPanel.add(emailLabel);
-
-        panel.add(labelsPanel);
-
-        JPanel valuesPanel = new JPanel();
-        valuesPanel.setLayout(new BoxLayout(valuesPanel, BoxLayout.Y_AXIS));
-
         name = new TextField("name", user.getName(), 15);
-        name.setToolTipText("User name");
+        name.setToolTipText("Full name");
         nameLabel.setLabelFor(name);
         changeablesList.addChangeable(name);
-        valuesPanel.add(name);
-        valuesPanel.add(Box.createRigidArea(new Dimension(1, 10)));
 
         affiliation = new TextField("affiliation", user.getAffiliation(), 15);
         affiliation.setToolTipText("User affiliation");
         affiliationLabel.setLabelFor(affiliation);
         changeablesList.addChangeable(affiliation);
-        valuesPanel.add(affiliation);
-        valuesPanel.add(Box.createRigidArea(new Dimension(1, 10)));
 
         phone = new TextField("phone", user.getPhone(), 15);
-        phone.setToolTipText("User phone number");
+        phone.setToolTipText("User phone number, format (000-000-0000)");
         phoneLabel.setLabelFor(phone);
         changeablesList.addChangeable(phone);
-        valuesPanel.add(phone);
-        valuesPanel.add(Box.createRigidArea(new Dimension(1, 10)));
 
         email = new TextField("email", user.getEmail(), 15);
         email.setToolTipText("User email");
         emailLabel.setLabelFor(email);
         changeablesList.addChangeable(email);
-        valuesPanel.add(email);
 
-        panel.add(valuesPanel);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 1;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(5, 5, 5, 5);
 
-        panel.setMaximumSize(new Dimension(300, 175));
+        mainPanel.add(nameLabel, constraints);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        mainPanel.add(name, constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        mainPanel.add(affiliationLabel, constraints);
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        mainPanel.add(affiliation, constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        mainPanel.add(phoneLabel, constraints);
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+        mainPanel.add(phone, constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        mainPanel.add(emailLabel, constraints);
+        constraints.gridx = 1;
+        constraints.gridy = 3;
+        mainPanel.add(email, constraints);
 
-        return panel;
+        return mainPanel;
     }
-    
+
     private JPanel createHideFeaturePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
