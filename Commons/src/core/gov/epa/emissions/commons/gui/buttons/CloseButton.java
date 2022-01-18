@@ -11,6 +11,7 @@ public class CloseButton extends Button {
     public CloseButton(String label, final Action action) {
         super(label, action);
         this.setMnemonic(KeyEvent.VK_L);
+        this.setToolTipText("Close Window");
     }
 
     public CloseButton(final Action action) {
