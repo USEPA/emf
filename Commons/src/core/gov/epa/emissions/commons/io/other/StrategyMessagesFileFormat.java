@@ -29,10 +29,10 @@ public class StrategyMessagesFileFormat implements FileFormat, DelimitedFileForm
         List<Column> cols = new ArrayList<Column>();
         cols.add(new Column("REGION_CD", types.stringType(6), new StringFormatter(6)));
         cols.add(new Column("SCC", types.stringType(10), new StringFormatter(10)));
-        cols.add(new Column("FACILITY_ID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("UNIT_ID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("REL_POINT_ID", types.stringType(15), 15, new StringFormatter(15)));
-        cols.add(new Column("PROCESS_ID", types.stringType(15), 15, new StringFormatter(15)));
+        cols.add(new Column("FACILITY_ID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("UNIT_ID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("REL_POINT_ID", types.stringType(20), 20, new StringFormatter(20)));
+        cols.add(new Column("PROCESS_ID", types.stringType(20), 20, new StringFormatter(20)));
         cols.add(new Column("POLL", types.stringType(16), 16, new StringFormatter(16)));
         cols.add(new Column("Status", types.stringType(11), 11, new StringFormatter(11)));
         cols.add(new Column("Control_Program", types.stringType(255), 255, new StringFormatter(255)));
