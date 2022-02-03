@@ -2697,3 +2697,9 @@ SELECT e.id,
 	    WHERE equation_type_id = e.id) AS list_index
 FROM emf.equation_types as e
 WHERE name = 'Type 2c';
+
+-- 1/28/2022 Update SCC description lengths for Control Strategy Detailed Result Extended dataset type
+UPDATE emf.fileformat_columns
+SET type = 'VARCHAR(255)'
+WHERE file_format_id = (SELECT file_format FROM emf.dataset_types WHERE name = 'Control Strategy Detailed Result Extended')
+AND name LIKE 'scc_l%';
