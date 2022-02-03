@@ -182,10 +182,10 @@ BEGIN
 		' || strategy_messages_dataset_id || '::integer,
 		dr.region_cd,
 		dr.scc,
-		SUBSTR(dr.facility_id, 1, 15),
-		SUBSTR(dr.unit_id, 1, 15),
-		SUBSTR(dr.rel_point_id, 1, 15),
-		SUBSTR(dr.process_id, 1, 15),
+		dr.facility_id, 
+		dr.unit_id, 
+		dr.rel_point_id, 
+		dr.process_id, 
 		dr.poll,
 		''Warning''::character varying(11) as status,
 		null::character varying(255) as control_program,
@@ -241,12 +241,7 @@ BEGIN
 
 		from (
 			select record_id,
-				' || case when is_point_table = false then '' else '
-				SUBSTR(' || plantid_expression || ', 1, 15) as plantid,
-				SUBSTR(' || pointid_expression || ', 1, 15) as pointid,
-				SUBSTR(' || stackid_expression || ', 1, 15) as stackid,
-				SUBSTR(' || segment_expression || ', 1, 15) as segment,
-				' end || '
+				' || case when is_point_table = false then '' else '' || plantid_expression || ' as plantid,' || pointid_expression || ' as pointid,' || stackid_expression || ' as stackid,' || segment_expression || ' as segment,' end || '
 				poll,
 				scc,
 				' || fips_expression || ' as fips,
@@ -289,10 +284,10 @@ BEGIN
 		a.' || fips_expression || ' as fips,
 		a.scc,
 		' || case when is_point_table then '
-		SUBSTR(a.' || plantid_expression || ', 1, 15) as plantid,
-		SUBSTR(a.' || pointid_expression || ', 1, 15) as pointid,
-		SUBSTR(a.' || stackid_expression || ', 1, 15) as stackid,
-		SUBSTR(a.' || segment_expression || ', 1, 15) as segment,
+		a.' || plantid_expression || ' as plantid, 
+		a.' || pointid_expression || ' as pointid, 
+		a.' || stackid_expression || ' as stackid, 
+		a.' || segment_expression || ' as segment, 
 		' else '' end || ' 
 		a.poll,
 		''Warning''::character varying(11) as status,
@@ -373,10 +368,10 @@ BEGIN
 		' || strategy_messages_dataset_id || '::integer,
 		dr.region_cd,
 		dr.scc,
-		SUBSTR(dr.facility_id, 1, 15),
-		SUBSTR(dr.unit_id, 1, 15),
-		SUBSTR(dr.rel_point_id, 1, 15),
-		SUBSTR(dr.process_id, 1, 15),
+		dr.facility_id, 
+		dr.unit_id, 
+		dr.rel_point_id, 
+		dr.process_id, 
 		dr.poll,
 		''Warning''::character varying(11) as status,
 		''Source is missing engineering cost equations, '' || et.name || '' ['' || et.description || ''], inventory inputs; '' || et.inventory_fields || ''.  The default cost per ton approach was used instead for costing.'' as "comment"
@@ -408,10 +403,10 @@ BEGIN
     a.' || fips_expression || ' as fips,
     a.scc,
     ' || case when is_point_table then '
-		SUBSTR(a.' || plantid_expression || ', 1, 15) as plantid,
-		SUBSTR(a.' || pointid_expression || ', 1, 15) as pointid,
-		SUBSTR(a.' || stackid_expression || ', 1, 15) as stackid,
-		SUBSTR(a.' || segment_expression || ', 1, 15) as segment,
+		a.' || plantid_expression || ' as facility_id,
+		a.' || pointid_expression || ' as unit_id,
+		a.' || stackid_expression || ' as rel_point_id,
+		a.' || segment_expression || ' as process_id,
 		' else '' end || '
 		a.poll,
 		''Warning''::character varying(11) as status,
