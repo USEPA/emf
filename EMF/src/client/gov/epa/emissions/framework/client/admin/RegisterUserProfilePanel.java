@@ -69,7 +69,7 @@ public class RegisterUserProfilePanel extends JPanel {
     private JPanel createLoginPanel(Widget usernameWidget) {
         JPanel panel = new JPanel();
         panel.setBorder(new Border("Login"));
-        panel.setToolTipText("Uaer Profile Login; username and password");
+        panel.setToolTipText("User Profile Login; username and password");
 
 
         GridLayout labelsLayoutManager = new GridLayout(3, 1);
@@ -117,7 +117,7 @@ public class RegisterUserProfilePanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(new Border("Profile"));
-        panel.setToolTipText("Uaer Profile Information; name, phone, email");
+        panel.setToolTipText("User Profile Information; name, phone, email");
 
         JPanel topPanel = new JPanel(new GridBagLayout());
 
