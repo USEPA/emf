@@ -17,7 +17,6 @@ public class Label extends JLabel {
         super.setName(toCanonicalName(name));
         super.getAccessibleContext().setAccessibleName(name + " " + label);
         super.setFocusable(true);
-        super.setPreferredSize(new Dimension(150, 18));
 
         super.addFocusListener(new FocusAdapter() {
             @Override

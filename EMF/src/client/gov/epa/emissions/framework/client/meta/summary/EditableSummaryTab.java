@@ -124,9 +124,13 @@ public class EditableSummaryTab extends JPanel implements EditableSummaryTabView
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        layoutGenerator.addLabelWidgetPair("Status:", new Label("status", dataset.getStatus()), panel);
-        layoutGenerator.addLabelWidgetPair("Last Modified Date:", new Label("lastModifiedDate", format(dataset
-                .getModifiedDateTime())), panel);
+        Label statusLabel = new Label("status", dataset.getStatus());
+        statusLabel.setPreferredSize(new Dimension(150, 18));
+        layoutGenerator.addLabelWidgetPair("Status:", statusLabel, panel);
+        Label modifiedDate = new Label("lastModifiedDate", format(dataset
+                .getModifiedDateTime()));
+        modifiedDate.setPreferredSize(new Dimension(150, 18));
+        layoutGenerator.addLabelWidgetPair("Last Modified Date:", modifiedDate, panel);
         layoutGenerator.addLabelWidgetPair("Last Accessed Date:", new Label("lastAccessedDate", format(dataset
                 .getAccessedDateTime())), panel);
         layoutGenerator.addLabelWidgetPair("Creation Date:", new Label("creationDate", format(dataset
