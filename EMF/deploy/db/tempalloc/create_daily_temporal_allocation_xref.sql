@@ -291,12 +291,29 @@ BEGIN
        AND ' || xref_dataset_filter_sql || '
        AND xref.profile_type = ''' || profile_type || '''';
 
+    -- 9. Country/state/county code and plant ID
+    sql := sql || '
+     UNION ALL
+    SELECT inv.record_id, xref.profile_id, 9 AS ranking
+      FROM emissions.' || xref_table_name || ' xref
+      JOIN inv
+        ON (xref.fips = ' || inv_fips_exp || '
+       AND  xref.plantid = ' || inv_plantid || ')
+     WHERE xref.fips IS NOT NULL
+       AND xref.scc IS NULL
+       AND xref.plantid IS NOT NULL
+       AND xref.pointid IS NULL
+       AND xref.stackid IS NULL
+       AND xref.processid IS NULL
+       AND xref.poll IS NULL
+       AND ' || xref_dataset_filter_sql || '
+       AND xref.profile_type = ''' || profile_type || '''';
   END IF;
 
-  -- 9. Country/state/county code, SCC, and pollutant
+  -- 10. Country/state/county code, SCC, and pollutant
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 9 AS ranking
+  SELECT inv.record_id, xref.profile_id, 10 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.fips = ' || inv_fips_exp || '
@@ -312,10 +329,10 @@ BEGIN
      AND ' || xref_dataset_filter_sql || '
      AND xref.profile_type = ''' || profile_type || '''';
   
-  -- 10. Country/state code, SCC, and pollutant
+  -- 11. Country/state code, SCC, and pollutant
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 10 AS ranking
+  SELECT inv.record_id, xref.profile_id, 11 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (SUBSTR(xref.fips, 1, 3) = SUBSTR(' || inv_fips_exp || ', 1, 3)
@@ -332,10 +349,10 @@ BEGIN
      AND ' || xref_dataset_filter_sql || '
      AND xref.profile_type = ''' || profile_type || '''';
   
-  -- 11. SCC and pollutant
+  -- 12. SCC and pollutant
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 11 AS ranking
+  SELECT inv.record_id, xref.profile_id, 12 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.scc = inv.scc
@@ -350,10 +367,10 @@ BEGIN
      AND ' || xref_dataset_filter_sql || '
      AND xref.profile_type = ''' || profile_type || '''';
   
-  -- 12. Country/state/county code and SCC
+  -- 13. Country/state/county code and SCC
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 12 AS ranking
+  SELECT inv.record_id, xref.profile_id, 13 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.fips = ' || inv_fips_exp || '
@@ -368,10 +385,10 @@ BEGIN
      AND ' || xref_dataset_filter_sql || '
      AND xref.profile_type = ''' || profile_type || '''';
   
-  -- 13. Country/state code and SCC
+  -- 14. Country/state code and SCC
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 13 AS ranking
+  SELECT inv.record_id, xref.profile_id, 14 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (SUBSTR(xref.fips, 1, 3) = SUBSTR(' || inv_fips_exp || ', 1, 3)
@@ -387,10 +404,10 @@ BEGIN
      AND ' || xref_dataset_filter_sql || '
      AND xref.profile_type = ''' || profile_type || '''';
   
-  -- 14. SCC
+  -- 15. SCC
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 14 AS ranking
+  SELECT inv.record_id, xref.profile_id, 15 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.scc = inv.scc)
@@ -404,10 +421,10 @@ BEGIN
      AND ' || xref_dataset_filter_sql || '
      AND xref.profile_type = ''' || profile_type || '''';
   
-  -- 15. Country/state/county code
+  -- 16. Country/state/county code
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 15 AS ranking
+  SELECT inv.record_id, xref.profile_id, 16 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (xref.fips = ' || inv_fips_exp || ')
@@ -421,10 +438,10 @@ BEGIN
      AND ' || xref_dataset_filter_sql || '
      AND xref.profile_type = ''' || profile_type || '''';
   
-  -- 16. Country/state code
+  -- 17. Country/state code
   sql := sql || '
    UNION ALL
-  SELECT inv.record_id, xref.profile_id, 16 AS ranking
+  SELECT inv.record_id, xref.profile_id, 17 AS ranking
     FROM emissions.' || xref_table_name || ' xref
     JOIN inv
       ON (SUBSTR(xref.fips, 1, 3) = SUBSTR(' || inv_fips_exp || ', 1, 3))
