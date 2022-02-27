@@ -29,6 +29,7 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -38,6 +39,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
@@ -141,6 +143,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
         tableModel = new EmfTableModel(tableData);
 
         ScrollableTable scrollableTable = new ScrollableTable(new VersionTable(tableModel), null);
+        scrollableTable.getTable().getAccessibleContext().setAccessibleName("List of versions for this dataset");
 
         String[] columns = {"Select", "Version", "Base", "Is Final?"}; 
         Font font = this.getFont();
@@ -174,6 +177,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
         newButton.setText("New Version");
         newButton.setToolTipText("Create a new version");
         newButton.setMargin(new Insets(2, 2, 2, 2));
+        
         panel.add(newButton);
         if (dataset.getInternalSources().length == 0) {
             newButton.setEnabled(false);
@@ -189,6 +193,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
                 }
             }
         });
+        renameButton.setMnemonic(KeyEvent.VK_D);
         renameButton.setToolTipText("Edit version information");
         renameButton.setMargin(new Insets(2, 2, 2, 2));
         panel.add(renameButton);
@@ -206,6 +211,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
                 }
             }
         });
+        markFinal.setMnemonic(KeyEvent.VK_R);
         markFinal.setToolTipText("Mark the selected versions as final so that no more edits can be made");
         markFinal.setMargin(new Insets(2, 2, 2, 2));
 
@@ -301,7 +307,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
             String msg = "Would you like to make version " + versions[0].getVersion()
                     + " the default version for the dataset?";
             int makeDefault = JOptionPane.showConfirmDialog(parentConsole, msg, "Make Default Version",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null);
 
             if (makeDefault == JOptionPane.YES_OPTION) {
                 presenter.markFinalNDefault(versions[0]);
@@ -327,13 +333,15 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
 
         JPanel panel = new JPanel();
 
-        panel.add(new Label("Table:"));
+        JLabel tableLabel = new JLabel("Table:");
+        panel.add(tableLabel);
 
         DefaultComboBoxModel tablesModel = new DefaultComboBoxModel(tableNames(sources));
         tableCombo = new JComboBox(tablesModel);
         tableCombo.setName("tables");
         tableCombo.setEditable(false);
         tableCombo.addActionListener(sourceAction());
+        tableLabel.setLabelFor(tableCombo);
         panel.add(tableCombo);
 
         Button view = viewButton(tableCombo);
@@ -533,7 +541,7 @@ public class EditVersionsPanel extends JPanel implements EditVersionsView {
     private int getYesNoSelection() {
         String message = " Would you like to copy a version to new dataset? ";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
         return selection;
     }
 

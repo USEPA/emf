@@ -38,6 +38,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -70,7 +71,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
     private int previousTab = 0; // NOTE: assuming the default tab shown is Summary tab.
 
     public DatasetPropertiesEditor(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Dataset Properties Editor", new Dimension(700, 550), desktopManager);
+        super("Dataset Properties Editor", new Dimension(800, 550), desktopManager);
         this.session = session;
         this.parentConsole = parentConsole;
         this.desktopManager = desktopManager;
@@ -265,6 +266,7 @@ public class DatasetPropertiesEditor extends DisposableInteralFrame implements D
                 }
             }
         });
+        refresh.setMnemonic(KeyEvent.VK_R);
         buttonsPanel.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
 

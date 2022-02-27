@@ -88,6 +88,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
 
     private JMenuItem createMyProfile(final EmfSession session, final MessagePanel messagePanel) {
         JMenuItem menuItem = new JMenuItem("My Profile");
+        menuItem.setMnemonic(KeyEvent.VK_Y);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 displayMyProfile(session, messagePanel);
@@ -113,6 +114,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private JMenuItem createDatasets(final EmfConsole parent, final MessagePanel messagePanel) {
         JMenuItem menuItem = new JMenuItem("Datasets");
         menuItem.setName("datasets");
+        menuItem.setMnemonic(KeyEvent.VK_D);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doDisplayDatasets(parent, messagePanel);
@@ -126,6 +128,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private JMenuItem createDatasetTypes(final EmfConsole parent, final MessagePanel messagePanel) {
         JMenuItem menuItem = new JMenuItem("Dataset Types");
         menuItem.setName("datasetTypes");
+        menuItem.setMnemonic(KeyEvent.VK_T);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doManageDatasetTypes(parent, messagePanel);
@@ -174,6 +177,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private JMenuItem createCases(final EmfConsole parent, final MessagePanel messagePanel) {
         JMenuItem menuItem = new JMenuItem("Cases");
         menuItem.setName("cases");
+        menuItem.setMnemonic(KeyEvent.VK_C);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doManageCases(parent, messagePanel);
@@ -186,6 +190,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private JMenuItem createControlMeasures(final EmfConsole parent, final MessagePanel messagePanel) {
         JMenuItem menuItem = new JMenuItem("Control Measures");
         menuItem.setName("controlMeasures");
+        menuItem.setMnemonic(KeyEvent.VK_M);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
@@ -202,6 +207,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private JMenuItem createControlStrategies(final EmfConsole parent, final MessagePanel messagePanel) {
         JMenuItem menuItem = new JMenuItem("Control Strategies");
         menuItem.setName("controlStrategies");
+        menuItem.setMnemonic(KeyEvent.VK_S);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doManageControlStrategies(parent, messagePanel);
@@ -214,6 +220,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     private JMenuItem createControlPrograms(final EmfConsole parent, final MessagePanel messagePanel) {
         JMenuItem menuItem = new JMenuItem("Control Programs");
         menuItem.setName("controlPrograms");
+        menuItem.setMnemonic(KeyEvent.VK_P);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 doManageControlPrograms(parent, messagePanel);

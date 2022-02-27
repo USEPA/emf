@@ -58,6 +58,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -653,7 +654,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         statusContainer.setLayout(statusLayout);
         
         statusButton = new Button("Status", statusAction());
-        statusButton.setMnemonic('S');
+        statusButton.setMnemonic(KeyEvent.VK_T);
         
         statusText = new Label("");
         refreshStatusText();
@@ -670,17 +671,17 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         buttonsContainer.setLayout(buttonsLayout);
 
         validateButton = new Button("Validate", validateAction());
-        validateButton.setMnemonic('V');
+        validateButton.setMnemonic(KeyEvent.VK_V);
         
         saveButton = new SaveButton(saveAction());
         saveButton.setEnabled(viewMode != ViewMode.VIEW);
         
         runButton = new Button("Run", runAction());
-        runButton.setMnemonic('u');
+        runButton.setMnemonic(KeyEvent.VK_U);
         runButton.setEnabled(viewMode != ViewMode.VIEW);
         
         finalizeButton = new Button("Finalize", finalizeAction());
-        finalizeButton.setMnemonic('F');
+        finalizeButton.setMnemonic(KeyEvent.VK_F);
         finalizeButton.setEnabled(viewMode != ViewMode.VIEW);
         
         closeButton = new CloseButton("Close", closeAction());
@@ -709,7 +710,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button addTagsButton = new Button("Add Tags", addTagsAction);
-        addTagsButton.setMnemonic('A');
+        addTagsButton.setMnemonic(KeyEvent.VK_A);
 
         Action removeTagsAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -717,7 +718,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button removeTagsButton = new Button("Remove Tags", removeTagsAction);
-        removeTagsButton.setMnemonic('e');
+        removeTagsButton.setMnemonic(KeyEvent.VK_E);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -774,7 +775,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         SelectAwareButton viewDatasetsButton = new SelectAwareButton("View Dataset Properties", viewAction, datasetsTable, confirmDialog);
-        viewDatasetsButton.setMnemonic('D');
+        viewDatasetsButton.setMnemonic(KeyEvent.VK_D);
 
         Action viewRelatedModulesAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -782,7 +783,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button viewRelatedModulesButton = new Button("View Related Modules", viewRelatedModulesAction);
-        viewRelatedModulesButton.setMnemonic('M');
+        viewRelatedModulesButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -931,6 +932,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         SelectAwareButton editButton = new SelectAwareButton("Set Input Value", editAction, parametersTable, confirmDialog);
+        editButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -1002,7 +1004,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button keepButton = new Button("Keep", keepAction);
-        keepButton.setMnemonic('K');
+        keepButton.setMnemonic(KeyEvent.VK_K);
 
         Action dontKeepAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -1010,7 +1012,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button dontKeepButton = new Button("Don't Keep", dontKeepAction);
-        dontKeepButton.setMnemonic('o');
+        dontKeepButton.setMnemonic(KeyEvent.VK_O);
 
         Action setInternalDatasetNameAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -1018,7 +1020,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button setInternalDatasetNameButton = new Button("Set Dataset Name", setInternalDatasetNameAction);
-        setInternalDatasetNameButton.setMnemonic('N');
+        setInternalDatasetNameButton.setMnemonic(KeyEvent.VK_N);
 
         Action viewInternalDatasetsAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -1026,7 +1028,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         SelectAwareButton viewInternalDatasetsButton = new SelectAwareButton("View Dataset Properties", viewInternalDatasetsAction, internalDatasetsTable, confirmDialog);
-        viewInternalDatasetsButton.setMnemonic('D');
+        viewInternalDatasetsButton.setMnemonic(KeyEvent.VK_D);
 
         Action viewInternalRelatedModulesAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -1034,7 +1036,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button viewRelatedModulesButton = new Button("View Related Modules", viewInternalRelatedModulesAction);
-        viewRelatedModulesButton.setMnemonic('M');
+        viewRelatedModulesButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -1239,7 +1241,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button keepButton = new Button("Keep", keepAction);
-        keepButton.setMnemonic('K');
+        keepButton.setMnemonic(KeyEvent.VK_K);
 
         Action dontKeepAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -1247,7 +1249,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         Button dontKeepButton = new Button("Don't Keep", dontKeepAction);
-        dontKeepButton.setMnemonic('o');
+        dontKeepButton.setMnemonic(KeyEvent.VK_O);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -1325,6 +1327,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
             }
         };
         viewButton = new SelectAwareButton("View", viewAction, historyTable, confirmDialog);
+        viewButton.setMnemonic(KeyEvent.VK_I);
         viewButton.setEnabled(!historyTableData.rows().isEmpty());
         
         String deleteMessage = "Are you sure you want to delete the selected history records?";
@@ -1467,7 +1470,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
                 return;
         }
         String message = "Are you sure you want to run the '" + module.getName() + "' module?";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
         
@@ -1586,7 +1589,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         if (nonfinalInputVersionsText.length() > 0) {
             String title = "Finalizing module " + module.getName(); 
             String message = "Are you sure you want to finalize these input datasets?\n\n" + nonfinalInputVersionsText.toString();
-            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection != JOptionPane.YES_OPTION)
                 return;
             for (Version version : nonfinalInputVersions.values()) {
@@ -1621,7 +1624,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         if (nonfinalOutputVersionsText.length() > 0) {
             String message = "Are you sure you want to finalize these output datasets?\n\n" + nonfinalOutputVersionsText.toString();
-            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection != JOptionPane.YES_OPTION)
                 return;
             for (Version version : nonfinalOutputVersions.values()) {
@@ -1640,7 +1643,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         
         title = module.getName();
         int selection = JOptionPane.showConfirmDialog(parentConsole, "Are you sure you want to finalize this module?",
-                                                      title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                                      title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             module.setIsFinal(true);
@@ -1765,7 +1768,7 @@ public class ModulePropertiesWindow extends DisposableInteralFrame implements Mo
         if (module.getModuleTypeVersion().isValid(error)) {
             if (!module.isValid(error)) {
                 int selection = JOptionPane.showConfirmDialog(parentConsole, error + "\n\nAre you sure you want to close invalid/incomplete module?\n",
-                                                              "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                                              "Module Properties", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (selection == JOptionPane.NO_OPTION)
                     return;
             }

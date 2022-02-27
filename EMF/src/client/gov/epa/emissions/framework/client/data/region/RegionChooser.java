@@ -17,6 +17,7 @@ import gov.epa.mims.analysisengine.gui.ScreenUtils;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import javax.swing.AbstractAction;
@@ -79,7 +80,9 @@ public class RegionChooser extends JDialog {
 
     private JPanel buttonPanel() {
         Button newRegionButton = new Button("New", addNewRegionAction());
+        newRegionButton.setMnemonic(KeyEvent.VK_N);
         Button editButton = new Button("Edit", editRegionAction());
+        editButton.setMnemonic(KeyEvent.VK_E);
         OKButton okButton = new OKButton(okAction());
         CancelButton cancelButton = new CancelButton(cancelAction());
         

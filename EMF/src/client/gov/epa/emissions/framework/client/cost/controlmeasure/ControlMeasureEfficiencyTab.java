@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -276,7 +277,7 @@ public class ControlMeasureEfficiencyTab extends JPanel implements ControlMeasur
         String title = "Warning";
         String message = "Are you sure you want to remove the "+records.length+" selected efficiency record(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             for (int i = 0; i < records.length; i++) {
@@ -522,6 +523,7 @@ public class ControlMeasureEfficiencyTab extends JPanel implements ControlMeasur
                 applySortFilter();
             }
         });
+        apply.setMnemonic(KeyEvent.VK_P);
         apply.setToolTipText("Apply the Row Filter constraints to the table");
         actionPanel.add(new JLabel(""));
         actionPanel.add(apply);

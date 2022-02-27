@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.data.editor;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ManageChangeables;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -21,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
-public class DataFindReplaceWindow extends ReusableInteralFrame implements FindReplaceWindowView {
+public class DataFindReplaceWindow extends DisposableInteralFrame implements FindReplaceWindowView {
 
     private String[] cols = new String[0];
 
@@ -117,9 +118,11 @@ public class DataFindReplaceWindow extends ReusableInteralFrame implements FindR
         JPanel panel = new JPanel();
 
         okButton = new Button("Apply", applyAction());
+        okButton.setMnemonic(KeyEvent.VK_A);
         panel.add(okButton);
 
         Button closeButton = new Button("Close", closeWindowAction());
+        closeButton.setMnemonic(KeyEvent.VK_L);
         panel.add(closeButton);
 
         return panel;

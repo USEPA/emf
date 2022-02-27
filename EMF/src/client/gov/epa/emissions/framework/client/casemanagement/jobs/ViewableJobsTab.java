@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -174,6 +175,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
         
         Button copy = new Button("Copy", copyAction());
         copy.setMargin(insets);
+        copy.setMnemonic(KeyEvent.VK_C);
         container.add(copy);
 
         Button validate = new Button("Validate", new AbstractAction() {
@@ -188,8 +190,9 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             }
         });
         validate.setMargin(insets);
+        validate.setMnemonic(KeyEvent.VK_I);
         container.add(validate);
-        
+         
         Button set = new Button("Set Status", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clearMessage();
@@ -197,6 +200,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
             }
         });
         set.setMargin(insets);
+        set.setMnemonic(KeyEvent.VK_E);
         container.add(set);
         
         Button cancelJobs = new Button("Cancel", new AbstractAction() {
@@ -209,6 +213,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
                 }
             }
         });
+        cancelJobs.setMnemonic(KeyEvent.VK_A);
         cancelJobs.setMargin(insets);
         container.add(cancelJobs);
 
@@ -292,7 +297,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
                     caseId + ")? \n Note: if you don't add the region, the copy will be canceled. ";
                           
                     int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
+                            JOptionPane.WARNING_MESSAGE);
                     if (selection == JOptionPane.YES_OPTION) 
                         presenter.copyJobs(caseId, jobs);
                     return; 
@@ -457,7 +462,7 @@ public class ViewableJobsTab extends JPanel implements JobsTabView, RefreshObser
 
     private int showDialog(Object msg, String title) {
         return JOptionPane.showConfirmDialog(parentConsole, msg, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private void showMessageDialog(Object msg, String title) {

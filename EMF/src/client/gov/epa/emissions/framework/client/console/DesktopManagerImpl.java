@@ -54,6 +54,15 @@ public class DesktopManagerImpl implements DesktopManager {
         windowNames.remove(manageView.getName());
         windowMenu.unregister(manageView);
         layout.remove(manageView);
+        /*if (windowNames.size() > 0) {
+            boolean justOpened = false;
+            for (Object mv : windowNames.values()) {
+                if (!justOpened) {
+                    this.openWindow((ManagedView)mv);
+                    justOpened = true;
+                }
+            }
+        }*/
     }
     
     public void hideWindow(ManagedView manageView) {
@@ -114,6 +123,12 @@ public class DesktopManagerImpl implements DesktopManager {
 
     public int numberOfOpenWindows() {
         return windowNames.size();
+    }
+    
+    public void selectNextWindowIfNeeded() {
+        if (desktop.getDesktopPane().getSelectedFrame() == null) {
+            desktop.getDesktopPane().selectFrame(true);
+        }
     }
 
 }

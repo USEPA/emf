@@ -10,6 +10,7 @@ import gov.epa.emissions.framework.ui.ListWidget;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -41,10 +42,20 @@ public class AddRemoveWidget extends JPanel {
         this(allObjects, changeables, parentConsole, true, true);
         this.topic = topic;
     }
-    
-    public AddRemoveWidget(Object[] allObjects, ManageChangeables changeables, EmfConsole parentConsole, 
+
+    public AddRemoveWidget(Object[] allObjects, Object[] setObjects, ManageChangeables changeables, EmfConsole parentConsole, String topic) {
+        this.allObjects = allObjects;
+        this.objectsList = new ListWidget(new Object[0]);
+        setObjects(setObjects);
+        this.parentConsole = parentConsole;
+        setupLayout(changeables, true, true);
+        this.topic = topic;
+    }
+
+    public AddRemoveWidget(Object[] allObjects, ManageChangeables changeables, EmfConsole parentConsole,
             boolean horizontalBar, boolean verticalBar) {
         this.allObjects = allObjects;
+        this.objectsList = new ListWidget(new Object[0]);
         this.parentConsole = parentConsole;
         setupLayout(changeables, horizontalBar, verticalBar);
 
@@ -61,7 +72,6 @@ public class AddRemoveWidget extends JPanel {
     }
 
     private void setupLayout(ManageChangeables changeables, boolean horizontalBar, boolean verticalBar) {
-        this.objectsList = new ListWidget(new Object[0]);
         final JPanel container = this;
         this.objectsList.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent event) {
@@ -110,6 +120,8 @@ public class AddRemoveWidget extends JPanel {
         removeButton = new RemoveButton("Remove", removeAction());
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));
+        addButton.setToolTipText("Add item to list");
+        removeButton.setToolTipText("Remove item from list");
         panel.add(addButton);
         panel.add(removeButton);
 

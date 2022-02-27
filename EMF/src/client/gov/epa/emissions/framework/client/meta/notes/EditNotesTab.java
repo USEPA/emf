@@ -16,6 +16,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,12 +69,14 @@ public class EditNotesTab extends JPanel implements EditNotesTabView, RefreshObs
     private JPanel tablePanel(DatasetNote[] datasetNotes) {
         setupTableModel(datasetNotes);
         changeables.addChangeable(tableData);
-        if ( table == null){
+        if (table == null) {
             tablePanel = new JPanel(new BorderLayout());
             table = new SelectableSortFilterWrapper(parentConsole, tableData, null);
+            table.getTable().getAccessibleContext().setAccessibleName("List of notes for this dataset");
             tablePanel.add(table);
-        }else
+        } else {
             refresh();
+        }
         return tablePanel;
     }
     
@@ -97,6 +100,7 @@ public class EditNotesTab extends JPanel implements EditNotesTabView, RefreshObs
                 addExistingNotes();
             }
         });
+        addExisting.setMnemonic(KeyEvent.VK_E);
         addExisting.setToolTipText("add an existing note");
         container.add(addExisting);
 

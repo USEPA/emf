@@ -209,7 +209,7 @@ public abstract class AbstractFastRunWindow extends DisposableInteralFrame imple
         String message = "Are you sure you want to execute the Fast run?";
 
         int selection = JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
 

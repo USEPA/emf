@@ -11,7 +11,7 @@ import gov.epa.emissions.commons.gui.buttons.AddButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.OKButton;
 import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.casemanagement.CaseSearchPresenter;
 import gov.epa.emissions.framework.client.casemanagement.CaseSearchWindow;
@@ -32,6 +32,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
-public class DatasetSearchWindow extends ReusableInteralFrame {
+public class DatasetSearchWindow extends DisposableInteralFrame {
 
     private DatasetsBrowserPresenter presenter;
 
@@ -223,6 +224,7 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
         qaStepArguments.setToolTipText("QA step argument contains.");
         
         Button selectButton = new AddButton("Find Dataset", selectAction());
+        selectButton.setMnemonic(KeyEvent.VK_D);
         selectButton.setMargin(new Insets(1, 2, 1, 2));
 
         JPanel invPanel = new JPanel(new BorderLayout(5, 0));
@@ -363,13 +365,13 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
             }
         });
         
-        Button clearButoon = new Button("Clear", new AbstractAction(){
+        Button clearButton = new Button("Clear", new AbstractAction(){
             public void actionPerformed(ActionEvent event) {
                 clearFields();
             }
         });
-        
-        panel.add(clearButoon);
+        clearButton.setMnemonic(KeyEvent.VK_C);
+        panel.add(clearButton);
         
         panel.add(closeButton, BorderLayout.LINE_END);
         getRootPane().setDefaultButton(okButton);
@@ -403,7 +405,7 @@ public class DatasetSearchWindow extends ReusableInteralFrame {
                     if (datasets.length == 1 && datasets[0].getName().startsWith("Alert!!! More than 300 datasets selected.")) {
                         String msg = "Number of datasets > 300. Would you like to continue?";
                         int option = JOptionPane.showConfirmDialog(parent, msg, "Warning", JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.WARNING_MESSAGE);
                         if (option == JOptionPane.NO_OPTION)
                             return;
                         //kick off another swingworker for second step...

@@ -19,5 +19,7 @@ public interface DesktopManager {
     public boolean hideAll();
 
     public void ensurePresence(ManagedView frame);
+    
+    public void selectNextWindowIfNeeded();
 
 }

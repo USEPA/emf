@@ -66,8 +66,10 @@ public class TextField extends JTextField implements Changeable {
     private void addKeyListener() {
         this.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
-                if (!(e.getKeyChar() == KeyEvent.VK_TAB)
-                        && !(e.getKeyCode() == KeyEvent.VK_TAB &&  e.isShiftDown()))
+                if (!(e.getKeyChar() == KeyEvent.VK_TAB)    //Char.ToLower(
+                        && !(e.isAltDown()) //ignore all mnemonic characters
+                        && !(e.getKeyCode() == KeyEvent.VK_TAB &&  e.isShiftDown())
+                        )
                     notifyChanges();
             }
         });

@@ -11,6 +11,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
 
@@ -104,29 +105,44 @@ public class InstallWindow extends JFrame implements InstallView {
         preferencesText.setEditable(false);
 
         urlLabel = new JLabel("EMF Download URL", SwingConstants.RIGHT);
+        urlLabel.setLabelFor(url);
         javaHomeLabel = new JLabel("Java Home Directory", SwingConstants.RIGHT);
+        javaHomeLabel.setLabelFor(javaHomeDirField);
         rHomeLabel = new JLabel("R Bin Directory", SwingConstants.RIGHT);
+        rHomeLabel.setLabelFor(rHomeField);
         inputLabel = new JLabel("Server Import Directory", SwingConstants.RIGHT);
+        inputLabel.setLabelFor(inputDirField);
         outputLabel = new JLabel("Server Export Directory", SwingConstants.RIGHT);
+        outputLabel.setLabelFor(outputDirField);
         installHomeLabel = new JLabel("Client Home Directory", SwingConstants.RIGHT);
+        installHomeLabel.setLabelFor(installDirField);
         tmpDirLabel = new JLabel("Local Temp Directory", SwingConstants.RIGHT);
+        tmpDirLabel.setLabelFor(tmpDirField);
         serverLabel = new JLabel("Server Address", SwingConstants.RIGHT);
+        serverLabel.setLabelFor(serverField);
         serverHolderLabel = new JLabel();
         prefFileLabel = new JLabel("Output Preferences File", SwingConstants.RIGHT);
+        prefFileLabel.setLabelFor(preferencesText);
         statusLabel = new JLabel();
         holderLabel = new JLabel();
-        new JLabel();
         load = new JLabel();
 
         javaHomeBrowser = new JButton("Browse...");
+        javaHomeBrowser.setToolTipText("Locate the Java Home Directory");
         rHomeBrowser = new JButton("Browse...");
+        rHomeBrowser.setToolTipText("Locate the R Bin Directory");
         inputDirBrowser = new JLabel();
         outputDirBrowser = new JLabel();
         installDirBrowser = new JButton("Browse...");
+        installDirBrowser.setToolTipText("Set the Client Home Directory");
         tmpDirBrowser = new JButton("Browse...");
+        tmpDirBrowser.setToolTipText("Set the Local Temp Directory");
         installButton = new JButton("Install");
-        exitInstallButton = new JButton(" Exit  ");
+        installButton.setMnemonic(KeyEvent.VK_I);
+        exitInstallButton = new JButton("Exit");
+        exitInstallButton.setMnemonic(KeyEvent.VK_X);
         cancel = new JButton("Cancel");
+        cancel.setMnemonic(KeyEvent.VK_L);
 
         // Create and set up the panel.
         directoryPage = new JPanel();
@@ -471,7 +487,7 @@ public class InstallWindow extends JFrame implements InstallView {
         rewriteBatchFile();
 
         if (INSTALL_MODE == INSTALL) {
-            presenter.createShortcut();
+            //presenter.createShortcut();
             load.setText(Constants.INSTALL_CLOSE_MESSAGE);
         } else if (INSTALL_MODE == RE_INSTALL) {
             load.setText(Constants.REINSTALL_CLOSE_MESSAGE);
@@ -480,6 +496,7 @@ public class InstallWindow extends JFrame implements InstallView {
         }
 
         cancel.setText("Done");
+        cancel.setMnemonic(KeyEvent.VK_D);
     }
 
     private void rewriteBatchFile() {
@@ -521,23 +538,26 @@ public class InstallWindow extends JFrame implements InstallView {
         String message3 = "Do you want to proceed with installing the EMF client?";
 
         if (!message1.isEmpty() || !message2.isEmpty())
-            return JOptionPane.showConfirmDialog(this, message1 + message2 + message3);
+            return JOptionPane.showConfirmDialog(this, message1 + message2 + message3,
+                    "Proceed with installation?", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE);
 
         return JOptionPane.OK_OPTION;
     }
 
     private void checkUpdates() {
-        Object[] possibleValues = { "Update", "Reinstall" };
-        Object selectedValue = JOptionPane.showInputDialog(installFrame,
-                "The Client Home Directory already exists. Would you like to reinstall "
-                        + "or update?\n Please choose one:", "Input", JOptionPane.INFORMATION_MESSAGE, null,
-                possibleValues, possibleValues[0]);
-        if (selectedValue == "Reinstall") {
+        Object[] possibleValues = { "Update", "Reinstall", "Cancel" };
+        int selectedValue = JOptionPane.showOptionDialog(installFrame,
+                "The Client Home Directory already exists. Would you like to update "
+                        + "or reinstall?", "Input", JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE, null, possibleValues,
+                        possibleValues[0]);
+        if (selectedValue == JOptionPane.NO_OPTION) {
             INSTALL_MODE = RE_INSTALL;
             load.setText(Constants.EMF_REINSTALL_MESSAGE);
             writePreferences();
             presenter.startDownload();
-        } else if (selectedValue == "Update") {
+        } else if (selectedValue == JOptionPane.YES_OPTION) {
             INSTALL_MODE = UPDATE;
             load.setText(Constants.EMF_UPDATE_MESSAGE);
             writePreferences();

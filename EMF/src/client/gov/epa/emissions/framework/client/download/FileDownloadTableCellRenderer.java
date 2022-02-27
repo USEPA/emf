@@ -179,6 +179,7 @@ public class FileDownloadTableCellRenderer extends JPanel implements TableCellRe
         } else {
             setBorder(noFocusBorder);
         }
+        if (value == null) return this;
         FileDownload fileDownload = (FileDownload)value;
         nameLabel.setText(fileDownload.getFileName());
         messageLabel.setText(fileDownload.getMessage());

@@ -12,7 +12,7 @@ import gov.epa.emissions.commons.gui.buttons.ExportButton;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -41,6 +41,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -53,7 +54,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-public class ControlMeasuresManagerWindow extends ReusableInteralFrame implements ControlMeasuresManagerView,
+public class ControlMeasuresManagerWindow extends DisposableInteralFrame implements ControlMeasuresManagerView,
         RefreshObserver, Runnable {
 
     // private SortFilterSelectModel selectModel;
@@ -111,7 +112,7 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
     private TextField textFilter;
 
     public ControlMeasuresManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Control Measure Manager", new Dimension(900, 400), desktopManager);
+        super("Control Measure Manager", new Dimension(1000, 400), desktopManager);
         super.setName("controlMeasures");
         super.setMinimumSize(new Dimension(860, 300));
         this.session = session;
@@ -236,6 +237,7 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
 
         // JScrollPane sortFilterPane = sortFilterPane(parentConsole);
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of control measures");
 
         tablePanel.add(table);
 
@@ -405,9 +407,11 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
         Button view = new Button("View", viewAction());
         // Button view = new ViewButton(viewAction());
         panel.add(view);
+        view.setMnemonic(KeyEvent.VK_V);
 
         Button edit = new Button("Edit", editAction());
         panel.add(edit);
+        edit.setMnemonic(KeyEvent.VK_E);
 
         AbstractAction copyAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -426,9 +430,11 @@ public class ControlMeasuresManagerWindow extends ReusableInteralFrame implement
         Button find = new Button("Find", findAction());
         find.setToolTipText("Find measures that apply to specific SCCs");
         panel.add(find);
+        find.setMnemonic(KeyEvent.VK_F);
 
         Button genereateReport = new Button("Report", generatePDFReportAction());
         panel.add(genereateReport);
+        genereateReport.setMnemonic(KeyEvent.VK_P);
 
         return panel;
     }

@@ -14,6 +14,7 @@ import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,10 +67,12 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
     private JPanel tablePanel(Revision[] revisions, EmfConsole parentConsole) {
         //EmfTableModel model = new EmfTableModel(new RevisionsTableData(revisions));
         JPanel tablePanel = new JPanel(new BorderLayout());
-        if ( table==null ) 
+        if (table == null) {
             table = new SelectableSortFilterWrapper(parentConsole, new RevisionsTableData(revisions), null);
-        else
+            table.getTable().getAccessibleContext().setAccessibleName("List of revisions for this dataset");
+        } else {
             table.refresh(new RevisionsTableData(revisions));
+        }
         tablePanel.add(table);
         return tablePanel;
     }
@@ -87,18 +90,19 @@ public class RevisionsTab extends JPanel implements RevisionsTabView, RefreshObs
                 viewRevisions();
             }
         });
+        viewButton.setMnemonic(KeyEvent.VK_V);
         buttonPanel.add(viewButton);
 
-        JButton editButton = new JButton(new AbstractAction("Edit"){
-            public void actionPerformed(ActionEvent event) {
-                editRevisions();
-            }
-        });
-        
-        editButton.setMargin(insets);
-        editButton.setEnabled(this.editable);
-        
-        buttonPanel.add(editButton);
+        if (this.editable) {
+            JButton editButton = new JButton(new AbstractAction("Edit"){
+                public void actionPerformed(ActionEvent event) {
+                    editRevisions();
+                }
+            });
+            editButton.setMnemonic(KeyEvent.VK_E);
+            editButton.setMargin(insets);
+            buttonPanel.add(editButton);
+        }
 
         panel.add(buttonPanel, BorderLayout.LINE_START);
 

@@ -129,7 +129,8 @@ public class EditorControlMeasurePresenterImpl implements ControlMeasurePresente
                 reportFile = fileChooser.getSelectedFile();
                 if (reportFile.exists()) {
                     overwrite = JOptionPane.showConfirmDialog(null, "File " + reportFile.getName()
-                            + " already exist. Overwrite?", "Overwrite?", JOptionPane.YES_NO_OPTION);
+                            + " already exist. Overwrite?", "Overwrite?", JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
                 }
             }
 

@@ -4,9 +4,8 @@ import gov.epa.emissions.commons.io.ColumnMetaData;
 import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.framework.client.data.DataHeaderPref;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Font;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,22 +15,17 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
-import javax.swing.JTextPane;
 import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 
 public class TableColumnHeadersViewer implements MouseListener, ActionListener {
     
@@ -84,38 +78,25 @@ public class TableColumnHeadersViewer implements MouseListener, ActionListener {
         initiateColumns();
     }
 
-    public class TableHeaderRenderer extends JPanel implements TableCellRenderer {
-
-        private JTextPane textPane;
+    public class TableHeaderRenderer extends DefaultTableCellRenderer {
 
         private TableMetadata metadata;
 
         public TableHeaderRenderer(JTableHeader tableHeader, TableMetadata tableMetadata) {
-            this.textPane = new JTextPane();
             this.metadata = tableMetadata;
-            textPaneSettings(tableHeader);
-            setLayout(new BorderLayout());
-            add(textPane);
-        }
 
-        private void textPaneSettings(JTableHeader tableHeader) {
-            textPane.setForeground(tableHeader.getForeground());
-            textPane.setBackground(tableHeader.getBackground());
-            textPane.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-            StyledDocument doc = textPane.getStyledDocument();
-            MutableAttributeSet standard = new SimpleAttributeSet();
-            Font font = tableHeader.getFont();
-            StyleConstants.setAlignment(standard, StyleConstants.ALIGN_CENTER);
-            StyleConstants.setFontFamily(standard, font.getFamily());
-            StyleConstants.setFontSize(standard,font.getSize());
-            doc.setParagraphAttributes(0, 0, standard, true);
+            setForeground(tableHeader.getForeground());
+            setBackground(tableHeader.getBackground());
+            setBorder(UIManager.getBorder("TableHeader.cellBorder"));
             
-            textPane.setFont(font);
+            setFont(tableHeader.getFont());
+            
+            setHorizontalAlignment(SwingConstants.CENTER);
         }
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                 boolean hasFocus, int row, int column) {
-            textPane.setText(headerText(value));
+            setText("<html><center>" + headerText(value) + "</center></html>");
             return this;
         }
 
@@ -127,15 +108,15 @@ public class TableColumnHeadersViewer implements MouseListener, ActionListener {
         private String type(String header) {
             ColumnMetaData data = metadata.columnMetadata(header);
             if(data==null){
-                return "\n";
+                return "<br>&nbsp;";
             }
             String type = parse(data.getType());
             if(!type.equalsIgnoreCase("String")){
-                return "\n"+type;
+                return "<br>"+type;
             }
             int length = data.getSize();
             String size = (length==-1 || length > 500)?"*":""+length;
-            return "\n" + type + "(" + size + ")";
+            return "<br>" + type + "(" + size + ")";
         }
 
         private String parse(String type) {

@@ -8,10 +8,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Label extends JLabel {
+    
+    private String name;
 
     public Label(String name, String label) {
         super(label);
+        this.name = name;
         super.setName(toCanonicalName(name));
+        super.getAccessibleContext().setAccessibleName(name + " " + label);
         super.setFocusable(true);
 
         super.addFocusListener(new FocusAdapter() {
@@ -47,6 +51,11 @@ public class Label extends JLabel {
 
     public Label(String label) {
         this(label, label);
+    }
+    
+    public void setText(String text) {
+        super.setText(text);
+        getAccessibleContext().setAccessibleName(name + " " + text);
     }
 
     // FIXME: refactor to be reusable across components

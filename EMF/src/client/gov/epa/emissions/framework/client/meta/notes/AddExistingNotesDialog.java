@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +111,7 @@ public class AddExistingNotesDialog extends JDialog{
                   refresh();
               }
           });
+          button.setMnemonic(KeyEvent.VK_G);
           button.setToolTipText("Get notes");
           rightPanel.add(button, BorderLayout.CENTER);
 

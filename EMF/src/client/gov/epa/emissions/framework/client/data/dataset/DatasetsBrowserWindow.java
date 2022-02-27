@@ -11,7 +11,8 @@ import gov.epa.emissions.commons.gui.buttons.ExportButton;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.exim.DatasetsBrowserAwareImportPresenter;
@@ -40,6 +41,10 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -54,8 +59,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
-public class DatasetsBrowserWindow extends ReusableInteralFrame implements DatasetsBrowserView, RefreshObserver {
+public class DatasetsBrowserWindow extends DisposableInteralFrame implements DatasetsBrowserView, RefreshObserver {
 
     private MessagePanel messagePanel;
 
@@ -66,12 +74,14 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
     private EmfSession session;
 
     private ComboBox dsTypesBox;
+    private DatasetType dsTypeLoaded;
     
     private TextField textFilter;
 
     private DatasetType[] allDSTypes = new DatasetType[] {};
 
     private SelectableSortFilterWrapper table;
+    private Button removeButton;
     
     public DatasetsBrowserWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
         super("Dataset Manager", new Dimension(850, 450), desktopManager);
@@ -86,6 +96,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         JPanel panel = createLayout(datasets);
         Container contentPane = getContentPane();
         contentPane.add(panel);
+        messagePanel.setMessage("Fetching dataset types...");
         super.display();
         populate();
     }
@@ -97,25 +108,42 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         this.allDSTypes = dbDSTypes.toArray(new DatasetType[0]);
     }
     
-    private Action typeAction() {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                DatasetType type = getSelectedDSType();
-                try {
-                    // count the number of datasets and do refresh
-                    if (dsTypesBox.getSelectedIndex() > 0)
-                        doRefresh();          
-                } catch (EmfException e1) {
-                    messagePanel.setError("Could not retrieve all datasets for dataset type " + type.getName());
-                }
-            }
-        };
+    private void typeAction() {
+        DatasetType type = getSelectedDSType();
+        try {
+            // count the number of datasets and do refresh
+            if (dsTypesBox.getSelectedIndex() > 0)
+                doRefresh();          
+        } catch (EmfException e1) {
+            messagePanel.setError("Could not retrieve all datasets for dataset type " + type.getName());
+        }
     }    
 
     private void createDSTypesComboBox() {
-        dsTypesBox = new ComboBox("Select one", allDSTypes);
+        dsTypesBox = new ComboBox("Select one", allDSTypes, "Dataset Types");
         dsTypesBox.setPreferredSize(new Dimension(360, 25));
-        dsTypesBox.addActionListener(typeAction());
+        dsTypesBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!dsTypesBox.isPopupVisible() &&
+                        getSelectedDSType() != dsTypeLoaded) {
+                    typeAction();
+                }
+            }
+        });
+        dsTypesBox.addPopupMenuListener(new PopupMenuListener() {
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                if (getSelectedDSType() != dsTypeLoaded) typeAction();
+            }
+
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                //
+            }
+
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                //
+            }
+        });
     }
 
     public DatasetType getSelectedDSType() {
@@ -144,6 +172,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
     private JPanel createBrowserPanel(EmfDataset[] datasets) {
         EmfDatasetTableData tableData = new EmfDatasetTableData(datasets);
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of datasets");
 
         JPanel browserPanel = new JPanel(new BorderLayout());
         browserPanel.add(table);
@@ -164,9 +193,14 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         msgRefreshPanel.add(button, BorderLayout.EAST);
         
         JPanel topPanel = new JPanel(new BorderLayout());
-        textFilter = new TextField("textfilter", 10);
+        textFilter = new TextField("textfilter", 10, "Name contains text filter");
         textFilter.setEditable(true);
-        textFilter.addActionListener(typeAction());
+        textFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typeAction();
+            }
+        });
         
         Button advButton = new Button("Advanced", new AbstractAction(){
             public void actionPerformed(ActionEvent arg0) {
@@ -174,11 +208,13 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
                 notifyAdvancedSearch();
             }
         });
+        advButton.setMnemonic(KeyEvent.VK_D);
         advButton.setToolTipText("Advanced search");
         
         JPanel advPanel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel("Name Contains:");
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(textFilter);
         advPanel.add(jlabel, BorderLayout.WEST);
         advPanel.add(textFilter, BorderLayout.CENTER);
         advPanel.add(advButton, BorderLayout.EAST);
@@ -223,6 +259,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         JPanel panel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel(label);
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(box);
         panel.add(jlabel, BorderLayout.WEST);
         panel.add(box, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));
@@ -258,9 +295,14 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction(), table, confirmDialog);
         SelectAwareButton propButton = new SelectAwareButton("Edit Properties", editPropAction(), table, confirmDialog);
         SelectAwareButton dataButton = new SelectAwareButton("Edit Data", editDataAction(), table, confirmDialog);
-        Button removeButton = new RemoveButton(removeAction());
+        removeButton = new RemoveButton(removeAction());
 
-        dataButton.setMnemonic('a');
+        viewButton.setToolTipText("View dataset properties window");
+        propButton.setToolTipText("Edit dataset properties window");
+        dataButton.setToolTipText("Edit dataset data window");
+        removeButton.setToolTipText("Remove datasets action");
+
+        dataButton.setMnemonic(KeyEvent.VK_A);
 
         panel.add(viewButton);
         panel.add(propButton);
@@ -359,6 +401,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
             }
         });
         purgeButton.setToolTipText("Purge deleted dataset(s)");
+        purgeButton.setMnemonic(KeyEvent.VK_P);
         panel.add(purgeButton);
 
         Button closeButton = new CloseButton(new AbstractAction() {
@@ -366,6 +409,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
                 presenter.doClose();
             }
         });
+        closeButton.setToolTipText("Close dataset manager");
         panel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -400,8 +444,9 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         if (presenter.isAdminUser()) {
             message = "As an admin user, purge datasets will clear up all the datasets that do not have emissions data."
                     + ls + "Are you sure you want to remove them permanently?";
+            UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
             selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
         } else {
             if (numDelDatasets == 0) {
                 JOptionPane.showMessageDialog(parentConsole, message);
@@ -409,7 +454,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
             }
             
             selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
         }
         
         if (selection == JOptionPane.NO_OPTION)
@@ -601,9 +646,8 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
         }
 
         String message = "Are you sure you want to remove the selected " + datasets.size() + " dataset(s)?";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
+        int selection = JOptionPane.showConfirmDialog(parentConsole, new Label("", message), "Warning", JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
             //long running methods.....
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -653,6 +697,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
 //                        this.parentContainer.
                         ComponentUtility.enableComponents(parentContainer, true);
                         this.parentContainer.setCursor(null); //turn off the wait cursor
+                        removeButton.grabFocus();
                     }
                 }
             };
@@ -687,10 +732,10 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
     public void doRefresh() throws EmfException {  
         int numDataset = presenter.getNumOfDatasets(getSelectedDSType(), textFilter.getText());
         if ( numDataset >= 300){
-            String message = "There are " + numDataset + " datasets, which could take a while to transfer, would you like to continue? \n"
-            +"[Hint: if you choose not to continue, enter a filter in Name Contains before proceeding]";
-            int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+            String message = "<html>There are " + numDataset + " datasets, which could take a while to transfer, would you like to continue?<br>"
+            +"[Hint: if you choose not to continue, enter a filter in Name Contains before proceeding]</html>";
+            int selection = JOptionPane.showConfirmDialog(parentConsole, new Label("", message), "Warning", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.NO_OPTION ||
                     selection == JOptionPane.CANCEL_OPTION) {
@@ -729,6 +774,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
                 try {
                     //make sure something didn't happen
                     refresh(get());
+                    dsTypeLoaded = getSelectedDSType();
                 } catch (InterruptedException e1) {
 //                    messagePanel.setError(e1.getMessage());
 //                    setErrorMsg(e1.getMessage());
@@ -740,6 +786,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
 //                    this.parentContainer.
                     ComponentUtility.enableComponents(parentContainer, true);
                     this.parentContainer.setCursor(null); //turn off the wait cursor
+                    dsTypesBox.grabFocus();
                 }
             }
         };
@@ -810,6 +857,7 @@ public class DatasetsBrowserWindow extends ReusableInteralFrame implements Datas
 //                    this.parentContainer.
                     ComponentUtility.enableComponents(parentContainer, true);
                     this.parentContainer.setCursor(null); //turn off the wait cursor
+                    messagePanel.setMessage("Please select a dataset type to display datasets.");
                 }
             }
         };

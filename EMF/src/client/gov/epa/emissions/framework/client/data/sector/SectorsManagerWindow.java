@@ -4,7 +4,7 @@ import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 //FIXME: look at the common design b/w this and UserManagerWindow. Refactor ?
-public class SectorsManagerWindow extends ReusableInteralFrame implements SectorsManagerView, RefreshObserver {
+public class SectorsManagerWindow extends DisposableInteralFrame implements SectorsManagerView, RefreshObserver {
 
     private SectorsManagerPresenter presenter;
 
@@ -80,6 +81,7 @@ public class SectorsManagerWindow extends ReusableInteralFrame implements Sector
         //model = new EmfTableModel(new SectorsTableData(sectors));
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new SectorsTableData(sectors), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of sectors");
         tablePanel.add(table);
         createLayout();
     }
@@ -115,6 +117,7 @@ public class SectorsManagerWindow extends ReusableInteralFrame implements Sector
                 presenter.doClose();
             }
         });
+        closeButton.setMnemonic(KeyEvent.VK_L);
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -157,6 +160,7 @@ public class SectorsManagerWindow extends ReusableInteralFrame implements Sector
                 createNewSector();
             }
         });
+        newButton.setMnemonic(KeyEvent.VK_N);
         crudPanel.add(newButton);
 
         return crudPanel;

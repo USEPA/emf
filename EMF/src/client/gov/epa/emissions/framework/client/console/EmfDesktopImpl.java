@@ -15,6 +15,10 @@ public class EmfDesktopImpl implements EmfDesktop {
     public EmfDesktopImpl(JDesktopPane desktop) {
         this.desktop = desktop;
     }
+    
+    public JDesktopPane getDesktopPane() {
+        return desktop;
+    }
 
     public void add(ManagedView view) {
         EmfInternalFrame frame = (EmfInternalFrame) view;// unfortunate class-cast

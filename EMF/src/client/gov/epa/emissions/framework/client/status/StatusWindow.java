@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.status;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
@@ -35,7 +35,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class StatusWindow 
-  extends ReusableInteralFrame 
+  extends DisposableInteralFrame 
   implements StatusView, RefreshObserver {
 
     private MessagePanel messagePanel;
@@ -47,6 +47,8 @@ public class StatusWindow
     private EmfConsole parent;
     
     private User user;
+    
+    private RefreshButton refreshButton;
 
     public StatusWindow(EmfConsole parent, DesktopManager desktopManager, User user) {
         super("Status", desktopManager);
@@ -75,14 +77,15 @@ public class StatusWindow
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel container = new JPanel(new FlowLayout());
-        messagePanel = new SingleLineMessagePanel();
+        messagePanel = new SingleLineMessagePanel(false);
         container.add(messagePanel);
 
         JButton clearButton = createClearButton();
         getRootPane().setDefaultButton(clearButton);
         container.add(clearButton);
 
-        container.add(createRefreshButton());
+        refreshButton = createRefreshButton();
+        container.add(refreshButton);
 
         panel.add(container, BorderLayout.EAST);
 
@@ -105,7 +108,7 @@ public class StatusWindow
         return button;
     }
 
-    private Button createRefreshButton() {
+    private RefreshButton createRefreshButton() {
         return new RefreshButton(this, "Refresh the Status messages", messagePanel);
     }
 
@@ -119,6 +122,7 @@ public class StatusWindow
         table = //new JTable(statusTableModel);
                 new MultiLineTable(statusTableModel);
         table.setName("statusMessages");
+        table.getAccessibleContext().setAccessibleName("List of status messages");
         // FIXME: code put in for the demo
         //table.setRowHeight(50);
         //table.setDefaultRenderer(Object.class, new TextAreaTableCellRenderer());
@@ -197,7 +201,10 @@ public class StatusWindow
                         messagePanel.setError(e1.getMessage());
 //                    setErrorMsg(e1.getCause().getMessage());
                 } finally {
-                    super.finalize();            }
+                    super.finalize();
+                    if (isSelected())
+                        refreshButton.requestFocusInWindow();
+                }
             }
         }.execute();
     }

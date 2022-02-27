@@ -165,7 +165,7 @@ public class ColumnFormatGUI extends OptionDialog implements TableModelListener 
 				selColumns = new boolean[columnHeaders.length];
 			}
 			// set the format to nulls
-			selectionPanel = new ColumnSelectionPanel(columnHeaders, selColumns, "Format", "Ignore");
+			selectionPanel = new ColumnSelectionPanel(columnHeaders, selColumns, "Show", "Hide");
 			selectionPanel.addTableModelListener(this);
 			// to initialize the panel correctly with appropriate format RP
 			tableChanged(null);

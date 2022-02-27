@@ -6,7 +6,7 @@ import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -25,6 +25,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,7 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implements ModuleTypeVersionsManagerView, RefreshObserver {
+public class ModuleTypeVersionsManagerWindow extends DisposableInteralFrame implements ModuleTypeVersionsManagerView, RefreshObserver {
 
     private ModuleTypeVersionsManagerPresenter presenter;
 
@@ -177,7 +178,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         SelectAwareButton viewButton = new SelectAwareButton("View", viewAction, table, confirmDialog);
-        viewButton.setMnemonic('V');
+        viewButton.setMnemonic(KeyEvent.VK_V);
 
         Action editAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -185,7 +186,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         SelectAwareButton editButton = new SelectAwareButton("Edit", editAction, table, confirmDialog);
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_E);
 
         Action newVersionAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -193,7 +194,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         Button newVersionButton = new Button("New Version", newVersionAction);
-        newVersionButton.setMnemonic('N');
+        newVersionButton.setMnemonic(KeyEvent.VK_N);
 
         Action newModuleTypeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -201,7 +202,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         Button newModuleTypeButton = new Button("New Module Type", newModuleTypeAction);
-        newModuleTypeButton.setMnemonic('T');
+        newModuleTypeButton.setMnemonic(KeyEvent.VK_T);
 
         Action removeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -209,7 +210,6 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
             }
         };
         Button removeButton = new RemoveButton(removeAction);
-        removeButton.setMnemonic('m');
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
@@ -405,7 +405,7 @@ public class ModuleTypeVersionsManagerWindow extends ReusableInteralFrame implem
         }
         
         String message = "Are you sure you want to remove the selected module type version? There is no undo for this action.";
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection == JOptionPane.YES_OPTION) {
             try {
                 ModuleType moduleType = presenter.removeModuleTypeVersion(selectedMTV.getId());

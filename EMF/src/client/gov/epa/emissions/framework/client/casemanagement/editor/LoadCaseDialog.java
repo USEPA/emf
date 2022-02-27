@@ -22,6 +22,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -144,10 +145,12 @@ public class LoadCaseDialog extends JDialog {
         container.setLayout(layout);
 
         loadButton = new Button("Load", loadCase());
+        loadButton.setMnemonic(KeyEvent.VK_L);
         container.add(loadButton);
         getRootPane().setDefaultButton(loadButton);
 
         cancelButton = new Button("Done", closeAction());
+        cancelButton.setMnemonic(KeyEvent.VK_D);
         container.add(cancelButton);
 
         panel.add(container, BorderLayout.EAST);

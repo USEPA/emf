@@ -129,10 +129,12 @@ public class InfoTab extends JPanel implements InfoTabView, RefreshObserver {
     private JPanel createSortFilterPane(TableData tableData, EmfConsole parentConsole, boolean external)
             throws EmfException {
         JPanel tablePanel = new JPanel(new BorderLayout());
-        if ( table == null )
+        if (table == null) {
             table = new SelectableSortFilterWrapper(parentConsole, tableData, null);
-        else
+            table.getTable().getAccessibleContext().setAccessibleName("List of sources for this dataset's data");
+        } else {
             table.refresh(tableData);
+        }
         
         tablePanel.add(table, BorderLayout.CENTER);
 

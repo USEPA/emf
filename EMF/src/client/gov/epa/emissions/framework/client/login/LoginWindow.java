@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.gui.buttons.CancelButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.DefaultEmfSession;
 import gov.epa.emissions.framework.client.EmfFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.admin.PostRegisterStrategy;
 import gov.epa.emissions.framework.client.admin.RegisterUserPresenter;
 import gov.epa.emissions.framework.client.admin.RegisterUserWindow;
@@ -21,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -47,7 +49,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
     private ServiceLocator serviceLocator;
 
-    public final static String EMF_VERSION = "v3.7 - 08/17/2020";
+    public final static String EMF_VERSION = "v3.10.1 - 11/04/2021";
 
     public LoginWindow(ServiceLocator serviceLocator) {
         super("Login", "Login to EMF [" + EMF_VERSION + "]");
@@ -106,13 +108,13 @@ public class LoginWindow extends EmfFrame implements LoginView {
     }
 
     private int toUpdate() {
-        String message = "An updated version of the EMF client exists (" + 
-                  presenter.getUpdatedEmfVersion() + ").\n"
-                + "Would you like to stop logging in so that you can update \nyour client using the Installer?";
+        String message = "<html>An updated version of the EMF client exists (" + 
+                  presenter.getUpdatedEmfVersion() + ").<br>"
+                + "Would you like to stop logging in so that you can update<br>your client using the Installer?</html>";
 
         System.out.println("Showing confirm dialog");
-        return JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+        return JOptionPane.showConfirmDialog(this, new Label("", message), "Warning", JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private JPanel createButtonsPanel() {
@@ -129,6 +131,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
                 doSignIn();
             }
         });
+        signIn.setMnemonic(KeyEvent.VK_I);
         container.add(signIn);
         setDefaultButton(signIn);
 
@@ -175,7 +178,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 //            Math.abs(expireDays) + " days.\n"
 //            + "Please reset your password using profile manager. ";
 //            System.out.println("Showing confirm dialog");
-//            return JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.CLOSED_OPTION);
+//            return JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
 //        }
         return 0; 
     }  
@@ -192,8 +195,10 @@ public class LoginWindow extends EmfFrame implements LoginView {
         GridLayout labelsLayoutManager = new GridLayout(2, 1);
         labelsLayoutManager.setVgap(15);
         JPanel labelsPanel = new JPanel(labelsLayoutManager);
-        labelsPanel.add(new JLabel("EMF Username"));
-        labelsPanel.add(new JLabel("EMF Password"));
+        final JLabel usernameLabel = new JLabel("EMF Username");
+        labelsPanel.add(usernameLabel);
+        final JLabel passwordLabel = new JLabel("EMF Password");
+        labelsPanel.add(passwordLabel);
 
         panel.add(labelsPanel);
 
@@ -203,9 +208,19 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
         username = new JTextField(10);
         username.setName("username");
+        username.setToolTipText("EMF Username");
+
+        usernameLabel.setLabelFor(username);
+        usernameLabel.setToolTipText(username.getToolTipText());
+
         valuesPanel.add(username);
         password = new JPasswordField(10);
         password.setName("password");
+        password.setToolTipText("EMF Password");
+
+        passwordLabel.setLabelFor(password);
+        passwordLabel.setToolTipText(password.getToolTipText());
+
         valuesPanel.add(password);
 
         panel.add(valuesPanel);
@@ -225,6 +240,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
         forgotPassword.setToolTipText("Reset password");
         JPanel forgotPasswordPanel = new JPanel(new BorderLayout());
         forgotPasswordPanel.add(forgotPassword);
+        forgotPassword.setMnemonic(KeyEvent.VK_P);
 
         JButton register = new Button("Register New User", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -232,6 +248,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
             }
         });
         register.setToolTipText("Register as a new user");
+        register.setMnemonic(KeyEvent.VK_R);
 
         JPanel registerPanel = new JPanel(new BorderLayout());
         registerPanel.add(register);

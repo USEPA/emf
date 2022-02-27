@@ -79,6 +79,14 @@ public class EditQAStepTemplateWindow extends DisposableInteralFrame implements 
                     "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        try {
+            if (!templatePanel.getOrder().equals(""))
+                Float.parseFloat(templatePanel.getOrder());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(super.getParent(), "Order should be a floating point number.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
 
         return true;
     }

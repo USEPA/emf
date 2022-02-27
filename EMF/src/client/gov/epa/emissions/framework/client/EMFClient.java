@@ -7,6 +7,8 @@ import gov.epa.emissions.framework.client.transport.ServiceLocator;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import java.awt.Color;
 
 public class EMFClient {
     private static final String DEFAULT_URL = "http://localhost:8080/emf/services";// default
@@ -38,7 +40,8 @@ public class EMFClient {
       {
         String url = DEFAULT_URL;
         System.setProperty("emf.remote.host", "localhost");
-        
+        UIManager.put("Button.focus", new Color(51, 82, 107));
+
         if (args.length == 1) {
             url = args[0];
             setHost(url);

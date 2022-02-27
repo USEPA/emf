@@ -21,6 +21,7 @@ import gov.epa.emissions.commons.CommonDebugLevel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,13 +111,16 @@ public class ViewControlStrategyMeasuresTab extends EmfPanel implements ViewCont
 
         JButton addButton = new DisabledButton("Add");
         addButton.setMargin(new Insets(2, 5, 2, 5));
+        addButton.setMnemonic(KeyEvent.VK_A);
         panel.add(addButton);
 
         JButton editButton = new DisabledButton("Edit");
+        editButton.setMnemonic(KeyEvent.VK_E);
         panel.add(editButton);
 
         JButton removeButton = new DisabledButton("Remove");
         removeButton.setMargin(new Insets(2, 5, 2, 5));
+        removeButton.setMnemonic(KeyEvent.VK_O);
         panel.add(removeButton);
 
         JPanel container = new JPanel(new BorderLayout());

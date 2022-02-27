@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.cost.controlstrategy.groups;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import gov.epa.emissions.commons.gui.BorderlessButton;
@@ -73,6 +74,7 @@ public class StrategyGroupStrategiesTab extends JPanel implements StrategyGroupT
                 addAction();
             }
         });
+        addButton.setMnemonic(KeyEvent.VK_A);
         buttonPanel.add(addButton);
 
         Button removeButton = new BorderlessButton("Remove from Group", new AbstractAction() {
@@ -80,6 +82,7 @@ public class StrategyGroupStrategiesTab extends JPanel implements StrategyGroupT
                 removeAction();
             }
         });
+        removeButton.setMnemonic(KeyEvent.VK_R);
         buttonPanel.add(removeButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
@@ -123,7 +126,7 @@ public class StrategyGroupStrategiesTab extends JPanel implements StrategyGroupT
         String title = "Warning";
         String message = "Are you sure you want to remove the selected control strategies from the group?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.remove(strategies);

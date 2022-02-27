@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
@@ -177,7 +178,7 @@ public class EditControlMeasureWindow extends DisposableInteralFrame implements 
                 doReport();
             }
         });
-
+        reportButton.setMnemonic(KeyEvent.VK_R);
         reportButton.setToolTipText("Generate \"At-a-glance\" report");
 
         buttonsPanel.add(reportButton);

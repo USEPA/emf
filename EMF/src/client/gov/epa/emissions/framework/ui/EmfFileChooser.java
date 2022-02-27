@@ -227,6 +227,7 @@ public class EmfFileChooser extends JComponent {
         fileChooser.setMultiSelectionEnabled(true);
         fileChooser.setApproveButtonText("Upload");
         fileChooser.setControlButtonsAreShown(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent action)
@@ -247,6 +248,9 @@ public class EmfFileChooser extends JComponent {
                 }
             }
         });
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        InputMap map = fileChooser.getInputMap(JFileChooser.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        map.put(enter, "approveSelection");
 
         localPanel.add(fileChooser);
         JButton buttonUpload = new JButton("Upload");
@@ -256,6 +260,7 @@ public class EmfFileChooser extends JComponent {
                 buttonUploadActionPerformed(event);
             }
         });
+        buttonUpload.setMnemonic(KeyEvent.VK_U);
         JPanel uploadFileButtonPanel = new JPanel(new BorderLayout());
         uploadFileButtonPanel.add(buttonUpload, BorderLayout.EAST);
         localPanel.add(uploadFileButtonPanel);
@@ -440,7 +445,7 @@ public class EmfFileChooser extends JComponent {
             }
         });
         refresh.setToolTipText("Refresh the content of the dir");
-        refresh.setMnemonic('R');
+        refresh.setMnemonic(KeyEvent.VK_R);
         panel.add(refresh); 
 
         JPanel container = new JPanel(new BorderLayout(0, 20));

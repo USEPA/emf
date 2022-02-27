@@ -22,6 +22,7 @@ import gov.epa.emissions.framework.ui.MessagePanel;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -80,6 +81,7 @@ public class ViewableInputsTab extends EditInputsTab {
 
         Button copy = new Button("Copy", copyAction(presenter));
         copy.setMargin(insets);
+        copy.setMnemonic(KeyEvent.VK_C);
         container.add(copy);
 
         Button viewDS = new ViewButton("View Dataset", new AbstractAction() {
@@ -87,6 +89,7 @@ public class ViewableInputsTab extends EditInputsTab {
                 doDisplayInputDatasetsPropertiesViewer();
             }
         });
+        viewDS.setMnemonic(KeyEvent.VK_I);
         viewDS.setMargin(insets);
         container.add(viewDS);
 
@@ -95,6 +98,7 @@ public class ViewableInputsTab extends EditInputsTab {
                 doExportInputDatasets(getSelectedInputs());
             }
         });
+        export.setMnemonic(KeyEvent.VK_E);
         export.setMargin(insets);
         container.add(export);
 
@@ -104,6 +108,7 @@ public class ViewableInputsTab extends EditInputsTab {
             }
         });
         findRelated.setMargin(insets);
+        findRelated.setMnemonic(KeyEvent.VK_N);
         container.add(findRelated);
 
         showAll = new JCheckBox("Show All", false);

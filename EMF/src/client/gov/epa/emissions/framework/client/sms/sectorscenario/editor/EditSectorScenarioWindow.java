@@ -23,6 +23,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -214,7 +215,7 @@ public class EditSectorScenarioWindow extends DisposableInteralFrame implements 
                 }
             }
         }); 
-        
+        refreshButton.setMnemonic(KeyEvent.VK_R);
         container.add(refreshButton);
 
         stopButton = new StopButton(stopAction());
@@ -241,7 +242,7 @@ public class EditSectorScenarioWindow extends DisposableInteralFrame implements 
                 
                 String message = "Would you like to stop running the sector scenario?\nThis could take several minutes to cancel the run.";
                 int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE);
                 boolean cancel = false;
                 if (selection == JOptionPane.CANCEL_OPTION) {
                     return;

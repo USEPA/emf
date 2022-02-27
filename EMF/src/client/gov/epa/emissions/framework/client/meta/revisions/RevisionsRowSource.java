@@ -15,13 +15,13 @@ public class RevisionsRowSource implements RowSource {
     }
 
     public Object[] values() {
-        return new Object[] { string25(revision.getWhat()), string25(revision.getWhy()), revision.getReferences(),
+        return new Object[] { string50(revision.getWhat()), string50(revision.getWhy()), revision.getReferences(),
                 new Long(revision.getVersion()), revision.getCreator().getName(), format(revision.getDate()) };
     }
     
-    private String string25(String value){
+    private String string50(String value){
         if (value == null ) return "";
-        return value.length()>25 ? value.substring(0, 25)+ ".." : value; 
+        return value.length()>50 ? value.substring(0, 50)+ ".." : value;
     }
 
     private Object format(Date date) {

@@ -9,7 +9,7 @@ import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.editor.EditControlStrategyView;
@@ -36,6 +36,7 @@ import gov.epa.emissions.commons.CommonDebugLevel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,7 +46,7 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-public class ControlStrategyManagerWindow extends ReusableInteralFrame implements ControlStrategyManagerView,
+public class ControlStrategyManagerWindow extends DisposableInteralFrame implements ControlStrategyManagerView,
         RefreshObserver, Runnable {
 
     private ControlStrategiesManagerPresenter presenter;
@@ -87,7 +88,6 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
      
     public ControlStrategyManagerWindow(EmfConsole parentConsole, EmfSession session, DesktopManager desktopManager) {
         super("Control Strategy Manager", new Dimension(850, 400), desktopManager);
-        
         this.session = session;
         this.parentConsole = parentConsole;
 
@@ -164,6 +164,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         setupTableModel(controlStrategies);
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of control strategies");
 
         JTable innerTable = table.getTable();
         TableColumnModel columnModel = innerTable.getColumnModel();
@@ -273,6 +274,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 presenter.doClose();
             }
         });
+        closeButton.setMnemonic(KeyEvent.VK_L);
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -342,6 +344,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        compareButton.setMnemonic(KeyEvent.VK_P);
         row1Panel.add(compareButton);
         
         Button summaryButton = new Button("Summarize", new AbstractAction() {
@@ -354,6 +357,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        summaryButton.setMnemonic(KeyEvent.VK_U);
         row2Panel.add(summaryButton);
         
         Button resultsButton = new Button("Export Results", new AbstractAction() {
@@ -366,6 +370,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        resultsButton.setMnemonic(KeyEvent.VK_X);
         row2Panel.add(resultsButton);
         
         Button groupsButton = new Button("Strategy Groups", new AbstractAction() {
@@ -379,6 +384,7 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 }
             }
         });
+        groupsButton.setMnemonic(KeyEvent.VK_S);
         row2Panel.add(groupsButton);
         
         crudPanel.add(row1Panel);
@@ -484,8 +490,10 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         JCheckBox deleteResults = new JCheckBox("Strategy results, messages, and summaries");
         JCheckBox deleteCntlInvs = new JCheckBox("Controlled inventories");
         Object[] contents = {message, deleteResults, deleteCntlInvs};
+        UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
+        UIManager.put("OptionPane.cancelButtonMnemonic", "67"); // for Setting 'C' as mnemonic
         int selection = JOptionPane.showConfirmDialog(parentConsole, contents, title, JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE);
 
         if (selection == JOptionPane.OK_OPTION) {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -548,10 +556,13 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
                 tempDir = System.getProperty("java.io.tmpdir");
             File tempDirFile = new File(tempDir);
             chooser.setCurrentDirectory(tempDirFile);
-
+             
             chooser.setSelectedFile(new File("strategy_summary.csv"));
         }
-
+        chooser.setApproveButtonMnemonic('S');
+         
+        //UIManager.put("JFileChooser.saveButtonMnemonic", "83");  // for Setting 'O' as mnemonic
+        //UIManager.put("JFileChooser.cancelButtonMnemonic", "67");
         if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
         
         localFile = chooser.getSelectedFile();
@@ -574,6 +585,8 @@ public class ControlStrategyManagerWindow extends ReusableInteralFrame implement
         }
         
         // prompt for file name prefix
+        UIManager.put("OptionPane.okButtonMnemonic", "79");  // for Setting 'O' as mnemonic
+        UIManager.put("OptionPane.cancelButtonMnemonic", "67"); // for Setting 'C' as mnemonic
         String prefix = JOptionPane.showInputDialog(parentConsole, 
                 "Enter a prefix for the exported filenames (leave blank for no prefix).", 
                 "Use filename prefix?",

@@ -216,7 +216,7 @@ public class EmfFileChooserPanel extends JPanel implements Runnable {
         });
 
         Button create = new Button("Create", createSubdir());
-        create.setMnemonic('C');
+        create.setMnemonic(KeyEvent.VK_C);
         panel.add(subfolder);
         panel.add(create, BorderLayout.EAST);
         
@@ -283,7 +283,7 @@ public class EmfFileChooserPanel extends JPanel implements Runnable {
         filePanel.add(new JLabel("Files:"), BorderLayout.NORTH);
 
         // Button getFiles = new Button("Get Files", getFilesAction());
-        // getFiles.setMnemonic('G');
+        // getFiles.setMnemonic(KeyEvent.VK_G);
         // JPanel getFilesPanel = new JPanel(new FlowLayout());
         // getFilesPanel.add(getFiles);
         JPanel middlePanel = new JPanel(new BorderLayout(2, 5));

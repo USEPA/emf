@@ -1,9 +1,9 @@
 package gov.epa.emissions.framework.client.admin;
 
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 
-public class RegisterUserInternalFrame extends ReusableInteralFrame implements RegisterUserDesktopView {
+public class RegisterUserInternalFrame extends DisposableInteralFrame implements RegisterUserDesktopView {
 
     private RegisterUserPanel view;
 

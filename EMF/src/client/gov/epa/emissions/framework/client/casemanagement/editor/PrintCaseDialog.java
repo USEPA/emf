@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.AbstractAction;
@@ -155,6 +156,7 @@ public class PrintCaseDialog extends JDialog {
         container.setLayout(layout);
 
         okButton = new Button("OK", printCase());
+        okButton.setMnemonic(KeyEvent.VK_O);
         container.add(okButton);
         getRootPane().setDefaultButton(okButton);
 

@@ -20,6 +20,7 @@ import gov.epa.emissions.framework.ui.ScrollableTable;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
@@ -132,6 +134,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
         tableModel = new EmfTableModel(tableData);
 
         ScrollableTable scrollableTable = new ScrollableTable(new VersionTable(tableModel), null);
+        scrollableTable.getTable().getAccessibleContext().setAccessibleName("List of versions for this dataset");
 
         String[] columns = {"Select", "Version", "Base", "Is Final?"}; 
         Font font = this.getFont();
@@ -161,13 +164,15 @@ public class VersionsPanel extends JPanel implements VersionsView {
             hasMultiISources = true;
         
         JPanel panel = new JPanel();
-        panel.add(new Label("Table:"));
+        JLabel tableLabel = new JLabel("Table:");
+        panel.add(tableLabel);
 
         DefaultComboBoxModel tablesModel = new DefaultComboBoxModel(tableNames(sources));
         tableCombo = new JComboBox(tablesModel);
         tableCombo.setName("tables");
         tableCombo.setEditable(false);
         tableCombo.addActionListener(sourceAction());
+        tableLabel.setLabelFor(tableCombo);
         panel.add(tableCombo);
 
         view = new ViewButton(new AbstractAction() {
@@ -217,6 +222,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
                 archiveDataset();
             }
         });
+        archive.setMnemonic(KeyEvent.VK_A);
         archive.setToolTipText(label + " Dataset");
         return archive;
     }
@@ -231,7 +237,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
             }
 
             if (JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE)
+                    JOptionPane.WARNING_MESSAGE)
                     == JOptionPane.YES_OPTION)
                 if (dataset.getStatus().equals("Archived")) {
                     presenter.restoreDataset(dataset.getId());
@@ -259,7 +265,7 @@ public class VersionsPanel extends JPanel implements VersionsView {
     private int getYesNoSelection(){
         String message = " Would you like to copy a version to new dataset? ";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
         return selection;
     }
 

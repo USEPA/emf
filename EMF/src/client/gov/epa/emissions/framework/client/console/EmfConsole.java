@@ -4,6 +4,10 @@ import gov.epa.emissions.commons.gui.Confirm;
 import gov.epa.emissions.framework.ConcurrentTaskRunner;
 import gov.epa.emissions.framework.client.EmfFrame;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.Label;
+import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserPresenter;
+import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserView;
+import gov.epa.emissions.framework.client.data.dataset.DatasetsBrowserWindow;
 import gov.epa.emissions.framework.client.download.FileDownloadPresenter;
 import gov.epa.emissions.framework.client.download.FileDownloadWindow;
 import gov.epa.emissions.framework.client.sms.SectorScenarioDialog;
@@ -17,10 +21,12 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.emissions.framework.ui.YesNoDialog;
 import gov.epa.mims.analysisengine.table.TableApp;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JMenu;
@@ -44,6 +50,13 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
     private StatusPresenter presenter;
 
     private FileDownloadPresenter fileDownloadPresenter;
+    
+    private static String guideUrl = "https://www.cmascenter.org/cost/documentation/3.7/EMF%20User's%20Guide/";
+    
+    private static String guideMessage = "<html><center>Please visit<br>" +
+            "https://www.cmascenter.org/cost/<br>" +
+            "and click the DOCUMENTATION link<br>" +
+            "to view the EMF User's Guide</center></html>";
 
     private static String aboutMessage = "<html><center>Emissions Modeling Framework (EMF)<br>"
             + gov.epa.emissions.framework.client.login.LoginWindow.EMF_VERSION + 
@@ -98,6 +111,16 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
 
         fileDownloadPresenter = new FileDownloadPresenter(session.user(), session.dataCommonsService(), new ConcurrentTaskRunner());
         fileDownloadPresenter.display(fileDownloadWindow);
+    }
+    
+    private void showDatasetsManager() {
+        try {
+            DatasetsBrowserView datasetsBrowserView = new DatasetsBrowserWindow(session, this, desktopManager);
+            DatasetsBrowserPresenter datasetsBrowserPresenter = new DatasetsBrowserPresenter(session);
+            datasetsBrowserPresenter.doDisplay(datasetsBrowserView);
+        } catch (EmfException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setProperties() {
@@ -164,13 +187,6 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
         presenter.close();
     }
 
-    private JMenuItem createDisabledMenuItem(String name) {
-        JMenuItem menuItem = new JMenuItem(name);
-        menuItem.setEnabled(false);
-
-        return menuItem;
-    }
-
     private JMenu createManageMenu(EmfSession session, MessagePanel messagePanel) {
         manageMenu = new ManageMenu(session, this, messagePanel, desktopManager);
         addClearAction(manageMenu);
@@ -208,13 +224,33 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
         menu.setMnemonic(KeyEvent.VK_H);
         addClearAction(menu);
 
-        menu.add(createDisabledMenuItem("User Guide"));
-        menu.add(createDisabledMenuItem("Documentation"));
+        JMenuItem guide = new JMenuItem("User's Guide");
+        guide.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                Boolean showDialog = false;
+                Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+                if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+                    try {
+                        desktop.browse(new URL(guideUrl).toURI());
+                    } catch (Exception e) {
+                        showDialog = true;
+                    }
+                } else {
+                    showDialog = true;
+                }
+                
+                if (showDialog) {
+                    JOptionPane.showMessageDialog(EmfConsole.this, new Label("", guideMessage), "EMF User's Guide",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+        menu.add(guide);
 
         JMenuItem about = new JMenuItem("About");
         about.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                JOptionPane.showMessageDialog(EmfConsole.this, aboutMessage, "About the EMF",
+                JOptionPane.showMessageDialog(EmfConsole.this, new Label("", aboutMessage), "About the EMF",
                         JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -250,6 +286,11 @@ public class EmfConsole extends EmfFrame implements EmfConsoleView {
     
     public void observe(EmfConsolePresenter presenter) {
         manageMenu.observe(presenter);
+    }
+    
+    public void display() {
+        super.display();
+        showDatasetsManager();
     }
 
     public void displayUserManager() throws EmfException {

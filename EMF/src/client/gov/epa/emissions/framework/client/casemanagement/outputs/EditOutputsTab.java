@@ -39,6 +39,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -201,10 +202,11 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         container.add(remove);
 
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog);
+        edit.setMnemonic(KeyEvent.VK_I);
         edit.setMargin(insets);
         container.add(edit);
         
-        Button view = new ViewButton("View Dataset", new AbstractAction() {
+        Button view = new ViewButton("View Datasetz", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     displayOutputDatasetsPropertiesViewer();
@@ -214,6 +216,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
                 }
             }
         });
+        view.setMnemonic(KeyEvent.VK_Z);
         view.setMargin(insets);
         container.add(view);
         
@@ -222,6 +225,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
                 //
             }
         });
+        export.setMnemonic(KeyEvent.VK_E);
         export.setMargin(insets);
         export.setEnabled(false);
         container.add(export);
@@ -231,6 +235,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
                 viewCasesReleatedToDataset();
             }
         });
+        findRelated.setMnemonic(KeyEvent.VK_N);
         findRelated.setMargin(insets);
         container.add(findRelated);
 
@@ -376,7 +381,7 @@ public class EditOutputsTab extends JPanel implements EditOutputsTabView, Refres
         String title = "Warning";
         String message = "Are you sure you want to remove the selected output(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         String messageDS = "Would you also like to delete the Datasets"+"\n associated with these Outputs?";
         String titleDS = "Discard dataset?";

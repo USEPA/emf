@@ -36,6 +36,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -244,14 +245,17 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
         String message1 = "You have asked to open a lot of windows. Do you wish to proceed?";
         ConfirmDialog confirmDialog1 = new ConfirmDialog(message1, "Warning", this);
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog1);
+        edit.setMnemonic(KeyEvent.VK_E);
         edit.setMargin(insets);
         container.add(edit);
 
         Button copy = new Button("Copy", copyAction());
+        copy.setMnemonic(KeyEvent.VK_C);
         copy.setMargin(insets);
         container.add(copy);
 
         Button modify = new Button("Modify", modifyAction());
+        modify.setMnemonic(KeyEvent.VK_Y);
         modify.setMargin(insets);
         container.add(modify);
 
@@ -279,15 +283,17 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 }
             }
         });
+        validate.setMnemonic(KeyEvent.VK_I);
         validate.setMargin(insets);
         container.add(validate);
 
-        Button set = new Button("Set Status", new AbstractAction() {
+        Button set = new Button("Set Statuz", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clearMessage();
                 setStatus();
             }
         });
+        set.setMnemonic(KeyEvent.VK_Z);
         set.setMargin(insets);
         container.add(set);
 
@@ -301,6 +307,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 }
             }
         });
+        cancelJobs.setMnemonic(KeyEvent.VK_N);
         cancelJobs.setMargin(insets);
         container.add(cancelJobs);
 
@@ -459,7 +466,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
                 caseId + ")? \n Note: if you don't add the region, the copy will be canceled. ";
                       
                 int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE);
                 if (selection == JOptionPane.YES_OPTION) 
                     presenter.copyJobs(caseId, jobs);
                 return; 
@@ -612,7 +619,7 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
 
     private int showDialog(Object msg, String title) {
         return JOptionPane.showConfirmDialog(parentConsole, msg, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private void showMessageDialog(Object msg, String title) {

@@ -4,8 +4,12 @@ import gov.epa.mims.analysisengine.table.filter.FilterCriteria;
 import gov.epa.mims.analysisengine.table.filter.FilterPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -146,7 +150,8 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 		Boolean value = new Boolean(check);
 
 		for (int i = 0; i < selectedRows.length; i++) {
-			table.setValueAt(value, selectedRows[i], lastCol);
+			if (table.isCellEditable(selectedRows[i], lastCol))
+				table.setValueAt(value, selectedRows[i], lastCol);
 		} // for(i)
 	} // checkSelectedRows()
 
@@ -163,10 +168,20 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 		String[] tableHeaders = { "Column Name", checkString + "?" };
 
 		table = new ColumnSelectionTable(tableHeaders, columnHeaders, selected);
+		table.getAccessibleContext().setAccessibleName("List of columns to show or hide");
 		table.getSelectionModel().addListSelectionListener(this);
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
+		selectionLabel.setFocusable(true);
+		selectionLabel.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                selectionLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void focusLost(FocusEvent e) {
+                selectionLabel.setBorder(null);
+            }
+        });
 		selectionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		valueChanged(new ListSelectionEvent(table, 0, 0, false));
 
@@ -180,9 +195,13 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 		checkBtn.setText(checkString);
 		uncheckBtn.setText(uncheckString);
 		JPanel buttonPanel = new JPanel();
+		filterBtn.setToolTipText("Select columns matching the filter criteria");
 		buttonPanel.add(filterBtn);
+		reverseBtn.setToolTipText("Invert column selections");
 		buttonPanel.add(reverseBtn);
+		checkBtn.setToolTipText("Mark selected columns as shown");
 		buttonPanel.add(checkBtn);
+		uncheckBtn.setToolTipText("Mark selected columns as hidden");
 		buttonPanel.add(uncheckBtn);
 
 		filterBtn.addActionListener(new ActionListener() {
@@ -190,24 +209,28 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 				applyFilterToSelection();
 			}
 		});
+		filterBtn.setMnemonic(KeyEvent.VK_S);
 
 		reverseBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reverseSelection();
 			}
 		});
+		reverseBtn.setMnemonic(KeyEvent.VK_I);
 
 		checkBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkSelectedRows(true);
 			}
 		});
+		checkBtn.setMnemonic(KeyEvent.VK_W);
 
 		uncheckBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkSelectedRows(false);
 			}
 		});
+		uncheckBtn.setMnemonic(KeyEvent.VK_H);
 
 		// Filter Panel
 		filterPanel = new FilterPanel(true, null, new String[] { "Column Name" }, FilterCriteria.OPERATION_STRINGS, 0,
@@ -271,7 +294,7 @@ public class ColumnSelectionPanel extends JPanel implements ListSelectionListene
 
 	public void valueChanged(ListSelectionEvent e) {
 		if (!e.getValueIsAdjusting()) {
-			selectionLabel.setText(table.getSelectedRowCount() + " selected");
+			selectionLabel.setText(table.getSelectedRowCount() + " columns selected");
 		}
 	}
 

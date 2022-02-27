@@ -5,12 +5,14 @@ import gov.epa.emissions.commons.gui.Editor;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.meta.keywords.EditableKeyValueTableData;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -77,21 +79,25 @@ public class EditableTablePanel extends JPanel implements Editor {
 
         JButton add = new JButton("Add");
         add.setMargin(new Insets(2, 2, 2, 2));
-        add.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
+        add.setToolTipText("Add");
+        add.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 tableData.addBlankRow();
                 refresh();
             }
         });
+        add.setMnemonic(KeyEvent.VK_A);
         container.add(add);
 
         JButton remove = new JButton("Remove");
         remove.setMargin(new Insets(2, 2, 2, 2));
-        remove.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
+        remove.setToolTipText("Remove");
+        remove.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 doRemove(tableData);
             }
         });
+        remove.setMnemonic(KeyEvent.VK_O);
         container.add(remove);
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -101,15 +107,15 @@ public class EditableTablePanel extends JPanel implements Editor {
     }
 
     private void doRemove(final InlineEditableTableData tableData) {
-        int[] rows = table.getSelectedRows();
+        int rowCount = tableData.getSelectedCount();
 
-        if (rows.length == 0)
+        if (rowCount == 0)
             return;
 
         String title = "Warning";
-        String message = "Are you sure you want to remove the "+rows.length+" selected items?";
+        String message = "Are you sure you want to remove the "+rowCount+" selected items?";
         int selection = JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.removeSelected();

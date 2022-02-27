@@ -107,6 +107,7 @@ public abstract class EditingDialog extends JDialog {
 		Insets buttonInsets = new Insets(2, 3, 2, 3);
 		okButton.setMargin(buttonInsets);
 		okButton.setActionCommand("okAction");
+		okButton.setToolTipText("Ok");
 		okButton.setText(okCaption);
 		okButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -116,6 +117,7 @@ public abstract class EditingDialog extends JDialog {
 		helpButton.setMargin(buttonInsets);
 		helpButton.setActionCommand("helpAction");
 		helpButton.setText("Help");
+		helpButton.setToolTipText("Help");
 		helpButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				helpButton_actionPerformed(e);
@@ -123,6 +125,7 @@ public abstract class EditingDialog extends JDialog {
 		});
 		closeButton.setMargin(buttonInsets);
 		closeButton.setActionCommand("closeAction");
+		closeButton.setToolTipText("Close");
 		closeButton.setText(" Close ");
 		closeButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {

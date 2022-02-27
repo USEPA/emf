@@ -216,10 +216,12 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
         container.add(remove);
 
         SelectAwareButton edit = new SelectAwareButton("Edit", editAction(), table, confirmDialog);
+        //edit.setMnemonic(KeyEvent.VK_I);
         edit.setMargin(insets);
         container.add(edit);
 
         Button copy = new Button("Copy", copyAction(presenter));
+        copy.setMnemonic(KeyEvent.VK_C);
         copy.setMargin(insets);
         container.add(copy);
 
@@ -303,7 +305,7 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
         String title = "Warning";
         String message = "Are you sure you want to remove the selected parameter(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.remove(params);
@@ -355,7 +357,7 @@ public class EditParametersTab extends JPanel implements EditCaseParametersTabVi
                         selectedCase + ")? \n Note: if you don't add the region, the copy will be canceled. ";
 
                         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.WARNING_MESSAGE);
                         if (selection == JOptionPane.YES_OPTION) 
                             presenter.copyParameter(selectedCaseId, params);
                         return;

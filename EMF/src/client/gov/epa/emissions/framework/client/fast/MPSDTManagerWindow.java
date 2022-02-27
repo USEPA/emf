@@ -1,7 +1,7 @@
 package gov.epa.emissions.framework.client.fast;
 
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.fast.analyzer.FastAnalysisManagerPresenter;
@@ -29,7 +29,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class MPSDTManagerWindow extends ReusableInteralFrame implements MPSDTManagerView {
+public class MPSDTManagerWindow extends DisposableInteralFrame implements MPSDTManagerView {
 
     private MPSDTManagerPresenter presenter;
 

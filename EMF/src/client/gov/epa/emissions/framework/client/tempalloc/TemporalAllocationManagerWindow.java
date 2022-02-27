@@ -17,11 +17,12 @@ import javax.swing.JPanel;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ConfirmDialog;
 import gov.epa.emissions.commons.gui.SelectAwareButton;
+import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.tempalloc.editor.TemporalAllocationView;
@@ -35,7 +36,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 
-public class TemporalAllocationManagerWindow extends ReusableInteralFrame implements TemporalAllocationManagerView,
+public class TemporalAllocationManagerWindow extends DisposableInteralFrame implements TemporalAllocationManagerView,
         RefreshObserver, Runnable {
 
     private TemporalAllocationManagerPresenter presenter;
@@ -120,6 +121,7 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
         setupTableModel(temporalAllocations);
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of temporal allocation runs");
         tablePanel.add(table, BorderLayout.CENTER);
 
         return tablePanel;
@@ -150,8 +152,7 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
         JPanel crudPanel = createCrudPanel();
 
         JPanel closePanel = new JPanel();
-        JButton closeButton = new JButton("Close");
-        closeButton.addActionListener(new ActionListener() {
+        JButton closeButton = new CloseButton(new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 presenter.doClose();
             }
@@ -310,7 +311,7 @@ public class TemporalAllocationManagerWindow extends ReusableInteralFrame implem
                 "Are you sure you want to remove the selected temporal allocation?" :
                 "Are you sure you want to remove the "+numSelected+" selected temporal allocations?";
        int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (selection == JOptionPane.YES_OPTION) {

@@ -29,6 +29,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
@@ -133,6 +134,8 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doAdd();
             }
         });
+        add.setToolTipText("Add QA step template");
+        add.setMnemonic(KeyEvent.VK_D);
         container.add(add);
 
         Button remove = new RemoveButton(new AbstractAction() {
@@ -140,6 +143,8 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doRemove();
             }
         });
+        remove.setToolTipText("Remove QA step template");
+        remove.setMnemonic(KeyEvent.VK_R);
         container.add(remove);
 
         Button update = new EditButton(new AbstractAction() {
@@ -147,6 +152,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doEdit();
             }
         });
+        update.setToolTipText("Edit QA step template");
         container.add(update);
 
         Button copy = new CopyButton(new AbstractAction() {
@@ -154,6 +160,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
                 doCopy();
             }
         });
+        copy.setToolTipText("Copy QA step template");
         container.add(copy);
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -257,7 +264,7 @@ public class EditQAStepTemplatesPanel extends JPanel implements QAStepTemplatesP
         String title = "Warning";
         String message = "Are you sure you want to remove the selected template(s)?";
         int selection = JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.removeSelected();

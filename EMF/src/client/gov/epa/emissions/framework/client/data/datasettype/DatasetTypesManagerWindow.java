@@ -10,7 +10,7 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.*;
 
-public class DatasetTypesManagerWindow extends ReusableInteralFrame implements DatasetTypesManagerView, RefreshObserver {
+public class DatasetTypesManagerWindow extends DisposableInteralFrame implements DatasetTypesManagerView, RefreshObserver {
 
     private DatasetTypesManagerPresenter presenter;
 
@@ -100,6 +100,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
     private JPanel tablePanel() {
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new DatasetTypesTableData(new DatasetType[] {}), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of dataset types");
         tablePanel.add(table);
         return tablePanel;
     }
@@ -126,7 +127,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
         //get table column names
 //        String[] columns = new String[] {"Module Name", "Composite?", "Final?", "Tags", "Project", "Module Type", "Version", "Creator", "Date", "Lock Owner", "Lock Date", "Description" };//(new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>())).columns();
 
-        filterFieldsComboBox = new ComboBox("Select one", (new DatasetTypeFilter()).getFilterFieldNames());
+        filterFieldsComboBox = new ComboBox("Select one", (new DatasetTypeFilter()).getFilterFieldNames(), "Fields Filter Text");
         filterFieldsComboBox.setSelectedIndex(1);
         filterFieldsComboBox.setPreferredSize(new Dimension(180, 25));
         filterFieldsComboBox.addActionListener(simpleFilterTypeAction());
@@ -167,6 +168,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
         JPanel panel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel(label);
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(box);
         panel.add(jlabel, BorderLayout.WEST);
         panel.add(box, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 10));
@@ -242,7 +244,13 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
     }
 
     private void viewDatasetTypes() {
+        messagePanel.clear();
         List selected = selected();
+        if (selected.isEmpty()) {
+            messagePanel.setMessage("Please select one or more dataset types");
+            return;
+        }
+        
         for (Iterator iter = selected.iterator(); iter.hasNext();) {
             DatasetType type = (DatasetType) iter.next();
             try {
@@ -255,6 +263,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
     }
 
     private void editDatasetTypes() {
+        messagePanel.clear();
         List selected = selected();
         if (selected.isEmpty()) {
             messagePanel.setMessage("Please select one or more dataset types");
@@ -287,7 +296,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
 
         String message = "Are you sure you want to remove the selected " + selected.size() + " dataset type(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
@@ -295,7 +304,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
                 messagePanel.setMessage(selected.size()
                         + " dataset types have been removed. Please Refresh to see the revised list of types.");
             } catch (EmfException e) {
-              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -383,6 +392,7 @@ public class DatasetTypesManagerWindow extends ReusableInteralFrame implements D
                         removeButton.setEnabled(false);
                     }
                     this.parentContainer.setCursor(null); //turn off the wait cursor
+                    filterFieldsComboBox.grabFocus();
                 }
             }
         };

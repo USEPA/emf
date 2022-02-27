@@ -9,6 +9,7 @@ import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.ManagedView;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -28,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -49,7 +51,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
 
     private EditorPanel pageContainer;
 
-    private JLabel lockInfo;
+    private Label lockInfo;
 
     private EmfConsole parent;
 
@@ -90,7 +92,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel, BorderLayout.CENTER);
 
-        lockInfo = new JLabel();
+        lockInfo = new Label("Lock info", "");
         panel.add(lockInfo, BorderLayout.LINE_END);
 
         return panel;
@@ -231,6 +233,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 }
             }
         });
+        addNote.setMnemonic(KeyEvent.VK_N);
         panel.add(addNote);
 
         return panel;
@@ -262,7 +265,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 doSave();
             }
         });
-
+        save.setMnemonic(KeyEvent.VK_S);
         save.setToolTipText("Save your changes");
         save.setEnabled(false);
         return save;
@@ -275,6 +278,7 @@ public class DataEditor extends DisposableInteralFrame implements DataEditorView
                 doDiscard();
             }
         });
+        discard.setMnemonic(KeyEvent.VK_D);
         discard.setToolTipText("Discard your changes");
         discard.setEnabled(false);
         return discard;

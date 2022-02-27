@@ -17,12 +17,14 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -88,22 +90,27 @@ public class DataSortFilterPanelViewer extends JPanel {
         buttonGBC.weightx = 0;
         buttonGBC.insets = new Insets(2, 2, 2, 5);
 
-        panel.add(new Label("Sort Order"), labelGBC);
+        JLabel sortOrderLabel = new JLabel("Sort Order");
+        panel.add(sortOrderLabel, labelGBC);
 
         sortOrder = new TextArea("sortOrder", dataset.getDatasetType().getDefaultSortOrder(), 25, 2);
         sortOrder.setToolTipText(sortOrder.getText());
+        sortOrderLabel.setLabelFor(sortOrder);
         panel.add(ScrollableComponent.createWithVerticalScrollBar(sortOrder), fieldGBC);
 
         labelGBC.gridy = 1;
-        panel.add(new Label("Row Filter"), labelGBC);
+        JLabel rowFilterLabel = new JLabel("Row Filter");
+        panel.add(rowFilterLabel, labelGBC);
 
         fieldGBC.gridy = 1;
         rowFilter = new TextArea("rowFilter", rowFilters, 25, 2);
         rowFilter.setToolTipText(rowFilter.getText());
+        rowFilterLabel.setLabelFor(rowFilter);
         panel.add(ScrollableComponent.createWithVerticalScrollBar(rowFilter), fieldGBC);
 
         labelGBC.gridy = 2;
-        panel.add(new Label("Decimal Places"), labelGBC);
+        JLabel decimalPlacesLabel = new JLabel("Decimal Places");
+        panel.add(decimalPlacesLabel, labelGBC);
 
         fieldGBC.gridy = 2;
         fieldGBC.weightx = 0;
@@ -111,6 +118,7 @@ public class DataSortFilterPanelViewer extends JPanel {
         decimalPlacesField = new TextField("decimalPlaces", 10);
         decimalPlacesField.setText(Integer.toString(doubleRenderer.getDecimalPlaces()));
         decimalPlacesField.setToolTipText("Number of decimal places to display");
+        decimalPlacesLabel.setLabelFor(decimalPlacesField);
         panel.add(decimalPlacesField, fieldGBC);
 
         buttonGBC.gridy = 2;
@@ -166,6 +174,7 @@ public class DataSortFilterPanelViewer extends JPanel {
             }
         });
         this.formatButton.setToolTipText("Apply the new format settings to the table");
+        formatButton.setMnemonic(KeyEvent.VK_O);
         
         this.resetViewCheckBox.setAction(new AbstractAction("Reset View") {
             public void actionPerformed(ActionEvent e) {
@@ -179,6 +188,7 @@ public class DataSortFilterPanelViewer extends JPanel {
             }
         });
         apply.setToolTipText("Apply the Row Filter & Sort Order constraints to the table");
+        apply.setMnemonic(KeyEvent.VK_A);
         actionPanel.add(apply);
     }
 

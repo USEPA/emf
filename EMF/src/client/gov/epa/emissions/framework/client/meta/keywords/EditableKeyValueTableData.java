@@ -108,7 +108,7 @@ public class EditableKeyValueTableData extends AbstractEditableTableData impleme
         return new EditableRow(source);
     }
 
-    private KeyVal[] getSelected() {
+    public KeyVal[] getSelected() {
         List selected = new ArrayList();
 
         for (Iterator iter = rows.iterator(); iter.hasNext();) {
@@ -154,6 +154,11 @@ public class EditableKeyValueTableData extends AbstractEditableTableData impleme
 
     public void removeSelected() {
         remove(getSelected());
+    }
+
+    @Override
+    public int getSelectedCount() {
+        return getSelected().length;
     }
 
     public Class getColumnClass(int col) {

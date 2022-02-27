@@ -157,7 +157,9 @@ public class MeasureReferenceWindow extends DisposableInteralFrame implements Me
         JLabel descriptionLabel = new JLabel("Description");
         panel.add(descriptionLabel, gbc);
 
-        this.descriptionField = new TextArea("", "");
+        this.descriptionField = new TextArea("", "Control measure reference text");
+        descriptionLabel.setLabelFor(this.descriptionField);
+        descriptionLabel.setToolTipText(this.descriptionField.getToolTipText());
         this.changeablesList.addChangeable(this.descriptionField);
 
         gbc.gridx = 1;
@@ -186,6 +188,7 @@ public class MeasureReferenceWindow extends DisposableInteralFrame implements Me
             }
         });
         getRootPane().setDefaultButton(saveButton);
+        saveButton.setToolTipText("Save control measure reference");
         panel.add(saveButton);
 
         cancelButton = new CancelButton(new AbstractAction() {
@@ -193,6 +196,7 @@ public class MeasureReferenceWindow extends DisposableInteralFrame implements Me
                 closeWindow();
             }
         });
+        cancelButton.setToolTipText("Cancel saving control measure reference and close window");
         panel.add(cancelButton);
 
         return panel;

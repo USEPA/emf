@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -213,6 +214,7 @@ public class FilterPanel extends JPanel implements ChildHasChangedListener, Acti
 
 		localModel = new DefaultTableModel(new Object[0][0], new String[] { "Column Name", "Operation", "Value" });
 		table = new JTable(localModel);
+		table.getAccessibleContext().setAccessibleName("List of current filter criteria");
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		table.setPreferredScrollableViewportSize(new Dimension(450, 100));
@@ -228,7 +230,9 @@ public class FilterPanel extends JPanel implements ChildHasChangedListener, Acti
 		toolBar.add(deleteBtn);
 
 		addBtn.addActionListener(this);
+		addBtn.setMnemonic(KeyEvent.VK_A);
 		deleteBtn.addActionListener(this);
+		deleteBtn.setMnemonic(KeyEvent.VK_D);
 
 		filterCheckBox = new JCheckBox("Apply Filter?");
 		filterCheckBox.addActionListener(this);
@@ -236,7 +240,9 @@ public class FilterPanel extends JPanel implements ChildHasChangedListener, Acti
 		compPanel.add(filterCheckBox);
 		compPanel.add(Box.createHorizontalStrut(10));
 		compPanel.add(matchUsing);
+		andRdo.setToolTipText("Only rows that match all criteria will be displayed");
 		compPanel.add(andRdo);
+		orRdo.setToolTipText("Rows that match any criteria will be displayed");
 		compPanel.add(orRdo);
 
 		ButtonGroup buttonGroup = new ButtonGroup();

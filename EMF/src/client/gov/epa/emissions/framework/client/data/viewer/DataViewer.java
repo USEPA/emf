@@ -18,6 +18,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -138,7 +139,7 @@ public class DataViewer extends DisposableInteralFrame implements DataView {
             }
         });
         addNote.setEnabled(this.editable);
-        
+        addNote.setMnemonic(KeyEvent.VK_N);
         leftPanel.add(addNote);
         return leftPanel;
     }

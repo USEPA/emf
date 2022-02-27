@@ -4,7 +4,7 @@ import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -16,13 +16,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class ImportWindow extends ReusableInteralFrame implements ImportView {
+public class ImportWindow extends DisposableInteralFrame implements ImportView {
 
     private ImportPresenter presenter;
 
@@ -72,13 +73,13 @@ public class ImportWindow extends ReusableInteralFrame implements ImportView {
         });
         container.add(importButton);
         getRootPane().setDefaultButton(importButton);
-
         JButton done = new Button("Done", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 presenter.doDone();
             }
         });
         container.add(done);
+        done.setMnemonic(KeyEvent.VK_D);
 
         panel.add(container, BorderLayout.EAST);
 

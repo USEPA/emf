@@ -26,6 +26,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -273,6 +274,7 @@ public class EditControlStrategyWindow extends DisposableInteralFrame implements
             container.add(runButton);
 
         refreshButton = new Button("Refresh", refreshAction());
+        refreshButton.setMnemonic(KeyEvent.VK_R);
         container.add(refreshButton);
 
         stopButton = new StopButton(stopAction());
@@ -306,7 +308,7 @@ public class EditControlStrategyWindow extends DisposableInteralFrame implements
                     
                     String message = "Would you like to stop the strategy run?  This could several minutes to cancel the run.";
                     int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
+                            JOptionPane.WARNING_MESSAGE);
                     boolean cancel = false;
                     if (selection == JOptionPane.CANCEL_OPTION) {
                         return;
@@ -339,7 +341,7 @@ public class EditControlStrategyWindow extends DisposableInteralFrame implements
                         
                         String message = "There are results available for this strategy. \n" + " Would you like to delete results and controlled inventories?";
                         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_CANCEL_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.WARNING_MESSAGE);
                         if (selection == JOptionPane.CANCEL_OPTION) {
                             return;
                         }

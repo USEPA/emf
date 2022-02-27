@@ -52,6 +52,11 @@ public class KeywordsTableData extends AbstractEditableTableData implements Inli
         remove(getSelected());
     }
 
+    @Override
+    public int getSelectedCount() {
+        return getSelected().length;
+    }
+
     private List createRows(Keyword[] keywordsList, Keywords masterKeywords) {
         List rows = new ArrayList();
         for (int i = 0; i < keywordsList.length; i++)

@@ -11,7 +11,7 @@ import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.swing.*;
 
-public class ModulesManagerWindow extends ReusableInteralFrame implements ModulesManagerView, RefreshObserver {
+public class ModulesManagerWindow extends DisposableInteralFrame implements ModulesManagerView, RefreshObserver {
 
     private ModulesManagerPresenter presenter;
 
@@ -79,7 +79,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     private ComboBox filterFieldsComboBox;
 
     public ModulesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Manager", new Dimension(1200, 800), desktopManager);
+        super("Module Manager", new Dimension(1000, 600), desktopManager);
         super.setName("moduleManager");
 
         this.session = session;
@@ -181,6 +181,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new ModulesTableData(new ConcurrentSkipListMap<Integer, LiteModule>()), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of modules");
         tablePanel.add(table);
         return tablePanel;
     }
@@ -232,7 +233,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         lockButton = new Button("Lock", lockAction);
-        lockButton.setMnemonic(KeyEvent.VK_L);
+        lockButton.setMnemonic(KeyEvent.VK_C);
 
         Action unlockAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -240,7 +241,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         unlockButton = new Button("Unlock", unlockAction);
-        unlockButton.setMnemonic(KeyEvent.VK_O);
+        unlockButton.setMnemonic(KeyEvent.VK_K);
 
         Action createAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -264,7 +265,6 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         removeButton = new RemoveButton(removeAction);
-        removeButton.setMnemonic(KeyEvent.VK_M);
 
         Action runAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -280,7 +280,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         compareButton = new Button("Compare", compareAction);
-        compareButton.setMnemonic(KeyEvent.VK_C);
+        compareButton.setMnemonic(KeyEvent.VK_P);
         
         Action exportAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -288,6 +288,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         Button exportButton = new Button("Export", exportAction);
+        exportButton.setMnemonic(KeyEvent.VK_X);
 
         Action importAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -295,6 +296,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             }
         };
         Button importButton = new Button("Import", importAction);
+        importButton.setMnemonic(KeyEvent.VK_I);
 
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
@@ -503,7 +505,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         String message = "Are you sure you want to remove the selected " + selectedModuleIds.length + " module(s)?";
         JCheckBox deleteOutputs = new JCheckBox("Delete any output datasets?");
         Object[] contents = {message, deleteOutputs};
-        int selection = JOptionPane.showConfirmDialog(parentConsole, contents, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, contents, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
         
@@ -516,7 +518,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
             else
                 messagePanel.setMessage(removedModuleIds.length + " modules have been removed. Please Refresh to see the revised list of modules.");
         } catch (EmfException e) {
-          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -537,7 +539,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         } else {
             message = "Are you sure you want to run the selected " + selectedModuleIds.length + " modules?";
         }
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (selection != JOptionPane.YES_OPTION)
             return;
             
@@ -549,7 +551,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
                 messagePanel.setMessage("The " + selectedModuleIds.length + " modules have been executed.");
             }
         } catch (EmfException e) {
-          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+          JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -626,7 +628,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         String location = "If not downloaded, files will be exported to \"" + exportFolder + "\" on the server.";
         Object[] contents = {message, download, location};
         boolean exportDatasets = (JOptionPane.showConfirmDialog(parentConsole, contents, "Export Module Datasets",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION);
+                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION);
 
         List<Module> modulesList = new ArrayList<Module>();
         Map<Integer, Map<String, String>> moduleDatasetInfo = new HashMap<Integer, Map<String, String>>();
@@ -698,7 +700,7 @@ public class ModulesManagerWindow extends ReusableInteralFrame implements Module
         }
         
         if (file.exists()) {
-            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection == JOptionPane.NO_OPTION) {
                 messagePanel.setMessage("Export cancelled.");
                 return;

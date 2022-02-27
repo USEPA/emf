@@ -18,9 +18,13 @@ public class OKCancelPanel
                        JRootPane rootPane)
   {
     JButton okButton = new JButton("OK");
+    okButton.setToolTipText("Okay, apply changes");
     okButton.addActionListener(okListener);
     JButton cancelButton = new JButton("Cancel");
+    cancelButton.setToolTipText("Cancel, do not apply changes");
     cancelButton.addActionListener(cancelListener);
+    okButton.setMnemonic(KeyEvent.VK_O);
+    cancelButton.setMnemonic(KeyEvent.VK_L);
     add(okButton);
     add(cancelButton);
   }

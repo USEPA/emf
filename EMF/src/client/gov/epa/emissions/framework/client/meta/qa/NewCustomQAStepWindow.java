@@ -104,9 +104,8 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
         ScrollableComponent scrollableDetails = ScrollableComponent.createWithVerticalScrollBar(arguments);
         layoutGenerator.addLabelWidgetPair("Arguments:", scrollableDetails, panel);
 
-        order = new NumberFormattedTextField(5, orderAction());
-        order.setText("0");
-        order.addKeyListener(keyListener());
+        order = new NumberFormattedTextField(5);
+        order.setValue(0);
         layoutGenerator.addLabelWidgetPair("Order:", order, panel);
 
         required = new CheckBox("", false);
@@ -131,43 +130,6 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
                 10, 10);// xPad, yPad
 
         return panel;
-    }
-
-    private KeyListener keyListener() {
-        return new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyReleased(KeyEvent e) {
-                keyActions();
-            }
-
-            public void keyPressed(KeyEvent e) {
-                keyActions();
-            }
-        };
-    }
-
-    private void keyActions() {
-        try {
-            messagePanel.clear();
-            Float.parseFloat(order.getText());
-        } catch (NumberFormatException ex) {
-            messagePanel.setError("Order should be a floating point number");
-        }
-    }
-
-    private AbstractAction orderAction() {
-        return new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Float.parseFloat(order.getText());
-                } catch (NumberFormatException ex) {
-                    messagePanel.setError("Order should be a floating point number");
-                }
-            }
-        };
     }
 
     private JPanel buttonsPanel() {
@@ -223,7 +185,12 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
         step.setName(stepName);
         step.setProgram(qaPrograms.get(program.getSelectedItem()));
         step.setProgramArguments(arguments.getText());
-        step.setOrder(Float.parseFloat(order.getText()));
+        try {
+            final float orderValue = Float.parseFloat(order.getText());
+            step.setOrder(orderValue);
+        } catch (NumberFormatException e) {
+            throw new EmfException("Please enter an order that is a numeric value");
+        }
         step.setDescription(description.getText().trim());
         step.setWho(dataset.getCreator());
 

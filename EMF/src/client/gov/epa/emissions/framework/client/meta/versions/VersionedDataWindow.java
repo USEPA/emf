@@ -1,7 +1,7 @@
 package gov.epa.emissions.framework.client.meta.versions;
 
 import gov.epa.emissions.commons.gui.Button;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.meta.DatasetPropertiesEditor;
@@ -19,6 +19,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
@@ -29,7 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
-public class VersionedDataWindow extends ReusableInteralFrame implements VersionedDataView {
+public class VersionedDataWindow extends DisposableInteralFrame implements VersionedDataView {
 
     private EmfConsole parentConsole;
 
@@ -46,7 +47,7 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
     private EditVersionsPanel versionsPanel; 
     
     public VersionedDataWindow(EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Data Versions Editor", new Dimension(750, 350), desktopManager);
+        super("Data Versions Editor", new Dimension(800, 350), desktopManager);
 
         this.parentConsole = parentConsole;
         layout = new JPanel();
@@ -117,10 +118,11 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
         
         if (dataset.isExternal())
             appendData.setEnabled(false);
-        
+        appendData.setMnemonic(KeyEvent.VK_A);
         panel.add(appendData);
 
         Button propButton = new Button("Edit Properties", editPropAction());
+        propButton.setMnemonic(KeyEvent.VK_P);
         panel.add(propButton);
 
         JButton closeButton = new JButton("Close");
@@ -129,7 +131,7 @@ public class VersionedDataWindow extends ReusableInteralFrame implements Version
                 presenter.doClose();
             }
         });
-
+        closeButton.setMnemonic(KeyEvent.VK_L);
         getRootPane().setDefaultButton(closeButton);
         panel.add(closeButton);
 

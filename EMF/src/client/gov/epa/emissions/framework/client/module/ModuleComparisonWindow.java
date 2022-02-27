@@ -7,7 +7,7 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -38,7 +38,7 @@ import javax.swing.Box;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class ModuleComparisonWindow extends ReusableInteralFrame implements ModuleComparisonView, RefreshObserver {
+public class ModuleComparisonWindow extends DisposableInteralFrame implements ModuleComparisonView, RefreshObserver {
 
     private ModuleComparisonPresenter presenter;
 

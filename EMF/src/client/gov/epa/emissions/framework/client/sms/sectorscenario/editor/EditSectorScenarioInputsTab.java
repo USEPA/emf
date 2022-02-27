@@ -32,6 +32,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -153,18 +154,21 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
                 }
             }
         });
+        addButton.setMnemonic(KeyEvent.VK_A);
         panel.add(addButton);
         editButton = new BorderlessButton("Set Version", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                     setVersionAction();
             }
         });
+        editButton.setMnemonic(KeyEvent.VK_N);
         panel.add(editButton);
         removeButton = new BorderlessButton("Remove", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {           
                     removeAction();
             }
         });
+        removeButton.setMnemonic(KeyEvent.VK_O);
         panel.add(removeButton);
         viewButton = new BorderlessButton("View", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
@@ -175,6 +179,7 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
                 }
             }
         });
+        viewButton.setMnemonic(KeyEvent.VK_E);
         panel.add(viewButton);
 //        Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
 //            public void actionPerformed(ActionEvent event) {
@@ -311,7 +316,7 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
         String title = "Warning";
         String message = "Are you sure you want to remove the selected inventories?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.remove(SectorScenarioInventories);
@@ -462,6 +467,7 @@ public class EditSectorScenarioInputsTab extends JPanel implements EditSectorSce
         changeablesList.addChangeable(datasetCom);
         datasetCom.setToolTipText("Press select button to choose from a dataset list.");
         Button viewButton = new BorderlessButton("View", viewDatasetAction(datasetCom)); 
+        viewButton.setMnemonic(KeyEvent.VK_V);
         JPanel invPanel = new JPanel(new BorderLayout(5,0));
 
         invPanel.add(datasetCom, BorderLayout.LINE_START);

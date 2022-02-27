@@ -60,7 +60,7 @@ public class EditableKeywordsTab extends JPanel implements EditableKeywordsTabVi
 
     private JPanel createDSKeywordsPanel(Keywords masterKeywords) {
         tableData = new EditableKeyValueTableData(dataset.getKeyVals(), masterKeywords);
-        editableKeywordsPanel = new EditableKeywordsPanel("", tableData, masterKeywords, changeablesList, parent);
+        editableKeywordsPanel = new EditableKeywordsPanel(null, tableData, masterKeywords, changeablesList, parent);
         editableKeywordsPanel.setBorder(BorderFactory.createTitledBorder("Keywords Specific to Dataset"));
         
         return editableKeywordsPanel;
@@ -73,6 +73,7 @@ public class EditableKeywordsTab extends JPanel implements EditableKeywordsTabVi
         TableData tableData = new DatasetTypeKeyValueTableData(vals);
         JTable table = new JTable(new EmfTableModel(tableData));
         table.setRowHeight(16);
+        table.getAccessibleContext().setAccessibleName("List of keywords specific to the dataset type used by this dataset");
 
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 

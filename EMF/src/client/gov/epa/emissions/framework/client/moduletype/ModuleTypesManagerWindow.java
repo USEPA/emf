@@ -10,7 +10,7 @@ import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.ViewMode;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -33,6 +33,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -57,7 +58,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class ModuleTypesManagerWindow extends ReusableInteralFrame implements ModuleTypesManagerView, RefreshObserver {
+public class ModuleTypesManagerWindow extends DisposableInteralFrame implements ModuleTypesManagerView, RefreshObserver {
 
     private ModuleTypesManagerPresenter presenter;
 
@@ -76,7 +77,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     private EmfSession session;
 
     public ModuleTypesManagerWindow(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("Module Type Manager", new Dimension(1200, 800), desktopManager);
+        super("Module Type Manager", new Dimension(1000, 600), desktopManager);
         super.setName("moduleTypeManager");
 
         this.session = session;
@@ -127,6 +128,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     private JPanel createTablePanel() {
         tablePanel = new JPanel(new BorderLayout());
         table = new SelectableSortFilterWrapper(parentConsole, new ModuleTypesTableData(moduleTypes), null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of module types");
         tablePanel.add(table);
         return tablePanel;
     }
@@ -193,6 +195,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
             }
         };
         SelectAwareButton exportButton = new SelectAwareButton("Export", exportAction, table, confirmDialog);
+        exportButton.setMnemonic(KeyEvent.VK_X);
 
         Action importAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -262,7 +265,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
     }
 
     private void createModuleType() {
-        int selection = JOptionPane.showConfirmDialog(parentConsole, "Create a composite module type?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, "Create a composite module type?", "", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         ModuleTypeVersionPropertiesWindow view = new ModuleTypeVersionPropertiesWindow(parentConsole, desktopManager, session, this, selection == JOptionPane.YES_OPTION);
         presenter.displayNewModuleTypeView(view);
     }
@@ -382,14 +385,14 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }
         message.append("There is no undo for this action!");
         
-        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             try {
                 presenter.doRemove(selectedModuleTypes);
                 messagePanel.setMessage(selectedModuleTypes.length + " module types have been removed. Please Refresh to see the revised list of types.");
             } catch (EmfException e) {
-              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION);
+              JOptionPane.showConfirmDialog(parentConsole, e.getMessage(), "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -468,7 +471,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         
                 String message = "Which version of '" + moduleType.getName() + "' do you want to export?";
                 String selectedVersionName = (String)JOptionPane.showInputDialog(parentConsole, message,
-                        "Select Module Type Version", JOptionPane.QUESTION_MESSAGE, null,
+                        "Select Module Type Version", JOptionPane.INFORMATION_MESSAGE, null,
                         versionNames, versionNames[0]);
                 if (selectedVersionName == null) {
                     return;
@@ -516,7 +519,7 @@ public class ModuleTypesManagerWindow extends ReusableInteralFrame implements Mo
         }
         
         if (file.exists()) {
-            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int selection = JOptionPane.showConfirmDialog(parentConsole, "File \"" + filename + "\" already exists. Are you sure you want to replace it?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (selection == JOptionPane.NO_OPTION) {
                 messagePanel.setMessage("Export cancelled.");
                 return;

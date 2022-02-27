@@ -6,7 +6,7 @@ import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.ComboBox;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.TextArea;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -41,7 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-public class AppendDataWindow extends ReusableInteralFrame implements AppendDataWindowView {
+public class AppendDataWindow extends DisposableInteralFrame implements AppendDataWindowView {
 
     private AppendDataViewPresenter presenter;
 
@@ -117,7 +118,7 @@ public class AppendDataWindow extends ReusableInteralFrame implements AppendData
                 }
             }
         });
-
+        setButton.setMnemonic(KeyEvent.VK_S);
         JPanel sourceDatasetPanel = new JPanel(new BorderLayout(2, 0));
         sourceDatasetPanel.add(sourceDatasetField, BorderLayout.LINE_START);
         sourceDatasetPanel.add(setButton, BorderLayout.CENTER);
@@ -165,6 +166,7 @@ public class AppendDataWindow extends ReusableInteralFrame implements AppendData
                 }
             }
         });
+        view.setMnemonic(KeyEvent.VK_V);
         // view.setEnabled(false);
         panel.add(view);
         return panel;
@@ -251,10 +253,10 @@ public class AppendDataWindow extends ReusableInteralFrame implements AppendData
 
         okButton = new Button("OK", okAction());
         panel.add(okButton);
-
+        okButton.setMnemonic(KeyEvent.VK_O);
         Button closeButton = new Button("Close", closeWindowAction());
         panel.add(closeButton);
-
+        closeButton.setMnemonic(KeyEvent.VK_L);
         return panel;
     }
 
@@ -326,7 +328,7 @@ public class AppendDataWindow extends ReusableInteralFrame implements AppendData
                     if (!sameDef) {
                         String defMsg = "Source dataset and target dataset have different table definitions.\nWould you like to proceed to append data anyway?";
                         int answer = JOptionPane.showConfirmDialog(parentConsole, defMsg, title,
-                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                         if (answer != JOptionPane.YES_OPTION)
                             return;

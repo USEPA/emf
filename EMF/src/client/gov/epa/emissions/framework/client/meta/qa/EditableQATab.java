@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -84,11 +85,12 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
 
     protected JPanel tablePanel(QAStep[] steps, QAStepResult[] qaStepResults) {
         setupTableModel(steps, qaStepResults);
-        if (table == null){
+        if (table == null) {
             tablePanel = new JPanel(new BorderLayout());
             table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+            table.getTable().getAccessibleContext().setAccessibleName("List of QA steps for this dataset");
             tablePanel.add(table, BorderLayout.CENTER);
-        }else {
+        } else {
             refreshTable(steps, qaStepResults);
         }
         return tablePanel;
@@ -117,20 +119,23 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 doAddUsingTemplate();
             }
         });
+        add.setMnemonic(KeyEvent.VK_P);
         container.add(add);
 
-        Button remove = new BorderlessButton("Add Custom", new AbstractAction() {
+        Button addC = new BorderlessButton("Add Custom", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 doAddCustom();
             }
         });
-        container.add(remove);
+        addC.setMnemonic(KeyEvent.VK_A);
+        container.add(addC);
 
         Button edit = new BorderlessButton("Edit", new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 doEdit();
             }
         });
+        edit.setMnemonic(KeyEvent.VK_E);
         container.add(edit);
 
         Button copy = new BorderlessButton("Copy", new AbstractAction() {
@@ -138,6 +143,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 doCopy();
             }
         });
+        copy.setMnemonic(KeyEvent.VK_C);
         container.add(copy);
         
         Button delete = new BorderlessButton("Delete", new AbstractAction() { // BUG3615
@@ -146,6 +152,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             }
 
         });
+        delete.setMnemonic(KeyEvent.VK_D);
         container.add(delete);
 
         Button status = new BorderlessButton("Set Status", new AbstractAction() {
@@ -153,6 +160,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 doSetStatus();
             }
         });
+        status.setMnemonic(KeyEvent.VK_U);
         container.add(status);
         
         Button runStatus = new BorderlessButton("Run", new AbstractAction() {
@@ -160,6 +168,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 runStatus();
             }
         });
+        runStatus.setMnemonic(KeyEvent.VK_N);
         container.add(runStatus);
         JButton viewResults = new BorderlessButton("View Results", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -171,6 +180,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 }
             }
         });
+        viewResults.setMnemonic(KeyEvent.VK_I);
         container.add(viewResults);
 
         JButton archive = new BorderlessButton("Archive", new AbstractAction() {
@@ -179,6 +189,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 archiveResults();
             }
         });
+        archive.setMnemonic(KeyEvent.VK_V);
         container.add(archive);
 
         JButton restore = new BorderlessButton("Restore", new AbstractAction() {
@@ -187,6 +198,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                 restoreResults();
             }
         });
+        restore.setMnemonic(KeyEvent.VK_O);
         container.add(restore);
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -246,7 +258,8 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             return;
         }
 
-        int answer = JOptionPane.showConfirmDialog(this, "Copy to the current dataset?");
+        int answer = JOptionPane.showConfirmDialog(this, "Copy to the current dataset?",
+                "Confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (answer == JOptionPane.CANCEL_OPTION) {
             return;
         } else if ( answer == JOptionPane.YES_OPTION) {
@@ -307,7 +320,8 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             return;
         }
 
-        int answer = JOptionPane.showConfirmDialog(this, "Archive QA Step Results?");
+        int answer = JOptionPane.showConfirmDialog(this, "Archive QA Step Results?", "Confirm",
+                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (answer == JOptionPane.CANCEL_OPTION) {
             return;
         } else if ( answer == JOptionPane.YES_OPTION) {
@@ -343,7 +357,8 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
             return;
         }
 
-        int answer = JOptionPane.showConfirmDialog(this, "Restore QA Step Results?");
+        int answer = JOptionPane.showConfirmDialog(this, "Restore QA Step Results?", "Confirm",
+                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (answer == JOptionPane.CANCEL_OPTION) {
             return;
         } else if ( answer == JOptionPane.YES_OPTION) {
@@ -378,7 +393,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
         
         String message = "Are you sure you want to remove the selected " + selected.size() + " QA step(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection != JOptionPane.YES_OPTION) {
             return;
@@ -570,7 +585,7 @@ public class EditableQATab extends JPanel implements EditableQATabView, RefreshO
                                     String title = "Warning";
                                     String message = "Are you sure you want to view more than 100,000 records?  It could take several minutes to load the data.";
                                     int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                                            JOptionPane.QUESTION_MESSAGE);
+                                            JOptionPane.WARNING_MESSAGE);
 
                                     if (selection == JOptionPane.NO_OPTION) {
                                         return;

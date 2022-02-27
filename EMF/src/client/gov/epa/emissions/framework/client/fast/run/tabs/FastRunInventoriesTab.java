@@ -228,7 +228,7 @@ public class FastRunInventoriesTab extends AbstractFastRunTab {
             String title = "Warning";
             String message = "Are you sure you want to remove the selected Fast run inventories?";
             int selection = JOptionPane.showConfirmDialog(this.getParentConsole(), message, title,
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
             if (selection == JOptionPane.YES_OPTION) {
 

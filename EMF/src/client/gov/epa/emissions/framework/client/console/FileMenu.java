@@ -46,6 +46,7 @@ public class FileMenu extends JMenu {
     private JMenuItem createExit(final EmfConsole parent) {
         JMenuItem exit = new JMenuItem("Exit");
         exit.setName("exit");
+        exit.setMnemonic(KeyEvent.VK_X);
         exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 ExitAndLogoutAction exit = new ExitAndLogoutAction(parent, desktopManager);
@@ -63,6 +64,7 @@ public class FileMenu extends JMenu {
     private JMenuItem createLogout(final EmfSession session, final EmfConsole parent) {
         JMenuItem logout = new JMenuItem("Logout");
         logout.setName("logout");
+        logout.setMnemonic(KeyEvent.VK_L);
         logout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 logout(session, parent, desktopManager);
@@ -106,6 +108,7 @@ public class FileMenu extends JMenu {
     private JMenuItem createImport(final EmfSession session, final MessagePanel messagePanel, final EmfConsole parent) {
         JMenuItem importMenu = new JMenuItem("Import");
         importMenu.setName("import");
+        importMenu.setMnemonic(KeyEvent.VK_I);
         importMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {

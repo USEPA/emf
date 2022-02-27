@@ -7,7 +7,7 @@ import gov.epa.emissions.commons.gui.buttons.CopyButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.sms.sectorscenario.base.NewSectorScenarioDialog;
@@ -31,6 +31,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -42,7 +43,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class SectorScenarioManagerWindow extends ReusableInteralFrame implements SectorScenarioManagerView,
+public class SectorScenarioManagerWindow extends DisposableInteralFrame implements SectorScenarioManagerView,
         RefreshObserver, Runnable {
 
     private SectorScenarioManagerPresenter presenter;
@@ -150,6 +151,7 @@ public class SectorScenarioManagerWindow extends ReusableInteralFrame implements
                 presenter.doClose();
             }
         });
+        closeButton.setMnemonic(KeyEvent.VK_L);
         closePanel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 
@@ -293,7 +295,7 @@ public class SectorScenarioManagerWindow extends ReusableInteralFrame implements
                 "Are you sure you want to remove the selected sector scenarios?" :
                 "Are you sure you want to remove the "+records.length+" selected scenarios?";
        int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (selection == JOptionPane.YES_OPTION) {

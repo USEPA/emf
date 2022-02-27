@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.cost.controlmeasure;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import javax.swing.AbstractAction;
@@ -69,7 +70,9 @@ public class AddRemoveMonthWidget extends JPanel {
     private JPanel addRemoveButtonPanel() {
         JPanel panel = new JPanel();
         addButton = new AddButton("Add", addAction());
+        addButton.setMnemonic(KeyEvent.VK_D);
         removeButton = new RemoveButton("Remove", removeAction());
+        removeButton.setMnemonic(KeyEvent.VK_E);
         addButton.setMargin(new Insets(1, 2, 1, 2));      
         removeButton.setMargin(new Insets(1, 2, 1, 2));
         panel.add(addButton);

@@ -217,7 +217,7 @@ public class ModulesDAO {
 
     public Module getModule(int id, Session session) {
         Criterion criterion = Restrictions.eq("id", id);
-        @SuppressWarnings("rawtypes")
+        //@SuppressWarnings("rawtypes")
         List list = hibernateFacade.get(Module.class, criterion, session);
         Module result = null;
         if (list != null && list.size() > 0) {

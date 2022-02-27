@@ -30,6 +30,7 @@ import gov.epa.emissions.framework.ui.SelectableSortFilterWrapper;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -113,12 +114,15 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
 
         JPanel panel = new JPanel();
         JButton addButton = new DisabledBorderlessButton("Add");
+        addButton.setMnemonic(KeyEvent.VK_A);
         panel.add(addButton);
 
         JButton editButton = new DisabledBorderlessButton("Set Version");
+        editButton.setMnemonic(KeyEvent.VK_E);
         panel.add(editButton);
 
         JButton removeButton = new DisabledBorderlessButton("Remove");
+        removeButton.setMnemonic(KeyEvent.VK_O);
         panel.add(removeButton);
 
         Button viewButton = new BorderlessButton("View", new AbstractAction() {
@@ -130,6 +134,7 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
                 }
             }
         });
+        viewButton.setMnemonic(KeyEvent.VK_V);
         panel.add(viewButton);
 
         Button viewDataButton = new BorderlessButton("View Data", new AbstractAction() {
@@ -141,6 +146,7 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
                 }
             }
         });
+        viewDataButton.setMnemonic(KeyEvent.VK_D);
         panel.add(viewDataButton);
 
         JPanel rightPanel = new JPanel();
@@ -332,11 +338,13 @@ public class ViewControlStrategyInventoryFilterTab extends EmfPanel implements V
     private JPanel datasetPanel() {
 
         Button viewButton = new BorderlessButton("View", viewDatasetAction());
+        viewButton.setMnemonic(KeyEvent.VK_E);
         JPanel invPanel = new JPanel(new BorderLayout(5, 0));
 
         invPanel.add(dataset, BorderLayout.LINE_START);
         invPanel.add(viewButton);
         Button viewDataButton = new BorderlessButton("View Data", viewCountyDatasetDataAction());
+        viewDataButton.setMnemonic(KeyEvent.VK_I);
         invPanel.add(viewDataButton, BorderLayout.LINE_END);
         return invPanel;
     }

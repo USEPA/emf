@@ -26,7 +26,7 @@ public class InfoDialog implements Confirm {
 
     private int show() {
         return JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.DEFAULT_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
 }

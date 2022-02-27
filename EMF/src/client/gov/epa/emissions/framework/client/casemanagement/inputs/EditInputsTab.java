@@ -305,14 +305,16 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         container.add(edit);
 
         Button copy = new Button("Copy", copyAction(presenter));
+        copy.setMnemonic(KeyEvent.VK_C);
         copy.setMargin(insets);
         container.add(copy);
 
-        Button view = new ViewButton("View Dataset", new AbstractAction() {
+        Button view = new ViewButton("View Datasetz", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 doDisplayInputDatasetsPropertiesViewer();
             }
         });
+        view.setMnemonic(KeyEvent.VK_Z);
         view.setMargin(insets);
         container.add(view);
 
@@ -321,6 +323,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
                 doExportInputDatasets(getSelectedInputs());
             }
         });
+        export.setMnemonic(KeyEvent.VK_I);
         export.setMargin(insets);
         container.add(export);
 
@@ -329,6 +332,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
                 viewCasesReleatedToDataset();
             }
         });
+        findRelated.setMnemonic(KeyEvent.VK_N);
         findRelated.setMargin(insets);
         container.add(findRelated);
 
@@ -406,7 +410,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         String title = "Warning";
         String message = "Are you sure you want to remove the selected input(s)?";
         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
             tableData.remove(inputs);
@@ -470,7 +474,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
                         selectedCase + ")? \n Note: if you don't add the region, the copy will be canceled. ";
                               
                         int selection = JOptionPane.showConfirmDialog(parentConsole, message, "Warning", JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.WARNING_MESSAGE);
                         if (selection == JOptionPane.YES_OPTION) 
                             presenter.copyInput(selectedCaseId, inputs);
                         return; 
@@ -634,7 +638,7 @@ public class EditInputsTab extends JPanel implements EditInputsTabView, RefreshO
         // String title = "Message";
         // String message = "Would you like to remove previously exported files prior to export?";
         // return JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-        // JOptionPane.QUESTION_MESSAGE);
+        // JOptionPane.WARNING_MESSAGE);
         // FIXME: Temporal setting till gets back from Marc on this policy 11/09/2007 Qun
         return JOptionPane.YES_OPTION;
     }

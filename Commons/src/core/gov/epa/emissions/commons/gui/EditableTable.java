@@ -17,6 +17,7 @@ public class EditableTable extends JTable implements Editor, Changeable {
         this.tableModel = tableModel;
         setRowHeight(25);
         getModel().addTableModelListener(tableModelListener());
+        setSurrendersFocusOnKeystroke(true);
     }
 
     private TableModelListener tableModelListener() {

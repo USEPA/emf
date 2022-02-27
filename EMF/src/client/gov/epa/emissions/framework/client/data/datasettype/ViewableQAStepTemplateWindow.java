@@ -65,28 +65,28 @@ public class ViewableQAStepTemplateWindow extends DisposableInteralFrame impleme
         JPanel panel = new JPanel(new SpringLayout());
         SpringLayoutGenerator layoutGenerator = new SpringLayoutGenerator();
 
-        name = new TextField("", 40);
+        name = new TextField("", 40, "QA step template name");
         name.setEditable(false);
         layoutGenerator.addLabelWidgetPair("Name:", name, panel);
 
-        program = new TextField("", 40);
+        program = new TextField("", 40, "QA step template program");
         program.setEditable(false);
         layoutGenerator.addLabelWidgetPair("Program:", program, panel);
 
-        programParameters = new TextArea("", "", 40, 3);
+        programParameters = new TextArea("", "", 40, 3, "QA step template program parameters");
         programParameters.setEditable(false);
         ScrollableComponent scrollableDetails = ScrollableComponent.createWithVerticalScrollBar(programParameters);
         layoutGenerator.addLabelWidgetPair("Parameters:", scrollableDetails, panel);
 
-        order = new TextField("", 40);
+        order = new TextField("", 40, "QA step template name");
         order.setEditable(false);
         layoutGenerator.addLabelWidgetPair("Order:", order, panel);
 
-        required = new CheckBox("");
+        required = new CheckBox("", "QA step template is required?");
         required.setEnabled(false);
         layoutGenerator.addLabelWidgetPair("Required?", required, panel);
 
-        description = new TextArea("", "", 40, 10);
+        description = new TextArea("", "", 40, 10, "QA step template description");
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
         description.setEditable(false);

@@ -13,17 +13,15 @@ import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.client.DisposableInteralFrame;
-import gov.epa.emissions.framework.client.SpringLayoutGenerator;
+import gov.epa.emissions.framework.client.*;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.qa.EditableQAStepTemplateTableData;
 import gov.epa.emissions.framework.ui.EmfTableModel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.emissions.framework.ui.TableData;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Date;
@@ -100,9 +98,10 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
 
         TextField name = new TextField("name", type.getName(), 40);
         name.setEditable(false);
+        name.setToolTipText("Dataset type name");
         layoutGenerator.addLabelWidgetPair("Name:", name, uPanel);
 
-        TextArea description = new TextArea("description", type.getDescription(), 40);
+        TextArea description = new TextArea("description", type.getDescription(), 40, "Dataset type description");
         description.setEditable(false);
         ScrollableComponent descScrollableTextArea = new ScrollableComponent(description);
         descScrollableTextArea.setMinimumSize(new Dimension(80, 80));
@@ -110,6 +109,7 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
 
         TextField sortOrder = new TextField("sortOrder", type.getDefaultSortOrder(), 40);
         sortOrder.setEditable(false);
+        sortOrder.setToolTipText("Dataset type sort order columns");
         layoutGenerator.addLabelWidgetPair("Default Sort Order:", sortOrder, uPanel);
 
         // Lay out the panel.
@@ -121,11 +121,28 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
         Date cDate = type.getCreationDate();
         Date mDate = type.getLastModifiedDate();
         String spaces = "       ";
-        JPanel creator = new JPanel();
-        creator.setLayout(new BoxLayout(creator, BoxLayout.X_AXIS));
-        creator.add(new JLabel("Creator: " + (user == null ? " " : user.getName() + spaces)));
-        creator.add(new JLabel("Creation Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(cDate) + spaces));
-        creator.add(new JLabel("Last Modified Date: " + CustomDateFormat.format_YYYY_MM_DD_HH_MM(mDate)));
+        JPanel creator = new JPanel(new SpringLayout());
+        creator.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
+        SpringLayoutGenerator subLayoutGenerator = new SpringLayoutGenerator();
+
+        // creator
+        gov.epa.emissions.framework.client.Label creatorLabel = new gov.epa.emissions.framework.client.Label("Creator", (user == null ? " " : user.getName() + spaces));
+        creatorLabel.setToolTipText("Creator of dataset type");
+        subLayoutGenerator.addLabelWidgetPair("Creator:", creatorLabel, creator);
+        // creation date
+        gov.epa.emissions.framework.client.Label creationDateLabel = new gov.epa.emissions.framework.client.Label("Creation Date", CustomDateFormat.format_YYYY_MM_DD_HH_MM(cDate) + spaces);
+        creationDateLabel.setToolTipText("Creation date of dataset type");
+        subLayoutGenerator.addLabelWidgetPair("Creation Date:", creationDateLabel, creator);
+        // creation date
+        gov.epa.emissions.framework.client.Label lastModDtLabel = new gov.epa.emissions.framework.client.Label("Last Modified Date", CustomDateFormat.format_YYYY_MM_DD_HH_MM(mDate) + spaces);
+        lastModDtLabel.setToolTipText("Last modified date of dataset typpe");
+        subLayoutGenerator.addLabelWidgetPair("Last Modified Date:", lastModDtLabel, creator);
+
+        // Lay out the panel.
+        subLayoutGenerator.makeCompactGrid(creator, 1, 6, // rows, cols
+                5, 5, // initialX, initialY
+                10, 10);// xPad, yPad
+
 
         fileFormat = getFileFormat(type);
 
@@ -139,6 +156,7 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
         }else {
             TextField fileFomatTextArea =new TextField(""," No file format for view.  ",40);
             fileFomatTextArea.setEditable(false);
+            fileFomatTextArea.setToolTipText("File format for dataset type");
             fileFormatPanel.add(new JScrollPane(fileFomatTextArea), BorderLayout.CENTER);
         }
 
@@ -219,7 +237,7 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
                 showTemplateWindows(data);
             }
         });
-        
+        view.setToolTipText("View selected QA step templates");
         panel.add(view, BorderLayout.LINE_START);
         
         return panel;
@@ -235,6 +253,10 @@ public class ViewableDatasetTypeWindow extends DisposableInteralFrame implements
 
     private void showTemplateWindows(EditableQAStepTemplateTableData data) {
         QAStepTemplate[] selected = data.getSelected();
+        if (selected.length == 0) {
+            messagePanel.setMessage("Please select one or more QA Step Templates to view");
+            return;
+        }
         
         for(int i = 0; i < selected.length; i++) {
             ViewableQAStepTemplateView view = new ViewableQAStepTemplateWindow(selected[i].getName()+

@@ -412,7 +412,7 @@ public class TreeDialog extends JDialog implements AnalysisOptionConstantsIfc, P
 				if (prospectiveFile.exists()) {
 					int retval = JOptionPane.showConfirmDialog(this, "The file " + prospectiveFile
 							+ " already exists. Overwrite?", "Overwrite File?", JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
+							JOptionPane.WARNING_MESSAGE);
 					shouldDrawPlot = (retval == JOptionPane.YES_OPTION);
 				}
 			} // else
@@ -961,7 +961,7 @@ public class TreeDialog extends JDialog implements AnalysisOptionConstantsIfc, P
 				if (file.exists()) {
 					writeFile = JOptionPane.showConfirmDialog(this, "The file " + file.getAbsolutePath()
 							+ " already exists. Overwrite?", "Overwrite File?", JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
+							JOptionPane.WARNING_MESSAGE);
 				} else {
 					writeFile = JOptionPane.YES_OPTION;
 				}
@@ -1000,7 +1000,7 @@ public class TreeDialog extends JDialog implements AnalysisOptionConstantsIfc, P
 			if (prospectiveFile.exists()) {
 				int retval = JOptionPane.showConfirmDialog(this, "The file " + prospectiveFile
 						+ " already exists. Overwrite?", "Overwrite File?", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
+						JOptionPane.WARNING_MESSAGE);
 				shouldDrawPlot = (retval == JOptionPane.YES_OPTION);
 			}
 		} // else

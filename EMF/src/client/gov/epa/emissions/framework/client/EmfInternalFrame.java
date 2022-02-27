@@ -62,6 +62,10 @@ public abstract class EmfInternalFrame extends JInternalFrame implements Managed
                 windowClosing();
                 super.internalFrameClosing(event);
             }
+            public void internalFrameClosed(InternalFrameEvent event) {
+                // Java 8 doesn't select next frame automatically
+                desktopManager.selectNextWindowIfNeeded();
+            }
         });
     }
 

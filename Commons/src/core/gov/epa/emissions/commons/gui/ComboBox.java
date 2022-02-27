@@ -30,6 +30,7 @@ public class ComboBox extends JComboBox implements Changeable {
 
         setModel(new DefaultComboBoxModel(list.toArray()));
         setRenderer(new ComboBoxRenderer(defaultLabel));
+        super.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
     }
 
     public ComboBox(String defaultLabel, Object[] values, String toolTipText) {
@@ -39,6 +40,7 @@ public class ComboBox extends JComboBox implements Changeable {
 
     public ComboBox(Object[] values) {
         super(values);
+        super.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
     }
 
     public ComboBox(Object[] values, String toolTipText) {
@@ -48,6 +50,7 @@ public class ComboBox extends JComboBox implements Changeable {
 
     public ComboBox() {
         super();
+        super.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
     }
     
     public void resetModel(Object[] values) {

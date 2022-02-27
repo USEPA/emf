@@ -114,6 +114,11 @@ public class EditableColumnTableData extends AbstractEditableTableData implement
         remove(getSelected());
     }
 
+    @Override
+    public int getSelectedCount() {
+        return getSelected().length;
+    }
+
     public Class getColumnClass(int col) {
         if (col == 0)
             return Boolean.class;

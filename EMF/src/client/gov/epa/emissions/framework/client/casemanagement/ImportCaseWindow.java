@@ -2,7 +2,7 @@ package gov.epa.emissions.framework.client.casemanagement;
 
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.data.DataCommonsService;
@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -20,7 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class ImportCaseWindow extends ReusableInteralFrame implements ImportCaseView {
+public class ImportCaseWindow extends DisposableInteralFrame implements ImportCaseView {
 
     private ImportCasePresenter presenter;
     
@@ -79,6 +80,7 @@ public class ImportCaseWindow extends ReusableInteralFrame implements ImportCase
                 presenter.finish();
             }
         });
+        done.setMnemonic(KeyEvent.VK_D);
         container.add(done);
 
         panel.add(container, BorderLayout.EAST);

@@ -8,6 +8,7 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.SaveButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -43,7 +44,7 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
     private PopulateUserOnUpdateStrategy populateUserStrategy;
 
     public UpdateUserWindow(AdminOption adminOption, DesktopManager desktopManager, EmfConsole console) {
-        super("Edit User", new Dimension(820, 560), desktopManager);
+        super("Edit User", new Dimension(900, 560), desktopManager);
         this.adminOption = adminOption;
         this.parentConsole = console;
     }
@@ -60,7 +61,7 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
         panel = createLayout(adminOption);
         container.add(panel);
         container.add(selectDTPanel());
-        
+
         messagePanel = new SingleLineMessagePanel();
         mainContainer.add(messagePanel);
         mainContainer.add(container);
@@ -82,7 +83,7 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
     }
 
     private EditableUserProfilePanel createLayout(AdminOption adminOption) {
-        Widget username = new LabelWidget("username", user.getUsername());
+        Label username = new Label("username", user.getUsername());
         return createUserProfilePanel(username, adminOption);
     }
     
@@ -112,8 +113,10 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
         container.setLayout(layout);
 
         Button okButton = new SaveButton(saveAction);
+        okButton.setToolTipText("Save user information");
         container.add(okButton);
         CloseButton closeButton = new CloseButton(closeAction);
+        closeButton.setToolTipText("Cancel saving user information and close window");
         container.add(closeButton);
 
         panel.add(container, BorderLayout.CENTER);
@@ -121,7 +124,7 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
         return panel;
     }
 
-    private EditableUserProfilePanel createUserProfilePanel(Widget username,
+    private EditableUserProfilePanel createUserProfilePanel(Label username,
             AdminOption adminOption) {
         EditableUserProfilePanel panel=null;
         try {
@@ -168,7 +171,8 @@ public class UpdateUserWindow extends DisposableInteralFrame implements Updatabl
 
     public void windowClosing() {
         try {
-            presenter.doClose();
+            if(shouldDiscardChanges())
+                presenter.doClose();
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         }

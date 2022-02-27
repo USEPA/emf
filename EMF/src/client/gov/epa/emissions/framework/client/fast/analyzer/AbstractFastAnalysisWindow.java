@@ -221,7 +221,7 @@ public abstract class AbstractFastAnalysisWindow extends DisposableInteralFrame 
         String message = "Are you sure you want to execute the Fast analysis?";
 
         int selection = JOptionPane.showConfirmDialog(this, message, "Warning", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
 
         if (selection == JOptionPane.YES_OPTION) {
 

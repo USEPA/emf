@@ -18,6 +18,7 @@ import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,10 +69,12 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
     private JPanel tablePanel(QAStep[] steps, QAStepResult[] results) {
         JPanel container = new JPanel(new BorderLayout());
         tableData = new QAStepsTableData(steps, results);
-        if (table == null )
+        if (table == null) {
             table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
-        else
+            table.getTable().getAccessibleContext().setAccessibleName("List of QA steps for this dataset");
+        } else {
             table.refresh(tableData);
+        }
         container.add(table, BorderLayout.CENTER);
         return container;
     }
@@ -100,8 +103,8 @@ public class QATab extends JPanel implements QATabView, RefreshObserver {
                 doView();
             }
         });
+        view.setMnemonic(KeyEvent.VK_V);
         container.add(view);
-
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(container, BorderLayout.LINE_START);
 

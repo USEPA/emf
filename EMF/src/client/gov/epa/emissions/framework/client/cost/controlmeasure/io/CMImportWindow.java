@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.cost.controlmeasure.io;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.services.EmfException;
@@ -19,6 +19,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
@@ -26,7 +27,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class CMImportWindow extends ReusableInteralFrame implements CMImportView, RefreshObserver {
+public class CMImportWindow extends DisposableInteralFrame implements CMImportView, RefreshObserver {
 
     private CMImportPresenter presenter;
 
@@ -92,6 +93,7 @@ public class CMImportWindow extends ReusableInteralFrame implements CMImportView
                 doDone();
             }
         });
+        done.setMnemonic(KeyEvent.VK_D);
         container.add(done);
         panel.add(container, BorderLayout.EAST);
 
@@ -180,7 +182,8 @@ public class CMImportWindow extends ReusableInteralFrame implements CMImportView
                 this,
                 msg,
                 "Purge existing control measures?",
-                JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
         if ( n == JOptionPane.YES_OPTION) {
             return true;
         }

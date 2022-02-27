@@ -7,7 +7,7 @@ import gov.epa.emissions.commons.gui.SelectAwareButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
@@ -24,6 +24,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -34,7 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
-public class UsersManager extends ReusableInteralFrame implements UsersManagerView, RefreshObserver {
+public class UsersManager extends DisposableInteralFrame implements UsersManagerView, RefreshObserver {
 
     private UsersManagerPresenter presenter;
     
@@ -114,6 +115,7 @@ public class UsersManager extends ReusableInteralFrame implements UsersManagerVi
         tablePanel = new JPanel(new BorderLayout());
         tableData = new UsersTableData(new User[] {});//User[] users
         table = new SelectableSortFilterWrapper(parentConsole, tableData, null);
+        table.getTable().getAccessibleContext().setAccessibleName("List of users");
         tablePanel.add(table);
         return tablePanel;
         
@@ -159,6 +161,7 @@ public class UsersManager extends ReusableInteralFrame implements UsersManagerVi
             }
         };
         Button deleteButton = new Button("Delete", deleteAction);
+        deleteButton.setMnemonic(KeyEvent.VK_D);
         deleteButton.setEnabled(false);
 
         String messageTooManyWindows = "You have asked to open a lot of windows. Do you wish to proceed?";
@@ -247,7 +250,7 @@ public class UsersManager extends ReusableInteralFrame implements UsersManagerVi
         }
 
         int option = JOptionPane.showConfirmDialog(this, "Are you sure about deleting user(s) - " + buffer.toString(),
-                "Delete User", JOptionPane.YES_NO_OPTION);
+                "Delete User", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         return (option == 0);
     }
 

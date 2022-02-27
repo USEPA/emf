@@ -3,7 +3,7 @@ package gov.epa.emissions.framework.client.download;
 import gov.epa.emissions.commons.gui.Button;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
@@ -71,7 +71,7 @@ import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.params.CoreConnectionPNames;
 
 public class FileDownloadWindow 
-  extends ReusableInteralFrame 
+  extends DisposableInteralFrame 
   implements FileDownloadView, RefreshObserver {
 
     private MessagePanel messagePanel;
@@ -91,7 +91,7 @@ public class FileDownloadWindow
     
     private String downloadFolder;
 
-
+    private RefreshButton refreshButton;
    
     
     class Task extends SwingWorker<Void, Void> {
@@ -327,14 +327,18 @@ public class FileDownloadWindow
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel container = new JPanel(new FlowLayout());
-        messagePanel = new SingleLineMessagePanel();
+        messagePanel = new SingleLineMessagePanel(false);
         container.add(messagePanel);
 
         JButton clearButton = createClearButton();
         getRootPane().setDefaultButton(clearButton);
         container.add(clearButton);
 
-        container.add(createRefreshButton());
+        JButton goToFolderButton = createGoToFolderButton();
+        container.add(goToFolderButton);
+
+        refreshButton = createRefreshButton();
+        container.add(refreshButton);
 
         panel.add(container, BorderLayout.EAST);
 
@@ -342,7 +346,7 @@ public class FileDownloadWindow
     }
 
     private JButton createClearButton() {
-        JButton button = new JButton("Clear Downloads");
+        JButton button = new JButton("Clear");
         button.setIcon(trashIcon());
         button.setBorderPainted(false);
         button.setToolTipText("Removes downloads from the list");
@@ -357,7 +361,22 @@ public class FileDownloadWindow
         return button;
     }
 
-    private Button createRefreshButton() {
+    private JButton createGoToFolderButton() {
+        JButton button = new JButton("Go to Folder");
+        button.setBorderPainted(false);
+        button.setToolTipText("Go to folder containing download files");
+        button.setMnemonic(KeyEvent.VK_G);
+
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                openContaingFolder();
+            }
+        });
+
+        return button;
+    }
+
+    private RefreshButton createRefreshButton() {
         return new RefreshButton(this, "Refresh the Downloaded Files", messagePanel);
     }
 
@@ -371,10 +390,11 @@ public class FileDownloadWindow
         table = new JTable(fileDownloadTableModel);
 //            new MultiLineTable(fileDownloadTableModel);
         table.setName("fileDownloads");
+        table.getAccessibleContext().setAccessibleName("List of downloaded files");
         // FIXME: code put in for the demo
 //        table.setRowHeight(50);
         //table.setDefaultRenderer(Object.class, new TextAreaTableCellRenderer());
-        
+
         table.setCellSelectionEnabled(true);
 //        MultiLineCellRenderer multiLineCR = new MultiLineCellRenderer();
         FileDownloadTableCellRenderer progressBarTableCellRenderer = new FileDownloadTableCellRenderer();
@@ -382,7 +402,7 @@ public class FileDownloadWindow
 //        table.getColumnModel().getColumn(1).setCellRenderer(multiLineCR);
 //        table.getColumnModel().getColumn(2).setCellRenderer(multiLineCR);
         table.getColumnModel().getColumn(0).setCellRenderer(progressBarTableCellRenderer);
-        
+
         table.addMouseListener(new MouseListener() {
             
             public void mouseReleased(MouseEvent e) {
@@ -431,7 +451,7 @@ public class FileDownloadWindow
             showPopup(e.getPoint());//table.columnAtPoint(e.getPoint()), table.rowAtPoint(e.getPoint()));
         }
     }
-  
+
     /**
      *  Show a hidden column in the table.
      *
@@ -556,17 +576,8 @@ public class FileDownloadWindow
                 java.awt.EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         // NOTE Auto-generated method stub
-//                        System.out.println("Popup Open Containing Folder click");
-                        Desktop desktop = null;
-                        if (Desktop.isDesktopSupported()) {
-                            desktop = Desktop.getDesktop();
-                        }
+                        openContaingFolder();
 
-                        try {
-                            desktop.open(new File(downloadFolder));
-                        } catch (IOException ex) {
-                            messagePanel.setError(ex.getMessage());
-                        }
                     }
                 });
                 
@@ -585,7 +596,21 @@ public class FileDownloadWindow
         //  Display the popup below the click point
         popup.show(table.getComponentAt(point), point.x, point.y);
     }
- 
+
+    private void openContaingFolder() {
+        //                        System.out.println("Popup Open Containing Folder click");
+        Desktop desktop = null;
+        if (Desktop.isDesktopSupported()) {
+            desktop = Desktop.getDesktop();
+        }
+
+        try {
+            desktop.open(new File(downloadFolder));
+        } catch (IOException ex) {
+            messagePanel.setError(ex.getMessage());
+        }
+    }
+
     private void setColumnWidths(TableColumnModel model) {
         TableColumn message = model.getColumn(0);
         message.setPreferredWidth((int) (getWidth() * 0.75));
@@ -754,6 +779,8 @@ public class FileDownloadWindow
 //                    setErrorMsg(e1.getCause().getMessage());
                 } finally {
                     super.finalize();
+                    if (isSelected())
+                        refreshButton.requestFocusInWindow();
                 }
             }
         }.execute();

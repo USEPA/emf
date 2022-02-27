@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 
 import javax.help.HelpBroker;
@@ -84,7 +85,7 @@ public class HelpMenu
       // create Help Menu
       JMenu helpMenu = new JMenu();
       helpMenu.setText("Help");
-      helpMenu.setMnemonic('H');
+      helpMenu.setMnemonic(KeyEvent.VK_H);
 
       // create a helpBroker for a user guide menu item
       if(helpBroker==null)

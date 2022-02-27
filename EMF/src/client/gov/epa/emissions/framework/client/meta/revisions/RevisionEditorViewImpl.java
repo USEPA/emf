@@ -27,6 +27,7 @@ import gov.epa.emissions.framework.ui.Position;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -144,6 +145,8 @@ public class RevisionEditorViewImpl extends Dialog implements RevisionEditorView
                 doSetReference(tempNotes);
             }
         });
+        setButton.setMnemonic(KeyEvent.VK_E);
+        setButton.setToolTipText("Set References");
 
         refPanel.add(setButton);
 

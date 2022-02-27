@@ -21,6 +21,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -200,7 +201,7 @@ public class ImportInputPanel extends JPanel {
                 selectFilesFromPattern();
             }
         });
-
+        button.setMnemonic(KeyEvent.VK_A);
         return button;
     }
 

@@ -21,11 +21,14 @@ import gov.epa.mims.analysisengine.table.sort.SortCriteria;
 import gov.epa.mims.analysisengine.table.sort.SortGUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -34,6 +37,7 @@ import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -172,6 +176,15 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 		setLayout(new BorderLayout());
 		add(toolBar, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
+		statusLabel.setFocusable(true);
+		statusLabel.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void focusLost(FocusEvent e) {
+                statusLabel.setBorder(null);
+            }
+        });
 		add(statusLabel, BorderLayout.SOUTH);
 		DefaultUserInteractor.set(new GUIUserInteractor());
 		for (int i = 0; i < table.getColumnCount(); i++) {
@@ -206,6 +219,15 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 		setLayout(new BorderLayout());
 		add(toolBar, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
+		statusLabel.setFocusable(true);
+		statusLabel.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+            	statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            public void focusLost(FocusEvent e) {
+            	statusLabel.setBorder(null);
+            }
+        });
 		add(statusLabel, BorderLayout.SOUTH);
 		DefaultUserInteractor.set(new GUIUserInteractor());
 		for (int i = 0; i < table.getColumnCount(); i++) {
@@ -343,9 +365,15 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 	                                         int rowIndex, int vColIndex) {
 	            Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 	            if ( column1.trim().equalsIgnoreCase("select")){
+	            	if (c instanceof JComponent && vColIndex == 1) {
+	            		JComponent jc = (JComponent)c;
+	            		jc.setToolTipText("Use checkbox to select this row");
+	            		jc.getAccessibleContext().setAccessibleDescription("Use checkbox to select this row");
+	            	}
 	            	if (c instanceof JComponent && vColIndex>2 ) {
 	            		JComponent jc = (JComponent)c;
 	            		jc.setToolTipText(getValueAt(rowIndex, 2) != null? getValueAt(rowIndex, 2).toString():"");
+	            		jc.getAccessibleContext().setAccessibleDescription("");
 	            	}
 	            	return c;
 	            }
@@ -354,8 +382,10 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
 					if (jc != null)
 					{
 						Object obj = getValueAt(rowIndex, 1);
-						if (obj != null)
+						if (obj != null) {
 						   jc.setToolTipText(getValueAt(rowIndex, 1).toString());
+						   jc.getAccessibleContext().setAccessibleDescription("");
+						}
 					}
 				}
 				return c;
@@ -833,6 +863,7 @@ public class SortFilterTablePanel extends JPanel implements TableModelListener, 
                         COLUMNS_STR + " [" + overallModel.filterSortInfoString() + "]";
 		statusLabel.setText(info);
 		statusLabel.setToolTipText(info);
+		statusLabel.getAccessibleContext().setAccessibleName("Table status " + info);
 	} // updateStatusLabel()
 
 	/**

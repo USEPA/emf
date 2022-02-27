@@ -27,6 +27,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -229,6 +230,7 @@ public class SensitivityWindow extends DisposableInteralFrame implements Sensiti
 
         Button setJobsButton = new Button("Select Jobs", setJobsAction(this));
         container.add(setJobsButton);
+        setJobsButton.setMnemonic(KeyEvent.VK_S);
         container.add(new CancelButton(closeAction()));
         getRootPane().setDefaultButton(setJobsButton);
 

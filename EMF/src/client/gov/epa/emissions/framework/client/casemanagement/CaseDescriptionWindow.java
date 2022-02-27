@@ -25,7 +25,7 @@ import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 public class CaseDescriptionWindow extends DisposableInteralFrame implements CaseDescriptionView { // BUG3621
 
-    private JTextArea description;
+    private TextArea description;
     
     private JPanel layout;
     
@@ -63,11 +63,14 @@ public class CaseDescriptionWindow extends DisposableInteralFrame implements Cas
         
         JLabel lblArgument = new JLabel("Description:    ");
         pnlArgument.add( lblArgument);
-        
-        description = new JTextArea();
-        description.setWrapStyleWord(true);
-        description.setLineWrap(true);
-        description.setText(textDescription);
+
+        description = new TextArea("msgArea", textDescription, 50, 50, "Case description");//new JTextArea();
+        addChangeable(description);
+//        description.setWrapStyleWord(true);
+//        description.setLineWrap(true);
+//        description.setText(textDescription);
+//        description.setToolTipText("Case description");
+        lblArgument.setLabelFor(description);
         JScrollPane scrollPane = new JScrollPane( description);
         scrollPane.setPreferredSize(new Dimension(650,250));
         pnlArgument.add( scrollPane);

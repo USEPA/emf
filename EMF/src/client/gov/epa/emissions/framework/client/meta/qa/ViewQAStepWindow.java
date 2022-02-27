@@ -13,6 +13,8 @@ import gov.epa.emissions.commons.gui.TextArea;
 import gov.epa.emissions.commons.gui.TextField;
 import gov.epa.emissions.commons.gui.buttons.BrowseButton;
 import gov.epa.emissions.commons.gui.buttons.CloseButton;
+import gov.epa.emissions.commons.gui.buttons.ExportButton;
+import gov.epa.emissions.commons.gui.buttons.ViewButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
@@ -85,7 +87,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
 
     private FormattedDateField date;
 
-    private CheckBox required;
+    private Label required;
 
     private User user;
 
@@ -99,11 +101,11 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     
     private JCheckBox overide;
 
-    private JLabel creationStatusLabel;
+    private Label creationStatusLabel;
     
-    private JLabel creationDateLabel;
+    private Label creationDateLabel;
     
-    private JCheckBox currentTable;
+    private Label currentTable;
 
     private EmfConsole parentConsole;
 
@@ -194,24 +196,27 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         String table = stepResult.getTable();
         table = (table == null) ? "" : table;
         tableName = new TextField("tableName", table, 20);
+        tableName.setToolTipText("QA step database table name");
         tableName.setEditable(false);
         layoutGenerator.addLabelWidgetPair("Output Name:", tableName, panel);
 
-        creationStatusLabel = new JLabel();
+        creationStatusLabel = new Label("Creation Status");
         String tableCreationStatus = stepResult.getTableCreationStatus();
+        creationStatusLabel.setToolTipText("QA step creation status");
         creationStatusLabel.setText((tableCreationStatus != null) ? tableCreationStatus : "");
         layoutGenerator.addLabelWidgetPair("Run Status:", creationStatusLabel, panel);
 
-        creationDateLabel = new JLabel();
+        creationDateLabel = new Label("Table Creation Date");
         Date tableCreationDate = stepResult.getTableCreationDate();
+        creationDateLabel.setToolTipText("QA step creation date");
         String creationDate = (tableCreationDate != null) ? CustomDateFormat.format_MM_DD_YYYY_HH_mm(tableCreationDate)
                 : "";
         creationDateLabel.setText(creationDate);
         layoutGenerator.addLabelWidgetPair("Run Date:", creationDateLabel, panel);
 
-        currentTable = new JCheckBox();
-        currentTable.setEnabled(false);
-        currentTable.setSelected(stepResult.isCurrentTable());
+        currentTable = new Label("Current Output?");
+        currentTable.setToolTipText("QA step current output?");
+        currentTable.setText(stepResult.isCurrentTable() ? "Yes" : "No");
         layoutGenerator.addLabelWidgetPair("Current Output?", currentTable, panel);
 
         // Lay out the panel.
@@ -231,7 +236,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 + "file (e.g., a REPCONFIG file)");
         layoutGenerator.addLabelWidgetPair("Configuration:", config, panel);
 
-        comments = new TextArea("Comments", step.getComments(), 40, 2);
+        comments = new TextArea("Comments", step.getComments(), 40, 2, "QA step comments");
         //addChangeable(comments);
         ScrollableComponent scrollableComment = ScrollableComponent.createWithVerticalScrollBar(comments);
         layoutGenerator.addLabelWidgetPair("Comments:", scrollableComment, panel);
@@ -242,7 +247,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         layoutGenerator.addLabelWidgetPair("", overideChkboxPanel(step), panel);
         
         // Lay out the panel.
-        layoutGenerator.makeCompactGrid(panel, 5, 2, // rows, cols
+        layoutGenerator.makeCompactGrid(panel, 6, 2, // rows, cols
                 5, 5, // initialX, initialY
                 10, 10);// xPad, yPad
 
@@ -263,6 +268,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     private JPanel downloadResultsChkboxPanel(QAStep step) {
         download = new JCheckBox("Download result file to local machine?");
         download.setName("download");
+        download.setToolTipText("Download result file to local machine?");
         download.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
 
@@ -284,8 +290,8 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
 
     private JPanel overideChkboxPanel(QAStep step) {
         overide = new JCheckBox("Overwrite files if they exist?");
-        overide.setToolTipText("If the box checked, the files with the same names will be overiden if they already exist in the folder.");
-        overide.setName("overid");
+        overide.setToolTipText("If the box checked, the files with the same names will be overriden if they already exist in the folder.");
+        overide.setName("override");
         JPanel overidePanel = new JPanel(new BorderLayout(2, 10));
         overidePanel.add(overide, BorderLayout.LINE_START);
         return overidePanel;
@@ -294,6 +300,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     private JPanel exportFolderPanel(QAStep step) {
         exportFolder = new JTextField(40);
         exportFolder.setName("folder");
+        exportFolder.setToolTipText("QA step output folder");
         String outputFolder = step.getOutputFolder();
         exportFolder.setText(outputFolder != null ? outputFolder : "");
         exportFolderButton = new BrowseButton(new AbstractAction() {
@@ -301,6 +308,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 selectFolder();
             }
         });
+        exportFolder.setToolTipText("Browse for QA step output folder");
         JPanel folderPanel = new JPanel(new BorderLayout(10, 10));
         folderPanel.add(exportFolder);
         folderPanel.add(exportFolderButton, BorderLayout.EAST);
@@ -398,14 +406,11 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         
         layoutGenerator.addLabelWidgetPair("Arguments:", scrollableDetails, panel);
 
-        required = new CheckBox("", step.isRequired());
-        if (step.isRequired())
-            required.setEnabled(false);
-        CheckBox sameAstemplate = new CheckBox("", asTemplate);
-        sameAstemplate.setEnabled(false);
-        
+        required = new Label("", step.isRequired() ? "Yes" : "No");
+        Label sameAstemplate = new Label("", asTemplate ? "Yes" : "No");
+
         order = new NumberFormattedTextField(5, orderAction());
-        order.setText(step.getOrder() + "");
+        order.setValue(step.getOrder());
         order.addKeyListener(keyListener());
         //addChangeable(order);
         
@@ -490,13 +495,14 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     }
 
     private Button exportButton() {
-        Button export = new Button("Export", new AbstractAction() {
+        Button export = new ExportButton(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clear();
                 
                 doExport();
             }
         });
+        export.setToolTipText("Export Results to CSV or Shapefile");
         return export;
     }
 
@@ -572,9 +578,10 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
             // show a dialog to remind user that the name will be default
             int n = JOptionPane.showConfirmDialog(
                     this,
-                    "You did not specify the Export Name. It will be generated automatically. Would you like to continue?",
+                    new Label("", "You did not specify the Export Name. It will be generated automatically. Would you like to continue?"),
                     "Export Name not Specified",
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
             if ( n == JOptionPane.YES_OPTION) 
                 return true;
             return false;
@@ -589,7 +596,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
     }
 
     private Button viewResultsButton() {
-        return new Button("View Results", new AbstractAction() {
+        Button viewButton = new ViewButton("View Results", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 clear();
                 try {
@@ -599,6 +606,8 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 }
             }
         });
+        viewButton.setToolTipText("View the result as a local file on the client computer. Optionally create Google Earth .kmz file");
+        return viewButton;
     }
     
     private void viewResults() throws EmfException { // TODO: 2011-02
@@ -651,8 +660,8 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                         if (viewCount > 100000) {
                             String title = "Warning";
                             String message = "Are you sure you want to view more than 100,000 records?  It could take several minutes to load the data.";
-                            int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE);
+                            int selection = JOptionPane.showConfirmDialog(parentConsole, new Label("", message), title, JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.WARNING_MESSAGE);
 
                             if (selection == JOptionPane.NO_OPTION) {
                                 return;
@@ -690,6 +699,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
                 doClose();
             }
         });
+        cancel.setToolTipText("Close QA step window");
         return cancel;
     }
 
@@ -719,7 +729,7 @@ public class ViewQAStepWindow extends DisposableInteralFrame implements QAStepVi
         tableName.setText(result == null ? "" : result.getTable());
         creationStatusLabel.setText(result == null ? "" : result.getTableCreationStatus());
         creationDateLabel.setText(CustomDateFormat.format_MM_DD_YYYY_HH_mm(result == null ? null : result.getTableCreationDate()));
-        currentTable.setSelected(result == null ? false : result.isCurrentTable());
+        currentTable.setText(result != null && result.isCurrentTable() ? "Yes" : "No");
         super.revalidate();
     }
 

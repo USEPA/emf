@@ -29,6 +29,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -62,7 +63,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
 
     public DatasetPropertiesViewer(EmfSession session, EmfConsole parentConsole, DesktopManager desktopManager, boolean editable) {
 
-        super("Dataset Properties View", new Dimension(750, 500), desktopManager);
+        super("Dataset Properties View", new Dimension(800, 550), desktopManager);
         this.parentConsole = parentConsole;
         this.session=session;
         this.desktopManager = desktopManager;
@@ -165,7 +166,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
 
     private JPanel createRevisionsTab(EmfConsole parentConsole) {
         try {
-            RevisionsTab view = new RevisionsTab(parentConsole, desktopManager, messagePanel, editable);
+            RevisionsTab view = new RevisionsTab(parentConsole, desktopManager, messagePanel, false);
             presenter.set(view);
             return view;
         } catch (EmfException e) {
@@ -209,11 +210,11 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
         
         JPanel left = new JPanel();
         Button property = new Button("Edit Properties", editPropertyAction());
-        property.setMnemonic('E');
+        property.setMnemonic(KeyEvent.VK_E);
         property.setEnabled(this.editable);
         
         Button data = new Button("View Dataset Versions", displayVersionedData());
-        data.setMnemonic('D');
+        data.setMnemonic(KeyEvent.VK_D);
         data.setEnabled(this.editable);
         if (dataset.getStatus().equals("Archived"))
             data.setEnabled(false);
@@ -231,6 +232,7 @@ public class DatasetPropertiesViewer extends DisposableInteralFrame implements P
                 }
             }
         });
+        refresh.setMnemonic(KeyEvent.VK_R);
         right.add(refresh);
         refresh.setToolTipText("Refresh only the current tab with focus.");
         

@@ -2,6 +2,7 @@ package gov.epa.emissions.framework.client.console;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.UserService;
 import gov.epa.emissions.framework.services.module.ModuleService;
@@ -79,7 +80,7 @@ public class ExitAndLogoutAction {
     }
 
     private boolean confirm(String message) {
-        YesNoDialog emfDialog = new YesNoDialog(emfConsole, "Logout/Exit Confirmation", message);
+        YesNoDialog emfDialog = new YesNoDialog(emfConsole, "Logout/Exit Confirmation", new Label("", message));
         return emfDialog.confirm();
     }
 

@@ -23,6 +23,7 @@ import gov.epa.emissions.framework.ui.Dialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -148,6 +149,7 @@ public class NewNoteDialog extends Dialog implements NewNoteView {
                 doAddReferences(notes);
             }
         });
+        button.setMnemonic(KeyEvent.VK_S);
         button.setToolTipText("Set References");
         container.add(button);
 

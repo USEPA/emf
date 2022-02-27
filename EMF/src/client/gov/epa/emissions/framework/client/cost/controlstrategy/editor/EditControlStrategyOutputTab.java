@@ -39,6 +39,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,7 +159,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
             if (canConcatReports && datasetList.size() > 1) {
                 int selection = JOptionPane.showConfirmDialog(parentConsole,
                     "Export all selected reports in a single file?",
-                    "Strategy Detailed Result Output", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    "Strategy Detailed Result Output", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 if (selection == JOptionPane.YES_OPTION)
                     concat = true;
             }
@@ -218,7 +219,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                         String title = "Warning";
                         String message = "Are you sure you want to view the result? The table has over 300,000 records. It could take several minutes to load the data.";
                         int selection = JOptionPane.showConfirmDialog(parentConsole, message, title,
-                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                         if (selection == JOptionPane.NO_OPTION) {
                             return;
@@ -322,7 +323,7 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
                 String title = "Warning";
                 String message = "Are you sure you want to create controlled inventories? There are controlled inventories that " + (creatingControlledInventories ? "are already being created" : "have already been created") + ".";
                 int selection = JOptionPane.showConfirmDialog(parentConsole, message, title, JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
+                        JOptionPane.WARNING_MESSAGE);
 
                 if (selection != JOptionPane.YES_OPTION) {
                     return;
@@ -427,16 +428,22 @@ public class EditControlStrategyOutputTab extends JPanel implements EditControlS
     }
     private JPanel buttonPanel() {
         exportButton = new ExportButton(exportAction());
+        //exportButton.setMnemonic(mnemonic);
         analysisButton = new Button("Analyze", analysisAction());
+        analysisButton.setMnemonic(KeyEvent.VK_A);
 //        analysisButton.setVisible(false);
 //        view = new ViewButton("View", viewAction());
         viewDataButton = new Button("View Data", viewDataAction());
+        viewDataButton.setMnemonic(KeyEvent.VK_V);
         editButton = new Button("Edit", editAction());
+        editButton.setMnemonic(KeyEvent.VK_E);
         summarizeButton = new Button("Summarize", summarizeAction());
+        summarizeButton.setMnemonic(KeyEvent.VK_Z);
         createButton = new Button("Create", createOutputAction());
+        createButton.setMnemonic(KeyEvent.VK_C);
         createButton.setEnabled(false);
         customizeButton = new Button("Customize", customizeAction());
-        
+        customizeButton.setMnemonic(KeyEvent.VK_O);
 //        editButton.setEnabled(false);
         
         detailButton = new JRadioButton("Result");

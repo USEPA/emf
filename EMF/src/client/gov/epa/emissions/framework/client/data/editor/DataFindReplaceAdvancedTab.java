@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.gui.ManageChangeables;
 import gov.epa.emissions.commons.gui.ScrollableComponent;
 import gov.epa.emissions.commons.gui.TextArea;
+import gov.epa.emissions.framework.client.Label;
 import gov.epa.emissions.framework.client.SpringLayoutGenerator;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
@@ -31,7 +32,7 @@ public class DataFindReplaceAdvancedTab extends JPanel implements DataFindReplac
 
     private TextArea filter;
     
-    private JLabel filterLabel;
+    private Label filterLabel;
 
     private TextArea replaceWith;
     
@@ -54,7 +55,7 @@ public class DataFindReplaceAdvancedTab extends JPanel implements DataFindReplac
         this.table = table;
         this.version = version;
         this.filterFromParentWindow = filterFromParentWindow;
-        this.filterLabel = new JLabel(filterFromParentWindow.getText());
+        this.filterLabel = new Label(filterFromParentWindow.getText());
         this.listOfChangeables = listOfChangeables;
         this.sortOrder = sortOrder;
         this.messagePanel = messagePanel;
@@ -63,6 +64,7 @@ public class DataFindReplaceAdvancedTab extends JPanel implements DataFindReplac
     
     public void display(){
         this.filterLabel.setText(filterFromParentWindow.getText());
+        this.filterLabel.setToolTipText("Filter used");
         this.filterLabel.validate();
         setLayout();
     }
@@ -200,7 +202,7 @@ public class DataFindReplaceAdvancedTab extends JPanel implements DataFindReplac
         if (replaceString.isEmpty()){
             String message = "Replace field is empty, would you like to continue?";
             int selection = JOptionPane.showConfirmDialog( this, message, "Warning", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
             if (selection == JOptionPane.NO_OPTION)   
                 return false;
         }

@@ -11,7 +11,7 @@ import gov.epa.emissions.commons.gui.buttons.ImportButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.gui.buttons.RemoveButton;
 import gov.epa.emissions.framework.client.EmfSession;
-import gov.epa.emissions.framework.client.ReusableInteralFrame;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseEditor;
 import gov.epa.emissions.framework.client.casemanagement.editor.CaseViewer;
 import gov.epa.emissions.framework.client.casemanagement.sensitivity.SensitivityWindow;
@@ -38,6 +38,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -51,7 +52,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class CaseManagerWindow extends ReusableInteralFrame implements CaseManagerView, RefreshObserver {
+public class CaseManagerWindow extends DisposableInteralFrame implements CaseManagerView, RefreshObserver {
 
     private CaseManagerPresenter presenter;
 
@@ -109,6 +110,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         setupTableModel(cases);
         table.refresh(tableData);
         panelRefresh();
+        categoriesBox.requestFocusInWindow();
     }
 
     private void panelRefresh() {
@@ -139,6 +141,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         mainPanel.setLayout(new BorderLayout());
 
         table = new SelectableSortFilterWrapper(parentConsole, tableData, sortCriteria());
+        table.getTable().getAccessibleContext().setAccessibleName("List of cases");
         mainPanel.add(table);
 
         return mainPanel;
@@ -150,7 +153,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
     }
 
     private void createCategoriesComboBox() { 
-        categoriesBox = new ComboBox("Select one", categories.toArray(new CaseCategory[0]));
+        categoriesBox = new ComboBox("Select one", categories.toArray(new CaseCategory[0]), "Select one category to filter the cases on");
         categoriesBox.setPreferredSize(new Dimension(360, 20));
         
         if (selectedCategory != null)
@@ -194,7 +197,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         msgRefreshPanel.add(button, BorderLayout.EAST);
 
         JPanel topPanel = new JPanel(new BorderLayout());
-        nameFilter = new TextField("textfilter", 10);
+        nameFilter = new TextField("textfilter", 10, "Name contains text filter");
         nameFilter.setEditable(true);
         nameFilter.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -206,6 +209,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         JPanel advPanel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel("Name Contains:");
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(nameFilter);
         advPanel.add(jlabel, BorderLayout.WEST);
         advPanel.add(nameFilter, BorderLayout.CENTER);
         advPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 30));
@@ -224,6 +228,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
         JPanel panel = new JPanel(new BorderLayout(5, 2));
         JLabel jlabel = new JLabel(label);
         jlabel.setHorizontalAlignment(JLabel.RIGHT);
+        jlabel.setLabelFor(box);
         panel.add(jlabel, BorderLayout.WEST);
         panel.add(box, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(3, 50, 5, 5));
@@ -302,7 +307,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
                 sensitivityCase();
             }
         });
-        sensitivityButton.setMnemonic('S');
+        sensitivityButton.setMnemonic(KeyEvent.VK_S);
         crudPanel.add(sensitivityButton);
         
         Button compareButton = new Button("Compare", new AbstractAction() {
@@ -317,6 +322,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
             }
         });
         crudPanel.add(compareButton);
+        compareButton.setMnemonic(KeyEvent.VK_O);
         
         Button qaButton = new Button("Compare Reports", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -330,6 +336,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
             }
         });
         crudPanel.add(qaButton);
+        qaButton.setMnemonic(KeyEvent.VK_P);
         
         return crudPanel;
     }
@@ -488,7 +495,7 @@ public class CaseManagerWindow extends ReusableInteralFrame implements CaseManag
 
     private int showWarningMsg(String title, String msg) {
         return JOptionPane.showConfirmDialog(parentConsole, msg, title, JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private void copySelectedCases() {

@@ -11,32 +11,29 @@ public class FormattedTextField extends JFormattedTextField implements Changeabl
     private boolean changed = false;
 
     private Changeables changeables;
-    protected String formattedValue = "";
 
     public FormattedTextField(String name, Object value, Format format, MessageBoard messagePanel) {
         super(format);
         super.setName(name);
         super.setValue(value);
         super.setColumns(10);
+
         super.setInputVerifier(new FormattedTextFieldVerifier(messagePanel));
-        this.formattedValue = super.getText();
     }
 
     private void addTextListener() {
         Document nameDoc = this.getDocument();
         nameDoc.addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
-//                notifyChanges();
+                notifyChanges();
             }
 
             public void insertUpdate(DocumentEvent e) {
-                if (!formattedValue.equals(getText()))
-                    notifyChanges();
+                notifyChanges();
             }
 
             public void removeUpdate(DocumentEvent e) {
-                if (getText().length() > 0 && !formattedValue.equals(getText()))
-                    notifyChanges();
+                notifyChanges();
             }
         });
     }
