@@ -32,7 +32,7 @@
 	<classpathentry kind="lib" path="lib/dom4j-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/ehcache-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jta.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.9.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17-rhel.jar"/>
 	<classpathentry kind="lib" path="lib/dev/junitperf-1.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/analysis-engine.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.2.1.jar"/>
