@@ -2703,3 +2703,57 @@ UPDATE emf.fileformat_columns
 SET type = 'VARCHAR(255)'
 WHERE file_format_id = (SELECT file_format FROM emf.dataset_types WHERE name = 'Control Strategy Detailed Result Extended')
 AND name LIKE 'scc_l%';
+
+-- 2/21/2022 Create Equation Type 21 and variables
+INSERT INTO emf.equation_types (name, description, inventory_fields, equation) VALUES
+('Type 21', 'Non-EGU SO2', 'design_capacity, design_capacity_unit_numerator, design_capacity_unit_denominator',
+'Capital Cost = Capital Cost Multiplier x Design Capacity (in MW) + Capital Cost Constant
+O&M Cost = O&M Cost Multiplier x Design Capacity (in MW) + O&M Cost Constant');
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+    'Capital Cost Multiplier ($/MW)',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 21';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'O&M Cost Multiplier ($/MW)',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 21';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'Capital Cost Constant ($)',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 21';
+
+INSERT INTO emf.equation_type_variables (equation_type_id, name, file_col_position, list_index)
+SELECT e.id,
+	  'O&M Cost Constant ($)',
+	  (SELECT COALESCE(MAX(file_col_position) + 1, 1)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS file_col_position,
+	  (SELECT COALESCE(MAX(list_index) + 1, 0)
+	     FROM emf.equation_type_variables
+	    WHERE equation_type_id = e.id) AS list_index
+FROM emf.equation_types as e
+WHERE name = 'Type 21';
