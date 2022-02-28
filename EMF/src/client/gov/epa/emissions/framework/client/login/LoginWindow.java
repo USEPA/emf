@@ -49,7 +49,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
     private ServiceLocator serviceLocator;
 
-    public final static String EMF_VERSION = "v3.10.1 - 11/04/2021";
+    public final static String EMF_VERSION = "v4.0 - 02/28/2022";
 
     public LoginWindow(ServiceLocator serviceLocator) {
         super("Login", "Login to EMF [" + EMF_VERSION + "]");
