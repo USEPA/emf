@@ -7,7 +7,9 @@ import gov.epa.emissions.commons.data.Mutex;
 import gov.epa.emissions.commons.data.UserFeature;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -197,30 +199,74 @@ public class User implements Serializable, Lockable {
         if (password == null)
             throw new UserException("Password should be specified");
 
-        if (password.length() < 8) {
-            throw new UserException("Password should have at least 8 characters");
+        if (password.length() < 12) {
+            throw new UserException("Password length must be a minimum of 12 characters");
         }
 
         boolean hasDigits = false;
-        boolean hasLetter = false;
-        
+        boolean hasSymbol = false;
+        boolean hasUpperLetter = false;
+        boolean hasLowerLetter = false;
+        int characterCriteriaMatches = 0;   //must match at least 3 of 4 criteria
+//From requirements:
+//        and contain characters from 3 of the following 4 categories:
+//        At least 1 digit (0-9)
+//        At least 1 symbol (~, !, @, #, $, %, =, +, <, >, /, ?)
+//        At least 1 UPPERCASE English letter (A-Z)
+//        At least 1 lowercase English letters (a-z)
+
+        char[] validSymbols = new char[] {'~','!','@','#','$','%','=','+','<','>','/','?'};
         for (int i = 0; i < password.length(); i++) {
             if (Character.isDigit(password.charAt(i)))
                 hasDigits = true;
             
-            if (Character.isLetter(password.charAt(i)))
-                hasLetter = true;
-        }
-        
-        if (!hasDigits)
-            throw new UserException("One or more characters of password should be a number");
-        
-        if (!hasLetter)
-            throw new UserException("One or more characters of password should be a letter");
+            if (Character.isLetter(password.charAt(i))) {
+                if (Character.isUpperCase(password.charAt(i)))
+                    hasUpperLetter = true;
+                if (Character.isLowerCase(password.charAt(i)))
+                    hasLowerLetter = true;
+            }
 
-        if (password.equals(username)) {
-            throw new UserException("Username should be different from Password");
+
+            for (char validSymbol : validSymbols) {
+                if (Character.compare(password.charAt(i), validSymbol) == 0) {
+                    hasSymbol = true;
+                    break;
+                }
+            }
         }
+
+        String trimmedName = name.replace(" ", "").toLowerCase();
+        for (int i = 0; i < trimmedName.length() - 2; ++i) {
+            if (password.toLowerCase().indexOf(trimmedName.substring(i, i + 3)) != -1) {
+                throw new UserException("Must not contain any part of your full name that exceeds two characters (Example: cannot be 'SMI' if your last name is 'SMITH').");
+            }
+        }
+
+        if (password.indexOf(username) != -1) {
+            throw new UserException("Username should not be included in the Password");
+        }
+
+        if (!hasDigits)
+            ++characterCriteriaMatches;
+        if (!hasUpperLetter)
+            ++characterCriteriaMatches;
+        if (!hasLowerLetter)
+            ++characterCriteriaMatches;
+        if (!hasSymbol)
+            ++characterCriteriaMatches;
+
+        if (!hasDigits && characterCriteriaMatches < 3)
+            throw new UserException("At least 1 digit (0-9)");
+
+        if (!hasUpperLetter && characterCriteriaMatches < 3)
+            throw new UserException("At least 1 UPPERCASE English letter (A-Z)");
+
+        if (!hasLowerLetter && characterCriteriaMatches < 3)
+            throw new UserException("At least 1 lowercase English letter (a-z)");
+
+        if (!hasSymbol && characterCriteriaMatches < 3)
+            throw new UserException("At least 1 symbol (~, !, @, #, $, %, =, +, <, >, /, ?)");
 
         try {
             this.encryptedPassword = passwordGen.encrypt(password);

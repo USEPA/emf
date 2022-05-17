@@ -50,7 +50,7 @@ public class PopulateUserOnUpdateStrategy implements PopulateUserStrategy {
         }
         
         if (oldPassword.equals(user.getEncryptedPassword())) {
-            throw new EmfException("Please specify a new password. ");
+            throw new EmfException("Please specify a new password not the old password. ");
         }
     }
 
