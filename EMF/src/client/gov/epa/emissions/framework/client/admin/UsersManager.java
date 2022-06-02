@@ -53,7 +53,7 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
 
   
     public UsersManager(EmfConsole parentConsole, DesktopManager desktopManager) {
-        super("User Manager", new Dimension(730, 400), desktopManager);
+        super("User Manager", new Dimension(860, 400), desktopManager);
         super.setName("userManager");
 
         this.parentConsole = parentConsole;
