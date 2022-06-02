@@ -30,6 +30,7 @@ public class PopulateUserOnUpdateStrategy implements PopulateUserStrategy {
                 checkNewPwd(password);
                 user.confirmPassword(new String(confirmPassword));
                 user.setPasswordResetDate(new Date());
+                user.setLastResetDate(new Date());
             }
             user.setWantEmails(wantEmails);
             user.setExcludedDatasetTypes(eDatasetTypes);

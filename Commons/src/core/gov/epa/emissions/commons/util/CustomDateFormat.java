@@ -52,7 +52,12 @@ public class CustomDateFormat {
         dateFormatter.applyPattern("MM/dd/yyyy");
         return date == null || date.trim().isEmpty()? null : dateFormatter.parse(date);
     }
-    
+
+    public static String format_yyyyMMdd(Date date) throws ParseException {
+        dateFormatter.applyPattern("yyyy/MM/dd");
+        return date == null ? "" : dateFormatter.format(date);
+    }
+
     public static String format_ddMMMyyyy(Date date) {
         dateFormatter.applyPattern("ddMMMyyyy");
         return date == null ? "" : dateFormatter.format(date);

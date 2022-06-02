@@ -21,6 +21,7 @@
         <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
         <property name="lastLoginDate" column="last_login_date" type="java.util.Date" not-null="false" length="4"/>
         <property name="passwordResetDate" column="password_reset_date" type="java.util.Date" not-null="false" length="4"/>
+        <property name="lastResetDate" column="last_reset_date" type="java.util.Date" not-null="false" length="4"/>
         <property name="loggedIn" column="is_login" type="boolean"/>
         <array name="excludedDatasetTypes" table="user_excluded_dataset_types" cascade="save-update">
             <key column="user_id" not-null="true"/>

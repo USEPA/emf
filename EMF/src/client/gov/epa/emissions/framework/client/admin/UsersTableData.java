@@ -20,7 +20,7 @@ public class UsersTableData extends AbstractTableData {
     }
 
     public String[] columns() {
-        return new String[] { "Username", "Name", "Logged in", "Phone", "Email", "Is Admin ?", "Wants Emails?", "Last Logged in" };
+        return new String[] { "Username", "Name", "Logged in", "Phone", "Email", "Is Admin ?", "Wants Emails?", "Last Logged in", "Last Password Reset" };
     }
 
     public Class getColumnClass(int col) {

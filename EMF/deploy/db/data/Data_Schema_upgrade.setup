@@ -2122,3 +2122,10 @@ update emf.fileformat_columns
 set name = 'data_set_id', type = 'varchar(255)'
 where file_format_id in (select file_format from emf.dataset_types where name = 'Flat File 2010 Activity')
 and name = 'date_set_id';
+
+--1/27/21 Updates two scc reference tables to what be current the EIS system
+--added new data/misc/EIS_To_EMF_20210120.sql script please update your system.
+
+-- 5/16/2022 - add last reset date field to users table
+ALTER TABLE emf.users
+ADD COLUMN last_reset_date timestamp;

@@ -45,6 +45,8 @@ public class User implements Serializable, Lockable {
     
     private Date passwordResetDate;
 
+    private Date lastResetDate;
+
     private PasswordGenerator passwordGen;
 
     private Mutex lock;
@@ -193,6 +195,14 @@ public class User implements Serializable, Lockable {
 
     public void setPasswordResetDate(Date passwordResetDate) {
         this.passwordResetDate = passwordResetDate;
+    }
+
+    public Date getLastResetDate() {
+        return lastResetDate;
+    }
+
+    public void setLastResetDate(Date lastResetDate) {
+        this.lastResetDate = lastResetDate;
     }
 
     public void setPassword(String password) throws UserException {

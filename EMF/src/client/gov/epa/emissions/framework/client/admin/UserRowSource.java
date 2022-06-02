@@ -1,5 +1,6 @@
 package gov.epa.emissions.framework.client.admin;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import gov.epa.emissions.commons.security.User;
@@ -16,8 +17,8 @@ public class UserRowSource implements RowSource {
 
     public Object[] values() {
         return new Object[] { source.getUsername(), source.getName(), source.isLoggedIn(), source.getPhone(), source.getEmail(), 
-                new Boolean(source.isAdmin()), source.getWantEmails(), format(source.getLastLoginDate()) };
-    }
+                new Boolean(source.isAdmin()), source.getWantEmails(), format(source.getLastLoginDate()), format(source.getLastResetDate()) };
+        }
 
     public Object source() {
         return source;
@@ -30,6 +31,11 @@ public class UserRowSource implements RowSource {
     }
     
     private Object format(Date date) {
-        return date == null ? "N/A" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(date);
+        try {
+            return date == null ? "N/A" : CustomDateFormat.format_yyyyMMdd(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "N/A";
     }
 }
