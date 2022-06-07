@@ -8,6 +8,7 @@ import gov.epa.emissions.commons.gui.buttons.CloseButton;
 import gov.epa.emissions.commons.gui.buttons.NewButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.console.DesktopManager;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.util.ComponentUtility;
@@ -51,13 +52,14 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
 
     private UsersTableData tableData;
 
+    private EmfSession session;
   
-    public UsersManager(EmfConsole parentConsole, DesktopManager desktopManager) {
+    public UsersManager(EmfConsole parentConsole, DesktopManager desktopManager, EmfSession session) {
         super("User Manager", new Dimension(860, 400), desktopManager);
         super.setName("userManager");
 
         this.parentConsole = parentConsole;
-
+        this.session = session;
         layout = new JPanel();
         this.getContentPane().add(layout);
     }
@@ -174,11 +176,23 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
         };
         SelectAwareButton updateButton = new SelectAwareButton("Edit", updateAction, table, confirmUpdateDialog);
 
+        Action logoutAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                logoutUsers();
+            }
+        };
+        Button logoutButton = new Button("Logout", logoutAction);
+        logoutButton.setMnemonic(KeyEvent.VK_L);
+        logoutButton.setEnabled(false);
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(newButton);
         crudPanel.add(updateButton);
         crudPanel.add(deleteButton);
+        if (session.user().isAdmin())
+            crudPanel.add(logoutButton);
 
         return crudPanel;
     }
@@ -237,6 +251,23 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
         }
     }
 
+    private void logoutUsers() {
+        User[] selected = getSelectedUsers();
+        if (selected.length == 0) {
+            showMessage("To logout, please select at least one User.");
+            return;
+        }
+
+        if (!promptLogout(selected))
+            return;
+
+        try {
+            presenter.doLogout(selected);
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+    }
+
     private void showMessage(String message) {
         messagePanel.setMessage(message);
     }
@@ -251,6 +282,19 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
 
         int option = JOptionPane.showConfirmDialog(this, "Are you sure about deleting user(s) - " + buffer.toString(),
                 "Delete User", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        return (option == 0);
+    }
+
+    public boolean promptLogout(User[] users) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < users.length; i++) {
+            buffer.append("'" + users[i].getUsername() + "'");
+            if (i + 1 < users.length)
+                buffer.append(", ");
+        }
+
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure to logout user(s) - " + buffer.toString(),
+                "Logout User", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         return (option == 0);
     }
 

@@ -279,7 +279,7 @@ public class ManageMenu extends JMenu implements ManageMenuView {
     }
 
     public void displayUserManager() throws EmfException {
-        UsersManagerView view = new UsersManager(parent, desktopManager);
+        UsersManagerView view = new UsersManager(parent, desktopManager, session);
         presenter.doDisplayUserManager(view);
     }
 
