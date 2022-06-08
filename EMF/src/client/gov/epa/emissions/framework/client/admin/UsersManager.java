@@ -186,13 +186,36 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
         logoutButton.setMnemonic(KeyEvent.VK_L);
         logoutButton.setEnabled(false);
 
+        Action enableAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                enableUsers();
+            }
+        };
+        Button enableButton = new Button("Enable", enableAction);
+        enableButton.setMnemonic(KeyEvent.VK_N);
+        enableButton.setEnabled(false);
+
+        Action disableAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.clear();
+                disableUsers();
+            }
+        };
+        Button disableButton = new Button("Disable", disableAction);
+        disableButton.setMnemonic(KeyEvent.VK_I);
+        disableButton.setEnabled(false);
+
         JPanel crudPanel = new JPanel();
         crudPanel.setLayout(new FlowLayout());
         crudPanel.add(newButton);
         crudPanel.add(updateButton);
         crudPanel.add(deleteButton);
-        if (session.user().isAdmin())
+        if (session.user().isAdmin()) {
             crudPanel.add(logoutButton);
+            crudPanel.add(enableButton);
+            crudPanel.add(disableButton);
+        }
 
         return crudPanel;
     }
@@ -268,6 +291,40 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
         }
     }
 
+    private void enableUsers() {
+        User[] selected = getSelectedUsers();
+        if (selected.length == 0) {
+            showMessage("To enable user, please select at least one User.");
+            return;
+        }
+
+        if (!promptEnableDisable(selected, true))
+            return;
+
+        try {
+            presenter.doEnable(selected);
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+    }
+
+    private void disableUsers() {
+        User[] selected = getSelectedUsers();
+        if (selected.length == 0) {
+            showMessage("To disable user, please select at least one User.");
+            return;
+        }
+
+        if (!promptEnableDisable(selected, false))
+            return;
+
+        try {
+            presenter.doDisable(selected);
+        } catch (EmfException e) {
+            messagePanel.setError(e.getMessage());
+        }
+    }
+
     private void showMessage(String message) {
         messagePanel.setMessage(message);
     }
@@ -294,6 +351,19 @@ public class UsersManager extends DisposableInteralFrame implements UsersManager
         }
 
         int option = JOptionPane.showConfirmDialog(this, "Are you sure to logout user(s) - " + buffer.toString(),
+                "Logout User", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        return (option == 0);
+    }
+
+    public boolean promptEnableDisable(User[] users, boolean enable) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < users.length; i++) {
+            buffer.append("'" + users[i].getUsername() + "'");
+            if (i + 1 < users.length)
+                buffer.append(", ");
+        }
+
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure to " + (enable ? "enable" : "disable") + " user(s) - " + buffer.toString(),
                 "Logout User", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         return (option == 0);
     }

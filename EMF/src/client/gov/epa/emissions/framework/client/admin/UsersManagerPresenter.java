@@ -126,4 +126,45 @@ public class UsersManagerPresenter implements RefreshObserver {
         user.setLoggedIn(false);
         service.updateUser(user);
     }
+
+    public void doEnable(User[] users) throws EmfException {
+        for (int i = 0; i < users.length; i++)
+            doEnableDisable(users[i], true);
+
+        view.refresh(service.getUsers());
+    }
+
+    public void doDisable(User[] users) throws EmfException {
+        for (int i = 0; i < users.length; i++)
+            doEnableDisable(users[i], false);
+
+        view.refresh(service.getUsers());
+    }
+
+    private void doEnableDisable(User user, boolean enable) throws EmfException {
+        User loggedIn = session.user();
+        if (loggedIn.getUsername().equals(user.getUsername()))
+            throw new EmfException("Cannot logout yourself - '" + user.getUsername() + "'");
+
+        enableDisable(user, enable);
+    }
+
+    private void doDisable(User user) throws EmfException {
+        User loggedIn = session.user();
+        if (loggedIn.getUsername().equals(user.getUsername()))
+            throw new EmfException("Cannot logout yourself - '" + user.getUsername() + "'");
+
+        enableDisable(user, false);
+    }
+
+    private void enableDisable(User user, boolean enable) throws EmfException {
+        user = service.obtainLocked(session.user(), user);
+        if (!user.isLocked(session.user())) {// locked by another user
+            String message = "Locked by " + user.getLockOwner() + " at "
+                    + CustomDateFormat.format_YYYY_MM_DD_HH_MM(user.getLockDate());
+            throw new EmfException(message);
+        }
+        user.setAccountDisabled(!enable);
+        service.updateUser(user);
+    }
 }
