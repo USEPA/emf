@@ -519,6 +519,7 @@ public class EditableCaseSummaryTab extends JPanel implements EditableCaseSummar
 
     private JLabel createLeftAlignedLabel(String name) {
         JLabel label = new JLabel(name);
+        label.setToolTipText(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         return label;

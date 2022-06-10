@@ -83,8 +83,11 @@ public class FindCaseWindow extends DisposableInteralFrame implements RelatedCas
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        panel.add(new JLabel("Case that Produced Dataset: "), BorderLayout.NORTH);
+        final JLabel caseProducerLabel = new JLabel("Case that Produced Dataset: ");
+        panel.add(caseProducerLabel, BorderLayout.NORTH);
         produceListWidget = new ListWidget(caseProduceThisDataset);
+        produceListWidget.setToolTipText("Choose case that produced dataset");
+        caseProducerLabel.setLabelFor(produceListWidget);
         JScrollPane pane = new JScrollPane(produceListWidget);
         panel.add(pane);
         return panel;
@@ -94,8 +97,11 @@ public class FindCaseWindow extends DisposableInteralFrame implements RelatedCas
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        panel.add(new JLabel("Cases that Use Dataset: "), BorderLayout.NORTH);
+        final JLabel caseUsesDatasetLabel = new JLabel("Cases that Use Dataset: ");
+        panel.add(caseUsesDatasetLabel, BorderLayout.NORTH);
         useListWidget = new ListWidget(casesUseThisDataset);
+        useListWidget.setToolTipText("Choose case that uses dataset");
+        caseUsesDatasetLabel.setLabelFor(useListWidget);
         JScrollPane pane = new JScrollPane(useListWidget);
         panel.add(pane);
         return panel;

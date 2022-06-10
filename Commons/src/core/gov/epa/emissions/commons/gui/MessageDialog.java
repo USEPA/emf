@@ -1,7 +1,7 @@
 package gov.epa.emissions.commons.gui;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import java.awt.Component;
 
 public class MessageDialog {
 
