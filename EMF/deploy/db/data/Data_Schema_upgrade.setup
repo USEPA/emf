@@ -2129,3 +2129,7 @@ and name = 'date_set_id';
 -- 5/16/2022 - add last reset date field to users table
 ALTER TABLE emf.users
 ADD COLUMN last_reset_date timestamp;
+
+-- 6/8/2022 - add failed login attempts field to users table
+ALTER TABLE emf.users
+ADD COLUMN failed_login_attempts int default 0;

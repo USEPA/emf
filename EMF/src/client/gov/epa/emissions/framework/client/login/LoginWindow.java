@@ -1,6 +1,7 @@
 package gov.epa.emissions.framework.client.login;
 
 import gov.epa.emissions.commons.gui.Button;
+import gov.epa.emissions.commons.gui.MessageDialog;
 import gov.epa.emissions.commons.gui.buttons.CancelButton;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.DefaultEmfSession;
@@ -13,29 +14,17 @@ import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.console.EmfConsolePresenter;
 import gov.epa.emissions.framework.client.transport.ServiceLocator;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.FailedLoginAttemptException;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.gui.ScreenUtils;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Date;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 public class LoginWindow extends EmfFrame implements LoginView {
 
@@ -57,7 +46,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
         JPanel layoutPanel = createLayout();
 
-        this.setSize(new Dimension(460, 225));
+        this.setSize(new Dimension(500, 225));
         this.setLocation(ScreenUtils.getPointToCenter(this));
 
         this.getContentPane().add(layoutPanel);
@@ -157,6 +146,10 @@ public class LoginWindow extends EmfFrame implements LoginView {
             super.refreshLayout();
             launchConsole(user);
             disposeView();
+        } catch (FailedLoginAttemptException e) {
+            messagePanel.setError(e.getMessage());
+            MessageDialog messageDialog = new MessageDialog(e.getMessage(), "Warning", this);
+            messageDialog.prompt();
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());
         }

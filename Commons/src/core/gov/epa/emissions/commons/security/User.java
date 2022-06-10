@@ -47,6 +47,8 @@ public class User implements Serializable, Lockable {
 
     private Date lastResetDate;
 
+    private int failedLoginAttempts;
+
     private PasswordGenerator passwordGen;
 
     private Mutex lock;
@@ -389,4 +391,11 @@ public class User implements Serializable, Lockable {
         return getName()+" ("+getUsername()+")";
     }
 
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
 }
