@@ -32,11 +32,6 @@ public class UserRowSource implements RowSource {
     }
     
     private Object format(Date date) {
-        try {
-            return date == null ? "N/A" : CustomDateFormat.format_yyyyMMdd(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "N/A";
+        return date == null ? "N/A" : CustomDateFormat.format_yyyyMMdd(date);
     }
 }

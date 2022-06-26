@@ -53,7 +53,7 @@ public class CustomDateFormat {
         return date == null || date.trim().isEmpty()? null : dateFormatter.parse(date);
     }
 
-    public static String format_yyyyMMdd(Date date) throws ParseException {
+    public static String format_yyyyMMdd(Date date) {
         dateFormatter.applyPattern("yyyy/MM/dd");
         return date == null ? "" : dateFormatter.format(date);
     }

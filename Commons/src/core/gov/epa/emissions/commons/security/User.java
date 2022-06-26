@@ -7,9 +7,7 @@ import gov.epa.emissions.commons.data.Mutex;
 import gov.epa.emissions.commons.data.UserFeature;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
