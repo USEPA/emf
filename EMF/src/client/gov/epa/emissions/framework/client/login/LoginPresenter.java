@@ -31,6 +31,9 @@ public class LoginPresenter {
             userAdmin.authenticate(username, new PasswordGenerator().encrypt(password));
         } catch (EmfException e) {
             User user = userAdmin.getUser(username);
+            if (user == null) {
+                throw e;
+            }
 
             user = userAdmin.obtainLocked(userAdmin.getUser(username), userAdmin.getUser(username));
 
