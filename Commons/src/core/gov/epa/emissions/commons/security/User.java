@@ -257,13 +257,13 @@ public class User implements Serializable, Lockable {
             throw new UserException("Username should not be included in the Password");
         }
 
-        if (!hasDigits)
+        if (hasDigits)
             ++characterCriteriaMatches;
-        if (!hasUpperLetter)
+        if (hasUpperLetter)
             ++characterCriteriaMatches;
-        if (!hasLowerLetter)
+        if (hasLowerLetter)
             ++characterCriteriaMatches;
-        if (!hasSymbol)
+        if (hasSymbol)
             ++characterCriteriaMatches;
 
         if (!hasDigits && characterCriteriaMatches < 3)
