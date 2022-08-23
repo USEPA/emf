@@ -22,7 +22,7 @@
 
         <!-- Module Dependencies -->
         <dependency org="epa" name="analysis-engine" rev="0.1.1" conf="client->analysis_engine" />
-        <dependency org="epa" name="kmlGenerator" rev="0.1" conf="client->kml_generator" />
+        <!--<dependency org="epa" name="kmlGenerator" rev="0.1" conf="client->kml_generator" />-->
         <dependency org="epa" name="epa-commons" rev="0.5" conf="client->commons;server->commons" />
         <!-- Module Dependencies -->
 
@@ -76,7 +76,7 @@
         <!--<dependency org="jnlp" name="jnlp" rev="?" />-->
         <dependency org="javax.transaction" name="jta" rev="1.1" /><!-- Server Client ? -->
 
-        <!--<dependency org="kmlGenerator" name="kmlGenerator" rev="?" />-->
+        <dependency org="epa" name="kmlGenerator" rev="0.1" conf="client->default" />
 
         <dependency org="log4j" name="log4j" rev="1.2.9"  />
         <!--<dependency org="mail" name="mail" rev="?" />-->
