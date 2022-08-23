@@ -1,0 +1,33 @@
+<ivy-module version="2.0">
+    <info organisation="epa"
+        module="analysis-engine"
+        />
+        <configurations>
+                <conf name="master"/>
+                <conf name="default" visibility="public" extends="master,runtime"/>
+                <conf name="compile" visibility="public" description="Compile dependencies"/>
+                <conf name="runtime" visibility="public" description="Runtime dependencies" extends="compile"/>
+                <conf name="test" visibility="private" description="Test dependencies" extends="runtime"/>
+                <conf name="analysis_engine" visibility="public" extends="default" description="Compile Analysis Engine"/>
+        </configurations>
+        <publications>
+                <artifact name="analysis-engine" type="jar" conf="analysis_engine" ext="jar" />
+        </publications>
+    <dependencies>
+
+
+        <dependency org="colt" name="colt" rev="1.2.0" conf="analysis_engine->default"/>
+        <!--<dependency org="cosu" name="cosu" rev="?" /> ANALYSIS ENGINE, moved code to local, only an one exception and one interface class to replicate -->
+        <dependency org="net.sf.squirrel-sql.thirdparty.non-maven" name="java-cup" rev="11a" conf="analysis_engine->default"/>
+        <dependency org="com.sun.woodstock.dependlibs" name="jh" rev="2.0" conf="analysis_engine->default"/>
+        <dependency org="net.java.linoleum" name="jlfgr" rev="1_0" conf="analysis_engine->default"/>
+        <!--<dependency org="jsearch" name="jsearch" rev="?"  /> can't find ?? -->
+        <dependency org="nz.ac.waikato.cms.weka" name="weka-stable" rev="3.6.6" conf="analysis_engine->default"/>
+        <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.2.1" conf="analysis_engine->default"/>
+
+        <!-- Testing Framework(s) Libraries -->
+        <dependency org="junit" name="junit" rev="3.8.1" conf="test->default"/>
+        <!-- Testing Framework(s) Libraries -->
+
+    </dependencies>
+</ivy-module>

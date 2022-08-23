@@ -1,0 +1,404 @@
+<?xml version="1.0"?>
+<project name="EPA-Commons" default="core" basedir="."
+         xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <!--  =================== Properties ====================================== -->
+    <property file="build.properties" />
+    <property file="${user.home}/build.properties" />
+
+    <property name="env" environment="env" value="env" />
+    <property name="J2EE_HOME" value="${env.J2EE_HOME}" />
+    <property name="JAVA_HOME" value="${env.JAVA_HOME}" />
+    <property name="core.src.dir" value="src/core" />
+    <property name="postgres.src.dir" value="src/postgres" />
+    <property name="lib.dir" value="lib" />
+
+    <property name="core.test.dir" value="test/core" />
+    <property name="core.test.unit.dir" value="${core.test.dir}/unit" />
+    <property name="core.test.integration.dir"
+              value="${core.test.dir}/integration"
+            />
+
+    <property name="postgres.test.dir" value="test/postgres" />
+    <property name="postgres.test.unit.dir" value="${postgres.test.dir}/unit" />
+    <property name="postgres.test.integration.dir"
+              value="${postgres.test.dir}/integration"
+            />
+
+    <property name="build.home" value="build/sandbox" />
+    <property name="build.dist.dir" value="${build.home}/dist" />
+    <property name="build.classes.dir" value="${build.dist.dir}/classes" />
+
+    <property name="reports.dir" value="${build.home}/reports" />
+    <property name="reports.tests.dir" value="${reports.dir}/tests" />
+
+    <property name="app.name" value="emf" />
+    <property name="app.path" value="/${app.name}" />
+
+    <property name="test.database" value="Postgres" />
+
+    <!-- begin Ivy properties -->
+    <property name="common.dir" value="${ivy.default.ivy.user.dir}"/>
+    <property name="ivy.default.ivy.user.dir" value="${ivy.default.ivy.user.dir}"/>
+    <property name="repo.downloader.dir" value="${user.home}/.ivy2/download" />
+    <ivy:settings file="${basedir}/../ivysettings.xml" id="ivy.instance" />
+    <!-- end Ivy properties -->
+
+
+    <path id="classpath">
+        <pathelement location="${build.classes.dir}" />
+        <fileset dir="lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+
+    <target name="retrieve">
+        <ivy:resolve/>
+        <ivy:cachepath pathid="build.path" conf="commons"/>
+        <ivy:cachepath pathid="test.build.path" conf="test"/>
+        <ivy:cachepath pathid="runtime.path" conf="runtime"/>
+    </target>
+
+    <target name="resolve" description="--> retrieve dependencies with ivy">
+        <ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" sync="true" />
+    </target>
+
+    <target name="resolve-clean-cache" description="Cleans Ivy cache">
+        <ivy:cleancache />
+    </target>
+
+    <target name="report" depends="init">
+        <mkdir dir="report" />
+        <!--
+         The type attribute is optional, we're using it to exlude other dependcy types we're not interested in.
+         Note that each resolve uses that list (via a property) in our build.
+        -->
+        <ivy:resolve type="jar,ejb,tld,bundle" />
+        <ivy:report todir="report" />
+    </target>
+
+    <target name="jar" depends="compile-core">
+        <jar jarfile="${build.home}/${app.name}.jar" basedir="${build.classes.dir}" />
+    </target>
+
+    <target name="compile_distribute" description="Compile and Publish/Install this build into repository" depends="jar">
+        <ivy:resolve />
+        <tstamp>
+            <format property="now" pattern="yyyyMMddHHmmss"/>
+        </tstamp>
+        <ivy:publish artifactspattern="${build.home}/[artifact].[ext]"
+                     resolver="local"
+                     pubrevision="${app.version}"
+                     pubdate="${now}"
+                     status="integration"
+                     forcedeliver="true"
+                     overwrite="true"
+                />
+        <ivy:install organisation="epa" module="epa-commons"
+                     revision="0.5" transitive="true" overwrite="true"
+                     from="local" to="local" />
+    </target>
+
+
+    <!--  ===================START Basic Targets ====================================== -->
+    <target name="init">
+        <mkdir dir="${build.home}" />
+        <mkdir dir="${build.classes.dir}" />
+        <mkdir dir="${reports.tests.dir}" />
+    </target>
+
+
+    <target name="clean">
+        <delete includeemptydirs="true" failonerror="no">
+            <fileset dir="${build.home}" includes="**/*" />
+        </delete>
+    </target>
+
+    <target name="compile-core-src" depends="clean, init">
+        <antcall target="do-compile-src">
+            <param name="src.dir" value="${core.src.dir}" />
+        </antcall>
+    </target>
+
+    <target name="compile-postgres-src" depends="clean, init, compile-core-src">
+        <antcall target="do-compile-src">
+            <param name="src.dir" value="${postgres.src.dir}" />
+        </antcall>
+    </target>
+
+    <target name="do-compile-src" depends="retrieve">
+        <javac srcdir="${src.dir}"
+               destdir="${build.classes.dir}"
+               debug="on"
+               target="1.6"
+               source="1.6"
+                >
+            <classpath>
+                <path refid="build.path" />
+            </classpath>
+        </javac>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.dir}" includes="**/*.*" />
+        </copy>
+    </target>
+
+    <target name="compile-core-tests" depends="clean, init, compile-core-src">
+        <antcall target="do-compile-tests">
+            <param name="test.unit.dir" value="${core.test.unit.dir}" />
+            <param name="test.integration.dir"
+                   value="${core.test.integration.dir}"
+                    />
+        </antcall>
+    </target>
+
+    <target name="compile-postgres-tests"
+            depends="clean, init, retrieve, compile-core-src, compile-postgres-src, compile-core-tests"
+            >
+        <antcall target="do-compile-tests" inheritall="true" inheritrefs="true">
+            <param name="test.unit.dir" value="${postgres.test.unit.dir}" />
+            <param name="test.integration.dir"
+                   value="${postgres.test.integration.dir}"
+                    />
+        </antcall>
+    </target>
+
+    <target name="do-compile-tests" depends="retrieve">
+        <javac srcdir="${test.unit.dir}"
+               destdir="${build.classes.dir}"
+               debug="on"
+                >
+            <classpath>
+                <path refid="build.path" />
+                <path refid="test.build.path" />
+            </classpath>
+        </javac>
+        <javac srcdir="${test.integration.dir}"
+               destdir="${build.classes.dir}"
+               debug="on"
+                >
+            <classpath>
+                <path refid="build.path" />
+                <path refid="test.build.path" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="compile-core"
+            depends="compile-core-src, compile-core-tests"
+            />
+    <target name="compile-postgres"
+            depends="compile-postgres-src, compile-postgres-tests"
+            />
+
+    <target name="compile"
+            depends="clean, init, compile-core, compile-postgres"
+            />
+    <!--  ===============END  Basic ====================================== -->
+
+
+    <!--  ===============START  Tests ====================================== -->
+    <target name="core-tests" depends="compile-core, do-tests" />
+    <target name="postgres-tests"
+            depends="compile-postgres, core-tests, do-tests"
+            />
+    <target name="tests" depends="compile, do-tests" />
+
+    <target name="mysql-tests">
+        <antcall target="core-tests">
+            <param name="test.database" value="MySql" />
+        </antcall>
+    </target>
+
+    <target name="do-tests">
+        <junit printsummary="yes" haltonfailure="yes">
+            <classpath>
+                <path refid="build.path" />
+                <path refid="test.build.path" />
+                <!--<pathelement location="${build.classes.dir}" />-->
+            </classpath>
+            <jvmarg value="-DDatabase=${test.database}" />
+            <formatter type="xml" />
+
+            <batchtest fork="yes" todir="${reports.tests.dir}">
+                <fileset dir="${build.classes.dir}">
+                    <include name="**/*Test.class" />
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="setup-reference-schema"
+            depends="compile"
+            description="Sets up Reference schema"
+            >
+        <java classname="gov.epa.emissions.commons.io.reference.ReferenceDatasourceSetup"
+              fork="true"
+              failonerror="true"
+              classpathref="classpath"
+                >
+            <arg line="test/postgres.conf config/ref/delimited"/>
+        </java>
+    </target>
+
+    <!-- DEFAULT target-->
+    <target name="core" depends="tests" />
+    <target name="mysql-core" depends="mysql-tests" />
+
+    <!-- Continuous Integration target -->
+    <target name="ci-build"
+            depends="compile, core"
+            description="Continuous Integration build"
+            />
+
+    <!--  ===============END  Tests ====================================== -->
+
+
+
+    <!--  ===============START CVS Targets ====================================== -->
+    <target name="cvs-properties-load">
+        <property file=".cvs" />
+    </target>
+    <target name="cvs-username-check"
+            depends="cvs-properties-load"
+            unless="cvs.username"
+            >
+        <echo message="Please create a .cvs file in your project home directory w/ the following properties:"
+                />
+        <echo message="username='cvs username'" />
+    </target>
+
+    <target name="cvs-update" depends="cvs-username-check" if="cvs.username">
+        <cvs command="update"
+             cvsroot=":pserver:${cvs.username}@cvs.sourceforge.net:/cvsroot/emisview"
+             quiet="yes"
+             reallyquiet="yes"
+             failonerror="yes"
+                />
+        <echo message="EMF update is complete." />
+    </target>
+
+    <!--  ===============END CVS Targets ====================================== -->
+
+
+    <!--  ===============START  Coverage Targets =============================== -->
+    <path id="cobertura.classpath">
+        <fileset dir="lib/dev/cobertura">
+            <include name="**/*.jar" />
+        </fileset>
+        <path refid="classpath" />
+    </path>
+
+    <!--<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />-->
+    <property name="coverage.dir" value="${reports.dir}/coverage" />
+    <property name="instrumented.dir" value="${coverage.dir}/instrumented" />
+    <property name="reports.xml.dir" value="${coverage.dir}/tests/xml" />
+    <property name="reports.html.dir" value="${coverage.dir}/tests/html" />
+    <property name="coverage.xml.dir" value="${coverage.dir}/coverage/xml" />
+    <property name="coverage.html.dir" value="${coverage.dir}/coverage/html" />
+
+    <target name="coverage-init">
+        <mkdir dir="${build.classes.dir}" />
+        <mkdir dir="${instrumented.dir}" />
+        <mkdir dir="${reports.xml.dir}" />
+        <mkdir dir="${reports.html.dir}" />
+        <mkdir dir="${coverage.xml.dir}" />
+        <mkdir dir="${coverage.html.dir}" />
+    </target>
+
+    <target name="instrument" depends="coverage-init">
+        <delete file="cobertura.ser" />
+
+        <cobertura-instrument todir="${instrumented.dir}">
+            <ignore regex="org.apache.log4j.*" />
+            <fileset dir="${build.classes.dir}">
+                <include name="**/*.class" />
+                <exclude name="**/*Test.class" />
+            </fileset>
+        </cobertura-instrument>
+    </target>
+
+    <target name="run-instrumented-tests" depends="compile, instrument">
+        <junit printsummary="yes" haltonfailure="yes">
+            <classpath location="${instrumented.dir}" />
+            <classpath refid="classpath" />
+            <formatter type="xml" />
+
+            <batchtest fork="yes" todir="${reports.xml.dir}">
+                <fileset dir="${test.emf.unit.dir}">
+                    <include name="**/*Test.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${reports.xml.dir}">
+            <fileset dir="${reports.xml.dir}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="${reports.html.dir}" />
+        </junitreport>
+    </target>
+
+    <target name="coverage-check">
+        <cobertura-check branchrate="34" totallinerate="100" />
+    </target>
+
+    <target name="xml-coverage-report">
+        <cobertura-report srcdir="${core.src.dir}}"
+                          destdir="${coverage.xml.dir}"
+                          format="xml"
+                />
+    </target>
+
+    <target name="html-coverage-report">
+        <cobertura-report destdir="${coverage.html.dir}">
+            <fileset dir="${core.src.dir}">
+                <include name="**/*.java" />
+            </fileset>
+        </cobertura-report>
+    </target>
+
+    <target name="coverage"
+            depends="compile,instrument,run-instrumented-tests,xml-coverage-report,html-coverage-report"
+            description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports."
+            />
+    <!--  ===============END Coverage Targets =============================== -->
+
+    <!-- ================START Distribution Targets ========================= -->
+    <target name="dist" depends="core, do-dist" />
+
+    <target name="do-dist" depends="compile">
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${core.src.dir}" includes="**/*" />
+        </copy>
+        <jar jarfile="${build.home}/${app.name}.jar"
+             basedir="${build.classes.dir}"
+                />
+        <antcall target="publish"/>
+    </target>
+    <!-- ================END Distribution Targets ========================= -->
+
+    <!--  ===============START Commons-dependent modules ============================== -->
+    <!-- Analysis Engine -->
+    <target name="analysisengine.basedir.check">
+        <property name="analysisengine.basedir" value="${basedir}/../${analysisengine.project.name}" />
+        <echo message="Checking existence of AnalysisEngine project in '${analysisengine.basedir}'"/>
+        <available file="${analysisengine.basedir}" property="analysisengine.basedir.present" />
+    </target>
+
+    <target name="analysisengine-dist-warning" depends="analysisengine.basedir.check" unless="analysisengine.basedir.present">
+        <property name="parent.basedir" value="${basedir}/.." />
+        <echo message="You need to checkout the AnalysisEngine module from CVS into ${analysisengine.basedir} before attempting to build the AnalysisEngine codebase" />
+    </target>
+
+    <target name="analysisengine-dist" depends="analysisengine.basedir.check, analysisengine-dist-warning" if="analysisengine.basedir.present">
+        <ant dir="${analysisengine.basedir}" target="do-dist" inheritall="false" />
+        <copy todir="lib">
+            <fileset dir="${analysisengine.basedir}/build/sandbox" includes="*.jar" />
+        </copy>
+    </target>
+
+    <!--  ===============END Commons-dependent modules ============================== -->
+
+</project>
+

@@ -1,0 +1,60 @@
+<ivy-module version="2.0" >
+    <info organisation="epa"
+        module="epa-commons"
+        />
+        <configurations defaultconfmapping="commons->default">
+                <conf name="master"/>
+                <conf name="default" extends="master,runtime"/>
+                <conf name="compile" description="Compile dependencies"/>
+                <conf name="runtime" description="Runtime dependencies" extends="compile"/>
+                <conf name="test" description="Test dependencies" extends="runtime"/>
+
+                <conf name="commons" description="Compile Commons"/>
+        </configurations>
+        <publications>
+                <artifact name="epa-commons" type="jar" conf="commons"  />
+        </publications>
+    <dependencies>
+
+        <!-- Module Dependencies -->
+        <dependency org="epa" name="analysis-engine" rev="0.1.1" conf="commons->analysis_engine" />
+        <!-- Module Dependencies -->
+
+        <!--<dependency org="asm" name="asm" rev="?" />-->
+        <!--<dependency org="asm-attrs" name="asm-attrs" rev="?" />-->
+        <dependency org="colt" name="colt" rev="1.2.0" conf="commons->default"/>
+        <dependency org="commons-collections" name="commons-collections" rev="3.1" conf="commons->default" />
+        <dependency org="commons-logging" name="commons-logging" rev="1.0.4" conf="commons->default"/>
+        <dependency org="commons-primitives" name="commons-primitives" rev="1.0" conf="commons->default" />
+        <!--<dependency org="cosu" name="cosu" rev="?" />-->
+        <!--<dependency org="dom4j" name="dom4j" rev="1.6.1" />-->
+        <!--<dependency org="ehcache" name="ehcache" rev="1.1" />-->
+        <dependency org="org.hibernate" name="hibernate-core" rev="3.5.4-Final" conf="commons->default" />
+        <dependency org="org.hibernate" name="hibernate-annotations" rev="3.5.4-Final" conf="commons->default" />
+        <dependency org="org.hibernate" name="hibernate-commons-annotations" rev="3.2.0.Final" conf="commons->default" />
+        <!--<dependency org="com.sun.woodstock.dependlibs" name="jh" rev="2.0"/>-->
+        <!--<dependency org="net.java.linoleum" name="jlfgr" rev="1_0"  />-->
+        <!--<dependency org="javax.transaction" name="jta" rev="1.1" />-->
+        <dependency org="log4j" name="log4j" rev="1.2.9" conf="commons->default" />
+        <dependency org="postgresql" name="postgresql" rev="9.1-901-1.jdbc4" conf="commons->default"/>
+        <!--<dependency org="nz.ac.waikato.cms.weka" name="weka-stable" rev="3.6.6" />&lt;!&ndash; Analysis Engine Only &ndash;&gt;-->
+        <!--<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.2.1" /> &lt;!&ndash; Analysis Engine Only &ndash;&gt;-->
+        <dependency org="commons-configuration" name="commons-configuration" rev="1.1" conf="commons->default" />
+        <dependency org="dbunit" name="dbunit" rev="2.1" conf="commons->default"/>
+
+        <!-- Testing Framework(s) Dependencies -->
+        <dependency org="junit" name="junit" rev="3.8.1" conf="test->default"/>
+        <dependency org="cobertura" name="cobertura" rev="1.6" conf="test->default"/>
+        <dependency org="junitperf" name="junitperf" rev="1.8" conf="test->default"/>
+        <dependency org="jmock" name="jmock" rev="1.0.1" conf="test->default"/>
+        <dependency org="cglib" name="cglib" rev="2.1" conf="test->default"/>
+        <dependency org="jmock" name="jmock-cglib" rev="1.0.1" conf="test->default"/>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" conf="test->default"/>
+        <dependency org="org.slf4j" name="slf4j-nop" rev="1.6.1" conf="test->default"/>
+        <!--<dependency org="javax.transaction" name="jta" rev="1.1" conf="test->default"/>-->
+        <!--<dependency org="asm" name="asm" rev="2.0" force="true" conf="test->compile('...')"/>-->
+        <!--<exclude module="asm" conf="test->default"/>-->
+        <override org="xml-apis" module="xml-apis" rev="1.0.b2"/>
+        <override org="asm" module="asm" rev="2.1"/>
+    </dependencies>
+</ivy-module>

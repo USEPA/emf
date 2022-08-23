@@ -1,0 +1,49 @@
+<ivysettings>
+    <settings defaultResolver="chain-example"/>
+    <resolvers>
+        <chain name="chain-example" returnFirst="true">
+            <ibiblio name="ibiblio" m2compatible="true" />
+            <ibiblio name="central" m2compatible="true" />
+            <ibiblio name="freehep" m2compatible="true" root="http://java.freehep.org/maven2/"/>
+            <ibiblio name="geotoolkit" m2compatible="true" root="http://maven.geotoolkit.org/"/>
+            <ibiblio name="osgeo" m2compatible="true" root="http://download.osgeo.org/webdav/geotools/"/>
+
+            <!--<ibiblio name="mvnrepo" m2compatible="true" root="http://mvnrepository.com/artifact/"/>-->
+            <!--<ibiblio name="ebi_repo" m2compatible="true" root="http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/"/>-->
+
+            <url name="com.springsource.repository.bundles.release">
+                <ivy pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></ivy>
+                <artifact pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></artifact>
+            </url>
+            <url name="com.springsource.repository.bundles.external">
+                <ivy pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></ivy>
+                <artifact pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></artifact>
+            </url>
+            <!--<ibiblio name="spring_plugin_release" m2compatible="true" root="http://repo.spring.io/plugins-release/"/>-->
+            <filesystem name="local">
+                <artifact pattern="${ivy.default.ivy.user.dir}/local/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+                <ivy pattern="${ivy.default.ivy.user.dir}/local/[organisation]/[module]/[revision]/[module]-[revision].xml" />
+            </filesystem>
+            <!--<url name="mvnrepo2">-->
+            <!--<ivy pattern="https://mvnrepository.com/artifact/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></ivy>-->
+            <!--<artifact pattern="https://mvnrepository.com/artifact/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"></artifact>-->
+            <!--</url>-->
+        </chain>
+
+        <!--<chain name="spring-chain">-->
+            <!--<url name="com.springsource.repository.bundles.release">-->
+                <!--<ivy pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+                <!--<artifact pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+            <!--</url>-->
+            <!--<url name="com.springsource.repository.bundles.external">-->
+                <!--<ivy pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+                <!--<artifact pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />-->
+            <!--</url>-->
+            <!--<ibiblio name="ibiblio" m2compatible="true"/>-->
+        <!--</chain>-->
+    </resolvers>
+    <modules>
+        <module organisation="epa" name="analysis-engine" revision="0.1.1" resolver="local"/>
+        <module organisation="epa" name="epa-commons" revision="0.5" resolver="local"/>
+    </modules>
+</ivysettings>

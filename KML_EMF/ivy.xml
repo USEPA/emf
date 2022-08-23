@@ -1,0 +1,36 @@
+<ivy-module version="2.0">
+    <info organisation="epa"
+        module="kmlGenerator"
+        />
+        <configurations defaultconfmapping="kml_generator->default">
+                <conf name="master"/>
+                <conf name="default" visibility="public" extends="master,runtime"/>
+                <conf name="compile" visibility="public" description="Compile dependencies"/>
+                <conf name="runtime" visibility="public" description="Runtime dependencies" extends="compile"/>
+                <conf name="test" visibility="private" description="Test dependencies" extends="runtime"/>
+                <conf name="kml_generator" visibility="public" extends="default" description="Compile KML Generator"/>
+        </configurations>
+        <publications>
+                <artifact name="kmlGenerator" type="jar" conf="kml_generator" ext="jar" />
+        </publications>
+    <dependencies>
+
+        <dependency org="edu.ucar" name="netcdf" rev="4.1" conf="kml_generator->default"/>
+        <dependency org="org.geotools" name="gt2-brewer" rev="2.3.0" conf="kml_generator->default">
+            <exclude module="jsr108"/>
+        </dependency>
+        <!--<dependency org="javax.units" name="jsr108" rev="0.01" conf="kml_generator->default">-->
+        <!--<artifact name="jsr108" type="jar" url="http://download.osgeo.org/webdav/geotools/javax/units/jsr108/0.01/jsr108-0.01.jar" conf="kml_generator->default"/>-->
+    <!--</dependency>-->
+
+        <!-- Testing Framework(s) Libraries -->
+        <dependency org="junit" name="junit" rev="3.8.1" conf="test->default"/>
+        <!-- Testing Framework(s) Libraries -->
+
+        <!--<override org="javax.units" module="jsr108" rev="0.01"/>-->
+        <!-- https://mvnrepository.com/artifact/javax.measure/jsr-275 -->
+        <dependency org="javax.measure" name="jsr-275" rev="0.9.0" conf="kml_generator->default"/>
+        <exclude org="javax.units" module="jsr108" artifact="jsr108" type="pom" ext="pom"  conf="kml_generator->default"/>
+
+    </dependencies>
+</ivy-module>
