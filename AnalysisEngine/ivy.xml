@@ -17,7 +17,7 @@
 
 
         <dependency org="colt" name="colt" rev="1.2.0" conf="analysis_engine->default"/>
-        <!--<dependency org="cosu" name="cosu" rev="?" /> ANALYSIS ENGINE, moved code to local, only an one exception and one interface class to replicate -->
+        <dependency org="org.iscmem" name="cosu" rev="1.0" /> <!--ANALYSIS ENGINE, moved code to local, only an one exception and one interface class to replicate -->
         <dependency org="net.sf.squirrel-sql.thirdparty.non-maven" name="java-cup" rev="11a" conf="analysis_engine->default"/>
         <dependency org="com.sun.woodstock.dependlibs" name="jh" rev="2.0" conf="analysis_engine->default"/>
         <dependency org="net.java.linoleum" name="jlfgr" rev="1_0" conf="analysis_engine->default"/>

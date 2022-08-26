@@ -88,7 +88,7 @@
 
 	<target name="compile" depends="clean, init, compile-src" />
 
-	<target name="do-dist" depends="jar,publish" >
+	<target name="do-dist" depends="publish" >
 	</target>
 
 	<target name="do-dist-src" depends="compile" >
@@ -116,6 +116,30 @@
 				/>
 	</target>
 
+	<target name="install_local_cosu" description="Publish local cosu jar into repository">
+		<!--<ivy:resolve file="lib/kmlGenerator-0.1.xml" haltonfailure="false" />-->
+		<ivy:retrieve file="lib/cosu-1.0.xml" haltonfailure="false" />
+		<tstamp>
+			<format property="now" pattern="yyyyMMddHHmmss"/>
+		</tstamp>
+		<ivy:publish 
+				artifactspattern="lib/[artifact].[ext]"
+				organisation="org.iscmem"
+				module="cosu"
+				revision="1.0"
+				resolver="local"
+				pubrevision="1.0"
+				pubdate="${now}"
+				forcedeliver="true"
+				overwrite="true"
+				status="release"
+				/>
+		<ivy:install organisation="org.iscmem" module="cosu"
+					 revision="1.0" transitive="true" overwrite="true"
+					 from="local" to="local" />
+	</target>
+
+	
 	<target name="full-dist" depends="full-dist-sandbox" description="Builds the EMF Client distribution ">
 		<zip destfile="${build.home}/AnalysisEngine.zip" basedir="${build.dist.dir}" includes="lib/**,*.jar,*.bat,*.txt" />
 	</target>
