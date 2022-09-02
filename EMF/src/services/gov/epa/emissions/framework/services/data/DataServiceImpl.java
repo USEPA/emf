@@ -47,8 +47,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-import javax.mail.Folder;
-
 public class DataServiceImpl implements DataService {
     private static Log LOG = LogFactory.getLog(DataServiceImpl.class);
 

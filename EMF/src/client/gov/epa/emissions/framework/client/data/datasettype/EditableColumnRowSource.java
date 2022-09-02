@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.client.data.datasettype;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.db.JdbcToCommonsSqlTypeMap;

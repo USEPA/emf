@@ -114,6 +114,20 @@
 					 publishivy="true"
 
 				/>
+		<ivy:retrieve  
+			inline="true"
+			overwritemode="always"
+			sync="true"
+			 />
+<!--		<ivy:cleancache />
+		<ivy:retrieve  
+			inline="true"
+			overwritemode="always"
+			sync="true"
+			 />-->
+		<!--ivy:install organisation="epa" module="analysis-engine"  revision="${app.version}"
+				overwrite="true"
+				from="local" to="local" /-->
 	</target>
 
 	<target name="install_local_cosu" description="Publish local cosu jar into repository">

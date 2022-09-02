@@ -82,7 +82,7 @@
         <jar jarfile="${build.home}/${app.name}.jar" basedir="${build.classes.dir}" />
     </target>
 
-    <target name="compile_distribute" description="Compile and Publish/Install this build into repository" depends="jar">
+    <target name="publish" description="Compile and Publish/Install this build into repository" depends="jar">
         <ivy:resolve />
         <tstamp>
             <format property="now" pattern="yyyyMMddHHmmss"/>
@@ -94,10 +94,18 @@
                      status="integration"
                      forcedeliver="true"
                      overwrite="true"
+        			publishivy="true"
                 />
+    	<ivy:retrieve  
+    				inline="true"
+    				overwritemode="always"
+    				sync="true"
+    				 />
+        <!--ivy:resolve organisation="epa" module="epa-commons"
+            revision="0.5" checkifchanged="true" />
         <ivy:install organisation="epa" module="epa-commons"
-                     revision="0.5" transitive="true" overwrite="true"
-                     from="local" to="local" />
+                     revision="0.5" overwrite="true"
+                     from="local" to="local" /-->
     </target>
 
 
@@ -131,8 +139,6 @@
         <javac srcdir="${src.dir}"
                destdir="${build.classes.dir}"
                debug="on"
-               target="1.6"
-               source="1.6"
                 >
             <classpath>
                 <path refid="build.path" />

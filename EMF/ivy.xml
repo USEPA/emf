@@ -21,9 +21,8 @@
         <dependency org="javax.xml" name="saaj-api" rev="1.2"/>-->
 
         <!-- Module Dependencies -->
-        <dependency org="epa" name="analysis-engine" rev="0.1.1" conf="client->analysis_engine" />
-        <!--<dependency org="epa" name="kmlGenerator" rev="0.1" conf="client->kml_generator" />-->
-        <dependency org="epa" name="epa-commons" rev="0.5" conf="client->commons;server->commons" />
+        <dependency org="epa" name="analysis-engine" rev="0.1.1" conf="client->default" />
+        <dependency org="epa" name="kmlGenerator" rev="0.1" conf="client->default" />
         <!-- Module Dependencies -->
 
         <!-- not sure these are used -->
@@ -38,7 +37,10 @@
         <!--<dependency org="c3p0" name="c3p0" rev="9.2-pre1"  />-->
         <!--<dependency org="cglib" name="cglib" rev="2.1"  />-->
         <!--<dependency org="cleanimports" name="cleanimports" rev="?"  />-->
-        <!--<dependency org="colt" name="colt" rev="1.3.1_09-b03"  />-->
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.0.0"  conf="client->default" />
+		<dependency org="com.mxgraph" name="jgraphx" rev="3.7.4" conf="client->default" />
+
+        <dependency org="colt" name="colt" rev="1.2.0"  conf="client->default" />
         <dependency org="commons-collections" name="commons-collections" rev="3.1" /><!-- Server Client ? -->
         <!--<dependency org="commons-discovery" name="commons-discovery" rev="0.2"  />-->
         <dependency org="commons-fileupload" name="commons-fileupload" rev="1.3.2" conf="client->default;server->default" />
@@ -115,7 +117,8 @@
         <dependency org="xerces" name="xercesImpl" rev="2.10.0" conf="client->default;server->default" /><!-- Server Client -->
         <dependency org="xml-apis" name="xml-apis" rev="1.4.01"/><!-- Server Client ? -->
 
-        <dependency org="org.apache.tomcat" name="tomcat-dbcp" rev="7.0.50" />
+        <!--dependency org="org.apache.tomcat" name="tomcat-dbcp" rev="7.0.50" /-->
+        <dependency org="org.apache.tomcat" name="tomcat-dbcp" rev="8.5.9" conf="server->default" />
         <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="server->default" />
 
     </dependencies>
