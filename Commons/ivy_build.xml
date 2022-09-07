@@ -78,7 +78,7 @@
         <ivy:report todir="report" />
     </target>
 
-    <target name="jar" depends="compile-core">
+    <target name="jar" depends="compile-postgres, compile-core">
         <jar jarfile="${build.home}/${app.name}.jar" basedir="${build.classes.dir}" />
     </target>
 
@@ -139,7 +139,7 @@
         <javac srcdir="${src.dir}"
                destdir="${build.classes.dir}"
                debug="on"
-                >
+               target="1.7" >
             <classpath>
                 <path refid="build.path" />
             </classpath>

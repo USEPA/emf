@@ -222,7 +222,7 @@
 	<target name="compile-src-no-clean-init" depends="build-version-no-clean-init, compile-contract-no-clean-init, compile-client-no-clean-init, compile-services-no-clean-init" />
 
 	<target name="do-compile">
-		<javac srcdir="${compile.src}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" />
+		<javac srcdir="${compile.src}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" target="1.7" />
 	</target>
 
 	<target name="do-compile-common">
@@ -244,7 +244,7 @@
 	</target>
 
 	<target name="do-compile-server">
-		<javac srcdir="${src.services.dir}" destdir="${build.classes.dir}" debug="on" >
+		<javac srcdir="${src.services.dir}" destdir="${build.classes.dir}" debug="on" target="1.7" >
 			<classpath>
 				<path refid="server.build.path" />
 				<pathelement location="${build.classes.dir}" />
@@ -284,7 +284,7 @@
 
 	<target name="compile" depends="clean, init, compile-no-clean-init" />
 
-	<target name="compile-no-clean-init" depends="compile-src-no-clean-init, compile-tests-no-clean-init" />
+	<target name="compile-no-clean-init" depends="compile-src-no-clean-init" />
 	<!--  ===============END  Basic ====================================== -->
 
 
@@ -442,7 +442,7 @@
 				<!--<exclude name="tomcat/**" />-->
 			<!--</fileset>-->
 		<!--</copy>-->
-		<ivy:retrieve conf="client" pattern="${client.dist.lib}/[artifact].[ext]" />
+		<ivy:retrieve conf="client" pattern="${client.dist.lib}/[artifact]-[revision].[ext]" />
 
 		<jar jarfile="${client.dist}/${app.name}-client.jar" basedir="${build.classes.dir}">
 			<include name="**/*" />
@@ -689,6 +689,9 @@
 			<fileset dir="${web.dir}" />
 		</copy>
 		<ivy:retrieve conf="server" pattern="${build.web-inf.dir}/lib/[artifact]-[revision].[ext]" />
+		<!--ivy:retrieve organisation="epa"  module="kmlGenerator" revision="0.1" pattern="${build.web-inf.dir}/lib/[artifact]-[revision].[ext]" />
+		<ivy:retrieve conf="commons" organisation="epa"  module="epa-commons" revision="0.5" pattern="${build.web-inf.dir}/lib/[artifact]-[revision].[ext]" /-->
+
 		<!--<copy todir="${build.web-inf.dir}/lib">-->
 			<!--<fileset dir="${lib.dir}">-->
 				<!--<exclude name="dev/**" />-->
