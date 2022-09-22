@@ -103,7 +103,7 @@
          The type attribute is optional, we're using it to exlude other dependcy types we're not interested in.
          Note that each resolve uses that list (via a property) in our build.
         -->
-		<ivy:resolve type="jar,ejb,tld,bundle" />
+		<ivy:resolve type="war,jar,ejb,tld,bundle" />
 		<ivy:report todir="report" />
 	</target>
 
@@ -525,28 +525,6 @@
 				/>
 		<ivy:install organisation="com.mxgraph" module="jgraphx"
 					 revision="3.7.4" transitive="true" overwrite="true"
-					 from="local" to="local" />
-	</target>
-
-	<target name="install_local_tomcat_dbcp" description="Publish local tomcat-dbcp jar into repository">
-		<ivy:retrieve file="lib/tomcat/tomcat-dbcp-8.5.9.xml" haltonfailure="false" />
-		<tstamp>
-			<format property="now" pattern="yyyyMMddHHmmss"/>
-		</tstamp>
-		<ivy:publish
-				artifactspattern="lib/tomcat/[artifact].[ext]"
-				organisation="org.apache.tomcat"
-				module="tomcat-dbcp"
-				revision="8.5.9"
-				resolver="local"
-				pubrevision="8.5.9"
-				pubdate="${now}"
-				forcedeliver="true"
-				overwrite="true"
-				status="release"
-				/>
-		<ivy:install organisation="org.apache.tomcat" module="tomcat-dbcp"
-					 revision="8.5.9" transitive="true" overwrite="true"
 					 from="local" to="local" />
 	</target>
 
