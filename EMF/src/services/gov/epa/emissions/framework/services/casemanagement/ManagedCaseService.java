@@ -3139,7 +3139,7 @@ public class ManagedCaseService {
             // line w/ input name = fullPath
             setenvLine = this.runComment + " " + input.getName() + " = " + fullPath + eolString;
         } else {
-            setenvLine = shellSetenv(envvar.getName(), fullPath);
+            setenvLine = shellSetenvWithComment(envvar.getName(), fullPath, input.getName());
         }
 
         // Expand input director, ie. remove env variables
@@ -3155,6 +3155,10 @@ public class ManagedCaseService {
     }
 
     private String shellSetenv(String envvariable, String envvalue) {
+        return shellSetenvWithComment(envvariable, envvalue, null);
+    }
+
+    private String shellSetenvWithComment(String envvariable, String envvalue, String comment) {
         /**
          * Simply creates a setenv line from an environmental variable and a value.
          * 
@@ -3168,9 +3172,13 @@ public class ManagedCaseService {
 
         // add quotes to value, if they are not already there
         if (envvalue.indexOf('"') >= 0)
-            setenvLine = this.runSet + " " + envvariable + this.runEq + envvalue + this.runTerminator;
+            setenvLine = this.runSet + " " + envvariable + this.runEq + envvalue;
         else
-            setenvLine = this.runSet + " " + envvariable + this.runEq + addQuotes(envvalue) + this.runTerminator;
+            setenvLine = this.runSet + " " + envvariable + this.runEq + addQuotes(envvalue);
+
+        if (comment != null && comment.length() > 0)
+            setenvLine += " " + this.runComment + " " + comment;
+        setenvLine += this.runTerminator;
 
         return setenvLine + eolString;
 
@@ -3195,7 +3203,7 @@ public class ManagedCaseService {
             // parameter name = value
             setenvLine = this.runComment + " " + parameter.getName() + " = " + parameter.getValue() + eolString;
         } else {
-            setenvLine = shellSetenv(parameter.getEnvVar().getName(), parameter.getValue());
+            setenvLine = shellSetenvWithComment(parameter.getEnvVar().getName(), parameter.getValue(), parameter.getName());
 
         }
         return setenvLine;
