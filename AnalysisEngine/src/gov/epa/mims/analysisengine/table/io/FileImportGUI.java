@@ -200,7 +200,7 @@ public class FileImportGUI extends JDialog {
 			for (int i = 0; i < fileNames.length; i++) {
 				Vector rowData = new Vector();
 				rowData.add(fileNames[i]);
-				rowData.add(new Boolean(false));
+				rowData.add(Boolean.FALSE);
 				tableData.add(rowData);
 			}// for(i)
 		}// if()
@@ -831,7 +831,7 @@ public class FileImportGUI extends JDialog {
 
 						rowData.add(fileName);
 
-						rowData.add(new Boolean(true));
+						rowData.add(Boolean.TRUE);
 
 						tableModel.addRow(rowData);
 

@@ -100,7 +100,7 @@ public class LabeledDataSetsTableModel extends DataSetsTableModel {
 				// so converting it to doubles
 				String label = aDataSet.getLabel(rowIndex);
 				try {
-					return new Double(label);
+					return Double.valueOf(label);
 				} catch (Exception e) {
 					return label;
 				}
@@ -133,9 +133,9 @@ public class LabeledDataSetsTableModel extends DataSetsTableModel {
 					DefaultUserInteractor.get().notify(null, "Error",
 							"A error in DataSetsTableModel.getValueAt()" + e.getMessage(), UserInteractor.ERROR);
 				}
-				return new Double(aElement);
+				return Double.valueOf(aElement);
 			}// if(rowIndex <= numOfElements)
-			return new Double(Double.NaN);
+			return Double.valueOf(Double.NaN);
 		}// else
 		return null;
 	}

@@ -800,8 +800,8 @@ public class MultipleEditableTablePanel extends JPanel implements ChildHasChange
       validChoices4[4] =  createImageIcon("/gov/epa/mims/analysisengine/gui/icons/lineStyles/dotDash.jpg");
       for (int i = 1; i <= 10; i++)
       {
-         validChoices1[i-1] = new Double(i*10.0);
-         validChoices2[i-1] = new Double(i);
+         validChoices1[i-1] = Double.valueOf(i*10.0);
+         validChoices2[i-1] = Double.valueOf(i);
       }
       doubleColumn1.setValidChoices(validChoices1);
       //doubleColumn2.setValidChoices(validChoices2);
@@ -809,8 +809,8 @@ public class MultipleEditableTablePanel extends JPanel implements ChildHasChange
       imageColumn1.setValidChoices(validChoices4);
       try
       {
-         doubleColumn1.setDefaultValue(new Double(1.2345));
-         doubleColumn2.setDefaultValue(new Double(1.2345));
+         doubleColumn1.setDefaultValue(Double.valueOf(1.2345));
+         doubleColumn2.setDefaultValue(Double.valueOf(1.2345));
       }
       catch(Exception e)
       {

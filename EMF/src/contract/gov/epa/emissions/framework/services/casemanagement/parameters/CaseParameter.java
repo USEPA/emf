@@ -163,8 +163,8 @@ public class CaseParameter implements Serializable, Comparable<CaseParameter> {
 //    }
     
     public int compareTo(CaseParameter other) {
-        Float otherOrder = new Float (other.getOrder());
-        Float thisOrder = new Float(getOrder());
+        Float otherOrder = Float.valueOf(other.getOrder());
+        Float thisOrder = Float.valueOf(getOrder());
         
         return thisOrder.compareTo(otherOrder);
     }

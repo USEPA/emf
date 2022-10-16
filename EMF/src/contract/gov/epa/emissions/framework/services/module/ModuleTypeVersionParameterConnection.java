@@ -325,7 +325,7 @@ public class ModuleTypeVersionParameterConnection implements Serializable {
         if (this == otherConnection) return 0;
         int comp = compositeModuleTypeVersion.compareTo(otherConnection.getCompositeModuleTypeVersion());
         if (comp != 0) return comp;
-        comp = new Boolean(connectionName == null).compareTo(otherConnection.getConnectionName() == null);
+        comp = Boolean.valueOf(connectionName == null).compareTo(otherConnection.getConnectionName() == null);
         if (comp != 0) return comp;
         if (connectionName != null) {
             comp = connectionName.compareTo(otherConnection.getConnectionName());

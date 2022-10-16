@@ -348,7 +348,7 @@ public class GenericExporter implements Exporter {
             return "\"" + val + "\"";
         
         if (colType.startsWith("DOUBLE")) {
-            String temp = new Double(data.getDouble(column.name())).toString();
+            String temp = Double.valueOf(data.getDouble(column.name())).toString();
             
             return temp.equals("0.0") ? "0" : temp;
         }

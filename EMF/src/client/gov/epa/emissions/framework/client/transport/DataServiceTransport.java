@@ -96,7 +96,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("nameContains");
         call.setReturnType(mappings.datasets());
 
-        return (EmfDataset[]) call.requestResponse(new Object[] { new Integer(datasetTypeId), nameContains});
+        return (EmfDataset[]) call.requestResponse(new Object[] { Integer.valueOf(datasetTypeId), nameContains});
     
     }
 
@@ -109,7 +109,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("nameContaining");
         call.setReturnType(mappings.datasets());
 
-        return (EmfDataset[]) call.requestResponse(new Object[] {new Integer(datasetTypeId), nameContaining});
+        return (EmfDataset[]) call.requestResponse(new Object[] {Integer.valueOf(datasetTypeId), nameContaining});
     
     }
 
@@ -183,7 +183,7 @@ public class DataServiceTransport implements DataService {
         call.addIntegerParam("datasetID");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, new Integer(datasetID) });
+        call.request(new Object[] { user, Integer.valueOf(datasetID) });
     }
 
     public void purgeDeletedDatasets(User user) throws EmfException {
@@ -214,7 +214,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("nameContains");
         call.setIntegerReturnType();
         
-        return (Integer) call.requestResponse(new Object[] {new Integer(datasetTypeId), nameContains });
+        return (Integer) call.requestResponse(new Object[] {Integer.valueOf(datasetTypeId), nameContains });
     }
     
     public int getNumOfDatasets(String nameContains, int userId) throws EmfException {
@@ -263,7 +263,7 @@ public class DataServiceTransport implements DataService {
 //        System.out.println(call.getCall().getProperty(Call.CHARACTER_SET_ENCODING));
 //        call.getCall().getMessageContext().setProperty(Call.CHARACTER_SET_ENCODING, "utf-16");
 
-        return (String) call.requestResponse(new Object[] { qualifiedTableName, new Long(recordLimit), new Long(recordOffset) });
+        return (String) call.requestResponse(new Object[] { qualifiedTableName, Long.valueOf(recordLimit), Long.valueOf(recordOffset) });
     }
 
     public long getTableRecordCount(String qualifiedTableName) throws EmfException {
@@ -292,8 +292,8 @@ public class DataServiceTransport implements DataService {
         call.addParam("targetStartLineNumber", emfMappings.doubleValue());
         call.setVoidReturnType();
         
-        call.request(new Object[]{user, new Integer(srcDSid), new Integer(srcDSVersion), filter, new Integer(targetDSid),
-                new Integer(targetDSVersion), targetStartLineNumber});
+        call.request(new Object[]{user, Integer.valueOf(srcDSid), Integer.valueOf(srcDSVersion), filter, Integer.valueOf(targetDSid),
+                Integer.valueOf(targetDSVersion), targetStartLineNumber});
     }
     
     public boolean checkTableDefinitions(int srcDSid, int targetDSid) throws EmfException {
@@ -304,7 +304,7 @@ public class DataServiceTransport implements DataService {
         call.addIntegerParam("targetDSid");
         call.setBooleanReturnType();
         
-        return (Boolean)call.requestResponse(new Object[]{new Integer(srcDSid), new Integer(targetDSid)});
+        return (Boolean)call.requestResponse(new Object[]{Integer.valueOf(srcDSid), Integer.valueOf(targetDSid)});
     }
 
     public void replaceColValues(String table, String colName, String find, String replaceWith, Version version, String rowFilter) throws EmfException {
@@ -358,7 +358,7 @@ public class DataServiceTransport implements DataService {
         call.addParam("user", mappings.user());
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(datasetId), version, user });
+        call.request(new Object[] { Integer.valueOf(datasetId), version, user });
     }
 
     public ExternalSource[] getExternalSources(int datasetId, int limit, String filter) throws EmfException {
@@ -370,7 +370,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("filter");
         call.setReturnType(mappings.externalSources());
         
-        return (ExternalSource[])call.requestResponse(new Object[]{new Integer(datasetId), new Integer(limit), filter});
+        return (ExternalSource[])call.requestResponse(new Object[]{Integer.valueOf(datasetId), Integer.valueOf(limit), filter});
     }
     
     public int getNumExternalSources(int datasetId, String filter) throws EmfException {
@@ -381,7 +381,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("filter");
         call.setIntegerReturnType();
         
-        return (Integer)call.requestResponse(new Object[]{new Integer(datasetId), filter});
+        return (Integer)call.requestResponse(new Object[]{Integer.valueOf(datasetId), filter});
     }
 
     public boolean isExternal(int datasetId) throws EmfException {
@@ -391,7 +391,7 @@ public class DataServiceTransport implements DataService {
         call.addIntegerParam("datasetId");
         call.setBooleanReturnType();
         
-        return (Boolean)call.requestResponse(new Object[]{new Integer(datasetId)});
+        return (Boolean)call.requestResponse(new Object[]{Integer.valueOf(datasetId)});
     }
 
     public void addExternalSources(String folder, String[] files, int datasetId) throws EmfException {
@@ -403,7 +403,7 @@ public class DataServiceTransport implements DataService {
         call.addIntegerParam("datasetId");
         call.setVoidReturnType();
         
-        call.request(new Object[]{folder, files, new Integer(datasetId)});
+        call.request(new Object[]{folder, files, Integer.valueOf(datasetId)});
     }
 
     public void updateExternalSources(int datasetId, String newDir) throws EmfException {
@@ -414,7 +414,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("newDir");
         call.setVoidReturnType();
         
-        call.request(new Object[]{new Integer(datasetId), newDir});
+        call.request(new Object[]{Integer.valueOf(datasetId), newDir});
     }
 
     public int getNumOfRecords(String table, Version version, String filter) throws EmfException {
@@ -450,7 +450,7 @@ public class DataServiceTransport implements DataService {
 //        call.addParam("user", mappings.user());
 //        call.setVoidReturnType();
 //        
-//        call.request(new Object[]{new Integer(externalDatasetAccessId), user});
+//        call.request(new Object[]{Integer.valueOf(externalDatasetAccessId), user});
 //    }
 
     public String[] getTableColumnDistinctValues(int datasetId, int datasetVersion, String columnName, String whereFilter,
@@ -465,7 +465,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("sortOrder");
         call.setStringArrayReturnType();
         
-        return (String[])call.requestResponse(new Object[] { new Integer(datasetId), new Integer(datasetVersion), 
+        return (String[])call.requestResponse(new Object[] { Integer.valueOf(datasetId), Integer.valueOf(datasetVersion), 
                 columnName, whereFilter, sortOrder});
         
     }
@@ -506,7 +506,7 @@ public class DataServiceTransport implements DataService {
         call.addIntegerParam("userId");
         call.setReturnType(mappings.datasets());
         
-        return (EmfDataset[]) call.requestResponse(new Object[]{ dataset, qaStep, qaArgument, usedByCasesID, dataValueFilter, new Boolean(unconditional), userId });
+        return (EmfDataset[]) call.requestResponse(new Object[]{ dataset, qaStep, qaArgument, usedByCasesID, dataValueFilter, Boolean.valueOf(unconditional), userId });
     }
 
     public void updateVersion(Version locked) throws EmfException {
@@ -528,7 +528,7 @@ public class DataServiceTransport implements DataService {
         call.addStringParam("colName");
         call.setBooleanReturnType();
         
-        return (Boolean)call.requestResponse(new Object[]{new Integer(datasetId), new Integer(version), colName});
+        return (Boolean)call.requestResponse(new Object[]{Integer.valueOf(datasetId), Integer.valueOf(version), colName});
     }
 
     public synchronized String[] getTableColumns(String table) throws EmfException {

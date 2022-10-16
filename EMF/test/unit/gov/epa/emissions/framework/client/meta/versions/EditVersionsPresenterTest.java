@@ -114,7 +114,7 @@ public class EditVersionsPresenterTest extends EmfMockObjectTestCase {
         Version[] versions = new Version[0];
         InternalSource[] internalSources = new InternalSource[0];
 
-        service.stubs().method("getVersions").with(eq(new Integer(dataset.getId()))).will(returnValue(versions));
+        service.stubs().method("getVersions").with(eq(Integer.valueOf(dataset.getId()))).will(returnValue(versions));
         EmfSession session = session(user, (DataEditorService) service.proxy(), null);
         EditVersionsPresenter presenter = new EditVersionsPresenter(dataset, session);
         view.expects(once()).method("observe").with(same(presenter));

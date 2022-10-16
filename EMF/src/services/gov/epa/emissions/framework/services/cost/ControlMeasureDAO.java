@@ -444,7 +444,7 @@ public class ControlMeasureDAO {
     }
 
     public Scc[] getSccs(int controlMeasureId, Session session) {
-        Criterion id = Restrictions.eq("controlMeasureId", new Integer(controlMeasureId));
+        Criterion id = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
         List list = hibernateFacade.get(Scc.class, new Criterion[] { id }, session);
         return (Scc[]) list.toArray(new Scc[0]);
     }
@@ -459,7 +459,7 @@ public class ControlMeasureDAO {
     }
 
     public void checkForConstraints(ControlMeasure controlMeasure, Session session) throws EmfException {
-        Criterion id = Restrictions.ne("id", new Integer(controlMeasure.getId()));
+        Criterion id = Restrictions.ne("id", Integer.valueOf(controlMeasure.getId()));
         Criterion name = Restrictions.eq("name", controlMeasure.getName());
         Criterion abbrev = Restrictions.eq("abbreviation", controlMeasure.getAbbreviation());
 
@@ -554,7 +554,7 @@ public class ControlMeasureDAO {
              .setInteger("controlMeasureEquationTypeId", controlMeasureEquationTypeId)
              .executeUpdate();
         session.flush();
-//        Criterion c = Restrictions.eq("controlMeasureId", new Integer(controlMeasureId));
+//        Criterion c = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
 //        List list = hibernateFacade.get(EfficiencyRecord.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
 //            hibernateFacade.remove(list.get(i), session);
@@ -567,7 +567,7 @@ public class ControlMeasureDAO {
              .setInteger("controlMeasureId", controlMeasureId)
              .executeUpdate();
         session.flush();
-//        Criterion c = Restrictions.eq("controlMeasureId", new Integer(controlMeasureId));
+//        Criterion c = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
 //        List list = hibernateFacade.get(EfficiencyRecord.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
 //            hibernateFacade.remove(list.get(i), session);
@@ -668,7 +668,7 @@ public class ControlMeasureDAO {
     }
 
     public List getEfficiencyRecords(int controlMeasureId, Session session) {
-        Criterion c = Restrictions.eq("controlMeasureId", new Integer(controlMeasureId));
+        Criterion c = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
         return hibernateFacade.get(EfficiencyRecord.class, c, session);
     }
 
@@ -720,8 +720,8 @@ public class ControlMeasureDAO {
 //    }
 
     public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, Session session) throws EmfException {
-        Criterion id = Restrictions.ne("id", new Integer(record.getId()));
-        Criterion measureId = Restrictions.eq("controlMeasureId", new Integer(record.getControlMeasureId()));
+        Criterion id = Restrictions.ne("id", Integer.valueOf(record.getId()));
+        Criterion measureId = Restrictions.eq("controlMeasureId", Integer.valueOf(record.getControlMeasureId()));
         Criterion locale = Restrictions.eq("locale", record.getLocale());
         Criterion pollutant = Restrictions.eq("pollutant", record.getPollutant());
         Criterion existingMeasureAbbr = record.getExistingMeasureAbbr() == null ? Restrictions.isNull("existingMeasureAbbr") : Restrictions.eq("existingMeasureAbbr", record.getExistingMeasureAbbr());
@@ -743,8 +743,8 @@ public class ControlMeasureDAO {
     }
 
     public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, StatelessSession session) throws EmfException {
-        Criterion id = Restrictions.ne("id", new Integer(record.getId()));
-        Criterion measureId = Restrictions.eq("controlMeasureId", new Integer(record.getControlMeasureId()));
+        Criterion id = Restrictions.ne("id", Integer.valueOf(record.getId()));
+        Criterion measureId = Restrictions.eq("controlMeasureId", Integer.valueOf(record.getControlMeasureId()));
         Criterion locale = Restrictions.eq("locale", record.getLocale());
         Criterion pollutant = Restrictions.eq("pollutant", record.getPollutant());
         Criterion existingMeasureAbbr = record.getExistingMeasureAbbr() == null ? Restrictions.isNull("existingMeasureAbbr") : Restrictions.eq("existingMeasureAbbr", record.getExistingMeasureAbbr());

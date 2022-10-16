@@ -130,9 +130,9 @@ public class DataSetsTableModel extends SpecialTableModel {
 				DefaultUserInteractor.get().notify(null, "Error",
 						"A error in DataSetsTableModel.getValueAt()" + e.getMessage(), UserInteractor.ERROR);
 			}
-			return new Double(aElement);
+			return Double.valueOf(aElement);
 		}// if(rowIndex <= numOfElements)
-		return new Double(Double.NaN);
+		return Double.valueOf(Double.NaN);
 	}
 
 	/**

@@ -47,7 +47,7 @@ public class NumericTableCellEditor extends DefaultCellEditor {
 
     private Object validateRealValue(Object value) {
         try {
-            new Double(value.toString());
+            Double.valueOf(value.toString());
             return value;
         } catch (NumberFormatException e) {
             messagePanel.setError("Please enter a real number");
@@ -58,7 +58,7 @@ public class NumericTableCellEditor extends DefaultCellEditor {
 
     private Object validateInteger(Object value) {
         try {
-            new Integer(value.toString());
+            Integer.valueOf(value.toString());
             return value;
         } catch (NumberFormatException e) {
             messagePanel.setError("Please enter a integer number");

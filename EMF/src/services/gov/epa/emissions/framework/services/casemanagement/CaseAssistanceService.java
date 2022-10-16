@@ -149,7 +149,7 @@ public class CaseAssistanceService {
 
         if (caseJobs != null && caseJobs.size() > 0) {
             for (CaseJob job : caseJobs)
-                jobIds.put(job.getName(), new Integer(job.getId()));
+                jobIds.put(job.getName(), Integer.valueOf(job.getId()));
         }
 
         return jobIds;

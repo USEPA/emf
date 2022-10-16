@@ -67,7 +67,7 @@ public class FileDownloader {
 //                }
                 
                 int count = 1;
-                Double downloadedBytes = new Double(0F);
+                Double downloadedBytes = Double.valueOf(0F);
 
                 @Override
                 protected void onContentReceived(org.apache.http.nio.ContentDecoder decoder, org.apache.http.nio.IOControl ioctrl)  {

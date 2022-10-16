@@ -28,7 +28,7 @@ public class DataEditorServiceTransport implements DataEditorService {
         call.setOperation("getPage");
         call.setReturnType(mappings.page());
         
-        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(pageNumber) });
+        Page page = (Page) call.requestResponse(new Object[] { token, Integer.valueOf(pageNumber) });
         if ( CommonDebugLevel.DEBUG_PAGE_2) {
             page.print();
         }
@@ -52,7 +52,7 @@ public class DataEditorServiceTransport implements DataEditorService {
         call.addParam("token", mappings.dataAccessToken());
         call.addIntegerParam("recordId");
         
-        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(recordId) });
+        Page page = (Page) call.requestResponse(new Object[] { token, Integer.valueOf(recordId) });
         if ( CommonDebugLevel.DEBUG_PAGE_2) {
             page.print();
         }   
@@ -100,7 +100,7 @@ public class DataEditorServiceTransport implements DataEditorService {
         call.setOperation("submit");
         call.setVoidReturnType();
 
-        call.request(new Object[] { token, changeset, new Integer(pageNumber) });
+        call.request(new Object[] { token, changeset, Integer.valueOf(pageNumber) });
     }
 
     public boolean hasChanges(DataAccessToken token) throws EmfException {
@@ -162,7 +162,7 @@ public class DataEditorServiceTransport implements DataEditorService {
         call.setOperation("getVersions");
         call.setReturnType(mappings.versions());
 
-        return (Version[]) call.requestResponse(new Object[] { new Integer(datasetId) });
+        return (Version[]) call.requestResponse(new Object[] { Integer.valueOf(datasetId) });
     }
 
     public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
@@ -196,6 +196,6 @@ public class DataEditorServiceTransport implements DataEditorService {
         call.addLongParam("version");
         call.setReturnType(mappings.version());
 
-        return (Version) call.requestResponse(new Object[] { new Integer(datasetId), new Integer(version) });
+        return (Version) call.requestResponse(new Object[] { Integer.valueOf(datasetId), Integer.valueOf(version) });
     }
 }

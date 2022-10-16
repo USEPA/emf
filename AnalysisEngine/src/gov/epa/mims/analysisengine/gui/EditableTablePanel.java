@@ -866,7 +866,7 @@ public  abstract class EditableTablePanel
             int arraySize = 5;
             Integer[] inputValues = new Integer[arraySize];
             for (int i = 0; i < arraySize; i++)
-               inputValues[i] = new Integer(i * 3);
+               inputValues[i] = Integer.valueOf(i * 3);
             panel.setValue(inputValues);
             if (useBounds)
             {
@@ -876,10 +876,10 @@ public  abstract class EditableTablePanel
             {
                Integer[] validChoices = new Integer[10];
                for (int i = 1; i <= 10; i++)
-                  validChoices[i-1] = new Integer(i);
+                  validChoices[i-1] = Integer.valueOf(i);
                panel.setValidChoices(validChoices);
             }
-            panel.setDefaultValue(new Integer(52));
+            panel.setDefaultValue(Integer.valueOf(52));
             break;
          }
          case DBL:
@@ -892,10 +892,10 @@ public  abstract class EditableTablePanel
             {
                Double[] validChoices = new Double[10];
                for (int i = 1; i <= 10; i++)
-                  validChoices[i-1] = new Double(i*10.0);
+                  validChoices[i-1] = Double.valueOf(i*10.0);
                panel.setValidChoices(validChoices);
             }
-            panel.setDefaultValue(new Double(1.2345));
+            panel.setDefaultValue(Double.valueOf(1.2345));
             break;
          }
          case STR:

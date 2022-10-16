@@ -35,11 +35,11 @@ public class EditablePageTest extends TestCase {
         page = new Page();
 
         record1 = new VersionedRecord();
-        record1.setTokens(new Object[] { "1", new Double(2.0), new Integer(3) });
+        record1.setTokens(new Object[] { "1", Double.valueOf(2.0), Integer.valueOf(3) });
         page.add(record1);
 
         record2 = new VersionedRecord();
-        record2.setTokens(new Object[] { "11", new Double(4.0), new Integer(6) });
+        record2.setTokens(new Object[] { "11", Double.valueOf(4.0), Integer.valueOf(6) });
         page.add(record2);
 
         cols = new String[] { "col1", "col2", "col3" };

@@ -86,13 +86,13 @@ public class TextBoxArrowEditor extends OptionDialog
    static
    {
       codePrettyHashMap = new HashMap();
-      codePrettyHashMap.put(new Integer(TextBoxArrow.ARROW_IS_DOUBLE_HEADED), ARROW_IS_DOUBLE_HEADED);
-      codePrettyHashMap.put(new Integer(TextBoxArrow.ARROW_POINTS_FROM_BOX), ARROW_POINTS_FROM_BOX);
-      codePrettyHashMap.put(new Integer(TextBoxArrow.ARROW_POINTS_TO_BOX), ARROW_POINTS_TO_BOX);
+      codePrettyHashMap.put(Integer.valueOf(TextBoxArrow.ARROW_IS_DOUBLE_HEADED), ARROW_IS_DOUBLE_HEADED);
+      codePrettyHashMap.put(Integer.valueOf(TextBoxArrow.ARROW_POINTS_FROM_BOX), ARROW_POINTS_FROM_BOX);
+      codePrettyHashMap.put(Integer.valueOf(TextBoxArrow.ARROW_POINTS_TO_BOX), ARROW_POINTS_TO_BOX);
       codeSystemHashMap = new HashMap();
-      codeSystemHashMap.put(ARROW_IS_DOUBLE_HEADED,new Integer(TextBoxArrow.ARROW_IS_DOUBLE_HEADED));
-      codeSystemHashMap.put(ARROW_POINTS_FROM_BOX, new Integer(TextBoxArrow.ARROW_POINTS_FROM_BOX));
-      codeSystemHashMap.put(ARROW_POINTS_TO_BOX,new Integer(TextBoxArrow.ARROW_POINTS_TO_BOX));
+      codeSystemHashMap.put(ARROW_IS_DOUBLE_HEADED,Integer.valueOf(TextBoxArrow.ARROW_IS_DOUBLE_HEADED));
+      codeSystemHashMap.put(ARROW_POINTS_FROM_BOX,Integer.valueOf(TextBoxArrow.ARROW_POINTS_FROM_BOX));
+      codeSystemHashMap.put(ARROW_POINTS_TO_BOX,Integer.valueOf(TextBoxArrow.ARROW_POINTS_TO_BOX));
 
    }
 
@@ -322,7 +322,7 @@ public class TextBoxArrowEditor extends OptionDialog
    */
    public static String getPrettyArrowCode(Component parent,int systemCode)
    {
-      Object key = new Integer(systemCode);
+      Object key = Integer.valueOf(systemCode);
       String stringCode = (String)TextBoxArrowEditor.codePrettyHashMap.get(key);
       if(stringCode == null)
       {

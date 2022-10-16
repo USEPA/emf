@@ -100,16 +100,16 @@ public class FileAdapter {
 		fileDelimiter.put(FileImportGUI.FIXED_WIDTH_FILE, null);
 
 		fileColumnHeaderInfo = new HashMap();
-		fileColumnHeaderInfo.put(FileImportGUI.SMOKE_REPORT_FILE, new Integer(
+		fileColumnHeaderInfo.put(FileImportGUI.SMOKE_REPORT_FILE, Integer.valueOf(
 				SMKReportFileReader.NO_OF_COLUMN_HEADER_ROWS));
-		fileColumnHeaderInfo.put(FileImportGUI.TRIM_RESULTS_FILE, new Integer(
+		fileColumnHeaderInfo.put(FileImportGUI.TRIM_RESULTS_FILE, Integer.valueOf(
 				TRIMResultFileReader.NO_OF_COLUMN_HEADER_ROWS));
-		fileColumnHeaderInfo.put(FileImportGUI.TRIM_SENSITIVITY_FILE, new Integer(
+		fileColumnHeaderInfo.put(FileImportGUI.TRIM_SENSITIVITY_FILE, Integer.valueOf(
 				TRIMSensitivityFileReader.NO_OF_COLUMN_HEADER_ROWS));
-		fileColumnHeaderInfo.put(FileImportGUI.MONTE_CARLO_FILE, new Integer(
+		fileColumnHeaderInfo.put(FileImportGUI.MONTE_CARLO_FILE, Integer.valueOf(
 				MonteCarloFileReader.NO_OF_COLUMN_HEADER_ROWS));
-		fileColumnHeaderInfo.put(FileImportGUI.COSU_FILE, new Integer(COSUAdapter.NO_OF_COLUMN_HEADER_ROWS));
-		fileColumnHeaderInfo.put(FileImportGUI.DAVE_OUTPUT_FILE, new Integer(DAVEFileReader.NO_OF_COLUMN_HEADER_ROWS));
+		fileColumnHeaderInfo.put(FileImportGUI.COSU_FILE, Integer.valueOf(COSUAdapter.NO_OF_COLUMN_HEADER_ROWS));
+		fileColumnHeaderInfo.put(FileImportGUI.DAVE_OUTPUT_FILE, Integer.valueOf(DAVEFileReader.NO_OF_COLUMN_HEADER_ROWS));
 		fileColumnHeaderInfo.put(FileImportGUI.ARFF_FILE, null);
 		fileColumnHeaderInfo.put(FileImportGUI.GENERIC_FILE, null);
 		fileColumnHeaderInfo.put(FileImportGUI.FIXED_WIDTH_FILE, null);

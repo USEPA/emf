@@ -155,7 +155,7 @@ public class SignificantDigitsFormat extends DecimalFormat {
 		// format
 		// System.out.println(sigDigitsFormat.toPattern());
 		if (Double.isNaN(number)) {
-			// return new StringBuffer(new Double("NaN").toString());
+			// return new StringBuffer(Double.valueOf(Double.NaN).toString());
 			return new StringBuffer(NaN_FORMAT);
 		}
 		String formattedNumber = "" + number;

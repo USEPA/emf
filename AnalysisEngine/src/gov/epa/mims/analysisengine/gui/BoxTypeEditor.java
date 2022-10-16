@@ -91,9 +91,9 @@ public class BoxTypeEditor extends OptionDialog
       BoxPlotConstantsIfc.UPPER_HINGE, BoxPlotConstantsIfc.UPPER_WHISKER};
 
    /** default valus for the second colum corresponding to the first col labels */
-   public static final Double [] DEFAULT_VALUES = {new Double(0.00),new Double(0.20),
-      new Double(0.25),new Double(0.50), new Double(0.70),new Double(0.75),
-      new Double(1.00)};
+   public static final Double [] DEFAULT_VALUES = {Double.valueOf(0.00),Double.valueOf(0.20),
+      Double.valueOf(0.25),Double.valueOf(0.50), Double.valueOf(0.70),Double.valueOf(0.75),
+      Double.valueOf(1.00)};
 
    /** Creates a new instance of BoxTypeEditor */
    public BoxTypeEditor(BoxType aBoxType)
@@ -300,7 +300,7 @@ public class BoxTypeEditor extends OptionDialog
                {
                   try
                   {
-                     Double d = new Double((String)o);
+                     Double d = Double.valueOf((String)o);
                      double value = d.doubleValue();
                      if(value < 0.0 || value > 1.0)
                      {
@@ -402,7 +402,7 @@ public class BoxTypeEditor extends OptionDialog
 //                   return originalObjectValue;
 //                }//if (enteredValue < 0.0 || enteredValue > 1.0)
 //
-//                return new Double(enteredValue);
+//                return Double.valueOf(enteredValue);
 //              }//getCellEditorValue()
 //          };
 //

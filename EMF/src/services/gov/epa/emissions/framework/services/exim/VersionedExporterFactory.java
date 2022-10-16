@@ -49,7 +49,7 @@ public class VersionedExporterFactory {
             classParams = new Class[] { Dataset.class, String.class, DbServer.class,
                     DataFormatFactory.class, Integer.class, Dataset.class, Version.class, String.class };
             params = new Object[] { datasets[0], rowFilters, dbServer, new VersionedDataFormatFactory(versions[0], datasets[0]),
-                    new Integer(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition };
+                    Integer.valueOf(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition };
             
             // for now, FlexibleDBExporter is only class that supports colsToExport and file concatenation
             if (exporterName.equals(DatasetType.FLEXIBLE_EXPORTER)) {
@@ -61,7 +61,7 @@ public class VersionedExporterFactory {
                     factories[i] = new VersionedDataFormatFactory(versions[i], datasets[i]);
                 }
                 params = new Object[] { datasets, rowFilters, dbServer, factories,
-                        new Integer(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition,
+                        Integer.valueOf(batchSize), filterDataset, filterDatasetVersion, filterDatasetJoinCondition,
                         colsToExport };
             }
             

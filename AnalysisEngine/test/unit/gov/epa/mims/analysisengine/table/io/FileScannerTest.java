@@ -217,8 +217,8 @@ public class FileScannerTest extends TestCase {
 		try {
 
 			Symbol[] expected_value = { scanner.symbol(TokenConstants.STRING_LITERAL, "abcd"),
-					scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("234.5")),
-					scanner.symbol(TokenConstants.INTEGER_LITERAL, new Integer("1234")),
+					scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("234.5")),
+					scanner.symbol(TokenConstants.INTEGER_LITERAL, Integer.valueOf("1234")),
 					scanner.symbol(TokenConstants.DATE_TIME_LITERAL, sdf.parse("09/12/2004 02:30")),
 					scanner.symbol(TokenConstants.STRING_LITERAL, "qwert"),
 					scanner.symbol(TokenConstants.NULL_LITERAL, "") };
@@ -242,14 +242,14 @@ public class FileScannerTest extends TestCase {
 			assertEquals(true, false);
 		}
 
-		Symbol[] expected_value = { scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("1493.676563463864")),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("6.56150776093055E-8")),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("10.669118310456177")),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("0.0608139743696002")),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("NaN")),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("2.2232386397631296E-4")),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("-1.1584864434794742E8")),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("1.9330E-01")) };
+		Symbol[] expected_value = { scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("1493.676563463864")),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("6.56150776093055E-8")),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("10.669118310456177")),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("0.0608139743696002")),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf(Double.NaN)),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("2.2232386397631296E-4")),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("-1.1584864434794742E8")),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("1.9330E-01")) };
 		try {
 			Symbol[] values = scanner.getTokensPerLine(',', false);
 			assertEquals(compareSymbols(expected_value, values), true);
@@ -270,10 +270,10 @@ public class FileScannerTest extends TestCase {
 			assertEquals(true, false);
 		}
 
-		Symbol[] expected_value = { scanner.symbol(TokenConstants.INTEGER_LITERAL, new Integer("0000")),
-				scanner.symbol(TokenConstants.INTEGER_LITERAL, new Integer("123")),
-				scanner.symbol(TokenConstants.INTEGER_LITERAL, new Integer("023456")),
-				scanner.symbol(TokenConstants.INTEGER_LITERAL, new Integer("-1223")) };
+		Symbol[] expected_value = { scanner.symbol(TokenConstants.INTEGER_LITERAL, Integer.valueOf("0000")),
+				scanner.symbol(TokenConstants.INTEGER_LITERAL, Integer.valueOf("123")),
+				scanner.symbol(TokenConstants.INTEGER_LITERAL, Integer.valueOf("023456")),
+				scanner.symbol(TokenConstants.INTEGER_LITERAL, Integer.valueOf("-1223")) };
 		try {
 			assertEquals(compareSymbols(expected_value, scanner.getTokensPerLine(':', false)), true);
 			assertEquals(line, scanner.getLine());
@@ -361,12 +361,12 @@ public class FileScannerTest extends TestCase {
 			assertEquals(true, false);
 		}
 
-		Symbol[] expected_value = { scanner.symbol(TokenConstants.BOOLEAN_LITERAL, new Boolean(true)),
-				scanner.symbol(TokenConstants.BOOLEAN_LITERAL, new Boolean(false)),
+		Symbol[] expected_value = { scanner.symbol(TokenConstants.BOOLEAN_LITERAL, Boolean.TRUE),
+				scanner.symbol(TokenConstants.BOOLEAN_LITERAL, Boolean.FALSE),
 				scanner.symbol(TokenConstants.STRING_LITERAL, "true false"),
 				scanner.symbol(TokenConstants.STRING_LITERAL, "true false"),
-				scanner.symbol(TokenConstants.BOOLEAN_LITERAL, new Boolean(true)),
-				scanner.symbol(TokenConstants.BOOLEAN_LITERAL, new Boolean(false)),
+				scanner.symbol(TokenConstants.BOOLEAN_LITERAL, Boolean.TRUE),
+				scanner.symbol(TokenConstants.BOOLEAN_LITERAL, Boolean.FALSE),
 				scanner.symbol(TokenConstants.STRING_LITERAL, "True"),
 				scanner.symbol(TokenConstants.STRING_LITERAL, "False"),
 				scanner.symbol(TokenConstants.STRING_LITERAL, "TRUE"),
@@ -395,7 +395,7 @@ public class FileScannerTest extends TestCase {
 				scanner.symbol(TokenConstants.NULL_LITERAL, ""), scanner.symbol(TokenConstants.NULL_LITERAL, ""),
 				scanner.symbol(TokenConstants.NULL_LITERAL, ""), scanner.symbol(TokenConstants.STRING_LITERAL, "abcd"),
 				scanner.symbol(TokenConstants.NULL_LITERAL, ""),
-				scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("NaN")),
+				scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf(Double.NaN)),
 				scanner.symbol(TokenConstants.NULL_LITERAL, ""), scanner.symbol(TokenConstants.NULL_LITERAL, "") };
 		try {
 			assertEquals(compareSymbols(expected_value, scanner.getTokensPerLine(':', false)), true);
@@ -423,11 +423,11 @@ public class FileScannerTest extends TestCase {
 			sdf = new SimpleDateFormat("MM/dd/yyyy");
 			Date date1 = sdf.parse("04/04/1920");
 			Symbol[] expected_value = { scanner.symbol(TokenConstants.STRING_LITERAL, "Stone,Clay,Etc."),
-					scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("100.258")),
-					scanner.symbol(TokenConstants.DOUBLE_LITERAL, new Double("101.555")),
-					scanner.symbol(TokenConstants.INTEGER_LITERAL, new Integer("-250")),
+					scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("100.258")),
+					scanner.symbol(TokenConstants.DOUBLE_LITERAL, Double.valueOf("101.555")),
+					scanner.symbol(TokenConstants.INTEGER_LITERAL, Integer.valueOf("-250")),
 					scanner.symbol(TokenConstants.DATE_LITERAL, date1),
-					scanner.symbol(TokenConstants.BOOLEAN_LITERAL, new Boolean(true)),
+					scanner.symbol(TokenConstants.BOOLEAN_LITERAL, Boolean.TRUE),
 					scanner.symbol(TokenConstants.DATE_TIME_LITERAL, date2),
 					scanner.symbol(TokenConstants.NULL_LITERAL, null) };
 			assertEquals(compareSymbols(expected_value, scanner.getTokensPerLine(',', false)), true);
@@ -444,8 +444,8 @@ public class FileScannerTest extends TestCase {
 	 * System.out.println("testWithTabInData");
 	 * 
 	 * Symbol[] expected_value = { scanner.symbol(TokenConstants.STRING_LITERAL, "C:\temp\tata\nem\\"),
-	 * scanner.symbol(TokenConstants.STRING_LITERAL, "abcd"), scanner.symbol(TokenConstants.DOUBLE_LITERAL, new
-	 * Double("NaN")), scanner.symbol(TokenConstants.DOUBLE_LITERAL, "123.4") }; try {
+	 * scanner.symbol(TokenConstants.STRING_LITERAL, "abcd"), scanner.symbol(TokenConstants.DOUBLE_LITERAL,
+	 * Double.valueOf(Double.NaN)), scanner.symbol(TokenConstants.DOUBLE_LITERAL, "123.4") }; try {
 	 * assertEquals(compareSymbols(expected_value, scanner.getTokensPerLine(':')), true); //
 	 * assertEquals(line,scanner.getLine()); } catch(IOException ie) { assertEquals(true, false); } }
 	 */

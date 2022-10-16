@@ -53,7 +53,7 @@ public class AggregatingTableModel extends MultiRowHeaderTableModel implements T
 
 		for (int row = 0; row < numRows; row++) {
 			extraColumns[row][0] = (String) getValueAt(row, 0) + " " + (String) getValueAt(row, 1);
-			extraColumns[row][1] = new Double(((Double) getValueAt(row, 3)).doubleValue()
+			extraColumns[row][1] = Double.valueOf(((Double) getValueAt(row, 3)).doubleValue()
 					/ ((Integer) getValueAt(row, 2)).doubleValue());
 		} // for(row)
 
@@ -82,11 +82,11 @@ public class AggregatingTableModel extends MultiRowHeaderTableModel implements T
 				}
 
 				if (getValueAt(0, col) instanceof Integer) {
-					extraRows[0][col] = new Integer((int) sum);
-					extraRows[1][col] = new Integer((int) sum / numRows);
+					extraRows[0][col] = Integer.valueOf((int) sum);
+					extraRows[1][col] = Integer.valueOf((int) sum / numRows);
 				} else {
-					extraRows[0][col] = new Double(sum);
-					extraRows[1][col] = new Double(sum / numRows);
+					extraRows[0][col] = Double.valueOf(sum);
+					extraRows[1][col] = Double.valueOf(sum / numRows);
 				}
 			} else if (getValueAt(0, col) instanceof Date) {
 				int numRows = underlyingModel.getRowCount();

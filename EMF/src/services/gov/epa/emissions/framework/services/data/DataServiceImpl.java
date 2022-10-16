@@ -448,7 +448,7 @@ public class DataServiceImpl implements DataService {
         List<EmfDataset> list = new ArrayList<EmfDataset>();
         
         for (EmfDataset ds : removables)
-            if (ids.contains(new Integer(ds.getId())))
+            if (ids.contains(Integer.valueOf(ds.getId())))
                 list.add(ds);
                 
         return list.toArray(new EmfDataset[0]);

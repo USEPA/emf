@@ -25,9 +25,9 @@ public class SccControlMeasuresMap {
             list = new ArrayList();
             map.put(scc, list);
         }
-        list.add(new Integer(measure.getId()));
+        list.add(Integer.valueOf(measure.getId()));
 
-        measuresMap.put(new Integer(measure.getId()), measure);
+        measuresMap.put(Integer.valueOf(measure.getId()), measure);
     }
 
     public ControlMeasure[] getControlMeasures(String scc) {

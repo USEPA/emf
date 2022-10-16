@@ -51,7 +51,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("gridId");
         call.setReturnType(mappings.fastRuns());
 
-        return (FastRun[]) call.requestResponse(new Object[] { new Integer(gridId) });
+        return (FastRun[]) call.requestResponse(new Object[] { Integer.valueOf(gridId) });
     }
 
     public synchronized int addFastRun(FastRun fastRun) throws EmfException {
@@ -72,7 +72,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.fastRun());
 
-        return (FastRun) call.requestResponse(new Object[] { owner, new Integer(id) });
+        return (FastRun) call.requestResponse(new Object[] { owner, Integer.valueOf(id) });
 
     }
 
@@ -94,7 +94,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.fastRun());
 
-        call.request(new Object[] { user, new Integer(id) });
+        call.request(new Object[] { user, Integer.valueOf(id) });
     }
 
     public synchronized FastRun updateFastRun(FastRun fastRun) throws EmfException {
@@ -147,7 +147,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastRunId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, new Integer(fastRunId) });
+        call.request(new Object[] { user, Integer.valueOf(fastRunId) });
     }
 
     public synchronized void stopFastRun(int fastRunId) throws EmfException {
@@ -157,7 +157,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastRunId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(fastRunId) });
+        call.request(new Object[] { Integer.valueOf(fastRunId) });
     }
 
     public synchronized int copyFastRun(int id, User creator) throws EmfException {
@@ -167,7 +167,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.addParam("creator", mappings.user());
         call.setIntegerReturnType();
-        return (Integer) call.requestResponse(new Object[] { new Integer(id), creator });
+        return (Integer) call.requestResponse(new Object[] { Integer.valueOf(id), creator });
     }
 
     public synchronized FastRun getFastRun(int fastRunId) throws EmfException {
@@ -176,7 +176,7 @@ public class FastServiceTransport implements FastService {
         call.setOperation("getFastRun");
         call.addIntegerParam("fastRunId");
         call.setReturnType(mappings.fastRun());
-        return (FastRun) call.requestResponse(new Object[] { new Integer(fastRunId) });
+        return (FastRun) call.requestResponse(new Object[] { Integer.valueOf(fastRunId) });
     }
 
     public synchronized FastRunOutput[] getFastRunOutputs(int fastRunId) throws EmfException {
@@ -186,7 +186,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastRunId");
         call.setReturnType(mappings.fastRunOutputs());
 
-        return (FastRunOutput[]) call.requestResponse(new Object[] { new Integer(fastRunId) });
+        return (FastRunOutput[]) call.requestResponse(new Object[] { Integer.valueOf(fastRunId) });
     }
 
     public List<FastRun> getFastRunsByRunStatus(String runStatus) {
@@ -225,7 +225,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.string());
 
-        return (String) call.requestResponse(new Object[] { new Integer(id) });
+        return (String) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized FastDataset[] getFastDatasets() throws EmfException {
@@ -244,7 +244,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastDatasetId");
         call.setReturnType(mappings.fastDataset());
 
-        return (FastDataset) call.requestResponse(new Object[] { new Integer(fastDatasetId) });
+        return (FastDataset) call.requestResponse(new Object[] { Integer.valueOf(fastDatasetId) });
     }
 
     public int getFastDatasetCount() throws EmfException {
@@ -275,7 +275,7 @@ public class FastServiceTransport implements FastService {
         call.addParam("user", mappings.user());
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(fastDatasetId), user });
+        call.request(new Object[] { Integer.valueOf(fastDatasetId), user });
     }
 
     public synchronized FastNonPointDataset[] getFastNonPointDatasets() throws EmfException {
@@ -294,7 +294,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastNonPointDatasetId");
         call.setReturnType(mappings.fastNonPointDataset());
 
-        return (FastNonPointDataset) call.requestResponse(new Object[] { new Integer(fastNonPointDatasetId) });
+        return (FastNonPointDataset) call.requestResponse(new Object[] { Integer.valueOf(fastNonPointDatasetId) });
     }
 
     public int getFastNonPointDatasetCount() throws EmfException {
@@ -327,7 +327,7 @@ public class FastServiceTransport implements FastService {
         call.addParam("user", mappings.user());
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(fastNonPointDatasetId), user });
+        call.request(new Object[] { Integer.valueOf(fastNonPointDatasetId), user });
     }
 
     public synchronized Grid[] getGrids() throws EmfException {
@@ -384,7 +384,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.fastAnalysis());
 
-        return (FastAnalysis) call.requestResponse(new Object[] { owner, new Integer(id) });
+        return (FastAnalysis) call.requestResponse(new Object[] { owner, Integer.valueOf(id) });
 
     }
 
@@ -406,7 +406,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.fastAnalysis());
 
-        call.request(new Object[] { user, new Integer(id) });
+        call.request(new Object[] { user, Integer.valueOf(id) });
     }
 
     public synchronized FastAnalysis updateFastAnalysis(FastAnalysis fastAnalysis) throws EmfException {
@@ -459,7 +459,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastAnalysisId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, new Integer(fastAnalysisId) });
+        call.request(new Object[] { user, Integer.valueOf(fastAnalysisId) });
     }
 
     public synchronized void stopFastAnalysis(int fastAnalysisId) throws EmfException {
@@ -469,7 +469,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastAnalysisId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(fastAnalysisId) });
+        call.request(new Object[] { Integer.valueOf(fastAnalysisId) });
     }
 
     public synchronized int copyFastAnalysis(int id, User creator) throws EmfException {
@@ -479,7 +479,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.addParam("creator", mappings.user());
         call.setIntegerReturnType();
-        return (Integer) call.requestResponse(new Object[] { new Integer(id), creator });
+        return (Integer) call.requestResponse(new Object[] { Integer.valueOf(id), creator });
     }
 
     public synchronized FastAnalysis getFastAnalysis(int fastAnalysisId) throws EmfException {
@@ -488,7 +488,7 @@ public class FastServiceTransport implements FastService {
         call.setOperation("getFastAnalysis");
         call.addIntegerParam("fastAnalysisId");
         call.setReturnType(mappings.fastAnalysis());
-        return (FastAnalysis) call.requestResponse(new Object[] { new Integer(fastAnalysisId) });
+        return (FastAnalysis) call.requestResponse(new Object[] { Integer.valueOf(fastAnalysisId) });
     }
 
     public synchronized FastAnalysisOutput[] getFastAnalysisOutputs(int fastAnalysisId) throws EmfException {
@@ -498,7 +498,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("fastAnalysisId");
         call.setReturnType(mappings.fastAnalysisOutputs());
 
-        return (FastAnalysisOutput[]) call.requestResponse(new Object[] { new Integer(fastAnalysisId) });
+        return (FastAnalysisOutput[]) call.requestResponse(new Object[] { Integer.valueOf(fastAnalysisId) });
     }
 
     public List<FastAnalysis> getFastAnalysesByRunStatus(String runStatus) {
@@ -528,7 +528,7 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.string());
 
-        return (String) call.requestResponse(new Object[] { new Integer(id) });
+        return (String) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public FastAnalysisOutputType getFastAnalysisOutputType(String name) throws EmfException {
@@ -582,7 +582,7 @@ public class FastServiceTransport implements FastService {
         call.addStringParam("pollutant");
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(datasetId), new Integer(datasetVersion), new Integer(gridId), userName, dirName, pollutant });
+        call.request(new Object[] { Integer.valueOf(datasetId), Integer.valueOf(datasetVersion), Integer.valueOf(gridId), userName, dirName, pollutant });
     }
 
     public void exportFastOutputToNetCDFFile(int datasetId, int datasetVersion, int gridId, String userName, String dirName,
@@ -598,7 +598,7 @@ public class FastServiceTransport implements FastService {
         call.addStringParam("pollutant");
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(datasetId), new Integer(datasetVersion), new Integer(gridId), userName, dirName, pollutant });
+        call.request(new Object[] { Integer.valueOf(datasetId), Integer.valueOf(datasetVersion), Integer.valueOf(gridId), userName, dirName, pollutant });
     }
 
     public String[] getFastRunSpeciesMappingDatasetPollutants(int datasetId, int datasetVersion) throws EmfException {
@@ -609,6 +609,6 @@ public class FastServiceTransport implements FastService {
         call.addIntegerParam("datasetVersion");
         call.setStringArrayReturnType();
 
-        return (String[])call.requestResponse(new Object[] { new Integer(datasetId), new Integer(datasetVersion) });
+        return (String[])call.requestResponse(new Object[] { Integer.valueOf(datasetId), Integer.valueOf(datasetVersion) });
     }
 }

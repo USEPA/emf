@@ -38,7 +38,7 @@ public class IDAExImporterTest extends PersistenceTestCase {
         super.setUp();
         dbServer = dbSetup.getDbServer();
         sqlDataTypes = dbServer.getSqlDataTypes();
-        optimizedBatchSize = new Integer(10000);
+        optimizedBatchSize = Integer.valueOf(10000);
         dataset = new SimpleDataset();
         dataset.setName("test");
         dataset.setId(Math.abs(new Random().nextInt()));

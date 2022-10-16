@@ -196,7 +196,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 
         try {
             for (int i = 0; i < numOfDS; i++)
-                datasets[i] = ds.getDataset(new Integer(datasetIds[i]));
+                datasets[i] = ds.getDataset(Integer.valueOf(datasetIds[i]));
 
             // if Vservion[] is not specified, get the default versions from datasets themselves
             if (versions == null) {
@@ -264,7 +264,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 
         try {
             for (int i = 0; i < numOfDS; i++)
-                datasets[i] = ds.getDataset(new Integer(datasetIds[i]));
+                datasets[i] = ds.getDataset(Integer.valueOf(datasetIds[i]));
 
             // if Vservion[] is not specified, get the default versions from datasets themselves
             if (versions == null) {

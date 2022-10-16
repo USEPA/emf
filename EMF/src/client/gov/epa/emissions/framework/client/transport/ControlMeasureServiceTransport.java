@@ -75,7 +75,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(controlMeasureId) });
+        call.request(new Object[] { Integer.valueOf(controlMeasureId) });
     }
 
     public synchronized int copyMeasure(int controlMeasureId, User creator) throws EmfException {
@@ -86,7 +86,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addParam("creator", mappings.user());
         call.setIntegerReturnType();
 
-        return (Integer) call.requestResponse(new Object[] { new Integer(controlMeasureId), creator });
+        return (Integer) call.requestResponse(new Object[] { Integer.valueOf(controlMeasureId), creator });
     }
 
     public synchronized ControlMeasure obtainLockedMeasure(User owner, int controlMeasureId) throws EmfException {
@@ -97,7 +97,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setReturnType(mappings.controlMeasure());
 
-        return (ControlMeasure) call.requestResponse(new Object[] { owner, new Integer(controlMeasureId) });
+        return (ControlMeasure) call.requestResponse(new Object[] { owner, Integer.valueOf(controlMeasureId) });
     }
 
     // public ControlMeasure releaseLockedControlMeasure(ControlMeasure locked) throws EmfException {
@@ -118,7 +118,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setVoidReturnType();
 
-        call.requestResponse(new Object[] { user, new Integer(controlMeasureId) });
+        call.requestResponse(new Object[] { user, Integer.valueOf(controlMeasureId) });
     }
 
     public synchronized ControlMeasure updateMeasure(ControlMeasure measure, Scc[] sccs) throws EmfException {
@@ -150,7 +150,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setReturnType(mappings.sccs());
 
-        Scc[] sccs = (Scc[]) call.requestResponse(new Object[] { new Integer(controlMeasureId) });
+        Scc[] sccs = (Scc[]) call.requestResponse(new Object[] { Integer.valueOf(controlMeasureId) });
 
         return sccs;
     }
@@ -162,7 +162,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setReturnType(mappings.sccs());
 
-        Scc[] sccs = (Scc[]) call.requestResponse(new Object[] { new Integer(controlMeasureId) });
+        Scc[] sccs = (Scc[]) call.requestResponse(new Object[] { Integer.valueOf(controlMeasureId) });
 
         return sccs;
     }
@@ -210,7 +210,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
 
         call.setReturnType(mappings.costYearTable());
 
-        return (CostYearTable) call.requestResponse(new Object[] { new Integer(targetYear) });
+        return (CostYearTable) call.requestResponse(new Object[] { Integer.valueOf(targetYear) });
     }
 
     public synchronized ControlMeasureClass[] getMeasureClasses() throws EmfException {
@@ -248,7 +248,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setReturnType(mappings.efficiencyRecords());
 
-        return (EfficiencyRecord[]) call.requestResponse(new Object[] { new Integer(controlMeasureId) });
+        return (EfficiencyRecord[]) call.requestResponse(new Object[] { Integer.valueOf(controlMeasureId) });
     }
 
     public synchronized int getEfficiencyRecordCount(int controlMeasureId) throws EmfException {
@@ -258,7 +258,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setIntegerReturnType();
 
-        return (Integer) call.requestResponse(new Object[] { new Integer(controlMeasureId) });
+        return (Integer) call.requestResponse(new Object[] { Integer.valueOf(controlMeasureId) });
     }
 
     public synchronized EfficiencyRecord[] getEfficiencyRecords(int controlMeasureId, int recordLimit, String filter)
@@ -271,8 +271,8 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addStringParam("filter");
         call.setReturnType(mappings.efficiencyRecords());
 
-        return (EfficiencyRecord[]) call.requestResponse(new Object[] { new Integer(controlMeasureId),
-                new Integer(recordLimit), filter });
+        return (EfficiencyRecord[]) call.requestResponse(new Object[] { Integer.valueOf(controlMeasureId),
+                Integer.valueOf(recordLimit), filter });
     }
 
     public synchronized int addEfficiencyRecord(EfficiencyRecord efficiencyRecord) throws EmfException {
@@ -292,7 +292,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("efficiencyRecordId");
         call.setVoidReturnType();
 
-        call.requestResponse(new Object[] { new Integer(efficiencyRecordId) });
+        call.requestResponse(new Object[] { Integer.valueOf(efficiencyRecordId) });
     }
 
     public synchronized void updateEfficiencyRecord(EfficiencyRecord efficiencyRecord) throws EmfException {
@@ -331,7 +331,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("majorPollutantId");
         call.addStringParam("whereFilter");
         call.setReturnType(mappings.controlMeasures());
-        return (ControlMeasure[]) call.requestResponse(new Object[] { new Integer(majorPollutantId), whereFilter });
+        return (ControlMeasure[]) call.requestResponse(new Object[] { Integer.valueOf(majorPollutantId), whereFilter });
     }
 
     public synchronized ControlMeasure[] getControlMeasures(int majorPollutantId, String whereFilter)
@@ -342,7 +342,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("majorPollutantId");
         call.addStringParam("whereFilter");
         call.setReturnType(mappings.controlMeasures());
-        return (ControlMeasure[]) call.requestResponse(new Object[] { new Integer(majorPollutantId), whereFilter });
+        return (ControlMeasure[]) call.requestResponse(new Object[] { Integer.valueOf(majorPollutantId), whereFilter });
     }
 
     public synchronized ControlMeasure getMeasure(int controlMeasureId) throws EmfException {
@@ -352,7 +352,7 @@ public class ControlMeasureServiceTransport implements ControlMeasureService {
         call.addIntegerParam("controlMeasureId");
         call.setReturnType(mappings.controlMeasure());
 
-        return (ControlMeasure) call.requestResponse(new Object[] { new Integer(controlMeasureId) });
+        return (ControlMeasure) call.requestResponse(new Object[] { Integer.valueOf(controlMeasureId) });
     }
 
     public synchronized EquationType[] getEquationTypes() throws EmfException {

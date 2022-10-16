@@ -31,7 +31,7 @@ public class LoggingServiceTransport implements LoggingService {
         call.addIntegerParam("datasetId");
         call.setReturnType(mappings.logs());
 
-        return (AccessLog[]) call.requestResponse(new Object[] { new Integer(datasetid) });
+        return (AccessLog[]) call.requestResponse(new Object[] { Integer.valueOf(datasetid) });
     }
 
     public synchronized String getLastExportedFileName(int datasetId) throws EmfException {
@@ -40,7 +40,7 @@ public class LoggingServiceTransport implements LoggingService {
         call.setOperation("getLastExportedFileName");
         call.addIntegerParam("datasetId");
         call.setReturnType(mappings.string());
-        return (String) call.requestResponse(new Object[]{new Integer(datasetId)});
+        return (String) call.requestResponse(new Object[]{Integer.valueOf(datasetId)});
     }
 
 }

@@ -16,7 +16,7 @@ public class RevisionsRowSource implements RowSource {
 
     public Object[] values() {
         return new Object[] { string50(revision.getWhat()), string50(revision.getWhy()), revision.getReferences(),
-                new Long(revision.getVersion()), revision.getCreator().getName(), format(revision.getDate()) };
+                Long.valueOf(revision.getVersion()), revision.getCreator().getName(), format(revision.getDate()) };
     }
     
     private String string50(String value){

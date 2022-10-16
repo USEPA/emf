@@ -15,7 +15,7 @@ public class ControlStrategiesTableData extends AbstractTableData {
 
     private List rows;
 
-    private final static Double NAN_VALUE = new Double(Double.NaN);
+    private final static Double NAN_VALUE = Double.valueOf(Double.NaN);
     
 //    private EmfSession session;
     
@@ -79,7 +79,7 @@ public class ControlStrategiesTableData extends AbstractTableData {
 //        if (summary == null)
 //            return NAN_VALUE;
 // 
-//        return new Double(summary.getStrategyTotalReduction());
+//        return Double.valueOf(summary.getStrategyTotalReduction());
 //    }
 //
 //    private Double getTotalCost(int controlStrategyId) throws EmfException {
@@ -87,7 +87,7 @@ public class ControlStrategiesTableData extends AbstractTableData {
 //        if (summary == null)
 //            return NAN_VALUE;
 //
-//        return new Double(summary.getStrategyTotalCost());
+//        return Double.valueOf(summary.getStrategyTotalCost());
 //    }
 //
 //    private ControlStrategyResult[] getControlStrategyResults(int controlStrategyId) throws EmfException {

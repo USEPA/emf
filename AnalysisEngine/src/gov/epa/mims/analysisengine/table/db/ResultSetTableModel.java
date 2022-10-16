@@ -33,10 +33,10 @@ public class ResultSetTableModel extends SpecialTableModel {
 	static {
 		defaultValue = new HashMap();
 		defaultValue.put(String.class, "");
-		defaultValue.put(Double.class, new Double(Double.NaN));
-		defaultValue.put(Float.class, new Float(Double.NaN));
+		defaultValue.put(Double.class, Double.valueOf(Double.NaN));
+		defaultValue.put(Float.class, Float.valueOf(Float.NaN));
 		defaultValue.put(Date.class, new Date(0L));
-		defaultValue.put(Integer.class, new Integer(0));
+		defaultValue.put(Integer.class, Integer.valueOf(0));
 	}
 
 	/** a reference to the resultset */

@@ -68,7 +68,7 @@ public class TabNameGUI extends JDialog {
 		// String [] names = filesInTabbedPane.getAllUniqueNames();
 		Object[][] data = new Object[allTabNames.length][colNames.length];
 		for (int i = 0; i < allTabNames.length; i++) {
-			data[i][0] = new Integer(i + 1);
+			data[i][0] = Integer.valueOf(i + 1);
 			data[i][1] = allTabNames[i];
 		}// for(i)
 		DefaultTableModel tableModel = new DefaultTableModel(data, colNames) {

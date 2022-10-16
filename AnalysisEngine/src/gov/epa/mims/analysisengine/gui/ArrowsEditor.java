@@ -58,7 +58,7 @@ public class ArrowsEditor extends JPanel
       BooleanTableColumn showColumn = new BooleanTableColumn(SHOW_ARROW, "Show?");
       try
       {
-         showColumn.setDefaultValue(new Boolean(true));
+         showColumn.setDefaultValue(Boolean.TRUE);
       }
       catch(Exception e)
       {
@@ -94,7 +94,7 @@ public class ArrowsEditor extends JPanel
             TextBoxArrow arrow = (TextBoxArrow)arrows.get(i);
             tablePanel.insertRow(false);
             tablePanel.setValueAt(arrow, i,ARROW);
-            Boolean enabled = new Boolean(arrow.getEnable());
+            Boolean enabled = Boolean.valueOf(arrow.getEnable());
             tablePanel.setValueAt(enabled, i,SHOW_ARROW);
          }//for(i)
       }//if

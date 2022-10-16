@@ -105,8 +105,8 @@ public class ViewablePage extends AbstractTableData {
         Object[] tokens = record.getTokens();
         allTokens.addAll(Arrays.asList(tokens));
         
-        allTokens.add(new Integer(record.getRecordId()));
-        allTokens.add(new Long(record.getVersion()));
+        allTokens.add(Integer.valueOf(record.getRecordId()));
+        allTokens.add(Long.valueOf(record.getVersion()));
         allTokens.add(record.getDeleteVersions());
         
         return allTokens.toArray();

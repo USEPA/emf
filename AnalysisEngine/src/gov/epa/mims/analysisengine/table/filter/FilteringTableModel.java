@@ -247,7 +247,7 @@ public class FilteringTableModel extends MultiRowHeaderTableModel implements Tab
 		nameToIndexHash.clear();
 		int numCols = getColumnCount();
 		for (int c = 0; c < numCols; c++) {
-			nameToIndexHash.put(getColumnName(c), new Integer(c));
+			nameToIndexHash.put(getColumnName(c), Integer.valueOf(c));
 		} // for(c)
 	} // populateNameToIndexHashtable()
 

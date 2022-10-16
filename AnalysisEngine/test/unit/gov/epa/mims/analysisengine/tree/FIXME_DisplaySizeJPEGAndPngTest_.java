@@ -317,7 +317,7 @@ public class FIXME_DisplaySizeJPEGAndPngTest_ extends TestCase implements Analys
         axis.setGridTickmarkEnable(true);
         axis.setGridEnable(true);
         axis.setGridColor(java.awt.Color.yellow);
-        axis.setAxisRange(new Double(0), new Double(25));
+        axis.setAxisRange(Double.valueOf(0), Double.valueOf(25));
         axis.setGrid();
         axis.setLogScale(false);
 

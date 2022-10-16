@@ -167,7 +167,7 @@ public class PaginationPanel extends JPanel implements ObserverPanel {
                 JSlider source = (JSlider) e.getSource();
                 int val = source.getValue();
                 if (!source.getValueIsAdjusting()) { // done adjusting
-                    recordInput.setValue(new Integer(val)); // update value
+                    recordInput.setValue(Integer.valueOf(val)); // update value
                 } else { // value is adjusting; just set the text
                     recordInput.setText(String.valueOf(val));
                 }

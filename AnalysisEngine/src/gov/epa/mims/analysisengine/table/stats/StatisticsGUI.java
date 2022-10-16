@@ -741,21 +741,21 @@ public class StatisticsGUI extends JDialog {
 		HashMap basicAnal = new HashMap();
 
 		boolean selected = minCheckBox.isSelected();
-		basicAnal.put(SummaryStats.MIN, new Boolean(selected));
+		basicAnal.put(SummaryStats.MIN, Boolean.valueOf(selected));
 		selected = maxCheckBox.isSelected();
-		basicAnal.put(SummaryStats.MAX, new Boolean(selected));
+		basicAnal.put(SummaryStats.MAX, Boolean.valueOf(selected));
 		selected = sumCheckBox.isSelected();
-		basicAnal.put(SummaryStats.SUM, new Boolean(selected));
+		basicAnal.put(SummaryStats.SUM, Boolean.valueOf(selected));
 		selected = meanCheckBox.isSelected();
-		basicAnal.put(SummaryStats.MEAN, new Boolean(selected));
+		basicAnal.put(SummaryStats.MEAN, Boolean.valueOf(selected));
 		selected = medianCheckBox.isSelected();
-		basicAnal.put(SummaryStats.MEDIAN, new Boolean(selected));
+		basicAnal.put(SummaryStats.MEDIAN, Boolean.valueOf(selected));
 		selected = stdDevCheckBox.isSelected();
-		basicAnal.put(SummaryStats.STD_DEVIATION, new Boolean(selected));
+		basicAnal.put(SummaryStats.STD_DEVIATION, Boolean.valueOf(selected));
 		selected = skewCheckBox.isSelected();
-		basicAnal.put(SummaryStats.SKEW, new Boolean(selected));
+		basicAnal.put(SummaryStats.SKEW, Boolean.valueOf(selected));
 		selected = kurtosisCheckBox.isSelected();
-		basicAnal.put(SummaryStats.KURTOSIS, new Boolean(selected));
+		basicAnal.put(SummaryStats.KURTOSIS, Boolean.valueOf(selected));
 		statisticsModel.setSelBasicStats(basicAnal);
 
 		HistogramModel hModel = null;
@@ -900,7 +900,7 @@ public class StatisticsGUI extends JDialog {
 		for (int i = 0; i < 10; i++) {
 			ArrayList rowData = new ArrayList();
 			for (int j = 0; j < count; j++) {
-				rowData.add(new Double(j));
+				rowData.add(Double.valueOf(j));
 			}
 			data.add(rowData);
 		}// for(i)

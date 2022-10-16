@@ -137,7 +137,7 @@ public class TextBoxesTypeEditor extends OptionDialog
             TextBox aTextBox = textBoxesType.getTextBox(i);
             tablePanel.insertRow(false);
             tablePanel.setValueAt(aTextBox,i,TEXTBOX_COLUMN);
-            tablePanel.setValueAt(new Boolean(aTextBox.getEnable()),i, SHOW_COLUMN);
+            tablePanel.setValueAt(Boolean.valueOf(aTextBox.getEnable()),i, SHOW_COLUMN);
          }
       }//if(textBoxesType != null)
 

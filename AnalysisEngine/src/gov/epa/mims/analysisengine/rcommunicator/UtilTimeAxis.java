@@ -570,13 +570,13 @@ gov.epa.mims.analysisengine.tree.AnalysisOptionConstantsIfc
          Calendar.MILLISECOND
       };
       HashMap hashMap = new HashMap();
-      hashMap.put(new Integer(fields[0]), yearSteps);
-      hashMap.put(new Integer(fields[1]), monthSteps);
-      hashMap.put(new Integer(fields[2]), daySteps);
-      hashMap.put(new Integer(fields[3]), hourSteps);
-      hashMap.put(new Integer(fields[4]), minSteps);
-      hashMap.put(new Integer(fields[5]), secSteps);
-      hashMap.put(new Integer(fields[6]), msSteps);
+      hashMap.put(Integer.valueOf(fields[0]), yearSteps);
+      hashMap.put(Integer.valueOf(fields[1]), monthSteps);
+      hashMap.put(Integer.valueOf(fields[2]), daySteps);
+      hashMap.put(Integer.valueOf(fields[3]), hourSteps);
+      hashMap.put(Integer.valueOf(fields[4]), minSteps);
+      hashMap.put(Integer.valueOf(fields[5]), secSteps);
+      hashMap.put(Integer.valueOf(fields[6]), msSteps);
 
       Date[] at = null;
       boolean done = false;
@@ -585,7 +585,7 @@ gov.epa.mims.analysisengine.tree.AnalysisOptionConstantsIfc
       while (!done)
       {
          int field = fields[++i];
-         int[] steps = (int[]) hashMap.get(new Integer(field));
+         int[] steps = (int[]) hashMap.get(Integer.valueOf(field));
 
          for (int j = 0; j < steps.length; ++j)
          {

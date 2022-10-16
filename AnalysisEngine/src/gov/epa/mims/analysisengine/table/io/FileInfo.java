@@ -26,7 +26,7 @@ public class FileInfo extends java.util.Vector {
    add(path);
    add(fileName);
    add(delim);
-   add(new Integer(numColHdrRows));
+   add(Integer.valueOf(numColHdrRows));
   }
 
   public void print(OutputStream out) throws java.io.IOException 

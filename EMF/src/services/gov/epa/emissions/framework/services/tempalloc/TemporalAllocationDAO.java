@@ -103,7 +103,7 @@ public class TemporalAllocationDAO {
     }
 
     public TemporalAllocation getById(int id, Session session) {
-        TemporalAllocation element = (TemporalAllocation)hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", new Integer(id)), session);
+        TemporalAllocation element = (TemporalAllocation)hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", Integer.valueOf(id)), session);
         return element;
     }
 
@@ -113,7 +113,7 @@ public class TemporalAllocationDAO {
     }
 
     public TemporalAllocation getTemporalAllocation(int id, Session session) {
-        return (TemporalAllocation) hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", new Integer(id)), session);
+        return (TemporalAllocation) hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", Integer.valueOf(id)), session);
     }
     
     public List allResolutions(Session session) {

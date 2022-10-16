@@ -9,7 +9,7 @@ public class EmfArrays {
         List<Integer> IntArray = new ArrayList<Integer>();
         
         for (int i : intArray)
-            IntArray.add(new Integer(i));
+            IntArray.add(Integer.valueOf(i));
         
         return IntArray;
     }

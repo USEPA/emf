@@ -393,11 +393,11 @@ public class DataCommonsDAO {
     }
     
     public List<Revision> getRevisions(int datasetId, Session session) {
-        return session.createCriteria(Revision.class).add(Restrictions.eq("datasetId", new Integer(datasetId))).list();
+        return session.createCriteria(Revision.class).add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).list();
     }
 
     public List<DatasetNote> getDatasetNotes(int datasetId, Session session) {
-        return session.createCriteria(DatasetNote.class).add(Restrictions.eq("datasetId", new Integer(datasetId))).list();
+        return session.createCriteria(DatasetNote.class).add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).list();
     }
     
     public List<Note> getNotes(Session session, String nameContains) {

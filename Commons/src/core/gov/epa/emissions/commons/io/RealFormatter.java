@@ -28,7 +28,7 @@ public class RealFormatter implements ColumnFormatter {
         if (data.getString(name) == null || data.getFloat(name) == -9)
             return getSpaces(this.width + this.spaces);
 
-        String dataValue = new Double(data.getDouble(name)).toString(); //add for rounding off unnecessary digits
+        String dataValue = Double.valueOf(data.getDouble(name)).toString(); //add for rounding off unnecessary digits
         int dataWidth = dataValue.length();
         
         //NOTE: if width never specified, it should always be the width of the data itself

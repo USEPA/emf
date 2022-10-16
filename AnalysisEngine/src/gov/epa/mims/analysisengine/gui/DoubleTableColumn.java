@@ -34,10 +34,10 @@ public class DoubleTableColumn extends SpecialTableColumn
 
    /** The list of valid choices for the user to choose from. This will be null if the user
     * can enter any value. */
-   protected Double[] validChoices = null;//   {new Double(1.0)};
+   protected Double[] validChoices = null;//   {Double.valueOf(1.0)};
 
    /** The default value to place in newly added rows. */
-   protected Double defaultValue = new Double(1.0d);
+   protected Double defaultValue = Double.valueOf(1.0d);
 
 
    //protected  DoubleSelection contents ;
@@ -244,7 +244,7 @@ public class DoubleTableColumn extends SpecialTableColumn
                }
             }
 
-            return new Double(enteredValue);
+            return Double.valueOf(enteredValue);
          }
       };
       cellEditor = doubleEditor;

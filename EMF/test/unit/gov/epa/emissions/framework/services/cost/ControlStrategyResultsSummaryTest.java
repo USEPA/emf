@@ -23,8 +23,8 @@ public class ControlStrategyResultsSummaryTest extends TestCase {
         };
         
         ControlStrategyResultsSummary summary = new ControlStrategyResultsSummary(results);
-        assertEquals(new Float(500), new Float(summary.getStrategyTotalCost()));
-        assertEquals(new Float(5000), new Float(summary.getStrategyTotalReduction()));
+        assertEquals(Float.valueOf(500), Float.valueOf(summary.getStrategyTotalCost()));
+        assertEquals(Float.valueOf(5000), Float.valueOf(summary.getStrategyTotalReduction()));
         assertEquals("Completed successfully.", summary.getRunStatus());
         assertEquals(dateFormatter.format(new Date(500)).toString(), summary.getStartTime().toString());
         assertEquals(dateFormatter.format(new Date(12000)).toString(), summary.getCompletionTime().toString());

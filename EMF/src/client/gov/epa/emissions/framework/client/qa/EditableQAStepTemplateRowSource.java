@@ -19,7 +19,7 @@ public class EditableQAStepTemplateRowSource implements RowSource {
     public Object[] values() {
         return new Object[] { selected, source.getName(), source.getProgram(), 
                 shortenProgramArguments(source.getProgramArguments()),
-                Boolean.valueOf(source.isRequired()), new Float(source.getOrder()) };
+                Boolean.valueOf(source.isRequired()), Float.valueOf(source.getOrder()) };
     }
     
     private String shortenProgramArguments(String arguments)

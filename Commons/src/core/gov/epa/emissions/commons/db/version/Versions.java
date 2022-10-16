@@ -43,8 +43,8 @@ public class Versions {
         try {
             tx = session.beginTransaction();
             Criteria crit = session.createCriteria(Version.class);
-            Criteria fullCrit = crit.add(Restrictions.eq("datasetId", new Integer(datasetId))).add(
-                    Restrictions.eq("version", new Integer(version)));
+            Criteria fullCrit = crit.add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).add(
+                    Restrictions.eq("version", Integer.valueOf(version)));
             tx.commit();
 
             return (Version) fullCrit.uniqueResult();
@@ -87,7 +87,7 @@ public class Versions {
         try {
             tx = session.beginTransaction();
             Criteria crit = session.createCriteria(Version.class).add(
-                    Restrictions.eq("datasetId", new Integer(datasetId))).addOrder(Order.asc("version"));
+                    Restrictions.eq("datasetId", Integer.valueOf(datasetId))).addOrder(Order.asc("version"));
             List versions = crit.list();
             tx.commit();
 
@@ -181,7 +181,7 @@ public class Versions {
         try {
             tx = session.beginTransaction();
             Criteria base = session.createCriteria(Version.class);
-            Criteria fullCrit = base.add(Restrictions.eq("datasetId", new Integer(datasetId))).addOrder(
+            Criteria fullCrit = base.add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).addOrder(
                     Order.desc("version"));
             List versions = fullCrit.list();
             tx.commit();

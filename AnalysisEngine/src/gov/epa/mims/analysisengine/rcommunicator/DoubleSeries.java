@@ -85,7 +85,7 @@ public class DoubleSeries extends AbstractDataSet implements DataSetIfc,
    {
       for (int i = 0; i < data.length; i++)
       {
-         dataArrayList.add(new Double(data[i]));
+         dataArrayList.add(Double.valueOf(data[i]));
       }
    }
 
@@ -96,7 +96,7 @@ public class DoubleSeries extends AbstractDataSet implements DataSetIfc,
     *****************************************************/
    public void addData(double data)
    {
-      dataArrayList.add(new Double(data));
+      dataArrayList.add(Double.valueOf(data));
    }
 
    /**

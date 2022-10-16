@@ -126,7 +126,7 @@ public class FastDAO {
 
     // return FastRuns by Grid and orderby name
     public List<FastRun> getFastRuns(int gridId, Session session) {
-        return hibernateFacade.get(FastRun.class, Restrictions.eq("grid.id", new Integer(gridId)), Order.asc("name"), session);
+        return hibernateFacade.get(FastRun.class, Restrictions.eq("grid.id", Integer.valueOf(gridId)), Order.asc("name"), session);
     }
 
     public List<FastRunOutputType> getFastRunOutputTypes(Session session) {
@@ -238,7 +238,7 @@ public class FastDAO {
     }
 
 //    public void removeFastRunResult(FastRun fastRun, Session session) {
-//        Criterion c = Restrictions.eq("fastRunId", new Integer(fastRun.getId()));
+//        Criterion c = Restrictions.eq("fastRunId", Integer.valueOf(fastRun.getId()));
 //        List list = hibernateFacade.get(FastRunResult.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
 //            FastRunResult result = (FastRunResult) list.get(i);
@@ -252,7 +252,7 @@ public class FastDAO {
 //             .setInteger("fastRunId", fastRunId)
 //             .executeUpdate();
 //        session.flush();
-        List<?> outputs = hibernateFacade.get(FastRunOutput.class, Restrictions.eq("fastRunId", new Integer(fastRunId)), session);
+        List<?> outputs = hibernateFacade.get(FastRunOutput.class, Restrictions.eq("fastRunId", Integer.valueOf(fastRunId)), session);
         hibernateFacade.remove(outputs.toArray(), session);
     }
 
@@ -262,7 +262,7 @@ public class FastDAO {
     }
 
     public FastRun getFastRun(int id, Session session) {
-        FastRun cs = (FastRun) hibernateFacade.load(FastRun.class, Restrictions.eq("id", new Integer(id)), session);
+        FastRun cs = (FastRun) hibernateFacade.load(FastRun.class, Restrictions.eq("id", Integer.valueOf(id)), session);
         return cs;
     }
 
@@ -412,7 +412,7 @@ public class FastDAO {
     }
 
     public FastDataset getFastDataset(Session session, int fastDatasetId) {
-        return (FastDataset) hibernateFacade.load(FastDataset.class, Restrictions.eq("id", new Integer(fastDatasetId)), session);
+        return (FastDataset) hibernateFacade.load(FastDataset.class, Restrictions.eq("id", Integer.valueOf(fastDatasetId)), session);
     }
 
     public int addFastDataset(FastDataset fastDataset, Session session) {
@@ -432,7 +432,7 @@ public class FastDAO {
     }
 
     public FastNonPointDataset getFastNonPointDataset(Session session, int fastNonPointDatasetId) {
-        return (FastNonPointDataset) hibernateFacade.load(FastNonPointDataset.class, Restrictions.eq("id", new Integer(fastNonPointDatasetId)), session);
+        return (FastNonPointDataset) hibernateFacade.load(FastNonPointDataset.class, Restrictions.eq("id", Integer.valueOf(fastNonPointDatasetId)), session);
     }
 
     public int addFastNonPointDataset(FastNonPointDataset fastNonPointDataset, Session session) {
@@ -616,7 +616,7 @@ public class FastDAO {
     }
 
 //    public void removeFastAnalysisResult(FastAnalysis fastAnalysis, Session session) {
-//        Criterion c = Restrictions.eq("fastAnalysisId", new Integer(fastAnalysis.getId()));
+//        Criterion c = Restrictions.eq("fastAnalysisId", Integer.valueOf(fastAnalysis.getId()));
 //        List list = hibernateFacade.get(FastAnalysisResult.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
 //            FastAnalysisResult result = (FastAnalysisResult) list.get(i);
@@ -631,7 +631,7 @@ public class FastDAO {
 //             .executeUpdate();
 //        session.flush();
         
-        List<?> outputs = hibernateFacade.get(FastAnalysisOutput.class, Restrictions.eq("fastAnalysisId", new Integer(fastAnalysisId)), session);
+        List<?> outputs = hibernateFacade.get(FastAnalysisOutput.class, Restrictions.eq("fastAnalysisId", Integer.valueOf(fastAnalysisId)), session);
         hibernateFacade.remove(outputs.toArray(), session);
     }
 
@@ -641,7 +641,7 @@ public class FastDAO {
     }
 
     public FastAnalysis getFastAnalysis(int id, Session session) {
-        FastAnalysis cs = (FastAnalysis) hibernateFacade.load(FastAnalysis.class, Restrictions.eq("id", new Integer(id)), session);
+        FastAnalysis cs = (FastAnalysis) hibernateFacade.load(FastAnalysis.class, Restrictions.eq("id", Integer.valueOf(id)), session);
         return cs;
     }
 

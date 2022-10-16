@@ -452,7 +452,7 @@ public class SaveConfigView extends JDialog {
 			TableModel model = chooseConfigTable.getModel();
 
 			for (int i = 0; i < indexs.length; i++) {
-				model.setValueAt(new Boolean(true), indexs[i], 2);
+				model.setValueAt(Boolean.TRUE, indexs[i], 2);
 			}
 		}
 		return;
@@ -465,7 +465,7 @@ public class SaveConfigView extends JDialog {
 			TableModel model = chooseConfigTable.getModel();
 
 			for (int i = 0; i < indexs.length; i++) {
-				model.setValueAt(new Boolean(false), indexs[i], 2);
+				model.setValueAt(Boolean.FALSE, indexs[i], 2);
 			}
 		}
 		return;

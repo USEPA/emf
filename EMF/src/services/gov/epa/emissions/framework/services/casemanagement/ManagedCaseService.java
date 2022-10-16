@@ -937,7 +937,7 @@ public class ManagedCaseService {
         try {
             dao.add(name, session);
             Criterion crit1 = Restrictions.eq("name", name.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", new Integer(name.getModelToRunId()));
+            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(name.getModelToRunId()));
 
             return (InputName) dao.load(InputName.class, new Criterion[] { crit1, crit2 }, session);
         } catch (Exception e) {
@@ -954,7 +954,7 @@ public class ManagedCaseService {
         try {
             dao.add(program, session);
             Criterion crit1 = Restrictions.eq("name", program.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", new Integer(program.getModelToRunId()));
+            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(program.getModelToRunId()));
 
             return (CaseProgram) dao.load(CaseProgram.class, new Criterion[] { crit1, crit2 }, session);
         } catch (Exception e) {
@@ -971,7 +971,7 @@ public class ManagedCaseService {
         try {
             dao.add(inputEnvtVar, session);
             Criterion crit1 = Restrictions.eq("name", inputEnvtVar.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", new Integer(inputEnvtVar.getModelToRunId()));
+            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(inputEnvtVar.getModelToRunId()));
             return (InputEnvtVar) dao.load(InputEnvtVar.class, new Criterion[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new input environment variable '" + inputEnvtVar.getName() + "'\n", e);
@@ -1020,7 +1020,7 @@ public class ManagedCaseService {
         Session session = sessionFactory.getSession();
         try {
             Criterion crit1 = Restrictions.eq("name", subdir.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", new Integer(subdir.getModelToRunId()));
+            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(subdir.getModelToRunId()));
             SubDir existed = (SubDir) dao.load(SubDir.class, new Criterion[] { crit1, crit2 }, session);
 
             if (existed != null)
@@ -1896,7 +1896,7 @@ public class ManagedCaseService {
         try {
             dao.addParameterName(name, session);
             Criterion crit1 = Restrictions.eq("name", name.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", new Integer(name.getModelToRunId()));
+            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(name.getModelToRunId()));
             return (ParameterName) dao.load(ParameterName.class, new Criterion[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new parameter name '" + name.getName() + "'\n", e);
@@ -1958,7 +1958,7 @@ public class ManagedCaseService {
         try {
             dao.add(envVar, session);
             Criterion crit1 = Restrictions.eq("name", envVar.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", new Integer(envVar.getModelToRunId()));
+            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(envVar.getModelToRunId()));
             return (ParameterEnvVar) dao.load(ParameterEnvVar.class, new Criterion[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new parameter env variable '" + envVar.getName() + "'\n", e);
@@ -3983,7 +3983,7 @@ public class ManagedCaseService {
                 if (caseId == -9) {
                     caseId = pwTask.getCaseId();
                 }
-                jobIds[i] = new Integer(pwTask.getJobId());
+                jobIds[i] = Integer.valueOf(pwTask.getJobId());
             }
 
             // Task has been acquired so delete from persisted wait task table

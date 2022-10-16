@@ -37,7 +37,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
 
         Page page = new Page();
         page.setNumber(3);
-        service.stubs().method("getPage").with(ANYTHING, eq(new Integer(3))).will(returnValue(page));
+        service.stubs().method("getPage").with(ANYTHING, eq(Integer.valueOf(3))).will(returnValue(page));
 
         Mock view = mock(TableView.class);
         view.expects(once()).method("display");
@@ -53,7 +53,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
 
         Page page = new Page();
         page.setNumber(3);
-        service.stubs().method("getPage").with(ANYTHING, eq(new Integer(3))).will(returnValue(page));
+        service.stubs().method("getPage").with(ANYTHING, eq(Integer.valueOf(3))).will(returnValue(page));
 
         Mock view = mock(TableView.class);
         view.expects(new InvokeCountMatcher(2)).method("display");
@@ -70,7 +70,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
 
         Page page = new Page();
         page.setNumber(1);
-        service.stubs().method("getPage").with(ANYTHING, eq(new Integer(1))).will(returnValue(page));
+        service.stubs().method("getPage").with(ANYTHING, eq(Integer.valueOf(1))).will(returnValue(page));
 
         Mock view = mock(TableView.class);
         view.expects(once()).method("display");
@@ -86,8 +86,8 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
 
         Page page = new Page();
         page.setNumber(1);
-        service.stubs().method("getPage").with(ANYTHING, eq(new Integer(1))).will(returnValue(page));
-        stub(service, "getPageCount", new Integer(3));
+        service.stubs().method("getPage").with(ANYTHING, eq(Integer.valueOf(1))).will(returnValue(page));
+        stub(service, "getPageCount", Integer.valueOf(3));
 
         Mock view = mock(TableView.class);
         view.expects(once()).method("display");
@@ -103,8 +103,8 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
 
         Page page = new Page();
         page.setNumber(1);
-        service.stubs().method("getPage").with(ANYTHING, eq(new Integer(7))).will(returnValue(page));
-        stub(service, "getPageCount", new Integer(7));
+        service.stubs().method("getPage").with(ANYTHING, eq(Integer.valueOf(7))).will(returnValue(page));
+        stub(service, "getPageCount", Integer.valueOf(7));
 
         Mock view = mock(TableView.class);
         view.expects(once()).method("display");
@@ -121,8 +121,8 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
 
         Page page = new Page();
         page.setNumber(92);
-        service.stubs().method("getPage").with(ANYTHING, eq(new Integer(92))).will(returnValue(page));
-        stub(service, "getPageCount", new Integer(92));
+        service.stubs().method("getPage").with(ANYTHING, eq(Integer.valueOf(92))).will(returnValue(page));
+        stub(service, "getPageCount", Integer.valueOf(92));
 
         Mock view = mock(TableView.class);
         view.expects(once()).method("display");
@@ -140,7 +140,7 @@ public class TablePaginatorTest extends EmfMockObjectTestCase {
 
         Page page = new Page();
         page.setNumber(1);
-        service.stubs().method("getPage").with(ANYTHING, eq(new Integer(1))).will(returnValue(page));
+        service.stubs().method("getPage").with(ANYTHING, eq(Integer.valueOf(1))).will(returnValue(page));
 
         Mock view = mock(TableView.class);
         view.expects(once()).method("display");

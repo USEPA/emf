@@ -63,7 +63,7 @@ public class ControlProgramServiceTransport implements ControlProgramService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.controlProgram());
 
-        return (ControlProgram) call.requestResponse(new Object[] { owner, new Integer(id) });
+        return (ControlProgram) call.requestResponse(new Object[] { owner, Integer.valueOf(id) });
 
     }
 
@@ -75,7 +75,7 @@ public class ControlProgramServiceTransport implements ControlProgramService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.controlProgram());
 
-        call.request(new Object[] { user, new Integer(id) });
+        call.request(new Object[] { user, Integer.valueOf(id) });
     }
 
     public synchronized ControlProgram updateControlProgram(ControlProgram element) throws EmfException {
@@ -125,7 +125,7 @@ public class ControlProgramServiceTransport implements ControlProgramService {
         call.addIntegerParam("id");
         call.addParam("creator", mappings.user());
         call.setIntegerReturnType();
-        return (Integer) call.requestResponse(new Object[] { new Integer(id), creator });
+        return (Integer) call.requestResponse(new Object[] { Integer.valueOf(id), creator });
     }
 
     public ControlProgram getControlProgram(int id) throws EmfException {
@@ -135,6 +135,6 @@ public class ControlProgramServiceTransport implements ControlProgramService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.controlProgram());
 
-        return (ControlProgram) call.requestResponse(new Object[] { new Integer(id) });
+        return (ControlProgram) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 }

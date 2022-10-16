@@ -242,7 +242,7 @@ public class SectorScenarioDAO {
     }
 
 //    public void removeSectorScenarioResult(SectorScenario sectorScenario, Session session) {
-//        Criterion c = Restrictions.eq("sectorScenarioId", new Integer(sectorScenario.getId()));
+//        Criterion c = Restrictions.eq("sectorScenarioId", Integer.valueOf(sectorScenario.getId()));
 //        List list = hibernateFacade.get(SectorScenarioResult.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
 //            SectorScenarioResult result = (SectorScenarioResult) list.get(i);
@@ -392,7 +392,7 @@ public class SectorScenarioDAO {
     }
 
     public SectorScenario getById(int id, Session session) {
-        SectorScenario cs = (SectorScenario) hibernateFacade.load(SectorScenario.class, Restrictions.eq("id", new Integer(id)), session);
+        SectorScenario cs = (SectorScenario) hibernateFacade.load(SectorScenario.class, Restrictions.eq("id", Integer.valueOf(id)), session);
         return cs;
     }
 

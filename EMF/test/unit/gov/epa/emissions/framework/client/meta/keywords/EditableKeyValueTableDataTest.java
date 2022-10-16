@@ -129,7 +129,7 @@ public class EditableKeyValueTableDataTest extends TestCase {
 
         String key = "key";
         String value = "value";
-        data.setValueAt(new Boolean(true), 3, 0);
+        data.setValueAt(Boolean.TRUE, 3, 0);
         data.setValueAt(key, 3, 1);
         data.setValueAt(value, 3, 2);
 

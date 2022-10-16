@@ -54,7 +54,7 @@ public class ViewableInputsTabPresenterImpl extends EditInputsTabPresenterImpl {
         Integer[] caseInputIds = new Integer[caseInputs.size()];
 
         for (int i = 0; i < caseInputIds.length; i++) {
-            caseInputIds[i] = new Integer(caseInputs.get(i).getId());
+            caseInputIds[i] = Integer.valueOf(caseInputs.get(i).getId());
         }
 
         if (overwrite)

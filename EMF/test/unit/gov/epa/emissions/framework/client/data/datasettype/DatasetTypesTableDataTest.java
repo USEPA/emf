@@ -73,8 +73,8 @@ public class DatasetTypesTableDataTest extends TestCase {
         Row row = (Row) rows.get(0);
         assertEquals("name1", row.getValueAt(0));
         assertEquals("desc1", row.getValueAt(5));
-        assertEquals(new Integer(1), row.getValueAt(3));
-        assertEquals(new Integer(3), row.getValueAt(4));
+        assertEquals(Integer.valueOf(1), row.getValueAt(3));
+        assertEquals(Integer.valueOf(3), row.getValueAt(4));
     }
 
     public void testShouldReturnARowRepresentingADatasetTypeEntry() {

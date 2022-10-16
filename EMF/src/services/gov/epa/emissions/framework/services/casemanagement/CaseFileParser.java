@@ -328,12 +328,12 @@ public class CaseFileParser {
         }
 
         if (values[1].equalsIgnoreCase("Met Layers")) {
-            caseObj.setNumMetLayers(value == null || value.equalsIgnoreCase("null") || value.trim().isEmpty() ? null : new Integer(value));
+            caseObj.setNumMetLayers(value == null || value.equalsIgnoreCase("null") || value.trim().isEmpty() ? null : Integer.valueOf(value));
             return;
         }
 
         if (values[1].equalsIgnoreCase("Emission Layers")) {
-            caseObj.setNumEmissionsLayers(value == null || value.equalsIgnoreCase("null") || value.trim().isEmpty() ? null : new Integer(value));
+            caseObj.setNumEmissionsLayers(value == null || value.equalsIgnoreCase("null") || value.trim().isEmpty() ? null : Integer.valueOf(value));
             return;
         }
 

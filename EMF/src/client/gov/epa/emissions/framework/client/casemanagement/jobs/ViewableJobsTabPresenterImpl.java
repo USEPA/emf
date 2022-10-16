@@ -87,7 +87,7 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
         for (int i = 0; i < jobs.length; i++) {
             if (jobs[i].getExecutable() == null)
                 throw new EmfException("Job " + jobs[i].getName() + " doesn't have a valid executable file.");
-            jobIds[i] = new Integer(jobs[i].getId());
+            jobIds[i] = Integer.valueOf(jobs[i].getId());
         }
 
         System.out.println("Start running jobs");
@@ -156,7 +156,7 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
         List<Integer> ids = new ArrayList<Integer>();
         
         for (CaseJob job : jobs)
-            ids.add(new Integer(job.getId()));
+            ids.add(Integer.valueOf(job.getId()));
         
         return service().validateJobs(ids.toArray(new Integer[0]));
     }

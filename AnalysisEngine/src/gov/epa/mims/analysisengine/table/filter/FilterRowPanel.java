@@ -105,7 +105,7 @@ public class FilterRowPanel extends JPanel implements ChildHasChangedListener {
 	 */
 	protected void buildHashtable(Class[] columnClasses) {
 		for (int i = 0; i < allColumnNames.length; i++) {
-			nameToInfoHash.put(allColumnNames[i], new Duplex(new Integer(i),
+			nameToInfoHash.put(allColumnNames[i], new Duplex(Integer.valueOf(i),
 					columnClasses[i]));
 		} // for(i)
 	} // buildHashtable()
@@ -254,28 +254,28 @@ public class FilterRowPanel extends JPanel implements ChildHasChangedListener {
 					if (duplex.columnClass == Integer.class) {
 						Number numObject = (Number) formats[r]
 								.parseObject(cellValue);
-						values[r] = new Integer(numObject.intValue());
+						values[r] = Integer.valueOf(numObject.intValue());
 					} else if (duplex.columnClass == Double.class) {
 						if (cellValue.equals("NaN")
 								|| cellValue.equals("Double.NaN"))
-							values[r] = new Double(Double.NaN);
+							values[r] = Double.valueOf(Double.NaN);
 						else {
 							Number numObject = (Number) formats[r]
 									.parseObject(cellValue);
-							values[r] = new Double(numObject.doubleValue());
+							values[r] = Double.valueOf(numObject.doubleValue());
 						}
 					} else if (duplex.columnClass == Long.class) {
 						Number numObject = (Number) formats[r]
 								.parseObject(cellValue);
-						values[r] = new Long(numObject.longValue());
+						values[r] = Long.valueOf(numObject.longValue());
 					} else if (duplex.columnClass == Float.class) {
 						Number numObject = (Number) formats[r]
 								.parseObject(cellValue);
-						values[r] = new Float(numObject.floatValue());
+						values[r] = Float.valueOf(numObject.floatValue());
 					} else if (duplex.columnClass == Date.class) {
 						values[r] = (Date) formats[r].parseObject(cellValue);
 					} else if (duplex.columnClass == Boolean.class) {
-						Boolean bool = new Boolean(cellValue);
+						Boolean bool = Boolean.valueOf(cellValue);
 						values[r] = new ComparableBoolean(bool);
 					} else {
 						values[r] = cellValue;

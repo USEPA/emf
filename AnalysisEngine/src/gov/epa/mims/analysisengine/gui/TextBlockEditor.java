@@ -73,13 +73,13 @@ public class TextBlockEditor extends JPanel
    static
    {
       unitPrettyHashMap = new HashMap();
-      unitPrettyHashMap.put(new Integer(TextBlock.DEVICE_UNITS),DEVICE_UNITS);
-      unitPrettyHashMap.put(new Integer(TextBlock.FIGURE_UNITS),FIGURE_UNITS);
-      unitPrettyHashMap.put(new Integer(TextBlock.USER_UNITS),USER_UNITS);
+      unitPrettyHashMap.put(Integer.valueOf(TextBlock.DEVICE_UNITS),DEVICE_UNITS);
+      unitPrettyHashMap.put(Integer.valueOf(TextBlock.FIGURE_UNITS),FIGURE_UNITS);
+      unitPrettyHashMap.put(Integer.valueOf(TextBlock.USER_UNITS),USER_UNITS);
       unitSystemHashMap = new HashMap();
-      unitSystemHashMap.put(DEVICE_UNITS, new Integer(TextBlock.DEVICE_UNITS));
-      unitSystemHashMap.put(FIGURE_UNITS, new Integer(TextBlock.FIGURE_UNITS));
-      unitSystemHashMap.put(USER_UNITS, new Integer(TextBlock.USER_UNITS));
+      unitSystemHashMap.put(DEVICE_UNITS, Integer.valueOf(TextBlock.DEVICE_UNITS));
+      unitSystemHashMap.put(FIGURE_UNITS, Integer.valueOf(TextBlock.FIGURE_UNITS));
+      unitSystemHashMap.put(USER_UNITS, Integer.valueOf(TextBlock.USER_UNITS));
    }
    /** Creates a new instance of TextBlockEditor */
    public TextBlockEditor()
@@ -247,7 +247,7 @@ public class TextBlockEditor extends JPanel
       double y = txtBlock.getY();
       double xJust = txtBlock.getXJustification();
       double yJust = txtBlock.getYJustification();
-      String units = (String)unitPrettyHashMap.get(new Integer(txtBlock.getUnitsXY()));
+      String units = (String)unitPrettyHashMap.get(Integer.valueOf(txtBlock.getUnitsXY()));
 
       String prettyRegion = regionConverter.getPrettyOption(txtBlock.getRegion());
       String prettySector = sectorConverter.getPrettyOption(txtBlock.getPosition());

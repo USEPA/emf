@@ -156,10 +156,10 @@ public class FileExportGUI extends JDialog {
 				Vector rowData = new Vector();
 				rowData.add(tabNames[i]);
 				if (i != selectedTabIndex) {
-					rowData.add(new Boolean(false));
+					rowData.add(Boolean.FALSE);
 				}// if(i!= selectedTabIndex)
 				else {
-					rowData.add(new Boolean(true));
+					rowData.add(Boolean.TRUE);
 				}// else
 				tableData.add(rowData);
 			}// for(i)
@@ -215,7 +215,7 @@ public class FileExportGUI extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int noOfRows = table.getRowCount();
 				for (int i = 0; i < noOfRows; i++) {
-					tableModel.setValueAt(new Boolean("true"), i, SECOND_COLUMN);
+					tableModel.setValueAt(Boolean.valueOf("true"), i, SECOND_COLUMN);
 				}// for(i)
 			}
 		});
@@ -521,7 +521,7 @@ public class FileExportGUI extends JDialog {
 		for (int i = 0; i < noOfRows; i++) {
 			Boolean value = (Boolean) table.getValueAt(i, SECOND_COLUMN);
 			if (value.booleanValue() == true) {
-				selectedIndices.add(new Integer(i));
+				selectedIndices.add(Integer.valueOf(i));
 			}// if( value.booleanValue() == true)
 		}// for(i)
 		return selectedIndices;

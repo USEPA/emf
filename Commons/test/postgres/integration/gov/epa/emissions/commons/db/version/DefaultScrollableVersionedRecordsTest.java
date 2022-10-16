@@ -151,7 +151,7 @@ public class DefaultScrollableVersionedRecordsTest extends PersistenceTestCase {
         assertEquals("P1_1", record.token(0));
         assertEquals("P2_1", record.token(1));
         assertEquals(Integer.class, record.token(2).getClass());
-        assertEquals(new Integer(2), record.token(2));
+        assertEquals(Integer.valueOf(2), record.token(2));
         assertEquals(Double.class, record.token(3).getClass());
         assertEquals(3.0, ((Double) record.token(3)).floatValue(), 0.000001);
     }

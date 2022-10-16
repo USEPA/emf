@@ -31,7 +31,7 @@ public class IntegerEditableTablePanel
    protected Integer[] validChoices = null;
 
    /** The default value to use in newly added rows.*/
-   protected Integer defaultValue = new Integer(1);
+   protected Integer defaultValue = Integer.valueOf(1);
 
    /**
     * Consructor.
@@ -185,7 +185,7 @@ public class IntegerEditableTablePanel
 
       Integer[] intObjs = new Integer[newValues.length];
       for (int i = newValues.length - 1; i >= 0; --i)
-         intObjs[i] = new Integer(newValues[i]);
+         intObjs[i] = Integer.valueOf(newValues[i]);
       setValue(intObjs);
    }
 
@@ -290,7 +290,7 @@ public class IntegerEditableTablePanel
                   }
                }
 
-               return new Integer(enteredValue);
+               return Integer.valueOf(enteredValue);
              }
           };
 

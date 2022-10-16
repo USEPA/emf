@@ -28,7 +28,7 @@ public class ParametersRowSource implements RowSource {
     }
 
     private Float getOrder(CaseParameter parameter) {
-        return new Float(parameter.getOrder());
+        return Float.valueOf(parameter.getOrder());
     }
 
     private String getValueType(CaseParameter parameter) {

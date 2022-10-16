@@ -167,10 +167,10 @@ public class LineTypeEditor extends OptionDialog {
 		try {
 			symbolsColumn.setDefaultValue(MultipleEditableTablePanel
 					.createImageIcon("/gov/epa/mims/analysisengine/gui/icons/symbols/circle.jpg"));
-			sizeColumn.setDefaultValue(new Double(1.0));
+			sizeColumn.setDefaultValue(Double.valueOf(1.0));
 			lineStyleColumn.setDefaultValue(MultipleEditableTablePanel
 					.createImageIcon("/gov/epa/mims/analysisengine/gui/icons/lineStyles/blank.jpg"));
-			widthColumn.setDefaultValue(new Double(1.0));
+			widthColumn.setDefaultValue(Double.valueOf(1.0));
 			colorColumn.setDefaultValue(Color.black);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -250,7 +250,7 @@ public class LineTypeEditor extends OptionDialog {
 			double[] symbolSize = lineType.getSymbolExpansion();
 			Double[] symbolSizeObjects = new Double[symbolSize.length];
 			for (int i = 0; i < symbolSize.length; i++) {
-				symbolSizeObjects[i] = new Double(symbolSize[i]);
+				symbolSizeObjects[i] = Double.valueOf(symbolSize[i]);
 			}// for(i)
 			tablePanel.setValueAt(symbolSizeObjects, SIZE_COLUMN_NUMBER);
 
@@ -260,7 +260,7 @@ public class LineTypeEditor extends OptionDialog {
 			double[] lineWidth = lineType.getLineWidth();
 			Double[] lineWidthObjects = new Double[lineWidth.length];
 			for (int i = 0; i < lineWidth.length; i++) {
-				lineWidthObjects[i] = new Double(lineWidth[i]);
+				lineWidthObjects[i] = Double.valueOf(lineWidth[i]);
 			}
 			tablePanel.setValueAt(lineWidthObjects, LINEWIDTH_COLUMN_NUMBER);
 

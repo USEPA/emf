@@ -61,7 +61,7 @@ public class VersionsViewPresenterTest extends EmfMockObjectTestCase {
         Version[] versions = new Version[0];
         InternalSource[] internalSources = new InternalSource[0];
 
-        service.stubs().method("getVersions").with(eq(new Integer(dataset.getId()))).will(returnValue(versions));
+        service.stubs().method("getVersions").with(eq(Integer.valueOf(dataset.getId()))).will(returnValue(versions));
 
         VersionsViewPresenter presenter = new VersionsViewPresenter(dataset, session((DataViewService) service.proxy()));
         view.expects(once()).method("observe").with(same(presenter));

@@ -69,7 +69,7 @@ public class DoubleSeries extends AbstractDataSet implements DataSetIfc, Seriali
 	 ******************************************************************************************************************/
 	public void setData(double[] data) {
 		for (int i = 0; i < data.length; i++) {
-			dataArrayList.add(new Double(data[i]));
+			dataArrayList.add(Double.valueOf(data[i]));
 		}
 	}
 
@@ -80,7 +80,7 @@ public class DoubleSeries extends AbstractDataSet implements DataSetIfc, Seriali
 	 *            point
 	 ******************************************************************************************************************/
 	public void addData(double data) {
-		dataArrayList.add(new Double(data));
+		dataArrayList.add(Double.valueOf(data));
 	}
 
 	/*******************************************************************************************************************

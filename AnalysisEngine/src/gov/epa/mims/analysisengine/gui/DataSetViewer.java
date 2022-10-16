@@ -352,7 +352,7 @@ public class DataSetViewer extends JPanel
               {
                  result = "NaN";
               }
-              //AME return new Double(dvalue);
+              //AME return Double.valueOf(dvalue);
               // If we use a string instead, then it uses scientific notation
               // for very large or very small values
               return result;

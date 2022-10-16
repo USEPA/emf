@@ -510,7 +510,7 @@ public class CaseServiceTest2 extends ServiceTestCase {
             }
             
             String lineSeparator = System.getProperty("line.separator");
-            String validationMsg = service.validateJobs(new Integer[]{new Integer(job.getId())});
+            String validationMsg = service.validateJobs(new Integer[]{Integer.valueOf(job.getId())});
             String expectedMsg = "Input: test2test;  Dataset: test2" + lineSeparator +
                     "Input: test3test;  Dataset: test3" + lineSeparator +
                     "Input: test4test;  Dataset: test4" + lineSeparator;

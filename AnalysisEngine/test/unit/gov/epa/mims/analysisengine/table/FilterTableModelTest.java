@@ -30,7 +30,7 @@ public class FilterTableModelTest extends TestCase {
 
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				intData[i][j] = new Integer(ints[i][j]);
+				intData[i][j] = Integer.valueOf(ints[i][j]);
 			}
 		}
 
@@ -39,7 +39,7 @@ public class FilterTableModelTest extends TestCase {
 
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				dblData[i][j] = new Double(dbls[i][j]);
+				dblData[i][j] = Double.valueOf(dbls[i][j]);
 			}
 		}
 
@@ -176,7 +176,7 @@ public void testFilterModelTransparent()
    Integer[][] iData = new Integer[11][1];
    for (int i = 0; i < 11; i++)
    {
-      iData[i][0] = new Integer(ints[i]);
+      iData[i][0] = Integer.valueOf(ints[i]);
    }
 
    dfm = new SimpleTestModel(iData, null, cols);
@@ -185,7 +185,7 @@ public void testFilterModelTransparent()
    // > 0
    names[0] = "col1";
    ops[0] = FilterCriteria.GREATER_THAN;
-   cutoff[0] = new Integer(0);
+   cutoff[0] = Integer.valueOf(0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -200,7 +200,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // > -2
-   cutoff[0] = new Integer(-2);
+   cutoff[0] = Integer.valueOf(-2);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0], true));
 
    // Check data
@@ -215,7 +215,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // > -6 (should be all data)
-   cutoff[0] = new Integer(-6);
+   cutoff[0] = Integer.valueOf(-6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0], true));
 
    // Check data
@@ -230,7 +230,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // > 5 (should be no data)
-   cutoff[0] = new Integer(5);
+   cutoff[0] = Integer.valueOf(5);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0], true));
 
    // Check data
@@ -249,14 +249,14 @@ public void testFilterModelTransparent()
    Double[][] dData = new Double[11][1];
    for (int i = 0; i < 11; i++)
    {
-      dData[i][0] = new Double(dbls[i]);
+      dData[i][0] = Double.valueOf(dbls[i]);
    }
 
    dfm = new SimpleTestModel(dData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // > 0.0
-   cutoff[0] = new Double(0.0);
+   cutoff[0] = Double.valueOf(0.0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0], true));
 
    // Check data
@@ -271,7 +271,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // > 1.89999999
-   cutoff[0] = new Double(1.89999999);
+   cutoff[0] = Double.valueOf(1.89999999);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0], true));
 
    // Check data
@@ -286,7 +286,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // > -5.6 (should be all data)
-   cutoff[0] = new Double(-5.6);
+   cutoff[0] = Double.valueOf(-5.6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0], true));
 
    // Check data
@@ -301,7 +301,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // > 5.9 (should be no data)
-   cutoff[0] = new Double(5.9);
+   cutoff[0] = Double.valueOf(5.9);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0], true));
 
    // Check data
@@ -488,14 +488,14 @@ public void testFilterModelTransparent()
    Integer[][] iData = new Integer[11][1];
    for (int i = 0; i < 11; i++)
    {
-      iData[i][0] = new Integer(ints[i]);
+      iData[i][0] = Integer.valueOf(ints[i]);
    }
 
    dfm = new SimpleTestModel(iData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // >= 0
-   cutoff[0] = new Integer(0);
+   cutoff[0] = Integer.valueOf(0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -510,7 +510,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // >= -2
-   cutoff[0] = new Integer(-2);
+   cutoff[0] = Integer.valueOf(-2);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -525,7 +525,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // >= -5 (should be all data)
-   cutoff[0] = new Integer(-6);
+   cutoff[0] = Integer.valueOf(-6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -540,7 +540,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // >= 6 (should be no data)
-   cutoff[0] = new Integer(6);
+   cutoff[0] = Integer.valueOf(6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -559,14 +559,14 @@ public void testFilterModelTransparent()
    Double[][] dData = new Double[11][1];
    for (int i = 0; i < 11; i++)
    {
-      dData[i][0] = new Double(dbls[i]);
+      dData[i][0] = Double.valueOf(dbls[i]);
    }
 
    dfm = new SimpleTestModel(dData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // >= 0.0
-   cutoff[0] = new Double(0.0);
+   cutoff[0] = Double.valueOf(0.0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -581,7 +581,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // >= 1.9
-   cutoff[0] = new Double(1.9);
+   cutoff[0] = Double.valueOf(1.9);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -596,7 +596,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // >= -5.5 (should be all data)
-   cutoff[0] = new Double(-5.6);
+   cutoff[0] = Double.valueOf(-5.6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -611,7 +611,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // >= 5.900000001 (should be no data)
-   cutoff[0] = new Double(5.900000001);
+   cutoff[0] = Double.valueOf(5.900000001);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -797,14 +797,14 @@ public void testFilterModelTransparent()
    Integer[][] iData = new Integer[11][1];
    for (int i = 0; i < 11; i++)
    {
-      iData[i][0] = new Integer(ints[i]);
+      iData[i][0] = Integer.valueOf(ints[i]);
    }
 
    dfm = new SimpleTestModel(iData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // < 0
-   cutoff[0] = new Integer(0);
+   cutoff[0] = Integer.valueOf(0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -819,7 +819,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // < -2
-   cutoff[0] = new Integer(-2);
+   cutoff[0] = Integer.valueOf(-2);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -834,7 +834,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // < -5 (should be no data)
-   cutoff[0] = new Integer(-5);
+   cutoff[0] = Integer.valueOf(-5);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -849,7 +849,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // < 6 (should be no data)
-   cutoff[0] = new Integer(6);
+   cutoff[0] = Integer.valueOf(6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -868,14 +868,14 @@ public void testFilterModelTransparent()
    Double[][] dData = new Double[11][1];
    for (int i = 0; i < 11; i++)
    {
-      dData[i][0] = new Double(dbls[i]);
+      dData[i][0] = Double.valueOf(dbls[i]);
    }
 
    dfm = new SimpleTestModel(dData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // < 0.0
-   cutoff[0] = new Double(0.0);
+   cutoff[0] = Double.valueOf(0.0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -890,7 +890,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // < 1.9
-   cutoff[0] = new Double(1.9);
+   cutoff[0] = Double.valueOf(1.9);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -905,7 +905,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // < -5.5 (should be no data)
-   cutoff[0] = new Double(-5.5);
+   cutoff[0] = Double.valueOf(-5.5);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -920,7 +920,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // < 5.900000001 (should be all data)
-   cutoff[0] = new Double(5.900000001);
+   cutoff[0] = Double.valueOf(5.900000001);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1106,14 +1106,14 @@ public void testFilterModelTransparent()
    Integer[][] iData = new Integer[11][1];
    for (int i = 0; i < 11; i++)
    {
-      iData[i][0] = new Integer(ints[i]);
+      iData[i][0] = Integer.valueOf(ints[i]);
    }
 
    dfm = new SimpleTestModel(iData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // <= 0
-   cutoff[0] = new Integer(0);
+   cutoff[0] = Integer.valueOf(0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1128,7 +1128,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // <= -2
-   cutoff[0] = new Integer(-2);
+   cutoff[0] = Integer.valueOf(-2);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1144,7 +1144,7 @@ public void testFilterModelTransparent()
 
 
    // <= -6 (should be no data)
-   cutoff[0] = new Integer(-6);
+   cutoff[0] = Integer.valueOf(-6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1159,7 +1159,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // <= 5 (should be all data)
-   cutoff[0] = new Integer(5);
+   cutoff[0] = Integer.valueOf(5);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1178,14 +1178,14 @@ public void testFilterModelTransparent()
    Double[][] dData = new Double[11][1];
    for (int i = 0; i < 11; i++)
    {
-      dData[i][0] = new Double(dbls[i]);
+      dData[i][0] = Double.valueOf(dbls[i]);
    }
 
    dfm = new SimpleTestModel(dData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // <= 0.0
-   cutoff[0] = new Double(0.0);
+   cutoff[0] = Double.valueOf(0.0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1200,7 +1200,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // <= 1.9
-   cutoff[0] = new Double(1.9);
+   cutoff[0] = Double.valueOf(1.9);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1215,7 +1215,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // <= -5.5000001 (should be no data)
-   cutoff[0] = new Double(-5.5000001);
+   cutoff[0] = Double.valueOf(-5.5000001);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1230,7 +1230,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // <= 5.9 (should be all data)
-   cutoff[0] = new Double(5.9);
+   cutoff[0] = Double.valueOf(5.9);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1417,14 +1417,14 @@ public void testFilterModelTransparent()
    Integer[][] iData = new Integer[11][1];
    for (int i = 0; i < 11; i++)
    {
-      iData[i][0] = new Integer(ints[i]);
+      iData[i][0] = Integer.valueOf(ints[i]);
    }
 
    dfm = new SimpleTestModel(iData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // = 0
-   cutoff[0] = new Integer(0);
+   cutoff[0] = Integer.valueOf(0);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1439,7 +1439,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // = -2
-   cutoff[0] = new Integer(-2);
+   cutoff[0] = Integer.valueOf(-2);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1454,7 +1454,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // = -6 (should be no data)
-   cutoff[0] = new Integer(-6);
+   cutoff[0] = Integer.valueOf(-6);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1469,7 +1469,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // = 6 (should be no data)
-   cutoff[0] = new Integer(6);
+   cutoff[0] = Integer.valueOf(6);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1488,14 +1488,14 @@ public void testFilterModelTransparent()
    Double[][] dData = new Double[11][1];
    for (int i = 0; i < 11; i++)
    {
-      dData[i][0] = new Double(dbls[i]);
+      dData[i][0] = Double.valueOf(dbls[i]);
    }
 
    dfm = new SimpleTestModel(dData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // = 0.0
-   cutoff[0] = new Double(0.0);
+   cutoff[0] = Double.valueOf(0.0);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1510,7 +1510,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // = 1.9
-   cutoff[0] = new Double(1.9);
+   cutoff[0] = Double.valueOf(1.9);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1525,7 +1525,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // = -5.5000001 (should be no data)
-   cutoff[0] = new Double(-5.5000001);
+   cutoff[0] = Double.valueOf(-5.5000001);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1540,7 +1540,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // = 5.9000001 (should be no data)
-   cutoff[0] = new Double(5.9000001);
+   cutoff[0] = Double.valueOf(5.9000001);
    ftm.filterRows(new FilterCriteria(names, ops ,cutoff, cols[0],true));
 
    // Check data
@@ -1727,14 +1727,14 @@ public void testFilterModelTransparent()
    Integer[][] iData = new Integer[11][1];
    for (int i = 0; i < 11; i++)
    {
-      iData[i][0] = new Integer(ints[i]);
+      iData[i][0] = Integer.valueOf(ints[i]);
    }
 
    dfm = new SimpleTestModel(iData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // != 0
-   cutoff[0] = new Integer(0);
+   cutoff[0] = Integer.valueOf(0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1749,7 +1749,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // != -2
-   cutoff[0] = new Integer(-2);
+   cutoff[0] = Integer.valueOf(-2);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1764,7 +1764,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // != -6 (should be all data)
-   cutoff[0] = new Integer(-6);
+   cutoff[0] = Integer.valueOf(-6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1779,7 +1779,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // != 6 (should be all data)
-   cutoff[0] = new Integer(6);
+   cutoff[0] = Integer.valueOf(6);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1798,14 +1798,14 @@ public void testFilterModelTransparent()
    Double[][] dData = new Double[11][1];
    for (int i = 0; i < 11; i++)
    {
-      dData[i][0] = new Double(dbls[i]);
+      dData[i][0] = Double.valueOf(dbls[i]);
    }
 
    dfm = new SimpleTestModel(dData, null, cols);
    ftm = new FilteringTableModel(dfm);
 
    // != 0.0
-   cutoff[0] = new Double(0.0);
+   cutoff[0] = Double.valueOf(0.0);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1820,7 +1820,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // != 1.9
-   cutoff[0] = new Double(1.9);
+   cutoff[0] = Double.valueOf(1.9);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1835,7 +1835,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // != -5.5000001 (should be all data)
-   cutoff[0] = new Double(-5.5000001);
+   cutoff[0] = Double.valueOf(-5.5000001);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -1850,7 +1850,7 @@ public void testFilterModelTransparent()
    } // for(r)
 
    // != 5.9000001 (should be all data)
-   cutoff[0] = new Double(5.9000001);
+   cutoff[0] = Double.valueOf(5.9000001);
    ftm.filterRows(new FilterCriteria(names, ops, cutoff, cols[0],true));
 
    // Check data
@@ -2044,7 +2044,7 @@ public void testFilterModelTransparent()
    Integer[][] iData = new Integer[ints.length][1];
    for (int i = 0; i < ints.length; i++)
    {
-      iData[i][0] = new Integer(ints[i]);
+      iData[i][0] = Integer.valueOf(ints[i]);
    }
 
    dfm = new SimpleTestModel(iData, null, cols);
@@ -2062,7 +2062,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Integer(ints[correct[r]]), ftm.getValueAt(r,c));
+            Integer.valueOf(ints[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 
@@ -2078,7 +2078,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Integer(ints[correct[r]]), ftm.getValueAt(r,c));
+            Integer.valueOf(ints[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 
@@ -2094,7 +2094,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Integer(ints[correct[r]]), ftm.getValueAt(r,c));
+            Integer.valueOf(ints[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 
@@ -2110,7 +2110,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Integer(ints[correct[r]]), ftm.getValueAt(r,c));
+            Integer.valueOf(ints[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 
@@ -2121,7 +2121,7 @@ public void testFilterModelTransparent()
    Double[][] dData = new Double[dbls.length][1];
    for (int i = 0; i < dbls.length; i++)
    {
-      dData[i][0] = new Double(dbls[i]);
+      dData[i][0] = Double.valueOf(dbls[i]);
    }
 
    dfm = new SimpleTestModel(dData, null, cols);
@@ -2139,7 +2139,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Double(dbls[correct[r]]), ftm.getValueAt(r,c));
+            Double.valueOf(dbls[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 
@@ -2155,7 +2155,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Double(dbls[correct[r]]), ftm.getValueAt(r,c));
+            Double.valueOf(dbls[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 
@@ -2171,7 +2171,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Double(dbls[correct[r]]), ftm.getValueAt(r,c));
+            Double.valueOf(dbls[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 
@@ -2187,7 +2187,7 @@ public void testFilterModelTransparent()
       for(int c = 0; c < ftm.getColumnCount(); c++)
       {
          assertEquals(ftm.getValueAt(r,c) + " starts with " + ftm.getValueAt(r,c),
-            new Double(dbls[correct[r]]), ftm.getValueAt(r,c));
+            Double.valueOf(dbls[correct[r]]), ftm.getValueAt(r,c));
       } // for(c)
    } // for(r)
 

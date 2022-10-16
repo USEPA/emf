@@ -394,7 +394,7 @@ public class FileScanner implements java_cup.runtime.Scanner {
 		switch (token.sym) {
 
 		case 6:
-			Boolean b = new Boolean((String) token.value);
+			Boolean b = Boolean.valueOf((String) token.value);
 			token.value = b;
 			return token;
 
@@ -403,16 +403,16 @@ public class FileScanner implements java_cup.runtime.Scanner {
 			return token;
 
 		case 2:
-			Double d = new Double((String) token.value);
+			Double d = Double.valueOf((String) token.value);
 			token.value = d;
 			return token;
 
 		case 3:
 			try {
-				Integer i = new Integer((String) token.value);
+				Integer i = Integer.valueOf((String) token.value);
 				token.value = i;
 			} catch (NumberFormatException e) {
-				Double id = new Double((String) token.value);
+				Double id = Double.valueOf((String) token.value);
 				token.value = id;
 				token.sym = TokenConstants.DOUBLE_LITERAL;
 			}

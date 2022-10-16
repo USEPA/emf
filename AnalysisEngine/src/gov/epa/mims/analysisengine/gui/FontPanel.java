@@ -44,10 +44,10 @@ public class FontPanel extends JPanel
 
    static
    {
-      styleConverter.put(PLAIN,      new Integer(Font.PLAIN));
-      styleConverter.put(BOLD,       new Integer(Font.BOLD));
-      styleConverter.put(ITALIC,     new Integer(Font.ITALIC));
-      styleConverter.put(BOLDITALIC, new Integer(Font.BOLD|Font.ITALIC));
+      styleConverter.put(PLAIN,      Integer.valueOf(Font.PLAIN));
+      styleConverter.put(BOLD,       Integer.valueOf(Font.BOLD));
+      styleConverter.put(ITALIC,     Integer.valueOf(Font.ITALIC));
+      styleConverter.put(BOLDITALIC, Integer.valueOf(Font.BOLD|Font.ITALIC));
    } // static
 
    /**
@@ -76,7 +76,7 @@ public class FontPanel extends JPanel
       Integer[] sizes = new Integer[36];
       for (int i = 1; i <= 36; i++)
       {
-         sizes[i-1] = new Integer(i);
+         sizes[i-1] = Integer.valueOf(i);
       }
 
       sizeList = new JList(sizes);
@@ -120,13 +120,13 @@ public class FontPanel extends JPanel
                styleList.setSelectedValue(PLAIN, true);
          } // switch (font.getStyle())
 
-         sizeList.setSelectedValue(new Integer(font.getSize()), true);
+         sizeList.setSelectedValue(Integer.valueOf(font.getSize()), true);
       }
       else
       {
          fontList.setSelectedIndex(0);
          styleList.setSelectedIndex(0);
-         sizeList.setSelectedValue(new Integer(12), true);
+         sizeList.setSelectedValue(Integer.valueOf(12), true);
       }
    } // initGUIFromModel()
 

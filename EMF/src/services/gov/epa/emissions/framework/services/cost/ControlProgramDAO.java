@@ -173,7 +173,7 @@ public class ControlProgramDAO {
     }
 
     public ControlProgram getControlProgram(int id, Session session) {
-        ControlProgram cs = (ControlProgram) hibernateFacade.load(ControlProgram.class, Restrictions.eq("id", new Integer(id)), session);
+        ControlProgram cs = (ControlProgram) hibernateFacade.load(ControlProgram.class, Restrictions.eq("id", Integer.valueOf(id)), session);
         return cs;
     }
 

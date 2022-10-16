@@ -97,7 +97,7 @@ public class QAServiceTransport implements QAService {
         call.addStringParam("rowFilter");
         call.setVoidReturnType();
 
-        call.request(new Object[] { step, user, dirName, fileName, new Boolean(overide), rowFilter });
+        call.request(new Object[] { step, user, dirName, fileName, Boolean.valueOf(overide), rowFilter });
     }
 
     public synchronized void downloadQAStep(QAStep step, User user, String fileName, boolean overwrite, String rowFilter) throws EmfException {
@@ -128,7 +128,7 @@ public class QAServiceTransport implements QAService {
         call.addParam("pivotConfiguration", mappings.pivotConfiguration());
         call.setVoidReturnType();
 
-        call.request(new Object[] { step, user, dirName, fileName, new Boolean(overide), projectionShapeFile, rowFilter, pivotConfiguration });
+        call.request(new Object[] { step, user, dirName, fileName, Boolean.valueOf(overide), projectionShapeFile, rowFilter, pivotConfiguration });
     }
 
     public synchronized void downloadShapeFileQAStep(QAStep step, User user, String fileName, ProjectionShapeFile projectionShapeFile, String rowFilter, PivotConfiguration pivotConfiguration, boolean overwrite) throws EmfException {
@@ -199,7 +199,7 @@ public class QAServiceTransport implements QAService {
         call.addBooleanParameter("replace");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, steps, datasetIds, new Boolean(replace) });
+        call.request(new Object[] { user, steps, datasetIds, Boolean.valueOf(replace) });
     }
     
     public boolean getSameAsTemplate(QAStep step) throws EmfException {

@@ -35,7 +35,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
 
     public void testShouldDelegateOnTotalRecords() throws Exception {
         Mock delegate = mock(TablePresenterDelegate.class);
-        stub(delegate, "totalRecords", new Integer(28));
+        stub(delegate, "totalRecords", Integer.valueOf(28));
 
         TablePresenter p = new EditableTablePresenterImpl((TablePresenterDelegate) delegate.proxy(), null, null,null);
 
@@ -62,7 +62,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
 
         Mock delegate = mock(TablePresenterDelegate.class);
         expects(delegate, 1, "updateFilteredCount");
-        expects(delegate, 1, "doDisplay", eq(new Integer(21)));
+        expects(delegate, 1, "doDisplay", eq(Integer.valueOf(21)));
 
         TablePresenter p = new EditableTablePresenterImpl((TablePresenterDelegate) delegate.proxy(),
                 (EditorPanelView) view.proxy(), null, null);
@@ -73,7 +73,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
     private Mock mockViewWithChanges(int recordsCount) {
         Mock view = mock(EditorPanelView.class);
         stub(view, "changeset", new ChangeSet());
-        view.stubs().method("updateFilteredRecordsCount").with(eq(new Integer(recordsCount)));
+        view.stubs().method("updateFilteredRecordsCount").with(eq(Integer.valueOf(recordsCount)));
 
         return view;
     }
@@ -83,7 +83,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
 
         Mock paginator = mock(TablePaginator.class);
         expects(paginator, "doDisplayPageWithRecord");
-        stub(paginator, "totalRecords", new Integer(20));
+        stub(paginator, "totalRecords", Integer.valueOf(20));
         stub(paginator, "isCurrent", Boolean.FALSE);
 
         TablePresenter p = new EditableTablePresenterImpl(null, (TablePaginator) paginator.proxy(), null,
@@ -97,7 +97,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
 
         Mock paginator = mock(TablePaginator.class);
         expects(paginator, "doDisplayFirst");
-        stub(paginator, "totalRecords", new Integer(20));
+        stub(paginator, "totalRecords", Integer.valueOf(20));
 
         TablePresenter p = new EditableTablePresenterImpl(null, (TablePaginator) paginator.proxy(), null,
                 (EditorPanelView) view.proxy(), null, null);
@@ -110,7 +110,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
 
         Mock paginator = mock(TablePaginator.class);
         expects(paginator, "token");
-        stub(paginator, "totalRecords", new Integer(20));
+        stub(paginator, "totalRecords", Integer.valueOf(20));
         expects(paginator, "doDisplayFirst");
 
         Mock datasetType = mock(DatasetType.class);
@@ -141,7 +141,7 @@ public class EditableTablePresenterTest extends EmfMockObjectTestCase {
 
         Mock paginator = mock(TablePaginator.class);
         expects(paginator, "doDisplayLast");
-        stub(paginator, "totalRecords", new Integer(20));
+        stub(paginator, "totalRecords", Integer.valueOf(20));
 
         TablePresenter p = new EditableTablePresenterImpl(null, (TablePaginator) paginator.proxy(), null,
                 (EditorPanelView) view.proxy(), null, null);
