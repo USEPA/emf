@@ -45,12 +45,12 @@
     <!-- end Ivy properties -->
 
 
-    <path id="classpath">
+    <!--path id="classpath">
         <pathelement location="${build.classes.dir}" />
         <fileset dir="lib">
             <include name="**/*.jar" />
         </fileset>
-    </path>
+    </path-->
 
 
     <target name="retrieve">
@@ -95,12 +95,14 @@
                      forcedeliver="true"
                      overwrite="true"
         			publishivy="true"
+        	merge="true"
+        	update="true"
                 />
-    	<ivy:retrieve  
+    	<!--ivy:retrieve  
     				inline="true"
     				overwritemode="always"
     				sync="true"
-    				 />
+    				 /-->
         <!--ivy:resolve organisation="epa" module="epa-commons"
             revision="0.5" checkifchanged="true" />
         <ivy:install organisation="epa" module="epa-commons"
@@ -139,7 +141,7 @@
         <javac srcdir="${src.dir}"
                destdir="${build.classes.dir}"
                debug="on"
-               target="1.7" >
+               target="1.8" verbose="true" >
             <classpath>
                 <path refid="build.path" />
             </classpath>

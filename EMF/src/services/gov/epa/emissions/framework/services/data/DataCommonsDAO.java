@@ -265,7 +265,19 @@ public class DataCommonsDAO {
     
     public void removeStatuses(String username, String type, Session session) {
         String hqlDelete = "delete Status s where s.username = :username and s.type = :type";
-        session.createQuery(hqlDelete).setString("username", username).setString("type", type).executeUpdate();
+        Transaction tx = null;
+        try {
+            tx = session.
+                    beginTransaction();
+            session.createQuery(hqlDelete)
+                .setString("username", username)
+                .setString("type", type)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     public List getStatuses(String username, Session session) {

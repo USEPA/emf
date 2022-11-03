@@ -275,7 +275,7 @@ public class SectorScenarioDAO {
 
             hibernateFacade.remove(getSectorScenarioOutputs(sectorScenarioId, session).toArray(new SectorScenarioOutput[0]), session);
             session.clear();
-            session.flush();
+//            session.flush();
 //delete and purge datasets
             if (dsList != null && dsList.size() > 0){
                 removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, session, dbServer);

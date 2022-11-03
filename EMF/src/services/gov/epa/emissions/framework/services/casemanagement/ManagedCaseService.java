@@ -2733,7 +2733,7 @@ public class ManagedCaseService {
         try {
             dao.updateCaseJob(caseJob, session);
             dao.updateCaseJobKey(caseJob.getId(), caseJob.getJobkey(), session);
-            session.flush();
+//            session.flush();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         }

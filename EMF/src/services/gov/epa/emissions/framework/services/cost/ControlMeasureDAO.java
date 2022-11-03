@@ -126,7 +126,6 @@ public class ControlMeasureDAO {
             sccs[i].setControlMeasureId(cmId);
         }
         hibernateFacade.add(sccs, session);
-        session.flush();
         return cmId;
     }
 
@@ -290,10 +289,17 @@ public class ControlMeasureDAO {
 
     private void removeSccs(int controlMeasureId, Session session) {
         String hqlDelete = "delete Scc scc where scc.controlMeasureId = :controlMeasureId";
-        session.createQuery( hqlDelete )
-             .setInteger("controlMeasureId", controlMeasureId)
-             .executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.createQuery( hqlDelete )
+                .setInteger("controlMeasureId", controlMeasureId)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
 //        Scc[] sccs = getSccs(controlMeasureId, session);
 //        for (int i = 0; i < sccs.length; i++) {
 //            hibernateFacade.remove(sccs[i], session);
@@ -313,8 +319,15 @@ public class ControlMeasureDAO {
                         ? "inner join cm.sectors AS s "
                           + "WHERE s.id in (" + idList + ") " 
                         : "") + ")";
-        int count = session.createQuery( hqlDelete ).executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            int count = session.createQuery( hqlDelete ).executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     public ControlMeasure grabLocked(User user, int controlMeasureId, Session session) {
@@ -550,10 +563,17 @@ public class ControlMeasureDAO {
 
     public void removeMeasureEquationType(int controlMeasureEquationTypeId, Session session) {
         String hqlDelete = "delete ControlMeasureEquationType et where et.id = :controlMeasureEquationTypeId";
-        session.createQuery( hqlDelete )
-             .setInteger("controlMeasureEquationTypeId", controlMeasureEquationTypeId)
-             .executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.createQuery( hqlDelete )
+                .setInteger("controlMeasureEquationTypeId", controlMeasureEquationTypeId)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
 //        Criterion c = Restrictions.eq("controlMeasureId", new Integer(controlMeasureId));
 //        List list = hibernateFacade.get(EfficiencyRecord.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
@@ -563,10 +583,17 @@ public class ControlMeasureDAO {
 
     public void removeEfficiencyRecords(int controlMeasureId, Session session) {
         String hqlDelete = "delete EfficiencyRecord er where er.controlMeasureId = :controlMeasureId";
-        session.createQuery( hqlDelete )
-             .setInteger("controlMeasureId", controlMeasureId)
-             .executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.createQuery( hqlDelete )
+                .setInteger("controlMeasureId", controlMeasureId)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
 //        Criterion c = Restrictions.eq("controlMeasureId", new Integer(controlMeasureId));
 //        List list = hibernateFacade.get(EfficiencyRecord.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
@@ -642,8 +669,15 @@ public class ControlMeasureDAO {
                         ? "inner join cm.sectors AS s "
                           + "WHERE s.id in (" + idList + ") " 
                         : "") + ")";
-        session.createQuery( hqlDelete ).executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.createQuery( hqlDelete ).executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     public void removeEfficiencyRecords(int controlMeasureId, DbServer dbServer) throws EmfException {

@@ -606,6 +606,8 @@ public class FileDownloadWindow
 
         try {
             desktop.open(new File(downloadFolder));
+        } catch (NullPointerException ex) {
+            messagePanel.setMessage("Missing valid download folder");
         } catch (IOException ex) {
             messagePanel.setError(ex.getMessage());
         }

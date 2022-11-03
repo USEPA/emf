@@ -685,7 +685,7 @@ public class ManagedImportService {
         if (DebugLevels.DEBUG_17())
             System.out.println("qedOutput (id = " + qOutput.getId() + ") removed from QueueCaseOutput table.");
 
-        session.flush();
+//        session.flush();
         session.clear();
     }
 

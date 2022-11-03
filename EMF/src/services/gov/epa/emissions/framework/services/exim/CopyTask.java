@@ -115,7 +115,7 @@ public class CopyTask extends Task {
             try {
                 if (isDone) {
                     addCompletedStatus();
-                    session.flush();
+//                    session.flush();
                 } else 
                     addFailedStatus(errorMsg);
             } catch (Exception e2) {

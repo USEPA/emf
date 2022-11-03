@@ -3,21 +3,31 @@ package gov.epa.emissions.framework.services.spring;
 import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.RemoveDownloadFilesTask;
 import gov.epa.emissions.framework.services.basic.RemoveUploadFilesTask;
+import gov.epa.emissions.framework.services.cost.ControlStrategyDAO;
+
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan(basePackages = "gov.epa.emissions.framework")
+@ComponentScan(basePackages = {
+        "gov.epa.emissions.framework.services.cost",
+        "gov.epa.emissions.framework.services.basic",
+        "gov.epa.emissions.framework.services.cost.analysis.common"
+    })
 @EnableScheduling
+@EnableTransactionManagement
 //@EnableTransactionManagement(proxyTargetClass=true, mode=AdviceMode.PROXY)gov.epa.emissions.framework.services.basic
 public class AppConfig {
 
@@ -43,11 +53,12 @@ public class AppConfig {
 //    }
 
     @Bean
-    public AnnotationSessionFactoryBean sessionFactory() {
-       AnnotationSessionFactoryBean sessionFactory = new AnnotationSessionFactoryBean();
+    public LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
        sessionFactory.setDataSource(dataSource());
-       sessionFactory.setAnnotatedPackages(/*PackagesToScan(*/new String[] { "gov.epa.emissions.framework" });
-       sessionFactory.setAnnotatedClasses(new Class[] { FileDownloadDAO.class, RemoveDownloadFilesTask.class, RemoveUploadFilesTask.class });
+//       sessionFactory.setAnnotatedPackages(new String[]{"gov.epa.emissions.framework", "gov.epa.emissions.framework.services.cost"});
+//       sessionFactory.setPackagesToScan(new String[]{"gov.epa.emissions.framework.services.cost", "gov.epa.emissions.framework.services.cost.analysis.common"});
+//       sessionFactory.setAnnotatedClasses(new Class[] { ControlStrategyDAO.class, FileDownloadDAO.class, RemoveDownloadFilesTask.class, RemoveUploadFilesTask.class });
        sessionFactory.setHibernateProperties(hibernateProperties());
 
        return sessionFactory;
@@ -94,6 +105,21 @@ public class AppConfig {
 //       return txManager;
 //    }
 
+//    @Bean
+//    public PlatformTransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
+//        JpaTransactionManager transactionManager = new JpaTransactionManager();
+//        transactionManager.set(sessionFactory);
+//        return transactionManager;
+//    }
+    
+    @Bean
+    public PlatformTransactionManager hibernateTransactionManager() {
+        HibernateTransactionManager transactionManager
+          = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+        return transactionManager;
+    }
+
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
        return new PersistenceExceptionTranslationPostProcessor();
@@ -104,6 +130,8 @@ public class AppConfig {
           {
              setProperty("hibernate.hbm2ddl.auto", "create-drop");//env.getProperty("hibernate.hbm2ddl.auto"));
              setProperty("hibernate.dialect","org.hibernate.dialect.PostgreSQLDialect");// env.getProperty("hibernate.dialect"));
+//             setProperty("hibernate.transaction.coordinator_class","jta");
+//             setProperty("hibernate.transaction.jta.platform","JBossAS");
           }
        };
     }    

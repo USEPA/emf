@@ -508,7 +508,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             Session session = sessionFactory.getSession();
             fileDownloadDAO.markFileDownloadsRead(fileDownloadIds, session);
 //            session.clear();
-            session.flush();
+//            session.flush();
                        
             session.close();
         } catch (RuntimeException e) {

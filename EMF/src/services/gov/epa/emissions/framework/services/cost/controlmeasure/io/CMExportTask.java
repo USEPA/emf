@@ -60,7 +60,7 @@ public class CMExportTask implements Runnable {
     public void run() {
         Session session = sessionFactory.getSession();
         try {
-            session.setFlushMode(FlushMode.NEVER);
+            session.setFlushMode(FlushMode.MANUAL);
 //            prepare();
             String[] selectedAbbrevAndSCCs = getSelectedAbbrevAndSCCs(controlMeasureIds);
             ControlMeasuresExporter exporter = new ControlMeasuresExporter(folder, prefix, getControlMeasures(controlMeasureIds, session), selectedAbbrevAndSCCs, user, sessionFactory, dbServerFactory);
@@ -76,7 +76,7 @@ public class CMExportTask implements Runnable {
             logError("Failed to export control measures", e); // FIXME: report generation
 //            setStatus("Failed to export all control measures: " + e.getMessage());
         } finally {
-            session.flush();
+//            session.flush();
             session.close();
         }
     }

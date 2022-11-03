@@ -837,7 +837,6 @@ public class DatasetDAO {
         
         try {
             session.clear();
-            session.flush();
             hibernateFacade.remove(datasets, session);
         } catch (Exception e) {
             LOG.error(e);
@@ -1360,7 +1359,7 @@ public class DatasetDAO {
         // check if dataset is a profile or xref (via the TemporalAllocation table)
         list = session.createQuery(
                 "select DISTINCT tA.monthlyProfileDataset, tA.name from TemporalAllocation tA where "
-                        + "tA.monthlyProfileDataset.id = "
+                        + "(tA.monthlyProfileDataset.id = "
                         + getAndOrClause(EmfArrays.convert(all), "tA.monthlyProfileDataset.id") + ")").list();
         ids = getUsedDatasetIds(user, session, list, usedby);
         all.removeAll(ids);
@@ -1370,7 +1369,7 @@ public class DatasetDAO {
 
         list = session.createQuery(
                 "select DISTINCT tA.weeklyProfileDataset, tA.name from TemporalAllocation tA where "
-                        + "tA.weeklyProfileDataset.id = "
+                        + "(tA.weeklyProfileDataset.id = "
                         + getAndOrClause(EmfArrays.convert(all), "tA.weeklyProfileDataset.id") + ")").list();
         ids = getUsedDatasetIds(user, session, list, usedby);
         all.removeAll(ids);
@@ -1380,7 +1379,7 @@ public class DatasetDAO {
         
         list = session.createQuery(
                 "select DISTINCT tA.dailyProfileDataset, tA.name from TemporalAllocation tA where "
-                        + "tA.dailyProfileDataset.id = "
+                        + "(tA.dailyProfileDataset.id = "
                         + getAndOrClause(EmfArrays.convert(all), "tA.dailyProfileDataset.id") + ")").list();
         ids = getUsedDatasetIds(user, session, list, usedby);
         all.removeAll(ids);
@@ -1390,7 +1389,7 @@ public class DatasetDAO {
 
         list = session.createQuery(
                 "select DISTINCT tA.xrefDataset, tA.name from TemporalAllocation tA where "
-                        + "tA.xrefDataset.id = "
+                        + "(tA.xrefDataset.id = "
                         + getAndOrClause(EmfArrays.convert(all), "tA.xrefDataset.id") + ")").list();
         ids = getUsedDatasetIds(user, session, list, usedby);
         all.removeAll(ids);

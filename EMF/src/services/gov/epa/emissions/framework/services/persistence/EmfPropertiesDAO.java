@@ -49,8 +49,6 @@ public class EmfPropertiesDAO implements EmfProperties {
             tx.rollback();
             throw e;
         }finally{
-            session.flush();
-            session.clear();
             session.close();
         }
     }

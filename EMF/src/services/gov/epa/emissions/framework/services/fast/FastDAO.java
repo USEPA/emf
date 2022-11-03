@@ -421,10 +421,18 @@ public class FastDAO {
 
     public void removeFastDataset(int fastDatasetId, Session session) {
         String hqlDelete = "delete FastDataset fd where fd.id = :fastDatasetId";
-        session.createQuery( hqlDelete )
-             .setInteger("fastDatasetId", fastDatasetId)
-             .executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.
+                    beginTransaction();
+            session.createQuery( hqlDelete )
+                .setInteger("fastDatasetId", fastDatasetId)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     public List<FastNonPointDataset> getFastNonPointDatasets(Session session) {
@@ -441,10 +449,18 @@ public class FastDAO {
 
     public void removeFastNonPointDataset(int fastNonPointDatasetId, Session session) {
         String hqlDelete = "delete FastNonPointDataset fd where fd.id = :fastNonPointDatasetId";
-        session.createQuery( hqlDelete )
-             .setInteger("fastNonPointDatasetId", fastNonPointDatasetId)
-             .executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.
+                    beginTransaction();
+            session.createQuery( hqlDelete )
+                .setInteger("fastNonPointDatasetId", fastNonPointDatasetId)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     public List<Grid> getGrids(Session session) {

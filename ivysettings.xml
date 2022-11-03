@@ -6,8 +6,9 @@
             <ibiblio name="central" m2compatible="true" />
             <ibiblio name="freehep" m2compatible="true" root="http://java.freehep.org/maven2/"/>
             <ibiblio name="mavenrepo1" m2compatible="true" root="https://repo1.maven.org/maven2/"/>
-            <ibiblio name="geotoolkit" m2compatible="true" root="http://maven.geotoolkit.org/"/>
+            <!--ibiblio name="geotoolkit" m2compatible="true" root="http://maven.geotoolkit.org/"/-->
             <ibiblio name="osgeo" m2compatible="true" root="http://download.osgeo.org/webdav/geotools/"/>
+            <ibiblio name="jboss-snapshots-repository" m2compatible="true" root="https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/"/>
 
             <!--<ibiblio name="mvnrepo" m2compatible="true" root="http://mvnrepository.com/artifact/"/>-->
             <!--<ibiblio name="ebi_repo" m2compatible="true" root="http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/"/>-->

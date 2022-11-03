@@ -221,12 +221,18 @@
 
 	<target name="compile-src-no-clean-init" depends="build-version-no-clean-init, compile-contract-no-clean-init, compile-client-no-clean-init, compile-services-no-clean-init" />
 
-	<target name="do-compile">
-		<javac srcdir="${compile.src}" destdir="${build.classes.dir}" classpathref="classpath" debug="on" target="1.7" />
+	<target name="do-compile" depends="retrieve">
+		<javac srcdir="${compile.src}" destdir="${build.classes.dir}" debug="on" target="1.8" verbose="true" >
+			<classpath>
+				<path refid="client.build.path" />
+				<path refid="server.build.path" />
+				<pathelement location="${build.classes.dir}" />
+			</classpath>
+		</javac>
 	</target>
 
 	<target name="do-compile-common">
-		<javac srcdir="${src.common.dir}" destdir="${build.classes.dir}" debug="on" >
+		<javac srcdir="${src.common.dir}" destdir="${build.classes.dir}" debug="on" target="1.8" verbose="true" >
 			<classpath>
 				<path refid="client.build.path" />
 				<pathelement location="${build.classes.dir}" />
@@ -235,7 +241,7 @@
 	</target>
 
 	<target name="do-compile-client">
-		<javac srcdir="${src.client.dir}" destdir="${build.classes.dir}" debug="on" >
+		<javac srcdir="${src.client.dir}" destdir="${build.classes.dir}" debug="on" target="1.8" verbose="true" >
 			<classpath>
 				<path refid="client.build.path" />
 				<pathelement location="${build.classes.dir}" />
@@ -244,7 +250,7 @@
 	</target>
 
 	<target name="do-compile-server">
-		<javac srcdir="${src.services.dir}" destdir="${build.classes.dir}" debug="on" target="1.7" >
+		<javac srcdir="${src.services.dir}" destdir="${build.classes.dir}" debug="on" target="1.8" verbose="true" >
 			<classpath>
 				<path refid="server.build.path" />
 				<pathelement location="${build.classes.dir}" />
@@ -253,7 +259,7 @@
 	</target>
 
 	<target name="do-compile-contract">
-		<javac srcdir="${src.contract.dir}" destdir="${build.classes.dir}" debug="on" >
+		<javac srcdir="${src.contract.dir}" destdir="${build.classes.dir}" debug="on" target="1.8" verbose="true" >
 			<classpath refid="server.build.path" />
 		</javac>
 	</target>
@@ -467,6 +473,44 @@
 		</copy>
 	</target>
 
+	<target name="install_local_axis_jar" description="Publish local ma2 jar into repository">
+		<ivy:resolve file="lib/axis-1.4/axis-rt-core-1.4.1-SNAPSHOT.xml" haltonfailure="false" />
+		<tstamp>
+			<format property="now" pattern="yyyyMMddHHmmss"/>
+		</tstamp>
+		<ivy:publish
+				artifactspattern="lib/axis-1.4/[artifact]-[revision].[ext]"
+				organisation="org.apache.axis"
+				module="axis-rt-core"
+				revision="1.4.1-SNAPSHOT"
+				resolver="local"
+				pubrevision="1.4.1-SNAPSHOT"
+				pubdate="${now}"
+				forcedeliver="true"
+				overwrite="true"
+				status="release"
+				/>
+		<ivy:install organisation="org.apache.axis" module="axis-rt-core"
+					 revision="1.4.1-SNAPSHOT" transitive="true" overwrite="true"
+					 from="local" to="local" />
+		<ivy:resolve file="lib/axis-1.4/axis-rt-jws-1.4.1-SNAPSHOT.xml" haltonfailure="false" />
+		<ivy:publish
+				artifactspattern="lib/axis-1.4/[artifact]-[revision].[ext]"
+				organisation="org.apache.axis"
+				module="axis-rt-jws"
+				revision="1.4.1-SNAPSHOT"
+				resolver="local"
+				pubrevision="1.4.1-SNAPSHOT"
+				pubdate="${now}"
+				forcedeliver="true"
+				overwrite="true"
+				status="release"
+				/>
+		<ivy:install organisation="org.apache.axis" module="axis-rt-jws"
+					 revision="1.4.1-SNAPSHOT" transitive="true" overwrite="true"
+					 from="local" to="local" />
+	</target>
+
 
 	<target name="client-dist" depends="client-dist-sandbox" description="Builds the EMF Client distribution, zips and tars it up">
 
@@ -529,7 +573,7 @@
 	</target>
 
 	<target name="retrieve">
-		<ivy:resolve/>
+		<ivy:resolve conf="client,server"/>
 		<!--<ivy:retrieve pattern="repository/[artifact]-[revision].[ext]" />-->
 		<ivy:cachepath pathid="client.build.path" conf="client"/>
 		<ivy:cachepath pathid="server.build.path" conf="server"/>
@@ -643,12 +687,10 @@
 
 	<target name="run-client" depends="client-env, client-dist-sandbox" description="Runs the EMF Client">
 		<property name="userprefs" location="${user.home}/EMFPrefs.txt" />
-		<java classname="gov.epa.emissions.framework.client.EMFClient" fork="true" failonerror="true">
+		<java classname="gov.epa.emissions.framework.client.EMFClient" fork="true" failonerror="true" >
+			<classpath location="${client.dist.lib}" />
 			<classpath>
-				<pathelement location="${client.jar}" />
-				<fileset dir="${client.dist.lib}">
-					<include name="**/*.jar" />
-				</fileset>
+		        <pathelement location="${build.classes.dir}" />
 			</classpath>
 			<jvmarg value="-DUSER_PREFERENCES=${userprefs}" />
 		</java>
@@ -703,10 +745,10 @@
 	</target>
 
 	<target name="simple-deploy" depends="app-dist" description="Removes (if present) an existing installation and copies the new War to Tomcat webapps folder">
-		<delete file="${tomcat.webapps}/${app.name}.war" />
+		<!--delete file="${tomcat.webapps}/${app.name}.war" />
 		<delete dir="${tomcat.webapps}/${app.name}" />
 		<delete dir="${tomcat.home}/work/Standalone/localhost/emf" />
-		<copy todir="${tomcat.webapps}" file="${build.home}/${app.name}.war" />
+		<copy todir="${tomcat.webapps}" file="${build.home}/${app.name}.war" /-->
 	</target>
 
 	<target name="redeploy" depends="tomcat-stop, simple-deploy, tomcat-start" description="Stops Tomcat, deploys EMF, and starts Tomcat" />

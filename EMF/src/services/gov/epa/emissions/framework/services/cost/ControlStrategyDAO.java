@@ -355,19 +355,33 @@ public class ControlStrategyDAO {
 
     public void removeControlStrategyResults(int controlStrategyId, Session session) {
         String hqlDelete = "delete ControlStrategyResult sr where sr.controlStrategyId = :controlStrategyId";
-        session.createQuery( hqlDelete )
-             .setInteger("controlStrategyId", controlStrategyId)
-             .executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.createQuery( hqlDelete )
+                .setInteger("controlStrategyId", controlStrategyId)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     public void removeControlStrategyResult(int controlStrategyId, int resultId, Session session) {
         String hqlDelete = "delete ControlStrategyResult sr where sr.id = :resultId and sr.controlStrategyId = :controlStrategyId";
-        session.createQuery( hqlDelete )
-             .setInteger("resultId", resultId)
-             .setInteger("controlStrategyId", controlStrategyId)
-             .executeUpdate();
-        session.flush();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.createQuery( hqlDelete )
+                .setInteger("resultId", resultId)
+                .setInteger("controlStrategyId", controlStrategyId)
+                .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     public ControlStrategy getByName(String name, Session session) {

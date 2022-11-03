@@ -114,7 +114,7 @@ public class CaseAssistanceService {
                 session.clear();
                 resetCaseValues(user, newCase, session);
                 session.clear(); // NOTE: to clear up the old object images
-                session.flush();
+                //session.flush();
                 addNewCaseObject(newCase);
 
                 session.clear(); // NOTE: to clear up the old object images
@@ -340,7 +340,7 @@ public class CaseAssistanceService {
 
     private Object checkDB(Object obj, Class<?> clazz, String name, Session session) {
         session.clear();
-        session.flush();
+        //session.flush();
         Object temp = caseDao.load(clazz, name, session);
         
         if (obj instanceof ModelToRun)
@@ -351,19 +351,19 @@ public class CaseAssistanceService {
             String uniqueName = name + "_" + random.substring(2);
             ((Abbreviation) obj).setName(uniqueName);
             session.clear();
-            session.flush();
+            //session.flush();
             caseDao.addObject(obj, session);
             session.clear();
-            session.flush();
+            //session.flush();
             temp = caseDao.load(clazz, uniqueName, session);
         }
         
         if (temp == null) {
             session.clear();
-            session.flush();
+            //session.flush();
             caseDao.addObject(obj, session);
             session.clear();
-            session.flush();
+            //session.flush();
             temp = caseDao.load(clazz, name, session);
         }
 

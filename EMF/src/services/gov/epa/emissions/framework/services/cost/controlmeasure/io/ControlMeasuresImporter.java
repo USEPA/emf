@@ -376,7 +376,7 @@ public class ControlMeasuresImporter implements Importer {
 //                session.flush();
 //                session.clear();
 //            }
-            session.flush();
+//            session.flush();
             session.clear();
             session.close();
        }

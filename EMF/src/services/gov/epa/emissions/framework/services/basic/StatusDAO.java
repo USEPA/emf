@@ -46,7 +46,7 @@ public class StatusDAO {
         Session session = sessionFactory.getSession();
         try {
             dao.add(status, session);
-            session.flush();
+//            session.flush();
             session.clear();
         } finally {
             session.close();
