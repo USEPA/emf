@@ -26,7 +26,7 @@
 
         <dependency org="org.apache.commons" name="commons-configuration2" rev="2.8.0" conf="commons->default" />
         <!--dependency org="commons-configuration" name="commons-configuration" rev="1.10" conf="commons->default" /-->
-        <dependency org="commons-collections" name="commons-collections" rev="3.2.2" conf="commons->default" />
+        <!--dependency org="commons-collections" name="commons-collections" rev="3.2.2" conf="commons->default" /-->
         <!--dependency org="org.apache.commons" name="commons-collections4" rev="4.4" conf="commons->default" /-->
         <!--dependency org="commons-collections" name="commons-collections" rev="3.1" conf="commons->default" /-->
         <!--dependency org="commons-logging" name="commons-logging" rev="1.0.4" conf="commons->default"/-->
