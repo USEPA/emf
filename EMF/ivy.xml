@@ -48,7 +48,7 @@
         <!--dependency org="colt" name="colt" rev="1.2.0"  conf="client->default" />
         <dependency org="commons-collections" name="commons-collections" rev="3.1" /--><!-- Server Client ? -->
         <dependency org="commons-discovery" name="commons-discovery" rev="0.5" conf="client->default;server->default" />
-        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.3.2" conf="client->default;server->default" />
+        <dependency org="commons-fileupload" name="commons-fileupload" rev="1.4" conf="client->default;server->default" />
         <!--dependency org="commons-lang" name="commons-lang" rev="2.6" /-->
         <!--dependency org="commons-logging" name="commons-logging" rev="1.0.4" />
         <dependency org="commons-primitives" name="commons-primitives" rev="1.0" /-->
@@ -92,7 +92,7 @@
 
 		<dependency org="jakarta.xml.rpc" name="jakarta.xml.rpc-api" rev="1.1.4" />
 
-        <dependency org="log4j" name="log4j" rev="1.2.17" conf="server->default" />
+        <!--dependency org="log4j" name="log4j" rev="1.2.17" conf="server->default" /-->
         <!--<dependency org="mail" name="mail" rev="?" />-->
         <!--<dependency org="mchange-commons" name="mchange-commons" rev="0.2" />-->
         <!--<dependency org="oscache" name="oscache" rev="2.1" />-->
