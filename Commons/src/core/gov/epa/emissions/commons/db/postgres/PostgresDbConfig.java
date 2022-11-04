@@ -2,7 +2,7 @@ package gov.epa.emissions.commons.db.postgres;
 
 import gov.epa.emissions.commons.FileConfig;
 
-import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 public class PostgresDbConfig extends FileConfig {
 
