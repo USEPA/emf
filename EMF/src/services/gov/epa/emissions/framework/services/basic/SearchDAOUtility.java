@@ -1,7 +1,7 @@
 package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.framework.services.module.SearchFilterFields;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Property;

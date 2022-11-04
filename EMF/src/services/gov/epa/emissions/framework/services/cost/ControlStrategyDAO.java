@@ -1,5 +1,19 @@
 package gov.epa.emissions.framework.services.cost;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
@@ -12,32 +26,14 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyGroup;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
+import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 
 public class ControlStrategyDAO {
     private LockingScheme lockingScheme;

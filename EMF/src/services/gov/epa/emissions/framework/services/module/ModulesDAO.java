@@ -1,20 +1,30 @@
 package gov.epa.emissions.framework.services.module;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
+
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
-import gov.epa.emissions.framework.services.basic.FilterField;
 import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
-
-import java.io.Serializable;
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.*;
-import org.hibernate.criterion.*;
-import org.hibernate.transform.Transformers;
 
 public class ModulesDAO {
 

@@ -1,5 +1,16 @@
 package gov.epa.emissions.framework.services.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
+
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
@@ -7,25 +18,9 @@ import gov.epa.emissions.commons.io.Column;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
-import gov.epa.emissions.framework.services.basic.FilterField;
 import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
-import gov.epa.emissions.framework.services.module.LiteModule;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 
 public class DatasetTypesDAO {
 

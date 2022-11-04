@@ -9,7 +9,7 @@ import gov.epa.emissions.commons.io.XFileFormat;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.ui.RowSource;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
