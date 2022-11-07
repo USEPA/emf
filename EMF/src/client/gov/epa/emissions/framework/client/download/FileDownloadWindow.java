@@ -1,21 +1,5 @@
 package gov.epa.emissions.framework.client.download;
 
-import gov.epa.emissions.commons.gui.Button;
-import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.client.DisposableInteralFrame;
-import gov.epa.emissions.framework.client.console.DesktopManager;
-import gov.epa.emissions.framework.client.console.EmfConsole;
-import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
-import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
-import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.FileDownload;
-import gov.epa.emissions.framework.ui.ImageResources;
-import gov.epa.emissions.framework.ui.MessagePanel;
-import gov.epa.emissions.framework.ui.RefreshButton;
-import gov.epa.emissions.framework.ui.RefreshObserver;
-import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -35,8 +19,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -58,17 +45,34 @@ import javax.swing.SwingWorker;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.nio.client.DefaultHttpAsyncClient;
-import org.apache.http.nio.client.HttpAsyncClient;
-import org.apache.http.nio.client.methods.HttpAsyncMethods;
-import org.apache.http.nio.client.methods.ZeroCopyConsumer;
-import org.apache.http.nio.reactor.IOReactorException;
-import org.apache.http.params.CoreConnectionPNames;
+import org.apache.hc.client5.http.async.methods.AbstractCharResponseConsumer;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.message.BasicHttpRequest;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.http.nio.support.BasicRequestProducer;
+import org.apache.hc.core5.http.support.BasicRequestBuilder;
+import org.apache.hc.core5.reactor.IOReactorConfig;
+import org.apache.hc.core5.util.Timeout;
+
+import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.commons.util.CustomDateFormat;
+import gov.epa.emissions.framework.client.DisposableInteralFrame;
+import gov.epa.emissions.framework.client.console.DesktopManager;
+import gov.epa.emissions.framework.client.console.EmfConsole;
+import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTableApp;
+import gov.epa.emissions.framework.client.swingworker.GenericSwingWorker;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.FileDownload;
+import gov.epa.emissions.framework.ui.ImageResources;
+import gov.epa.emissions.framework.ui.MessagePanel;
+import gov.epa.emissions.framework.ui.RefreshButton;
+import gov.epa.emissions.framework.ui.RefreshObserver;
+import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 
 public class FileDownloadWindow 
   extends DisposableInteralFrame 
@@ -116,7 +120,7 @@ public class FileDownloadWindow
 //            fileDownload.setProgress(0);
 
             String downloadURL = fileDownload.getUrl();
-            HttpAsyncClient httpclient = null;
+            CloseableHttpAsyncClient httpclient = null;
             File downloadedFile = null;
             boolean downloadIssue = false;
             try {
@@ -130,10 +134,22 @@ public class FileDownloadWindow
                     return null;
                 }
                 
-                httpclient = new DefaultHttpAsyncClient();
+                final IOReactorConfig ioReactorConfig = IOReactorConfig.custom()
+                        .setSoTimeout(Timeout.ofSeconds(10))
+                        .build();
+                
+                httpclient = HttpAsyncClients
+                        .custom()
+                        .setIOReactorConfig(ioReactorConfig)
+                        .setDefaultRequestConfig(RequestConfig.custom()
+                                .setConnectTimeout(Timeout.ofSeconds(10))
+                                .setResponseTimeout(Timeout.ofSeconds(10))
+                                .build())
+                        .build();
+
                 //Initialize progress property.
                 setProgress(0);
-            } catch (IOReactorException e2) {
+            } catch (RuntimeException e2) {
                 // NOTE Auto-generated catch block
                 e2.printStackTrace();
             } catch (EmfException e) {
@@ -141,114 +157,211 @@ public class FileDownloadWindow
                 e.printStackTrace();
             }
 
-            final FileChannel wChannel = new FileOutputStream(downloadedFile, false).getChannel();
+            //final FileChannel fileOutputStream = new FileOutputStream(downloadedFile, false).getChannel();
+OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(downloadedFile, false), StandardCharsets.UTF_8);
+ 
 //            System.out.println("start file download...");
             
-            httpclient.getParams()
-                .setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 10000)
-                .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000)
-                .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
-                .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true)
-                .setIntParameter(CoreConnectionPNames.MIN_CHUNK_LIMIT, 8 * 1024);
+//            httpclient.getParams()
+//                .setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 10000)
+//                .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000)
+//                .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
+//                .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true)
+//                .setIntParameter(CoreConnectionPNames.MIN_CHUNK_LIMIT, 8 * 1024);
             httpclient.start();
             try {
                   
                 // Create a writable file channel
 //                wChannel = new FileOutputStream(downloadedFile, false).getChannel();
 
-                ZeroCopyConsumer<File> consumer = new ZeroCopyConsumer<File>(downloadedFile) {
-
-                    long position = 0;
-//                        @Override
-//                        protected void onResponseReceived(HttpResponse httpResponse) {
-//                            
+//                ZeroCopyConsumer<File> consumer = new ZeroCopyConsumer<File>(downloadedFile) {
+//
+//                    long position = 0;
+////                        @Override
+////                        protected void onResponseReceived(HttpResponse httpResponse) {
+////                            
+////                        }
+//                    
+//                    long downloadedBytes = 0;
+//                    int previousProgress = 0;
+//                    int progress = 0;
+//
+//                    @Override
+//                    protected void onContentReceived(org.apache.http.nio.ContentDecoder decoder, org.apache.http.nio.IOControl ioctrl)  {
+//                        boolean allRead = false;
+//                        ByteBuffer t = ByteBuffer.allocate(2048);
+//
+//                        while(!allRead) {
+//                          int count = 0;
+//                        try {
+//                            count = decoder.read(t);
+//                        } catch (IOException e1) {
+//                            // NOTE Auto-generated catch block
+//                            e1.printStackTrace();
 //                        }
-                    
-                    long downloadedBytes = 0;
-                    int previousProgress = 0;
-                    int progress = 0;
+//                          if(count <= 0) {
+//                            allRead = true;
+////                                System.out.println("Buffer reading is : " + decoder.isCompleted());
+//                          } else {
+//                              downloadedBytes += count;
+////                                  System.out.println("onContentReceived downloadedBytes = " + downloadedBytes + ", count = " + count);
+////                                  System.out.println("****** Number of Bytes read is : " + count);
+//                             t.flip();
+//                             try {
+//                                wChannel.write(t);
+//                            } catch (IOException e) {
+//                                // NOTE Auto-generated catch block
+//                                e.printStackTrace();
+//                            }
+//                            t.clear();
+//                          }
+//                          
+//                        }
+//                        if (fileDownload.getSize() != 0) 
+//                            progress = Math.min((int)((downloadedBytes * 100.0) / fileDownload.getSize()), 100);
+//                        if (previousProgress != progress) {
+//                            setProgress(progress);
+////                                fileDownload.setProgress(progress);
+////                                table.repaint();
+//                        }
+//                        previousProgress = progress;
+//                    }
+//                    
+//                    @Override
+//                    protected File process(
+//                            final HttpResponse response, 
+//                            final File file,
+//                            final ContentType contentType) throws Exception {
+////                            System.out.println("process");
+//                        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+//                            throw new ClientProtocolException("Upload failed: " + response.getStatusLine());
+//                        }
+//                        //finalize progress bar download status
+//                        setProgress(100);
+////                            fileDownload.setProgress(100);
+////                            table.repaint();
+//                        return file;
+//                    }
+//
+//                };
 
-                    @Override
-                    protected void onContentReceived(org.apache.http.nio.ContentDecoder decoder, org.apache.http.nio.IOControl ioctrl)  {
-                        boolean allRead = false;
-                        ByteBuffer t = ByteBuffer.allocate(2048);
+                final BasicHttpRequest request = BasicRequestBuilder.get()
+                        .setUri(downloadURL)
+                        .build();
 
-                        while(!allRead) {
-                          int count = 0;
-                        try {
-                            count = decoder.read(t);
-                        } catch (IOException e1) {
-                            // NOTE Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-                          if(count <= 0) {
-                            allRead = true;
-//                                System.out.println("Buffer reading is : " + decoder.isCompleted());
-                          } else {
-                              downloadedBytes += count;
-//                                  System.out.println("onContentReceived downloadedBytes = " + downloadedBytes + ", count = " + count);
-//                                  System.out.println("****** Number of Bytes read is : " + count);
-                             t.flip();
-                             try {
-                                wChannel.write(t);
-                            } catch (IOException e) {
-                                // NOTE Auto-generated catch block
-                                e.printStackTrace();
+
+                
+                final Future<File> future = httpclient.execute(
+                        new BasicRequestProducer(request, null),
+                        new AbstractCharResponseConsumer<File>() {
+
+                            long position = 0;
+                            long downloadedBytes = 0;
+                            int previousProgress = 0;
+                            int progress = 0;
+
+                            @Override
+                            protected void start(
+                                    final HttpResponse response,
+                                    final ContentType contentType) throws HttpException, IOException {
+                                System.out.println(request + "->" + new StatusLine(response));
                             }
-                            t.clear();
-                          }
-                          
-                        }
-                        if (fileDownload.getSize() != 0) 
-                            progress = Math.min((int)((downloadedBytes * 100.0) / fileDownload.getSize()), 100);
-                        if (previousProgress != progress) {
-                            setProgress(progress);
-//                                fileDownload.setProgress(progress);
-//                                table.repaint();
-                        }
-                        previousProgress = progress;
-                    }
-                    
-                    @Override
-                    protected File process(
-                            final HttpResponse response, 
-                            final File file,
-                            final ContentType contentType) throws Exception {
-//                            System.out.println("process");
-                        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                            throw new ClientProtocolException("Upload failed: " + response.getStatusLine());
-                        }
-                        //finalize progress bar download status
-                        setProgress(100);
-//                            fileDownload.setProgress(100);
-//                            table.repaint();
-                        return file;
-                    }
 
-                };
-                  
+                            @Override
+                            protected int capacityIncrement() {
+                                return Integer.MAX_VALUE;
+                            }
+
+                            @Override
+                            protected void data(final CharBuffer data, final boolean endOfStream) throws IOException {
+//                                while (data.hasRemaining()) {
+//                                    System.out.print(data.get());
+//                                }
+//                                if (endOfStream) {
+//                                    System.out.println();
+//                                }
+
+                                boolean allRead = false;
+//                                ByteBuffer t = ByteBuffer.allocate(data.length() * Character.BYTES);
+//                                ByteBuffer result = ByteBuffer.allocate(data.length() * Character.BYTES);
+//                                CharBuffer converter = result.asCharBuffer();
+//                                converter.append(data);
+
+                                
+//                                while(!allRead) {
+                                  int count = 0;
+//                                try {
+                                    count = data.length();
+//                                } catch (IOException e1) {
+//                                    // NOTE Auto-generated catch block
+//                                    e1.printStackTrace();
+//                                }
+                                  if(count <= 0) {
+                                    allRead = true;
+//                                        System.out.println("Buffer reading is : " + decoder.isCompleted());
+                                  } else {
+                                      downloadedBytes += count;
+//                                          System.out.println("onContentReceived downloadedBytes = " + downloadedBytes + ", count = " + count);
+//                                          System.out.println("****** Number of Bytes read is : " + count);
+//                                     t.flip();
+                                     try {
+                                         outputStreamWriter.append(data);
+                                    } catch (IOException e) {
+                                        // NOTE Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
+//                                    t.clear();
+                                  }
+                                  
+//                                }
+                                if (fileDownload.getSize() != 0) 
+                                    progress = Math.min((int)((downloadedBytes * 100.0) / fileDownload.getSize()), 100);
+                                if (previousProgress != progress) {
+                                    setProgress(progress);
+//                                        fileDownload.setProgress(progress);
+//                                        table.repaint();
+                                }
+                                previousProgress = progress;
+                            }
+
+                            @Override
+                            protected File buildResult() throws IOException {
+                                return null;
+                            }
+
+                            @Override
+                            public void failed(final Exception cause) {
+                                System.out.println(request + "->" + cause);
+                            }
+
+                            @Override
+                            public void releaseResources() {
+                            }
+
+                        }, null);
+                future.get();
                 //asynchronously download the file
 //                System.out.println("downloadURL = " + downloadURL);
-                Future<File> future = httpclient.execute(HttpAsyncMethods.createGet(downloadURL), 
-                        consumer, 
-                        new FutureCallback<File>() {
-
-                            public void cancelled() {
-                                // NOTE Auto-generated method stub
-//                                System.out.println("cancelled");
-                            }
-
-                            public void completed(File arg0) {
-                                // NOTE Auto-generated method stub
-//                                System.out.println("completed");
-                            }
-
-                            public void failed(Exception arg0) {
-                                // NOTE Auto-generated method stub
-//                                System.out.println("failed");
-                            }
-                        });
-                File result = future.get();
+//                Future<File> future = httpclient.execute(HttpAsyncMethods.createGet(downloadURL), 
+//                        consumer, 
+//                        new FutureCallback<File>() {
+//
+//                            public void cancelled() {
+//                                // NOTE Auto-generated method stub
+////                                System.out.println("cancelled");
+//                            }
+//
+//                            public void completed(File arg0) {
+//                                // NOTE Auto-generated method stub
+////                                System.out.println("completed");
+//                            }
+//
+//                            public void failed(Exception arg0) {
+//                                // NOTE Auto-generated method stub
+////                                System.out.println("failed");
+//                            }
+//                        });
+//                File result = future.get();
 //                System.out.println("Response file length: " + result.length());
 //                System.out.println("Response file length: " + result.getAbsolutePath());
                 
@@ -264,14 +377,14 @@ public class FileDownloadWindow
                 downloadIssue = true;
             } finally {
                 try {
-                    wChannel.close();
+                   outputStreamWriter.close();
                 } catch (IOException e) {
                     // NOTE Auto-generated catch block
                     e.printStackTrace();
                 }
                 try {
-                    httpclient.shutdown();
-                } catch (InterruptedException e) {
+                    httpclient.close();
+                } catch (IOException e) {
                     // NOTE Auto-generated catch block
                     e.printStackTrace();
                 }
