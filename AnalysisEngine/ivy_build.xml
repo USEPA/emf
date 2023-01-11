@@ -114,11 +114,6 @@
 					 publishivy="true"
 
 				/>
-		<ivy:retrieve  
-			inline="true"
-			overwritemode="always"
-			sync="true"
-			 />
 <!--		<ivy:cleancache />
 		<ivy:retrieve  
 			inline="true"
@@ -209,4 +204,3 @@
 	<target name="tests" depends="compile-tests, do-tests"  />
 
 </project>
-
