@@ -474,12 +474,12 @@
 	</target>
 
 	<target name="install_local_axis_jar" description="Publish local ma2 jar into repository">
-		<ivy:resolve file="lib/axis-1.4/axis-rt-core-1.4.1-SNAPSHOT.xml" haltonfailure="false" />
+		<ivy:resolve file="lib/axis-rt-core-1.4.1-SNAPSHOT.xml" haltonfailure="false" />
 		<tstamp>
 			<format property="now" pattern="yyyyMMddHHmmss"/>
 		</tstamp>
 		<ivy:publish
-				artifactspattern="lib/axis-1.4/[artifact]-[revision].[ext]"
+				artifactspattern="lib/[artifact]-[revision].[ext]"
 				organisation="org.apache.axis"
 				module="axis-rt-core"
 				revision="1.4.1-SNAPSHOT"
@@ -493,9 +493,9 @@
 		<ivy:install organisation="org.apache.axis" module="axis-rt-core"
 					 revision="1.4.1-SNAPSHOT" transitive="true" overwrite="true"
 					 from="local" to="local" />
-		<ivy:resolve file="lib/axis-1.4/axis-rt-jws-1.4.1-SNAPSHOT.xml" haltonfailure="false" />
+		<ivy:resolve file="lib/axis-rt-jws-1.4.1-SNAPSHOT.xml" haltonfailure="false" />
 		<ivy:publish
-				artifactspattern="lib/axis-1.4/[artifact]-[revision].[ext]"
+				artifactspattern="lib/[artifact]-[revision].[ext]"
 				organisation="org.apache.axis"
 				module="axis-rt-jws"
 				revision="1.4.1-SNAPSHOT"
@@ -1011,4 +1011,3 @@
 	<!--  ===============END EMF-dependent modules ============================== -->
 
 </project>
-
