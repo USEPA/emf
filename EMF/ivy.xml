@@ -137,7 +137,7 @@
         <dependency org="wsdl4j" name="wsdl4j" rev="1.5.1" conf="client->default;server->default" /><!-- Server Client -->
 
         <!--dependency org="xerces" name="xercesImpl" rev="2.2.1" conf="client->default;server->default" /--><!-- Server Client -->
-	    <dependency org="xerces" name="xerces" rev="2.4.0" conf="client->default;server->default">
+	    <dependency org="xerces" name="xercesImpl" rev="2.12.2" conf="client->default;server->default">
 	    </dependency><!-- Server Client -->
         <!--dependency org="xml-apis" name="xml-apis" rev="1.4.01"/--><!-- Server Client ? -->
 
