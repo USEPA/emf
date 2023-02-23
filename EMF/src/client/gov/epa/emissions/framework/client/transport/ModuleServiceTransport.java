@@ -84,7 +84,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.moduleType());
 
-        return (ModuleType) call.requestResponse(new Object[] { new Integer(id) });
+        return (ModuleType) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addParam("user", mappings.user());
         call.setReturnType(mappings.moduleType());
 
-        return (ModuleType) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId), user });
+        return (ModuleType) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId), user });
     }
 
     @Override
@@ -142,7 +142,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.moduleType());
 
-        return (ModuleType) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (ModuleType) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
 
 //    @Override
@@ -232,7 +232,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleId");
         call.setReturnType(mappings.module());
 
-        Module module = (Module) call.requestResponse(new Object[] { new Integer(moduleId) });
+        Module module = (Module) call.requestResponse(new Object[] { Integer.valueOf(moduleId) });
         return module;
     }
 
@@ -309,7 +309,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleId");
         call.setReturnType(mappings.module());
 
-        Module module = (Module) call.requestResponse(new Object[] { owner, new Integer(moduleId) });
+        Module module = (Module) call.requestResponse(new Object[] { owner, Integer.valueOf(moduleId) });
 
         // refresh the lite modules cache
         ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();
@@ -329,7 +329,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleId");
         call.setReturnType(mappings.module());
 
-        Module module = (Module) call.requestResponse(new Object[] { owner, new Integer(moduleId) });
+        Module module = (Module) call.requestResponse(new Object[] { owner, Integer.valueOf(moduleId) });
 
         // refresh the lite modules cache
         ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();
@@ -396,7 +396,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleId");
         call.setReturnType(mappings.dataset());
 
-        return (EmfDataset) call.requestResponse(new Object[] { new Integer(moduleDatasetId) });
+        return (EmfDataset) call.requestResponse(new Object[] { Integer.valueOf(moduleDatasetId) });
     }
 
     @Override
@@ -409,7 +409,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addStringParam("newDatasetNamePattern");
         call.setReturnType(mappings.dataset());
 
-        return (EmfDataset) call.requestResponse(new Object[] { new Integer(moduleDatasetId), newDatasetId, newDatasetNamePattern });
+        return (EmfDataset) call.requestResponse(new Object[] { Integer.valueOf(moduleDatasetId), newDatasetId, newDatasetNamePattern });
     }
 
     @Override
@@ -420,7 +420,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("datasetId");
         call.setReturnType(mappings.liteModules());
 
-        LiteModule[] relatedLiteModules = (LiteModule[]) call.requestResponse(new Object[] { new Integer(datasetId) });
+        LiteModule[] relatedLiteModules = (LiteModule[]) call.requestResponse(new Object[] { Integer.valueOf(datasetId) });
         
         // refresh the lite modules cache
         ConcurrentSkipListMap<Integer, LiteModule> liteModules = emfSession.getLiteModules();
@@ -439,7 +439,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.moduleTypeVersionSubmodules());
 
-        return (ModuleTypeVersionSubmodule[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (ModuleTypeVersionSubmodule[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
 
     @Override
@@ -450,7 +450,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.moduleTypeVersionSubmodules());
 
-        return (ModuleTypeVersionSubmodule[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (ModuleTypeVersionSubmodule[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
     
     @Override
@@ -461,7 +461,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.moduleTypeVersions());
 
-        return (ModuleTypeVersion[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (ModuleTypeVersion[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
     
     @Override
@@ -472,7 +472,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.moduleTypeVersions());
 
-        return (ModuleTypeVersion[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (ModuleTypeVersion[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
     
     @Override
@@ -483,7 +483,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.moduleTypes());
 
-        return (ModuleType[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (ModuleType[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
     
     @Override
@@ -494,7 +494,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.moduleTypes());
 
-        return (ModuleType[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (ModuleType[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
     
     @Override
@@ -505,7 +505,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.modules());
 
-        return (Module[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (Module[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
 
     
@@ -517,7 +517,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleTypeVersionId");
         call.setReturnType(mappings.modules());
 
-        return (Module[]) call.requestResponse(new Object[] { new Integer(moduleTypeVersionId) });
+        return (Module[]) call.requestResponse(new Object[] { Integer.valueOf(moduleTypeVersionId) });
     }
     
     @Override
@@ -528,7 +528,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("historyId");
         call.setReturnType(mappings.history());
         
-        return (History) call.requestResponse(new Object[] { new Integer(historyId) });
+        return (History) call.requestResponse(new Object[] { Integer.valueOf(historyId) });
     }
 
     @Override
@@ -539,7 +539,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("moduleId");
         call.setReturnType(mappings.histories());
 
-        return (History[]) call.requestResponse(new Object[] { new Integer(moduleId) });
+        return (History[]) call.requestResponse(new Object[] { Integer.valueOf(moduleId) });
     }
     
     public void deleteHistory(int historyId) throws EmfException {
@@ -549,7 +549,7 @@ public class ModuleServiceTransport implements ModuleService {
         call.addIntegerParam("historyId");
         call.setVoidReturnType();
         
-        call.request(new Object[] { new Integer(historyId) });
+        call.request(new Object[] { Integer.valueOf(historyId) });
     }
 
     @Override

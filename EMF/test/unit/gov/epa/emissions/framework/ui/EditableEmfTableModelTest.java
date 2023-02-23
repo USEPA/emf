@@ -10,8 +10,8 @@ public class EditableEmfTableModelTest extends EmfMockObjectTestCase {
         Mock tableData = mock(EditableTableData.class);
         stub(tableData, "rows", null);
         stub(tableData, "columns", null);
-        tableData.expects(once()).method("shouldTrackChange").with(eq(new Integer(0))).will(returnValue(Boolean.TRUE));
-        tableData.expects(once()).method("shouldTrackChange").with(eq(new Integer(1))).will(returnValue(Boolean.FALSE));
+        tableData.expects(once()).method("shouldTrackChange").with(eq(Integer.valueOf(0))).will(returnValue(Boolean.TRUE));
+        tableData.expects(once()).method("shouldTrackChange").with(eq(Integer.valueOf(1))).will(returnValue(Boolean.FALSE));
 
         EditableEmfTableModel model = new EditableEmfTableModel((EditableTableData) tableData.proxy());
 

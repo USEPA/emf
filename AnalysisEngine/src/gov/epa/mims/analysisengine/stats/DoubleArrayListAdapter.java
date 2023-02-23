@@ -67,7 +67,7 @@ public class DoubleArrayListAdapter {
 			int size = list.size();
 			Double[] doubles = new Double[size];
 			for (int i = 0; i < size; i++) {
-				doubles[i] = new Double(list.getQuick(i));
+				doubles[i] = Double.valueOf(list.getQuick(i));
 			}
 			return doubles;
 		}// if(list !=null)

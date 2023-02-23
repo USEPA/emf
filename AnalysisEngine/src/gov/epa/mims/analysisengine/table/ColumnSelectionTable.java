@@ -74,7 +74,7 @@ public class ColumnSelectionTable extends JTable {
 			}
             if (columnHeaders[r][0].equalsIgnoreCase("select"))
             	selectRow = r; 
-			data[r][localColumns.length - 1] = new Boolean(selected[r]);
+			data[r][localColumns.length - 1] = Boolean.valueOf(selected[r]);
 		} // for(r)
 
 		model = new ColumnSelectionTableModel(data, localColumns);

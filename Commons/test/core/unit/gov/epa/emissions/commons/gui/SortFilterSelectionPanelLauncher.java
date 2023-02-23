@@ -38,13 +38,13 @@ public class SortFilterSelectionPanelLauncher {
     private static Mock createModel() {
         Mock delegate = new Mock(RefreshableTableModel.class);
 
-        delegate.stubs().method("getColumnCount").withNoArguments().will(new ReturnStub(new Integer(3)));
+        delegate.stubs().method("getColumnCount").withNoArguments().will(new ReturnStub(Integer.valueOf(3)));
 
         delegate.stubs().method("getColumnName").with(isEqual(0)).will(new ReturnStub("Name"));
         delegate.stubs().method("getColumnName").with(isEqual(1)).will(new ReturnStub("Age"));
         delegate.stubs().method("getColumnName").with(isEqual(2)).will(new ReturnStub("Country"));
 
-        delegate.stubs().method("getRowCount").withNoArguments().will(new ReturnStub(new Integer(2)));
+        delegate.stubs().method("getRowCount").withNoArguments().will(new ReturnStub(Integer.valueOf(2)));
         
         addRow(delegate, 0, "Jimmy Connors", "46", "US");
         addRow(delegate, 1, "Boris Becker", "37", "Germany");
@@ -59,6 +59,6 @@ public class SortFilterSelectionPanelLauncher {
     }
 
     private static IsEqual isEqual(int val) {
-        return new IsEqual(new Integer(val));
+        return new IsEqual(Integer.valueOf(val));
     }
 }

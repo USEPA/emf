@@ -22,8 +22,8 @@ public class EditablePageRowSource implements RowSource {
         list.add(selected);
 
         list.addAll(source.tokens());
-        list.add(new Integer(source.getRecordId()));
-        list.add(new Integer(source.getVersion()));
+        list.add(Integer.valueOf(source.getRecordId()));
+        list.add(Integer.valueOf(source.getVersion()));
         list.add(source.getDeleteVersions());
         
 

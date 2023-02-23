@@ -29,7 +29,7 @@ public class ExternalFilesExImporterTest extends PersistenceTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         
-        optimizedBatchSize = new Integer(10000);
+        optimizedBatchSize = Integer.valueOf(10000);
 
         dbServer = dbSetup.getDbServer();
         sqlDataTypes = dbServer.getSqlDataTypes();

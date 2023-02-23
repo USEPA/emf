@@ -138,7 +138,7 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
     }
 
     private Integer pageChangesetsKey(int pageNumber) {
-        return new Integer(pageNumber);
+        return Integer.valueOf(pageNumber);
     }
 
     private Map pageChangesetsMap(DataAccessToken token) throws SQLException {

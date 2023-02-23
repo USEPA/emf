@@ -51,8 +51,8 @@ public class FilterCriteria implements Serializable, Cloneable {
 
 	static {
 		for (int i = 0; i < OPERATION_STRINGS.length; i++) {
-			symbolToConstantHash.put(OPERATION_STRINGS[i], new Integer(i));
-			constantToSymbolHash.put(new Integer(i), OPERATION_STRINGS[i]);
+			symbolToConstantHash.put(OPERATION_STRINGS[i], Integer.valueOf(i));
+			constantToSymbolHash.put(Integer.valueOf(i), OPERATION_STRINGS[i]);
 		}
 	} // static
 
@@ -198,7 +198,7 @@ public class FilterCriteria implements Serializable, Cloneable {
 
 				Object data = rowData[index];
 				if (colClass.equals(Double.class) && doubleValue) {
-					double d1 = new Double(values[i].toString()).doubleValue();
+					double d1 = Double.valueOf(values[i].toString()).doubleValue();
 					double d2 = ((Double) data).doubleValue();
 
 					if (!Double.isNaN(d1) && Double.isNaN(d2)) {
@@ -260,7 +260,7 @@ public class FilterCriteria implements Serializable, Cloneable {
 
 	private boolean isDoubleValue(Comparable comparable) {
 		try {
-			new Double(comparable.toString());
+			Double.valueOf(comparable.toString());
 			return true;
 		} catch (NumberFormatException e) {
 			return false;
@@ -294,7 +294,7 @@ public class FilterCriteria implements Serializable, Cloneable {
 	}
 
 	public String getOperationString(int index) {
-		return (String) constantToSymbolHash.get(new Integer(operations[index]));
+		return (String) constantToSymbolHash.get(Integer.valueOf(operations[index]));
 	}
 
 	public int getOperation(int index) {

@@ -15,7 +15,7 @@ public class ControlMeasureEfficiencyTableData extends AbstractTableData {
 
     private List rows;
 
-    private final static Double NAN_VALUE = new Double(Double.NaN);
+    private final static Double NAN_VALUE = Double.valueOf(Double.NaN);
     
     public ControlMeasureEfficiencyTableData(EfficiencyRecord[] records) {
         this.rows = createRows(records);
@@ -58,20 +58,20 @@ public class ControlMeasureEfficiencyTableData extends AbstractTableData {
                 record.getEfficiency() != null ? record.getEfficiency() : NAN_VALUE,
                 record.getMinEmis() != null ? record.getMinEmis() : NAN_VALUE, 
                 record.getMaxEmis() != null ? record.getMaxEmis() : NAN_VALUE, 
-                new Double(record.getRuleEffectiveness()), 
-                new Double(record.getRulePenetration()), 
+                Double.valueOf(record.getRuleEffectiveness()), 
+                Double.valueOf(record.getRulePenetration()), 
                 record.getEquationType(), 
-                new Double(record.getCapRecFactor()!= null ? record.getCapRecFactor() : NAN_VALUE), 
-                new Double(record.getDiscountRate()!= null ? record.getDiscountRate() : NAN_VALUE), 
-                new Double(record.getCapitalAnnualizedRatio()!= null ? record.getCapitalAnnualizedRatio() : NAN_VALUE), 
-                new Double(record.getIncrementalCostPerTon()!= null ? record.getIncrementalCostPerTon() : NAN_VALUE),
+                Double.valueOf(record.getCapRecFactor()!= null ? record.getCapRecFactor() : NAN_VALUE), 
+                Double.valueOf(record.getDiscountRate()!= null ? record.getDiscountRate() : NAN_VALUE), 
+                Double.valueOf(record.getCapitalAnnualizedRatio()!= null ? record.getCapitalAnnualizedRatio() : NAN_VALUE), 
+                Double.valueOf(record.getIncrementalCostPerTon()!= null ? record.getIncrementalCostPerTon() : NAN_VALUE),
                 record.getMinCapacity() != null ? record.getMinCapacity() : NAN_VALUE,
                 record.getMaxCapacity() != null ? record.getMaxCapacity() : NAN_VALUE,
                 record.getLastModifiedBy(), 
                 CustomDateFormat.format_MM_DD_YYYY_HH_mm(record.getLastModifiedTime()), 
                 record.getDetail(), 
                 record.getExistingMeasureAbbr(),
-                new Integer(record.getExistingDevCode())
+                Integer.valueOf(record.getExistingDevCode())
         };
 
         return new ViewableRow(record, values);

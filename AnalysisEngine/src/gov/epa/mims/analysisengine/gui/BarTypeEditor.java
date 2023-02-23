@@ -202,9 +202,9 @@ public class BarTypeEditor extends OptionDialog {
 		DoubleTableColumn shadeDensityColumn = new DoubleTableColumn(SHADING_DENSITY_COL, "Density");
 		shadeDensityColumn.setBounds(0.0, Double.POSITIVE_INFINITY);
 		try {
-			lineWidthColumn.setDefaultValue(new Double(1.0));
-			angleColumn.setDefaultValue(new Double(30.0));
-			shadeDensityColumn.setDefaultValue(new Double(20.0));
+			lineWidthColumn.setDefaultValue(Double.valueOf(1.0));
+			angleColumn.setDefaultValue(Double.valueOf(30.0));
+			shadeDensityColumn.setDefaultValue(Double.valueOf(20.0));
 		} catch (Exception e) {/* NOTHING */
 		}
 
@@ -260,9 +260,9 @@ public class BarTypeEditor extends OptionDialog {
 				&& (lineStyles.length == density.length)) {
 			for (int i = 0; i < lineStyles.length; i++) {
 				shadeBarTablePanel.setValueAt(lineStyles[i], i, LINE_STYLE_COL);
-				shadeBarTablePanel.setValueAt(new Double(lineWidth[i]), i, LINE_WIDTH_COL);
-				shadeBarTablePanel.setValueAt(new Double(angle[i]), i, LINE_ANGLE_COL);
-				shadeBarTablePanel.setValueAt(new Double(density[i]), i, SHADING_DENSITY_COL);
+				shadeBarTablePanel.setValueAt(Double.valueOf(lineWidth[i]), i, LINE_WIDTH_COL);
+				shadeBarTablePanel.setValueAt(Double.valueOf(angle[i]), i, LINE_ANGLE_COL);
+				shadeBarTablePanel.setValueAt(Double.valueOf(density[i]), i, SHADING_DENSITY_COL);
 			}// for(i)s
 		}// if
 		boolean enable = shadeBarsCB.isSelected();

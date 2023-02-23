@@ -551,7 +551,7 @@ public class ControlMeasureEfficiencyTab extends JPanel implements ControlMeasur
     private void applySortFilter() {
         //validate the record limit field...
         try {
-            _recordLimit = Math.abs(new Integer(recordLimit.getText()));
+            _recordLimit = Math.abs(Integer.valueOf(recordLimit.getText()));
         } catch (NumberFormatException ex) {
             messagePanel.setMessage("The row limit must be a number and must be a positive whole number");
             return;

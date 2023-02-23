@@ -10,22 +10,22 @@ public class JdbcToCommonsSqlTypeMap {
 
     public JdbcToCommonsSqlTypeMap(SqlDataTypes types) {
         map = new HashMap();
-        map.put(new Integer(Types.INTEGER), types.intType());
-        map.put(new Integer(Types.BOOLEAN), types.booleanType());
-        map.put(new Integer(Types.BIT), types.booleanType());
-        map.put(new Integer(Types.CHAR), types.charType());
-        map.put(new Integer(Types.BIGINT), types.longType());
-        map.put(new Integer(Types.REAL), types.realType());
-        map.put(new Integer(Types.DOUBLE), types.realType());
-        map.put(new Integer(Types.SMALLINT), types.smallInt());
-        map.put(new Integer(Types.LONGVARCHAR), types.text());
-        map.put(new Integer(Types.VARCHAR), types.stringType());
-        map.put(new Integer(Types.DATE), types.timestamp());
-        map.put(new Integer(Types.TIMESTAMP), types.timestamp());
+        map.put(Integer.valueOf(Types.INTEGER), types.intType());
+        map.put(Integer.valueOf(Types.BOOLEAN), types.booleanType());
+        map.put(Integer.valueOf(Types.BIT), types.booleanType());
+        map.put(Integer.valueOf(Types.CHAR), types.charType());
+        map.put(Integer.valueOf(Types.BIGINT), types.longType());
+        map.put(Integer.valueOf(Types.REAL), types.realType());
+        map.put(Integer.valueOf(Types.DOUBLE), types.realType());
+        map.put(Integer.valueOf(Types.SMALLINT), types.smallInt());
+        map.put(Integer.valueOf(Types.LONGVARCHAR), types.text());
+        map.put(Integer.valueOf(Types.VARCHAR), types.stringType());
+        map.put(Integer.valueOf(Types.DATE), types.timestamp());
+        map.put(Integer.valueOf(Types.TIMESTAMP), types.timestamp());
     }
 
     public String get(int type) {
-        return (String) map.get(new Integer(type));
+        return (String) map.get(Integer.valueOf(type));
     }
 
     public Map getSqlTypeMap() {

@@ -135,7 +135,7 @@ public class ExImServiceTransport implements ExImService {
         call.addIntegerParam("version");
         call.setReturnType(mappings.version());
 
-        return (Version) call.requestResponse(new Object[] { dataset, new Integer(version) });
+        return (Version) call.requestResponse(new Object[] { dataset, Integer.valueOf(version) });
     }
 
     /**

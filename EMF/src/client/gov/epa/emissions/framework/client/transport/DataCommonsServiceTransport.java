@@ -138,7 +138,7 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.addIntegerParam("userId");
         call.setReturnType(mappings.datasetTypes());
 
-        return (DatasetType[]) call.requestResponse(new Object[] { new Integer(userId) });
+        return (DatasetType[]) call.requestResponse(new Object[] { Integer.valueOf(userId) });
     }
 
     public synchronized DatasetType[] getLightDatasetTypes(int userId) throws EmfException {
@@ -148,7 +148,7 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.addIntegerParam("userId");
         call.setReturnType(mappings.datasetTypes());
 
-        return (DatasetType[]) call.requestResponse(new Object[] { new Integer(userId) });
+        return (DatasetType[]) call.requestResponse(new Object[] { Integer.valueOf(userId) });
     }
 
     public synchronized DatasetType[] getLightDatasetTypes() throws EmfException {
@@ -329,7 +329,7 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.setOperation("getDatasetNotes");
         call.setReturnType(mappings.datasetNotes());
 
-        return (DatasetNote[]) call.requestResponse(new Object[] { new Integer(datasetId) });
+        return (DatasetNote[]) call.requestResponse(new Object[] { Integer.valueOf(datasetId) });
     }
     
     public synchronized Note[] getNotes(int[] noteIds) throws EmfException {
@@ -388,7 +388,7 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.setOperation("getRevisions");
         call.setReturnType(mappings.revisions());
 
-        return (Revision[]) call.requestResponse(new Object[] { new Integer(datasetId) });
+        return (Revision[]) call.requestResponse(new Object[] { Integer.valueOf(datasetId) });
     }
 
     public synchronized void addRevision(Revision revision) throws EmfException {
@@ -584,7 +584,7 @@ public class DataCommonsServiceTransport implements DataCommonsService {
         call.addBooleanParameter("replace");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, templates, datasetTypeIds, new Boolean(replace) });
+        call.request(new Object[] { user, templates, datasetTypeIds, Boolean.valueOf(replace) });
     }
 
     public GeoRegion addGeoRegion(GeoRegion region) throws EmfException {

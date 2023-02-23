@@ -35,7 +35,7 @@ public class LineExporterTest extends PersistenceTestCase {
 
         dbServer = dbSetup.getDbServer();
         sqlDataTypes = dbServer.getSqlDataTypes();
-        optimizedBatchSize = new Integer(10000);
+        optimizedBatchSize = Integer.valueOf(10000);
         dataset = dataset("test");
     }
 

@@ -37,7 +37,7 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         call.addIntegerParam("id");
         call.setReturnType(mappings.temporalAllocation());
         
-        return (TemporalAllocation) call.requestResponse(new Object[] { new Integer(id) });
+        return (TemporalAllocation) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized TemporalAllocation[] getTemporalAllocations() throws EmfException {
@@ -88,7 +88,7 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         call.addIntegerParam("id");
         call.setReturnType(mappings.temporalAllocation());
 
-        return (TemporalAllocation) call.requestResponse(new Object[] { owner, new Integer(id) });
+        return (TemporalAllocation) call.requestResponse(new Object[] { owner, Integer.valueOf(id) });
     }
 
     public synchronized void releaseLocked(User user, int id) throws EmfException {
@@ -99,7 +99,7 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         call.addIntegerParam("id");
         call.setReturnType(mappings.temporalAllocation());
 
-        call.request(new Object[] { user, new Integer(id) });
+        call.request(new Object[] { user, Integer.valueOf(id) });
     }
 
     public synchronized TemporalAllocation updateTemporalAllocationWithLock(TemporalAllocation element) throws EmfException {
@@ -182,6 +182,6 @@ public class TemporalAllocationServiceTransport implements TemporalAllocationSer
         call.addIntegerParam("id");
         call.setReturnType(mappings.string());
 
-        return (String) call.requestResponse(new Object[] { new Integer(id) });
+        return (String) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 }

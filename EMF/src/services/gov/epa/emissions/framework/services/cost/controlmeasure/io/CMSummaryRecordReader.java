@@ -239,8 +239,8 @@ public class CMSummaryRecordReader {
                     && !equipLife.trim().isEmpty() 
                     && !equipLife.trim().toLowerCase().equals("null")
                     && !equipLife.trim().equals("0")
-                    && !new Float(equipLife.trim()).equals(new Float(0)))
-                cm.setEquipmentLife(new Float(equipLife.trim()));
+                    && !Float.valueOf(equipLife.trim()).equals(Float.valueOf(0)))
+                cm.setEquipmentLife(Float.valueOf(equipLife.trim()));
         } catch (NumberFormatException e) {
             sb.append(format("equip life should be a floating point value: " + equipLife));
         }

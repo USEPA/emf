@@ -128,7 +128,7 @@ public class FileDownloadTableModel extends AbstractTableModel {
             Column progress = new Column(this.fileDownload);
 
             columns = new HashMap();
-            columns.put(new Integer(0), progress);
+            columns.put(Integer.valueOf(0), progress);
         }
 
         public Object getValue() {
@@ -140,7 +140,7 @@ public class FileDownloadTableModel extends AbstractTableModel {
         }
 
         public Object getValueAt(int column) {
-//            Column columnHolder = (Column) columns.get(new Integer(column));
+//            Column columnHolder = (Column) columns.get(Integer.valueOf(column));
             return this.fileDownload;
         }
     }

@@ -326,7 +326,7 @@ public class SMKReportExporter implements Exporter {
             return "\"" + value + "\"";
 
         if (colType == Types.DOUBLE || colType == Types.FLOAT)
-            return new Double(Double.valueOf(value)).toString();
+            return Double.valueOf(value).toString();
 
         return value;
     }

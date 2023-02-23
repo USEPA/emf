@@ -37,7 +37,7 @@ public class TargetPollutantRowSource implements RowSource<ControlStrategyTarget
                 source.getInvFilter(),
                 source.getCountyDataset(),
                 source.getCountyDatasetVersion(),
-                source.getReplacementControlMinEfficiencyDiff() == null ? new Double(10.0) : source.getReplacementControlMinEfficiencyDiff()
+                source.getReplacementControlMinEfficiencyDiff() == null ? Double.valueOf(10.0) : source.getReplacementControlMinEfficiencyDiff()
                 };
         
         return values;

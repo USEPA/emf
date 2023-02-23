@@ -331,9 +331,9 @@ public class RegressionModel implements java.io.Serializable, FormatAndIndexInfo
 		if (!concise) {
 			result.add(data.attribute(0).name());
 			result.add(data.attribute(1).name());
-			result.add(new Double(eval.correlationCoefficient()));
-			result.add(new Double(((weka.classifiers.functions.SimpleLinearRegression) classy).getSlope()));
-			result.add(new Double(((weka.classifiers.functions.SimpleLinearRegression) classy).getIntercept()));
+			result.add(Double.valueOf(eval.correlationCoefficient()));
+			result.add(Double.valueOf(((weka.classifiers.functions.SimpleLinearRegression) classy).getSlope()));
+			result.add(Double.valueOf(((weka.classifiers.functions.SimpleLinearRegression) classy).getIntercept()));
 
 			String equation = classy.toString();
 
@@ -346,17 +346,17 @@ public class RegressionModel implements java.io.Serializable, FormatAndIndexInfo
 			equation = equation.replaceAll("\n", " ");
 			equation = equation.replaceAll(" ", "");
 			result.add(equation);
-			result.add(new Double(eval.meanAbsoluteError()));
-			result.add(new Double(eval.meanPriorAbsoluteError()));
-			result.add(new Double(eval.relativeAbsoluteError()));
-			result.add(new Double(eval.rootMeanSquaredError()));
-			result.add(new Double(eval.rootMeanPriorSquaredError()));
-			result.add(new Double(eval.rootRelativeSquaredError()));
+			result.add(Double.valueOf(eval.meanAbsoluteError()));
+			result.add(Double.valueOf(eval.meanPriorAbsoluteError()));
+			result.add(Double.valueOf(eval.relativeAbsoluteError()));
+			result.add(Double.valueOf(eval.rootMeanSquaredError()));
+			result.add(Double.valueOf(eval.rootMeanPriorSquaredError()));
+			result.add(Double.valueOf(eval.rootRelativeSquaredError()));
 		} else {
 			if (((weka.classifiers.functions.SimpleLinearRegression) classy).getSlope() > 0) {
-				result.add(new Double(eval.correlationCoefficient()));
+				result.add(Double.valueOf(eval.correlationCoefficient()));
 			} else {
-				result.add(new Double(eval.correlationCoefficient() * -1));
+				result.add(Double.valueOf(eval.correlationCoefficient() * -1));
 			}
 		}
 
@@ -391,17 +391,17 @@ public class RegressionModel implements java.io.Serializable, FormatAndIndexInfo
 		result.add(equation);
 
 		for (int i = 0; i < (coefficients.length - 1); i++) {
-			result.add(new Double(coefficients[i]));
+			result.add(Double.valueOf(coefficients[i]));
 		}
 
-		result.add(new Double(coefficients[coefficients.length - 1]));
-		result.add(new Double(eval.correlationCoefficient()));
-		result.add(new Double(eval.meanAbsoluteError()));
-		result.add(new Double(eval.meanPriorAbsoluteError()));
-		result.add(new Double(eval.relativeAbsoluteError()));
-		result.add(new Double(eval.rootMeanSquaredError()));
-		result.add(new Double(eval.rootMeanPriorSquaredError()));
-		result.add(new Double(eval.rootRelativeSquaredError()));
+		result.add(Double.valueOf(coefficients[coefficients.length - 1]));
+		result.add(Double.valueOf(eval.correlationCoefficient()));
+		result.add(Double.valueOf(eval.meanAbsoluteError()));
+		result.add(Double.valueOf(eval.meanPriorAbsoluteError()));
+		result.add(Double.valueOf(eval.relativeAbsoluteError()));
+		result.add(Double.valueOf(eval.rootMeanSquaredError()));
+		result.add(Double.valueOf(eval.rootMeanPriorSquaredError()));
+		result.add(Double.valueOf(eval.rootRelativeSquaredError()));
 
 		return result;
 	}

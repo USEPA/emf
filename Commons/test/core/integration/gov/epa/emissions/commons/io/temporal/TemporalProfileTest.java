@@ -39,7 +39,7 @@ public class TemporalProfileTest extends PersistenceTestCase {
         dbServer = dbSetup.getDbServer();
         typeMapper = dbServer.getSqlDataTypes();
 
-        optimizedBatchSize = new Integer(10000);
+        optimizedBatchSize = Integer.valueOf(10000);
 
         tableReader = tableReader(dbServer.getEmissionsDatasource());
         dataset = dataset("test");

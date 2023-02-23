@@ -200,8 +200,8 @@ public abstract class AbstractStrategyTask implements Strategy {
             totalReduction += result.getTotalReduction() != null ? result.getTotalReduction() : 0.0;
         }
         
-        controlStrategy.setTotalCost(new Double(totalCost));
-        controlStrategy.setTotalReduction(new Double(totalReduction));
+        controlStrategy.setTotalCost(Double.valueOf(totalCost));
+        controlStrategy.setTotalReduction(Double.valueOf(totalReduction));
         
         Session session = sessionFactory.getSession();
         

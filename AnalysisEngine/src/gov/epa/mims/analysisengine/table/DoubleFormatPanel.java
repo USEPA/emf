@@ -104,7 +104,7 @@ public class DoubleFormatPanel extends FormatChooserPanel implements ActionListe
 
 		sigDigitsCheckBox.setSelected(true);
 
-		sampleObject = new Double(123.456);
+		sampleObject = Double.valueOf(123.456);
 
 		// Listen to changes to update the format field.
 		decimalSpinner.addActionListener(this);

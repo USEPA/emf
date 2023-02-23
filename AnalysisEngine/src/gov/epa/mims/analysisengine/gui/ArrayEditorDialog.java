@@ -158,7 +158,7 @@ public class ArrayEditorDialog extends JDialog {
 		if (type.equals(DOUBLES)) {
 			if (doubleArray != null)
 				for (int i = 0; i < doubleArray.length; i++)
-					objectList.add(new Double(doubleArray[i]));
+					objectList.add(Double.valueOf(doubleArray[i]));
 			list.setListData(objectList.toArray());
 			list.setSelectedIndex(0);
 			addButton.addActionListener(new ActionListener() {
@@ -169,7 +169,7 @@ public class ArrayEditorDialog extends JDialog {
 								"Add new value", "0.0");
 						if (enter == null)
 							return;
-						value = new Double(enter);
+						value = Double.valueOf(enter);
 						if (value.doubleValue() < lowBound || value.doubleValue() > upBound)
 							throw new Exception("Value should be between " + lowBound + " and " + upBound);
 						objectList.add(value);
@@ -207,7 +207,7 @@ public class ArrayEditorDialog extends JDialog {
 								"Add new value", objectList.get(index).toString());
 						if (enter == null)
 							return;
-						value = new Double(enter);
+						value = Double.valueOf(enter);
 						if (value.doubleValue() < lowBound || value.doubleValue() > upBound)
 							throw new Exception("Value should be between " + lowBound + " and " + upBound);
 						objectList.remove(index);
@@ -236,7 +236,7 @@ public class ArrayEditorDialog extends JDialog {
 									"Add new value", objectList.get(index).toString());
 							if (enter == null)
 								return;
-							value = new Double(enter);
+							value = Double.valueOf(enter);
 							objectList.remove(index);
 							objectList.add(index, value);
 							list.setListData(objectList.toArray());
@@ -512,7 +512,7 @@ public class ArrayEditorDialog extends JDialog {
 		}
 		objectList = new ArrayList();
 		for (int i = 0; i < doubles.length; i++)
-			objectList.add(new Double(doubles[i]));
+			objectList.add(Double.valueOf(doubles[i]));
 		setVisible(true);
 	}
 

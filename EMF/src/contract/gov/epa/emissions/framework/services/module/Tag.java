@@ -42,7 +42,7 @@ public class Tag implements Serializable {
     // standard methods
 
     public int hashCode() {
-        return new Integer(id).hashCode();
+        return Integer.valueOf(id).hashCode();
     }
 
     public boolean equals(Object other) {

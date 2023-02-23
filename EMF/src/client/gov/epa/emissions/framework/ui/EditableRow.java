@@ -20,12 +20,12 @@ public class EditableRow implements Row {
 
         Object[] values = source.values();
         for (int i = 0; i < values.length; i++) {
-            columns.put(new Integer(i), new Column(values[i]));
+            columns.put(Integer.valueOf(i), new Column(values[i]));
         }
     }
 
     public Object getValueAt(int column) {
-        Column columnHolder = (Column) columns.get(new Integer(column));
+        Column columnHolder = (Column) columns.get(Integer.valueOf(column));
         return columnHolder.value;
     }
 

@@ -855,11 +855,11 @@ public class AxisTimeEditor extends AxisContinuousEditor
          // The final point is optional.
          else if (finalPoint == null)
          {
-            axisTime.setGrid(initialPoint, new Long(increment));
+            axisTime.setGrid(initialPoint, Long.valueOf(increment));
          }
          else
          {
-            axisTime.setGrid(initialPoint, new Long(increment), finalPoint);
+            axisTime.setGrid(initialPoint, Long.valueOf(increment), finalPoint);
          }
       }
       // Interval count.
@@ -895,7 +895,7 @@ public class AxisTimeEditor extends AxisContinuousEditor
          }
          else
          {
-            axisTime.setGrid(initialPoint, new Integer(intervalCount), finalPoint);
+            axisTime.setGrid(initialPoint, Integer.valueOf(intervalCount), finalPoint);
          }
       }
       // Default - reset everything in the AxisNumeric.

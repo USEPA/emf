@@ -13,7 +13,7 @@ public class SectorScenarioTableData extends AbstractTableData {
 
     private List rows;
 
-//    private final static Double NAN_VALUE = new Double(Double.NaN);
+//    private final static Double NAN_VALUE = Double.valueOf(Double.NaN);
     
 //    private EmfSession session;
     

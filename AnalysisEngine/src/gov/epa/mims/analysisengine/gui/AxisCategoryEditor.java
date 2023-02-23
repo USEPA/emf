@@ -197,8 +197,8 @@ extends AxisEditor
       AxisCategory axisCategory = (AxisCategory)axis;
       // The DouvleValuePanels return NaN for empty values and the tree
       // code ignores these if they are set to NaN.
-      Double minVal = new Double(minRangePnl.getValue());
-      Double maxVal = new Double(maxRangePnl.getValue());
+      Double minVal = Double.valueOf(minRangePnl.getValue());
+      Double maxVal = Double.valueOf(maxRangePnl.getValue());
       axisCategory.setAxisRange(minVal, maxVal);
    }
 

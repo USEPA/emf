@@ -108,7 +108,7 @@ public class EmfTableModelTest extends MockObjectTestCase {
 
     public void testShouldGetColumnClassFromUnderlyingTableData() {
         Mock tableData = mock(TableData.class);
-        tableData.stubs().method("getColumnClass").with(eq(new Integer(2))).will(returnValue(Integer.class));
+        tableData.stubs().method("getColumnClass").with(eq(Integer.valueOf(2))).will(returnValue(Integer.class));
         tableData.stubs().method("rows").withNoArguments().will(returnValue(Collections.EMPTY_LIST));
         tableData.stubs().method("columns").withNoArguments().will(returnValue(new String[0]));
 
@@ -124,8 +124,8 @@ public class EmfTableModelTest extends MockObjectTestCase {
         Mock tableData = mock(TableData.class);
         tableData.stubs().method("rows").withNoArguments().will(returnValue(null));
         tableData.stubs().method("columns").withNoArguments().will(returnValue(null));
-        tableData.expects(once()).method("setValueAt").with(eq(value), eq(new Integer(row)), eq(new Integer(col)));
-        tableData.stubs().method("isEditable").with(eq(new Integer(col))).will(returnValue(Boolean.TRUE));
+        tableData.expects(once()).method("setValueAt").with(eq(value), eq(Integer.valueOf(row)), eq(Integer.valueOf(col)));
+        tableData.stubs().method("isEditable").with(eq(Integer.valueOf(col))).will(returnValue(Boolean.TRUE));
 
         model = new EmfTableModel((TableData) tableData.proxy());
 
@@ -140,7 +140,7 @@ public class EmfTableModelTest extends MockObjectTestCase {
         Mock tableData = mock(TableData.class);
         tableData.stubs().method("rows").withNoArguments().will(returnValue(null));
         tableData.stubs().method("columns").withNoArguments().will(returnValue(null));
-        tableData.stubs().method("isEditable").with(eq(new Integer(col))).will(returnValue(Boolean.FALSE));
+        tableData.stubs().method("isEditable").with(eq(Integer.valueOf(col))).will(returnValue(Boolean.FALSE));
 
         model = new EmfTableModel((TableData) tableData.proxy());
 

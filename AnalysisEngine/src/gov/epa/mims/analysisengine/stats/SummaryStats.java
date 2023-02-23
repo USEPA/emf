@@ -70,14 +70,14 @@ public class SummaryStats
       double skew = Descriptive.skew(list, mean, stdDev);
       double kurtosis = Descriptive.kurtosis(list, mean, stdDev);
       
-      summaryStats.put(MIN,new Double(min));
-      summaryStats.put(MAX,new Double(max));
-      summaryStats.put(MEAN,new Double(mean));
-      summaryStats.put(MEDIAN,new Double(median));
-      summaryStats.put(SUM,new Double(sum));
-      summaryStats.put(STD_DEVIATION,new Double(stdDev));
-      summaryStats.put(SKEW,new Double(skew));
-      summaryStats.put(KURTOSIS,new Double(kurtosis));
+      summaryStats.put(MIN,Double.valueOf(min));
+      summaryStats.put(MAX,Double.valueOf(max));
+      summaryStats.put(MEAN,Double.valueOf(mean));
+      summaryStats.put(MEDIAN,Double.valueOf(median));
+      summaryStats.put(SUM,Double.valueOf(sum));
+      summaryStats.put(STD_DEVIATION,Double.valueOf(stdDev));
+      summaryStats.put(SKEW,Double.valueOf(skew));
+      summaryStats.put(KURTOSIS,Double.valueOf(kurtosis));
    }//calculateSummarStats()
    
    /** return the HashMap which contains the caculated statistical summary
@@ -289,7 +289,7 @@ public class SummaryStats
    
    public static HashMap getAllNaNSummary()
    {
-      Double nan = new Double(Double.NaN);
+      Double nan = Double.valueOf(Double.NaN);
       HashMap sumStats = new HashMap();
       sumStats.put(MIN,nan);
       sumStats.put(MAX,nan);

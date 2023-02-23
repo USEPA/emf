@@ -104,20 +104,20 @@ public class FixedWidthReader extends FileParser {
 					if (columnTypes[i] != String.class && type == String.class) {
 						type = String.class;
 						tokens[i].value = (tokens[i].value).toString();
-						Integer I = new Integer(i);
+						Integer I = Integer.valueOf(i);
 						if (!needToBeString.contains(I)) {
 							needToBeString.add(I);
 							maxErrorStringRow = count;
 						}
 					} else if (columnTypes[i] == Integer.class && type == Double.class) {
-						Integer I = new Integer(i);
+						Integer I = Integer.valueOf(i);
 						if (!needToBeDouble.contains(I)) {
-							needToBeDouble.add(new Integer(i));
+							needToBeDouble.add(Integer.valueOf(i));
 							maxErrorDoubleRow = count;
 						}
 					} else if (columnTypes[i] == Double.class && type == Integer.class) {
 						type = Double.class;
-						tokens[i].value = new Double(((Integer) tokens[i].value).intValue());
+						tokens[i].value = Double.valueOf(((Integer) tokens[i].value).intValue());
 					}
 					columnTypes[i] = type;
 					rowData.add(tokens[i].value);
@@ -133,7 +133,7 @@ public class FixedWidthReader extends FileParser {
 						int l = ((Integer) needToBeDouble.get(k)).intValue();
 						Object obj = rowDat.get(l);
 						if (obj.getClass() != Double.class)
-							rowDat.set(l, new Double(((Integer) obj).intValue()));
+							rowDat.set(l, Double.valueOf(((Integer) obj).intValue()));
 					}
 
 				if (maxErrorStringRow > i)
@@ -191,13 +191,13 @@ public class FixedWidthReader extends FileParser {
 		if (type != Object.class)
 			try {
 				if (type == Double.class) {
-					token.value = new Double((String) token.value);
+					token.value = Double.valueOf((String) token.value);
 					token.sym = TokenConstants.DOUBLE_LITERAL;
 				} else if (type == String.class) {
 					token.value = ((String) token.value).trim();
 					token.sym = TokenConstants.STRING_LITERAL;
 				} else if (type == Integer.class) {
-					token.value = new Integer((String) token.value);
+					token.value = Integer.valueOf((String) token.value);
 					token.sym = TokenConstants.INTEGER_LITERAL;
 				}
 				return token;
@@ -206,12 +206,12 @@ public class FixedWidthReader extends FileParser {
 			}
 
 		try {
-			Integer i = new Integer((String) token.value);
+			Integer i = Integer.valueOf((String) token.value);
 			token.value = i;
 			token.sym = TokenConstants.INTEGER_LITERAL;
 		} catch (Exception e1) {
 			try {
-				Double d = new Double((String) token.value);
+				Double d = Double.valueOf((String) token.value);
 				token.value = d;
 				token.sym = TokenConstants.DOUBLE_LITERAL;
 			} catch (Exception e2) {
@@ -263,7 +263,7 @@ public class FixedWidthReader extends FileParser {
 					if (index == prevIndex)
 						continue;
 					while (index > prevIndex) {
-						possibleColumnEnds1.add(new Integer(prevIndex));
+						possibleColumnEnds1.add(Integer.valueOf(prevIndex));
 						prevIndex++;
 					}
 					prevIndex = index + tokens[i].length();

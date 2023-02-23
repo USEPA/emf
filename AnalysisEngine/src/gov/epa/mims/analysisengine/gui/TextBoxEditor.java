@@ -159,27 +159,27 @@ public class TextBoxEditor extends TextBorderEditor
    static
    {
       unitPrettyHashMap = new HashMap();
-      unitPrettyHashMap.put(new Integer(TextBox.DEVICE_UNITS),DEVICE_UNITS);
-      unitPrettyHashMap.put(new Integer(TextBox.FIGURE_UNITS),FIGURE_UNITS);
-      unitPrettyHashMap.put(new Integer(TextBox.USER_UNITS),USER_UNITS);
+      unitPrettyHashMap.put(Integer.valueOf(TextBox.DEVICE_UNITS),DEVICE_UNITS);
+      unitPrettyHashMap.put(Integer.valueOf(TextBox.FIGURE_UNITS),FIGURE_UNITS);
+      unitPrettyHashMap.put(Integer.valueOf(TextBox.USER_UNITS),USER_UNITS);
       unitSystemHashMap = new HashMap();
-      unitSystemHashMap.put(DEVICE_UNITS, new Integer(TextBox.DEVICE_UNITS));
-      unitSystemHashMap.put(FIGURE_UNITS, new Integer(TextBox.FIGURE_UNITS));
-      unitSystemHashMap.put(USER_UNITS, new Integer(TextBox.USER_UNITS));
+      unitSystemHashMap.put(DEVICE_UNITS, Integer.valueOf(TextBox.DEVICE_UNITS));
+      unitSystemHashMap.put(FIGURE_UNITS, Integer.valueOf(TextBox.FIGURE_UNITS));
+      unitSystemHashMap.put(USER_UNITS, Integer.valueOf(TextBox.USER_UNITS));
       typePrettyHashMap = new HashMap();
-      typePrettyHashMap.put(new Integer(TextBox.MAX_WIDTH), MAX_WIDTH);
-      typePrettyHashMap.put(new Integer(TextBox.ABSOLUTE_WIDTH), ABSOLUTE_WIDTH);
+      typePrettyHashMap.put(Integer.valueOf(TextBox.MAX_WIDTH), MAX_WIDTH);
+      typePrettyHashMap.put(Integer.valueOf(TextBox.ABSOLUTE_WIDTH), ABSOLUTE_WIDTH);
       typeSystemHashMap = new HashMap();
-      typeSystemHashMap.put(MAX_WIDTH, new Integer(TextBox.MAX_WIDTH));
-      typeSystemHashMap.put(ABSOLUTE_WIDTH, new Integer(TextBox.ABSOLUTE_WIDTH));
+      typeSystemHashMap.put(MAX_WIDTH, Integer.valueOf(TextBox.MAX_WIDTH));
+      typeSystemHashMap.put(ABSOLUTE_WIDTH, Integer.valueOf(TextBox.ABSOLUTE_WIDTH));
       clipStylePrettyHashMap = new HashMap();
-      clipStylePrettyHashMap.put(new Integer(TextBox.DEVICE),DEVICE);
-      clipStylePrettyHashMap.put(new Integer(TextBox.PLOT),PLOT);
-      clipStylePrettyHashMap.put(new Integer(TextBox.FIGURE),FIGURE);
+      clipStylePrettyHashMap.put(Integer.valueOf(TextBox.DEVICE),DEVICE);
+      clipStylePrettyHashMap.put(Integer.valueOf(TextBox.PLOT),PLOT);
+      clipStylePrettyHashMap.put(Integer.valueOf(TextBox.FIGURE),FIGURE);
       clipStyleSystemHashMap = new HashMap();
-      clipStyleSystemHashMap.put(DEVICE, new Integer(TextBox.DEVICE));
-      clipStyleSystemHashMap.put(PLOT, new Integer(TextBox.PLOT));
-      clipStyleSystemHashMap.put(FIGURE,new Integer(TextBox.FIGURE));
+      clipStyleSystemHashMap.put(DEVICE, Integer.valueOf(TextBox.DEVICE));
+      clipStyleSystemHashMap.put(PLOT, Integer.valueOf(TextBox.PLOT));
+      clipStyleSystemHashMap.put(FIGURE,Integer.valueOf(TextBox.FIGURE));
    }
    /** Creates a new instance of TextBoxEditor */
    public TextBoxEditor(TextBox aTextBox)
@@ -711,7 +711,7 @@ public class TextBoxEditor extends TextBorderEditor
     */
    public static String getPrettyUnit(Component parent, int systemUnit)
    {
-      Object key = new Integer(systemUnit);
+      Object key = Integer.valueOf(systemUnit);
       String stringUnit = (String)TextBoxEditor.unitPrettyHashMap.get(key);
       if(stringUnit == null)
       {
@@ -743,7 +743,7 @@ public class TextBoxEditor extends TextBorderEditor
     */
    public String getPrettyType(Component parent, int systemType)
    {
-      Object key = new Integer(systemType);
+      Object key = Integer.valueOf(systemType);
       String stringType = (String)TextBoxEditor.typePrettyHashMap.get(key);
       if(stringType == null)
       {
@@ -775,7 +775,7 @@ public class TextBoxEditor extends TextBorderEditor
     */
    private String getPrettyClipStyle(int systemClipStyle)
    {
-      Object key = new Integer(systemClipStyle);
+      Object key = Integer.valueOf(systemClipStyle);
       String stringStyle = (String)TextBoxEditor.clipStylePrettyHashMap.get(key);
       if(stringStyle == null)
       {

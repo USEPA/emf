@@ -21,7 +21,7 @@ public class RetrieveSCCTest extends ServiceTestCase {
     // setup the reference schema before running this test
     public void testShouldGetCorrectSCCs() throws Exception {
         ControlMeasure cm = new ControlMeasure();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName("cm test added" + Math.random());
         cm.setAbbreviation("12345678");
         cm.setLastModifiedBy("emf");

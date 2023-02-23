@@ -379,7 +379,7 @@ public class CMEfficiencyRecordReader {
         try {
             Double costPerTon = validation.costPerTon(costValue, year);
             if (costPerTon != null)
-                efficiencyRecord.setRefYrCostPerTon(costPerTon * new Float(costYearTable.factor(validation.costYear(year))));
+                efficiencyRecord.setRefYrCostPerTon(costPerTon * Double.valueOf(costYearTable.factor(validation.costYear(year))));
             else
                 efficiencyRecord.setRefYrCostPerTon(null);
         } catch (EmfException e) {

@@ -42,7 +42,7 @@ public class DataViewServiceTransport implements DataViewService {
         call.setOperation("getPage");
         call.setReturnType(mappings.page());
         
-        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(pageNumber) });
+        Page page = (Page) call.requestResponse(new Object[] { token, Integer.valueOf(pageNumber) });
         
         if ( CommonDebugLevel.DEBUG_PAGE_2) {
             page.print();
@@ -68,7 +68,7 @@ public class DataViewServiceTransport implements DataViewService {
         call.addParam("token", mappings.dataAccessToken());
         call.addIntegerParam("record");
         
-        Page page = (Page) call.requestResponse(new Object[] { token, new Integer(record) });
+        Page page = (Page) call.requestResponse(new Object[] { token, Integer.valueOf(record) });
 
         if ( CommonDebugLevel.DEBUG_PAGE_2) {
             page.print();
@@ -107,7 +107,7 @@ public class DataViewServiceTransport implements DataViewService {
         call.setOperation("getVersions");
         call.setReturnType(mappings.versions());
 
-        return (Version[]) call.requestResponse(new Object[] { new Integer(datasetId) });
+        return (Version[]) call.requestResponse(new Object[] { Integer.valueOf(datasetId) });
     }
 
     public TableMetadata getTableMetadata(String table) throws EmfException {
@@ -125,7 +125,7 @@ public class DataViewServiceTransport implements DataViewService {
         call.addLongParam("version");
         call.setReturnType(mappings.version());
 
-        return (Version) call.requestResponse(new Object[] { new Integer(datasetId), new Integer(version) });
+        return (Version) call.requestResponse(new Object[] { Integer.valueOf(datasetId), Integer.valueOf(version) });
     }
 
 }

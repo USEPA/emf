@@ -132,7 +132,7 @@ public class SortFilterSelectionPanel extends SortFilterTablePanel {
         int rowCount = getRowCount();
 
         for (int i = 0; i < rowCount; i++) {
-            overallModel.setValueAt(new Boolean(select), i, colNo);
+            overallModel.setValueAt(Boolean.valueOf(select), i, colNo);
         }
     }
 
@@ -197,7 +197,7 @@ public class SortFilterSelectionPanel extends SortFilterTablePanel {
         for (int i = 0; i < numRows; i++) {
             Boolean selected = (Boolean) overallModel.getValueAt(i, boolColNo);
             if (selected.booleanValue()) {
-                selList.add(new Integer(overallModel.getBaseModelRowIndex(i)));
+                selList.add(Integer.valueOf(overallModel.getBaseModelRowIndex(i)));
             }
         }
         int[] selectedIndexes = new int[selList.size()];

@@ -175,9 +175,9 @@ public class ReferenceLineEditor extends OptionDialog
          lineStyleColumn.setDefaultValue(
             MultipleEditableTablePanel.createImageIcon(
             "/gov/epa/mims/analysisengine/gui/icons/lineStyles/solid.jpg"));
-         widthColumn.setDefaultValue(new Double(1.0));
+         widthColumn.setDefaultValue(Double.valueOf(1.0));
          colorColumn.setDefaultValue(Color.black);
-         booleanColumn.setDefaultValue(new Boolean(true));
+         booleanColumn.setDefaultValue(Boolean.TRUE);
          x1Column.setDefaultValue(null);
          y1Column.setDefaultValue(null);
          mColumn.setDefaultValue(null);
@@ -232,30 +232,30 @@ public class ReferenceLineEditor extends OptionDialog
                i, LABEL_COLUMN_NUMBER);
                tablePanel.setValueAt(lineStyleConverter.getPrettyOption(
                line.getLinestyle()), i, LINESTYLE_COLUMN_NUMBER);
-               tablePanel.setValueAt(new Double(line.getLinewidth()), i,
+               tablePanel.setValueAt(Double.valueOf(line.getLinewidth()), i,
                LINEWIDTH_COLUMN_NUMBER);
                tablePanel.setValueAt(line.getLinecolor(), i, COLOR_COLUMN_NUMBER);
-               tablePanel.setValueAt(new Boolean(line.getEnable()),
+               tablePanel.setValueAt(Boolean.valueOf(line.getEnable()),
                i, ENABLE_REFLLINE_COLUMN_NUMBER);
                if(!Double.isNaN(line.getX1()))
                {
-                  tablePanel.setValueAt(new Double(line.getX1()), i,X1_COLUMN_NUMBER);
+                  tablePanel.setValueAt(Double.valueOf(line.getX1()), i,X1_COLUMN_NUMBER);
                }
                if(!Double.isNaN(line.getY1()))
                {
-                  tablePanel.setValueAt(new Double(line.getY1()), i, Y1_COLUMN_NUMBER);
+                  tablePanel.setValueAt(Double.valueOf(line.getY1()), i, Y1_COLUMN_NUMBER);
                }
                if(!Double.isNaN(line.getM()))
                {
-                  tablePanel.setValueAt(new Double(line.getM()), i, M_COLUMN_NUMBER);
+                  tablePanel.setValueAt(Double.valueOf(line.getM()), i, M_COLUMN_NUMBER);
                }
                if(!Double.isNaN(line.getX2()))
                {
-                  tablePanel.setValueAt(new Double(line.getX2()), i, X2_COLUMN_NUMBER);
+                  tablePanel.setValueAt(Double.valueOf(line.getX2()), i, X2_COLUMN_NUMBER);
                }
                if(!Double.isNaN(line.getY2()))
                {
-                  tablePanel.setValueAt(new Double(line.getY2()), i, Y2_COLUMN_NUMBER);
+                  tablePanel.setValueAt(Double.valueOf(line.getY2()), i, Y2_COLUMN_NUMBER);
                }
             }
          }

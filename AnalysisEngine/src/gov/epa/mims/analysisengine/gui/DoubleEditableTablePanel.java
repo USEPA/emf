@@ -31,7 +31,7 @@ public class DoubleEditableTablePanel extends EditableTablePanel
    protected Double[] validChoices = null;
 
    /** The default value to place in newly added rows. */
-   protected Double defaultValue = new Double(1.0d);
+   protected Double defaultValue = Double.valueOf(1.0d);
 
    /**
     * Consructor.
@@ -112,7 +112,7 @@ public class DoubleEditableTablePanel extends EditableTablePanel
    {
       for(int i=0 ; i < values.length; i++)
       {
-         tableModel.insertRow(i,new Double(values[i]));
+         tableModel.insertRow(i,Double.valueOf(values[i]));
       }//for(i)
    }
    
@@ -129,7 +129,7 @@ public class DoubleEditableTablePanel extends EditableTablePanel
       boolean duplicate = false;
       for(int i=0 ; i < values.length; i++)
       {
-         Double aValue = new Double(values[i]);
+         Double aValue = Double.valueOf(values[i]);
          int rowCount = table.getRowCount();
          for(int j=0; j< rowCount; j++)
          {
@@ -293,7 +293,7 @@ public class DoubleEditableTablePanel extends EditableTablePanel
 
       Double[] dblObjs = new Double[newValues.length];
       for (int i = newValues.length - 1; i >= 0; --i)
-         dblObjs[i] = new Double(newValues[i]);
+         dblObjs[i] = Double.valueOf(newValues[i]);
       setValue(dblObjs);
    }
 
@@ -388,7 +388,7 @@ public class DoubleEditableTablePanel extends EditableTablePanel
                    }
                }
 
-                  return new Double(enteredValue);
+                  return Double.valueOf(enteredValue);
              }
           };
 

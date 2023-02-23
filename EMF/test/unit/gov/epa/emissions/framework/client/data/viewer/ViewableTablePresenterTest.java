@@ -34,7 +34,7 @@ public class ViewableTablePresenterTest extends EmfMockObjectTestCase {
 
     public void testShouldDelegateOnTotalRecords() throws Exception {
         Mock delegate = mock(TablePresenterDelegate.class);
-        stub(delegate, "totalRecords", new Integer(28));
+        stub(delegate, "totalRecords", Integer.valueOf(28));
 
         TablePresenter p = new ViewableTablePresenter((TablePresenterDelegate) delegate.proxy(), null);
 
@@ -43,7 +43,7 @@ public class ViewableTablePresenterTest extends EmfMockObjectTestCase {
 
     public void testShouldDelegateDisplaySpecifiedPage() throws Exception {
         Mock delegate = mock(TablePresenterDelegate.class);
-        expects(delegate, 1, "doDisplay", eq(new Integer(21)));
+        expects(delegate, 1, "doDisplay", eq(Integer.valueOf(21)));
 
         TablePresenter p = new ViewableTablePresenter((TablePresenterDelegate) delegate.proxy(), null);
         p.doDisplay(21);
@@ -51,7 +51,7 @@ public class ViewableTablePresenterTest extends EmfMockObjectTestCase {
 
     public void testShouldDelegateOnDisplayPageWithRecord() throws Exception {
         Mock delegate = mock(TablePresenterDelegate.class);
-        expects(delegate, 1, "doDisplayPageWithRecord", eq(new Integer(21)));
+        expects(delegate, 1, "doDisplayPageWithRecord", eq(Integer.valueOf(21)));
 
         TablePresenter p = new ViewableTablePresenter((TablePresenterDelegate) delegate.proxy(), null);
         p.doDisplayPageWithRecord(21);

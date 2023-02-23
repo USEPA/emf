@@ -561,7 +561,7 @@ abstract class ModuleRunner {
             e.printStackTrace();
             throw new EmfException("Error checking if dataset '" + dataset.getName() + "' is used by modules: " + e.getMessage());
         }
-        consumerModuleIds.remove(new Integer(module.getId()));
+        consumerModuleIds.remove(Integer.valueOf(module.getId()));
         boolean isUsedByOtherModules = (consumerModuleIds.size() > 0);
         
         // 2. dataset is used by non-module components

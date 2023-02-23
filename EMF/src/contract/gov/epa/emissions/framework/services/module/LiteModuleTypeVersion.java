@@ -137,6 +137,6 @@ public class LiteModuleTypeVersion implements Serializable {
 
     public int compareTo(LiteModuleTypeVersion o) {
         if (this == o) return 0;
-        return new Integer(id).compareTo(o.getId());
+        return Integer.valueOf(id).compareTo(o.getId());
     }
 }

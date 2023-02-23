@@ -83,7 +83,7 @@ public class NotesTableDataTest extends EmfMockObjectTestCase {
 
         Row row = (Row) rows.get(0);
         Note note=note0.getNote();
-        assertEquals(new Long(note0.getId()), row.getValueAt(0));
+        assertEquals(Long.valueOf(note0.getId()), row.getValueAt(0));
         assertEquals(note.getName(), row.getValueAt(1));
         assertEquals(note.getNoteType().getType(), row.getValueAt(2));
         assertEquals(note0.getVersion(), ((Long) row.getValueAt(3)).longValue());

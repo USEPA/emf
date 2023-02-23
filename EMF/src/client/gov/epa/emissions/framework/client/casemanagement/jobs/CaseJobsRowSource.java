@@ -28,7 +28,7 @@ public class CaseJobsRowSource implements RowSource {
     
     //NOTE: order is being stored in the job number field
     private Float getJobOrder(CaseJob job) {
-        return new Float(job.getJobNo()); 
+        return Float.valueOf(job.getJobNo()); 
     }
     
     private String getRegionName(CaseJob job) {
@@ -44,7 +44,7 @@ public class CaseJobsRowSource implements RowSource {
     }
     
     private Integer getVersion(CaseJob job) {
-        return new Integer(job.getVersion());
+        return Integer.valueOf(job.getVersion());
     }
     
     private String getArgs(CaseJob job) {
@@ -52,7 +52,7 @@ public class CaseJobsRowSource implements RowSource {
     }
     
     private Integer getJobId(CaseJob job) {
-        return new Integer(job.getId());
+        return Integer.valueOf(job.getId());
     }
     
     private String getRunStatus(CaseJob job) {

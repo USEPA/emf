@@ -37,7 +37,7 @@ public class ControlMeasureImportServiceTransport implements ControlMeasureImpor
 
         call.setReturnType(mappings.controlMeasures());
 
-        call.request(new Object[] { new Boolean(purge), sectorIDs, folderPath, fileNames, user });
+        call.request(new Object[] { Boolean.valueOf(purge), sectorIDs, folderPath, fileNames, user });
     }
     
     public synchronized int getControlMeasureCountInSummaryFile(boolean purge, int [] sectorIDs, String folderPath, String[] fileNames, User user) throws EmfException {
@@ -52,7 +52,7 @@ public class ControlMeasureImportServiceTransport implements ControlMeasureImpor
 
         call.setIntegerReturnType();
 
-        return (Integer)call.requestResponse(new Object[] { new Boolean(purge), sectorIDs, folderPath, fileNames, user });
+        return (Integer)call.requestResponse(new Object[] { Boolean.valueOf(purge), sectorIDs, folderPath, fileNames, user });
 
     }
 

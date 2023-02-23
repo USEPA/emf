@@ -29,7 +29,7 @@ public class ControlMeasureTableData extends AbstractTableData {
 
     protected int targetYear;
 
-    protected final static Double NAN_VALUE = new Double(Double.NaN);
+    protected final static Double NAN_VALUE = Double.valueOf(Double.NaN);
     
     protected Pollutant pollutant; 
 
@@ -39,7 +39,7 @@ public class ControlMeasureTableData extends AbstractTableData {
         this.costYearTable = costYearTable;
         this.pollutant = pollutant;
 //        filter(pollutant, year);
-        this.targetYear = (year != null) ? new Integer(year) : 2013;
+        this.targetYear = (year != null) ? Integer.valueOf(year) : 2013;
         this.rows = createRows(measures);
     }
 
@@ -90,10 +90,10 @@ public class ControlMeasureTableData extends AbstractTableData {
                 
                 if (majorPollutant && measure.getMajorPollutant().equals(aper.getPollutant())) {
                     Object[] values = { measure.getName(), measure.getAbbreviation(), getPollutantName(measure),
-                            getCostPerTon(aper.getAvgCPT()), new Double(aper.getAvgCE()), new Double(aper.getMinCE()), 
-                            new Double(aper.getMaxCE()), getCostPerTon(aper.getMinCPT()), getCostPerTon(aper.getMaxCPT()), 
-                            new Double(aper.getAvgRE()), new Double(aper.getAvgRP()), getControlTechnology(measure), 
-                            getSourceGroup(measure), new Double(measure.getEquipmentLife()),  
+                            getCostPerTon(aper.getAvgCPT()), Double.valueOf(aper.getAvgCE()), Double.valueOf(aper.getMinCE()), 
+                            Double.valueOf(aper.getMaxCE()), getCostPerTon(aper.getMinCPT()), getCostPerTon(aper.getMaxCPT()), 
+                            Double.valueOf(aper.getAvgRE()), Double.valueOf(aper.getAvgRP()), getControlTechnology(measure), 
+                            getSourceGroup(measure), Double.valueOf(measure.getEquipmentLife()),  
                             getSectors(measure), measureClass(measure.getCmClass()), getEquationTypes(measure), getLastModifiedTime(measure), 
                             measure.getLastModifiedBy(), getDateReviewed(measure), measure.getCreator().getName(), 
                             measure.getDataSouce(), measure.getDescription() };
@@ -103,10 +103,10 @@ public class ControlMeasureTableData extends AbstractTableData {
                     break;
                 } else if (pollutant.equals(aper.getPollutant())) {
                     Object[] values = { measure.getName(), measure.getAbbreviation(), getPollutantName(aper.getPollutant()),
-                            getCostPerTon(aper.getAvgCPT()), new Double(aper.getAvgCE()), new Double(aper.getMinCE()), 
-                            new Double(aper.getMaxCE()), getCostPerTon(aper.getMinCPT()), getCostPerTon(aper.getMaxCPT()), 
-                            new Double(aper.getAvgRE()), new Double(aper.getAvgRP()), getControlTechnology(measure), 
-                            getSourceGroup(measure), new Double(measure.getEquipmentLife()),  
+                            getCostPerTon(aper.getAvgCPT()), Double.valueOf(aper.getAvgCE()), Double.valueOf(aper.getMinCE()), 
+                            Double.valueOf(aper.getMaxCE()), getCostPerTon(aper.getMinCPT()), getCostPerTon(aper.getMaxCPT()), 
+                            Double.valueOf(aper.getAvgRE()), Double.valueOf(aper.getAvgRP()), getControlTechnology(measure), 
+                            getSourceGroup(measure), Double.valueOf(measure.getEquipmentLife()),  
                             getSectors(measure), measureClass(measure.getCmClass()), getEquationTypes(measure), getLastModifiedTime(measure), 
                             measure.getLastModifiedBy(), getDateReviewed(measure), measure.getCreator().getName(), 
                             measure.getDataSouce(), measure.getDescription() };
@@ -121,7 +121,7 @@ public class ControlMeasureTableData extends AbstractTableData {
                         NAN_VALUE, NAN_VALUE, NAN_VALUE, 
                         NAN_VALUE, NAN_VALUE, NAN_VALUE, 
                         NAN_VALUE, NAN_VALUE, getControlTechnology(measure), 
-                        getSourceGroup(measure), new Double(measure.getEquipmentLife()),  
+                        getSourceGroup(measure), Double.valueOf(measure.getEquipmentLife()),  
                         getSectors(measure), measureClass(measure.getCmClass()), getEquationTypes(measure), getLastModifiedTime(measure), 
                         measure.getLastModifiedBy(), getDateReviewed(measure), measure.getCreator().getName(), 
                         measure.getDataSouce(), measure.getDescription() };
@@ -269,7 +269,7 @@ public class ControlMeasureTableData extends AbstractTableData {
         costYearTable.setTargetYear(targetYear);
         
         double newCost = costPerTon * costYearTable.factor(CostYearTable.REFERENCE_COST_YEAR);
-        return new Double(newCost);
+        return Double.valueOf(newCost);
     }
 
 //    private Double getCostPerTon(EfficiencyRecord record) throws EmfException {
@@ -280,26 +280,26 @@ public class ControlMeasureTableData extends AbstractTableData {
 //        costYearTable.setTargetYear(targetYear);
 //
 //        double newCost = costPerTon * costYearTable.factor(costYear);
-//        return new Double(newCost);
+//        return Double.valueOf(newCost);
 //    }
 //
 //    private Double getControlEfficiency(EfficiencyRecord record) {
 //        if (record == null)
 //            return NAN_VALUE;
 //
-//        return new Double(record.getEfficiency());
+//        return Double.valueOf(record.getEfficiency());
 //    }
 //
 //    private Double ruleEffectiveness(EfficiencyRecord record) {
 //        if (record == null)
 //            return NAN_VALUE;
-//        return new Double(record.getRuleEffectiveness());
+//        return Double.valueOf(record.getRuleEffectiveness());
 //    }
 //
 //    private Double rulePenetration(EfficiencyRecord record) {
 //        if (record == null)
 //            return NAN_VALUE;
-//        return new Double(record.getRulePenetration());
+//        return Double.valueOf(record.getRulePenetration());
 //    }
 //
 }

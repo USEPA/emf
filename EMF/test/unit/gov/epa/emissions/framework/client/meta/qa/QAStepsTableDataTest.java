@@ -94,7 +94,7 @@ public class QAStepsTableDataTest extends EmfMockObjectTestCase {
         List rows = data.rows();
 
         Row row = (Row) rows.get(0);
-        assertEquals(new Integer(step1.getVersion()), row.getValueAt(0));
+        assertEquals(Integer.valueOf(step1.getVersion()), row.getValueAt(0));
         assertEquals(step1.getName(), row.getValueAt(1));
         assertEquals(step1.isRequired(), ((Boolean) row.getValueAt(2)).booleanValue());
         assertEquals(step1.getOrder() + "", row.getValueAt(3) + "");

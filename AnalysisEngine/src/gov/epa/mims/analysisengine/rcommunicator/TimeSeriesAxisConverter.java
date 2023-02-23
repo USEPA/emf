@@ -154,7 +154,7 @@ gov.epa.mims.analysisengine.tree.AnalysisOptionConstantsIfc
       }
 
       double val = t1 + ((u - U1) / m);
-      Double dbl = new Double(val);
+      Double dbl = Double.valueOf(val);
       long ms = dbl.longValue();
 
       return new Date(ms);
@@ -535,7 +535,7 @@ gov.epa.mims.analysisengine.tree.AnalysisOptionConstantsIfc
 
       while (t0L <= t2L)
       {
-         atList.add(new Long(t0L));
+         atList.add(Long.valueOf(t0L));
          t0L += tickInc;
       }
 
@@ -568,7 +568,7 @@ gov.epa.mims.analysisengine.tree.AnalysisOptionConstantsIfc
 
       while (t0L <= t2L)
       {
-         atList.add(new Long(t0L));
+         atList.add(Long.valueOf(t0L));
          t0L += tickInc;
       }
 
@@ -603,7 +603,7 @@ gov.epa.mims.analysisengine.tree.AnalysisOptionConstantsIfc
 
       while (t0L <= t2L)
       {
-         atList.add(new Long(t0L));
+         atList.add(Long.valueOf(t0L));
          t0L += tickInc;
       }
 

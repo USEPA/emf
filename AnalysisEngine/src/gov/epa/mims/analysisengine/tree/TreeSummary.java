@@ -47,7 +47,7 @@ public class TreeSummary extends Visitor {
 
 		// Populate the plot count hashtable with the data we found.
 		for (int i = 0; i < numPlots.length; i++) {
-			plotCounts.put(plotTypes[i], new Integer(numPlots[i]));
+			plotCounts.put(plotTypes[i], Integer.valueOf(numPlots[i]));
 		}
 	}
 

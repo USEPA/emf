@@ -877,7 +877,7 @@ public class ModuleServiceImpl implements ModuleService {
                                 try {
                                     // check if any modules besides the one to be deleted use this dataset as input
                                     List<Integer> consumerModuleIds = datasetDAO.getModulesUsingDataset(emfDataset.getId());
-                                    consumerModuleIds.remove(new Integer(moduleId));
+                                    consumerModuleIds.remove(Integer.valueOf(moduleId));
                                     if (consumerModuleIds.size() == 0) datasets.add(emfDataset);
                                 } catch (Exception e) {
                                     throw new EmfException("Error checking dataset usage", e);

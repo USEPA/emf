@@ -595,7 +595,7 @@ public class PlottingInfoView extends OptionDialog {
 		for (int i = 0; i < 10; i++) {
 			ArrayList rowData = new ArrayList();
 			for (int j = 0; j < count; j++) {
-				rowData.add(new Double(j));
+				rowData.add(Double.valueOf(j));
 			}
 			data.add(data);
 		}// for(i)

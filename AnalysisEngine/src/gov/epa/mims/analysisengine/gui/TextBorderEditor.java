@@ -200,16 +200,16 @@ public class TextBorderEditor extends TextEditor
       if(textBorder.getBackgroundColor() == null )
          textBorder.setBackgroundColor(BGCOLOR);
 
-      if( new Double(textBorder.getPadBottom()).isNaN() )
+      if(Double.valueOf(textBorder.getPadBottom()).isNaN())
          textBorder.setPadBottom(PAD_BOTTOM);
 
-      if( new Double(textBorder.getPadTop()).isNaN() )
+      if(Double.valueOf(textBorder.getPadTop()).isNaN())
          textBorder.setPadTop(PAD_TOP);
 
-      if(new Double(textBorder.getPadLeft()).isNaN())
+      if(Double.valueOf(textBorder.getPadLeft()).isNaN())
          textBorder.setPadLeft(PAD_LEFT);
 
-      if(new Double(textBorder.getPadRight()).isNaN())
+      if(Double.valueOf(textBorder.getPadRight()).isNaN())
          textBorder.setPadRight(PAD_RIGHT);
 
       if(textBorder.getTextExpansion() == 0)

@@ -10,7 +10,7 @@ public class PageReaderTest extends MockObjectTestCase {
 
     public void testPageCountShouldBeTotalRecordsByPageSize() throws Exception {
         Mock scrollableRecords = mock(ScrollableVersionedRecords.class);
-        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(new Integer(1800)));
+        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(Integer.valueOf(1800)));
 
         PageReader reader = new PageReader(3, (ScrollableVersionedRecords) scrollableRecords.proxy());
 
@@ -28,7 +28,7 @@ public class PageReaderTest extends MockObjectTestCase {
 
     public void testTotalRecordsShouldBeEqualToTotalFromScrollableRecords() throws Exception {
         Mock scrollableRecords = mock(ScrollableVersionedRecords.class);
-        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(new Integer(1800)));
+        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(Integer.valueOf(1800)));
 
         PageReader reader = new PageReader(3, (ScrollableVersionedRecords) scrollableRecords.proxy());
 
@@ -37,7 +37,7 @@ public class PageReaderTest extends MockObjectTestCase {
 
     public void testPageCountShouldIncludeTheLastPageWhichCouldBeSparse() throws Exception {
         Mock scrollableRecords = mock(ScrollableVersionedRecords.class);
-        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(new Integer(394)));
+        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(Integer.valueOf(394)));
 
         PageReader reader = new PageReader(10, (ScrollableVersionedRecords) scrollableRecords.proxy());
 
@@ -46,9 +46,9 @@ public class PageReaderTest extends MockObjectTestCase {
 
     public void testShouldGetSpecifiedPage() throws Exception {
         Mock scrollableRecords = mock(ScrollableVersionedRecords.class);
-        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(new Integer(1800)));
+        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(Integer.valueOf(1800)));
         VersionedRecord[] records = {};
-        scrollableRecords.stubs().method("range").with(eq(new Integer(40)), eq(new Integer(49))).will(
+        scrollableRecords.stubs().method("range").with(eq(Integer.valueOf(40)), eq(Integer.valueOf(49))).will(
                 returnValue(records));
 
         PageReader reader = new PageReader(10, (ScrollableVersionedRecords) scrollableRecords.proxy());
@@ -59,23 +59,23 @@ public class PageReaderTest extends MockObjectTestCase {
 
     public void testShouldGetPageBasedOnRecordNumber() throws Exception {
         Mock scrollableRecords = mock(ScrollableVersionedRecords.class);
-        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(new Integer(1800)));
+        scrollableRecords.stubs().method("total").withNoArguments().will(returnValue(Integer.valueOf(1800)));
 
         PageReader reader = new PageReader(10, (ScrollableVersionedRecords) scrollableRecords.proxy());
 
-        scrollableRecords.stubs().method("range").with(eq(new Integer(40)), eq(new Integer(49))).will(
+        scrollableRecords.stubs().method("range").with(eq(Integer.valueOf(40)), eq(Integer.valueOf(49))).will(
                 returnValue(new VersionedRecord[0]));
         assertNotNull("Should be able to fetch Page containing records 40-49", reader.pageByRecord(42));
 
-        scrollableRecords.stubs().method("range").with(eq(new Integer(0)), eq(new Integer(9))).will(
+        scrollableRecords.stubs().method("range").with(eq(Integer.valueOf(0)), eq(Integer.valueOf(9))).will(
                 returnValue(new VersionedRecord[0]));
         assertNotNull("Should be able to fetch Page containing records 0-9", reader.pageByRecord(7));
 
-        scrollableRecords.stubs().method("range").with(eq(new Integer(10)), eq(new Integer(19))).will(
+        scrollableRecords.stubs().method("range").with(eq(Integer.valueOf(10)), eq(Integer.valueOf(19))).will(
                 returnValue(new VersionedRecord[0]));
         assertNotNull("Should be able to fetch Page containing records 10-19", reader.pageByRecord(20));
 
-        scrollableRecords.stubs().method("range").with(eq(new Integer(10)), eq(new Integer(19))).will(
+        scrollableRecords.stubs().method("range").with(eq(Integer.valueOf(10)), eq(Integer.valueOf(19))).will(
                 returnValue(new VersionedRecord[0]));
         assertNotNull("Should be able to fetch Page containing records 10-19", reader.pageByRecord(20));
 

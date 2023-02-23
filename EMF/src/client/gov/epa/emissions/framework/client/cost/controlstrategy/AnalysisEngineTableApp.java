@@ -224,21 +224,21 @@ public class AnalysisEngineTableApp extends DisposableInteralFrame
                 if (colClasses[j].equals(String.class))
                     rowData.add(temp);
                 else if (colClasses[j].equals(Double.class))
-                    rowData.add((temp == null || temp.isEmpty())? Double.NaN : new Double(temp));
+                    rowData.add((temp == null || temp.isEmpty())? Double.NaN : Double.valueOf(temp));
                 else if (colClasses[j].equals(Boolean.class)) {
                     Boolean b = null;
                     if (temp != null && !temp.isEmpty()) {
                         if ( temp.equalsIgnoreCase("true") || temp.equalsIgnoreCase("t"))
-                            b= new Boolean(true);
+                            b= Boolean.TRUE;
                         else if (temp.equalsIgnoreCase("false") || temp.equalsIgnoreCase("f"))
-                            b = new Boolean(false);
+                            b = Boolean.FALSE;
                     }
-                    rowData.add(b); //(temp == null || temp.isEmpty())? null : new Boolean(temp));
+                    rowData.add(b); //(temp == null || temp.isEmpty())? null : Boolean.valueOf(temp));
                 }
                 else if (colClasses[j].equals(Date.class))
                     rowData.add((temp == null || temp.isEmpty())? null : CustomDateFormat.format_yyyy_MM_dd_HHmmss(temp));
                 else if (colClasses[j].equals(Integer.class))
-                    rowData.add((temp == null || temp.isEmpty())? null : new Integer(temp));
+                    rowData.add((temp == null || temp.isEmpty())? null : Integer.valueOf(temp));
                 else
                     rowData.add(tokens[j]);
             }

@@ -42,22 +42,22 @@ public class CSVExporter extends SMKReportExporter {
             return value;
         
         if (colType == Types.DECIMAL)
-            return new Double(Double.valueOf(value)).toString();
+            return Double.valueOf(value).toString();
         
         if (colType == Types.DOUBLE)
-            return new Double(Double.valueOf(value)).toString();
+            return Double.valueOf(value).toString();
         
         if (colType == Types.FLOAT)
-            return new Double(Double.valueOf(value)).toString();
+            return Double.valueOf(value).toString();
         
         if (colType == Types.INTEGER)
             return value;
         
         if (colType == Types.NUMERIC)
-            return new Double(Double.valueOf(value)).toString();
+            return Double.valueOf(value).toString();
         
         if (colType == Types.REAL)
-            return new Double(Double.valueOf(value)).toString();
+            return Double.valueOf(value).toString();
         
         if (colType == Types.SMALLINT)
             return value;

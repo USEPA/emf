@@ -238,9 +238,9 @@ public abstract class Enum implements Comparable, Serializable {
         synchronized (ordinalPerClass) {
             ordinal = (Integer) ordinalPerClass.get(clazz);
             if (ordinal == null) {
-                ordinal = new Integer(0);
+                ordinal = Integer.valueOf(0);
             } else {
-                ordinal = new Integer(ordinal.intValue() + 1);
+                ordinal = Integer.valueOf(ordinal.intValue() + 1);
             }
             ordinalPerClass.put(clazz, ordinal);
         }

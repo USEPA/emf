@@ -111,7 +111,7 @@ public class SortingTableModel extends MultiRowHeaderTableModel implements Table
 		int[] tempMap = new int[sortingMap.length];
 		for (int i = 0; i < tempMap.length; i++)
 			tempMap[i] = sortingMap[i];
-		while (index < lastElement && ((Double) getValueAt(index, column)).equals(new Double(Double.NaN)))
+		while (index < lastElement && ((Double) getValueAt(index, column)).equals(Double.valueOf(Double.NaN)))
 			index++;
 		if (index == firstElement)
 			begin = false;

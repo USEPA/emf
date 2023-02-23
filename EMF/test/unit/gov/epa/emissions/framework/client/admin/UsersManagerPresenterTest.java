@@ -52,7 +52,7 @@ public class UsersManagerPresenterTest extends EmfMockObjectTestCase {
         Mock user = mock(User.class);
         User userProxy = (User) user.proxy();
         stub(user, "getUsername", "matts");
-        stub(user, "isLocked", ownerProxy, new Boolean(true));
+        stub(user, "isLocked", ownerProxy, Boolean.TRUE);
 
         service.expects(once()).method("deleteUser").with(same(userProxy));
         service.expects(once()).method("obtainLocked").with(same(ownerProxy), same(userProxy)).will(
@@ -76,7 +76,7 @@ public class UsersManagerPresenterTest extends EmfMockObjectTestCase {
         stub(user, "getUsername", "matts");
         stub(user, "getLockOwner", null);
         stub(user, "getLockDate", new Date());
-        stub(user, "isLocked", ownerProxy, new Boolean(false));
+        stub(user, "isLocked", ownerProxy, Boolean.FALSE);
 
         service.expects(once()).method("obtainLocked").with(same(ownerProxy), same(userProxy)).will(
                 returnValue(userProxy));

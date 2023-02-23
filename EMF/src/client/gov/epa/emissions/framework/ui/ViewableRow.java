@@ -15,7 +15,7 @@ public class ViewableRow<T> implements Row<T> {
 
         columns = new HashMap<Integer, Column>();
         for (int i = 0; i < values.length; i++) {
-            columns.put(new Integer(i), new Column(values[i]));
+            columns.put(Integer.valueOf(i), new Column(values[i]));
         }
     }
 
@@ -25,7 +25,7 @@ public class ViewableRow<T> implements Row<T> {
     }
 
     public Object getValueAt(int column) {
-        Column columnHolder = columns.get(new Integer(column));
+        Column columnHolder = columns.get(Integer.valueOf(column));
         return columnHolder.value;
     }
 

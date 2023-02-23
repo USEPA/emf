@@ -36,7 +36,7 @@ public class SortTableModelTest extends TestCase {
 
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				intData[i][j] = new Integer(ints[i][j]);
+				intData[i][j] = Integer.valueOf(ints[i][j]);
 			}
 		}
 
@@ -45,7 +45,7 @@ public class SortTableModelTest extends TestCase {
 
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				dblData[i][j] = new Double(dbls[i][j]);
+				dblData[i][j] = Double.valueOf(dbls[i][j]);
 			}
 		}
 
@@ -373,8 +373,8 @@ public class SortTableModelTest extends TestCase {
 		for (int r = 0; r < 10; r++) {
 			data[r] = new Object[3];
 			data[r][0] = column1[r];
-			data[r][1] = new Integer(column2[r]);
-			data[r][2] = new Double(column3[r]);
+			data[r][1] = Integer.valueOf(column2[r]);
+			data[r][2] = Double.valueOf(column3[r]);
 		} // for(r)
 
 		String[][] colNames = { { "col1", "col2", "col3" } };
@@ -464,7 +464,7 @@ public class SortTableModelTest extends TestCase {
 		Integer[][] data = new Integer[6][3];
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 3; j++) {
-				data[i][j] = new Integer(ints[i][j]);
+				data[i][j] = Integer.valueOf(ints[i][j]);
 			}
 		}
 

@@ -418,7 +418,7 @@ public class FileParser {
 				examinedToken = line1Tokens[j];
 				if (examinedToken.sym != TokenConstants.NULL_LITERAL) {
 					if (examinedToken.sym == 2 || examinedToken.sym == 3) {
-						numCols.add(new Integer(j));
+						numCols.add(Integer.valueOf(j));
 					}
 					if (examinedToken.sym > 6 || examinedToken.sym < 0)
 						columnTypes[j] = String.class;
@@ -436,7 +436,7 @@ public class FileParser {
 					if (examinedToken.sym != TokenConstants.NULL_LITERAL) {
 						if (temp[j] == false) {
 							if (examinedToken.sym == 2 || examinedToken.sym == 3) {
-								numCols.add(new Integer(j));
+								numCols.add(Integer.valueOf(j));
 							}
 							if (examinedToken.sym > 6 || examinedToken.sym < 0)
 								columnTypes[j] = String.class;
@@ -461,7 +461,7 @@ public class FileParser {
 				examinedToken = line1Tokens[j];
 				if (examinedToken.sym != TokenConstants.NULL_LITERAL) {
 					if (examinedToken.sym == 2 || examinedToken.sym == 3) {
-						numCols.add(new Integer(j));
+						numCols.add(Integer.valueOf(j));
 					}
 
 					if (examinedToken.sym > 6 || examinedToken.sym < 0)
@@ -509,7 +509,7 @@ public class FileParser {
 						if (temp[j] == false) {
 							columnTypes[j] = TokenConstants.TypeToClass[examinedToken.sym];
 							if (examinedToken.sym == 2 || examinedToken.sym == 3) {
-								numCols.add(new Integer(j));
+								numCols.add(Integer.valueOf(j));
 							}
 							temp[j] = true;
 						} else if (!requiredToBeDouble[j] && numCols.size() > 0) {
@@ -668,9 +668,9 @@ public class FileParser {
 			for (j = 0; j < valuesPerLine; j++) {
 				if (doubleTypeColumns[j] && tokens[j].sym != TokenConstants.DOUBLE_LITERAL) {
 					if (tokens[j].sym == TokenConstants.INTEGER_LITERAL) {
-						rowValues.add(new Double(((Integer) tokens[j].value).intValue()));
+						rowValues.add(Double.valueOf(((Integer) tokens[j].value).intValue()));
 					} else if (tokens[j].sym == TokenConstants.NULL_LITERAL) {
-						rowValues.add(new Double("NaN"));
+						rowValues.add(Double.valueOf(Double.NaN));
 					} else if (tokens[j].sym != TokenConstants.DOUBLE_LITERAL) {
 						if (tokens[j].sym == TokenConstants.STRING_LITERAL) {
 							if (columnTypes[j]==String.class) // let it be a string since it's not a mismatch
@@ -679,12 +679,12 @@ public class FileParser {
 							}
 							else if (tokens[j].value.toString().trim().length()==0)
 							{
-								rowValues.add(new Double("NaN"));
+								rowValues.add(Double.valueOf(Double.NaN));
 							}
 							else 
 							{
 								try {
-									rowValues.add(new Double((String) tokens[j].value));
+									rowValues.add(Double.valueOf((String) tokens[j].value));
 								} catch (Exception e) {
 									rowValues.add(tokens[j].value);
 									retVal = false;
@@ -744,13 +744,13 @@ public class FileParser {
 	 */
 	public static Object getNullToken(Class type) throws Exception {
 		if (type.equals(Double.class)) {
-			return new Double("NaN");
+			return Double.valueOf(Double.NaN);
 		}
 		if (type.equals(String.class)) {
 			return new String("");
 		}
 		if (type.equals(Integer.class)) {
-			return new Integer(Integer.MIN_VALUE);
+			return Integer.valueOf(Integer.MIN_VALUE);
 		}
 		throw new Exception("Missing data, but there is no equivalent Null Object of " + type + " type");
 	}

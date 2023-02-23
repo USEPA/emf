@@ -21,7 +21,7 @@ public class NumberFormattedTextField extends JFormattedTextField implements Cha
 
     public NumberFormattedTextField(int min, int max, int size, Action action) {
         super.setFormatterFactory(new DefaultFormatterFactory(integerFormatter(min, max)));
-        super.setValue(new Integer(min));
+        super.setValue(Integer.valueOf(min));
         super.setColumns(size);
 
         addActionForEnterKeyPress(action);
@@ -50,16 +50,16 @@ public class NumberFormattedTextField extends JFormattedTextField implements Cha
 
     private NumberFormatter integerFormatter(int min, int max) {
         NumberFormatter formatter = new NumberFormatter(NumberFormat.getIntegerInstance());
-        formatter.setMinimum(new Integer(min));
-        formatter.setMaximum(new Integer(max));
+        formatter.setMinimum(Integer.valueOf(min));
+        formatter.setMaximum(Integer.valueOf(max));
 
         return formatter;
     }
 
     private NumberFormatter doubleFormatter(double min, double max) {
         NumberFormatter formatter = new NumberFormatter(NumberFormat.getNumberInstance());
-        formatter.setMinimum(new Double(min));
-        formatter.setMaximum(new Double(max));
+        formatter.setMinimum(Double.valueOf(min));
+        formatter.setMaximum(Double.valueOf(max));
 
         return formatter;
     }

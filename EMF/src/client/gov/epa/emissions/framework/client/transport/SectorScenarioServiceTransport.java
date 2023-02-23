@@ -58,7 +58,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.sectorScenario());
 
-        return (SectorScenario) call.requestResponse(new Object[] { owner, new Integer(id) });
+        return (SectorScenario) call.requestResponse(new Object[] { owner, Integer.valueOf(id) });
 
     }
 
@@ -80,7 +80,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.sectorScenario());
 
-        call.request(new Object[] { user, new Integer(id) });
+        call.request(new Object[] { user, Integer.valueOf(id) });
     }
 
     public synchronized SectorScenario updateSectorScenario(SectorScenario element) throws EmfException {
@@ -133,7 +133,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("sectorScenarioId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, new Integer(sectorScenarioId) });
+        call.request(new Object[] { user, Integer.valueOf(sectorScenarioId) });
     }
 
     public synchronized void summarizeStrategy(User user, int sectorScenarioId, 
@@ -147,7 +147,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addParam("strategyResultType", mappings.strategyResultType());
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, new Integer(sectorScenarioId), exportDirectory, strategyResultType });
+        call.request(new Object[] { user, Integer.valueOf(sectorScenarioId), exportDirectory, strategyResultType });
     }
 
     public synchronized StrategyType[] getStrategyTypes() throws EmfException {
@@ -166,7 +166,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("sectorScenarioId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(sectorScenarioId) });
+        call.request(new Object[] { Integer.valueOf(sectorScenarioId) });
     }
 
     public synchronized String sectorScenarioRunStatus(int id) throws EmfException {
@@ -177,7 +177,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
 
         call.setReturnType(mappings.string());
 
-        return (String) call.requestResponse(new Object[] { new Integer(id) });
+        return (String) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized ControlMeasureClass[] getControlMeasureClasses(int sectorScenarioId) throws EmfException {
@@ -187,7 +187,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntParam();
         call.setReturnType(mappings.controlMeasureClasses());
 
-        return (ControlMeasureClass[]) call.requestResponse(new Object[] { new Integer(sectorScenarioId) });
+        return (ControlMeasureClass[]) call.requestResponse(new Object[] { Integer.valueOf(sectorScenarioId) });
     }
 
     public synchronized int isDuplicateName(String name) throws EmfException {
@@ -215,7 +215,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("id");
         call.addParam("creator", mappings.user());
         call.setIntegerReturnType();
-        return (Integer) call.requestResponse(new Object[] { new Integer(id), creator });
+        return (Integer) call.requestResponse(new Object[] { Integer.valueOf(id), creator });
     }
 
     public synchronized SectorScenario getById(int id) throws EmfException {
@@ -224,7 +224,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.setOperation("getById");
         call.addIntegerParam("id");
         call.setReturnType(mappings.sectorScenario());
-        return (SectorScenario) call.requestResponse(new Object[] { new Integer(id) });
+        return (SectorScenario) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized SectorScenarioOutput[] getSectorScenarioOutputs(int sectorScenarioId) throws EmfException {
@@ -234,7 +234,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("sectorScenarioId");
         call.setReturnType(mappings.sectorScenarioOutputs());
 
-        return (SectorScenarioOutput[]) call.requestResponse(new Object[] { new Integer(sectorScenarioId) });
+        return (SectorScenarioOutput[]) call.requestResponse(new Object[] { Integer.valueOf(sectorScenarioId) });
     }
 
     public List<SectorScenario> getSectorScenariosByRunStatus(String runStatus) {
@@ -278,7 +278,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.string());
 
-        return (String) call.requestResponse(new Object[] { new Integer(id) });
+        return (String) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized String[] getDistinctSectorListFromDataset(int datasetId, int versionNumber) throws EmfException {
@@ -289,7 +289,7 @@ public class SectorScenarioServiceTransport implements SectorScenarioService {
         call.addIntegerParam("versionNumber");
         call.setReturnType(mappings.strings());
 
-        return (String[]) call.requestResponse(new Object[] { new Integer(datasetId), new Integer(versionNumber) });
+        return (String[]) call.requestResponse(new Object[] { Integer.valueOf(datasetId), Integer.valueOf(versionNumber) });
     }
 
 }

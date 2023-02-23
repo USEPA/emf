@@ -46,7 +46,7 @@ public class ExportPresenterImpl implements ExportPresenter {
             Integer[] datasetIds = new Integer[datasets.length];
             
             for (int i = 0; i < datasets.length; i++)
-                datasetIds[i] = new Integer(datasets[i].getId());
+                datasetIds[i] = Integer.valueOf(datasets[i].getId());
             
             session.setMostRecentExportFolder(folder);
 

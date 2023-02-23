@@ -12,7 +12,7 @@ public class EditableEquationVariableRowSource implements RowSource {
 
     private Boolean selected;
     
-//    private final static Double NAN_VALUE = new Double(Double.NaN);
+//    private final static Double NAN_VALUE = Double.valueOf(Double.NaN);
 //
     public EditableEquationVariableRowSource(EquationType equationType, EquationTypeVariable variable) {
         this.equationType = equationType;

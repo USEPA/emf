@@ -150,7 +150,7 @@ public class LinearRegressionTypeEditor extends OptionDialog
              LinearRegression aLR = linearRegressionType.getLinearRegression(i);
              tablePanel.insertRow(false);
              tablePanel.setValueAt(aLR,i,LINEAR_REGRESSION_COLUMN);
-             Boolean apply = new Boolean(aLR.getEnable());
+             Boolean apply = Boolean.valueOf(aLR.getEnable());
              tablePanel.setValueAt(apply,i, APPLY_COLUMN);
          }
       }//if(linearRegressionType != null)

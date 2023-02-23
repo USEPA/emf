@@ -33,7 +33,7 @@ public class GSCNVImporterExporterTest extends PersistenceTestCase {
 
         dbServer = dbSetup.getDbServer();
         sqlDataTypes = dbServer.getSqlDataTypes();
-        optimizedBatchSize = new Integer(1000);
+        optimizedBatchSize = Integer.valueOf(1000);
 
         dataset = new SimpleDataset();
         dataset.setName("test");

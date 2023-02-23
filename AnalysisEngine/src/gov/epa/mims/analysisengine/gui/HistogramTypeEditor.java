@@ -322,13 +322,13 @@ extends OptionDialog
          if (Double.isNaN(d))
             histogramType.setShadingAngle(null);
          else
-            histogramType.setShadingAngle(new Double(d));
+            histogramType.setShadingAngle(Double.valueOf(d));
 
          d = shadingDensityPanel.getValue();
          if (Double.isNaN(d))
             histogramType.setShadingDensity(null);
          else
-            histogramType.setShadingDensity(new Double(d));
+            histogramType.setShadingDensity(Double.valueOf(d));
       }
       //   If the user has selected the bars to be solid, them
       else
@@ -358,7 +358,7 @@ extends OptionDialog
                   UserInteractor.ERROR);
             shouldContinueClosing = false;
          }
-         histogramType.setXRange(new Double(d), new Double(d2));
+         histogramType.setXRange(Double.valueOf(d), Double.valueOf(d2));
       }
 
       if (breaksPanel.isEmpty())

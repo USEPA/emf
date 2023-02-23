@@ -26,14 +26,14 @@ public class QADAO {
     }
 
     public QAStep[] steps(EmfDataset dataset, Session session) {
-        Criterion criterion = Restrictions.eq("datasetId", new Integer(dataset.getId()));
+        Criterion criterion = Restrictions.eq("datasetId", Integer.valueOf(dataset.getId()));
 
         List steps = session.createCriteria(QAStep.class).add(criterion).list();
         return (QAStep[]) steps.toArray(new QAStep[0]);
     }
     
     public QAStepResult[] qaRsults(EmfDataset dataset, Session session) {
-        Criterion criterion = Restrictions.eq("datasetId", new Integer(dataset.getId()));
+        Criterion criterion = Restrictions.eq("datasetId", Integer.valueOf(dataset.getId()));
 
         List results = session.createCriteria(QAStepResult.class).add(criterion).list();
         return (QAStepResult[]) results.toArray(new QAStepResult[0]);
@@ -69,9 +69,9 @@ public class QADAO {
 
     public QAStepResult qaStepResult(QAStep step, Session session) {
         updateQAStepsIds(new QAStep[]{step},session);
-        Criterion c1 = Restrictions.eq("datasetId", new Integer(step.getDatasetId()));
-        Criterion c2 = Restrictions.eq("version", new Integer(step.getVersion()));
-        Criterion c3 = Restrictions.eq("qaStepId", new Integer(step.getId()));
+        Criterion c1 = Restrictions.eq("datasetId", Integer.valueOf(step.getDatasetId()));
+        Criterion c2 = Restrictions.eq("version", Integer.valueOf(step.getVersion()));
+        Criterion c3 = Restrictions.eq("qaStepId", Integer.valueOf(step.getId()));
         Criterion[] criterions =  { c1, c2, c3 };
         List list = hibernateFacade.get(QAStepResult.class, criterions, session);
         
@@ -151,8 +151,8 @@ public class QADAO {
     }
 
     private Criterion[] qaStepKeyConstraints(QAStep step) {
-        Criterion c1 = Restrictions.eq("datasetId", new Integer(step.getDatasetId()));
-        Criterion c2 = Restrictions.eq("version", new Integer(step.getVersion()));
+        Criterion c1 = Restrictions.eq("datasetId", Integer.valueOf(step.getDatasetId()));
+        Criterion c2 = Restrictions.eq("version", Integer.valueOf(step.getVersion()));
         Criterion c3 = Restrictions.eq("name", step.getName());
         Criterion[] criterions = { c1, c2, c3 };
         return criterions;

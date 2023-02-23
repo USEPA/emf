@@ -65,7 +65,7 @@ public class EditControlStrategyPresenterTest extends EmfMockObjectTestCase {
         Mock service = mock(ControlStrategyService.class);
         ControlStrategy comtrolStrategy = new ControlStrategy("name");
         expects(service, 1, "updateControlStrategyWithLock", same(comtrolStrategy));
-        stub(service, "isDuplicateName", new Integer(0));
+        stub(service, "isDuplicateName", Integer.valueOf(0));
         stub(service, "getControlStrategies", new ControlStrategy[0]);
 
         Mock session = mock(EmfSession.class);
@@ -96,7 +96,7 @@ public class EditControlStrategyPresenterTest extends EmfMockObjectTestCase {
 
         ControlStrategy[] controlStrategies = new ControlStrategy[] { new ControlStrategy("controlStrategy1"),
                 duplicateControlStrategy, controlStrategyObj };
-        stub(service, "isDuplicateName", new Integer(1));
+        stub(service, "isDuplicateName", Integer.valueOf(1));
         stub(service, "getControlStrategies", controlStrategies);
 
         Mock session = mock(EmfSession.class);

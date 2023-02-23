@@ -181,7 +181,7 @@ public class SQLECControlScenarioQuery extends SQLQAProgramQuery{
                 //also get version number...
                 keyVals = keyValFound(detailedResult, "STRATEGY_INVENTORY_VERSION");
                 if (keyVals.length > 0) {
-                    inventoryVersionNumber = new Integer(keyVals[0].getValue());
+                    inventoryVersionNumber = Integer.valueOf(keyVals[0].getValue());
                 }
             }
         }

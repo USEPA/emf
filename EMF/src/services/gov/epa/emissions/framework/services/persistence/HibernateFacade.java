@@ -51,7 +51,7 @@ public class HibernateFacade {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            Criteria crit = session.createCriteria(clazz).add(Restrictions.eq("id", new Integer(id)));
+            Criteria crit = session.createCriteria(clazz).add(Restrictions.eq("id", Integer.valueOf(id)));
             tx.commit();
 
             return crit.uniqueResult() != null;
@@ -92,7 +92,7 @@ public class HibernateFacade {
 
     public Object current(int id, Class clazz, Session session) {
         try {
-            Criteria crit = session.createCriteria(clazz).add(Restrictions.eq("id", new Integer(id)));
+            Criteria crit = session.createCriteria(clazz).add(Restrictions.eq("id", Integer.valueOf(id)));
             return crit.uniqueResult();
         } catch (HibernateException e) {
             // NOTE Auto-generated catch block

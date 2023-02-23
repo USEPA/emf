@@ -584,8 +584,8 @@ public class AxisNumericEditor extends AxisContinuousEditor
       // treats NaN as "no value" for the axis range.
       Double minVal = null;
       Double maxVal = null;
-      minVal = new Double(minRangePnl.getValue());
-      maxVal = new Double(maxRangePnl.getValue());
+      minVal = Double.valueOf(minRangePnl.getValue());
+      maxVal = Double.valueOf(maxRangePnl.getValue());
       if(minVal.isNaN() && !maxVal.isNaN())
       {
          DefaultUserInteractor.get().notify(this, "Error","Please enter a minimum " + 

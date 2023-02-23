@@ -58,7 +58,7 @@ public class COSUAdapter {
 				ArrayList rowData = new ArrayList();
 				rowData.add(doubleTable.getRowName(i));
 				for (j = 0; j < arrayOfRowData.length; j++) {
-					rowData.add(new Double(arrayOfRowData[j]));
+					rowData.add(Double.valueOf(arrayOfRowData[j]));
 				}// for(j)
 				fileData.add(rowData);
 

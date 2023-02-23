@@ -92,7 +92,7 @@ public class StatisticsModel {
 		selBasicStats = new HashMap();
 		// assumed that initialy all analysis are selected
 		for (int i = 0; i < SummaryStats.BASIC_STATISTICS.length; i++) {
-			selBasicStats.put(SummaryStats.BASIC_STATISTICS[i], new Boolean(true));
+			selBasicStats.put(SummaryStats.BASIC_STATISTICS[i], Boolean.TRUE);
 		}// for(i)
 	}// StatisticsModel
 
@@ -199,7 +199,7 @@ public class StatisticsModel {
 						}
 						// don't add if it's NaN
 					} else if (type == Integer.class) {
-						colData.add(new Double(((Integer) obj).intValue()));
+						colData.add(Double.valueOf(((Integer) obj).intValue()));
 					} else {
 						throw new Exception("The type '" + type + "' is not handled");
 					}

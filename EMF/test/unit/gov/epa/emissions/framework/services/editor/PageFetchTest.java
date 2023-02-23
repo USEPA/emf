@@ -19,12 +19,12 @@ public class PageFetchTest extends MockObjectTestCase {
 
         Mock sets1 = mock(ChangeSets.class);
         sets1.stubs().method("netIncrease").will(returnValue(3));
-        cache.stubs().method("changesets").with(same(token), eq(new Integer(1)), same(session)).will(
+        cache.stubs().method("changesets").with(same(token), eq(Integer.valueOf(1)), same(session)).will(
                 returnValue(sets1.proxy()));
 
         Mock sets2 = mock(ChangeSets.class);
         sets2.stubs().method("netIncrease").will(returnValue(-5));
-        cache.stubs().method("changesets").with(same(token), eq(new Integer(2)), same(session)).will(
+        cache.stubs().method("changesets").with(same(token), eq(Integer.valueOf(2)), same(session)).will(
                 returnValue(sets2.proxy()));
 
         assertEquals(18, fetch.totalSizeOfPreviousPagesUpto(token, 2, session));
@@ -41,12 +41,12 @@ public class PageFetchTest extends MockObjectTestCase {
 
         Mock sets1 = mock(ChangeSets.class);
         sets1.stubs().method("netIncrease").will(returnValue(3));
-        cache.stubs().method("changesets").with(same(token), eq(new Integer(1)), same(session)).will(
+        cache.stubs().method("changesets").with(same(token), eq(Integer.valueOf(1)), same(session)).will(
                 returnValue(sets1.proxy()));
 
         Mock sets2 = mock(ChangeSets.class);
         sets2.stubs().method("netIncrease").will(returnValue(-5));
-        cache.stubs().method("changesets").with(same(token), eq(new Integer(2)), same(session)).will(
+        cache.stubs().method("changesets").with(same(token), eq(Integer.valueOf(2)), same(session)).will(
                 returnValue(sets2.proxy()));
 
         Page page = new Page();
@@ -66,12 +66,12 @@ public class PageFetchTest extends MockObjectTestCase {
 
         Mock sets1 = mock(ChangeSets.class);
         sets1.stubs().method("netIncrease").will(returnValue(3));// page 1 - 13 records
-        cache.stubs().method("changesets").with(same(token), eq(new Integer(1)), same(session)).will(
+        cache.stubs().method("changesets").with(same(token), eq(Integer.valueOf(1)), same(session)).will(
                 returnValue(sets1.proxy()));
 
         Mock sets2 = mock(ChangeSets.class);
         sets2.stubs().method("netIncrease").will(returnValue(-1));// page 2 - 9 records
-        cache.stubs().method("changesets").with(same(token), eq(new Integer(2)), same(session)).will(
+        cache.stubs().method("changesets").with(same(token), eq(Integer.valueOf(2)), same(session)).will(
                 returnValue(sets2.proxy()));
 
         assertEquals(1, fetch.pageNumber(token, 12, 2, session));

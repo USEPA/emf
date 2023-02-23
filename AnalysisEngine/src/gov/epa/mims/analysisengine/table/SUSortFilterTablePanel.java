@@ -596,8 +596,8 @@ public class SUSortFilterTablePanel extends SortFilterTablePanel {
 		char[] charArray2 = { 'Z', 'Z', 'Z', 'Z', 'Z' };
 		for (int r = 0; r < NUM_ROWS; r++) {
 			data[r] = new Object[NUM_COLS];
-			data[r][2] = new Integer(r);
-			data[r][3] = new Double(r * 10.0);
+			data[r][2] = Integer.valueOf(r);
+			data[r][3] = Double.valueOf(r * 10.0);
 			data[r][4] = cal.getTime();
 			cal.add(java.util.Calendar.HOUR, 1);
 		} // for(r)

@@ -38,7 +38,7 @@ public class InternalSourcesTableData extends AbstractTableData {
         for (int i = 0; i < sources.length; i++) {
             InternalSource element = sources[i];
             Object[] values = { element.getTable(), element.getType(),
-                    new Long(element.getSourceSize()), element.getSource() };
+                    Long.valueOf(element.getSourceSize()), element.getSource() };
 
             Row row = new ViewableRow(element, values);
             rows.add(row);

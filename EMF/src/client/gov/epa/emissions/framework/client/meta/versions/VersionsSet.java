@@ -17,7 +17,7 @@ public class VersionsSet {
     public Integer[] versions() {
         List list = new ArrayList();
         for (int i = 0; i < versions.length; i++)
-            list.add(new Integer(versions[i].getVersion()));
+            list.add(Integer.valueOf(versions[i].getVersion()));
 
         return (Integer[]) list.toArray(new Integer[0]);
     }
@@ -27,7 +27,7 @@ public class VersionsSet {
         List list = new ArrayList();
         for (int i = 0; i < versions.length; i++) {
             if (versions[i].isFinalVersion())
-                list.add(new Integer(versions[i].getVersion()));
+                list.add(Integer.valueOf(versions[i].getVersion()));
         }
 
         return (Integer[]) list.toArray(new Integer[0]);

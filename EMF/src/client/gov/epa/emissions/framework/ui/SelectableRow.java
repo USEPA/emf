@@ -26,16 +26,16 @@ public class SelectableRow implements Row {
 
     private Map createCols(Object[] values) {
         Map columns = new HashMap();
-        columns.put(new Integer(0), new Column(selected));// select col
+        columns.put(Integer.valueOf(0), new Column(selected));// select col
         for (int i = 0; i < values.length; i++) {
-            columns.put(new Integer(i + 1), new Column(values[i]));
+            columns.put(Integer.valueOf(i + 1), new Column(values[i]));
         }
 
         return columns;
     }
 
     public Object getValueAt(int column) {
-        Column columnHolder = (Column) columns.get(new Integer(column));
+        Column columnHolder = (Column) columns.get(Integer.valueOf(column));
         return columnHolder.value;
     }
 

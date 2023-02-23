@@ -63,9 +63,9 @@ public class ColumnFormatPanel extends JPanel {
 	protected ColorValuePanel backgroundPanel = null;
 
 	static {
-		alignmentConverter.put(LEFT, new Integer(SwingConstants.LEFT));
-		alignmentConverter.put(CENTER, new Integer(SwingConstants.CENTER));
-		alignmentConverter.put(RIGHT, new Integer(SwingConstants.RIGHT));
+		alignmentConverter.put(LEFT, Integer.valueOf(SwingConstants.LEFT));
+		alignmentConverter.put(CENTER, Integer.valueOf(SwingConstants.CENTER));
+		alignmentConverter.put(RIGHT, Integer.valueOf(SwingConstants.RIGHT));
 	}
 
 	/**

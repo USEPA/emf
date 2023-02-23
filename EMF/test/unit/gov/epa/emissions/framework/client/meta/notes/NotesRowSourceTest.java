@@ -24,7 +24,7 @@ public class NotesRowSourceTest extends TestCase {
 
         Object[] values = source.values();
         assertEquals(8, values.length);
-        assertEquals(new Long(note.getId()), values[0]);
+        assertEquals(Long.valueOf(note.getId()), values[0]);
         assertEquals(note.getNote().getName(), values[1]);
         assertEquals(note.getNote().getNoteType().getType(), values[2]);
         assertEquals(note.getVersion(), ((Long)values[3]).longValue());

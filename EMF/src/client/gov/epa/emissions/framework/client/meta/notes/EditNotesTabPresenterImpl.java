@@ -96,7 +96,7 @@ public class EditNotesTabPresenterImpl implements EditNotesTabPresenter {
         List<Integer> noteIds =new ArrayList<Integer> (); 
         Note[] notes=dialog.getNotes();
         for (Note note: notes)
-            noteIds.add(new Integer(note.getId()));
+            noteIds.add(Integer.valueOf(note.getId()));
         
         int[] selectedIndexes = new int[noteIds.size()];
         for (int i = 0; i < selectedIndexes.length; i++) {

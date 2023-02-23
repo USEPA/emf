@@ -48,7 +48,7 @@ public class SaveConfigModel extends DefaultTableModel {
 		}
 
 		for (int i = 0; i < configNames.length; i++) {
-			toSaveOrNot.add(new Boolean("true"));
+			toSaveOrNot.add(Boolean.valueOf("true"));
 		}
 		addColumn(columnNames[0], configNames);
 		addColumn(columnNames[1], plotTypes);

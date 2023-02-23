@@ -67,7 +67,7 @@ public class InternalSourcesTableDataTest extends MockObjectTestCase {
         assertEquals("table", row.getValueAt(0));
         assertEquals("type", row.getValueAt(1));
         assertEquals("source", row.getValueAt(2));
-        assertEquals(new Long(2800), row.getValueAt(3));
+        assertEquals(Long.valueOf(2800), row.getValueAt(3));
     }
 
     public void testShouldReturnARowRepresentingAnInternalSourceEntry() {

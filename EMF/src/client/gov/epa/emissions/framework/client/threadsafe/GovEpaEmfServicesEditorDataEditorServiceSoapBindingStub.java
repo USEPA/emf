@@ -2150,7 +2150,7 @@ public class GovEpaEmfServicesEditorDataEditorServiceSoapBindingStub extends org
             org.apache.axis.client.Call _call = super._createCall();
             _call.setMaintainSession(true);
             // never time out
-            _call.setTimeout(new Integer(0));
+            _call.setTimeout(Integer.valueOf(0));
 //            if (super.maintainSessionSet) {
 //                _call.setMaintainSession(super.maintainSession);
 //            }
@@ -2305,7 +2305,7 @@ public class GovEpaEmfServicesEditorDataEditorServiceSoapBindingStub extends org
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(datasetId), new java.lang.Integer(version)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {java.lang.Integer.valueOf(datasetId), java.lang.Integer.valueOf(version)});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -2344,7 +2344,7 @@ public class GovEpaEmfServicesEditorDataEditorServiceSoapBindingStub extends org
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {token, changeset, new java.lang.Integer(pageNumber)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {token, changeset, java.lang.Integer.valueOf(pageNumber)});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -2376,7 +2376,7 @@ public class GovEpaEmfServicesEditorDataEditorServiceSoapBindingStub extends org
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(datasetId)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {java.lang.Integer.valueOf(datasetId)});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -2454,7 +2454,7 @@ public class GovEpaEmfServicesEditorDataEditorServiceSoapBindingStub extends org
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {user, token, new java.lang.Integer(pageSize)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {user, token, java.lang.Integer.valueOf(pageSize)});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -2635,7 +2635,7 @@ public class GovEpaEmfServicesEditorDataEditorServiceSoapBindingStub extends org
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {token, new java.lang.Integer(pageNumber)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {token, java.lang.Integer.valueOf(pageNumber)});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -2674,7 +2674,7 @@ public class GovEpaEmfServicesEditorDataEditorServiceSoapBindingStub extends org
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {token, new java.lang.Integer(record)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {token, java.lang.Integer.valueOf(record)});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

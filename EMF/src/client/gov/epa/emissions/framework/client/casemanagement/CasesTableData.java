@@ -92,7 +92,7 @@ public class CasesTableData extends AbstractTableData {
     }
     
     private Boolean isFinal(Case element) {
-        return new Boolean(element.getIsFinal());
+        return Boolean.valueOf(element.getIsFinal());
     }
 
     private String futureYear(Case element) {

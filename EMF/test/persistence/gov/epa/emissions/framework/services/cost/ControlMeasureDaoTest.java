@@ -485,7 +485,7 @@ public class ControlMeasureDaoTest extends ServiceTestCase {
 
     private Scc[] loadSccs(ControlMeasure controlMeasure) throws HibernateException, Exception {
         HibernateFacade facade = new HibernateFacade();
-        Criterion c1 = Restrictions.eq("controlMeasureId", new Integer(controlMeasure.getId()));
+        Criterion c1 = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasure.getId()));
         Session session = sessionFactory.getSession();
         try {
             List list = facade.get(Scc.class, c1, session);

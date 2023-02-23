@@ -530,7 +530,7 @@ public abstract class EfficiencyRecordWindow extends DisposableInteralFrame {
 
     private void saveRefYrCostPerTon() {
         if (costperTon.getText().trim().length() > 0) {
-            record.setRefYrCostPerTon(new Double(refYrCostPerTon.getText()));
+            record.setRefYrCostPerTon(Double.valueOf(refYrCostPerTon.getText()));
         } else {
             record.setRefYrCostPerTon(null);
         }

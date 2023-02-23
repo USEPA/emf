@@ -105,13 +105,13 @@ public class StatusTableModel extends AbstractTableModel {
             Column timestamp = new Column(CustomDateFormat.format_YYYY_MM_DD_HH_MM(status.getTimestamp()));
 
             columns = new HashMap();
-            columns.put(new Integer(0), messageType);
-            columns.put(new Integer(1), message);
-            columns.put(new Integer(2), timestamp);
+            columns.put(Integer.valueOf(0), messageType);
+            columns.put(Integer.valueOf(1), message);
+            columns.put(Integer.valueOf(2), timestamp);
         }
 
         public Object getValueAt(int column) {
-            Column columnHolder = (Column) columns.get(new Integer(column));
+            Column columnHolder = (Column) columns.get(Integer.valueOf(column));
             return columnHolder.value;
         }
     }

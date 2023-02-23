@@ -48,7 +48,7 @@ public class ControlStrategyOutputTableData extends AbstractTableData {
                 format(result.getStartTime()),
                 format(result.getCompletionTime()),
                 inputDataset != null ? inputDataset.getName() : "", //isDetailedStrategyResult ? result.getInputDataset().getName() : isLeastCostControlMeasureWorksheetResult ? StrategyResultType.leastCostControlMeasureWorksheetResult : isStrategySummaryResult ? StrategyResultType.strategySummaryResult : "", 
-                inputDataset != null && result.getInputDatasetVersion() != null ? result.getInputDatasetVersion() : new Integer(0), 
+                inputDataset != null && result.getInputDatasetVersion() != null ? result.getInputDatasetVersion() : Integer.valueOf(0), 
                 controlledInvDataset == null ? "" : controlledInvDataset.getName() 
                 };
         return values;

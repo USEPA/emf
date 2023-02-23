@@ -855,7 +855,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             Session session = sessionFactory.getSession();
             List<Note> notes = new ArrayList<Note>();
             for (int id : noteIds){
-               notes.add((Note) dao.current(new Integer(id), Note.class, session)); 
+               notes.add((Note) dao.current(Integer.valueOf(id), Note.class, session)); 
             }
             session.close();
 

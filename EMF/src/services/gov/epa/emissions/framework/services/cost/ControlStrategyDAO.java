@@ -341,7 +341,7 @@ public class ControlStrategyDAO {
     }
 
 //    public void removeControlStrategyResult(ControlStrategy controlStrategy, Session session) {
-//        Criterion c = Restrictions.eq("controlStrategyId", new Integer(controlStrategy.getId()));
+//        Criterion c = Restrictions.eq("controlStrategyId", Integer.valueOf(controlStrategy.getId()));
 //        List list = hibernateFacade.get(ControlStrategyResult.class, c, session);
 //        for (int i = 0; i < list.size(); i++) {
 //            ControlStrategyResult result = (ControlStrategyResult) list.get(i);
@@ -386,7 +386,7 @@ public class ControlStrategyDAO {
     }
 
     public ControlStrategy getById(int id, Session session) {
-        ControlStrategy cs = (ControlStrategy) hibernateFacade.load(ControlStrategy.class, Restrictions.eq("id", new Integer(id)), session);
+        ControlStrategy cs = (ControlStrategy) hibernateFacade.load(ControlStrategy.class, Restrictions.eq("id", Integer.valueOf(id)), session);
         return cs;
     }
 
@@ -627,7 +627,7 @@ public class ControlStrategyDAO {
     }
 
     public StrategyGroup getGroupById(int id, Session session) {
-        StrategyGroup group = (StrategyGroup) hibernateFacade.load(StrategyGroup.class, Restrictions.eq("id", new Integer(id)), session);
+        StrategyGroup group = (StrategyGroup) hibernateFacade.load(StrategyGroup.class, Restrictions.eq("id", Integer.valueOf(id)), session);
         return group;
     }
 

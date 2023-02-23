@@ -24,7 +24,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
 
         Mock paginator = mock(TablePaginator.class);
         stub(paginator, "token", new DataAccessToken());
-        Integer filtered = new Integer(10);
+        Integer filtered = Integer.valueOf(10);
         stub(paginator, "totalRecords", filtered);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(),
@@ -66,7 +66,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
     public void testShouldApplyDefaultSortOrderOnDisplay() throws Exception {
         Mock paginator = mock(TablePaginator.class);
         expects(paginator, "token");
-        stub(paginator, "totalRecords", new Integer(20));
+        stub(paginator, "totalRecords", Integer.valueOf(20));
         expects(paginator, "doDisplayFirst");
 
         Mock datasetType = mock(DatasetType.class);
@@ -122,7 +122,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
 
         Mock paginator = mock(TablePaginator.class);
         stub(paginator, "token", new DataAccessToken());
-        Integer filtered = new Integer(10);
+        Integer filtered = Integer.valueOf(10);
         stub(paginator, "totalRecords", filtered);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(),
@@ -149,7 +149,7 @@ public class TablePresenterDelegateTest extends EmfMockObjectTestCase {
     public void testShouldFetchTotalRecords() throws Exception {
         Mock paginator = mock(TablePaginator.class);
         stub(paginator, "token", new DataAccessToken());
-        Integer filtered = new Integer(28);
+        Integer filtered = Integer.valueOf(28);
         stub(paginator, "totalRecords", filtered);
 
         TablePresenterDelegate p = new TablePresenterDelegateImpl(null, (TablePaginator) paginator.proxy(), null, null,

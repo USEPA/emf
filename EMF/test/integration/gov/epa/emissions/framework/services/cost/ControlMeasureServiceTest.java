@@ -43,7 +43,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
         ControlMeasure cm = new ControlMeasure();
         String name = "cm test one" + Math.random();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345678");
         cm.setLastModifiedBy(userService.getUser("emf").getName());
@@ -55,7 +55,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
             assertEquals(1, cms.length);
             assertEquals(name, cms[0].getName());
-            assertEquals(new Float(12), new Float(cms[0].getEquipmentLife()));
+            assertEquals(Float.valueOf(12), Float.valueOf(cms[0].getEquipmentLife()));
         } finally {
             remove(cm);
         }
@@ -66,7 +66,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
         dataService.addPollutant(poll); 
         ControlMeasure cm = new ControlMeasure();
         String name = "cm test one" + Math.random();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345678");
         cm.setLastModifiedBy(userService.getUser("emf").getName());
@@ -79,7 +79,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
             
             assertEquals(1, cms.length);
             assertEquals(name, cms[0].getName());
-            assertEquals(new Float(12), new Float(cms[0].getEquipmentLife()));
+            assertEquals(Float.valueOf(12), Float.valueOf(cms[0].getEquipmentLife()));
         } finally {
             remove(poll);
             remove(cm);
@@ -97,7 +97,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
         ControlMeasure cm = new ControlMeasure();
         String name = "cm test one" + Math.random();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345679");
         cm.setLastModifiedBy(userService.getUser("emf").getName());
@@ -110,7 +110,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
             assertEquals(1, cms.length);
             assertEquals(name, cms[0].getName());
-            assertEquals(new Float(12), new Float(cms[0].getEquipmentLife()));
+            assertEquals(Float.valueOf(12), Float.valueOf(cms[0].getEquipmentLife()));
         } finally {
             remove(scc1);
             remove(cm);
@@ -123,7 +123,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
         ControlMeasureClass cmc = service.getMeasureClass("Known");
         cm.setCmClass(cmc);
         String name = "cm test one" + Math.random();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345688");
         cm.setLastModifiedBy(owner.getName());
@@ -134,7 +134,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
         service.addMeasure(cm, new Scc[] { scc1 });
 
         ControlMeasure cmModified = service.obtainLockedMeasure(owner, cm.getId());
-        cmModified.setEquipmentLife(new Float(120));
+        cmModified.setEquipmentLife(Float.valueOf(120));
         cmModified.setName("cm updated");
         ControlMeasure cm2 = service.updateMeasure(cmModified, new Scc[] {});
 
@@ -142,7 +142,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
             assertEquals("cm updated", cm2.getName());
 //            assertEquals(1, cm2.getSccs().length);
             assertEquals("Known", cm2.getCmClass().getName());
-            assertEquals(new Float(120), new Float(cm2.getEquipmentLife()));
+            assertEquals(Float.valueOf(120), Float.valueOf(cm2.getEquipmentLife()));
         } finally {
             remove(scc1);
             remove(cm);
@@ -204,7 +204,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
         String name = "cm test one" + Math.random();
         ControlMeasureClass cmc = service.getMeasureClass("Emerging");
         cm.setCmClass(cmc);
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345678");
         cm.setLastModifiedBy(userService.getUser("emf").getName());
@@ -216,7 +216,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
         assertEquals(1, cms.length);
         assertEquals(name, cms[0].getName());
-        assertEquals(new Float(12), new Float(cms[0].getEquipmentLife()));
+        assertEquals(Float.valueOf(12), Float.valueOf(cms[0].getEquipmentLife()));
 
         service.removeMeasure(cm.getId());
         assertEquals(0, service.getMeasures().length);
@@ -227,7 +227,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
         ControlMeasure cm = new ControlMeasure();
         String name = "cm test one" + Math.random();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345679");
         cm.setLastModifiedBy(userService.getUser("emf").getName());
@@ -259,7 +259,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
         ControlMeasure cm = new ControlMeasure();
         String name = "cm test one" + Math.random();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345679");
         cm.setLastModifiedBy(userService.getUser("emf").getName());
@@ -294,7 +294,7 @@ public class ControlMeasureServiceTest extends ServiceTestCase {
 
         ControlMeasure cm = new ControlMeasure();
         String name = "cm test one" + Math.random();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName(name);
         cm.setAbbreviation("12345679");
         cm.setLastModifiedBy(userService.getUser("emf").getName());

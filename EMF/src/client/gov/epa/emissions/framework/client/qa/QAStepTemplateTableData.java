@@ -38,7 +38,7 @@ public class QAStepTemplateTableData extends AbstractTableData {
         return new ViewableRow(template,
                 new Object[] { template.getName(), template.getProgram(), 
                 shortenProgramArguments(template.getProgramArguments()),
-                        Boolean.valueOf(template.isRequired()), new Float(template.getOrder()) });
+                        Boolean.valueOf(template.isRequired()), Float.valueOf(template.getOrder()) });
     }
     private String shortenProgramArguments(String arguments)
     {

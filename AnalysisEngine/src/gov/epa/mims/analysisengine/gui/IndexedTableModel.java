@@ -108,7 +108,7 @@ public class IndexedTableModel
       // For the first column, return the row number.
       if (col == 0)
       {
-         return new Integer(row +1);
+         return Integer.valueOf(row +1);
       }
       else
       {

@@ -28,7 +28,7 @@ public class QAStepRowSourceTest extends TestCase {
 
         Object[] values = source.values();
         assertEquals(11, values.length);
-        assertEquals(new Integer(step.getVersion()), values[0]);
+        assertEquals(Integer.valueOf(step.getVersion()), values[0]);
         assertEquals(step.getName(), values[1]);
         assertEquals(step.isRequired(), ((Boolean) values[2]).booleanValue());
         assertEquals(step.getOrder() + "", values[3] + "");

@@ -55,7 +55,7 @@ public class ControlMeasureServiceTransportTest extends ServiceTestCase {
         ControlMeasure cm = new ControlMeasure();
         String name = "cm test added" + getRandomString();
         cm.setName(name);
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setAbbreviation("12345678" + getRandomString());
         cm.setMajorPollutant(pollutants[0]);
         service.addMeasure(cm, new Scc[]{});
@@ -71,7 +71,7 @@ public class ControlMeasureServiceTransportTest extends ServiceTestCase {
     public void testShouldAddOneControlMeasure() throws RemoteException {
         ControlMeasure cm = new ControlMeasure();
         cm.setName("cm test added" + getRandomString());
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setAbbreviation("12345678" + getRandomString());
         service.addMeasure(cm, new Scc[]{});
 
@@ -86,19 +86,19 @@ public class ControlMeasureServiceTransportTest extends ServiceTestCase {
     public void testShouldUpdateControlMeasure() throws RemoteException {
         User owner = userService.getUser("emf");
         ControlMeasure cm = new ControlMeasure();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName("cm test added");
         cm.setAbbreviation("12345678");
         service.addMeasure(cm, new Scc[]{});
         
         ControlMeasure cmModified = service.obtainLockedMeasure(owner, service.getMeasures()[0].getId());
-        cmModified.setEquipmentLife(new Float(120));
+        cmModified.setEquipmentLife(Float.valueOf(120));
         cmModified.setName("cm updated");
         ControlMeasure cm2 = service.updateMeasure(cmModified, new Scc[]{});
         
         try {
             assertEquals("cm updated", cm2.getName());
-            assertEquals(new Float(120), new Float(cm2.getEquipmentLife()));
+            assertEquals(Float.valueOf(120), Float.valueOf(cm2.getEquipmentLife()));
         } finally {
             service.removeMeasure(cmModified.getId());
         }
@@ -128,7 +128,7 @@ public class ControlMeasureServiceTransportTest extends ServiceTestCase {
 
     public void testShouldGetCorrectSCCs() throws EmfException {
         ControlMeasure cm = new ControlMeasure();
-        cm.setEquipmentLife(new Float(12));
+        cm.setEquipmentLife(Float.valueOf(12));
         cm.setName("cm test added" + Math.random());
         cm.setAbbreviation("12345678");
         

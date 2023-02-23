@@ -119,7 +119,7 @@ public class OutputsRowSource implements RowSource {
         if (output.getDatasetId() == 0)
             return null; 
         try {
-            values = session.dataService().getDatasetValues(new Integer(output.getDatasetId()));
+            values = session.dataService().getDatasetValues(Integer.valueOf(output.getDatasetId()));
         } catch (Exception e) {
             return null;
         }

@@ -89,7 +89,7 @@ public class OutputFieldsPanelPresenter{
                String[] values = null;
                
                try {
-                   values = dataService().getDatasetValues(new Integer(output.getDatasetId()));
+                   values = dataService().getDatasetValues(Integer.valueOf(output.getDatasetId()));
                } catch (Exception e) {
                    return null;
                }

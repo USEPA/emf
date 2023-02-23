@@ -71,7 +71,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.controlStrategy());
 
-        return (ControlStrategy) call.requestResponse(new Object[] { owner, new Integer(id) });
+        return (ControlStrategy) call.requestResponse(new Object[] { owner, Integer.valueOf(id) });
 
     }
 
@@ -93,7 +93,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.controlStrategy());
 
-        call.request(new Object[] { user, new Integer(id) });
+        call.request(new Object[] { user, Integer.valueOf(id) });
     }
 
     public synchronized ControlStrategy updateControlStrategy(ControlStrategy element) throws EmfException {
@@ -152,7 +152,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("controlStrategyId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, new Integer(controlStrategyId) });
+        call.request(new Object[] { user, Integer.valueOf(controlStrategyId) });
     }
 
     public synchronized void summarizeStrategy(User user, int controlStrategyId, 
@@ -166,7 +166,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addParam("strategyResultType", mappings.strategyResultType());
         call.setVoidReturnType();
 
-        call.request(new Object[] { user, new Integer(controlStrategyId), exportDirectory, strategyResultType });
+        call.request(new Object[] { user, Integer.valueOf(controlStrategyId), exportDirectory, strategyResultType });
     }
 
     public synchronized StrategyType[] getStrategyTypes() throws EmfException {
@@ -185,7 +185,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("controlStrategyId");
         call.setVoidReturnType();
 
-        call.request(new Object[] { new Integer(controlStrategyId) });
+        call.request(new Object[] { Integer.valueOf(controlStrategyId) });
     }
 
     public synchronized void createInventory(User user, ControlStrategy controlStrategy, 
@@ -228,7 +228,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
 
         call.setReturnType(mappings.string());
 
-        return (String) call.requestResponse(new Object[] { new Integer(id) });
+        return (String) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized ControlMeasureClass[] getControlMeasureClasses(int controlStrategyId) throws EmfException {
@@ -238,7 +238,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntParam();
         call.setReturnType(mappings.controlMeasureClasses());
 
-        return (ControlMeasureClass[]) call.requestResponse(new Object[] { new Integer(controlStrategyId) });
+        return (ControlMeasureClass[]) call.requestResponse(new Object[] { Integer.valueOf(controlStrategyId) });
     }
 
     public synchronized int isDuplicateName(String name) throws EmfException {
@@ -257,7 +257,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("id");
         call.addParam("creator", mappings.user());
         call.setIntegerReturnType();
-        return (Integer) call.requestResponse(new Object[] { new Integer(id), creator });
+        return (Integer) call.requestResponse(new Object[] { Integer.valueOf(id), creator });
     }
 
     public synchronized ControlStrategy getById(int id) throws EmfException {
@@ -266,7 +266,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.setOperation("getById");
         call.addIntegerParam("id");
         call.setReturnType(mappings.controlStrategy());
-        return (ControlStrategy) call.requestResponse(new Object[] { new Integer(id) });
+        return (ControlStrategy) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized ControlStrategyResult[] getControlStrategyResults(int controlStrategyId) throws EmfException {
@@ -276,7 +276,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("controlStrategyId");
         call.setReturnType(mappings.controlStrategyResults());
 
-        return (ControlStrategyResult[]) call.requestResponse(new Object[] { new Integer(controlStrategyId) });
+        return (ControlStrategyResult[]) call.requestResponse(new Object[] { Integer.valueOf(controlStrategyId) });
     }
 
     public List<ControlStrategy> getControlStrategiesByRunStatus(String runStatus) {
@@ -320,7 +320,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.string());
 
-        return (String) call.requestResponse(new Object[] { new Integer(id) });
+        return (String) call.requestResponse(new Object[] { Integer.valueOf(id) });
     }
 
     public synchronized String getCoSTSUs() throws EmfException {
@@ -367,7 +367,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.strategyGroup());
 
-        return (StrategyGroup) call.requestResponse(new Object[] { owner, new Integer(id) });
+        return (StrategyGroup) call.requestResponse(new Object[] { owner, Integer.valueOf(id) });
     }
 
     public synchronized void releaseLockedGroup(User user, int id) throws EmfException {
@@ -378,7 +378,7 @@ public class ControlStrategyServiceTransport implements ControlStrategyService {
         call.addIntegerParam("id");
         call.setReturnType(mappings.strategyGroup());
 
-        call.request(new Object[] { user, new Integer(id) });
+        call.request(new Object[] { user, Integer.valueOf(id) });
     }
     
     public synchronized int addStrategyGroup(StrategyGroup element) throws EmfException {

@@ -193,8 +193,8 @@ public class TreeDialog extends JDialog implements AnalysisOptionConstantsIfc, P
 		dependentAxisInfo.put(AnalysisEngineConstants.CDF_PLOT, Y_NUMERIC_AXIS);
 		dependentAxisInfo.put(AnalysisEngineConstants.TORNADO_PLOT, NUMERIC_AXIS);
 
-		Boolean trueValue = new Boolean(true);
-		Boolean falseValue = new Boolean(false);
+		Boolean trueValue = Boolean.valueOf(true);
+		Boolean falseValue = Boolean.valueOf(false);
 		plotLabelInfo = new HashMap();
 		plotLabelInfo.put(AnalysisEngineConstants.BAR_PLOT, trueValue);
 		plotLabelInfo.put(AnalysisEngineConstants.SCATTER_PLOT, falseValue);
