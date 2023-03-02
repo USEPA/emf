@@ -265,7 +265,7 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
         
     }
 
-    public List<CaseJob> copyJobs2CurrentCase(int caseId, List<CaseJob> jobs) throws Exception {
+    public List<CaseJob> copyJobs2CurrentCase(int caseId, List<CaseJob> jobs, boolean copyAll) throws Exception {
         // NOTE Auto-generated method stub
         return null;
     }

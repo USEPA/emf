@@ -445,7 +445,16 @@ public class EditJobsTab extends JPanel implements EditJobsTabView, RefreshObser
 
     private void processCopyjobs(int caseId, List<CaseJob> jobs) throws Exception {
         if (caseId == this.caseObj.getId()) {
-            List<CaseJob> copied = presenter.copyJobs2CurrentCase(caseId, jobs);
+            boolean copyAll = false;
+            if (presenter.jobsUsed(jobs.toArray(new CaseJob[jobs.size()]))) {
+                int option = showDialog("Selected job(s) are used by case inputs or parameters." +
+                        System.getProperty("line.separator") +
+                        "Would you like to copy the associated inputs or parameters to the new job(s)?",
+                        "Copy inputs and parameters?");
+                if (option == JOptionPane.YES_OPTION)
+                    copyAll = true;
+            }
+            List<CaseJob> copied = presenter.copyJobs2CurrentCase(caseId, jobs, copyAll);
             
             if (copied.size() > 5) {
                 int option = showDialog("There are more than 5 job editors to be opened." +

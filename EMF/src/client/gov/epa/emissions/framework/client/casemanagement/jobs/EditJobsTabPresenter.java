@@ -21,7 +21,7 @@ public interface EditJobsTabPresenter extends CaseEditorTabPresenter {
 
     void editJob(CaseJob job, EditCaseJobView jobEditor) throws EmfException;
     
-    List<CaseJob> copyJobs2CurrentCase(int caseId, List<CaseJob> jobs) throws Exception;
+    List<CaseJob> copyJobs2CurrentCase(int caseId, List<CaseJob> jobs, boolean copyAll) throws Exception;
 
     void copyJobs(int caseId, List<CaseJob> jobs) throws Exception;
     

@@ -129,12 +129,26 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
         presenter.display(job);
     }
 
-    public List<CaseJob> copyJobs2CurrentCase(int caseId, List<CaseJob> jobs) throws Exception {
+    public List<CaseJob> copyJobs2CurrentCase(int caseId, List<CaseJob> jobs, boolean copyAll) throws Exception {
         List<CaseJob> added = new ArrayList<CaseJob>();
 
         if (caseId == this.caseObj.getId()) {
-            for (CaseJob job : jobs)
-                added.add(addNewJob(setJobValuesB4Copy(caseId, job)));
+            for (CaseJob job : jobs) {
+                CaseJob newJob = addNewJob(setJobValuesB4Copy(caseId, job));
+                added.add(newJob);
+                
+                if (!copyAll) continue;
+                int[] origJobId = { job.getId() };
+                CaseInput[] inputsArray = service().getCaseInputs(caseId, origJobId);
+                for (int i = 0; i < inputsArray.length; i++)
+                    inputsArray[i].setCaseJobID(newJob.getId());
+                service().addCaseInputs(session.user(), caseId, inputsArray);
+                
+                CaseParameter[] paramsArray = service().getCaseParameters(caseId, origJobId);
+                for (int i = 0; i < paramsArray.length; i++)
+                    paramsArray[i].setJobId(newJob.getId());
+                service().addCaseParameters(session.user(), caseId, paramsArray);
+            }
         }
 
         return added;
