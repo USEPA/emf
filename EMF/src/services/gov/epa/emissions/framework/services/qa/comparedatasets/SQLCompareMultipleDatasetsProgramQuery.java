@@ -43,6 +43,7 @@ dataset name1|1
 dataset name2|5
 dataset name3|3
 */
+    public static final int NUM_COMPARE = 5;
     
     public static final String GROUP_BY_EXPRESSIONS_TAG = "-groupby";
     //Sample:
@@ -160,7 +161,7 @@ poll|poll
         String[] matchingExpressionTokens = new String[] {};
         String whereFilter = new String();
         String baseWhereFilter = new String();
-        String compareWhereFilter = new String();
+        String[] compareWhereFilter = new String[NUM_COMPARE];
         String baseSuffix = new String();
         String compareSuffix = new String();
         
@@ -169,7 +170,9 @@ poll|poll
         Map<String, Column> compareColumns;
         
         List<DatasetVersion> baseDatasetList = new ArrayList<DatasetVersion>();
-        List<DatasetVersion> compareDatasetList = new ArrayList<DatasetVersion>();
+        List<DatasetVersion>[] compareDatasetList = new ArrayList[NUM_COMPARE];
+        for (int i = 0; i < NUM_COMPARE; i++)
+            compareDatasetList[i] = new ArrayList<DatasetVersion>();
         Map<String, ColumnMatchingMap> matchingExpressionMap = new HashMap<String, ColumnMatchingMap>();
         Map<String, String> expressionAliasMap = new TreeMap<String, String>();
         
@@ -205,19 +208,23 @@ poll|poll
                 baseDatasetList.add(new DatasetVersion(datasetVersionToken[0], Integer.parseInt(datasetVersionToken[1])));
             }
         }
-        if (indexCompare != -1) {
-            arguments = parseSwitchArguments(programArguments, indexCompare, programArguments.indexOf("\n-", indexCompare) != -1 ? programArguments.indexOf("\n-", indexCompare) : programArguments.length());
-            if (arguments != null && arguments.length > 0) compareTokens = arguments;
-            for (String datasetVersion : compareTokens) {
-                String[] datasetVersionToken = new String[] {};
-                if (!datasetVersion.equals("$DATASET")) { 
-                    datasetVersionToken = datasetVersion.split("\\|");
-                } else {
-                    EmfDataset qaStepDataset = getDataset(qaStep.getDatasetId());
-                    datasetVersionToken = new String[] { qaStepDataset.getName(), qaStepDataset.getDefaultVersion() + "" };
+        for (int i = 0; i < NUM_COMPARE; i++) {
+            compareTokens = new String[] {};
+            indexCompare = programArguments.indexOf(COMPARE_TAG + (i + 1));
+            if (indexCompare != -1) {
+                arguments = parseSwitchArguments(programArguments, indexCompare, programArguments.indexOf("\n-", indexCompare) != -1 ? programArguments.indexOf("\n-", indexCompare) : programArguments.length());
+                if (arguments != null && arguments.length > 0) compareTokens = arguments;
+                for (String datasetVersion : compareTokens) {
+                    String[] datasetVersionToken = new String[] {};
+                    if (!datasetVersion.equals("$DATASET")) { 
+                        datasetVersionToken = datasetVersion.split("\\|");
+                    } else {
+                        EmfDataset qaStepDataset = getDataset(qaStep.getDatasetId());
+                        datasetVersionToken = new String[] { qaStepDataset.getName(), qaStepDataset.getDefaultVersion() + "" };
+                    }
+                    datasetNames.add(datasetVersionToken[0]);
+                    compareDatasetList[i].add(new DatasetVersion(datasetVersionToken[0], Integer.parseInt(datasetVersionToken[1])));
                 }
-                datasetNames.add(datasetVersionToken[0]);
-                compareDatasetList.add(new DatasetVersion(datasetVersionToken[0], Integer.parseInt(datasetVersionToken[1])));
             }
         }
         
@@ -304,8 +311,12 @@ poll|poll
         }
         
         //see if there are issues with the compare datasets 
-        if (compareDatasetList.size() > 0 ) {
-            for (DatasetVersion datasetVersion : compareDatasetList) {
+        if (compareDatasetList[0].size() == 0) {
+            throw new EmfException("There are no compare datasets specified.");
+        }
+        DatasetType prevDatasetType = null;
+        for (int i = 0; i < NUM_COMPARE; i++) {
+            for (DatasetVersion datasetVersion : compareDatasetList[i]) {
                 EmfDataset dataset = getDataset(datasetVersion.getDatasetName());
                 //make sure dataset exists
                 if (dataset == null)
@@ -319,21 +330,17 @@ poll|poll
             }
             //do one last pass now that the dataset and version objects have been populated and 
             //make sure all of these datasets are of the same dataset type!
-            DatasetType prevDatasetType = null;
-            for (DatasetVersion datasetVersion : compareDatasetList) {
+            for (DatasetVersion datasetVersion : compareDatasetList[i]) {
                 EmfDataset dataset = datasetVersion.getDataset();
                 if (prevDatasetType != null && !prevDatasetType.equals(dataset.getDatasetType()))
                     throw new EmfException("The compare datasets must be of the same dataset type.");
                 prevDatasetType = dataset.getDatasetType();
             }
-            
-        } else {
-            throw new EmfException("There are no compare datasets specified.");
         }
 
         //get columns that represent both the compare and base datasets
         baseColumns = getDatasetColumnMap((baseDatasetList.get(0)).getDataset());
-        compareColumns = getDatasetColumnMap((compareDatasetList.get(0)).getDataset());
+        compareColumns = getDatasetColumnMap((compareDatasetList[0].get(0)).getDataset());
 
         //see if there are issues with the matching expressions
         if (matchingExpressionMap.size() > 0 ) {
@@ -466,17 +473,23 @@ poll|poll
         
         String selectSQL = "select ";
         String baseSelectSQL = "select ";
-        String compareSelectSQL = "select ";
+        String[] compareSelectSQL = new String[NUM_COMPARE];
+        for (int i = 0; i < NUM_COMPARE; i++)
+            compareSelectSQL[i] = "select ";
         String baseUnionSelectSQL = "select ";
         String compareUnionSelectSQL = "select ";
         String groupBySQL = "group by ";
         String baseGroupBySQL = "group by ";
-        String compareGroupBySQL = "group by ";
+        String[] compareGroupBySQL = new String[NUM_COMPARE];
+        for (int i = 0; i < NUM_COMPARE; i++)
+            compareGroupBySQL[i] = "group by ";
         String baseWhereSQL = "";
         String compareWhereSQL = "";
         String baseUnionGroupBySQL = "group by ";
         String compareUnionGroupBySQL = "group by ";
-        String fullJoinClauseSQL = "on ";
+        String[] fullJoinClauseSQL = new String[NUM_COMPARE];
+        for (int i = 0; i < NUM_COMPARE; i++)
+            fullJoinClauseSQL[i] = "on ";
 
         //build core group by expressions into SELECT statement 
         int counter = 0;
@@ -494,26 +507,45 @@ poll|poll
         //String groupByExpression : groupByExpressions) {
             String baseExpression = getBaseExpression(groupByExpression, matchingExpressionMap, baseColumns, "b");
 //            Column baseColumn = getBaseColumn(groupByExpression, matchingExpressionMap, baseColumns);
-            String compareExpression = getCompareExpression(groupByExpression, matchingExpressionMap, compareColumns, "c");
+            String[] compareExpression = new String[NUM_COMPARE];
+            for (int i = 0; i < NUM_COMPARE; i++)
+                compareExpression[i] = getCompareExpression(groupByExpression, matchingExpressionMap, compareColumns, "c" + (i + 1));
 //            Column compareColumn = getCompareColumn(groupByExpression, matchingExpressionMap, compareColumns);
             
 //            selectSQL += (!selectSQL.equals("select ") ? ", " : "") + "coalesce(b." + baseColumn.getName() + ",c." + compareColumn.getName() + ") as " + groupByExpression + "";
 //            baseSelectSQL += (!baseSelectSQL.equals("select ") ? ", " : "") + "b." + baseColumn.getName();
 //            compareSelectSQL += (!compareSelectSQL.equals("select ") ? ", " : "") + "c." + compareColumn.getName();
 
-            selectSQL += (!selectSQL.equals("select ") ? ", " : "") + "coalesce(b.expr" + counter + ",c.expr" + counter + ") as \"" + groupByExpressionAlias + "\"";
+            selectSQL += (!selectSQL.equals("select ") ? ", " : "") +
+                  "coalesce(b.expr" + counter;
+            for (int i = 0; i < NUM_COMPARE; i++) {
+                if (compareDatasetList[i].size() > 0) {
+                    selectSQL += ", c" + (i + 1) + ".expr" + counter;
+                }
+            }
+            selectSQL += ") as \"" + groupByExpressionAlias + "\"";
             baseSelectSQL += (!baseSelectSQL.equals("select ") ? ", " : "") + baseExpression + " as expr" + counter;
-            compareSelectSQL += (!compareSelectSQL.equals("select ") ? ", " : "") + compareExpression + " as expr" + counter;
+            for (int i = 0; i < NUM_COMPARE; i++)
+                compareSelectSQL[i] += (!compareSelectSQL[i].equals("select ") ? ", " : "") + compareExpression[i] + " as expr" + counter;
             baseUnionSelectSQL += (!baseUnionSelectSQL.equals("select ") ? ", " : "") + " expr" + counter;
             compareUnionSelectSQL += (!compareUnionSelectSQL.equals("select ") ? ", " : "") + " expr" + counter;
             
-            groupBySQL += (!groupBySQL.equals("group by ") ? ", " : "") + "coalesce(b.expr" + counter + ",c.expr" + counter + ")";
+            groupBySQL += (!groupBySQL.equals("group by ") ? ", " : "") +
+                    "coalesce(b.expr" + counter;
+            for (int i = 0; i < NUM_COMPARE; i++) {
+                if (compareDatasetList[i].size() > 0) {
+                    groupBySQL += ", c" + (i + 1) + ".expr" + counter;
+                }
+            }
+            groupBySQL += ")";
             baseGroupBySQL += (!baseGroupBySQL.equals("group by ") ? ", " : "") + baseExpression;
-            compareGroupBySQL += (!compareGroupBySQL.equals("group by ") ? ", " : "") + compareExpression;
+            for (int i = 0; i < NUM_COMPARE; i++)
+                compareGroupBySQL[i] += (!compareGroupBySQL[i].equals("group by ") ? ", " : "") + compareExpression[i];
             baseUnionGroupBySQL += (!baseUnionGroupBySQL.equals("group by ") ? ", " : "") + " expr" + counter;
             compareUnionGroupBySQL += (!compareUnionGroupBySQL.equals("group by ") ? ", " : "") + " expr" + counter;
 
-            fullJoinClauseSQL += (!fullJoinClauseSQL.equals("on ") ? " and " : "") + "c.expr" + counter + " = b.expr" + counter + " ";
+            for (int i = 0; i < NUM_COMPARE; i++)
+                fullJoinClauseSQL[i] += (!fullJoinClauseSQL[i].equals("on ") ? " and " : "") + "c" + (i + 1) + ".expr" + counter + " = b.expr" + counter + " ";
             ++counter;
         }
         
@@ -525,10 +557,19 @@ poll|poll
 //            Column baseColumn = getBaseColumn(aggregateExpression, matchingExpressionMap, baseColumns);
             String baseAggregateExpression = getBaseExpression(aggregateExpression, matchingExpressionMap, baseColumns, "b");
 //            Column compareColumn = getCompareColumn(aggregateExpression, matchingExpressionMap, compareColumns);
-            String compareAggregateExpression = getCompareExpression(aggregateExpression, matchingExpressionMap, compareColumns, "c");
-            selectSQL += ",sum(b.\"" + aggregateExpression + "\") as \"" + aggregateExpression + baseSuffix +"\", sum(c.\"" + aggregateExpression + "\") as \"" + aggregateExpression + compareSuffix + "\", sum(c.\"" + aggregateExpression + "\") - sum(b.\"" + aggregateExpression + "\") as \"" + aggregateExpression + "_diff\", abs(sum(c.\"" + aggregateExpression + "\") - sum(b.\"" + aggregateExpression + "\")) as \"" + aggregateExpression + "_absdiff\", case when coalesce(sum(b.\"" + aggregateExpression + "\"),0.0) <> 0.0 then (sum(c.\"" + aggregateExpression + "\") - sum(b.\"" + aggregateExpression + "\")) / sum(b.\"" + aggregateExpression + "\") * 100.0 else null::double precision end as \"" + aggregateExpression + "_pctdiff\", case when coalesce(sum(b.\"" + aggregateExpression + "\"),0.0) <> 0.0 then abs((sum(c.\"" + aggregateExpression + "\") - sum(b.\"" + aggregateExpression + "\")) / sum(b.\"" + aggregateExpression + "\") * 100.0) else null::double precision end as \"" + aggregateExpression + "_abspctdiff\"";
+            String[] compareAggregateExpression = new String[NUM_COMPARE];
+            for (int i = 0; i < NUM_COMPARE; i++)
+                compareAggregateExpression[i] = getCompareExpression(aggregateExpression, matchingExpressionMap, compareColumns, "c" + (i + 1));
+            selectSQL += ",sum(b.\"" + aggregateExpression + "\") as \"" + aggregateExpression + baseSuffix +"\"";
+            for (int i = 0; i < NUM_COMPARE; i++) {
+                if (compareDatasetList[i].size() > 0) {
+                    selectSQL += ",sum(c" + (i + 1) + ".\"" + aggregateExpression + "\") as \"" + aggregateExpression + compareSuffix + (i + 1) + "\"";
+                    selectSQL += ",sum(c" + (i + 1) + ".\"" + aggregateExpression + "\") - sum(b.\"" + aggregateExpression + "\") as \"" + aggregateExpression + "_diff" + compareSuffix + (i + 1) + "\"";
+                }
+            }
             baseSelectSQL += ",sum(" + baseAggregateExpression + ") as \"" + aggregateExpression + "\"";
-            compareSelectSQL += ",sum(" + compareAggregateExpression + ") as \"" + aggregateExpression + "\"";
+            for (int i = 0; i < NUM_COMPARE; i++)
+                compareSelectSQL[i] += ",sum(" + compareAggregateExpression[i] + ") as \"" + aggregateExpression + "\"";
             baseUnionSelectSQL += ",sum(\"" + aggregateExpression + "\") as \"" + aggregateExpression + "\"";
             compareUnionSelectSQL += ",sum(\"" + aggregateExpression + "\") as \"" + aggregateExpression + "\"";
         }
@@ -536,39 +577,66 @@ poll|poll
         //alias where filter for use in the base and compare datasets
         baseWhereFilter = aliasBaseExpression(whereFilter, matchingExpressionMap, baseColumns, "b");
 //      Column compareColumn = getCompareColumn(aggregateExpression, matchingExpressionMap, compareColumns);
-        compareWhereFilter = aliasCompareExpression(whereFilter, matchingExpressionMap, compareColumns, "c");
+        for (int i = 0; i < NUM_COMPARE; i++)
+            compareWhereFilter[i] = aliasCompareExpression(whereFilter, matchingExpressionMap, compareColumns, "c" + (i + 1));
 
       //build inner sql statement with the datasets specified, make sure and unionize (append) the tables together
-         String innerSQLBase = "";
-         if (baseDatasetList.size() > 1) 
-             innerSQLBase = baseUnionSelectSQL + ", sum(b.cnt) as cnt from (";
-         for (int j = 0; j < baseDatasetList.size(); j++) {
-             DatasetVersion datasetVersion = baseDatasetList.get(j);
-             EmfDataset dataset = datasetVersion.getDataset();
-             VersionedQuery datasetVersionedQuery = new VersionedQuery(datasetVersion.getVersion(), "b");
+        String innerSQLBase = "";
+        if (baseDatasetList.size() > 1) 
+            innerSQLBase = baseUnionSelectSQL + ", sum(b.cnt) as cnt from (";
+        for (int j = 0; j < baseDatasetList.size(); j++) {
+            DatasetVersion datasetVersion = baseDatasetList.get(j);
+            EmfDataset dataset = datasetVersion.getDataset();
+            VersionedQuery datasetVersionedQuery = new VersionedQuery(datasetVersion.getVersion(), "b");
 
-             innerSQLBase += (j > 0 ? " \nunion all " : "") + baseSelectSQL + ", count(1) as cnt from emissions." + dataset.getInternalSources()[0].getTable() + " as b where " + datasetVersionedQuery.query() + (baseWhereFilter.length() > 0 ? " and (" + baseWhereFilter + ")": "") + " " + baseGroupBySQL;
-         }
-         if (baseDatasetList.size() > 1) 
-             innerSQLBase += ") b " + baseUnionGroupBySQL;
+            innerSQLBase += (j > 0 ? " \nunion all " : "") +
+                    baseSelectSQL + ", " +
+                    "count(1) as cnt " +
+                    "from emissions." + dataset.getInternalSources()[0].getTable() + " as b " +
+                    "where " + datasetVersionedQuery.query() +
+                    (baseWhereFilter.length() > 0 ? " and (" + baseWhereFilter + ")": "") + " " +
+                    baseGroupBySQL;
+            }
+        if (baseDatasetList.size() > 1) 
+            innerSQLBase += ") b " + baseUnionGroupBySQL;
 
 //         //replace #base symbol with the unionized fire datasets query
 //         diffQuery = diffQuery.replaceAll("#base", innerSQLBase);
 
-         String innerSQLCompare = "";
+        String[] innerSQLCompare = new String[NUM_COMPARE];
 
-         if (compareDatasetList.size() > 1) 
-             innerSQLCompare = compareUnionSelectSQL + ", sum(c.cnt) as cnt from (";
-         for (int j = 0; j < compareDatasetList.size(); j++) {
-             DatasetVersion datasetVersion = compareDatasetList.get(j);
-             EmfDataset dataset = datasetVersion.getDataset();
-             VersionedQuery datasetVersionedQuery = new VersionedQuery(datasetVersion.getVersion(), "c");
-             innerSQLCompare += (j > 0 ? " \nunion all " : "") + compareSelectSQL + ", count(1) as cnt from emissions." + dataset.getInternalSources()[0].getTable() + " as c where " + datasetVersionedQuery.query() + (compareWhereFilter.length() > 0 ? " and (" + compareWhereFilter + ")": "") + " " + compareGroupBySQL;
-         }
-         if (compareDatasetList.size() > 1) 
-             innerSQLCompare += ") c " + compareUnionGroupBySQL;
-         
-         String sql = selectSQL + ", sum(b.cnt) as count" + baseSuffix+", sum(c.cnt) as count"+compareSuffix +" from (" + innerSQLBase + ") as b " +joinSQL+" (" + innerSQLCompare + ") as c ";
+        for (int i = 0; i < NUM_COMPARE; i++) {
+            innerSQLCompare[i] = "";
+            if (compareDatasetList[i].size() > 1) 
+                innerSQLCompare[i] = compareUnionSelectSQL + ", sum(c" + (i + 1) + ".cnt) as cnt from (";
+            for (int j = 0; j < compareDatasetList[i].size(); j++) {
+                DatasetVersion datasetVersion = compareDatasetList[i].get(j);
+                EmfDataset dataset = datasetVersion.getDataset();
+                VersionedQuery datasetVersionedQuery = new VersionedQuery(datasetVersion.getVersion(), "c" + (i + 1));
+                innerSQLCompare[i] += (j > 0 ? " \nunion all " : "") +
+                        compareSelectSQL[i] + ", " +
+                        "count(1) as cnt " +
+                        "from emissions." + dataset.getInternalSources()[0].getTable() + " as c" + (i + 1) + " " +
+                        "where " + datasetVersionedQuery.query() +
+                        (compareWhereFilter[i].length() > 0 ? " and (" + compareWhereFilter[i] + ")": "") + " " +
+                        compareGroupBySQL[i];
+            }
+            if (compareDatasetList[i].size() > 1) 
+                innerSQLCompare[i] += ") c" + (i + 1) + " " + compareUnionGroupBySQL;
+        }
+
+        String sql = selectSQL + ", sum(b.cnt) as count" + baseSuffix;
+        for (int i = 0; i < NUM_COMPARE; i++) {
+            if (compareDatasetList[i].size() > 0) {
+                sql += ", sum(c" + (i + 1) + ".cnt) as count" + compareSuffix + (i + 1);
+            }
+        }
+        sql += " from (" + innerSQLBase + ") as b ";
+        for (int i = 0; i < NUM_COMPARE; i++) {
+            if (compareDatasetList[i].size() > 0) {
+                sql += joinSQL + " (" + innerSQLCompare[i] + ") as c" + (i + 1) + " " + fullJoinClauseSQL[i];
+            }
+        }
 //         for (int j = 0; j < fullJoinExpressionList.size(); j++) {
 //             
 //             ColumnMatchingMap columnMatchingMap = fullJoinExpressionList.get(j);
@@ -582,8 +650,8 @@ poll|poll
 //             sql += (j == 0 ? " on " : " and ") + "c." + compareColumn.getName() + " = b." + baseColumn.getName();
 //         }
 
-         
-         sql += fullJoinClauseSQL + " " + groupBySQL + " " + groupBySQL.replace("group by", "order by");
+        
+        sql += groupBySQL + " " + groupBySQL.replace("group by", "order by");
 
 //        System.out.println(sql);
 
