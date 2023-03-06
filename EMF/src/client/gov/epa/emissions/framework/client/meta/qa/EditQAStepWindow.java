@@ -30,6 +30,7 @@ import gov.epa.emissions.framework.client.cost.controlstrategy.AnalysisEngineTab
 import gov.epa.emissions.framework.client.data.QAPrograms;
 import gov.epa.emissions.framework.client.meta.qa.compareDatasetFieldsProgram.CompareDatasetFieldsQAProgamWindow;
 import gov.epa.emissions.framework.client.meta.qa.comparedatasetsprogram.CompareDatasetsQAProgamWindow;
+import gov.epa.emissions.framework.client.meta.qa.comparedatasetsprogram.CompareMultipleDatasetsQAProgamWindow;
 import gov.epa.emissions.framework.client.meta.qa.flatFile2010Pnt.EnhanceFlatFile2010PointSettingWindows;
 import gov.epa.emissions.framework.client.meta.versions.VersionsSet;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
@@ -1105,6 +1106,13 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
                         // NOTE Auto-generated catch block
                         e1.printStackTrace();
                     }
+                } else if (QAStep.COMPARE_MULTIPLE_DATASETS_PROGRAM.equalsIgnoreCase(program.getSelectedItem().toString())) {
+                    try {
+                        showCompareMultipleDatasetsWindow();
+                    } catch (EmfException e1) {
+                        // NOTE Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                 } else if (QAStep.MERGE_IN_SUPPORTING_DATA.equalsIgnoreCase(program.getSelectedItem().toString())) {
                     try {
                         showEnhanceFlatFile2010PointSettingWindows();
@@ -1663,6 +1671,180 @@ public class EditQAStepWindow extends DisposableInteralFrame implements EditQASt
                         programSwitches.indexOf("\n-", indexCSuffix) != -1 ? programSwitches.indexOf("\n-",
                                 indexCSuffix) : programSwitches.length()) : ""));
 
+        EditQAEmissionsPresenter presenter = new EditQAEmissionsPresenter(view, this, session);
+        presenter.display(origDataset, step);
+    }
+    
+    private void showCompareMultipleDatasetsWindow() throws EmfException {
+
+        /*
+         * sample program arguments
+         * 
+         * -base ptipm_cap2005v2_nc_sc_va|0 -compare1 $DATASET -compare2 dataset|version -groupby scc substring(fips,1,2) -aggregate ann_emis
+         * avd_emis -matching substring(fips,1,2)=substring(region_cd,1,2) scc=scc_code ann_emis=emis_ann
+         * avd_emis=emis_avd
+         */
+
+        // When there is no data in window, set button causes new window to pop up,
+        // with the warning message to also show up. When data in window is invalid, a new window still
+        // pops up, but with a different warning message.
+        // Also change the window name to EditQASetArgumentsWindow
+        invBase = null;
+        invCompare = null;
+        invTables = null;
+        summaryType = "";
+
+        String programSwitches = "";
+        programSwitches = programArguments.getText();
+        String programVal = program.getSelectedItem().toString();
+        String[] arguments;
+
+        String[] baseTokens = new String[] {};
+        String[] compareTokens = new String[] {};
+
+        List<DatasetVersion> baseDatasetList = new ArrayList<DatasetVersion>();
+        List<DatasetVersion>[] compareDatasetList = new ArrayList[5];
+        for (int i = 0; i < 5; i++)
+            compareDatasetList[i] = new ArrayList<DatasetVersion>();
+
+        int indexBase = programSwitches.indexOf(BASE_TAG);
+        int indexCompare = programSwitches.indexOf(COMPARE_TAG);
+        int indexGroupBy = programSwitches.indexOf(GROUP_BY_EXPRESSIONS_TAG);
+        int indexAggregate = programSwitches.indexOf(AGGREGATE_EXPRESSIONS_TAG);
+        int indexMatching = programSwitches.indexOf(MATCHING_EXPRESSIONS_TAG);
+        int indexJoin = programSwitches.indexOf(JOIN_TYPE_TAG);
+        int indexWhereFilter = programSwitches.indexOf(WHERE_FILTER_TAG);
+        int indexBSuffix = programSwitches.indexOf(BASE_SUFFIX_TAG);
+        int indexCSuffix = programSwitches.indexOf(COMPARE_SUFFIX_TAG);
+
+        if (indexBase != -1) {
+            arguments = parseSwitchArguments(programSwitches, indexBase,
+                    programSwitches.indexOf("\n-", indexBase) != -1 ? programSwitches.indexOf("\n-", indexBase)
+                            : programSwitches.length());
+            if (arguments != null && arguments.length > 0)
+                baseTokens = arguments;
+            for (String datasetVersion : baseTokens) {
+                String[] datasetVersionToken = new String[] {};
+                if (!datasetVersion.equals("$DATASET")) {
+                    datasetVersionToken = datasetVersion.split("\\|");
+                } else {
+                    EmfDataset qaStepDataset = presenter.getDataset(step.getDatasetId());
+                    datasetVersionToken = new String[] { qaStepDataset.getName(),
+                            qaStepDataset.getDefaultVersion() + "" };
+                }
+
+                EmfDataset dataset = presenter.getDataset(datasetVersionToken[0]);
+                // make sure dataset exists
+                if (dataset == null)
+                    break;
+                // throw new EmfException("Dataset, " + datasetVersionToken[0] + ", doesn't exist.");
+                // datasetVersion.setDataset(dataset);
+                Version version = presenter.version(dataset.getId(), Integer.parseInt(datasetVersionToken[1]));
+                // make sure version exists
+                if (version == null)
+                    break;
+                // throw new EmfException("Version, " + datasetVersionToken[0] + " - " +
+                // datasetVersion.getDatasetVersion() + ", doesn't exists.");
+                // datasetVersion.setVersion(version);
+
+                baseDatasetList.add(new DatasetVersion(dataset, version));
+            }
+        }
+        for (int i = 0; i < 5; i++) {
+            compareTokens = new String[] {};
+            indexCompare = programSwitches.indexOf(COMPARE_TAG + (i + 1));
+            if (indexCompare != -1) {
+                arguments = parseSwitchArguments(programSwitches, indexCompare,
+                        programSwitches.indexOf("\n-", indexCompare) != -1 ? programSwitches.indexOf("\n-", indexCompare)
+                                : programSwitches.length());
+                if (arguments != null && arguments.length > 0)
+                    compareTokens = arguments;
+                for (String datasetVersion : compareTokens) {
+                    String[] datasetVersionToken = new String[] {};
+                    if (!datasetVersion.equals("$DATASET")) {
+                        datasetVersionToken = datasetVersion.split("\\|");
+                    } else {
+                        EmfDataset qaStepDataset = presenter.getDataset(step.getDatasetId());
+                        datasetVersionToken = new String[] { qaStepDataset.getName(),
+                                qaStepDataset.getDefaultVersion() + "" };
+                    }
+                    EmfDataset dataset = presenter.getDataset(datasetVersionToken[0]);
+                    // make sure dataset exists
+                    if (dataset == null)
+                        break;
+                    // throw new EmfException("Dataset, " + datasetVersionToken[0] + ", doesn't exist.");
+                    // datasetVersion.setDataset(dataset);
+                    Version version = presenter.version(dataset.getId(), Integer.parseInt(datasetVersionToken[1]));
+                    // make sure version exists
+                    if (version == null)
+                        break;
+                    // throw new EmfException("Version, " + datasetVersionToken[0] + " - " +
+                    // datasetVersion.getDatasetVersion() + ", doesn't exists.");
+                    // datasetVersion.setVersion(version);
+
+                    compareDatasetList[i].add(new DatasetVersion(dataset, version));
+                }
+            }
+        }
+
+        CompareMultipleDatasetsQAProgamWindow view = new CompareMultipleDatasetsQAProgamWindow(
+                desktopManager,
+                programVal,
+                session,
+                baseDatasetList.toArray(new DatasetVersion[0]),
+                compareDatasetList,
+
+                // programSwitches.substring(indexGroupBy + GROUP_BY_EXPRESSIONS_TAG.length() + 1,
+                // programSwitches.indexOf("\n-", indexGroupBy) != -1 ? programSwitches.indexOf("\n-", indexGroupBy) :
+                // programSwitches.length()),
+                // programSwitches.substring(indexAggregate + AGGREGATE_EXPRESSIONS_TAG.length() + 1,
+                // programSwitches.indexOf("\n-", indexAggregate) != -1 ? programSwitches.indexOf("\n-", indexAggregate)
+                // : programSwitches.length()),
+                // programSwitches.substring(indexMatching + MATCHING_EXPRESSIONS_TAG.length() + 1,
+                // programSwitches.indexOf("\n-", indexMatching) != -1 ? programSwitches.indexOf("\n-", indexMatching) :
+                // programSwitches.length())
+
+                (indexGroupBy != -1 ? programSwitches.substring(
+                        indexGroupBy + GROUP_BY_EXPRESSIONS_TAG.length() + 1,
+                        programSwitches.indexOf("\n-", indexGroupBy) != -1 ? programSwitches.indexOf("\n-",
+                                indexGroupBy) : programSwitches.length()) : ""),
+                (indexAggregate != -1 ? programSwitches.substring(
+                        indexAggregate + AGGREGATE_EXPRESSIONS_TAG.length() + 1,
+                        programSwitches.indexOf("\n-", indexAggregate) != -1 ? programSwitches.indexOf("\n-",
+                                indexAggregate) : programSwitches.length()) : ""),
+                (indexMatching != -1
+                        && (indexMatching + MATCHING_EXPRESSIONS_TAG.length() + 1) < (programSwitches.indexOf("\n-",
+                                indexMatching) != -1 ? programSwitches.indexOf("\n-", indexMatching) : programSwitches
+                                .length()) ? programSwitches.substring(
+                        indexMatching + MATCHING_EXPRESSIONS_TAG.length() + 1,
+                        programSwitches.indexOf("\n-", indexMatching) != -1 ? programSwitches.indexOf("\n-",
+                                indexMatching) : programSwitches.length()) : ""),
+                (indexJoin != -1
+                        && (indexJoin + JOIN_TYPE_TAG.length() + 1) < (programSwitches.indexOf("\n-", indexJoin) != -1 ? programSwitches
+                                .indexOf("\n-", indexJoin) : programSwitches.length()) ? programSwitches.substring(
+                        indexJoin + JOIN_TYPE_TAG.length() + 1,
+                        programSwitches.indexOf("\n-", indexJoin) != -1 ? programSwitches.indexOf("\n-", indexJoin)
+                                : programSwitches.length()) : ""), (indexWhereFilter != -1
+                        && (indexWhereFilter + WHERE_FILTER_TAG.length() + 1) < (programSwitches.indexOf("\n-",
+                                indexWhereFilter) != -1 ? programSwitches.indexOf("\n-", indexWhereFilter)
+                                : programSwitches.length()) ? programSwitches.substring(
+                        indexWhereFilter + WHERE_FILTER_TAG.length() + 1,
+                        programSwitches.indexOf("\n-", indexWhereFilter) != -1 ? programSwitches.indexOf("\n-",
+                                indexWhereFilter) : programSwitches.length()) : ""),
+                (indexBSuffix != -1
+                        && (indexBSuffix + BASE_SUFFIX_TAG.length() + 1) < (programSwitches
+                                .indexOf("\n-", indexBSuffix) != -1 ? programSwitches.indexOf("\n-", indexBSuffix)
+                                : programSwitches.length()) ? programSwitches.substring(
+                        indexBSuffix + BASE_SUFFIX_TAG.length() + 1,
+                        programSwitches.indexOf("\n-", indexBSuffix) != -1 ? programSwitches.indexOf("\n-",
+                                indexBSuffix) : programSwitches.length()) : ""),
+                (indexCSuffix != -1
+                        && (indexCSuffix + COMPARE_SUFFIX_TAG.length() + 1) < (programSwitches.indexOf("\n-",
+                                indexCSuffix) != -1 ? programSwitches.indexOf("\n-", indexCSuffix)
+                                : programSwitches.length()) ? programSwitches.substring(
+                        indexCSuffix + COMPARE_SUFFIX_TAG.length() + 1,
+                        programSwitches.indexOf("\n-", indexCSuffix) != -1 ? programSwitches.indexOf("\n-",
+                                indexCSuffix) : programSwitches.length()) : ""));
         EditQAEmissionsPresenter presenter = new EditQAEmissionsPresenter(view, this, session);
         presenter.display(origDataset, step);
     }

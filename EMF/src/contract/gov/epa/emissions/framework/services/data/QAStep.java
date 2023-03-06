@@ -47,6 +47,8 @@ public class QAStep implements Serializable {
     public static final String MultiInvRepProgram = "Multi-inventory column report";
 
     public static final String COMPARE_DATASETS_PROGRAM = "Compare Datasets";
+
+    public static final String COMPARE_MULTIPLE_DATASETS_PROGRAM = "Compare Multiple Datasets";
     
     public static final String COMPARE_DATASET_FIELDS_PROGRAM = "Compare Dataset Fields";
     
