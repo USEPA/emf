@@ -2366,8 +2366,8 @@ BEGIN
 			-- effecive date filter
 			and ' || inventory_year || '::smallint >= coalesce(date_part(''year'', er.effective_date), ' || inventory_year || '::smallint)		
 			and abs(er.efficiency - cont.ann_pctred) <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision
+			and ' || cont_packet_percent_reduction_sql || ' <> 0.0
 			and abs(' || cont_packet_percent_reduction_sql || ' - er.efficiency * coalesce(er.rule_effectiveness, 100) / 100.0 * coalesce(er.rule_penetration, 100) / 100.0) / ' || cont_packet_percent_reduction_sql || ' <= ' || control_program_measure_min_pct_red_diff_constraint || '::double precision / 100.0
---			and ' || cont_packet_percent_reduction_sql || ' <> 0.0
 
 			-- capacity restrictions
 			and ((er.min_capacity IS NULL and er.max_capacity IS NULL) '
