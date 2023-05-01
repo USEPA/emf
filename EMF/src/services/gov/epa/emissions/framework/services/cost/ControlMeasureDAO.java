@@ -319,13 +319,9 @@ public class ControlMeasureDAO {
                         ? "inner join cm.sectors AS s "
                           + "WHERE s.id in (" + idList + ") " 
                         : "") + ")";
-        Transaction tx = null;
         try {
-            tx = session.beginTransaction();
-            int count = session.createQuery( hqlDelete ).executeUpdate();
-            tx.commit();
+            session.createQuery( hqlDelete ).executeUpdate();
         } catch (RuntimeException e) {
-            tx.rollback();
             throw e;
         }
     }
@@ -669,13 +665,9 @@ public class ControlMeasureDAO {
                         ? "inner join cm.sectors AS s "
                           + "WHERE s.id in (" + idList + ") " 
                         : "") + ")";
-        Transaction tx = null;
         try {
-            tx = session.beginTransaction();
             session.createQuery( hqlDelete ).executeUpdate();
-            tx.commit();
         } catch (RuntimeException e) {
-            tx.rollback();
             throw e;
         }
     }
