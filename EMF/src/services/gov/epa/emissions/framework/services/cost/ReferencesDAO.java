@@ -1,7 +1,7 @@
 package gov.epa.emissions.framework.services.cost;
 
 import gov.epa.emissions.commons.data.Reference;
-import gov.epa.emissions.commons.db.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 
 import java.util.List;
