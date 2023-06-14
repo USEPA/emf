@@ -24,7 +24,7 @@
         <!--<dependency org="asm-attrs" name="asm-attrs" rev="?" />-->
         <dependency org="colt" name="colt" rev="1.2.0" conf="commons->default"/>
 
-        <dependency org="org.apache.commons" name="commons-configuration2" rev="2.8.0" conf="commons->default" />
+        <dependency org="org.apache.commons" name="commons-configuration2" rev="2.9.0" conf="commons->default" />
         <!--dependency org="commons-configuration" name="commons-configuration" rev="1.10" conf="commons->default" /-->
         <!--dependency org="commons-collections" name="commons-collections" rev="3.2.2" conf="commons->default" /-->
         <!--dependency org="org.apache.commons" name="commons-collections4" rev="4.4" conf="commons->default" /-->
@@ -50,7 +50,7 @@
         <!--dependency org="log4j" name="log4j" rev="1.2.9" conf="commons->default" /-->
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.36" conf="test->default;commons->default" />
         <dependency org="org.slf4j" name="slf4j-simple" rev="1.7.36" conf="test->default;commons->default" />
-		<dependency org="org.postgresql" name="postgresql" rev="42.5.0" conf="commons->default" />
+		<dependency org="org.postgresql" name="postgresql" rev="42.5.4" conf="commons->default" />
         <!--<dependency org="nz.ac.waikato.cms.weka" name="weka-stable" rev="3.6.6" />&lt;!&ndash; Analysis Engine Only &ndash;&gt;-->
         <!--<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.2.1" /> &lt;!&ndash; Analysis Engine Only &ndash;&gt;-->
         <dependency org="dbunit" name="dbunit" rev="2.1" conf="commons->default"/>

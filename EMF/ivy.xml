@@ -23,7 +23,7 @@
         <!-- Module Dependencies -->
         <dependency org="epa" name="analysis-engine" rev="0.1.1" conf="client->default" />
         <dependency org="epa" name="kmlGenerator" rev="0.1" conf="client->default" />
-        <dependency org="epa" name="epa-commons" rev="0.5" conf="client->commons;server->commons" >
+        <dependency org="epa" name="epa-commons" rev="0.6" conf="client->commons;server->commons" >
         	<exclude org="javax.servlet" module="servlet-api" />
         	<!--exclude org="xml-apis" name="xml-apis" /-->
         </dependency>
@@ -109,16 +109,16 @@
         </dependency--><!-- needed for spring-core -->
         <!--<dependency org="org.springframework" name="spring-aop" rev="3.2.4.RELEASE"/>-->
         <!--<dependency org="org.springframework" name="spring-aspects" rev="3.2.4.RELEASE"/>-->
-        <dependency org="org.springframework" name="spring-beans" rev="5.3.23" conf="server->default"/>
-        <dependency org="org.springframework" name="spring-context" rev="5.3.23" conf="server->default"/>
-        <dependency org="org.springframework" name="spring-core" rev="5.3.23" conf="server->default"/>
+        <dependency org="org.springframework" name="spring-beans" rev="5.3.27" conf="server->default"/>
+        <dependency org="org.springframework" name="spring-context" rev="5.3.27" conf="server->default"/>
+        <dependency org="org.springframework" name="spring-core" rev="5.3.27" conf="server->default"/>
         <!--<dependency org="org.springframework" name="spring-dao" rev="2.0.8"/>  Not needed, brought over on accident-->
         <!--<dependency org="org.springframework" name="spring-expression" rev="3.2.4.RELEASE"/> transitive dep -->
         <!--<dependency org="org.springframework" name="spring-hibernate3" rev="2.0.8"/>  Not needed, brought over on accident-->
         <!--<dependency org="org.springframework" name="spring-jdbc" rev="3.2.4.RELEASE"/>-->
-        <dependency org="org.springframework" name="spring-orm" rev="5.3.23" conf="server->default"/>
-        <dependency org="org.springframework" name="spring-tx" rev="5.3.23" conf="server->default"/>
-        <dependency org="org.springframework" name="spring-web" rev="5.3.23" conf="server->default"/>
+        <dependency org="org.springframework" name="spring-orm" rev="5.3.27" conf="server->default"/>
+        <dependency org="org.springframework" name="spring-tx" rev="5.3.27" conf="server->default"/>
+        <dependency org="org.springframework" name="spring-web" rev="5.3.27" conf="server->default"/>
         <!--<dependency org="swarmcache" name="swarmcache" rev="1.0rc2"/>-->
         <!--<dependency org="versioncheck" name="versioncheck" rev="?"/>-->
         <!--<dependency org="weka" name="weka" rev="3.4.11" />&lt;!&ndash; New version, WILL IT WORK? couldn't find older jar, it looks the same though &ndash;&gt;-->
