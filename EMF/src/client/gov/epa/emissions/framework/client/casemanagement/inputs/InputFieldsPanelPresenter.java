@@ -63,7 +63,8 @@ public class InputFieldsPanelPresenter {
     }
 
     public Sector[] getSectors() throws EmfException {
-        return caseObjectManager.getSectorsWithAll();
+//        return caseObjectManager.getSectorsWithAll();
+        return caseObjectManager.getCaseSectors(caseObj);
     }
 
     public CaseProgram[] getPrograms(int modelToRunId) throws EmfException {

@@ -46,7 +46,7 @@ public class JobFieldsPanelPresenter {
     }
 
     public synchronized Sector[] getSectors() throws EmfException {
-        return caseObjectManager.getSectorsWithAll();
+        return caseObjectManager.getCaseSectors(caseObj);
     }
 
     public synchronized Host[] getHosts() throws EmfException {

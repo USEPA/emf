@@ -58,7 +58,7 @@ public class ParameterFieldsPanelPresenter {
     }
 
     public Sector[] getSectors() throws EmfException {
-        return caseObjectManager.getSectorsWithAll();
+        return caseObjectManager.getCaseSectors(caseObj);
     }
 
     public CaseProgram[] getPrograms(int model_id) throws EmfException {

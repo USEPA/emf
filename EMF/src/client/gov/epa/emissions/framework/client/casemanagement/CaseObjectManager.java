@@ -8,6 +8,7 @@ import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.casemanagement.Abbreviation;
 import gov.epa.emissions.framework.services.casemanagement.AirQualityModel;
+import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.CaseCategory;
 import gov.epa.emissions.framework.services.casemanagement.CaseProgram;
 import gov.epa.emissions.framework.services.casemanagement.CaseService;
@@ -167,6 +168,15 @@ public class CaseObjectManager {
             sectors = dataCommonsService.getSectors();
 
         return sectors;
+    }
+
+    public synchronized Sector[] getCaseSectors(Case caseObj) throws EmfException {
+
+        List<Sector> list = new ArrayList();
+        list.add(allSectors);
+        if (caseObj != null)
+            list.addAll(Arrays.asList(caseObj.getSectors()));
+        return (Sector[]) list.toArray(new Sector[0]);
     }
 
     public synchronized Sector[] getSectorsWithAll() throws EmfException {
