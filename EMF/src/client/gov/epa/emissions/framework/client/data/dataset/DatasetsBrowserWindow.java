@@ -221,7 +221,7 @@ public class DatasetsBrowserWindow extends DisposableInteralFrame implements Dat
         advPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
         
         topPanel.add(getDSTypePanel("Show Datasets of Type:", dsTypesBox), BorderLayout.LINE_START);
-        topPanel.add(advPanel, BorderLayout.EAST);
+        topPanel.add(advPanel, BorderLayout.CENTER);
 
         JPanel panel = new JPanel(new GridLayout(2, 1));
         panel.add(msgRefreshPanel);
