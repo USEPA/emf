@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
@@ -45,13 +48,16 @@ import javax.swing.SwingWorker;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.hc.client5.http.async.methods.AbstractBinResponseConsumer;
 import org.apache.hc.client5.http.async.methods.AbstractCharResponseConsumer;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.config.CharCodingConfig;
 import org.apache.hc.core5.http.message.BasicHttpRequest;
 import org.apache.hc.core5.http.message.StatusLine;
 import org.apache.hc.core5.http.nio.support.BasicRequestProducer;
@@ -140,6 +146,7 @@ public class FileDownloadWindow
                 
                 httpclient = HttpAsyncClients
                         .custom()
+//                        .setCharCodingConfig(CharCodingConfig.custom().setCharset(StandardCharsets.ISO_8859_1).build()) //StandardCharsets.US_ASCII
                         .setIOReactorConfig(ioReactorConfig)
                         .setDefaultRequestConfig(RequestConfig.custom()
                                 .setConnectTimeout(Timeout.ofSeconds(10))
@@ -158,8 +165,11 @@ public class FileDownloadWindow
             }
 
             //final FileChannel fileOutputStream = new FileOutputStream(downloadedFile, false).getChannel();
-OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(downloadedFile, false), StandardCharsets.UTF_8);
- 
+//final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(downloadedFile, false), Charset.forName("Cp1252"));//StandardCharsets.ISO_8859_1
+//final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(downloadedFile, false), Charset.forName("Cp1252"));//StandardCharsets.ISO_8859_1
+
+final WritableByteChannel channel = Channels.newChannel(new FileOutputStream(downloadedFile, false));
+
 //            System.out.println("start file download...");
             
 //            httpclient.getParams()
@@ -247,13 +257,14 @@ OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStr
 
                 final BasicHttpRequest request = BasicRequestBuilder.get()
                         .setUri(downloadURL)
+//                        .setCharset(StandardCharsets.ISO_8859_1)
                         .build();
 
 
                 
                 final Future<File> future = httpclient.execute(
                         new BasicRequestProducer(request, null),
-                        new AbstractCharResponseConsumer<File>() {
+                        new AbstractBinResponseConsumer<File>() {
 
                             long position = 0;
                             long downloadedBytes = 0;
@@ -272,10 +283,10 @@ OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStr
                                 return Integer.MAX_VALUE;
                             }
 
-                            @Override
+/*                            @Override
                             protected void data(final CharBuffer data, final boolean endOfStream) throws IOException {
 //                                while (data.hasRemaining()) {
-//                                    System.out.print(data.get());
+                                    System.out.print(data.toString());
 //                                }
 //                                if (endOfStream) {
 //                                    System.out.println();
@@ -323,9 +334,9 @@ OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStr
                                 }
                                 previousProgress = progress;
                             }
-
+*/
                             @Override
-                            protected File buildResult() throws IOException {
+                            protected File buildResult() {  //throws IOException 
                                 return null;
                             }
 
@@ -336,6 +347,57 @@ OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStr
 
                             @Override
                             public void releaseResources() {
+                            }
+
+                            @Override
+                            protected void data(ByteBuffer src, boolean endOfStream) throws IOException {
+//                              while (data.hasRemaining()) {
+//                                System.out.print(src.toString());
+//                            }
+//                            if (endOfStream) {
+//                                System.out.println();
+//                            }
+
+//                            ByteBuffer t = ByteBuffer.allocate(data.length() * Character.BYTES);
+//                            ByteBuffer result = ByteBuffer.allocate(data.length() * Character.BYTES);
+//                            CharBuffer converter = result.asCharBuffer();
+//                            converter.append(data);
+
+                            
+//                            while(!allRead) {
+                              int count = 0;
+//                            try {
+                                count = src.remaining();
+//                            } catch (IOException e1) {
+//                                // NOTE Auto-generated catch block
+//                                e1.printStackTrace();
+//                            }
+                              if(count <= 0) {
+//                                    System.out.println("Buffer reading is : " + decoder.isCompleted());
+                              } else {
+                                  downloadedBytes += count;
+//                                      System.out.println("onContentReceived downloadedBytes = " + downloadedBytes + ", count = " + count);
+//                                      System.out.println("****** Number of Bytes read is : " + count);
+//                                 t.flip();
+                                 try {
+                                     channel.write(src);
+//                                     outputStreamWriter.append(src);
+                                } catch (IOException e) {
+                                    // NOTE Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+//                                t.clear();
+                              }
+                              
+//                            }
+                            if (fileDownload.getSize() != 0) 
+                                progress = Math.min((int)((downloadedBytes * 100.0) / fileDownload.getSize()), 100);
+                            if (previousProgress != progress) {
+                                setProgress(progress);
+//                                    fileDownload.setProgress(progress);
+//                                    table.repaint();
+                            }
+                            previousProgress = progress;
                             }
 
                         }, null);
@@ -377,7 +439,7 @@ OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStr
                 downloadIssue = true;
             } finally {
                 try {
-                   outputStreamWriter.close();
+                   channel.close();
                 } catch (IOException e) {
                     // NOTE Auto-generated catch block
                     e.printStackTrace();
