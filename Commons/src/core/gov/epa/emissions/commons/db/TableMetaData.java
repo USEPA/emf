@@ -27,7 +27,9 @@ public class TableMetaData {
 
     public Column[] getColumns(String table) throws SQLException {
         DatabaseMetaData meta = connection.getMetaData();
-        // postgres driver creates table with lower case lettes and case sensitive
+        if (table.length() > 63) { // postgresql table name max length is 63
+          table = table.substring(0, 63);
+        }
         ResultSet rs = meta.getColumns(null, schema, table.toLowerCase(), null);
 
         List cols = new ArrayList();

@@ -304,6 +304,9 @@ public class DataModifier {
         }
         
         DatabaseMetaData meta = connection.getMetaData();
+        if (table.length() > 63) { // postgresql table name max length is 63
+            table = table.substring(0, 63);
+        }
         // postgres driver creates table with lower case lettes and case sensitive
         ResultSet rs = meta.getColumns(null, schema, table.toLowerCase(), null);
 
