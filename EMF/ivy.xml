@@ -23,7 +23,7 @@
         <!-- Module Dependencies -->
         <dependency org="epa" name="analysis-engine" rev="0.1.1" conf="client->default" />
         <dependency org="epa" name="kmlGenerator" rev="0.1" conf="client->default" />
-        <dependency org="epa" name="epa-commons" rev="0.6" conf="client->commons;server->commons" >
+        <dependency org="epa" name="epa-commons" rev="0.7" conf="client->commons;server->commons" >
         	<exclude org="javax.servlet" module="servlet-api" />
         	<!--exclude org="xml-apis" name="xml-apis" /-->
         </dependency>
