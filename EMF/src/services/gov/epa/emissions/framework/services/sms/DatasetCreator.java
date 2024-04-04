@@ -483,7 +483,7 @@ public class DatasetCreator {
     private String createTableName(String name) {
         String table = name;
         //truncate if necessary so a unique timestamp can be added to ensure uniqueness
-        if (table.length() > 46) {     //postgresql table name max length is 64
+        if (table.length() > 45) {  //postgresql table name max length is 63
             table = table.substring(0, 45);
         }
 
