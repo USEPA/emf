@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class GenericExporter implements Exporter {
 
     private Dataset dataset;
@@ -139,11 +137,7 @@ public class GenericExporter implements Exporter {
             String lasttoken = "";
             while (st.hasMoreTokens()) {
                 lasttoken = st.nextToken();
-                if (!(StringUtils.isNotBlank(lasttoken) && lasttoken.substring(0, lasttoken.length() - 2).contains(cr))) {
-                    writer.print("#" + lasttoken);
-                } else {
-                    writer.print("#" + lasttoken.substring(0, lasttoken.length() - 2).replace(cr, " ") + lasttoken.substring(lasttoken.length() - 1, lasttoken.length() - 1));
-                }
+                writer.print("#" + lasttoken);
             }
 
             if (lasttoken.indexOf(cr) < 0)
