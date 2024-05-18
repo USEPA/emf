@@ -6,5 +6,7 @@ public interface LoginView {
     void disposeView();
 
     void display();
+    
+    void ssoLogin();
 
 }

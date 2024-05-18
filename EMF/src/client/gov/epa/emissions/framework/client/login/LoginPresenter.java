@@ -7,14 +7,19 @@ import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.preference.UserPreference;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.AuthenticationException;
+import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.FailedLoginAttemptException;
 import gov.epa.emissions.framework.services.basic.UserService;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class LoginPresenter {
 
     private UserService userAdmin;
+
+    private KerebosSSOWebService kerebosSSOWebService;
 
     private LoginView view;
 
@@ -24,6 +29,7 @@ public class LoginPresenter {
 
     public LoginPresenter(UserService model) {
         this.userAdmin = model;
+        this.kerebosSSOWebService = new KerebosSSOWebService(model);
     }
 
     public User doLogin(String username, String password) throws EmfException {
@@ -76,6 +82,32 @@ public class LoginPresenter {
         return user;
     }
 
+    public User doSSOLogin() throws EmfException {
+        String username = kerebosSSOWebService.login();
+
+        if (StringUtils.isBlank(username))
+            throw new EmfException("Unable to login via SSO Url.");
+
+        User user = userAdmin.getUser(username);
+
+        if (user == null)
+            throw new EmfException("Unable to find user, " + username + ", in EMF System.");
+
+        user = userAdmin.obtainLocked(user, user);
+
+        if (user == null)
+            throw new EmfException("Unable to fetch lock on user: " + username + ".");
+
+        user.setLoggedIn(true);
+        user.setLastLoginDate(new Date());
+        if (user.getPasswordResetDate() == null)
+            user.setPasswordResetDate(new Date());
+        user.setFailedLoginAttempts(0);
+        userAdmin.updateUser(user);
+
+        return user;
+    }
+
     public boolean checkEmfVersion(String current) throws EmfException {
         try {
             update = userAdmin.getEmfVersion();
@@ -111,8 +143,15 @@ public class LoginPresenter {
         view.observe(this);
 
         view.display();
+        try {
+            if (StringUtils.isNotBlank(getSSOUrl()))
+                view.ssoLogin();
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
     }
-
+    
     public String userName() throws EmfException {
         if (this.preferences == null)
             this.preferences = new DefaultUserPreferences();
@@ -127,4 +166,7 @@ public class LoginPresenter {
         return preferences.userPassword();
     }
 
+    public String getSSOUrl() throws EmfException {
+        return userAdmin.getPropertyValue(EmfProperty.SSO_URL);
+    }
 }

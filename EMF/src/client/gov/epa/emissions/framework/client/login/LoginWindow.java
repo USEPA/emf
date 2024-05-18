@@ -13,19 +13,24 @@ import gov.epa.emissions.framework.client.admin.RegisterUserWindow;
 import gov.epa.emissions.framework.client.console.EmfConsole;
 import gov.epa.emissions.framework.client.console.EmfConsolePresenter;
 import gov.epa.emissions.framework.client.transport.ServiceLocator;
+import gov.epa.emissions.framework.client.util.ComponentUtility;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.FailedLoginAttemptException;
 import gov.epa.emissions.framework.ui.MessagePanel;
 import gov.epa.emissions.framework.ui.SingleLineMessagePanel;
 import gov.epa.mims.analysisengine.gui.ScreenUtils;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -38,6 +43,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class LoginWindow extends EmfFrame implements LoginView {
 
@@ -53,9 +61,17 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
     public final static String EMF_VERSION = "v4.3 - 04/04/2024";
 
+    private String ssoUrl;
+
     public LoginWindow(ServiceLocator serviceLocator) {
         super("Login", "Login to EMF [" + EMF_VERSION + "]");
         this.serviceLocator = serviceLocator;
+        try {   //get SSO UJrl if there is one...
+            this.ssoUrl = serviceLocator.userService().getPropertyValue(EmfProperty.SSO_URL);
+        } catch (EmfException e) {
+            // NOTE Auto-generated catch block
+            e.printStackTrace();
+        }
 
         JPanel layoutPanel = createLayout();
 
@@ -71,10 +87,13 @@ public class LoginWindow extends EmfFrame implements LoginView {
 
         messagePanel = new SingleLineMessagePanel();
         panel.add(messagePanel);
-        panel.add(createLoginPanel());
-        panel.add(createButtonsPanel());
+        JPanel loginPanel = createLoginPanel();
+        panel.add(loginPanel);
+        JPanel buttonsPanel = createButtonsPanel();
+        panel.add(buttonsPanel);
         panel.add(new JSeparator(SwingConstants.HORIZONTAL));
-        panel.add(createLoginOptionsPanel());
+        JPanel loginOptionsPanel = createLoginOptionsPanel();
+        panel.add(loginOptionsPanel);
 
         return panel;
     }
@@ -87,8 +106,10 @@ public class LoginWindow extends EmfFrame implements LoginView {
             else
             {
                 System.out.println("Showing Login Window");
-                username.setText(presenter.userName());
-                password.setText(presenter.userPassword());
+                if (StringUtils.isBlank(ssoUrl)) {
+                    username.setText(presenter.userName());
+                    password.setText(presenter.userPassword());
+                }
                 super.display();
             }
         } catch (Exception e) {
@@ -109,6 +130,64 @@ public class LoginWindow extends EmfFrame implements LoginView {
         }
     }
 
+    @Override
+    public void ssoLogin() {
+        if (StringUtils.isNotBlank(ssoUrl)) {
+            
+            messagePanel.setMessage("Logging in via EPA Single Sign-On using PIV Card...");
+        
+            //long running methods.....
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            ComponentUtility.enableComponents(this, false);
+//            messagePanel.setEnabled(true);
+    
+            //Instances of javax.swing.SwingWorker are not reusuable, so
+            //we create new instances as needed.
+            class SSOLoginTask extends SwingWorker<User, Void> {
+                
+                private Container parentContainer;
+                private Exception ex;
+    
+                public SSOLoginTask(Container parentContainer) {
+                    this.parentContainer = parentContainer;
+                }
+        
+                /*
+                 * Main task. Executed in background thread.
+                 * don't update gui here
+                 */
+                @Override
+                public User doInBackground() throws EmfException  {
+                    return presenter.doSSOLogin();
+                }
+    
+                /*
+                 * Executed in event dispatching thread
+                 */
+                @Override
+                public void done() {
+                    try {
+                        User user = get();
+                        messagePanel.clear();
+                        toExpire(user);
+                        ((EmfFrame)parentContainer).refreshLayout();
+                        launchConsole(user);
+//                        disposeView();
+                    } catch (InterruptedException | ExecutionException | EmfException e1) {
+                        messagePanel.setError("");
+                        messagePanel.setMessage("");
+                        ex = e1;
+                    } finally {
+                        if (ex != null)
+                            ComponentUtility.enableComponents(this.parentContainer, true);
+                        this.parentContainer.setCursor(null); //turn off the wait cursor
+                    }
+                }
+            };
+            new SSOLoginTask(this).execute();
+        }
+    }
+    
     private int toUpdate() {
         String message = "<html>An updated version of the EMF client exists (" + 
                   presenter.getUpdatedEmfVersion() + ").<br>"
@@ -149,6 +228,23 @@ public class LoginWindow extends EmfFrame implements LoginView {
         return panel;
     }
 
+    private JPanel createSSOPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JPanel container = new JPanel();
+        FlowLayout layout = new FlowLayout();
+        layout.setHgap(20);
+        layout.setVgap(15);
+        container.setLayout(layout);
+
+        JLabel label = new JLabel("Logging in via EPA Single Sign-On using PIV Card");
+        container.add(label);
+
+        panel.add(container, BorderLayout.CENTER);
+
+        return panel;
+    }
+
     private void doSignIn() {
         if (presenter == null)
             return;
@@ -158,7 +254,6 @@ public class LoginWindow extends EmfFrame implements LoginView {
             toExpire(user);
             super.refreshLayout();
             launchConsole(user);
-            disposeView();
         } catch (FailedLoginAttemptException e) {
             messagePanel.setError(e.getMessage());
             MessageDialog messageDialog = new MessageDialog(e.getMessage(), "Warning", this);
@@ -190,9 +285,52 @@ public class LoginWindow extends EmfFrame implements LoginView {
     }  
 
     private void launchConsole(User user) throws EmfException {
-        EmfConsole console = new EmfConsole(new DefaultEmfSession(user, serviceLocator));
-        EmfConsolePresenter presenter = new EmfConsolePresenter();
-        presenter.display(console);
+        messagePanel.setMessage("Launching Main EMF Console...");
+        
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ComponentUtility.enableComponents(this, false);
+
+        //Instances of javax.swing.SwingWorker are not reusuable, so
+        //we create new instances as needed.
+        class LaunchConsoleTask extends SwingWorker<Void, Void> {
+            
+            private Container parentContainer;
+
+            public LaunchConsoleTask(Container parentContainer) {
+                this.parentContainer = parentContainer;
+            }
+    
+            /*
+             * Main task. Executed in background thread.
+             * don't update gui here
+             */
+            @Override
+            public Void doInBackground() throws EmfException {
+                EmfConsole console = new EmfConsole(new DefaultEmfSession(user, serviceLocator));
+                EmfConsolePresenter presenter = new EmfConsolePresenter();
+                presenter.display(console);
+                return null;
+            }
+
+            /*
+             * Executed in event dispatching thread
+             */
+            @Override
+            public void done() {
+                try {
+                    get();
+                    disposeView();
+                } catch (InterruptedException e1) {
+                    // ignore
+                } catch (ExecutionException e1) {
+                    // ignore
+                } finally {
+                    ComponentUtility.enableComponents(parentContainer, true);
+                    this.parentContainer.setCursor(null); //turn off the wait cursor
+                }
+            }
+        };
+        new LaunchConsoleTask(this).execute();
     }
 
     private JPanel createLoginPanel() {

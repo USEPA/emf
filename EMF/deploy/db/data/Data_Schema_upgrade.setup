@@ -2137,3 +2137,8 @@ ADD COLUMN failed_login_attempts int default 0;
 -- 3/3/2023 - add Compare Multiple Datasets qa program
 INSERT INTO emf.qa_programs (name, run_classname)
 values ('Compare Multiple Datasets', 'gov.epa.emissions.framework.services.qa.comparedatasets.SQLCompareMultipleDatasetsProgramQueryRunner');
+
+-- 05/17/2024 - adding SSO Url
+insert into emf.properties (name, value)
+values ('SSO_URL', 'https://bramble01.hesc.epa.gov/krbsso/');	
+
