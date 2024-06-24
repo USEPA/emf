@@ -180,7 +180,7 @@ public class InstallWindow extends JFrame implements InstallView {
 
         getContentPane().add(cards, BorderLayout.CENTER);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(700, 400));
+        setSize(new Dimension(900, 500));
         setResizable(false);
     }
 
