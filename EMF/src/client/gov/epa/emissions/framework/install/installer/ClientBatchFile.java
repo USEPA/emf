@@ -18,7 +18,7 @@ public class ClientBatchFile {
         writer = new PrintWriter(new BufferedWriter( new FileWriter(fileName)));
     }
     
-    public void create(String preference, String javahome, String rhome, String server) throws Exception{
+    public void create(String preference, String javahome, String rhome, String server, String cmdArguments) throws Exception{
         writer.println("@echo off" + sep);
         writer.println("::  Batch file to start the EMF Client" + sep  + sep);
         writer.println("set EMF_HOME=\"" + batchFile.getParent() + "\""+ sep);
@@ -32,6 +32,7 @@ public class ClientBatchFile {
         writer.println("java -Xmx1024M -DUSER_PREFERENCES=" +
                 "\"" + System.getProperty("user.home") + "\\" + preference + "\" " +
                 "-DEMF_HOME=%EMF_HOME% " + "-DR_HOME=\"%R_HOME%\" " +
+                cmdArguments + " " +
                 "-classpath %CLASSPATH% gov.epa.emissions.framework.client.EMFClient " +
                 server + sep);
         writer.close();

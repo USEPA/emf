@@ -54,11 +54,11 @@ public class InstallWindow extends JFrame implements InstallView {
     private Box updatePage;
 
     private JTextField url, javaHomeDirField, rHomeField, inputDirField, outputDirField, installDirField, serverField,
-            tmpDirField, preferencesText;
+            tmpDirField, cmdArgumentsField, preferencesText;
 
     private JLabel urlLabel, javaHomeLabel, rHomeLabel, inputLabel, outputLabel, installHomeLabel, tmpDirLabel;
 
-    private JLabel statusLabel, load, serverLabel, holderLabel, inputDirBrowser, outputDirBrowser, prefFileLabel, serverHolderLabel;
+    private JLabel statusLabel, load, serverLabel, holderLabel, inputDirBrowser, outputDirBrowser, prefFileLabel, serverHolderLabel, cmdArgumentsLabel, cmdArgumentsHolderLabel;
 
     private JButton installButton, exitInstallButton, cancel;
 
@@ -100,6 +100,9 @@ public class InstallWindow extends JFrame implements InstallView {
         serverField = new JTextField(30);
         serverField.setToolTipText("EMF service site URL");
         
+        cmdArgumentsField = new JTextField(30);
+        cmdArgumentsField.setToolTipText("Command-line arguments when running the EMF client");
+
         preferencesText = new JTextField(30);
         preferencesText.setText(Constants.USER_HOME + File.separatorChar + Constants.EMF_PREFERENCES_FILE);
         preferencesText.setEditable(false);
@@ -121,6 +124,9 @@ public class InstallWindow extends JFrame implements InstallView {
         serverLabel = new JLabel("Server Address", SwingConstants.RIGHT);
         serverLabel.setLabelFor(serverField);
         serverHolderLabel = new JLabel();
+        cmdArgumentsLabel = new JLabel("Command Arguments", SwingConstants.RIGHT);
+        cmdArgumentsLabel.setLabelFor(cmdArgumentsField);
+        cmdArgumentsHolderLabel = new JLabel();
         prefFileLabel = new JLabel("Output Preferences File", SwingConstants.RIGHT);
         prefFileLabel.setLabelFor(preferencesText);
         statusLabel = new JLabel();
@@ -191,6 +197,7 @@ public class InstallWindow extends JFrame implements InstallView {
             if (up == null) {
                 url.setText(Constants.EMF_URL);
                 serverField.setText(Constants.SERVER_ADDRESS);
+                cmdArgumentsField.setText(Constants.CMD_ARGUMENTS);
                 return;
             }
 
@@ -201,6 +208,7 @@ public class InstallWindow extends JFrame implements InstallView {
             String installString = up.emfInstallFolder();
             String localTmpDir = up.localTempDir();
             String rhome = up.rHome();
+            String cmdArguments = up.cmdArguments();
 
             url.setText(urlString);
             inputDirField.setText(inputString);
@@ -210,6 +218,7 @@ public class InstallWindow extends JFrame implements InstallView {
             if (!localTmpDir.isEmpty())
                 tmpDirField.setText(windowsOS ? localTmpDir.replace('/', '\\') : localTmpDir);
             serverField.setText(serverString);
+            cmdArgumentsField.setText(cmdArguments);
         } catch (Exception e) {
             presenter.displayErr(e.getMessage());
         }
@@ -352,6 +361,15 @@ public class InstallWindow extends JFrame implements InstallView {
         installPanel.add(serverLabel);
         installPanel.add(serverField);
         installPanel.add(serverHolderLabel);
+
+        c.gridwidth = 1; // next-to-last in row
+        gridbag.setConstraints(cmdArgumentsLabel, c);
+        gridbag.setConstraints(cmdArgumentsField, c);
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        gridbag.setConstraints(cmdArgumentsHolderLabel, c);
+        installPanel.add(cmdArgumentsLabel);
+        installPanel.add(cmdArgumentsField);
+        installPanel.add(cmdArgumentsHolderLabel);
         
         c.gridwidth = 1; // next-to-last in row
         gridbag.setConstraints(prefFileLabel, c);
@@ -504,8 +522,9 @@ public class InstallWindow extends JFrame implements InstallView {
         String installhome = installDirField.getText();
         String server = serverField.getText();
         String rhome = rHomeField.getText();
+        String cmdArguments = cmdArgumentsField.getText();
         presenter.createBatchFile(installhome + File.separatorChar + Constants.EMF_BATCH_FILE, Constants.EMF_PREFERENCES_FILE,
-                javahome, rhome, server);
+                javahome, rhome, server, cmdArguments);
     }
 
     public int checkDirs() {
@@ -575,9 +594,10 @@ public class InstallWindow extends JFrame implements InstallView {
         String tmpDir = tmpDirField.getText();
         String website = url.getText();
         String server = serverField.getText();
+        String cmdArguments = cmdArgumentsField.getText();
         CardLayout cl = (CardLayout) (cards.getLayout());
         cl.show(cards, DOWNLOAD_PAGE);
-        presenter.writePreference(website, inputdir, outputdir, javahome, rhome, installhome, tmpDir, server);
+        presenter.writePreference(website, inputdir, outputdir, javahome, rhome, installhome, tmpDir, server, cmdArguments);
     }
 
     private void startUpdates() {
