@@ -135,6 +135,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
         if (StringUtils.isNotBlank(ssoUrl)) {
             
             messagePanel.setMessage("Logging in via EPA Single Sign-On using PIV Card...");
+            System.out.println("Logging in via EPA Single Sign-On using PIV Card...");
         
             //long running methods.....
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -169,7 +170,6 @@ public class LoginWindow extends EmfFrame implements LoginView {
                     try {
                         User user = get();
                         messagePanel.clear();
-                        toExpire(user);
                         ((EmfFrame)parentContainer).refreshLayout();
                         launchConsole(user);
 //                        disposeView();

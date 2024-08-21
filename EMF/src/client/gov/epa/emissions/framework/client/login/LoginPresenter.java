@@ -85,14 +85,18 @@ public class LoginPresenter {
     public User doSSOLogin() throws EmfException {
         String username = kerebosSSOWebService.login();
 
-        if (StringUtils.isBlank(username))
+        if (StringUtils.isBlank(username)) {
+            System.out.println("Unable to login via SSO Url.");
             throw new EmfException("Unable to login via SSO Url.");
+        }
 
         User user = userAdmin.getUser(username);
 
-        if (user == null)
+        if (user == null) {
+            System.out.println("Unable to find user, " + username + ", in EMF System.");
             throw new EmfException("Unable to find user, " + username + ", in EMF System.");
-
+        }
+        
         user = userAdmin.obtainLocked(user, user);
 
         if (user == null)

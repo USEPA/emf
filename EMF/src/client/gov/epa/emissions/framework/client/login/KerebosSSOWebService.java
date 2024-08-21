@@ -77,6 +77,7 @@ public class KerebosSSOWebService {
 //            System.out.println("Http Response Code: " + connection.getResponseCode());
 //            System.out.println("Http Response Message: " + connection.getResponseMessage());
         } catch (IOException e) {   // | KeyManagementException | NoSuchAlgorithmException | KeyStoreException | CertificateException
+            System.out.println("Error connecting to SSO Url, " + e.getMessage());
             throw new EmfException(e.getMessage(), e);
         }
         
