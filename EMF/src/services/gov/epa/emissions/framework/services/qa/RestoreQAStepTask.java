@@ -44,7 +44,7 @@ public class RestoreQAStepTask implements Runnable {
         this.dbServerFactory = dbServerFactory;
         this.sessionFactory =sessionFactory;
         this.qaDAO = new QADAO();
-        this.propertyDao = new EmfPropertiesDAO(sessionFactory);
+        this.propertyDao = new EmfPropertiesDAO();
         this.qaStepResultId = qaStepResultId;
         this.statusDAO = new StatusDAO(sessionFactory);
         this.username = username;
@@ -75,7 +75,16 @@ public class RestoreQAStepTask implements Runnable {
     }
 
     private String getProperty(String name) {
-        return propertyDao.getProperty(name).getValue();
+        Session session = sessionFactory.getSession();
+        try {
+            return propertyDao.getProperty(name, session).getValue();
+        } catch (RuntimeException e) {
+            log.error("Could not get property with name=" + name, e);
+//            throw new EmfException("Could not get QA Step Result with id=" + qaStepResultId);
+        } finally {
+            session.close();
+        }
+        return null;
     }
 
     private void setStatus(String message) {

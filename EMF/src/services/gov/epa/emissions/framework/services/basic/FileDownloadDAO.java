@@ -12,71 +12,66 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Repository;
 
-@Repository
-//@Scope("prototype")
 public class FileDownloadDAO {
 
     private HibernateSessionFactory sessionFactory;
 
     public FileDownloadDAO() {
-        this(HibernateSessionFactory.get());
+        this.sessionFactory = HibernateSessionFactory.get();
     }
 
-    public FileDownloadDAO(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+//    public FileDownloadDAO(HibernateSessionFactory sessionFactory) {
+//        this.sessionFactory = sessionFactory;
+//    }
 
 //    public void setSessionFactory(SessionFactory sessionFactory) {
 //        this.sessionFactory = sessionFactory;
 //      }
 
-    private String getPropertyValue(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
-
-        try {
+    private String getPropertyValue(String name, Session session) throws EmfException {
+//        Session session = sessionFactory.getSession();
+//
+//        try {
             EmfProperty property = new EmfPropertiesDAO().getProperty(name, session);
             return property != null ? property.getValue() : null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new EmfException("Could not get EMF property.");
-        } finally {
-            session.close();
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new EmfException("Could not get EMF property.");
+//        } finally {
+//            session.close();
+//        }
     }
 
-    public String getDownloadExportFolder() throws EmfException {
-        return getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_FOLDER);
+    public String getDownloadExportFolder(Session session) throws EmfException {
+        return getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_FOLDER, session);
     }
 
-    public String getDownloadExportRootURL() throws EmfException {
-        return getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_ROOT_URL);
+    public String getDownloadExportRootURL(Session session) throws EmfException {
+        return getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_ROOT_URL, session);
     }
 
-    public int getDownloadExportFileHoursToExpire() throws EmfException {
-        return Integer.parseInt(getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE));
+    public int getDownloadExportFileHoursToExpire(Session session) throws EmfException {
+        return Integer.parseInt(getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE, session));
     }
 
-    public void add(FileDownload fileDownload) throws EmfException  {
+    public void add(FileDownload fileDownload, Session session) throws EmfException  {
         //determine the size of the file
         File file = new File(fileDownload.getAbsolutePath());
         if (!file.exists()) 
             throw new EmfException("File to download doesn't exist on the server.");
         fileDownload.setSize(file.length());
 
-        StatelessSession session = sessionFactory.getStatelessSession();
         Transaction tx = null;
         try {
             
             
             tx = session.beginTransaction();
-            session.insert(fileDownload);
+            session.save(fileDownload);
             tx.commit();
         } catch (HibernateException e) {
             tx.rollback();
@@ -91,7 +86,7 @@ public class FileDownloadDAO {
 
 //                PrintTask2 printTask1 = (PrintTask2) context.getBean("printTask2");
 //                printTask1.setName("Thread 1");
-            taskExecutor.execute(new RemoveDownloadFilesTask(getDownloadExportFolder(), getDownloadExportFileHoursToExpire()));
+            taskExecutor.execute(new RemoveDownloadFilesTask(getDownloadExportFolder(session), getDownloadExportFileHoursToExpire(session)));
 
         } catch (Exception e) {
             //suppress all errors this shouldn't stop the process from working....
@@ -100,7 +95,7 @@ public class FileDownloadDAO {
         }
    }
     
-    public void add(User user, Date dateAdded, String fileName, String type, Boolean overwrite) throws EmfException {
+    public void add(User user, Date dateAdded, String fileName, String type, Boolean overwrite, Session session) throws EmfException {
         
         String username = user.getUsername();
         
@@ -108,36 +103,36 @@ public class FileDownloadDAO {
         fileDownload.setUserId(user.getId());
         fileDownload.setType(type);
         fileDownload.setTimestamp(dateAdded);
-        fileDownload.setAbsolutePath(getDownloadExportFolder() + "/" + username + "/" + fileName);
-        fileDownload.setUrl(getDownloadExportRootURL() + "/" + username + "/" + fileName);
+        fileDownload.setAbsolutePath(getDownloadExportFolder(session) + "/" + username + "/" + fileName);
+        fileDownload.setUrl(getDownloadExportRootURL(session) + "/" + username + "/" + fileName);
         fileDownload.setOverwrite(overwrite);
 
         //persist record
-        add(fileDownload);
+        add(fileDownload, session);
     }
 
-    public List getFileDownloads(Integer userId, Session session) {
+    public List<FileDownload> getFileDownloads(Integer userId, Session session) {
 //        return this.getHibernateTemplate().find(
 //                "from FileDownload as FD where "
 //                        + " FD.userId=?", userId);
         return session
-        .createQuery(
-                "Select FD from FileDownload as FD where "
-                        + " FD.userId = "
-                        + userId) 
-        .list();
+            .createQuery(
+                    "Select FD from FileDownload as FD where "
+                            + " FD.userId = "
+                            + userId, FileDownload.class) 
+            .list();
     }
 
-    public List getUnreadFileDownloads(Integer userId, Session session) {
+    public List<FileDownload> getUnreadFileDownloads(Integer userId, Session session) {
 //        return this.getHibernateTemplate().find(
 //                "from FileDownload as FD where FD.read = false "
 //                        + " and FD.userId=?", userId);
         return session
-        .createQuery(
-                "Select FD from FileDownload as FD where "
-                + " FD.userId = " + userId
-                + " and FD.read = false") 
-        .list();
+            .createQuery(
+                    "Select FD from FileDownload as FD where "
+                    + " FD.userId = " + userId
+                    + " and FD.read = false", FileDownload.class) 
+            .list();
     }
 
     //mark filedownloads as read state
@@ -168,7 +163,7 @@ public class FileDownloadDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.createQuery(hqlDelete).setInteger("userId", userId).executeUpdate();
+            session.createQuery(hqlDelete).setParameter("userId", userId).executeUpdate();
             tx.commit();
         } catch (HibernateException e) {
             tx.rollback();

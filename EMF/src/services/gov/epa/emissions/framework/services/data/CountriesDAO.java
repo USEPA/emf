@@ -1,14 +1,15 @@
 package gov.epa.emissions.framework.services.data;
 
-import gov.epa.emissions.commons.data.Country;
-import gov.epa.emissions.framework.services.persistence.HibernateFacade;
-
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+
+import gov.epa.emissions.commons.data.Country;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 
 public class CountriesDAO {
 
@@ -18,13 +19,16 @@ public class CountriesDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List getAll(Session session) {
-        return session.createCriteria(Country.class).addOrder(Order.asc("name")).list();
+    public List<Country> getAll(Session session) {
+        CriteriaBuilderQueryRoot<Country> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Country.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Country> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
     
     public Country getCountry(String name, Session session) {
-        Criterion criterion = Restrictions.eq("name", name);
-        return (Country)hibernateFacade.load(Country.class, criterion, session);
+        return hibernateFacade.load(Country.class, "name", name, session);
     }
     
     public Country addCountry(Country country, Session session) {

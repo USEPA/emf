@@ -8,6 +8,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
@@ -20,13 +21,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 
 public class ControlProgramDAO {
     private LockingScheme lockingScheme;
@@ -56,22 +58,12 @@ public class ControlProgramDAO {
         return (Integer)hibernateFacade.add(obj, session);
     }
 
-    // return ControlStrategies orderby name
-    public List all(Session session) {
-//        return session.createQuery("select new ControlStrategy(cS.id, cS.name, " +
-//                "cS.lastModifiedDate, cS.runStatus, " +
-//                "cS.region, cS.targetPollutant, " +
-//                "cS.project, cS.strategyType, " +
-//                "cS.costYear, cS.inventoryYear, " +
-//                "cS.creator, (select sum(sR.totalCost) from ControlStrategyResult sR where sR.controlStrategyId = cS.id), (select sum(sR.totalReduction) from ControlStrategyResult sR where sR.controlStrategyId = cS.id)) " +
-//                "from ControlStrategy cS " +
-//                "left join cS.targetPollutant " +
-//                "left join cS.strategyType " +
-//                "left join cS.region " +
-//                "left join cS.project " +
-//                "left join cS.region " +
-//                "order by cS.name").list();
-        return hibernateFacade.getAll(ControlProgram.class, Order.asc("name"), session);
+    public List<ControlProgram> all(Session session) {
+        CriteriaBuilderQueryRoot<ControlProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlProgram.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<ControlProgram> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
     public List getControlPrograms(Session session, BasicSearchFilter searchFilter) {
@@ -89,12 +81,16 @@ public class ControlProgramDAO {
         return session.createQuery(hql).list();
     }
 
-    public List getControlProgramTypes(Session session) {
-        return hibernateFacade.getAll(ControlProgramType.class, Order.asc("name"), session);
+    public List<ControlProgramType> getControlProgramTypes(Session session) {
+        CriteriaBuilderQueryRoot<ControlProgramType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlProgramType.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<ControlProgramType> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
     public ControlProgram obtainLocked(User owner, int id, Session session) {
-        return (ControlProgram) lockingScheme.getLocked(owner, current(id, ControlProgram.class, session), session);
+        return (ControlProgram) lockingScheme.getLocked(owner, current(id, session), session);
     }
 
     public void releaseLocked(User user, int id, Session session) {
@@ -111,34 +107,34 @@ public class ControlProgramDAO {
     }
 
     private ControlProgram current(ControlProgram controlProgram, Session session) {
-        return current(controlProgram.getId(), ControlProgram.class, session);
+        return current(controlProgram.getId(), session);
     }
 
     public boolean canUpdate(ControlProgram controlProgram, Session session) {
-        if (!exists(controlProgram.getId(), ControlProgram.class, session)) {
+        if (!exists(controlProgram.getId(), session)) {
             return false;
         }
 
-        ControlProgram current = current(controlProgram.getId(), ControlProgram.class, session);
+        ControlProgram current = current(controlProgram.getId(), session);
 
         session.clear();// clear to flush current
 
         if (current.getName().equals(controlProgram.getName()))
             return true;
 
-        return !nameUsed(controlProgram.getName(), ControlProgram.class, session);
+        return !nameUsed(controlProgram.getName(), session);
     }
 
-    public boolean nameUsed(String name, Class clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    public boolean nameUsed(String name, Session session) {
+        return hibernateFacade.nameUsed(name, ControlProgram.class, session);
     }
 
-    private ControlProgram current(int id, Class clazz, Session session) {
-        return (ControlProgram) hibernateFacade.current(id, clazz, session);
+    private ControlProgram current(int id, Session session) {
+        return hibernateFacade.current(id, ControlProgram.class, session);
     }
 
-    public boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    public boolean exists(int id, Session session) {
+        return hibernateFacade.exists(id, ControlProgram.class, session);
     }
 
     public void remove(ControlProgram controlProgram, Session session) throws EmfException, SQLException {
@@ -168,12 +164,12 @@ public class ControlProgramDAO {
 }
 
     public ControlProgram getByName(String name, Session session) {
-        ControlProgram cs = (ControlProgram) hibernateFacade.load(ControlProgram.class, Restrictions.eq("name", new String(name)), session);
+        ControlProgram cs = hibernateFacade.load(ControlProgram.class, "name", new String(name), session);
         return cs;
     }
 
     public ControlProgram getControlProgram(int id, Session session) {
-        ControlProgram cs = (ControlProgram) hibernateFacade.load(ControlProgram.class, Restrictions.eq("id", Integer.valueOf(id)), session);
+        ControlProgram cs = hibernateFacade.load(ControlProgram.class, "id", Integer.valueOf(id), session);
         return cs;
     }
 
@@ -205,9 +201,9 @@ public class ControlProgramDAO {
             tx = session.beginTransaction();
             session.createQuery("update ControlProgram set description =  '' || "
                         + "description || '\n------\n' || :msg, lastModifiedDate = :date where id = :id")
-            .setText("msg", msg)
-            .setTimestamp("date", new Date())
-            .setInteger("id", controlProgramId)
+            .setParameter("msg", msg)
+            .setParameter("date", new Date())
+            .setParameter("id", Integer.valueOf(controlProgramId))
             .executeUpdate();
             tx.commit();
             session.clear();

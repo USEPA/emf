@@ -1,7 +1,6 @@
 package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.AccessLog;
 
 import java.util.List;
 
@@ -48,12 +47,12 @@ public class LoggingDAO {
             tx = session.beginTransaction();
             String query = "from AccessLog as alog where alog.datasetId=" + datasetId
                     + " order by alog.timestamp desc ";
-            List allLogs = session.createQuery(query).list();
+            List<AccessLog> allLogs = session.createQuery(query, AccessLog.class).list();
             tx.commit();
             if (allLogs.isEmpty()) {
                 throw new EmfException("Please export the dataset first");
             }
-            return ((AccessLog) allLogs.get(0)).getFolderPath();
+            return allLogs.get(0).getFolderPath();
 
         } catch (HibernateException e) {
             tx.rollback();

@@ -19,6 +19,7 @@ import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
@@ -26,13 +27,13 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class DataCommonsDAO {
 
@@ -79,20 +80,36 @@ public class DataCommonsDAO {
         addObject(project, session);
     }
 
-    public List getRegions(Session session) {
-        return session.createCriteria(Region.class).addOrder(Order.asc("name")).list();
+    public List<Region> getRegions(Session session) {
+        CriteriaBuilderQueryRoot<Region> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Region.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Region> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
     
-    public List getUserFeatures(Session session) {
-        return session.createCriteria(UserFeature.class).addOrder(Order.asc("name")).list();
+    public List<UserFeature> getUserFeatures(Session session) {
+        CriteriaBuilderQueryRoot<UserFeature> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(UserFeature.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<UserFeature> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
-    public List getProjects(Session session) {
-        return session.createCriteria(Project.class).addOrder(Order.asc("name")).list();
+    public List<Project> getProjects(Session session) {
+        CriteriaBuilderQueryRoot<Project> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Project.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Project> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
-    public List getCountries(Session session) {
-        return session.createCriteria(Country.class).addOrder(Order.asc("name")).list();
+    public List<Country> getCountries(Session session) {
+        CriteriaBuilderQueryRoot<Country> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Country.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Country> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
     public List getSectors(Session session) {
@@ -115,7 +132,7 @@ public class DataCommonsDAO {
                     + " DT.id not in (select EDT.id from User as U "
                     + " inner join U.excludedDatasetTypes as EDT where U.id = "
                     + userId + ")" 
-                    + " order by DT.name") 
+                    + " order by DT.name", DatasetType.class)
             .list();
     }
 
@@ -127,7 +144,7 @@ public class DataCommonsDAO {
                     + " DT.id not in (select EDT.id from User as U "
                     + " inner join U.excludedDatasetTypes as EDT where U.id = "
                     + userId + ")" 
-                    + " order by DT.name") 
+                    + " order by DT.name", DatasetType.class) 
             .list();
         
 //        "select new DatasetType(dT.id, dT.name) " +
@@ -139,11 +156,11 @@ public class DataCommonsDAO {
     }
 
     public DatasetType getLightDatasetType(String name, Session session) {
-        return (DatasetType) session
+        return session
                 .createQuery(
                         "select new DatasetType(DT.id, DT.name) from DatasetType as DT " 
-                        + "where DT.name = :datasetTypeName") 
-                .setString("datasetTypeName", name)
+                        + "where DT.name = :datasetTypeName", DatasetType.class) 
+                .setParameter("datasetTypeName", name)
                 .uniqueResult();
     }
 
@@ -152,7 +169,7 @@ public class DataCommonsDAO {
     }
 
     public DatasetType getDatasetType(int id, Session session) {
-        return datasetTypesDAO.current(id, DatasetType.class, session);
+        return datasetTypesDAO.current(id, session);
     }
 
     public Sector obtainLockedSector(User user, Sector sector, Session session) {
@@ -176,7 +193,7 @@ public class DataCommonsDAO {
     }
     
     private GeoRegion current(GeoRegion region, Session session) {
-        return (GeoRegion)current(region.getId(), GeoRegion.class, session);
+        return current(region.getId(), GeoRegion.class, session);
     }
 
     public Revision obtainLockedRevision(User user, Revision revision, Session session) {
@@ -216,9 +233,7 @@ public class DataCommonsDAO {
     }
 
     public List getControlMeasureImportStatuses(String username, Session session) {
-        Criterion criterion1 = Restrictions.eq("username", username);
-        Criterion criterion2 = Restrictions.eq("type", "CMImportDetailMsg");
-        return getStatus(username, new Criterion[] { criterion1, criterion2 }, session);
+        return getStatus(username, session);
     }
 
     public void removeDatasetTypes(DatasetType type, Session session) {
@@ -270,8 +285,8 @@ public class DataCommonsDAO {
             tx = session.
                     beginTransaction();
             session.createQuery(hqlDelete)
-                .setString("username", username)
-                .setString("type", type)
+                .setParameter("username", username)
+                .setParameter("type", type)
                 .executeUpdate();
             tx.commit();
         } catch (RuntimeException e) {
@@ -280,29 +295,29 @@ public class DataCommonsDAO {
         }
     }
 
-    public List getStatuses(String username, Session session) {
-        Criterion criterion1 = Restrictions.eq("username", username);
-        Criterion criterion2 = Restrictions.ne("type", "CMImportDetailMsg");
-        return getStatus(username, new Criterion[] { criterion1, criterion2 }, session);
+    public List<Status> getStatuses(String username, Session session) {
+        return getStatus(username, session);
     }
 
-    private List getStatus(String username, Criterion[] criterions, Session session) {
+    private List<Status> getStatus(String username, Session session) {
         removeReadStatus(username, session);
 
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            // Criteria crit = session.createCriteria(Status.class).add();
-            Criteria crit = session.createCriteria(Status.class).addOrder(Order.desc("timestamp"));
 
-            for (int i = 0; i < criterions.length; i++) {// add restrictions
-                crit = crit.add(criterions[i]);
-            }
-            List all = crit.list();
+            CriteriaBuilderQueryRoot<Status> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Status.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<Status> root = criteriaBuilderQueryRoot.getRoot();
+
+            Predicate criterion1 = builder.equal(root.get("username"), username);
+            Predicate criterion2 = builder.notEqual(root.get("type"), "CMImportDetailMsg");
+
+            List<Status> all = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { criterion1, criterion2 }, builder.desc(root.get("timestamp")), session);
 
             // mark read
-            for (Iterator iter = all.iterator(); iter.hasNext();) {
-                Status element = (Status) iter.next();
+            for (Iterator<Status> iter = all.iterator(); iter.hasNext();) {
+                Status element = iter.next();
                 element.markRead();
                 session.save(element);
 
@@ -324,12 +339,18 @@ public class DataCommonsDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            Criteria crit = session.createCriteria(Status.class).add(Restrictions.eq("username", username)).add(
-                    Restrictions.eq("read", Boolean.TRUE));
 
-            List read = crit.list();
-            for (Iterator iter = read.iterator(); iter.hasNext();) {
-                Status element = (Status) iter.next();
+            CriteriaBuilderQueryRoot<Status> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Status.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<Status> root = criteriaBuilderQueryRoot.getRoot();
+
+            Predicate criterion1 = builder.equal(root.get("username"), username);
+            Predicate criterion2 = builder.equal(root.get("read"), Boolean.TRUE);
+
+            List<Status> read = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { criterion1, criterion2 }, builder.desc(root.get("timestamp")), session);
+
+            for (Iterator<Status> iter = read.iterator(); iter.hasNext();) {
+                Status element = iter.next();
                 session.delete(element);
             }
 
@@ -341,7 +362,11 @@ public class DataCommonsDAO {
     }
 
     public List getIntendedUses(Session session) {
-        return session.createCriteria(IntendedUse.class).addOrder(Order.asc("name")).list();
+        CriteriaBuilderQueryRoot<IntendedUse> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(IntendedUse.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<IntendedUse> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
     public void add(IntendedUse intendedUse, Session session) {
@@ -376,8 +401,12 @@ public class DataCommonsDAO {
         hibernateFacade.add(obj, session);
     }
 
-    public List getNoteTypes(Session session) {
-        return session.createCriteria(NoteType.class).list();
+    public List<NoteType> getNoteTypes(Session session) {
+        CriteriaBuilderQueryRoot<NoteType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(NoteType.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<NoteType> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
     }
 
     public void add(Revision revision, Session session) {
@@ -397,32 +426,48 @@ public class DataCommonsDAO {
     }
 
     public List<GeoRegion> getGeoRegions(Session session) {
-        return hibernateFacade.getAll(GeoRegion.class, Order.asc("name"), session);
+        CriteriaBuilderQueryRoot<GeoRegion> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(GeoRegion.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<GeoRegion> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
     
     public List<RegionType> getRegionTypes(Session session) {
-        return hibernateFacade.getAll(RegionType.class, Order.asc("name"), session);
+        CriteriaBuilderQueryRoot<RegionType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(RegionType.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<RegionType> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
     
     public List<Revision> getRevisions(int datasetId, Session session) {
-        return session.createCriteria(Revision.class).add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).list();
+        CriteriaBuilderQueryRoot<Revision> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Revision.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Revision> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)) }, session);
     }
 
     public List<DatasetNote> getDatasetNotes(int datasetId, Session session) {
-        return session.createCriteria(DatasetNote.class).add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).list();
+        CriteriaBuilderQueryRoot<DatasetNote> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(DatasetNote.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<DatasetNote> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)) }, session);
     }
     
     public List<Note> getNotes(Session session, String nameContains) {
         if (nameContains.trim().equals(""))
             return session
             .createQuery(
-                    "select new Note( NT.id, NT.name) from Note as NT ").list();
+                    "select new Note( NT.id, NT.name) from Note as NT ", Note.class).list();
         return session
         .createQuery(
                 "select new Note( NT.id, NT.name) from Note as NT " + "where "
                         + " lower(NT.name) like "
                         + "'%"
-                        + nameContains.toLowerCase().trim() + "%'") 
+                        + nameContains.toLowerCase().trim() + "%'", Note.class) 
         .list();
  }
 
@@ -430,15 +475,15 @@ public class DataCommonsDAO {
     /*
      * Return true if the name is already used
      */
-    public boolean nameUsed(String name, Class clazz, Session session) {
+    public <C> boolean nameUsed(String name, Class<C> clazz, Session session) {
         return hibernateFacade.nameUsed(name, clazz, session);
     }
 
-    public Object current(int id, Class clazz, Session session) {
+    public <C> C current(int id, Class<C> clazz, Session session) {
         return hibernateFacade.current(id, clazz, session);
     }
 
-    public boolean exists(int id, Class clazz, Session session) {
+    public <C> boolean exists(int id, Class<C> clazz, Session session) {
         return hibernateFacade.exists(id, clazz, session);
     }
 
@@ -454,17 +499,15 @@ public class DataCommonsDAO {
         datasetTypesDAO.validateDatasetTypeIndicesKeyword(datasetType, cols);
     }
     
-    public Object load(Class clazz, String name, Session session) {
-        Criterion criterion = Restrictions.eq("name", name);
-        return hibernateFacade.load(clazz, criterion, session);
+    public <T> T load(Class<T> clazz, String name, Session session) {
+        return hibernateFacade.load(clazz, "name", name, session);
     }
     
-    public List get(Class clazz, Criterion criterion, Session session){
-        return hibernateFacade.get(clazz, criterion, session);
+    public <C,K> List<C> get(Class<C> clazz, String keyField, K keyValue, Session session){
+        return hibernateFacade.get(clazz, keyField, keyValue, session);
     }
     
     public void updateProject(Project project, Session session) {
         hibernateFacade.updateOnly(project, session);
     }
-
 }

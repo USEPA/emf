@@ -1,5 +1,19 @@
 package gov.epa.emissions.framework.services.cost;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.query.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import gov.epa.emissions.commons.CoSTConstants;
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.commons.data.Reference;
@@ -11,23 +25,10 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.controlmeasure.Scc;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.StatelessSession;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class ControlMeasureDAO {
     private LockingScheme lockingScheme;
@@ -51,24 +52,20 @@ public class ControlMeasureDAO {
 //        this.dbServer = dbServer;
 //    }
 
-    public boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    public boolean exists(int id, Session session) {
+        return hibernateFacade.exists(id, ControlMeasure.class, session);
     }
 
-    public boolean exists(Class clazz, Criterion[] criterions, Session session) {
-        return hibernateFacade.exists(clazz, criterions, session);
-    }
-
-    private boolean exists(Class clazz, Criterion[] criterions, StatelessSession session) {
-        return hibernateFacade.exists(clazz, criterions, session);
+    public <C> boolean exists(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, Session session) {
+        return hibernateFacade.exists(criteriaBuilderQueryRoot, predicates, session);
     }
 
     public ControlMeasure current(int id, Session session) {
-        return (ControlMeasure) hibernateFacade.current(id, ControlMeasure.class, session);
+        return hibernateFacade.current(id, ControlMeasure.class, session);
     }
 
     public boolean canUpdate(ControlMeasure measure, Session session) {
-        if (!exists(measure.getId(), ControlMeasure.class, session)) {
+        if (!exists(measure.getId(), session)) {
             return false;
         }
 
@@ -77,14 +74,14 @@ public class ControlMeasureDAO {
         if (current.getName().equals(measure.getName()))
             return true;
 
-        return !nameUsed(measure.getName(), ControlMeasure.class, session);
+        return !nameUsed(measure.getName(), session);
     }
 
     /*
      * Return true if the name is already used
      */
-    private boolean nameUsed(String name, Class clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    private boolean nameUsed(String name, Session session) {
+        return hibernateFacade.nameUsed(name, ControlMeasure.class, session);
     }
 
     public boolean exists(String name, Session session) {
@@ -92,12 +89,13 @@ public class ControlMeasureDAO {
     }
 
     public List all(Session session) {
-        return hibernateFacade.getAll(ControlMeasure.class, session);
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
     }
 
     public List getControlMeasures(Pollutant poll, Session session) {
-        Criterion c = Restrictions.eq("majorPollutant", poll);
-        return hibernateFacade.get(ControlMeasure.class, c, session);
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("majorPollutant"), poll));
     }
 
     // NOTE: it't not happening in one transaction. modify?
@@ -130,8 +128,7 @@ public class ControlMeasureDAO {
     }
 
     private int controlMeasureIds(ControlMeasure measure, Scc[] sccs, Session session) {
-        ControlMeasure cm = (ControlMeasure) hibernateFacade.load(ControlMeasure.class, Restrictions.eq("name", measure
-                .getName()), session);
+        ControlMeasure cm = hibernateFacade.load(ControlMeasure.class, "name", measure.getName(), session);
         int cmId = cm.getId();
         for (int i = 0; i < sccs.length; i++) {
             sccs[i].setControlMeasureId(cmId);
@@ -252,10 +249,14 @@ public class ControlMeasureDAO {
         cm.setName("Copy of " + cm.getName() + " " + creator.getName() + " " + CustomDateFormat.format_HHMM(new Date()));
         cm.setAbbreviation(CustomDateFormat.format_YYDDHHMMSS(new Date()));
         
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<ControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
+
         //make sure the name and abbrev are unique
 //        Criterion name = Restrictions.eq("name", cm.getName());
-        Criterion abbrev = Restrictions.eq("abbreviation", cm.getAbbreviation());
-        boolean abbrExist = abbrExist(new Criterion[] { abbrev }, session);
+        Predicate abbrev = builder.equal(root.get("abbreviation"), cm.getAbbreviation());
+        boolean abbrExist = abbrExist(criteriaBuilderQueryRoot, new Predicate[] { abbrev }, session);
         boolean nameExist = nameExist(cm.getName(), session);
 
         if (abbrExist || nameExist)
@@ -453,9 +454,13 @@ public class ControlMeasureDAO {
     }
 
     public Scc[] getSccs(int controlMeasureId, Session session) {
-        Criterion id = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
-        List list = hibernateFacade.get(Scc.class, new Criterion[] { id }, session);
-        return (Scc[]) list.toArray(new Scc[0]);
+        CriteriaBuilderQueryRoot<Scc> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Scc.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Scc> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate id = builder.equal(root.get("controlMeasureId"), Integer.valueOf(controlMeasureId));
+        List<Scc> list = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { id }, session);
+        return list.toArray(new Scc[0]);
     }
 
     public String[] getCMAbbrevAndSccs(int measureId, DbServer dbServer) throws EmfException {
@@ -468,20 +473,20 @@ public class ControlMeasureDAO {
     }
 
     public void checkForConstraints(ControlMeasure controlMeasure, Session session) throws EmfException {
-        Criterion id = Restrictions.ne("id", Integer.valueOf(controlMeasure.getId()));
-        Criterion name = Restrictions.eq("name", controlMeasure.getName());
-        Criterion abbrev = Restrictions.eq("abbreviation", controlMeasure.getAbbreviation());
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<ControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate id = builder.notEqual(root.get("id"), Integer.valueOf(controlMeasure.getId()));
+        Predicate name = builder.equal(root.get("name"), controlMeasure.getName());
+        Predicate abbrev = builder.equal(root.get("abbreviation"), controlMeasure.getAbbreviation());
 
 //        if (nameExist(new Criterion[] { id, name }, session))
 //            throw new EmfException("The Control Measure name is already in use: " + controlMeasure.getName());
 
-        if (abbrExist(new Criterion[] { id, abbrev }, session))
+        if (abbrExist(criteriaBuilderQueryRoot, new Predicate[] { id, abbrev }, session))
             throw new EmfException("This control measure abbreviation is already in use: "
                     + controlMeasure.getAbbreviation());
-    }
-
-    private boolean nameExist(Criterion[] criterions, Session session) {
-        return exists(ControlMeasure.class, criterions, session);
     }
 
     private boolean nameExist(String name, Session session) {
@@ -490,20 +495,22 @@ public class ControlMeasureDAO {
         return count > 0 ? true : false;
     }
 
-    private boolean abbrExist(Criterion[] criterions, Session session) {
-        return exists(ControlMeasure.class, criterions, session);
+    private boolean abbrExist(CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot, Predicate[] predicates, Session session) {
+        return exists(criteriaBuilderQueryRoot, predicates, session);
     }
 
     public ControlMeasure load(ControlMeasure measure, Session session) {
-        return (ControlMeasure) hibernateFacade.load(ControlMeasure.class, Restrictions.eq("name", measure.getName()),
-                session);
+        return hibernateFacade.load(ControlMeasure.class, "name", measure.getName(), session);
     }
 
     public int addFromImporter(ControlMeasure measure, Scc[] sccs, User user, Session session, DbServer dbServer) throws EmfException {
         int cmId = 0;
 //        Criterion name = Restrictions.eq("name", measure.getName());
-        Criterion abbrev = Restrictions.eq("abbreviation", measure.getAbbreviation());
-        boolean abbrExist = abbrExist(new Criterion[] { abbrev }, session);
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<ControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
+        Predicate abbrev = builder.equal(root.get("abbreviation"), measure.getAbbreviation());
+        boolean abbrExist = abbrExist(criteriaBuilderQueryRoot, new Predicate[] { abbrev }, session);
         boolean nameExist = nameExist(measure.getName(), session);
 
         if (abbrExist) {// overwrite based on the UNIQUE control measure abbreviation
@@ -535,26 +542,11 @@ public class ControlMeasureDAO {
     
     // use only after confirming measure is exist
     private int getControlMeasureIdByAbbreviation(String abbreviation, Session session) {
-//        Criterion criterion = Restrictions.eq("name", measure.getName());
-//
-//        Transaction tx = null;
-//        try {
-//            tx = session.beginTransaction();
-//            Criteria criteria = session.createCriteria(ControlMeasure.class);
-//            criteria.add(criterion);
-//            tx.commit();
-//            return ((ControlMeasure) criteria.uniqueResult()).getId();
-//        } catch (HibernateException e) {
-//            tx.rollback();
-//            throw e;
-//        }
-//
         int id = (Integer)session.createQuery("select cM.id from ControlMeasure cM where cM.abbreviation =  :abbreviation")
-            .setString("abbreviation", abbreviation)
+            .setParameter("abbreviation", abbreviation)
             .uniqueResult();
         
         return id;
-    
     }
 
     public void removeMeasureEquationType(int controlMeasureEquationTypeId, Session session) {
@@ -682,20 +674,28 @@ public class ControlMeasureDAO {
     }
 
     public List allCMClasses(Session session) {
-        return hibernateFacade.getAll(ControlMeasureClass.class, Order.asc("name"), session);
+        CriteriaBuilderQueryRoot<ControlMeasureClass> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasureClass.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<ControlMeasureClass> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
     public ControlMeasureClass getCMClass(Session session, String name) {
-        return (ControlMeasureClass)hibernateFacade.load(ControlMeasureClass.class, Restrictions.eq("name", name), session);
+        return hibernateFacade.load(ControlMeasureClass.class, "name", name, session);
     }
 
-    public List getLightControlMeasures(Session session) {
-        return hibernateFacade.getAll(LightControlMeasure.class, Order.asc("name"), session);
+    public List<LightControlMeasure> getLightControlMeasures(Session session) {
+        CriteriaBuilderQueryRoot<LightControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(LightControlMeasure.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<LightControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
-    public List getEfficiencyRecords(int controlMeasureId, Session session) {
-        Criterion c = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
-        return hibernateFacade.get(EfficiencyRecord.class, c, session);
+    public List<EfficiencyRecord> getEfficiencyRecords(int controlMeasureId, Session session) {
+        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, session);
+        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("controlMeasureId"), Integer.valueOf(controlMeasureId)));
     }
 
     public long getEfficiencyRecordCount(int controlMeasureId, Session session) {
@@ -704,7 +704,7 @@ public class ControlMeasureDAO {
                 "controlMeasureId", controlMeasureId).uniqueResult();
     }
 
-    public List getEfficiencyRecords(int controlMeasureId, int inventoryYear, 
+    public List<EfficiencyRecord> getEfficiencyRecords(int controlMeasureId, int inventoryYear, 
             String[] pollutants, Session session) {
         String sql = "from EfficiencyRecord as e where e.controlMeasureId = :controlMeasureId and coalesce(date_part('year', e.effectiveDate), :inventoryYear) <= :inventoryYear";
         if (pollutants.length> 0) {
@@ -715,9 +715,9 @@ public class ControlMeasureDAO {
             sql += ")";
         }
 //        System.out.println(sql);
-        Query query = session.createQuery(sql)
-            .setInteger("controlMeasureId", controlMeasureId)
-            .setInteger("inventoryYear", inventoryYear);
+        Query<EfficiencyRecord> query = session.createQuery(sql, EfficiencyRecord.class)
+            .setParameter("controlMeasureId", Integer.valueOf(controlMeasureId))
+            .setParameter("inventoryYear", Integer.valueOf(inventoryYear));
         query.setCacheable(true);
         return query.list();
     }
@@ -746,18 +746,22 @@ public class ControlMeasureDAO {
 //    }
 
     public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, Session session) throws EmfException {
-        Criterion id = Restrictions.ne("id", Integer.valueOf(record.getId()));
-        Criterion measureId = Restrictions.eq("controlMeasureId", Integer.valueOf(record.getControlMeasureId()));
-        Criterion locale = Restrictions.eq("locale", record.getLocale());
-        Criterion pollutant = Restrictions.eq("pollutant", record.getPollutant());
-        Criterion existingMeasureAbbr = record.getExistingMeasureAbbr() == null ? Restrictions.isNull("existingMeasureAbbr") : Restrictions.eq("existingMeasureAbbr", record.getExistingMeasureAbbr());
-        Criterion existingDevCode = Restrictions.eq("existingDevCode", record.getExistingDevCode());
-        Criterion effectiveDate = record.getEffectiveDate() == null ? Restrictions.isNull("effectiveDate") : Restrictions.eq("effectiveDate", record.getEffectiveDate());
+        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<EfficiencyRecord> root = criteriaBuilderQueryRoot.getRoot();
 
-        Criterion minEmis = record.getMinEmis() == null ? Restrictions.isNull("minEmis") : Restrictions.eq("minEmis", record.getMinEmis());
-        Criterion maxEmis = record.getMaxEmis() == null ? Restrictions.isNull("maxEmis") : Restrictions.eq("maxEmis", record.getMaxEmis());
+        Predicate id = builder.notEqual(root.get("id"), Integer.valueOf(record.getId()));
+        Predicate measureId = builder.equal(root.get("controlMeasureId"), Integer.valueOf(record.getControlMeasureId()));
+        Predicate locale = builder.equal(root.get("locale"), record.getLocale());
+        Predicate pollutant = builder.equal(root.get("pollutant"), record.getPollutant());
+        Predicate existingMeasureAbbr = record.getExistingMeasureAbbr() == null ? builder.isNull(root.get("existingMeasureAbbr")) : builder.equal(root.get("existingMeasureAbbr"), record.getExistingMeasureAbbr());
+        Predicate existingDevCode = builder.equal(root.get("existingDevCode"), record.getExistingDevCode());
+        Predicate effectiveDate = record.getEffectiveDate() == null ? builder.isNull(root.get("effectiveDate")) : builder.equal(root.get("effectiveDate"), record.getEffectiveDate());
 
-        if (exists(EfficiencyRecord.class, new Criterion[] {id, measureId, locale, pollutant, existingMeasureAbbr, existingDevCode, effectiveDate, minEmis, maxEmis}, session)) {
+        Predicate minEmis = record.getMinEmis() == null ? builder.isNull(root.get("minEmis")) : builder.equal(root.get("minEmis"), record.getMinEmis());
+        Predicate maxEmis = record.getMaxEmis() == null ? builder.isNull(root.get("maxEmis")) : builder.equal(root.get("maxEmis"), record.getMaxEmis());
+
+        if (exists(criteriaBuilderQueryRoot, new Predicate[] {id, measureId, locale, pollutant, existingMeasureAbbr, existingDevCode, effectiveDate, minEmis, maxEmis}, session)) {
             throw new EmfException("Duplicate Record: The combination of 'Pollutant', 'Locale', 'Effective Date', 'Existing Measure', 'Existing Dev Code', 'Minimum Emission' and 'Maximum Emission' should be unique - Locale = " + record.getLocale()
                 + " Pollutant = " + record.getPollutant().getName()
                 + " ExistingMeasureAbbr = " + record.getExistingMeasureAbbr()
@@ -768,24 +772,28 @@ public class ControlMeasureDAO {
         }
     }
 
-    public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, StatelessSession session) throws EmfException {
-        Criterion id = Restrictions.ne("id", Integer.valueOf(record.getId()));
-        Criterion measureId = Restrictions.eq("controlMeasureId", Integer.valueOf(record.getControlMeasureId()));
-        Criterion locale = Restrictions.eq("locale", record.getLocale());
-        Criterion pollutant = Restrictions.eq("pollutant", record.getPollutant());
-        Criterion existingMeasureAbbr = record.getExistingMeasureAbbr() == null ? Restrictions.isNull("existingMeasureAbbr") : Restrictions.eq("existingMeasureAbbr", record.getExistingMeasureAbbr());
-        Criterion effectiveDate = record.getEffectiveDate() == null ? Restrictions.isNull("effectiveDate") : Restrictions.eq("effectiveDate", record.getEffectiveDate());
-
-        if (exists(EfficiencyRecord.class, new Criterion[] {id, measureId, locale, pollutant, existingMeasureAbbr, effectiveDate}, session)) {
-            throw new EmfException("Duplicate Record: The combination of 'Pollutant', 'Locale', 'Effective Date' and 'Existing Measure' should be unique - Locale = " + record.getLocale()
-                + " Pollutant = " + record.getPollutant().getName()
-                + " ExistingMeasureAbbr = " + record.getExistingMeasureAbbr()
-                + " EffectiveDate = " + (record.getEffectiveDate() == null ? "" : record.getEffectiveDate()));
-        }
-    }
-
+//    public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, StatelessSession session) throws EmfException {
+//        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, session);
+//        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+//        Root<EfficiencyRecord> root = criteriaBuilderQueryRoot.getRoot();
+//
+//        Criterion id = Restrictions.ne("id", Integer.valueOf(record.getId()));
+//        Criterion measureId = Restrictions.eq("controlMeasureId", Integer.valueOf(record.getControlMeasureId()));
+//        Criterion locale = Restrictions.eq("locale", record.getLocale());
+//        Criterion pollutant = Restrictions.eq("pollutant", record.getPollutant());
+//        Criterion existingMeasureAbbr = record.getExistingMeasureAbbr() == null ? Restrictions.isNull("existingMeasureAbbr") : Restrictions.eq("existingMeasureAbbr", record.getExistingMeasureAbbr());
+//        Criterion effectiveDate = record.getEffectiveDate() == null ? Restrictions.isNull("effectiveDate") : Restrictions.eq("effectiveDate", record.getEffectiveDate());
+//
+//        if (exists(EfficiencyRecord.class, new Criterion[] {id, measureId, locale, pollutant, existingMeasureAbbr, effectiveDate}, session)) {
+//            throw new EmfException("Duplicate Record: The combination of 'Pollutant', 'Locale', 'Effective Date' and 'Existing Measure' should be unique - Locale = " + record.getLocale()
+//                + " Pollutant = " + record.getPollutant().getName()
+//                + " ExistingMeasureAbbr = " + record.getExistingMeasureAbbr()
+//                + " EffectiveDate = " + (record.getEffectiveDate() == null ? "" : record.getEffectiveDate()));
+//        }
+//    }
+//
     public void removeEfficiencyRecord(int efficiencyRecordId, Session session, DbServer dbServer) throws EmfException {
-        EfficiencyRecord er = (EfficiencyRecord)hibernateFacade.current(efficiencyRecordId, EfficiencyRecord.class, session);
+        EfficiencyRecord er = hibernateFacade.current(efficiencyRecordId, EfficiencyRecord.class, session);
         int cmId = er.getControlMeasureId();
         hibernateFacade.remove(hibernateFacade.current(efficiencyRecordId, EfficiencyRecord.class, session), session);
         updateAggregateEfficiencyRecords(cmId, dbServer);
@@ -855,20 +863,20 @@ public class ControlMeasureDAO {
         }
     }
 
-    public List getEquationTypes(Session session) {
-        Query query = session.createQuery("from EquationType as e order by e.name");
+    public List<EquationType> getEquationTypes(Session session) {
+        Query<EquationType> query = session.createQuery("from EquationType as e order by e.name", EquationType.class);
         query.setCacheable(true);
         return query.list();//hibernateFacade.getAll(EquationType.class, Order.asc("name"), session);
     }
 
     public List<ControlMeasurePropertyCategory> getPropertyCategories(Session session) {
-        Query query = session.createQuery("from ControlMeasurePropertyCategory as e order by e.name");
+        Query<ControlMeasurePropertyCategory> query = session.createQuery("from ControlMeasurePropertyCategory as e order by e.name", ControlMeasurePropertyCategory.class);
         query.setCacheable(true);
         return query.list();
     }
 
     public List<Sector> getDistinctControlMeasureSectors(Session session) {
-        Query query = session.createQuery("select distinct s FROM ControlMeasure AS cm inner join cm.sectors AS s order by s.name");
+        Query<Sector> query = session.createQuery("select distinct s FROM ControlMeasure AS cm inner join cm.sectors AS s order by s.name", Sector.class);
         query.setCacheable(true);
         return query.list();
     }
@@ -881,16 +889,14 @@ public class ControlMeasureDAO {
         
         String join = (sectorIds.length > 0 ? "inner join cm.sectors AS s " : "") +
                       (!allClasses ? "inner join cm.cmClass AS cl " : "");
-        Query query = session.createQuery("select new ControlMeasure(cm.id, cm.name, cm.abbreviation) "
+        Query<ControlMeasure> query = session.createQuery("select new ControlMeasure(cm.id, cm.name, cm.abbreviation) "
                 + "FROM ControlMeasure AS cm "
                 + join
                 + "WHERE 1 = 1 "
                 + (sectorIds.length > 0 ? "AND s.id IN (" + idList + ") " : "")
                 + (!allClasses ? "AND cl.name NOT IN ('Obsolete', 'Temporary') " : "")
-                + "order by cm.name");
+                + "order by cm.name", ControlMeasure.class);
         query.setCacheable(true);
         return query.list();
     }
-    
-    
 }

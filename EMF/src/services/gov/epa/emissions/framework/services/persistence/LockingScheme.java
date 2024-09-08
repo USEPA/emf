@@ -3,7 +3,6 @@ package gov.epa.emissions.framework.services.persistence;
 import gov.epa.emissions.commons.data.Lockable;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.EmfProperties;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 
 import java.util.Date;
@@ -14,7 +13,7 @@ import org.hibernate.Transaction;
 
 public class LockingScheme {
 
-    private EmfProperties propertiesDao;
+    private EmfPropertiesDAO propertiesDao;
 
     public LockingScheme() {
         propertiesDao = new EmfPropertiesDAO();

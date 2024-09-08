@@ -1,7 +1,6 @@
 package gov.epa.emissions.framework.services.casemanagement;
 
 import gov.epa.emissions.commons.data.Sector;
-import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.io.ExporterException;
@@ -19,26 +18,25 @@ import gov.epa.emissions.framework.services.casemanagement.parameters.CaseParame
 import gov.epa.emissions.framework.services.casemanagement.parameters.ParameterEnvVar;
 import gov.epa.emissions.framework.services.casemanagement.parameters.ParameterName;
 import gov.epa.emissions.framework.services.casemanagement.parameters.ValueType;
-import gov.epa.emissions.framework.services.cost.ControlStrategyInventoryOutputTask;
 import gov.epa.emissions.framework.services.data.DataCommonsDAO;
 import gov.epa.emissions.framework.services.data.DatasetVersion;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import gov.epa.emissions.framework.services.qa.QAProgramRunner;
 import gov.epa.emissions.framework.services.qa.QueryToString;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
@@ -846,7 +844,7 @@ public class CaseServiceImpl implements CaseService {
                     if (minVersion != maxVersion) {
                         //let's look up revisions, we are also assuming the different versions are based on the
                         //same revision branch
-                        EmfDataset dataset = (EmfDataset) dataCommonsDao.get(EmfDataset.class, Restrictions.eq("name", datasetName), session).get(0);
+                        EmfDataset dataset = dataCommonsDao.get(EmfDataset.class, "name", datasetName, session).get(0);
                         List<Revision> revisions = dataCommonsDao.getRevisions(dataset.getId(), session);
                         Version version = dataCommonsDao.getVersion(dataset.getId(), maxVersion, session);
                         for (Revision revision : revisions) {

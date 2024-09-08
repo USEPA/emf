@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.BaseColor;
@@ -114,6 +115,8 @@ public class ControlMeasuresPDFReport implements Runnable {
 
     private DbServerFactory dbServerFactory;
 
+    private HibernateSessionFactory sessionFactory;
+
     private DbServer dbServer;
 
     private SumEffRec[] aggEfficiencyRecords;
@@ -121,11 +124,12 @@ public class ControlMeasuresPDFReport implements Runnable {
     public ControlMeasuresPDFReport(User user, int[] controlMeasureIds, 
             ControlMeasureService service, HibernateSessionFactory sessionFactory, 
             DbServerFactory dbServerFactory) {
+        this.sessionFactory = sessionFactory;
         this.user = user;
         this.controlMeasureIds = controlMeasureIds;
         this.service = service;
         this.statusDao = new StatusDAO(sessionFactory);
-        this.fileDownloadDao = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDao = new FileDownloadDAO();
         this.aggregateEfficiencyRecordDao = new AggregateEfficiencyRecordDAO();
         this.dbServerFactory = dbServerFactory;
         this.outputFile = new File(temporaryFile());
@@ -136,11 +140,14 @@ public class ControlMeasuresPDFReport implements Runnable {
         String separator = File.separator; 
   
         String exportDir = "";
+        Session session = sessionFactory.getSession();
         try {
-            exportDir = fileDownloadDao.getDownloadExportFolder() + "/" + user.getUsername();
+            exportDir = fileDownloadDao.getDownloadExportFolder(session) + "/" + user.getUsername();
         } catch (EmfException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            session.close();
         }
 
         File tempDirFile = new File(exportDir);
@@ -1750,13 +1757,14 @@ public class ControlMeasuresPDFReport implements Runnable {
     }
     
     public void run() {
+        Session session = sessionFactory.getSession();
         try {
             dbServer = dbServerFactory.getDbServer();
             
             setStatus("Started generating Control Measure Control Measure AT-A-GLANCE PDF Report.  This could take several minutes to finish.");
             generate();
             //lets add a filedownload item for the user, so they can download the file
-            fileDownloadDao.add(user, new Date(), this.outputFile.getName(), "PDF", true);
+            fileDownloadDao.add(user, new Date(), this.outputFile.getName(), "PDF", true, session);
 
             
             setStatus("Completed generating Control Measure Control Measure AT-A-GLANCE PDF Report.  Report was exported to " + outputFile.getAbsolutePath());
@@ -1766,6 +1774,7 @@ public class ControlMeasuresPDFReport implements Runnable {
             e.printStackTrace();
         } finally {
             try {
+                session.close();
                 if (dbServer != null && dbServer.isConnected())
                     dbServer.disconnect();
             } catch (Exception e) {

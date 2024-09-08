@@ -3,7 +3,6 @@ package gov.epa.emissions.framework.services.editor;
 import gov.epa.emissions.commons.db.PageReader;
 import gov.epa.emissions.commons.db.version.ScrollableVersionedRecords;
 import gov.epa.emissions.commons.db.version.VersionedRecordsFactory;
-import gov.epa.emissions.framework.services.EmfProperties;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 
@@ -21,13 +20,13 @@ public class DataViewCacheImpl implements DataViewCache {
 
     private VersionedRecordsFactory recordsReader;
 
-    private EmfProperties properties;
+    private EmfPropertiesDAO properties;
 
     public DataViewCacheImpl(VersionedRecordsFactory reader) {
         this(reader, new EmfPropertiesDAO());
     }
 
-    public DataViewCacheImpl(VersionedRecordsFactory reader, EmfProperties properties) {
+    public DataViewCacheImpl(VersionedRecordsFactory reader, EmfPropertiesDAO properties) {
         this.properties = properties;
         recordsReader = reader;
         readersMap = new HashMap();
@@ -123,7 +122,7 @@ public class DataViewCacheImpl implements DataViewCache {
         cacheReader(token, reader);
     }
 
-    private int batchSize(EmfProperties properties, Session session) {
+    private int batchSize(EmfPropertiesDAO properties, Session session) {
         EmfProperty batchSize = properties.getProperty("batch-size", session);
         return Integer.parseInt(batchSize.getValue());
     }

@@ -8,7 +8,11 @@ import java.util.Date;
 public class LockableImpl implements Lockable, Serializable {
 
     private Mutex lock;
-    
+
+    public int getId() {
+        return 0;
+    }
+
     public LockableImpl() {
         this.lock = new Mutex();
     }

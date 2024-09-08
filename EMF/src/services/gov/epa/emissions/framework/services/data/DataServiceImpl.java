@@ -56,8 +56,6 @@ public class DataServiceImpl implements DataService {
 
     private DatasetDAO dao;
 
-    private EmfPropertiesDAO propertyDao;
-
     private PooledExecutor threadPool;
 
     public enum DeleteType {
@@ -76,7 +74,6 @@ public class DataServiceImpl implements DataService {
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
         dao = new DatasetDAO(dbServerFactory);
-        this.propertyDao = new EmfPropertiesDAO(sessionFactory);
         threadPool = createThreadPool();
     }
 
@@ -167,10 +164,6 @@ public class DataServiceImpl implements DataService {
 
     }
 
-
-    private String getProperty(String name) {
-        return propertyDao.getProperty(name).getValue();
-    }
     public synchronized EmfDataset[] getDatasets(String nameContains, int userId) throws EmfException {
         Session session = sessionFactory.getSession();
         List datasets;

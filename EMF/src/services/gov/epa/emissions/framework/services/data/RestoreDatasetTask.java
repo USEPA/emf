@@ -44,7 +44,7 @@ public class RestoreDatasetTask implements Runnable {
         this.dbServerFactory = dbServerFactory;
         this.sessionFactory =sessionFactory;
         this.datasetDAO = new DatasetDAO(dbServerFactory);
-        this.propertyDao = new EmfPropertiesDAO(sessionFactory);
+        this.propertyDao = new EmfPropertiesDAO();
         this.statusDAO = new StatusDAO(sessionFactory);
         this.datasetId = datasetId;
         this.username = username;
@@ -64,7 +64,16 @@ public class RestoreDatasetTask implements Runnable {
     }
 
     private String getProperty(String name) {
-        return propertyDao.getProperty(name).getValue();
+        Session session = sessionFactory.getSession();
+        try {
+            return propertyDao.getProperty(name, session).getValue();
+        } catch (RuntimeException e) {
+            log.error("Could not get property with name=" + name, e);
+//            throw new EmfException("Could not get dataset with id=" + datasetId.intValue());
+        } finally {
+            session.close();
+        }
+        return null;
     }
 
     private void setStatus(String message) {

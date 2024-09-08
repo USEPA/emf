@@ -1,15 +1,16 @@
 package gov.epa.emissions.framework.services.cost;
 
 import gov.epa.emissions.commons.data.Reference;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class ReferencesDAO {
 
@@ -30,24 +31,34 @@ public class ReferencesDAO {
     }
 
     public List<Reference> getReferences(Session session) {
-        return session.createCriteria(Reference.class).addOrder(Order.asc("description")).list();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Reference> criteriaQuery = builder.createQuery(Reference.class);
+        Root<Reference> root = criteriaQuery.from(Reference.class);
+
+        criteriaQuery.select(root);
+        criteriaQuery.orderBy(builder.asc(root.get("description")));
+
+        return session.createQuery(criteriaQuery).getResultList();
     }
 
     public List<Reference> getReferences(Session session, String textContains) {
-        return session.createCriteria(Reference.class).add(
-                Restrictions.ilike("description", textContains.toLowerCase().trim(), MatchMode.ANYWHERE)).addOrder(
-                Order.asc("description")).list();
-        // return session.createQuery(
-        // "select new Reference(ref.id, ref.description) from Reference as ref where lower(ref.description) "
-        // + "like '%%" + textContains.toLowerCase().trim() + "%%' order by ref.description").list();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Reference> criteriaQuery = builder.createQuery(Reference.class);
+        Root<Reference> root = criteriaQuery.from(Reference.class);
+
+        criteriaQuery.select(root);
+        criteriaQuery.where(builder.like(builder.lower(root.get("description")), textContains.toLowerCase()));
+        criteriaQuery.orderBy(builder.asc(root.get("description")));
+
+        return session.createQuery(criteriaQuery).getResultList();
     }
 
     public boolean canUpdate(Reference reference, Session session) {
-        if (!exists(reference.getId(), Reference.class, session)) {
+        if (!exists(reference.getId(), session)) {
             return false;
         }
 
-        Reference current = current(reference.getId(), Reference.class, session);
+        Reference current = current(reference.getId(), session);
         // The current object is saved in the session. Hibernate cannot persist our
         // object with the same id.
         session.clear();
@@ -73,12 +84,12 @@ public class ReferencesDAO {
         return hibernateFacade.isUsed("description", description, Reference.class, session);
     }
 
-    private Reference current(int id, Class clazz, Session session) {
-        return (Reference) hibernateFacade.current(id, clazz, session);
+    private Reference current(int id, Session session) {
+        return hibernateFacade.current(id, Reference.class, session);
     }
 
-    private boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    private boolean exists(int id, Session session) {
+        return hibernateFacade.exists(id, Reference.class, session);
     }
 
     public Session getSession() {

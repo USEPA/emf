@@ -104,7 +104,7 @@ public class ExportTask extends Task {
         this.dbFactory = dbFactory;
         this.accesslog = accesslog;
         this.sessionFactory = sessionFactory;
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO();
         this.versions = new Version[] { version };
         this.datasetDao = new DatasetDAO();
     }
@@ -223,7 +223,7 @@ public class ExportTask extends Task {
             //download manager will pick up the new download request...
             if (download) {
                 //lets add a filedownload item for the user, so they can download the file
-                fileDownloadDAO.add(user, new Date(), file.getName(), "Dataset Export", false);
+                fileDownloadDAO.add(user, new Date(), file.getName(), "Dataset Export", false, session);
             }
 
             if ( DebugLevels.DEBUG_24()) {

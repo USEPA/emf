@@ -1,16 +1,23 @@
 package gov.epa.emissions.framework.services.basic;
 
+import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.framework.services.module.SearchFilterFields;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Created by DDelVecc on 3/14/2019.
@@ -62,6 +69,64 @@ public class SearchDAOUtility {
                     }
                 }
             }
+        }
+    }
+
+    public static void buildSearchCriterion(Subquery<DatasetType> subQuery, CriteriaBuilder builder, Root<DatasetType> subRoot, SearchFilterFields searchFilterFields,
+            BasicSearchFilter searchFilter) {
+        if (StringUtils.isNotBlank(searchFilter.getFieldName())
+                && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
+            FilterField filterField = searchFilterFields.getFilterFields().get(searchFilter.getFieldName());
+
+            List<Predicate> predicates = new ArrayList<Predicate>();
+            
+//agregate fields are dealt with differently
+            if (!filterField.isAggregrateField()) {
+                if (filterField.getFieldDataType().equals(String.class)) {
+                    predicates.add(builder.like(subRoot.get(filterField.getAssociationPath()),
+                            "%" + searchFilter.getFieldValue() + "%"));
+                } else if (filterField.getFieldDataType().equals(Integer.class)) {
+                    try {
+                        predicates.add(builder.equal(subRoot.get(filterField.getAssociationPath()),
+                                Integer.parseInt(searchFilter.getFieldValue())));
+                    } catch (NumberFormatException e) {
+                        predicates.add(builder.equal(subRoot.get(filterField.getAssociationPath()), null));
+                    }
+                } else if (filterField.getFieldDataType().equals(Date.class)) { // this is ignoring the time part of the
+                                                                                // date!!!
+                    try {
+                        final SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date = df.parse(searchFilter.getFieldValue());
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(date);
+                        c.add(Calendar.DATE, 1);
+                        predicates.add(builder.between(subRoot.get(filterField.getAssociationPath()), date, c.getTime()));
+                    } catch (ParseException e) {
+                        predicates.add(builder.equal(subRoot.get(filterField.getAssociationPath()), null));
+                    }
+                } else if (filterField.getFieldDataType().equals(Boolean.class)) {
+                    if (searchFilter.getFieldValue().equalsIgnoreCase("y")
+                            || searchFilter.getFieldValue().equalsIgnoreCase("yes")) {
+                        predicates.add(builder.equal(subRoot.get(filterField.getAssociationPath()), true));
+                    } else if (searchFilter.getFieldValue().equalsIgnoreCase("n")
+                            || searchFilter.getFieldValue().equalsIgnoreCase("no")) {
+                        predicates.add(builder.equal(subRoot.get(filterField.getAssociationPath()), false));
+                    } else {
+                        predicates.add(builder.equal(subRoot.get(filterField.getAssociationPath()), null));
+                    }
+                }
+            } else {
+                if (filterField.getFieldDataType().equals(Integer.class)) {
+                    try {
+                        predicates.add(builder.equal(builder.size(subRoot.get(filterField.getAssociationPath())),
+                                Integer.parseInt(searchFilter.getFieldValue())));
+                    } catch (NumberFormatException e) {
+                        predicates.add(builder.equal(builder.size(subRoot.get(filterField.getAssociationPath())),
+                                -1));
+                    }
+                }
+            }
+            subQuery.where(predicates.toArray(new Predicate[0]));
         }
     }
 

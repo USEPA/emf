@@ -42,7 +42,7 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
         this.dataCommonsDAO = new DataCommonsDAO();
         this.threadPool = createThreadPool();
         this.dbServerFactory = dbServerFactory;
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO();
     }
 
     public synchronized void finalize() throws Throwable {
@@ -81,10 +81,11 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
 
     private synchronized void doExport(String folderPath, String prefix, int[] controlMeasureIds, User user,
             boolean overwrite, boolean download) throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
             File dir;
             if (download) {
-                dir = new File(this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/");
+                dir = new File(this.fileDownloadDAO.getDownloadExportFolder(session) + "/" + user.getUsername() + "/");
             } else {
                 dir = new File(folderPath);
             }
@@ -106,6 +107,8 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
         } catch (Exception e) {
             LOG.error("Could not export control measures.", e);
             throw new EmfException("Could not export control measures: " + e.getMessage());
+        } finally {
+            session.close();
         }
     }
 

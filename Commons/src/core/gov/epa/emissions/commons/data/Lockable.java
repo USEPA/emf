@@ -5,6 +5,8 @@ import gov.epa.emissions.commons.security.User;
 import java.util.Date;
 
 public interface Lockable {
+    
+    int getId();
 
     Date getLockDate();
 

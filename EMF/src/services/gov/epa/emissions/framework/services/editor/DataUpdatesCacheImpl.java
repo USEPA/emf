@@ -1,14 +1,5 @@
 package gov.epa.emissions.framework.services.editor;
 
-import gov.epa.emissions.commons.db.Datasource;
-import gov.epa.emissions.commons.db.SqlDataTypes;
-import gov.epa.emissions.commons.db.version.ChangeSet;
-import gov.epa.emissions.commons.db.version.VersionedRecordsWriter;
-import gov.epa.emissions.framework.services.EmfProperties;
-import gov.epa.emissions.framework.services.basic.EmfProperty;
-import gov.epa.emissions.framework.services.editor.ChangeSets.ChangeSetsIterator;
-import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +9,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.hibernate.Session;
+
+import gov.epa.emissions.commons.db.Datasource;
+import gov.epa.emissions.commons.db.SqlDataTypes;
+import gov.epa.emissions.commons.db.version.ChangeSet;
+import gov.epa.emissions.commons.db.version.VersionedRecordsWriter;
+import gov.epa.emissions.framework.services.basic.EmfProperty;
+import gov.epa.emissions.framework.services.editor.ChangeSets.ChangeSetsIterator;
+import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 
 public class DataUpdatesCacheImpl implements DataUpdatesCache {
 
@@ -31,7 +30,7 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
 
     private VersionedRecordsWriterFactory writerFactory;
 
-    private EmfProperties properties;
+    private EmfPropertiesDAO properties;
 
     public DataUpdatesCacheImpl(VersionedRecordsWriterFactory writerFactory, Datasource datasource,
             SqlDataTypes sqlTypes) {
@@ -39,7 +38,7 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
     }
 
     public DataUpdatesCacheImpl(VersionedRecordsWriterFactory writerFactory, Datasource datasource,
-            SqlDataTypes sqlTypes, EmfProperties properties) {
+            SqlDataTypes sqlTypes, EmfPropertiesDAO properties) {
         this.properties = properties;
 
         this.writerFactory = writerFactory;

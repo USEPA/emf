@@ -5,8 +5,11 @@ import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 
 public class ControlTechnologiesDAO {
 
@@ -24,35 +27,42 @@ public class ControlTechnologiesDAO {
         addObject(technology, session);
     }
 
-    public List getAll(Session session) {
-        return session.createCriteria(ControlTechnology.class).addOrder(Order.asc("name")).list();
+    public List<ControlTechnology> getAll(Session session) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<ControlTechnology> criteriaQuery = builder.createQuery(ControlTechnology.class);
+        Root<ControlTechnology> root = criteriaQuery.from(ControlTechnology.class);
+
+        criteriaQuery.select(root);
+        criteriaQuery.orderBy(builder.asc(root.get("name")));
+
+        return session.createQuery(criteriaQuery).getResultList();
     }
 
     public boolean canUpdate(ControlTechnology technology, Session session) {
-        if (!exists(technology.getId(), ControlTechnology.class, session)) {
+        if (!exists(technology.getId(), session)) {
             return false;
         }
 
-        ControlTechnology current = current(technology.getId(), ControlTechnology.class, session);
+        ControlTechnology current = current(technology.getId(), session);
         // The current object is saved in the session. Hibernate cannot persist our
         // object with the same id.
         session.clear();
         if (current.getName().equals(technology.getName()))
             return true;
 
-        return !nameUsed(technology.getName(), ControlTechnology.class, session);
+        return !nameUsed(technology.getName(), session);
     }
 
-    private boolean nameUsed(String name, Class clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    private boolean nameUsed(String name, Session session) {
+        return hibernateFacade.nameUsed(name, ControlTechnology.class, session);
     }
 
-    private ControlTechnology current(int id, Class clazz, Session session) {
-        return (ControlTechnology) hibernateFacade.current(id, clazz, session);
+    private ControlTechnology current(int id, Session session) {
+        return hibernateFacade.current(id, ControlTechnology.class, session);
     }
 
-    private boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    private boolean exists(int id, Session session) {
+        return hibernateFacade.exists(id, ControlTechnology.class, session);
     }
 
 }

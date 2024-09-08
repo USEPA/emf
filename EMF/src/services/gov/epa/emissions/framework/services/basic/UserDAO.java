@@ -3,13 +3,16 @@ package gov.epa.emissions.framework.services.basic;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 
 public class UserDAO {
 
@@ -22,8 +25,9 @@ public class UserDAO {
         facade = new HibernateFacade();
     }
 
-    public List all(Session session) {
-        return facade.getAll(User.class, session);
+    public List<User> all(Session session) {
+        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, session);
+        return facade.getAll(criteriaBuilderQueryRoot, session);
     }
 
     public void add(User user, Session session) {
@@ -39,27 +43,30 @@ public class UserDAO {
     }
 
     public User get(String username, Session session) {
-        Criterion criterion = Restrictions.eq("username", username);
-        List list = facade.get(User.class, criterion, session);
+        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, session);
+        
+        List<User> list = facade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("username"), username));
         if (list.isEmpty())
             return null;
-        return (User) list.get(0);
+        return list.get(0);
     }
     
     public User getUserByEmail(int id, String email, Session session) {
-        Criterion crit1 = Restrictions.eq("email", email);
-        Criterion crit2 = Restrictions.ne("id", Integer.valueOf(id));
+        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<User> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate crit1 = builder.equal(root.get("email"), email);
+        Predicate crit2 = builder.notEqual(root.get("id"), Integer.valueOf(id));
         
-        List list = facade.get(User.class, new Criterion[]{crit1, crit2}, session);
+        List list = facade.get(criteriaBuilderQueryRoot, new Predicate[]{crit1, crit2}, session);
         if (list.isEmpty())
             return null;
         return (User) list.get(0);
     }
 
     public User get(int userId, Session session) {
-        Criterion criterion = Restrictions.eq("id", userId);
-        User user = (User) facade.load(User.class, criterion, session);
-        return user;
+        return facade.load(User.class, "id", new Integer(userId), session);
     }
 
     public boolean contains(String username, Session session) {
@@ -79,6 +86,6 @@ public class UserDAO {
     }
 
     private User current(User user, Session session) {
-        return (User) facade.current(user.getId(), User.class, session);
+        return facade.current(user.getId(), User.class, session);
     }
 }

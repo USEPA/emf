@@ -6,8 +6,6 @@ import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 
 public class ProjectsDAO {
 
@@ -36,8 +34,7 @@ public class ProjectsDAO {
     }
     
     private Project loadProject(String name, Session session) {
-        Criterion criterion = Restrictions.eq("name", name);
-        return (Project)hibernateFacade.load(Project.class, criterion, session);
+        return hibernateFacade.load(Project.class, "name", name, session);
     }
 
 }

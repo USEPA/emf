@@ -48,11 +48,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 
-//@Transactional(readOnly = true)
-//@Repository
 public class DataCommonsServiceImpl implements DataCommonsService {
 
     private static Log LOG = LogFactory.getLog(DataCommonsServiceImpl.class);
@@ -78,7 +74,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public DataCommonsServiceImpl(HibernateSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO();
         dao = new DataCommonsDAO();
     }
 
@@ -390,8 +386,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                         + type.getId()+ ")").list();
 
         if (list != null && list.size() > 0) {
-            Criterion criterion = Restrictions.eq("id", list.get(0));
-            Case usedCase = (Case) dao.get(Case.class, criterion, session).get(0);
+            Case usedCase = dao.get(Case.class, "id", list.get(0), session).get(0);
             throw new EmfException("Dataset type \" " + type.getName()+ "\" is used by case " + usedCase.getName() + ".");
         }
     }
@@ -406,8 +401,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                         + type.getId()+ ")").list();
 
         if (list != null && list.size() > 0) {
-            Criterion criterion = Restrictions.eq("id", list.get(0));
-            EmfDataset deletedDS = (EmfDataset) dao.get(EmfDataset.class, criterion, session).get(0);
+            EmfDataset deletedDS = dao.get(EmfDataset.class, "id", list.get(0), session).get(0);
             throw new EmfException(" Cannot delete dataset type <"+ type.getName()
                     + ">. \n The following user have removed but not purged datasets of this type. \n" 
                     + "<" + deletedDS.getCreator() + ", " + deletedDS.getCreatorFullName() +">");
@@ -495,11 +489,14 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public void addFileDownload(FileDownload fileDownload) throws EmfException {
+        Session session = sessionFactory.getSession();
         try {
-            fileDownloadDAO.add(fileDownload);
+            fileDownloadDAO.add(fileDownload, session);
         } catch (RuntimeException e) {
             LOG.error("Could not add FileDownload", e);
             throw new EmfException("Could not add FileDownload");
+        } finally {
+            session.close();
         }
     }
 

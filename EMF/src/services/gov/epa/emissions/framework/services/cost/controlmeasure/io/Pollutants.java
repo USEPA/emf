@@ -1,14 +1,16 @@
 package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
-import gov.epa.emissions.commons.data.Pollutant;
-import gov.epa.emissions.framework.services.persistence.HibernateFacade;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+
+import gov.epa.emissions.commons.data.Pollutant;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
+import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 public class Pollutants {
 
@@ -24,10 +26,14 @@ public class Pollutants {
         pollutantList = pollutants(sessionFactory);
     }
 
-    private List pollutants(HibernateSessionFactory sessionFactory) {
+    private List<Pollutant> pollutants(HibernateSessionFactory sessionFactory) {
         Session session = sessionFactory.getSession();
         try {
-            return facade.getAll(Pollutant.class, Order.asc("name"), session);
+            CriteriaBuilderQueryRoot<Pollutant> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(Pollutant.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<Pollutant> root = criteriaBuilderQueryRoot.getRoot();
+
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
         } finally {
             session.close();
         }
@@ -68,7 +74,7 @@ public class Pollutants {
     private Pollutant load(String name) {
         Session session = sessionFactory.getSession();
         try {
-            return (Pollutant) facade.load(Pollutant.class, Restrictions.eq("name", name), session);
+            return facade.load(Pollutant.class, "name", name, session);
         } finally {
             session.close();
         }

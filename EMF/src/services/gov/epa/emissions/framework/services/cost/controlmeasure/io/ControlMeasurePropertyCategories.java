@@ -1,15 +1,17 @@
 package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Session;
+
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlMeasurePropertyCategory;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-
-import java.util.List;
-
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class ControlMeasurePropertyCategories {
 
@@ -25,10 +27,14 @@ public class ControlMeasurePropertyCategories {
         categoryList = categories(sessionFactory);
     }
 
-    private List categories(HibernateSessionFactory sessionFactory) {
+    private List<ControlMeasurePropertyCategory> categories(HibernateSessionFactory sessionFactory) {
         Session session = sessionFactory.getSession();
         try {
-            return facade.getAll(ControlMeasurePropertyCategory.class, Order.asc("name"), session);
+            CriteriaBuilderQueryRoot<ControlMeasurePropertyCategory> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(ControlMeasurePropertyCategory.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<ControlMeasurePropertyCategory> root = criteriaBuilderQueryRoot.getRoot();
+
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
         } finally {
             session.close();
         }
@@ -69,7 +75,7 @@ public class ControlMeasurePropertyCategories {
     private ControlMeasurePropertyCategory load(String name) {
         Session session = sessionFactory.getSession();
         try {
-            return (ControlMeasurePropertyCategory) facade.load(ControlMeasurePropertyCategory.class, Restrictions.eq("name", name), session);
+            return (ControlMeasurePropertyCategory) facade.load(ControlMeasurePropertyCategory.class, "name", name, session);
         } finally {
             session.close();
         }

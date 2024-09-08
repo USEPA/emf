@@ -70,7 +70,7 @@ public class ControlMeasureImportServiceImpl implements ControlMeasureImportServ
             LOG.error("Could not get detail import status messages.", e);
             throw new EmfException("Could not get detail import status messages. " + e.getMessage());
         } finally {
-            session.clear();
+            session.close();
         }
     }
     
@@ -82,7 +82,7 @@ public class ControlMeasureImportServiceImpl implements ControlMeasureImportServ
             LOG.error("Could not remove detail import status messages.", e);
             throw new EmfException("Could not remove detail import status messages. " + e.getMessage());
         } finally {
-            session.clear();
+            session.close();
         }
     }
     

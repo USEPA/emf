@@ -67,7 +67,7 @@ public class ExportQAStepTask implements Runnable {
         this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
         this.statusDao = new StatusDAO(sessionFactory);
-        this.fileDownloadDao = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDao = new FileDownloadDAO();
     }
 
     public ExportQAStepTask(String dirName, String fileName, 
@@ -94,6 +94,7 @@ public class ExportQAStepTask implements Runnable {
     public void run() {        
         String suffix = "";
         DbServer dbServer = dbServerFactory.getDbServer();
+        Session session = sessionFactory.getSession();
         try {
             getStepResult();
             file = exportFile(dirName);
@@ -108,7 +109,7 @@ public class ExportQAStepTask implements Runnable {
 
             if (download) {
                 //lets add a filedownload item for the user, so they can download the file
-                fileDownloadDao.add(user, new Date(), file.getName(), "QA Step - CSV", overide);
+                fileDownloadDao.add(user, new Date(), file.getName(), "QA Step - CSV", overide, session);
             }
 
             complete(suffix);
@@ -116,6 +117,7 @@ public class ExportQAStepTask implements Runnable {
             logError("Failed to export QA step : " + qastep.getName() + suffix, e);
             setStatus("Failed to export QA step " + qastep.getName() + suffix + ". Reason: " + e.getMessage());
         } finally {
+            session.close();
             disconnect(dbServer); // Note: to disconnect db server from within the exporter (not obvious).
         }
     }

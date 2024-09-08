@@ -10,6 +10,7 @@ import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
@@ -41,7 +42,7 @@ public class ExportQAStep {
         this.dbServerFactory = dbServerFactory;
         this.user = user;
         this.sessionFactory = sessionFactory;
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO();
         this.threadPool = threadPool;
         this.rowFilter = rowFilter;
     }
@@ -68,9 +69,11 @@ public class ExportQAStep {
     }
 
     public void download(String fileName, boolean overwrite) throws EmfException {
-        ExportQAStepTask task = new ExportQAStepTask(fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername(), fileName, 
+        Session session = sessionFactory.getSession();
+        ExportQAStepTask task = new ExportQAStepTask(fileDownloadDAO.getDownloadExportFolder(session) + "/" + user.getUsername(), fileName, 
                 overwrite, step, 
                 user, sessionFactory, dbServerFactory, verboseStatusLogging, true, rowFilter);
+        session.close();
         try {
             threadPool.execute(new GCEnforcerTask("Export QA Step : " + step.getProgram().getName(), task));
         } catch (InterruptedException e) {

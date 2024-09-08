@@ -2,13 +2,15 @@ package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
 import gov.epa.emissions.commons.data.SourceGroup;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class SourceGroups {
 
@@ -24,10 +26,14 @@ public class SourceGroups {
         sourceGroupList = sourceGroups(sessionFactory);
     }
 
-    private List sourceGroups(HibernateSessionFactory sessionFactory) {
+    private List<SourceGroup> sourceGroups(HibernateSessionFactory sessionFactory) {
         Session session = sessionFactory.getSession();
         try {
-            return facade.getAll(SourceGroup.class, Order.asc("name"), session);
+            CriteriaBuilderQueryRoot<SourceGroup> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(SourceGroup.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<SourceGroup> root = criteriaBuilderQueryRoot.getRoot();
+
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
         } finally {
             session.close();
         }
@@ -67,7 +73,7 @@ public class SourceGroups {
     private SourceGroup load(String name) {
         Session session = sessionFactory.getSession();
         try {
-            return (SourceGroup) facade.load(SourceGroup.class, Restrictions.eq("name", name), session);
+            return facade.load(SourceGroup.class, "name", name, session);
 
         } finally {
             session.close();

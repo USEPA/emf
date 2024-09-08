@@ -92,7 +92,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
         this.user = user;
         this.sessionFactory = sessionFactory;
         this.statusDao = new StatusDAO(sessionFactory);
-        this.fileDownloadDao = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDao = new FileDownloadDAO();
         this.dbServerFactory = dbServerFactory;
         this.projectionShapeFile = projectionShapeFile;
         this.verboseStatusLogging = verboseStatusLogging;
@@ -123,6 +123,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
         
         String suffix = "";
         DbServer dbServer = dbServerFactory.getDbServer();
+        Session session = sessionFactory.getSession();
         try {
             getStepResult();
             file = exportFile(dirName);
@@ -141,7 +142,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
                 for (File f : getShapefiles(file.getName())) {
                     //lets add shapefiles (remember there are multiple files to worry about prj, dbf, etc...) 
                     //for the user to download
-                    fileDownloadDao.add(user, new Date(), f.getName(), "QA Step - Shapefile", overide);
+                    fileDownloadDao.add(user, new Date(), f.getName(), "QA Step - Shapefile", overide, session);
                 }
             }
             complete(suffix);
@@ -149,6 +150,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
             logError("Failed to export QA step : " + qastep.getName() + suffix, e);
             setStatus("Failed to export QA step " + qastep.getName() + suffix + ". Reason: " + e.getMessage());
         } finally {
+            session.close();
             if (dbServer != null)
                 try {
                     dbServer.disconnect();

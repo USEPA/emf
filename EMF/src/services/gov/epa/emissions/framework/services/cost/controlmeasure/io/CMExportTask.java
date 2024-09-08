@@ -54,7 +54,7 @@ public class CMExportTask implements Runnable {
         this.dbServerFactory = dbServerFactory;
         this.controlMeasureDao = new ControlMeasureDAO();
 //        this.statusDao = new StatusDAO(sessionFactory);
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO();
     }
 
     public void run() {
@@ -68,7 +68,7 @@ public class CMExportTask implements Runnable {
             
             if (download) {
                 for (String fileName : exporter.getFileNames()) {
-                    fileDownloadDAO.add(user, new Date(), fileName, "Dataset Export", false);
+                    fileDownloadDAO.add(user, new Date(), fileName, "Dataset Export", false, session);
                 }
             }
         } catch (Exception e) {

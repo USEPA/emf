@@ -1,14 +1,15 @@
 package gov.epa.emissions.framework.services.data;
 
-import gov.epa.emissions.commons.data.Region;
-import gov.epa.emissions.framework.services.persistence.HibernateFacade;
-
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+
+import gov.epa.emissions.commons.data.Region;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 
 public class RegionsDAO {
 
@@ -19,12 +20,15 @@ public class RegionsDAO {
     }
 
     public List getAll(Session session) {
-        return session.createCriteria(Region.class).addOrder(Order.asc("name")).list();
+        CriteriaBuilderQueryRoot<Region> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Region.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Region> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
     
     public Region getRegion(String name, Session session) {
-        Criterion criterion = Restrictions.eq("name", name);
-        return (Region)hibernateFacade.load(Region.class, criterion, session);
+        return hibernateFacade.load(Region.class, "name", name, session);
     }
     
     public Region addRegion(Region region, Session session) {

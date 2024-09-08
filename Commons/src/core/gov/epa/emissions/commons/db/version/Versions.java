@@ -1,20 +1,21 @@
 package gov.epa.emissions.commons.db.version;
 
-import gov.epa.emissions.commons.security.User;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.IntList;
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+
+import gov.epa.emissions.commons.security.User;
 
 public class Versions {
 
@@ -27,7 +28,7 @@ public class Versions {
 
     private Version[] doGetPath(Version version, Session session) {
         int[] parentVersions = parseParentVersions(version.getPath());
-        List versions = new ArrayList();
+        List<Version> versions = new ArrayList<Version>();
         for (int i = 0; i < parentVersions.length; i++) {
             Version parent = get(version.getDatasetId(), parentVersions[i], session);
             versions.add(parent);
@@ -35,23 +36,19 @@ public class Versions {
 
         versions.add(version);
 
-        return (Version[]) versions.toArray(new Version[0]);
+        return versions.toArray(new Version[0]);
     }
 
     public Version get(int datasetId, int version, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            Criteria crit = session.createCriteria(Version.class);
-            Criteria fullCrit = crit.add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).add(
-                    Restrictions.eq("version", Integer.valueOf(version)));
-            tx.commit();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Version> criteriaQuery = builder.createQuery(Version.class);
+        Root<Version> root = criteriaQuery.from(Version.class);
 
-            return (Version) fullCrit.uniqueResult();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+        criteriaQuery.select(root);
+        criteriaQuery.where(builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)), 
+                builder.equal(root.get("version"), Integer.valueOf(version)));
+
+        return session.createQuery(criteriaQuery).getSingleResult();
     }
 
     private int[] parseParentVersions(String versionsList) {
@@ -83,19 +80,15 @@ public class Versions {
     }
 
     public Version[] get(int datasetId, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            Criteria crit = session.createCriteria(Version.class).add(
-                    Restrictions.eq("datasetId", Integer.valueOf(datasetId))).addOrder(Order.asc("version"));
-            List versions = crit.list();
-            tx.commit();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Version> criteriaQuery = builder.createQuery(Version.class);
+        Root<Version> root = criteriaQuery.from(Version.class);
 
-            return (Version[]) versions.toArray(new Version[0]);
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+        criteriaQuery.select(root);
+        criteriaQuery.where(builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)));
+        criteriaQuery.orderBy(builder.asc(root.get("version")));
+
+        return session.createQuery(criteriaQuery).getResultList().toArray(new Version[0]);
     }
 
     public Version derive(Version base, String name, User user, Session session) {
@@ -177,21 +170,15 @@ public class Versions {
     }
 
     private int getNextVersionNumber(int datasetId, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            Criteria base = session.createCriteria(Version.class);
-            Criteria fullCrit = base.add(Restrictions.eq("datasetId", Integer.valueOf(datasetId))).addOrder(
-                    Order.desc("version"));
-            List versions = fullCrit.list();
-            tx.commit();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Version> criteriaQuery = builder.createQuery(Version.class);
+        Root<Version> root = criteriaQuery.from(Version.class);
 
-            Version latest = (Version) versions.get(0);
-            return (latest).getVersion() + 1;
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+        criteriaQuery.select(root);
+        criteriaQuery.where(builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)));
+        criteriaQuery.orderBy(builder.desc(root.get("version")));
+
+        return session.createQuery(criteriaQuery).getResultList().get(0).getVersion() + 1;
     }
 
     public Version[] getLaterVersions(int datasetId, Version version, Session session) throws Exception{
@@ -208,8 +195,7 @@ public class Versions {
             throw new Exception("Could not get later versions for dataset version: " + version.getName() + ".\n");
         }
     }
-    
-    
+
     public Version current(Version version, Session session) {
         return get(version.getDatasetId(), version.getVersion(), session);
     }

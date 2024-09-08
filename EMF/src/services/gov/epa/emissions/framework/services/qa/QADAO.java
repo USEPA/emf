@@ -7,15 +7,18 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 
 public class QADAO {
 
@@ -26,17 +29,23 @@ public class QADAO {
     }
 
     public QAStep[] steps(EmfDataset dataset, Session session) {
-        Criterion criterion = Restrictions.eq("datasetId", Integer.valueOf(dataset.getId()));
+        CriteriaBuilderQueryRoot<QAStep> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAStep.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<QAStep> root = criteriaBuilderQueryRoot.getRoot();
 
-        List steps = session.createCriteria(QAStep.class).add(criterion).list();
-        return (QAStep[]) steps.toArray(new QAStep[0]);
+        return hibernateFacade
+                .get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(dataset.getId())) }, session)
+                .toArray(new QAStep[0]);
     }
     
     public QAStepResult[] qaRsults(EmfDataset dataset, Session session) {
-        Criterion criterion = Restrictions.eq("datasetId", Integer.valueOf(dataset.getId()));
+        CriteriaBuilderQueryRoot<QAStepResult> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAStepResult.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<QAStepResult> root = criteriaBuilderQueryRoot.getRoot();
 
-        List results = session.createCriteria(QAStepResult.class).add(criterion).list();
-        return (QAStepResult[]) results.toArray(new QAStepResult[0]);
+        return hibernateFacade
+                .get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(dataset.getId())) }, session)
+                .toArray(new QAStepResult[0]);
     }
 
     public void update(QAStep[] steps, Session session) {
@@ -45,8 +54,10 @@ public class QADAO {
 
     public void updateQAStepsIds(QAStep[] steps, Session session) {
         for (int i = 0; i < steps.length; i++) {
-            Criterion[] criterions = qaStepKeyConstraints(steps[i]);
-            List list = hibernateFacade.get(QAStep.class, criterions, session);
+            CriteriaBuilderQueryRoot<QAStep> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAStep.class, session);
+
+            Predicate[] criterions = qaStepKeyConstraints(steps[i], criteriaBuilderQueryRoot);
+            List list = hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
             if (!list.isEmpty())
                 steps[i].setId(((QAStep) list.get(0)).getId());
         }
@@ -57,23 +68,30 @@ public class QADAO {
     }
 
     public QAProgram[] getQAPrograms(Session session) {
-        List list = hibernateFacade.getAll(QAProgram.class, session);
+        CriteriaBuilderQueryRoot<QAProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAProgram.class, session);
+        List<QAProgram> list = hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
         Collections.sort(list);
-        return (QAProgram[]) list.toArray(new QAProgram[0]);
+        return list.toArray(new QAProgram[0]);
     }
 
     public ProjectionShapeFile[] getProjectionShapeFiles(Session session) {
-        List<ProjectionShapeFile> list = hibernateFacade.getAll(ProjectionShapeFile.class, session);
+        CriteriaBuilderQueryRoot<ProjectionShapeFile> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ProjectionShapeFile.class, session);
+        List<ProjectionShapeFile> list = hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
         return list.toArray(new ProjectionShapeFile[0]);
     }
 
     public QAStepResult qaStepResult(QAStep step, Session session) {
         updateQAStepsIds(new QAStep[]{step},session);
-        Criterion c1 = Restrictions.eq("datasetId", Integer.valueOf(step.getDatasetId()));
-        Criterion c2 = Restrictions.eq("version", Integer.valueOf(step.getVersion()));
-        Criterion c3 = Restrictions.eq("qaStepId", Integer.valueOf(step.getId()));
-        Criterion[] criterions =  { c1, c2, c3 };
-        List list = hibernateFacade.get(QAStepResult.class, criterions, session);
+
+        CriteriaBuilderQueryRoot<QAStepResult> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAStepResult.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<QAStepResult> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate c1 = builder.equal(root.get("datasetId"), Integer.valueOf(step.getDatasetId()));
+        Predicate c2 = builder.equal(root.get("version"), Integer.valueOf(step.getVersion()));
+        Predicate c3 = builder.equal(root.get("qaStepId"), Integer.valueOf(step.getId()));
+        Predicate[] criterions =  { c1, c2, c3 };
+        List list = hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
         
         if (!list.isEmpty())
             return (QAStepResult) list.get(0);
@@ -82,9 +100,13 @@ public class QADAO {
     }
 
     public QAStepResult getQAStepResult(Integer qaStepResultId, Session session) {
-        Criterion c1 = Restrictions.eq("id", qaStepResultId);
-        Criterion[] criterions =  { c1 };
-        List list = hibernateFacade.get(QAStepResult.class, criterions, session);
+        CriteriaBuilderQueryRoot<QAStepResult> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAStepResult.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<QAStepResult> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate c1 = builder.equal(root.get("id"), qaStepResultId);
+        Predicate[] criterions =  { c1 };
+        List list = hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
 
         if (!list.isEmpty())
             return (QAStepResult) list.get(0);
@@ -93,9 +115,13 @@ public class QADAO {
     }
 
     public QAStep getQAStep(Integer qaStepId, Session session) {
-        Criterion c1 = Restrictions.eq("id", qaStepId);
-        Criterion[] criterions =  { c1 };
-        List list = hibernateFacade.get(QAStep.class, criterions, session);
+        CriteriaBuilderQueryRoot<QAStep> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAStep.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<QAStep> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate c1 = builder.equal(root.get("id"), qaStepId);
+        Predicate[] criterions =  { c1 };
+        List list = hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
 
         if (!list.isEmpty())
             return (QAStep) list.get(0);
@@ -146,15 +172,20 @@ public class QADAO {
     }
 
     public boolean exists(QAStep step, Session session) {
-        Criterion[] criterions = qaStepKeyConstraints(step);
-        return hibernateFacade.exists(QAStep.class, criterions, session);
+        CriteriaBuilderQueryRoot<QAStep> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QAStep.class, session);
+
+        Predicate[] criterions = qaStepKeyConstraints(step, criteriaBuilderQueryRoot);
+        return hibernateFacade.exists(criteriaBuilderQueryRoot, criterions, session);
     }
 
-    private Criterion[] qaStepKeyConstraints(QAStep step) {
-        Criterion c1 = Restrictions.eq("datasetId", Integer.valueOf(step.getDatasetId()));
-        Criterion c2 = Restrictions.eq("version", Integer.valueOf(step.getVersion()));
-        Criterion c3 = Restrictions.eq("name", step.getName());
-        Criterion[] criterions = { c1, c2, c3 };
+    private Predicate[] qaStepKeyConstraints(QAStep step, CriteriaBuilderQueryRoot<QAStep> criteriaBuilderQueryRoot) {
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<QAStep> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate c1 = builder.equal(root.get("datasetId"), Integer.valueOf(step.getDatasetId()));
+        Predicate c2 = builder.equal(root.get("version"), Integer.valueOf(step.getVersion()));
+        Predicate c3 = builder.equal(root.get("name"), step.getName());
+        Predicate[] criterions = { c1, c2, c3 };
         return criterions;
     }
 
@@ -165,8 +196,7 @@ public class QADAO {
     }
     
     private Object load(Class clazz, String name, Session session) {
-        Criterion criterion = Restrictions.eq("name", name);
-        return hibernateFacade.load(clazz, criterion, session);
+        return hibernateFacade.load(clazz, "name", name, session);
     }
 
     public void deleteQASteps(QAStep[] steps, Session session) { // BUG3615

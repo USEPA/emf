@@ -24,6 +24,8 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     private static int svcCount = 0;
 
     private String svcLabel = null;
+    
+    private HibernateSessionFactory sessionFactory;
 
     public String myTag() {
         if (svcLabel == null) {
@@ -60,9 +62,10 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
 
     private void init(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
         setProperties(sessionFactory);
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO();
         exportService = new ManagedExportService(dbServerFactory, sessionFactory);
         managedImportService = new ManagedImportService(dbServerFactory, sessionFactory);
+        this.sessionFactory = sessionFactory;
     }
 
     private void setProperties(HibernateSessionFactory sessionFactory) {
@@ -130,7 +133,13 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
             String[] dsExportPrefs, boolean concat) throws EmfException {
-        String dirName = this.fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername() + "/";
+        Session session = sessionFactory.getSession();
+        String dirName;
+        try {
+            dirName = this.fileDownloadDAO.getDownloadExportFolder(session) + "/" + user.getUsername() + "/";
+        } finally {
+            session.close();
+        }
         if (DebugLevels.DEBUG_4())
             System.out.println(">>## calling export datasets in eximSvcImp: " + myTag() + " for datasets: "
                     + datasets.toString());

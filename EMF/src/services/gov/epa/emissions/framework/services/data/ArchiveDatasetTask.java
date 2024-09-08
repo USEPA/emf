@@ -43,7 +43,7 @@ public class ArchiveDatasetTask implements Runnable {
         this.dbServerFactory = dbServerFactory;
         this.sessionFactory =sessionFactory;
         this.datasetDAO = new DatasetDAO(dbServerFactory);
-        this.propertyDao = new EmfPropertiesDAO(sessionFactory);
+        this.propertyDao = new EmfPropertiesDAO();
         this.datasetId = datasetId;
         this.statusDAO = new StatusDAO(sessionFactory);
         this.username = username;
@@ -63,7 +63,17 @@ public class ArchiveDatasetTask implements Runnable {
     }
 
     private String getProperty(String name) {
-        return propertyDao.getProperty(name).getValue();
+        Session session = null;
+        try {
+            session = sessionFactory.getSession();
+            return propertyDao.getProperty(name, session).getValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+//            throw new EmfException(e.getMessage());
+        } finally {
+            if (session != null) session.close();
+        }
+        return null;
     }
 
     private void setStatus(String message) {

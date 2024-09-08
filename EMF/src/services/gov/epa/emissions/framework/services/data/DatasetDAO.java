@@ -31,6 +31,7 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.module.ModuleDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.utils.Utils;
@@ -47,15 +48,16 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class DatasetDAO {
 
@@ -81,18 +83,18 @@ public class DatasetDAO {
         this.dbServerFactory = dbServerFactory;
     }
 
-    public boolean exists(int id, Class clazz, Session session) {
+    public <C> boolean exists(int id, Class<C> clazz, Session session) {
         return hibernateFacade.exists(id, clazz, session);
     }
 
     /*
      * Return true if the name is already used
      */
-    public boolean nameUsed(String name, Class clazz, Session session) {
+    public <C> boolean nameUsed(String name, Class<C> clazz, Session session) {
         return hibernateFacade.nameUsed(name, clazz, session); // case insensitive comparison
     }
 
-    public Object current(int id, Class clazz, Session session) {
+    public <C> C current(int id, Class<C> clazz, Session session) {
         return hibernateFacade.current(id, clazz, session);
     }
 
@@ -118,7 +120,8 @@ public class DatasetDAO {
     }
 
     public List all(Session session) {
-        return hibernateFacade.getAll(EmfDataset.class, session);
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
     }
 
     public int getNumOfDatasets(int userId, Session session) {
@@ -384,12 +387,16 @@ public class DatasetDAO {
     }
 
     public List getDatasets(Session session, DatasetType datasetType) {
-        Criterion statusCrit = Restrictions.ne("status", "Deleted"); // FIXME: to be deleted after dataset removed
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate statusCrit = builder.notEqual(root.get("status"), "Deleted"); // FIXME: to be deleted after dataset removed
         // from db
-        Criterion typeCrit = Restrictions.eq("datasetType", datasetType);
-        Criterion criterion = Restrictions.and(statusCrit, typeCrit);
-        Order order = Order.asc("name");
-        return hibernateFacade.get(EmfDataset.class, criterion, order, session);
+        Predicate typeCrit = builder.equal(root.get("datasetType"), datasetType);
+        Predicate criterion = builder.and(statusCrit, typeCrit);
+        javax.persistence.criteria.Order order = builder.asc(root.get("name"));
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterion, order, session);
     }
 
     public List getDatasets(Session session, int datasetTypeId) {
@@ -457,14 +464,17 @@ public class DatasetDAO {
         return count != null && count.size() > 0;
     }
 
-    @SuppressWarnings("unchecked")
     public EmfDataset getDataset(Session session, String name) {
-        Criterion statusCrit = Restrictions.ne("status", "Deleted"); // FIXME: to be deleted after dataset removed
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
+
+        Predicate statusCrit = builder.notEqual(root.get("status"), "Deleted"); // FIXME: to be deleted after dataset removed
         // from db
-        Criterion nameCrit = Restrictions.eq("name", name);
-        Criterion criterion = Restrictions.and(statusCrit, nameCrit);
-        Order order = Order.asc("name");
-        List<EmfDataset> list = hibernateFacade.get(EmfDataset.class, criterion, order, session);
+        Predicate nameCrit = builder.equal(root.get("name"), name);
+        Predicate criterion = builder.and(statusCrit, nameCrit);
+
+        List<EmfDataset> list = hibernateFacade.get(criteriaBuilderQueryRoot, criterion, builder.asc(root.get("name")), session);
 
         if (list == null || list.size() == 0)
             return null;
@@ -479,23 +489,39 @@ public class DatasetDAO {
     public EmfDataset getDataset(Session session, int id, boolean clearSession) {
         if (clearSession)
             session.clear(); // to clear the cached objects in session if any
-        Criterion statusCrit = Restrictions.ne("status", "Deleted"); // FIXME: to be deleted after dataset removed
-        // from db
-        Criterion idCrit = Restrictions.eq("id", Integer.valueOf(id));
-        Criterion criterion = Restrictions.and(statusCrit, idCrit);
-        return (EmfDataset) hibernateFacade.load(EmfDataset.class, criterion, session);
+
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.load(
+                session, 
+                criteriaBuilderQueryRoot, 
+                builder.and(
+                        builder.notEqual(root.get("status"), "Deleted"), 
+                        builder.equal(root.get("id"), Integer.valueOf(id))
+                    )
+            );
     }
 
     public Version getVersion(Session session, int datasetId, int version) {
-        Criterion crit1 = Restrictions.eq("datasetId", Integer.valueOf(datasetId));
-        Criterion crit2 = Restrictions.eq("version", Integer.valueOf(version));
-        Criterion criterion = Restrictions.and(crit1, crit2);
+        CriteriaBuilderQueryRoot<Version> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Version.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Version> root = criteriaBuilderQueryRoot.getRoot();
 
-        return (Version) hibernateFacade.load(Version.class, criterion, session);
+        return hibernateFacade.load(
+                session, 
+                criteriaBuilderQueryRoot, 
+                builder.and(
+                        builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)), 
+                        builder.equal(root.get("version"), Integer.valueOf(version))
+                    )
+            );
     }
 
     public boolean isUsedByControlStrategies(Session session, EmfDataset dataset) {
-        List strategies = hibernateFacade.getAll(ControlStrategy.class, session);
+        CriteriaBuilderQueryRoot<ControlStrategy> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlStrategy.class, session);
+        List<ControlStrategy> strategies = hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
 
         if (strategies == null || strategies.isEmpty())
             return false;
@@ -724,8 +750,7 @@ public class DatasetDAO {
     }
 
     public boolean datasetNameUsed(String name, Session session) throws Exception {
-        Criterion crit = Restrictions.eq("name", name).ignoreCase();
-        EmfDataset ds = (EmfDataset) hibernateFacade.load(EmfDataset.class, crit, session);
+        EmfDataset ds = hibernateFacade.load(EmfDataset.class, "name", name, session);
 
         if (ds == null)
             return false;
@@ -859,8 +884,8 @@ public class DatasetDAO {
                         + getAndOrClause(datasetIDs, "CI.dataset.id") + ")").list();
 
         if (list != null && list.size() > 0) {
-            Criterion criterion = Restrictions.eq("id", list.get(0));
-            Case usedCase = (Case) hibernateFacade.get(Case.class, criterion, session).get(0);
+            CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, session);
+            Case usedCase = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("id"), list.get(0))).get(0);
             throw new EmfException("Dataset used by case " + usedCase.getName() + ".");
         }
     }
@@ -1708,14 +1733,17 @@ public class DatasetDAO {
     }
 
     public List<EmfDataset> deletedDatasets(User user, Session session) {
-        Criterion statusCrit = Restrictions.eq("status", "Deleted");
-        Criterion nameCrit = Restrictions.eq("creator", user.getUsername());
-        Criterion criterion = statusCrit;
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
+        Predicate statusPred = builder.equal(root.get("status"), "Deleted");
+        Predicate namePred = builder.equal(root.get("creator"), user.getUsername());
+        Predicate predicate = statusPred;
 
         if (!user.isAdmin())
-            criterion = Restrictions.and(statusCrit, nameCrit);
+            predicate = builder.and(statusPred, namePred);
 
-        return hibernateFacade.get(EmfDataset.class, criterion, session);
+        return hibernateFacade.get(session, criteriaBuilderQueryRoot, predicate);
     }
 
     public void removeEmptyDatasets(User user, DbServer dbServer, Session session) throws EmfException, SQLException {

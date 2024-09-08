@@ -40,6 +40,7 @@ import gov.epa.emissions.framework.services.exim.ManagedCopyService;
 import gov.epa.emissions.framework.services.exim.ManagedExportService;
 import gov.epa.emissions.framework.services.exim.ManagedImportService;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.CaseJobSubmitter;
 import gov.epa.emissions.framework.tasks.DebugLevels;
@@ -65,13 +66,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 
 public class ManagedCaseService {
     private static Log log = LogFactory.getLog(ManagedCaseService.class);
@@ -936,10 +939,15 @@ public class ManagedCaseService {
         Session session = sessionFactory.getSession();
         try {
             dao.add(name, session);
-            Criterion crit1 = Restrictions.eq("name", name.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(name.getModelToRunId()));
 
-            return (InputName) dao.load(InputName.class, new Criterion[] { crit1, crit2 }, session);
+            CriteriaBuilderQueryRoot<InputName> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(InputName.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<InputName> root = criteriaBuilderQueryRoot.getRoot();
+
+            Predicate crit1 = builder.equal(root.get("name"), name.getName());
+            Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(name.getModelToRunId()));
+
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new case input name '" + name.getName() + "'\n", e);
             throw new EmfException("Could not add new case input name '" + name.getName() + "'");
@@ -953,10 +961,15 @@ public class ManagedCaseService {
         Session session = sessionFactory.getSession();
         try {
             dao.add(program, session);
-            Criterion crit1 = Restrictions.eq("name", program.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(program.getModelToRunId()));
 
-            return (CaseProgram) dao.load(CaseProgram.class, new Criterion[] { crit1, crit2 }, session);
+            CriteriaBuilderQueryRoot<CaseProgram> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(CaseProgram.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<CaseProgram> root = criteriaBuilderQueryRoot.getRoot();
+
+            Predicate crit1 = builder.equal(root.get("name"), program.getName());
+            Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(program.getModelToRunId()));
+
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new program '" + program.getName() + "'\n", e);
             throw new EmfException("Could not add new program '" + program.getName() + "'");
@@ -970,9 +983,14 @@ public class ManagedCaseService {
         Session session = sessionFactory.getSession();
         try {
             dao.add(inputEnvtVar, session);
-            Criterion crit1 = Restrictions.eq("name", inputEnvtVar.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(inputEnvtVar.getModelToRunId()));
-            return (InputEnvtVar) dao.load(InputEnvtVar.class, new Criterion[] { crit1, crit2 }, session);
+
+            CriteriaBuilderQueryRoot<InputEnvtVar> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(InputEnvtVar.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<InputEnvtVar> root = criteriaBuilderQueryRoot.getRoot();
+
+            Predicate crit1 = builder.equal(root.get("name"), inputEnvtVar.getName());
+            Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(inputEnvtVar.getModelToRunId()));
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new input environment variable '" + inputEnvtVar.getName() + "'\n", e);
             throw new EmfException("Could not add new input environment variable '" + inputEnvtVar.getName() + "'");
@@ -1019,16 +1037,20 @@ public class ManagedCaseService {
     public synchronized SubDir addSubDir(SubDir subdir) throws EmfException {
         Session session = sessionFactory.getSession();
         try {
-            Criterion crit1 = Restrictions.eq("name", subdir.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(subdir.getModelToRunId()));
-            SubDir existed = (SubDir) dao.load(SubDir.class, new Criterion[] { crit1, crit2 }, session);
+            CriteriaBuilderQueryRoot<SubDir> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(SubDir.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<SubDir> root = criteriaBuilderQueryRoot.getRoot();
+
+            Predicate crit1 = builder.equal(root.get("name"), subdir.getName());
+            Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(subdir.getModelToRunId()));
+            SubDir existed = dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
 
             if (existed != null)
                 return existed;
 
             dao.add(subdir, session);
 
-            return (SubDir) dao.load(SubDir.class, new Criterion[] { crit1, crit2 }, session);
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new subdirectory '" + subdir.getName() + "'\n", e);
             throw new EmfException("Could not add new subdirectory '" + subdir.getName() + "'");
@@ -1895,9 +1917,14 @@ public class ManagedCaseService {
         Session session = sessionFactory.getSession();
         try {
             dao.addParameterName(name, session);
-            Criterion crit1 = Restrictions.eq("name", name.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(name.getModelToRunId()));
-            return (ParameterName) dao.load(ParameterName.class, new Criterion[] { crit1, crit2 }, session);
+
+            CriteriaBuilderQueryRoot<ParameterName> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(ParameterName.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<ParameterName> root = criteriaBuilderQueryRoot.getRoot();
+            
+            Predicate crit1 = builder.equal(root.get("name"), name.getName());
+            Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(name.getModelToRunId()));
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new parameter name '" + name.getName() + "'\n", e);
             throw new EmfException("Could not add new parameter name '" + name.getName() + "'");
@@ -1957,9 +1984,14 @@ public class ManagedCaseService {
         Session session = sessionFactory.getSession();
         try {
             dao.add(envVar, session);
-            Criterion crit1 = Restrictions.eq("name", envVar.getName());
-            Criterion crit2 = Restrictions.eq("modelToRunId", Integer.valueOf(envVar.getModelToRunId()));
-            return (ParameterEnvVar) dao.load(ParameterEnvVar.class, new Criterion[] { crit1, crit2 }, session);
+
+            CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<ParameterEnvVar> root = criteriaBuilderQueryRoot.getRoot();
+
+            Predicate crit1 = builder.equal(root.get("name"), envVar.getName());
+            Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(envVar.getModelToRunId()));
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
         } catch (Exception e) {
             log.error("Could not add new parameter env variable '" + envVar.getName() + "'\n", e);
             throw new EmfException("Could not add new parameter env variable '" + envVar.getName() + "'");

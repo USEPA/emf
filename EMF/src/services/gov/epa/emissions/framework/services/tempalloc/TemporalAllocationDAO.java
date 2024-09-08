@@ -5,10 +5,11 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
+import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
@@ -16,12 +17,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class TemporalAllocationDAO {
     private LockingScheme lockingScheme;
@@ -54,12 +56,16 @@ public class TemporalAllocationDAO {
         return (Integer)hibernateFacade.add(obj, session);
     }
 
-    public List all(Session session) {
-        return hibernateFacade.getAll(TemporalAllocation.class, Order.asc("name"), session);
+    public List<TemporalAllocation> all(Session session) {
+        CriteriaBuilderQueryRoot<TemporalAllocation> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocation.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<TemporalAllocation> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
     public TemporalAllocation obtainLocked(User owner, int id, Session session) {
-        return (TemporalAllocation) lockingScheme.getLocked(owner, current(id, TemporalAllocation.class, session), session);
+        return (TemporalAllocation) lockingScheme.getLocked(owner, current(id, session), session);
     }
 
     public void releaseLocked(User user, int id, Session session) {
@@ -72,52 +78,56 @@ public class TemporalAllocationDAO {
     }
 
     private TemporalAllocation current(TemporalAllocation temporalAllocation, Session session) {
-        return current(temporalAllocation.getId(), TemporalAllocation.class, session);
+        return current(temporalAllocation.getId(), session);
     }
 
     public boolean canUpdate(TemporalAllocation temporalAllocation, Session session) {
-        if (!exists(temporalAllocation.getId(), TemporalAllocation.class, session)) {
+        if (!exists(temporalAllocation.getId(), session)) {
             return false;
         }
 
-        TemporalAllocation current = current(temporalAllocation.getId(), TemporalAllocation.class, session);
+        TemporalAllocation current = current(temporalAllocation.getId(), session);
 
         session.clear(); // clear to flush current
 
         if (current.getName().equals(temporalAllocation.getName()))
             return true;
 
-        return !nameUsed(temporalAllocation.getName(), TemporalAllocation.class, session);
+        return !nameUsed(temporalAllocation.getName(), session);
     }
 
-    public boolean nameUsed(String name, Class clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    public boolean nameUsed(String name, Session session) {
+        return hibernateFacade.nameUsed(name, TemporalAllocation.class, session);
     }
 
-    private TemporalAllocation current(int id, Class clazz, Session session) {
-        return (TemporalAllocation) hibernateFacade.current(id, clazz, session);
+    private TemporalAllocation current(int id, Session session) {
+        return hibernateFacade.current(id, TemporalAllocation.class, session);
     }
 
-    public boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    public boolean exists(int id, Session session) {
+        return hibernateFacade.exists(id, TemporalAllocation.class, session);
     }
 
     public TemporalAllocation getById(int id, Session session) {
-        TemporalAllocation element = (TemporalAllocation)hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", Integer.valueOf(id)), session);
+        TemporalAllocation element = hibernateFacade.load(TemporalAllocation.class, "id", Integer.valueOf(id), session);
         return element;
     }
 
     public TemporalAllocation getByName(String name, Session session) {
-        TemporalAllocation element = (TemporalAllocation)hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("name", new String(name)), session);
+        TemporalAllocation element = hibernateFacade.load(TemporalAllocation.class, "name", new String(name), session);
         return element;
     }
 
     public TemporalAllocation getTemporalAllocation(int id, Session session) {
-        return (TemporalAllocation) hibernateFacade.load(TemporalAllocation.class, Restrictions.eq("id", Integer.valueOf(id)), session);
+        return hibernateFacade.load(TemporalAllocation.class, "id", Integer.valueOf(id), session);
     }
     
-    public List allResolutions(Session session) {
-        return hibernateFacade.getAll(TemporalAllocationResolution.class, Order.asc("name"), session);
+    public List<TemporalAllocationResolution> allResolutions(Session session) {
+        CriteriaBuilderQueryRoot<TemporalAllocationResolution> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocationResolution.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<TemporalAllocationResolution> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
     public Long getTemporalAllocationRunningCount(Session session) {
@@ -137,12 +147,16 @@ public class TemporalAllocationDAO {
     }
     
     public TemporalAllocationOutputType getTemporalAllocationOutputType(String name, Session session) {
-        Criterion critName = Restrictions.eq("name", name);
-        return (TemporalAllocationOutputType)hibernateFacade.load(TemporalAllocationOutputType.class, critName, session);
+        return hibernateFacade.load(TemporalAllocationOutputType.class, "name", name, session);
     }
     
     public List<TemporalAllocationOutput> getTemporalAllocationOutputs(int temporalAllocationId, Session session) {
-        return session.createCriteria(TemporalAllocationOutput.class).add(Restrictions.eq("temporalAllocationId", temporalAllocationId)).list();
+        CriteriaBuilderQueryRoot<TemporalAllocationOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocationOutput.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<TemporalAllocationOutput> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade
+                .get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("temporalAllocationId"), Integer.valueOf(temporalAllocationId)) }, session);
     }
     
     public EmfDataset[] getTemporalAllocationOutputDatasets(int temporalAllocationId, Session session) {

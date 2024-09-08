@@ -11,11 +11,12 @@ import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
+import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
@@ -25,12 +26,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 
 public class SectorScenarioDAO {
@@ -88,10 +91,10 @@ public class SectorScenarioDAO {
         try {
             tx = session.beginTransaction();
             session.createQuery("update SectorScenario set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
-            .setString("status", runStatus)
-            .setTimestamp("date", new Date())
-            .setTimestamp("completionDate", completionDate)
-            .setInteger("id", sectorScenarioId)
+            .setParameter("status", runStatus)
+            .setParameter("date", new Date())
+            .setParameter("completionDate", completionDate)
+            .setParameter("id", Integer.valueOf(sectorScenarioId))
             .executeUpdate();
             tx.commit();
         } catch (HibernateException e) {
@@ -129,8 +132,12 @@ public class SectorScenarioDAO {
 //        return list;
 //    }
 
-    public List getAllStrategyTypes(Session session) {
-        return hibernateFacade.getAll(SectorScenarioOutputType.class, Order.asc("name"), session);
+    public List<SectorScenarioOutputType> getAllStrategyTypes(Session session) {
+        CriteriaBuilderQueryRoot<SectorScenarioOutputType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SectorScenarioOutputType.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<SectorScenarioOutputType> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
     }
 
 //    // TODO: gettig all the strategies to obtain the lock--- is it a good idea?
@@ -139,7 +146,7 @@ public class SectorScenarioDAO {
 //    }
 //
     public SectorScenario obtainLocked(User owner, int id, Session session) {
-        return (SectorScenario) lockingScheme.getLocked(owner, current(id, SectorScenario.class, session), session);
+        return (SectorScenario) lockingScheme.getLocked(owner, current(id, session), session);
     }
 
 //    public void releaseLocked(SectorScenario locked, Session session) {
@@ -165,34 +172,34 @@ public class SectorScenarioDAO {
     }
 
     private SectorScenario current(SectorScenario strategy, Session session) {
-        return current(strategy.getId(), SectorScenario.class, session);
+        return current(strategy.getId(), session);
     }
 
     public boolean canUpdate(SectorScenario sectorScenario, Session session) {
-        if (!exists(sectorScenario.getId(), SectorScenario.class, session)) {
+        if (!exists(sectorScenario.getId(), session)) {
             return false;
         }
 
-        SectorScenario current = current(sectorScenario.getId(), SectorScenario.class, session);
+        SectorScenario current = current(sectorScenario.getId(), session);
 
         session.clear();// clear to flush current
 
         if (current.getName().equals(sectorScenario.getName()))
             return true;
 
-        return !nameUsed(sectorScenario.getName(), SectorScenario.class, session);
+        return !nameUsed(sectorScenario.getName(), session);
     }
 
-    public boolean nameUsed(String name, Class clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    public boolean nameUsed(String name, Session session) {
+        return hibernateFacade.nameUsed(name, SectorScenario.class, session);
     }
 
-    private SectorScenario current(int id, Class clazz, Session session) {
-        return (SectorScenario) hibernateFacade.current(id, clazz, session);
+    private SectorScenario current(int id, Session session) {
+        return hibernateFacade.current(id, SectorScenario.class, session);
     }
 
-    public boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    public boolean exists(int id, Session session) {
+        return hibernateFacade.exists(id, SectorScenario.class, session);
     }
 
     public void remove(SectorScenario strategy, Session session) {
@@ -204,23 +211,24 @@ public class SectorScenarioDAO {
     }
 
     public SectorScenarioOutputType getSectorScenarioOutputType(String name, Session session) {
-        Criterion critName = Restrictions.eq("name", name);
-        return (SectorScenarioOutputType)hibernateFacade.load(SectorScenarioOutputType.class, critName, session);
+        return hibernateFacade.load(SectorScenarioOutputType.class, "name", name, session);
     }
 
     public SectorScenarioOutput getSectorScenarioOutput(int sectorScenarioId, int inputDatasetId, 
             int detailedResultDatasetId, Session session) {
-        Criterion critSectorScenarioId = Restrictions.eq("sectorScenarioId", sectorScenarioId);
-        Criterion critInputDatasetId = Restrictions.eq("inputDatasetId", inputDatasetId);
-        Criterion critDetailedResultDatasetId = Restrictions.eq("detailedResultDataset.id", detailedResultDatasetId);
-        return (SectorScenarioOutput)hibernateFacade.load(SectorScenarioOutput.class, new Criterion[] {critSectorScenarioId, critInputDatasetId, critDetailedResultDatasetId}, 
-                session);
+        CriteriaBuilderQueryRoot<SectorScenarioOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SectorScenarioOutput.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<SectorScenarioOutput> root = criteriaBuilderQueryRoot.getRoot();
+        Join<EmfDataset, SectorScenarioOutput> odJoin = root.join("outputDataset", javax.persistence.criteria.JoinType.INNER);
+
+        Predicate critSectorScenarioId = builder.equal(root.get("sectorScenarioId"), sectorScenarioId);
+        Predicate critInputDatasetId = builder.equal(root.get("inputDatasetId"), inputDatasetId);
+        Predicate critDetailedResultDatasetId = builder.equal(odJoin.get("id"), detailedResultDatasetId);
+        return hibernateFacade.load(session, criteriaBuilderQueryRoot, new Predicate[] {critSectorScenarioId, critInputDatasetId, critDetailedResultDatasetId});
     }
 
     public SectorScenarioOutput getSectorScenarioOutput(int id, Session session) {
-        Criterion critId = Restrictions.eq("id", id);
-        return (SectorScenarioOutput)hibernateFacade.load(SectorScenarioOutput.class, new Criterion[] {critId}, 
-                session);
+        return hibernateFacade.load(SectorScenarioOutput.class, "id", Integer.valueOf(id), session);
     }
 
 //    private void updateSectorScenarioIds(SectorScenario sectorScenario, Session session) {
@@ -237,7 +245,7 @@ public class SectorScenarioDAO {
     }
 
     public String sectorScenarioRunStatus(int id, Session session) {
-        SectorScenario sectorScenario = (SectorScenario) hibernateFacade.current(id, SectorScenario.class, session);
+        SectorScenario sectorScenario = hibernateFacade.current(id, SectorScenario.class, session);
         return sectorScenario.getRunStatus();
     }
 
@@ -382,22 +390,27 @@ public class SectorScenarioDAO {
     }    
 
     public SectorScenario getByName(String name, Session session) {
-        SectorScenario cs = (SectorScenario) hibernateFacade.load(SectorScenario.class, Restrictions.eq("name", new String(name)), session);
+        SectorScenario cs = hibernateFacade.load(SectorScenario.class, "name", new String(name), session);
         return cs;
     }
     
     public SectorScenario getByAbbre(String abbre, Session session) {
-        SectorScenario cs = (SectorScenario) hibernateFacade.load(SectorScenario.class, Restrictions.eq("abbreviation", new String(abbre)), session);
+        SectorScenario cs = hibernateFacade.load(SectorScenario.class, "abbreviation", new String(abbre), session);
         return cs;
     }
 
     public SectorScenario getById(int id, Session session) {
-        SectorScenario cs = (SectorScenario) hibernateFacade.load(SectorScenario.class, Restrictions.eq("id", Integer.valueOf(id)), session);
+        SectorScenario cs = hibernateFacade.load(SectorScenario.class, "id", Integer.valueOf(id), session);
         return cs;
     }
 
     public List<SectorScenarioOutput> getSectorScenarioOutputs(int sectorScenarioId, Session session) {
-        return session.createCriteria(SectorScenarioOutput.class).add(Restrictions.eq("sectorScenarioId", sectorScenarioId)).addOrder(Order.desc("startDate")).list();
+        CriteriaBuilderQueryRoot<SectorScenarioOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SectorScenarioOutput.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<SectorScenarioOutput> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade
+                .get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("sectorScenarioId"), Integer.valueOf(sectorScenarioId)) }, builder.desc(root.get("startDate")), session);
     }
     
     public void removeResultDatasets(EmfDataset[] datasets, User user, Session session, DbServer dbServer) throws EmfException {

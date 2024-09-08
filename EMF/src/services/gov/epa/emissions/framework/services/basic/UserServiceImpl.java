@@ -2,12 +2,16 @@ package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.daos.UserDao;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,8 +21,10 @@ public class UserServiceImpl implements UserService {
     private static Log LOG = LogFactory.getLog(UserServiceImpl.class);
 
     private HibernateSessionFactory sessionFactory;
+    
+    private EntityManagerFactory entityManagerFactory;
 
-    private UserDAO dao;
+    private UserDao dao;
 
     private static int svcCount = 0;
 
@@ -43,7 +49,8 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(HibernateSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.dao = new UserDAO();
+        this.entityManagerFactory = Persistence.createEntityManagerFactory("com.baeldung.movie_catalog");
+        this.dao = new UserDao(this.entityManagerFactory);
         myTag();
 
         if (DebugLevels.DEBUG_1())
@@ -71,49 +78,24 @@ public class UserServiceImpl implements UserService {
     }
 
     public synchronized User getUser(String username) throws EmfException {
-        Session session = sessionFactory.getSession();
+        if (username == null || username.trim().isEmpty())
+            throw new EmfException("Please specify a valid username.");
 
-        try {
-            if (username == null || username.trim().isEmpty())
-                throw new EmfException("Please specify a valid username.");
+        User user = dao.get(username);
 
-            User user = dao.get(username, session);
-
-            return user;
-        } catch (RuntimeException e) {
-            LOG.error("Could not get User - " + username, e);
-            throw new EmfException("Could not get User due to data access failure: \n" + e.getMessage());
-        } finally {
-            session.close();
-        }
+        return user;
     }
 
     public synchronized User getUserByEmail(int id, String email) throws EmfException {
-        Session session = sessionFactory.getSession();
+        User user = dao.getUserByEmail(id, email);
 
-        try {
-            User user = dao.getUserByEmail(id, email, session);
-
-            return user;
-        } catch (RuntimeException e) {
-            LOG.error("Could not get User by email - " + email, e);
-            throw new EmfException("Could not get User due to data access failure");
-        } finally {
-            session.close();
-        }
+        return user;
     }
 
     public synchronized User[] getUsers() throws EmfException {
-        try {
-            Session session = sessionFactory.getSession();
-            List<?> all = dao.all(session);
-            session.close();
+        List<?> all = dao.getAll();
 
-            return all.toArray(new User[0]);
-        } catch (Exception e) {
-            LOG.error("Could not get all Users", e);
-            throw new EmfException("Unable to fetch all users due to data access failure");
-        }
+        return all.toArray(new User[0]);
     }
 
     public synchronized User createUser(User user) throws EmfException {
@@ -130,30 +112,12 @@ public class UserServiceImpl implements UserService {
             throw new EmfException("The same email address has already been used by user '"
                     + existingUser.getUsername() + "'.");
 
-        Session session = sessionFactory.getSession();
-        try {
-            dao.add(user, session);
-            return dao.get(user.getUsername(), session);
-        } catch (RuntimeException e) {
-            LOG.error("Could not create new user - " + user.getUsername(), e);
-            throw new EmfException("Unable to fetch user due to data access failure");
-        } finally {
-            session.close();
-        }
+        dao.add(user);
+        return dao.get(user.getUsername());
     }
 
     public synchronized void updateUser(User user) throws EmfException {
-        Session session = sessionFactory.getSession();
-
-        try {
-            dao.update(user, session);
-        } catch (RuntimeException e) {
-            LOG.error("Could not update user - " + user.getName(), e);
-            throw new EmfException("Unable to update user due to data access failure");
-        } finally {
-            if (session != null && session.isConnected())
-                session.close();
-        }
+        dao.update(user);
     }
 
     public void checkDuplicatesByEmail(User user) throws EmfException {
@@ -165,48 +129,22 @@ public class UserServiceImpl implements UserService {
     }
 
     public synchronized void deleteUser(User user) throws EmfException {
-        try {
-            Session session = sessionFactory.getSession();
-            dao.remove(user, session);
-            session.close();
-        } catch (RuntimeException e) {
-            LOG.error("Could not delete user - " + user.getName(), e);
-            throw new EmfException("Unable to delete user due to data access failure");
-        }
+        dao.delete(user);
     }
 
     public synchronized User obtainLocked(User owner, User object) throws EmfException {
-        Session session = sessionFactory.getSession();
+        User locked = null;
 
-        try {
-            User locked = null;
+        if (owner.isAdmin() || owner.equals(object))
+            locked = dao.getLocked(owner, object);
 
-            if (owner.isAdmin() || owner.equals(object))
-                locked = dao.obtainLocked(owner, object, session);
-
-            return locked;
-        } catch (RuntimeException e) {
-            LOG.error("Could not obtain lock for user: " + object.getUsername() + " by owner: " + owner.getUsername(),
-                    e);
-            throw new EmfException("Unable to fetch lock user due to data access failure");
-        } finally {
-            if (session != null && session.isConnected())
-                session.close();
-        }
+        return locked;
     }
 
     public synchronized User releaseLocked(User user, User object) throws EmfException {
-        try {
-            Session session = sessionFactory.getSession();
-            User released = dao.releaseLocked(user, object, session);
-            session.close();
+        User released = dao.releaseLock(user, object);
 
-            return released;
-        } catch (RuntimeException e) {
-            LOG.error("Could not release lock for user: " + object.getUsername() + " by owner: "
-                    + object.getLockOwner(), e);
-            throw new EmfException("Unable to release lock on user due to data access failure");
-        }
+        return released;
     }
 
     public synchronized String getEmfVersion() throws EmfException {

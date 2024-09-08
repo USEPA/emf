@@ -2,13 +2,15 @@ package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
 import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class Sectors {
 
@@ -24,10 +26,14 @@ public class Sectors {
         sectorsList = sectors(sessionFactory);
     }
 
-    private List sectors(HibernateSessionFactory sessionFactory) {
+    private List<Sector> sectors(HibernateSessionFactory sessionFactory) {
         Session session = sessionFactory.getSession();
         try {
-            return facade.getAll(Sector.class, Order.asc("name"), session);
+            CriteriaBuilderQueryRoot<Sector> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(Sector.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<Sector> root = criteriaBuilderQueryRoot.getRoot();
+
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
         } finally {
             session.close();
         }
@@ -68,7 +74,7 @@ public class Sectors {
     private Sector load(String name) {
         Session session = sessionFactory.getSession();
         try {
-            return (Sector) facade.load(Sector.class, Restrictions.eq("name", name), session);
+            return facade.load(Sector.class, "name", name, session);
         } finally {
             session.close();
         }

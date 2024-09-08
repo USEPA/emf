@@ -13,6 +13,7 @@ import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
@@ -55,7 +56,7 @@ public class ExportShapeFileQAStep {
         this.dbServerFactory = dbServerFactory;
         this.user = user;
         this.sessionFactory = sessionFactory;
-        this.fileDownloadDAO = new FileDownloadDAO(sessionFactory);
+        this.fileDownloadDAO = new FileDownloadDAO();
         this.threadPool = threadPool;
         this.verboseStatusLogging = verboseStatusLogging;
     }
@@ -76,12 +77,14 @@ public class ExportShapeFileQAStep {
     }
 
     public void download(String fileName, ProjectionShapeFile projectionShapeFile, String rowFilter, PivotConfiguration pivotConfiguration, boolean overwrite) throws EmfException {
-        ExportShapeFileQAStepTask task = new ExportShapeFileQAStepTask(fileDownloadDAO.getDownloadExportFolder() + "/" + user.getUsername(), fileName, 
+        Session session = sessionFactory.getSession();
+        ExportShapeFileQAStepTask task = new ExportShapeFileQAStepTask(fileDownloadDAO.getDownloadExportFolder(session) + "/" + user.getUsername(), fileName, 
                 overwrite, step, 
                 user, sessionFactory,
                 dbServerFactory, projectionShapeFile, 
                 verboseStatusLogging, rowFilter,
                 pivotConfiguration, true);
+        session.close();
         try {
             threadPool.execute(new GCEnforcerTask("Export QA Step : " + step.getProgram().getName(), task));
         } catch (InterruptedException e) {

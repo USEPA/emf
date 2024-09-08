@@ -2,13 +2,15 @@ package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
 import gov.epa.emissions.framework.services.cost.data.ControlTechnology;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 public class ControlTechnologies {
 
@@ -24,10 +26,14 @@ public class ControlTechnologies {
         controlTechnologiesList = controlTechnologies(sessionFactory);
     }
 
-    private List controlTechnologies(HibernateSessionFactory sessionFactory) {
+    private List<ControlTechnology> controlTechnologies(HibernateSessionFactory sessionFactory) {
         Session session = sessionFactory.getSession();
         try {
-            return facade.getAll(ControlTechnology.class, Order.asc("name"), session);
+            CriteriaBuilderQueryRoot<ControlTechnology> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(ControlTechnology.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<ControlTechnology> root = criteriaBuilderQueryRoot.getRoot();
+
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
         } finally {
             session.close();
         }
@@ -67,7 +73,7 @@ public class ControlTechnologies {
     private ControlTechnology load(String name) {
         Session session = sessionFactory.getSession();
         try {
-            return (ControlTechnology) facade.load(ControlTechnology.class, Restrictions.eq("name", name), session);
+            return (ControlTechnology) facade.load(ControlTechnology.class, "name", name, session);
         } finally {
             session.close();
         }

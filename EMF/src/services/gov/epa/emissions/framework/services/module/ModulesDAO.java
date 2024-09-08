@@ -1,5 +1,13 @@
 package gov.epa.emissions.framework.services.module;
 
+import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
+import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
+import gov.epa.emissions.framework.services.persistence.LockingScheme;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,23 +16,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
-
-import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
-import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
-import gov.epa.emissions.framework.services.persistence.HibernateFacade;
-import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 public class ModulesDAO {
 
@@ -39,9 +44,12 @@ public class ModulesDAO {
 
     //----------------------------------------------------------------
     
-    @SuppressWarnings("rawtypes")
-    public List getLiteModules(Session session) {
-        return hibernateFacade.getAll(LiteModule.class, Order.asc("name").ignoreCase(), session);
+    public List<LiteModule> getLiteModules(Session session) {
+        CriteriaBuilderQueryRoot<LiteModule> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(LiteModule.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<LiteModule> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("name"))), session);
     }
 
     @SuppressWarnings("rawtypes")
@@ -92,34 +100,37 @@ public class ModulesDAO {
     }
 
     public LiteModule getLiteModule(int id, Session session) {
-        Criterion criterion = Restrictions.eq("id", id);
-        @SuppressWarnings("rawtypes")
-        List list = hibernateFacade.get(LiteModule.class, criterion, session);
-        return (list == null || list.size() == 0) ? null : (LiteModule) list.get(0);
+        List<LiteModule> list = hibernateFacade.get(LiteModule.class, "id", Integer.valueOf(id), session);
+        return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
-    public List getModules(Session session) {
-        return hibernateFacade.getAll(Module.class, Order.asc("name").ignoreCase(), session);
+    public List<Module> getModules(Session session) {
+        CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Module> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("name"))), session);
     }
 
     @SuppressWarnings("unchecked")
     public List<Module> getLockedModules(Session session) throws EmfException {
         try {
-            List<?> lockedModules = session.createCriteria(Module.class)
-                                           .add(Restrictions.isNotNull("lockOwner"))
-                                           .list();
-            return (List<Module>) lockedModules;
+            CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, session);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<Module> root = criteriaBuilderQueryRoot.getRoot();
+
+            return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.isNotNull(root.get("lockOwner")) }, session);
         } catch (Exception ex) {
             throw new EmfException("Failed to get the list of locked modules: " + ex.getMessage());
         }
     }
 
-    @SuppressWarnings({ "unchecked" })
     public List<ModuleTypeVersionSubmodule> getSubmodulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
-        List<?> submodules = session.createCriteria(ModuleTypeVersionSubmodule.class)
-                                    .createCriteria("moduleTypeVersion").add(Restrictions.eq("id", moduleTypeVersionId))
-                                    .list();
-        return (List<ModuleTypeVersionSubmodule>) submodules;
+        CriteriaBuilderQueryRoot<ModuleTypeVersionSubmodule> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModuleTypeVersionSubmodule.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<ModuleTypeVersionSubmodule> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("id"), Integer.valueOf(moduleTypeVersionId)) }, session);
     }
     
     public List<ModuleTypeVersionSubmodule> getAllSubmodulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
@@ -146,10 +157,11 @@ public class ModulesDAO {
     
     @SuppressWarnings({ "unchecked" })
     public List<Module> getModulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
-        List<?> modules = session.createCriteria(Module.class)
-                                 .createCriteria("moduleTypeVersion").add(Restrictions.eq("id", moduleTypeVersionId))
-                                 .list();
-        return (List<Module>) modules;
+        CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<Module> root = criteriaBuilderQueryRoot.getRoot();
+
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("id"), Integer.valueOf(moduleTypeVersionId)) }, session);
     }
     
     public void removeModule(Module module, Session session) {
@@ -170,10 +182,8 @@ public class ModulesDAO {
     }
 
     public ModuleDataset getModuleDataset(int moduleDatasetId, Session session) {
-        Criterion criterion = Restrictions.eq("id", moduleDatasetId);
-        @SuppressWarnings("rawtypes")
-        List list = hibernateFacade.get(ModuleDataset.class, criterion, session);
-        return (list == null || list.size() == 0) ? null : (ModuleDataset) list.get(0);
+        List<ModuleDataset> list = hibernateFacade.get(ModuleDataset.class, "id", Integer.valueOf(moduleDatasetId), session);
+        return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
     //----------------------------------------------------------------
@@ -214,24 +224,20 @@ public class ModulesDAO {
     }
 
     public Module getModule(String name, Session session) {
-        Criterion criterion = Restrictions.eq("name", name);
-        @SuppressWarnings("rawtypes")
-        List list = hibernateFacade.get(Module.class, criterion, session);
+        List<Module> list = hibernateFacade.get(Module.class, "name", name, session);
         Module result = null;
         if (list != null && list.size() > 0) {
-            result = (Module) list.get(0);
+            result = list.get(0);
             result.setLastHistory(getLastHistory(result.getId(), session));
         }
         return result;
     }
 
     public Module getModule(int id, Session session) {
-        Criterion criterion = Restrictions.eq("id", id);
-        //@SuppressWarnings("rawtypes")
-        List list = hibernateFacade.get(Module.class, criterion, session);
+        List<Module> list = hibernateFacade.get(Module.class, "id", Integer.valueOf(id), session);
         Module result = null;
         if (list != null && list.size() > 0) {
-            result = (Module) list.get(0);
+            result = list.get(0);
             result.setLastHistory(getLastHistory(id, session));
         }
         return result;
@@ -252,7 +258,7 @@ public class ModulesDAO {
     }
 
     public boolean canUpdate(Module module, Session session) {
-        if (!exists(module.getId(), Module.class, session)) {
+        if (!exists(module.getId(), session)) {
             return false;
         }
 
@@ -265,8 +271,8 @@ public class ModulesDAO {
         return !moduleNameUsed(module.getName(), session);
     }
 
-    private boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    private boolean exists(int id, Session session) {
+        return hibernateFacade.exists(id, Module.class, session);
     }
 
     public boolean moduleNameUsed(String name, Session session) {
@@ -274,23 +280,36 @@ public class ModulesDAO {
     }
 
     public Module currentModule(int moduleId, Session session) {
-        return (Module) hibernateFacade.current(moduleId, Module.class, session);
+        return hibernateFacade.current(moduleId, Module.class, session);
     }
 
     public History currentHistory(int historyId, Session session) {
-        return (History) hibernateFacade.current(historyId, History.class, session);
+        return hibernateFacade.current(historyId, History.class, session);
     }
     
-    @SuppressWarnings("rawtypes")
     public List getHistoryForModule(int moduleId, Session session) {
-        Criterion criterion = Restrictions.eq("module.id", moduleId);
-        return hibernateFacade.get(History.class, criterion, Order.asc("runId"), session);
+        CriteriaBuilderQueryRoot<History> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(History.class, session);
+        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+        Root<History> root = criteriaBuilderQueryRoot.getRoot();
+        Join<Module, History> modJoin = root.join("module", JoinType.INNER);
+
+        Predicate criterion = builder.equal(modJoin.get("id"), moduleId);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterion, builder.asc(root.get("runId")), session);
     }
     
     public History getLastHistory(int moduleId, Session session) {
-        return (History) session.createCriteria(History.class)
-                .add(Restrictions.eq("module.id", moduleId))
-                .addOrder(Order.desc("id"))
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<History> criteriaQuery = builder.createQuery(History.class);
+        Root<History> root = criteriaQuery.from(History.class);
+        Join<Module, History> modJoin = root.join("module", JoinType.INNER);
+
+        criteriaQuery.select(root);
+
+        criteriaQuery.where(builder.equal(modJoin.get("id"), Integer.valueOf(moduleId)));
+        criteriaQuery.orderBy(builder.desc(root.get("id")));
+
+        return session
+                .createQuery(criteriaQuery)
                 .setMaxResults(1)
                 .uniqueResult();
     }
