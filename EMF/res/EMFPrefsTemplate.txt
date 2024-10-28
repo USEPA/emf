@@ -11,7 +11,7 @@ emf.install.folder=C:/Program Files/EMF Client
 server.import.folder=
 server.export.folder=
 server.address=https://sage.hesc.epa.gov:8443/emf/services
-cmd.arguments=-Djavax.net.ssl.trustStoreType\=WINDOWS-ROOT
+cmd.arguments=-Djavax.net.ssl.trustStoreType\=WINDOWS-ROOT -Dcom.sun.security.enableAIAcaIssuers\=true
 java.home=C:/Program Files/Java/jre6
 local.temp.dir=
 r.home=C:/Program Files/R/rw2000/bin

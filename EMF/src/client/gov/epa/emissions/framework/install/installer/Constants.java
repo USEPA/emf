@@ -11,7 +11,7 @@ public class Constants {
     public static final String TIME_FORMAT = "MM/dd/yyyy hh:mmaaa";
     public static final String EMF_URL = "https://www.cmascenter.org/emf/install/";
     public static final String SERVER_ADDRESS = "https://sage.hesc.epa.gov:8443/emf/services";
-    public static final String CMD_ARGUMENTS = "-Djavax.net.ssl.trustStoreType=WINDOWS-ROOT";
+    public static final String CMD_ARGUMENTS = "-Djavax.net.ssl.trustStoreType=WINDOWS-ROOT -Dcom.sun.security.enableAIAcaIssuers=true";
     
     public static final String INSTALLER_PREFERENCES_FILE = "EMFPrefsTemplate.txt";
     public static final String EMF_PREFERENCES_FILE = "EMFPrefs.txt";
